@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane styleClass="loadingPane" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
+   <children>
+      <VBox styleClass="shadowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox VBox.vgrow="NEVER">
+               <children>
+                  <Label text="%status" HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin></Label>
+                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="2.0" left="5.0" top="3.0" />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER" VBox.vgrow="ALWAYS">
+               <children>
+                  <ProgressBar fx:id="progressBar" progress="0.35" VBox.vgrow="NEVER" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="7.0" right="7.0" top="7.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" fillHeight="false" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="cancel_btn" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" VBox.vgrow="NEVER" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" right="5.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+   <padding>
+      <Insets bottom="-5.0" left="-5.0" right="-5.0" top="-5.0" />
+   </padding>
+</AnchorPane>

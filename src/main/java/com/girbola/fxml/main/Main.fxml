@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane fx:id="main_container" maxHeight="700.0" maxWidth="1200.0" minHeight="480.0" minWidth="640.0" styleClass="main" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
+	<children>
+		<VBox fx:id="main_vbox" prefHeight="502.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<children>
+				<fx:include fx:id="menuBar_top" source="MenuBar.fxml" />
+				<HBox prefHeight="100.0" prefWidth="200.0" spacing="2.0" VBox.vgrow="ALWAYS">
+					<children>
+						<fx:include fx:id="sortit" source="Table.fxml" />
+						<fx:include fx:id="sorted" source="Table.fxml" />
+						<fx:include fx:id="asitis" source="Table.fxml" />
+					</children>
+				</HBox>
+				<fx:include fx:id="bottom" source="Bottom.fxml" />
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>
+
+<!-- 	<HBox prefHeight="100.0" prefWidth="200.0" spacing="2.0" VBox.vgrow="ALWAYS"> -->
+<!-- 					<children> -->
+<!-- 						<fx:include fx:id="sortit" source="SortIt_Table.fxml" /> -->
+<!-- 						<fx:include fx:id="sorted" source="Sorted_Table.fxml" /> -->
+<!-- 						<fx:include fx:id="asitis" source="AsItIs_Table.fxml" /> -->
+<!-- 					</children> -->
+<!-- 				</HBox> -->

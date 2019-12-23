@@ -1,0 +1,112 @@
+/*
+* Marko Lokka project. MDir Tool
+* 2013 (c) mDesign
+*//* 
+    Created on : Nov 5, 2015, 8:16:01 AM
+    Author     : Marko Lokka
+    
+  Theme: themes/dark/dialogs.css
+*/
+.root {
+	 -fx-primary:#393939;
+}
+.loadingPane {
+    -fx-background-color: -fx-primary;
+    -fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
+    -fx-border-width:  1.0px;  
+    
+}
+.loadingPane_hbox{
+    -fx-background-color: red;
+    -fx-padding: 2.0;
+}
+
+.borderPane {
+	-fx-padding: 5.0;
+    -fx-background-color: transparent;
+}
+
+.button{
+    -fx-background-color: 
+        grey,
+        transparent,
+        transparent,
+        linear-gradient(darkgrey 0.0%, grey 38.0%, grey 61.0%, darkgrey 100.0%);
+    -fx-background-insets: 1.0, 2.0, 1.0 ,2.0;
+    -fx-background-radius: 5.0,5.0,5.0,5.0,3.0;
+    -fx-padding: 5.0 5.0 5.0 5.0;
+    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 12.0px;
+    -fx-text-fill: white;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+
+}
+
+.cancelLoading {
+    -fx-background-color: yellow;
+    -fx-opacity: 1.0;
+    -fx-padding: 2.0;
+}
+
+.dialog-pane {
+    -fx-background-color: #555555;
+}
+.dialog-pane .label {
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 14.0px;
+    -fx-text-fill: white;
+  
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+.dialog-pane:header .header-panel .label {
+    -fx-font-style: italic;
+    -fx-font-size: 2.0em;
+}
+
+.progress-bar .bar {
+    -fx-background-color: derive(red, 50.0%);
+
+}
+.progress-bar .track {
+    -fx-background-color: derive(black, 50.0%);
+}
+
+.shadowPane {
+    -fx-background-color: darkgrey;
+    -fx-effect: dropshadow(gaussian, grey, 1.0, 1.0, 1.0, 1.0);
+    -fx-background-insets: 5.0;
+}
+
+/*
+Custom styleclasses
+*/
+.alertDiag{
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
+    -fx-border-color: orange;
+    -fx-border-width: 1.0px;
+    -fx-text-fill: white;
+}
+.alertDiag:header *.header-panel {
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
+}
+
+.alertDiag > .button-bar > .container {
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 10.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 30.0%));
+}
+.alertDiag > *.label.content{    
+    -fx-text-fill: -fx-text-color;
+}
+.alertDiag:header *.header-panel *.label{
+    -fx-font-size: 12.0px;
+    -fx-fill: #292929;
+}
+
+
+
+
+
+
+
+

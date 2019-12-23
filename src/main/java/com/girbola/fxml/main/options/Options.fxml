@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.options.OptionsController">
+  
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <tabs>
+          <Tab closable="false" text="%general">
+            <content>
+              <AnchorPane>
+                     <children>
+                        <BorderPane prefHeight="171.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <center>
+                              <VBox prefHeight="344.0" prefWidth="598.0" spacing="1.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <CheckBox fx:id="confirmOnExit" mnemonicParsing="false" text="%confirmOnExit" />
+                                    <CheckBox fx:id="showTooltips" mnemonicParsing="false" text="%showTooltips" />
+                                    <CheckBox fx:id="showHints" mnemonicParsing="false" text="%showHints" />
+                                    <CheckBox fx:id="savingThumbs" mnemonicParsing="false" text="%saveThumbs" />
+                                    <CheckBox fx:id="betterQuality" mnemonicParsing="false" text="%betterQualityThumbs" />
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="1.0" left="4.0" right="1.0" top="20.0" />
+                                 </padding>
+                              </VBox>
+                           </center>
+                           <bottom>
+                              <HBox alignment="CENTER_LEFT" spacing="1.0" BorderPane.alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label text="%workDir">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="workDir_input" editable="false" promptText="label" text="label" HBox.hgrow="ALWAYS" />
+                                    <Button fx:id="chooseFolder_workDir" mnemonicParsing="false" onAction="#chooseFolder_workDir_action" text="%choose" HBox.hgrow="NEVER">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="3.0" left="1.0" right="1.0" top="1.0" />
+                                 </padding>
+                              </HBox>
+                           </bottom>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+            <Tab closable="false" text="%vlc">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <BorderPane prefHeight="365.0" prefWidth="596.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <bottom>
+                              <HBox alignment="CENTER_LEFT" spacing="1.0" BorderPane.alignment="CENTER">
+                                 <children>
+                                    <Label text="%vlcPath">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Label>
+                                    <TextField fx:id="vlcPath_input" editable="false" HBox.hgrow="ALWAYS">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </TextField>
+                                    <Button fx:id="vlcPath_choose" mnemonicParsing="false" onAction="#vlcPath_choose_action" text="%choose" HBox.hgrow="NEVER">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Button>
+                                 </children>
+                                 <padding>
+                                    <Insets bottom="3.0" left="1.0" right="1.0" top="1.0" />
+                                 </padding>
+                              </HBox>
+                           </bottom>
+                        </BorderPane>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>

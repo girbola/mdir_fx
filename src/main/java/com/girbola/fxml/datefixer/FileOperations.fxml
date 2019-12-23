@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.FileOperationsController">
+   <children>
+      <HBox>
+         <children>
+            <VBox prefHeight="75.0" prefWidth="109.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Button fx:id="mixDates_btn" focusTraversable="false" mnemonicParsing="false" onAction="#mixDates_btn_action" text="Mix dates" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="This folder is ok" />
+                  <Button focusTraversable="false" mnemonicParsing="false" text="Fix bad dates" wrapText="true" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <ComboBox fx:id="move_comboBox" focusTraversable="false" onAction="#move_comboBox_action" promptText="%moveToDestination" visibleRowCount="15" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,336 @@
+.root {
+    -fx-primary: #393639;
+    -fx-dark-border-color: darkgrey;
+    -fx-mid-border-color: grey;
+    -fx-light-border-color: white;
+
+    /* One of these colors will be chosen based upon a ladder calculation
+ * that uses the brightness of a background color.  Instead of using these
+ * colors directly as -fx-text-fill values, the sections in this file should
+ * use a derived color to match the background in use.  See also:
+ *
+ * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+ * -fx-text-background-color for text on top of -fx-background
+ * -fx-text-inner-color for text on top of -fx-control-inner-color
+ * -fx-selection-bar-text for text on top of -fx-selection-bar
+ */
+    -fx-dark-text-color: black;
+    -fx-mid-text-color: #292929;
+    -fx-light-text-color: white;
+    -fx-text-base-color: white;
+    -fx-background-color: -fx-primary;
+    /*-fx-padding: 0 3 3 3;*/
+    -fx-border-color: darkgrey;
+
+    -fx-focus-color: derive(blue, 50%);
+    -fx-outer-border: grey;
+    -fx-inner-border: darkgrey;
+    -fx-body-color: -fx-primary;
+}
+.button, .toggle-button,.combo-box-base:editable > .arrow-button,
+.radio-button > .radio,
+.check-box > .box,
+.menu-button,
+.choice-box,
+.color-picker.split-button > .color-picker-label,
+.combo-box-base {
+    -fx-background-color: 
+        -fx-primary,
+        transparent,
+        transparent,
+        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
+    /*-fx-background-insets: 1;*/
+    /*-fx-background-radius: 1;*/
+    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 10px;
+    /*-fx-insets: 0;*/
+    /*-fx-padding: 3;*/
+    -fx-text-fill: -fx-light-text-color;
+}
+.combo-box {
+    -fx-background-color: -fx-primary;
+}
+.combo-box  .arrow-button{
+    -fx-background-color: -fx-primary;
+}
+.combo-box .list-cell 
+{
+    -fx-background: blue;
+    -fx-background-color: derive(-fx-primary, 50%);
+
+    -fx-text-fill: -fx-text-base-color;
+/*    -fx-padding: 3 0 2 7;
+    -fx-cell-size: 1.66667em; */
+}
+
+.combo-box-popup .list-view 
+{
+    -fx-background-color: derive(-fx-primary, 70%);
+    /*-fx-background-insets: 0, 1;*/
+    -fx-effect: dropshadow( three-pass-box , rgba(0,0,0,0.6) , 8, 0.0 , 0 , 0 );
+}    
+
+.combo-box-popup .list-view .list-cell 
+{
+    /*-fx-padding: 4 0 4 5;*/
+
+    /* No alternate highlighting */
+    -fx-background-color: derive(-fx-primary, 70%);
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover 
+{
+    -fx-background: derive(-fx-primary, 70%);
+    -fx-background-color: derive(-fx-primary, 70%);
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover 
+{
+    -fx-background-color: derive(-fx-primary, 10%);
+    -fx-text-fill: -fx-text-base-color;
+}
+
+.combo-box-base  
+{
+    /*-fx-skin: "com.sun.javafx.scene.control.skin.ComboBoxBaseSkin";*/
+    -fx-background-color: derive(-fx-primary, 70%);
+/*    -fx-background-radius: 5, 5, 4, 3;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;*/
+    -fx-padding: 0;
+}
+
+.combo-box-base:hover
+{
+    -fx-color: -fx-hover-base;
+}
+
+.combo-box-base:showing 
+{
+    -fx-color: -fx-pressed-base;
+}
+
+.combo-box-base:focused {
+    -fx-background-color: -fx-focus-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
+/*    -fx-background-radius: 6.4, 4, 5, 3;
+    -fx-background-insets: -1.4, 0, 1, 2;*/
+}
+
+.combo-box-base:disabled {
+    -fx-opacity: .4;
+}
+/*.date-picker {
+
+}*/
+.text-field  {
+    -fx-font-size: 9px;
+    -fx-font-smoothing-type: lcd;
+    -fx-background-color: grey;
+    -fx-border-color: grey;
+    -fx-border-radius: 3;
+    -fx-text-fill: white;
+}
+.grid-pane {
+    -fx-background-color:  black;
+
+}
+.label {
+    -fx-text-fill: white;
+}
+.selection_btns {
+    -fx-background-color: derive(-fx-primary, 20%);
+    -fx-border-color:  derive(-fx-primary, 40%);
+
+
+}
+
+
+/**************************************************************
+ 
+  ScrollBar Skin  
+ 
+****************************************************************/
+.scroll-bar{
+    -fx-background-color: rgb(96,96,96);
+    -fx-background-radius: 2em;
+}
+.scroll-bar:horizontal .track,
+.scroll-bar:vertical .track {
+    -fx-background-color: transparent;
+    -fx-border-color:transparent;
+    -fx-background-radius: 2em;
+}
+.scroll-bar:vertical .track-background,
+
+.scroll-bar:horizontal .track-background {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2em;
+}
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: rgb(211,211,211);
+    -fx-background-insets: 4 0 4 0;
+    -fx-background-radius: 2em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgb(211,211,211);
+    -fx-background-insets: 0 4 0 4;
+    -fx-background-radius: 2em;
+}
+
+.scroll-bar:horizontal .thumb:hover,
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgb(231,231,231);
+}
+/*Scroll barin nappulat painettuna*/
+.scroll-bar:horizontal .thumb:pressed,
+.scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: rgb(255,255,255);
+}
+/*Scroll barin nappulat*/
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 2em;
+    -fx-padding: 5;
+}
+/*Scroll barin nappulat*/
+.scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
+    -fx-background-color:transparent;
+    -fx-background-radius: 2em;
+    -fx-padding: 5;
+}
+.scroll-bar:horizontal .increment-arrow {
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-background-color: rgb(211,211,211);
+    -fx-padding: 0.25em;
+    -fx-rotate: -90;
+}
+.scroll-bar:vertical .increment-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-background-radius: 2em;
+    -fx-padding: 0.25em;
+    -fx-rotate: 0;
+}
+.scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-padding: 0.25em;
+    -fx-rotate: 90;
+}
+.scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-padding: 0.25em;
+    -fx-rotate: -180;
+}
+
+.scroll-bar:vertical:focused,
+.scroll-bar:horizontal:focused {
+    -fx-background-color: blue;
+}
+
+.scroll-pane {
+    -fx-background-color: transparent;
+    /*-fx-control-inner-background: red;*/
+}
+.scroll-pane > .corner {    
+    -fx-background-color: transparent;
+}
+
+.tab-pane {
+    /*-fx-backgound-color: transparent;*/
+    -fx-tab-min-width: 90px;
+    -fx-tab-min-height: 20px;
+    -fx-tab-max-height: 20px;
+    /*-fx-border-color: transparent transparent transparent derive(-fx-primary, 20%);*/
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 1;
+    -fx-background-color: transparent;
+    /*-fx-backgound-color: yellow;*/
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+.tab-pane .tab:selected {
+    -fx-alignment: center;
+    -fx-background-color: grey, transparent, derive(orange, 60%);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-insets: 4;
+    -fx-text-fill: derive(grey, 60%);
+    -fx-padding: 2 1 4 5;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+.tab-content-area {
+    -fx-background-color: #393939;
+    -fx-padding: 2 2 2 2;
+}
+.tab .tab-label {
+    -fx-alignment: center;
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 10px;
+    -fx-font-weight: none;
+    -fx-insets: 5;
+    -fx-text-fill: black;
+}
+
+.separator:vertical .line {
+    -fx-background-color: null;
+    -fx-padding: 0.0em 0.083333em 0.0em 0.0em; /* 0 1 0 0 */
+    -fx-border-color:  transparent derive(-fx-background,-70%) transparent transparent;
+}
+.tilePane{
+    -fx-background-color: black;
+}
+
+.titled-pane {
+    -fx-border-color: -fx-dark-border-color;
+    -fx-background-color: derive(orange, 90%);
+}
+.titled-pane .title {
+    -fx-background-color: derive(-fx-primary, 10%);
+}
+.titled-pane .label {
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: white;
+}
+.titled-pane > .title > *.text {
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 10px;
+    -fx-fill: white;
+}
+.titled-pane > *.content 
+{
+    -fx-background-color:black;
+}
+
+.imageFrame{
+    -fx-border-color: -fx-light-border-color;
+    -fx-background-color: grey;
+}
+.imageContainer {
+    -fx-border-color: -fx-dark-border-color;
+    -fx-background-color: grey;
+}
+.cameras > .title > .arrow-button > .arrow{
+    -fx-shape: "";
+}
+.cameras *.content {
+    -fx-background-color: yellow;
+}
+.topButtons {
+    -fx-background-color: -fx-primary;
+}
