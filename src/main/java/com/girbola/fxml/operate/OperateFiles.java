@@ -275,7 +275,7 @@ public class OperateFiles extends Task<Boolean> {
 							return null;
 						} else {
 							try {
-								Messages.sprintf("DEMOOOOO! move : " + dest.toString() + ".tmp" + " to dest: " + dest);
+								Messages.sprintf("Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
 								Files.move(Paths.get(dest.toString() + ".tmp"), dest);
 								fileInfo.setDestinationPath(dest.toString());
 								fileInfo.setCopied(true);

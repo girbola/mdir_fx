@@ -11,7 +11,6 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -237,17 +236,26 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
-
+		List<String> notFound = new ArrayList<>();
+		
+		if (!Main.conf.getDrive_connected()) {
+			Messages.warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
-
 			@Override
 			protected List<FileInfo> call() throws Exception {
 				List<FileInfo> list = new ArrayList<>();
 				for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							list.add(fileInfo);
-							Messages.sprintf("Sorted Batch file found: " + fileInfo);
+							if (fileInfo.getDestinationPath().toString().contains(Main.conf.getWorkDir())) {
+
+								list.add(fileInfo);
+								Messages.sprintf("Sorted Batch file found: " + fileInfo);
+							}
+							notFound.add(fileInfo.getDestinationPath());
+							Messages.sprintf("Sorted file workdir were not found: " + fileInfo.getDestinationPath());
 						}
 					}
 				}
@@ -255,12 +263,20 @@ public class BottomController {
 				for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							Messages.sprintf("SortIt Batch file found: " + fileInfo);
-							list.add(fileInfo);
+							if (fileInfo.getDestinationPath().toString().contains(Main.conf.getWorkDir())) {
+								Messages.sprintf("SortIt Batch file found: " + fileInfo);
+								list.add(fileInfo);
+							} else {
+								notFound.add(fileInfo.getDestinationPath());
+								Messages.sprintf(
+										"SortIt file workdir were not found: " + fileInfo.getDestinationPath());
+							}
 						}
 					}
 				}
-
+				if(notFound.isEmpty()) {
+					return null;
+				}
 				return list;
 			}
 
@@ -268,7 +284,9 @@ public class BottomController {
 		task.setOnSucceeded((event2) -> {
 			Messages.sprintf("Making list were made successfully");
 			try {
-
+				if(task.get() == null) {
+					Messages.warningTextList("There were files which had bad destination paths", notFound);
+				}
 				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
@@ -380,7 +398,7 @@ public class BottomController {
 		assertNotNull(drive_space);
 		assertNotNull(drive_spaceLeft);
 		assertNotNull(drive_connected);
-		
+
 		Messages.sprintf("initBottomWorkdirMonitors started");
 		drive_name.textProperty().bindBidirectional(Main.conf.drive_name_property());
 		drive_space.textProperty().bindBidirectional(Main.conf.drive_space_property());
@@ -392,15 +410,16 @@ public class BottomController {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(newValue == true) {
-					drive_connected.setStyle("-fx-background-color: green;");			
+				if (newValue == true) {
+					drive_connected.setStyle("-fx-background-color: green;");
 				} else {
 					drive_connected.setStyle("-fx-background-color: red;");
 				}
 			}
-			
+
 		});
 	}
+
 	public void init(Model_main aModel_main) {
 		this.model_main = aModel_main;
 		sprintf("bottom controller...");

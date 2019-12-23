@@ -14,7 +14,7 @@ import static com.girbola.Main.country;
 import static com.girbola.controllers.misc.Misc_GUI.fastExit;
 import static com.girbola.messages.html.HTMLClass.urlExt;
 
-import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import com.girbola.Main;
@@ -313,7 +313,7 @@ public class Messages {
 	 * @param text
 	 * @param list
 	 */
-	public static void warningTextList(String text, ArrayList<String> list) {
+	public static void warningTextList(String text, List<String> list) {
 		Dialog<ButtonType> dialog  = createDialog();
 		DialogPane dialogPane = new DialogPane();
 		dialogPane.setMaxSize(800, 500);

@@ -36,7 +36,6 @@ import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.misc.Misc_GUI;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
