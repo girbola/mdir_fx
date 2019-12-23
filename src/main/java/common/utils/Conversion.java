@@ -151,10 +151,10 @@ public class Conversion {
 
 	}
 	public static String convertToSmallerConversion(long bytes) {
-        long kilobyte = 1024;
-        long megabyte = kilobyte * 1024;
-        long gigabyte = megabyte * 1024;
-        long terabyte = gigabyte * 1024;
+        float kilobyte = 1024;
+        float megabyte = kilobyte * 1024;
+        float gigabyte = megabyte * 1024;
+        float terabyte = gigabyte * 1024;
         
         DecimalFormat df = new DecimalFormat("#.##");
 
@@ -162,13 +162,13 @@ public class Conversion {
             return df.format(bytes) + " B";
 
         } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-            return df.format(Math.round(bytes / kilobyte)) + " KB";
+            return df.format(bytes / kilobyte) + " KB";
 
         } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-            return df.format(Math.round(bytes / megabyte)) + " MB";
+            return df.format(bytes / megabyte) + " MB";
 
         } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-            return df.format(Math.round(bytes / gigabyte)) + " GB";
+            return df.format(bytes / gigabyte) + " GB";
 
         } else if (bytes >= terabyte) {
             return df.format(bytes / terabyte) + " TB";

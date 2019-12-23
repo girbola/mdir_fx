@@ -238,7 +238,7 @@ public class BottomController {
 		Main.setProcessCancelled(false);
 		List<String> notFound = new ArrayList<>();
 		
-		if (!Main.conf.getDrive_connected()) {
+		if (!Main.conf.getDrive_connected() || !Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotConnected"));
 			return;
 		}
