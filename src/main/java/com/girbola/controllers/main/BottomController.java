@@ -290,7 +290,6 @@ public class BottomController {
 				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
-
 					Messages.sprintf("operateFiles Succeeded");
 				});
 				operateFiles.setOnCancelled((workerStateEvent) -> {

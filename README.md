@@ -25,14 +25,16 @@ https://github.com/jcodec/jcodec
 https://github.com/caprica/vlcj
 
 Supported file formats for thumbnail creation
-- __Video__
+
+__Video__
 - 3GP
 - AVI
 - MKV
 - MOV
 - MP4
 - MPG
-- __Picture__
+
+ __Picture__
 - BMP
 - GIF
 - JPG
@@ -40,7 +42,8 @@ Supported file formats for thumbnail creation
 - PNG
 - TIF
 - TIFF
-- __Raw__
+
+__Raw__
 - CR2
 - NEF
 
