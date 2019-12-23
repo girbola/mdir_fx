@@ -7,10 +7,10 @@ The project has been written with JDK 13 and JavaFX 13
 This project is my "learning environment" for JavaFX, CSS and other technologies.
 
 ** Features **
-* Date and time editor for medias that does not have dates and time s information
+* Date and time editor for medias that does not have dates and times information
 * Avoid duplicates to save space
 * Batch copy
-* Very poor documentation (improvementing is coming soon!)
+* Very poor documentation (improvement is coming soon!)
 
 
 External libraries used in this program
@@ -47,5 +47,3 @@ __Raw__
 - CR2
 - NEF
 
-This project is not yet ready for public use.
-Any inconvenience caused by this project is your responsibility.
