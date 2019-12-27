@@ -40,6 +40,11 @@ public class SaveTableContents {
 				}
 
 			}
+			try {
+				connection.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}	
 	}
 

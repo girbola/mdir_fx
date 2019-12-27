@@ -30,14 +30,23 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 
 	@Override
 	protected Boolean call() throws Exception {
-		if (!Files.exists(Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
-			Messages.sprintf("Can't find " + (Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()));
+		Messages.sprintf("Load_FileInfosBackToTableViews starts ");
+		
+		if (!Files.exists(
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
+			Messages.sprintf("Can't find "
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()));
 			return false;
 		}
 
 		List<FolderInfo> folderInfo_list = SQL_Utils.loadFolderInfoTo_Tables(connection, model_main);
 		if (connection == null) {
-			return null;
+			Messages.sprintf("Connection were null at " + Load_FileInfosBackToTableViews.class.getName());
+			return false;
+		}
+		if (folderInfo_list.isEmpty()) {
+			Messages.sprintf("folderInfo_list were empty" + Load_FileInfosBackToTableViews.class.getName());
+			return false;
 		}
 		if (!folderInfo_list.isEmpty()) {
 			for (FolderInfo folderInfo : folderInfo_list) {
@@ -62,7 +71,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
 			for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 				populateTable(folderInfo);
-				//				aerg;
+				// aerg;
 			}
 		}
 		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
@@ -87,7 +96,8 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			Path path = Paths.get(folderInfo.getFolderPath());
 
 			if (Files.exists(path)) {
-				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getFileInfo_db_fileName());
+				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+						Main.conf.getFileInfo_db_fileName());
 				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
 				if (!list.isEmpty()) {
 					folderInfo.getFileInfoList().addAll(list);
@@ -110,20 +120,22 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 	@Override
 	protected void cancelled() {
 		super.cancelled();
+		Messages.sprintfError("Load fileinfo back to table cancelled!");
 	}
 
 	@Override
 	protected void failed() {
 		super.failed();
+		Messages.sprintfError("Load fileinfo back to table FAILED!");
 	}
 
 	@Override
 	protected void succeeded() {
 		super.succeeded();
+		Messages.sprintf("Load fileinfo back to table SUCCEEDED!");
 		TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 		TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 		TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());
-		Messages.sprintf("222load_FileInfosBackToTableViews succee	kenrbgkdldl");
 	}
 
 }

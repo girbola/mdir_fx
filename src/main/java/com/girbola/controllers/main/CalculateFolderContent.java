@@ -107,19 +107,19 @@ public class CalculateFolderContent extends
 	}
 
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
-		Path thumbFilePath = Paths.get(folderInfo.getFolderPath() + File.separator + conf.getFolderInfo_FileName());
-		Messages.sprintf("sortit thumbFilePath is: " + thumbFilePath);
-		if (Files.exists(thumbFilePath)) {
+		Path fileInfo_databaseFilePath = Paths.get(folderInfo.getFolderPath() + File.separator + conf.getFileInfo_db_fileName());
+		Messages.sprintf("sortit thumbFilePath is: " + fileInfo_databaseFilePath);
+		if (Files.exists(fileInfo_databaseFilePath)) {
 
 			FolderInfo loaded_FolderInfo = null;
 			try {
-				loaded_FolderInfo = SQL_Utils.loadFolderInfo(thumbFilePath, SQL_Enums.FOLDERINFO.getType(),
+				loaded_FolderInfo = SQL_Utils.loadFolderInfo(fileInfo_databaseFilePath.getParent(), SQL_Enums.FOLDERINFO.getType(),
 						Main.conf.getFolderInfo_db_fileName());
 				//XMLFunctions.loadXMLData(thumbFilePath);
 				if (loaded_FolderInfo == null) {
 					Messages.sprintf("loaded_FolderInfo were null!");
 					List<FileInfo> li = createFileInfo_list(folderInfo);
-					loaded_FolderInfo = new FolderInfo(thumbFilePath.getParent());
+					loaded_FolderInfo = new FolderInfo(fileInfo_databaseFilePath.getParent());
 					folderInfo.setFileInfoList(li);
 					if (!folderInfo.getFileInfoList().isEmpty()) {
 						TableUtils.updateFolderInfos_FileInfo(folderInfo);
@@ -151,7 +151,7 @@ public class CalculateFolderContent extends
 				TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				Messages.sprintf("folderInfo were not zero: " + folderInfo.getFolderPath());
 			} else {
-				Messages.sprintf("folderInfo were were zero: " + thumbFilePath);
+				Messages.sprintf("folderInfo were were zero: " + fileInfo_databaseFilePath);
 			}
 			counter.set(counter.get() - 1);
 			updateProgress(counter.get(), total.get());

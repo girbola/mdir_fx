@@ -49,34 +49,32 @@ import javafx.scene.text.Text;
 public class TableUtils {
 
 	private static final String ERROR = TableUtils.class.getSimpleName();
+//
+//	public static void updateCopiedStatus(TableView<FolderInfo> table) {
+//		ObservableList<FolderInfo> list = table.getItems();
+//		for (FolderInfo folderInfo : list) {
+//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+//				if (fileInfo.getDestinationPath() != null) {
+//					if (!fileInfo.getDestinationPath().isEmpty()) {
+//						if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
+//							fileInfo.setCopied(false);
+//						}
+//					}
+//				}
+//			}
+//			updateFolderInfos_FileInfo(folderInfo);
+//		}
+//
+//	}
 
-	public static void updateCopiedStatus(TableView<FolderInfo> table) {
-		ObservableList<FolderInfo> list = table.getItems();
-		for (FolderInfo folderInfo : list) {
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				if (fileInfo.getDestinationPath() != null) {
-					if (!fileInfo.getDestinationPath().isEmpty()) {
-						if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
-							fileInfo.setCopied(false);
-						}
-					}
-				}
-			}
-			updateFolderInfos_FileInfo(folderInfo);
-		}
-
-	}
-
-	public static double calculateDateDifferenceRatio(TreeMap<LocalDate,
-			Integer> map) {
+	public static double calculateDateDifferenceRatio(TreeMap<LocalDate, Integer> map) {
 		List<Double> list = new ArrayList<>();
 
 		double tester = 0;
 		boolean pass = false;
 		LocalDate d1 = null;
 
-		for (Entry<LocalDate,
-				Integer> entry : map.entrySet()) {
+		for (Entry<LocalDate, Integer> entry : map.entrySet()) {
 			if (!pass) {
 				pass = true;
 				d1 = entry.getKey();
@@ -208,8 +206,7 @@ public class TableUtils {
 		long size = 0;
 		int copied = 0;
 		int ignored = 0;
-		TreeMap<LocalDate,
-				Integer> map = new TreeMap<>();
+		TreeMap<LocalDate, Integer> map = new TreeMap<>();
 
 		List<Long> dateCounter_list = new ArrayList<>();
 		if (folderInfo.getFileInfoList() == null) {
@@ -261,8 +258,9 @@ public class TableUtils {
 
 				LocalDate localDate = null;
 				try {
-					localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(
-							simpleDates.getSdf_Day().format(fi.getDate())));
+					localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())),
+							Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())),
+							Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
 
 				} catch (Exception ex) {
 					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
@@ -284,7 +282,7 @@ public class TableUtils {
 
 		folderInfo.setCopied(copied);
 
-		//		folderInfo.setFolderImageFiles(image);
+		// folderInfo.setFolderImageFiles(image);
 
 		folderInfo.setFolderSize(size);
 		folderInfo.setFolderImageFiles(image);
@@ -340,7 +338,8 @@ public class TableUtils {
 	public static void updateStatus(IntegerProperty status, int folderFiles, int badFiles, int suggested) {
 		double status_value = 0;
 		try {
-			status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles) * 100;
+			status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles)
+					* 100;
 			status.set((int) Math.floor(status_value));
 			status_value = 0;
 		} catch (Exception ex) {
@@ -350,13 +349,15 @@ public class TableUtils {
 		}
 	}
 
-	public static ChangeListener<Number> updateStatus_listener(IntegerProperty status, int folderFiles, int badFiles, int suggested) {
+	public static ChangeListener<Number> updateStatus_listener(IntegerProperty status, int folderFiles, int badFiles,
+			int suggested) {
 		ChangeListener<Number> cl = new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				double status_value = 0;
 				try {
-					status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles) * 100;
+					status_value = (((double) folderFiles - ((double) badFiles + (double) suggested))
+							/ (double) folderFiles) * 100;
 					status.set((int) Math.floor(status_value));
 					status_value = 0;
 				} catch (Exception ex) {
@@ -545,19 +546,19 @@ public class TableUtils {
 		return false;
 	}
 
-	public static void updateCopiedStatus(FolderInfo folderInfo) {
-		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-			if (fileInfo.getDestinationPath() != null) {
-				if (!fileInfo.getDestinationPath().isEmpty()) {
-					if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
-						fileInfo.setCopied(false);
-					}
-				}
-			}
-			updateFolderInfos_FileInfo(folderInfo);
-		}
-
-	}
+//	public static void updateCopiedStatus(FolderInfo folderInfo) {
+//		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+//			if (fileInfo.getDestinationPath() != null) {
+//				if (!fileInfo.getDestinationPath().isEmpty()) {
+//					if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
+//						fileInfo.setCopied(false);
+//					}
+//				}
+//			}
+//			updateFolderInfos_FileInfo(folderInfo);
+//		}
+//
+//	}
 
 	public static boolean hasDuplicates(FolderInfo folderInfo, TableView<FolderInfo> table) {
 		if (table.getItems().isEmpty()) {

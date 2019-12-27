@@ -14,6 +14,7 @@ import static com.girbola.messages.Messages.warningText;
 import static com.girbola.misc.Misc.getLineNumber;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -221,6 +222,10 @@ public class DateFixerController {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
+		if(!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
 		ConcurrencyUtils.stopExecThread();
 
 		List<FileInfo> fileInfo_list = new ArrayList<>();
@@ -232,7 +237,8 @@ public class DateFixerController {
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null) {
 					Messages.sprintf("blaaadestination is: " + dest);
-					fileInfo.setDestinationPath(dest.toString());
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setDestination_Path(dest.toString());
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
@@ -246,7 +252,7 @@ public class DateFixerController {
 			if (n instanceof VBox && n.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
 				Messages.sprintf(
-						"destination is: " + fileInfo.getDestinationPath() + " isCopied?: " + fileInfo.isCopied());
+						"destination is: " + fileInfo.getDestination_Path() + " isCopied?: " + fileInfo.isCopied());
 			}
 		}
 		Main.setChanged(true);
@@ -421,7 +427,8 @@ public class DateFixerController {
 		LocalDate ldl = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
 				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		fileInfo.setDestinationPath(Main.conf.getWorkDir() + File.separator + ldl.getYear() + File.separator
+		fileInfo.setWorkDir(Main.conf.getWorkDir());
+		fileInfo.setDestination_Path(File.separator + ldl.getYear() + File.separator
 				+ Conversion.formatStringTwoDigits(ldl.getMonthValue()) + File.separator + fileName + "."
 				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 
@@ -1165,7 +1172,7 @@ public class DateFixerController {
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null) {
 					Messages.sprintf("blaaadestination is: " + dest);
-					fileInfo.setDestinationPath(dest.toString());
+					fileInfo.setDestination_Path(dest.toString());
 					fileInfo_list.add(fileInfo);
 				} else {
 					Messages.sprintf("Dest were null. process is about to be cancelled");

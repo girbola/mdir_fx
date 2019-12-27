@@ -39,15 +39,15 @@ public class Configuration_GetsSets extends Configuration_GUI {
     private final String thumbInfo_db_fileName = "thumbinfo.db";
   
 
-    private final String folderInfo_FileName = "folderInfo.xml";
+//    private final String folderInfo_FileName = "folderInfo.xml";
     // private final String thumbFolderName = "m_images";
-    private final String thumbInfo_fileName = "thumbinfo.xml";
+//    private final String thumbInfo_fileName = "thumbinfo.xml";
 
     private ObservableList<Path> ignoredFoldersScanList = FXCollections.observableArrayList();
 
-    public final String getFolderInfo_FileName() {
-	return folderInfo_FileName;
-    }
+//    public final String getFolderInfo_FileName() {
+//	return folderInfo_FileName;
+//    }
 
     public Path getIgnoreListPath() {
 	return ignoreListPath;
@@ -107,9 +107,9 @@ public class Configuration_GetsSets extends Configuration_GUI {
     /**
      * @return the thumbInfo_fileName
      */
-    public String getThumbInfo_fileName() {
-	return thumbInfo_fileName;
-    }
+//    public String getThumbInfo_fileName() {
+//	return thumbInfo_fileName;
+//    }
 
     /**
      * @return the folderInfo_db_fileName

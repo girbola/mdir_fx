@@ -56,11 +56,37 @@ public class SQL_Utils {
 	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS "
 			+ SQL_Enums.SELECTEDFOLDERS.getType() + " (path STRING PRIMARY KEY, connected BOOLEAN)";
 	
+	/*
+	 * 	this.orgPath = aOrgPath;
+		this.fileInfo_id = fileInfo_id;
+		this.destinationPath = "";
+		this.event = "";
+		this.location = "";
+		this.tags = "";
+		this.camera_model = "Unknown";
+		this.orientation = 0;
+		this.timeShift = 0;
+		this.bad = false;
+		this.good = false;
+		this.suggested = false;
+		this.confirmed = false;
+		this.raw = false;
+		this.image = false;
+		this.video = false;
+		this.ignored = false;
+		this.tableDuplicated = false;
+		this.date = 0;
+		this.size = 0;
+		this.thumb_offset = 0;
+		this.thumb_length = 0;
+		this.user = "";
+	 * */
 	final static String fileInfoInsert =
 			"INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " ("
 			+ "'fileInfo_id', "
 			+ "'orgPath', "
-			+ "'destinationPath', "
+			+ "'workDir', "
+			+ "'destination_Path', "
 			+ "'camera_model', "
 			+ "'user', "
 			+ "'orientation', "
@@ -82,7 +108,7 @@ public class SQL_Utils {
 			+ "'location', "
 			+ "'thumb_offset', "
 			+ "'thumb_length')"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
@@ -115,7 +141,8 @@ public class SQL_Utils {
 	private static String fileInfoTableColumns() {
 		String sql = " (fileInfo_id  INTEGER PRIMARY KEY,"
 				+ "orgPath STRING UNIQUE,"
-				+ "destinationPath STRING,"
+				+ "workDir STRING,"
+				+ "destination_Path STRING,"
 				+ "event           STRING,"
 				+ "location        STRING,"
 				+ "tags            STRING,"
@@ -338,7 +365,7 @@ public class SQL_Utils {
 				}
 				FolderInfo folderInfo = new FolderInfo(path, tableType, isConnected);
 				folderInfo.setConnected(Files.exists(path));
-				Messages.sprintf("Folderinfo were connected? " + folderInfo.isConnected());
+				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected());
 				arrayList.add(folderInfo);
 			}
 			return arrayList;
@@ -619,34 +646,7 @@ public class SQL_Utils {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-				/*String orgPath = rs.getString("orgPath");
-				String destPath = rs.getString("destinationPath");
-				String event = rs.getString("event");
-				String location = rs.getString("location");
-				String tags = rs.getString("tags");
-				String camera_model = rs.getString("camera_model");
-				String user = rs.getString("user");
-				int orientation = rs.getInt("orientation");
-				long timeShift = rs.getInt("timeshift");
-				int fileInfo_id = rs.getInt("fileInfo_id");
-				boolean bad = rs.getBoolean("bad");
-				boolean good = rs.getBoolean("good");
-				boolean suggested = rs.getBoolean("suggested");
-				boolean confirmed = rs.getBoolean("confirmed");
-				boolean image = rs.getBoolean("image");
-				boolean raw = rs.getBoolean("raw");
-				boolean video = rs.getBoolean("video");
-				boolean ignored = rs.getBoolean("ignored");
-				boolean copied = rs.getBoolean("copied");
-				boolean tableDuplicated = rs.getBoolean("tableDuplicated");
-				long date = rs.getLong("date");
-				long size = rs.getLong("size");
-				int thumb_offset = rs.getInt("thumb_offset");
-				int thumb_lenght = rs.getInt("thumb_length");
-				FileInfo finfo = new FileInfo(orgPath, destPath, event, location, tags, camera_model, user, orientation, timeShift,
-						fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date,
-						size, thumb_offset, thumb_lenght);*/
-				
+		
 				FileInfo finfo = loadFileInfo(rs);
 						list.add(finfo);
 			}
@@ -658,7 +658,8 @@ public class SQL_Utils {
 
 	public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
 		String orgPath = rs.getString("orgPath");
-		String destPath = rs.getString("destinationPath");
+		String workDir = rs.getString("workDir");
+		String destPath = rs.getString("destination_Path");
 		String event = rs.getString("event");
 		String location = rs.getString("location");
 		String tags = rs.getString("tags");
@@ -681,7 +682,7 @@ public class SQL_Utils {
 		long size = rs.getLong("size");
 		int thumb_offset = rs.getInt("thumb_offset");
 		int thumb_lenght = rs.getInt("thumb_length");
-		FileInfo finfo = new FileInfo(orgPath, destPath, event, location, tags, camera_model, user, orientation, timeShift,
+		FileInfo finfo = new FileInfo(orgPath, workDir, destPath, event, location, tags, camera_model, user, orientation, timeShift,
 				fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date,
 				size, thumb_offset, thumb_lenght);
 		return finfo;
@@ -910,28 +911,29 @@ public class SQL_Utils {
 		try {
 			pstmt.setInt(1, fileInfo.getFileInfo_id());
 			pstmt.setString(2, fileInfo.getOrgPath());
-			pstmt.setString(3, fileInfo.getDestinationPath());
-			pstmt.setString(4, fileInfo.getCamera_model());
-			pstmt.setString(5, fileInfo.getUser());
-			pstmt.setInt(6, fileInfo.getOrientation());
-			pstmt.setBoolean(7, fileInfo.isBad());
-			pstmt.setBoolean(8, fileInfo.isGood());
-			pstmt.setBoolean(9, fileInfo.isConfirmed());
-			pstmt.setBoolean(10, fileInfo.isCopied());
-			pstmt.setBoolean(11, fileInfo.isIgnored());
-			pstmt.setBoolean(12, fileInfo.isSuggested());
-			pstmt.setBoolean(13, fileInfo.isImage());
-			pstmt.setBoolean(14, fileInfo.isRaw());
-			pstmt.setBoolean(15, fileInfo.isVideo());
-			pstmt.setLong(16, fileInfo.getTimeShift());
-			pstmt.setLong(17, fileInfo.getDate());
-			pstmt.setLong(18, fileInfo.getSize());
-			pstmt.setBoolean(19, fileInfo.isTableDuplicated());
-			pstmt.setString(20, fileInfo.getTags());
-			pstmt.setString(21, fileInfo.getEvent());
-			pstmt.setString(22, fileInfo.getLocation());
-			pstmt.setInt(23, fileInfo.getThumb_offset());
-			pstmt.setInt(24, fileInfo.getThumb_length());
+			pstmt.setString(3, fileInfo.getWorkDir());
+			pstmt.setString(4, fileInfo.getDestination_Path());
+			pstmt.setString(5, fileInfo.getCamera_model());
+			pstmt.setString(6, fileInfo.getUser());
+			pstmt.setInt(7, fileInfo.getOrientation());
+			pstmt.setBoolean(8, fileInfo.isBad());
+			pstmt.setBoolean(9, fileInfo.isGood());
+			pstmt.setBoolean(10, fileInfo.isConfirmed());
+			pstmt.setBoolean(11, fileInfo.isCopied());
+			pstmt.setBoolean(12, fileInfo.isIgnored());
+			pstmt.setBoolean(13, fileInfo.isSuggested());
+			pstmt.setBoolean(14, fileInfo.isImage());
+			pstmt.setBoolean(15, fileInfo.isRaw());
+			pstmt.setBoolean(16, fileInfo.isVideo());
+			pstmt.setLong(17, fileInfo.getTimeShift());
+			pstmt.setLong(18, fileInfo.getDate());
+			pstmt.setLong(19, fileInfo.getSize());
+			pstmt.setBoolean(20, fileInfo.isTableDuplicated());
+			pstmt.setString(21, fileInfo.getTags());
+			pstmt.setString(22, fileInfo.getEvent());
+			pstmt.setString(23, fileInfo.getLocation());
+			pstmt.setInt(24, fileInfo.getThumb_offset());
+			pstmt.setInt(25, fileInfo.getThumb_length());
 			pstmt.addBatch();
 			return true;
 		} catch (Exception e) {
@@ -967,6 +969,7 @@ public class SQL_Utils {
 	}
 
 	public static FolderInfo loadFolderInfo(Path path, String table, String value) {
+		Messages.sprintf("loadFolderInfo; " + path);
 		FolderInfo folderInfo = null;
 		try {
 			Connection connection = SqliteConnection.connector(path, Main.conf.getFolderInfo_db_fileName());

@@ -54,12 +54,14 @@ public class Populate {
 		sprintf("SorterTest action started");
 		Main.setProcessCancelled(false);
 
-		model_main.tables().getSortIt_table().getItems().clear();
-		model_main.tables().getSorted_table().getItems().clear();
 
 		if (model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
 			sprintf("getSelection_FolderScanner list were empty");
+			return;
 		}
+		model_main.tables().getSortIt_table().getItems().clear();
+		model_main.tables().getSorted_table().getItems().clear();
+
 		/*
 		 * Load from selectedFolder list Sort to tables Calculate tables content
 		 */
@@ -73,7 +75,7 @@ public class Populate {
 			}
 		}
 		if (list.isEmpty()) {
-			Messages.warningText("List is empty at Populate class");
+			Messages.warningText("No selected folder(s) to scan. Choose \"File/Add folders\" to choose folder to scan");
 			return;
 		}
 		for (Path pt : list) {
@@ -117,11 +119,11 @@ public class Populate {
 							public void handle(WorkerStateEvent event) {
 								try {
 									process.set(process.get() - 1);
-									sprintf("(double) process.get() / (double) total.get()); " + (double) process.get() / (double) total.get());
-									sprintf("Saving...");
 									loadingProcess_task.setMessage("Saving...");
 									// XMLFunctions.saveAll(model.getTables());
 									loadingProcess_task.closeStage();
+									model_main.getRegisterTableActivity().restart();
+									
 									sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
 								} catch (InterruptedException | ExecutionException ex) {
 									Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);

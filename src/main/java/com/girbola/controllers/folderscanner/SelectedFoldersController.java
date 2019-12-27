@@ -40,11 +40,9 @@ public class SelectedFoldersController {
 	private Model_folderScanner model_folderScanner;
 
 	@FXML
-	private TableColumn<SelectedFolder,
-			String> folder_col;
+	private TableColumn<SelectedFolder, String> folder_col;
 	@FXML
-	private TableColumn<SelectedFolder,
-			Boolean> folder_connected_col;
+	private TableColumn<SelectedFolder, Boolean> folder_connected_col;
 	@FXML
 	private Button selectedFolders_ok;
 	@FXML
@@ -57,10 +55,12 @@ public class SelectedFoldersController {
 	@FXML
 	private void selectedFolders_ok_action(ActionEvent event) {
 		model_folderScanner.getScanDrives().stop();
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getFolderInfo_db_fileName());
 		SQL_Utils.createSelectedFoldersTable(connection);
 
-		SQL_Utils.insertSelectedFolders_List_ToDB(connection, model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+		SQL_Utils.insertSelectedFolders_List_ToDB(connection,
+				model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 		if (connection != null) {
 			try {
 				connection.close();
@@ -68,7 +68,10 @@ public class SelectedFoldersController {
 				e.printStackTrace();
 			}
 		}
+//		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
+		model_main.getRegisterTableActivity().cancel();
 		model_main.populate().populateTables_FolderScanner_list();
+		
 		Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
 		stage.close();
 	}
@@ -90,7 +93,8 @@ public class SelectedFoldersController {
 				if (folder.toString().contains(conf.getWorkDir())) {
 					Messages.warningText("Cannot be same folder with com.girbola.workdir!");
 				} else {
-					model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, folder.toString()));
+					model_main.getSelectedFolders().getSelectedFolderScanner_obs()
+							.add(new SelectedFolder(true, folder.toString()));
 				}
 			} else {
 				sprintf("Won't be added because it already exists! " + folder.toPath());
@@ -109,7 +113,8 @@ public class SelectedFoldersController {
 
 	private void removeFromTable(TableView<SelectedFolder> table) {
 		ArrayList<SelectedFolder> listToRemove = new ArrayList<>();
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getFolderInfo_db_fileName());
 
 		ObservableList<SelectedFolder> rows = table.getSelectionModel().getSelectedItems();
 		for (SelectedFolder rm : rows) {
@@ -141,13 +146,16 @@ public class SelectedFoldersController {
 
 		selectedFolder_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		model_folderScanner.setDeleteKeyPressed(selectedFolder_TableView);
-		folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder,
-				String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
-		folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder,
-				Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+		folder_col.setCellValueFactory(
+				(TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(
+						cellData.getValue().getFolder()));
+		folder_connected_col.setCellValueFactory(
+				(TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(
+						cellData.getValue().isConnected()));
 
 		selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-		Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+		Messages.sprintf(
+				"getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 		for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
 			Messages.sprintf("sggg: " + sf.getFolder());
 		}

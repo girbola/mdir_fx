@@ -17,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.jcodec.common.logging.Message;
+
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
@@ -360,6 +362,18 @@ public class FileUtils {
 		final long end = Math.min(size, position + mapspan);
 		final long maplen = (int) (end - position);
 		return channel.map(FileChannel.MapMode.READ_ONLY, position, maplen);
+	}
+
+	/**
+	 * Replaces from filepath a workdir to none. For example c:\pictures\2019\09\pictures001.jpg to \2019\09\pictures001.jpg
+	 * 
+	 * @param dest
+	 * @param workDir
+	 */
+	public static String parseWorkDir(String dest, String workDir) {
+		String parsedWorkDir_FileName = dest.replace(workDir, "");
+		Messages.sprintf("parseWorkDir is: " + parsedWorkDir_FileName);
+		return parsedWorkDir_FileName;
 	}
 
 }

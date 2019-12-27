@@ -76,7 +76,7 @@ public class WorkDir_Handler {
 	 * @return
 	 */
 	public boolean loadAllLists(Path workDirPath) {
-		Messages.sprintf("loadAllLists: " + workDirPath);
+		Messages.sprintf("WorkDir Handler loadAllLists: " + workDirPath);
 		if (!Files.exists(workDirPath)) {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
@@ -122,7 +122,7 @@ public class WorkDir_Handler {
 			FileInfo fileInfo = it.next();
 			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month) {
 				if (new File(fileInfo.getOrgPath()).length() == new File(fileInfo.getOrgPath()).length()) {
-					Messages.sprintf("FileInfo exists at workdir: " + fileInfo.getDestinationPath());
+					Messages.sprintf("FileInfo exists at workdir: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 					return fileInfo;
 				}
 			}

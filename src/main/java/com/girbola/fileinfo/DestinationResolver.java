@@ -54,7 +54,8 @@ public class DestinationResolver {
 		// I:\\2017\\2017-06-23 Merikarvia - Kalassa �ijien kanssa
 		// I:\\2017\\2017-06-24 Merikarvia - Kalassa �ijien kanssa
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		Path destPath = Paths.get(Main.conf.getWorkDir() + File.separator + ld.getYear() + File.separator
+		
+		Path destPath = Paths.get(File.separator + ld.getYear() + File.separator
 				+ Conversion.formatStringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(source));
 		return destPath;
 	}

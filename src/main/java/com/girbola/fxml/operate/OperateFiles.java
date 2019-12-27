@@ -137,12 +137,12 @@ public class OperateFiles extends Task<Boolean> {
 					cancel();
 					break;
 				}
-
+				
 				source = Paths.get(fileInfo.getOrgPath());
 				// dest = DestinationResolver.getDestinationFileName(fileInfo);
 
-				dest = Paths.get(fileInfo.getDestinationPath());
-
+				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+				
 				Messages.sprintf("source is: " + source + " dest: " + dest);
 				Platform.runLater(new Runnable() {
 					@Override
@@ -176,8 +176,9 @@ public class OperateFiles extends Task<Boolean> {
 								dest = dest_test;
 								copy = true;
 								STATE = Copy_State.RENAME.getType();
-								fileInfo.setDestinationPath(dest.toString());
-								Messages.sprintf("Renamed: " + fileInfo.getDestinationPath());
+								String newDest = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+								fileInfo.setDestination_Path(newDest);
+								Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
 								Platform.runLater(new Runnable() {
 									@Override
 									public void run() {
@@ -277,7 +278,8 @@ public class OperateFiles extends Task<Boolean> {
 							try {
 								Messages.sprintf("Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
 								Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-								fileInfo.setDestinationPath(dest.toString());
+								String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+								fileInfo.setDestination_Path(newName);
 								fileInfo.setCopied(true);
 								boolean added = model_main.getWorkDir_Handler().add(fileInfo);
 								if (added) {
@@ -367,7 +369,6 @@ public class OperateFiles extends Task<Boolean> {
 			model_operate.doneButton(scene_NameType, close);
 			model_operate.stopTimeLine();
 			Task<Void> saveWorkDirToDatabase = new Task<Void>() {
-
 				@Override
 				protected Void call() throws Exception {
 					Messages.sprintf("Step1");

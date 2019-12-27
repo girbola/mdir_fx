@@ -237,44 +237,51 @@ public class BottomController {
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
 		List<String> notFound = new ArrayList<>();
-		
+
 		if (!Main.conf.getDrive_connected() || !Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotConnected"));
 			return;
 		}
+
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
 			@Override
 			protected List<FileInfo> call() throws Exception {
 				List<FileInfo> list = new ArrayList<>();
 				for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							if (fileInfo.getDestinationPath().toString().contains(Main.conf.getWorkDir())) {
-
+						if (Files.exists(Paths.get(fileInfo.getOrgPath())) 
+								&& !fileInfo.getDestination_Path().isEmpty()
+								&& Files.exists(Paths.get(fileInfo.getWorkDir()))
+								&& !fileInfo.isCopied()) {
+							if (fileInfo.getDestination_Path().toString().contains(Main.conf.getWorkDir())) {
 								list.add(fileInfo);
 								Messages.sprintf("Sorted Batch file found: " + fileInfo);
 							}
-							notFound.add(fileInfo.getDestinationPath());
-							Messages.sprintf("Sorted file workdir were not found: " + fileInfo.getDestinationPath());
+							notFound.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+							Messages.sprintf("Sorted file workdir were not found: " + fileInfo.getDestination_Path()
+									+ "Main.conf.getWorkDir(): " + Main.conf.getWorkDir());
 						}
 					}
 				}
-
+//prosessoi eri tavalla nämä. ensim tsekataan workdirrin olemassa olo. korjataan tarvittaessa workdir path
 				for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							if (fileInfo.getDestinationPath().toString().contains(Main.conf.getWorkDir())) {
-								Messages.sprintf("SortIt Batch file found: " + fileInfo);
+						if (Files.exists(Paths.get(fileInfo.getOrgPath())) 
+								&& !fileInfo.getDestination_Path().isEmpty()
+								&& Files.exists(Paths.get(fileInfo.getWorkDir())) 
+								&& !fileInfo.isCopied()) {
+							if (fileInfo.getDestination_Path().toString().contains(Main.conf.getWorkDir())) {
 								list.add(fileInfo);
-							} else {
-								notFound.add(fileInfo.getDestinationPath());
-								Messages.sprintf(
-										"SortIt file workdir were not found: " + fileInfo.getDestinationPath());
+								Messages.sprintf("SortIt Batch file found: " + fileInfo);
 							}
+							notFound.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+							Messages.sprintf("SortIt file workdir were not found: " + fileInfo.getDestination_Path()
+									+ "Main.conf.getWorkDir(): " + Main.conf.getWorkDir());
 						}
 					}
 				}
-				if(notFound.isEmpty()) {
+				
+				if (!notFound.isEmpty()) {
 					return null;
 				}
 				return list;
@@ -284,8 +291,9 @@ public class BottomController {
 		task.setOnSucceeded((event2) -> {
 			Messages.sprintf("Making list were made successfully");
 			try {
-				if(task.get() == null) {
+				if (task.get() == null) {
 					Messages.warningTextList("There were files which had bad destination paths", notFound);
+					return;
 				}
 				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
 						Scene_NameType.MAIN.getType());
@@ -411,8 +419,11 @@ public class BottomController {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				if (newValue == true) {
 					drive_connected.setStyle("-fx-background-color: green;");
+					start_copyBatch_btn.setDisable(false);
+
 				} else {
 					drive_connected.setStyle("-fx-background-color: red;");
+					start_copyBatch_btn.setDisable(true);
 				}
 			}
 

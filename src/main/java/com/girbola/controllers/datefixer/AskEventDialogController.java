@@ -55,7 +55,7 @@ public class AskEventDialogController {
 	@FXML
 	private Button cancel_btn;
 
-	private List<FileInfo> applyChanges() {
+	private List<FileInfo> applyChanges(String workDir) {
 		List<FileInfo> list = new ArrayList<>();
 		if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
 			String location_str = "";
@@ -90,15 +90,16 @@ public class AskEventDialogController {
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
 						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(Main.conf.getWorkDir() + File.separator + ld.getYear() + File.separator + ld
+				Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld
 						+ location_str + event_str + File.separator + fileName + "."
 						+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				if (!destPath.toString().equals(fileInfo.getDestinationPath())) {
-					fileInfo.setDestinationPath(destPath.toString());
+				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+					fileInfo.setWorkDir(workDir);
+					fileInfo.setDestination_Path(destPath.toString());
 					fileInfo.setCopied(false);
 					Main.setChanged(true);
 				}
-				Messages.sprintf("Destination path would be: " + fileInfo.getDestinationPath());
+				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
 				location_str = "";
 				event_str = "";
 			}
@@ -112,7 +113,7 @@ public class AskEventDialogController {
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
 		}
-		applyChanges();
+		applyChanges(Main.conf.getWorkDir());
 		Stage stage = (Stage) apply_btn.getScene().getWindow();
 		stage.close();
 
@@ -124,7 +125,7 @@ public class AskEventDialogController {
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
 		}
-		List<FileInfo> listOfApplyedChanges = applyChanges();
+		List<FileInfo> listOfApplyedChanges = applyChanges(Main.conf.getWorkDir());
 		if (listOfApplyedChanges.isEmpty()) {
 			Messages.errorSmth(ERROR, "No files were selected", null, Misc.getLineNumber(), true);
 			return;

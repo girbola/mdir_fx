@@ -134,11 +134,11 @@ public class Model_main {
 			Messages.warningText("model.getTables() were null!");
 		}
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
-		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType());
-		SQL_Utils.createFolderInfoDatabase(connection);
+				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
+		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
+		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
 		if (connection == null) {
-			Messages.errorSmth(ERROR, "Saving folderinfo's failed!", new Exception("Saving folderinfo's failed!"),
+			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
 					Misc.getLineNumber(), true);
 		}
 		long start = System.currentTimeMillis();
@@ -176,21 +176,23 @@ public class Model_main {
 			return false;
 		}
 		if (connection == null) {
-			Messages.sprintfError("saveTablecontent error!!!");
+			Messages.sprintfError("saveTablecontent connection error!!!");
 			return false;
 		}
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
 			folderInfo.setTableType(tableType);
 			try {
-				SQL_Utils.addToFolderInfoDB(connection, folderInfo);
+				SQL_Utils.addToFolderInfoDB(connection, folderInfo); // Adds FolderInfo into database folderInfo.db.
+																		// FolderPath, TableType and Connection status
+																		// when this was saved
+				// Connects to current folder for existing or creates new one called fileinfo.db
 				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
-				if (SQL_Utils.isDbConnected(fileList_connection)) {
-					SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
-					if (fileList_connection != null) {
-						fileList_connection.close();
-					}
+				// Inserts all data info fileinfo.db
+				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
+				if (fileList_connection != null) {
+					fileList_connection.close();
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -233,7 +235,7 @@ public class Model_main {
 		// saveTablePositions();
 		// erg;
 		Messages.sprintf("Exiting program");
-		Configuration_SQL_Utils.update_Configuration();
+//		Configuration_SQL_Utils.update_Configuration();
 
 		if (Main.getChanged()) {
 			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(bundle.getString("saveBeforeExit"));

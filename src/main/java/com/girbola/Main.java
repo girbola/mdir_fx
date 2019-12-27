@@ -200,6 +200,14 @@ public class Main extends Application {
 							lpt.closeStage();
 							model_main.tables().registerTableView_obs_listener();
 							stage.setOnCloseRequest(model_main.exitProgram);
+							try {
+								if(!load_FileInfosBackToTableViews.get()) {
+									Messages.warningText("Can't load previous session!");
+								}
+								
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
 							model_main.getRegisterTableActivity().restart();
 							boolean loaded = model_main.getWorkDir_Handler()
