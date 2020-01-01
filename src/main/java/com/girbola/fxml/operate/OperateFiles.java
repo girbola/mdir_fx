@@ -86,10 +86,12 @@ public class OperateFiles extends Task<Boolean> {
 		Main.scene_Switcher.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
+				Messages.warningText("CLosin");
 				Model_main model_Main = (Model_main) Main.getMain_stage().getUserData();
-				Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
+				
 				Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
-
+				Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
+				event.consume();
 			}
 		});
 

@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
@@ -237,6 +238,7 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
+		model_main.getRegisterTableActivity().cancel();
 		List<String> conflictWithWorkdir = new ArrayList<>();
 		List<String> cantCopy = new ArrayList<>();
 		if (Main.conf.getWorkDir().equals("null")) {
@@ -289,7 +291,7 @@ public class BottomController {
 								Messages.sprintf("1file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 							} else if (status == 1) {
 								conflictWithWorkdir.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								Messages.sprintf("2file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+								Messages.sprintf("2file: " + " workdir: " + fileInfo.getWorkDir() + " destP "  + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 							} else if (status == 2) {
 								cantCopy.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 								Messages.sprintf("3file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
@@ -301,7 +303,8 @@ public class BottomController {
 				}
 
 				if (!conflictWithWorkdir.isEmpty()) {
-					Messages.warningText("conflictWithWorkdir were not empty");
+//					Messages.warningText("conflictWithWorkdir were not empty");
+					Messages.sprintf("Workdir: " + Main.conf.getWorkDir()) ;
 					for(String confw : conflictWithWorkdir) {
 						Messages.sprintf("Conflict dir: " + confw);
 					}
@@ -310,7 +313,7 @@ public class BottomController {
 				}
 
 				if (!cantCopy.isEmpty()) {
-					Messages.warningText("cantCopy were not empty");
+//					Messages.warningText("cantCopy were not empty");
 					for(String confw : cantCopy) {
 						Messages.sprintf("cantCopy dir: " + confw);
 					}
@@ -334,6 +337,7 @@ public class BottomController {
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
 					Messages.sprintf("operateFiles Succeeded");
+					model_main.getRegisterTableActivity().restart();
 				});
 				operateFiles.setOnCancelled((workerStateEvent) -> {
 					Messages.sprintf("operateFiles CANCELLED");
@@ -359,7 +363,15 @@ public class BottomController {
 			Messages.sprintf("Making list were cancelled");
 		});
 		task.setOnFailed((event2) -> {
-			Messages.sprintf("Making list were made cancelled");
+				try {
+					Messages.sprintf("Making list were made cancelled: " + task.get().size());
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}	
 		});
 		Thread th = new Thread(task, "Start Threads");
 		th.start();

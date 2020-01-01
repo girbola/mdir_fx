@@ -369,24 +369,35 @@ public class FileInfo_Utils {
 		return source;
 	}
 
+	//@formatter:off
 	/**
-	 * Returns 2 if copying is not possible Returns 1 if conflict with workdir
-	 * Returns 0 if good
+	 * Returns 0 if good 
+	 * Returns 1 if conflict with workdir 
+	 * Returns 2 if copying is not possible
 	 * 
 	 * @param fileInfo
 	 * @return
 	 */
+	//@formatter:on
 	public static int checkWorkDir(FileInfo fileInfo) {
-		if (Main.conf.getDrive_connected() && !Main.conf.getWorkDir().equals("null")) {
+		if (Main.conf.getDrive_connected()) {
+			if (!fileInfo.getWorkDir().equals("null")) {
+				if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir()) || Main.conf.getWorkDir().contains(fileInfo.getWorkDir()) ) {
+					if (Files.exists(Paths.get(fileInfo.getWorkDir()))
+							&& Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+						return 0;
+					} else {
+						return 2;
+					}
+				} else {
+					return 1;
+				}
+			} else {
+				return 2;
+			}
+
+		} else {
 			return 2;
 		}
-		if (!fileInfo.getWorkDir().equals("null") && fileInfo.getWorkDir() != Main.conf.getWorkDir()) {
-			return 1;
-		}
-		if (!fileInfo.getWorkDir().equals("null") && fileInfo.getWorkDir() == Main.conf.getWorkDir()
-				&& Main.conf.getDrive_connected()) {
-			return 0;
-		}
-		return 2;
 	}
 }
