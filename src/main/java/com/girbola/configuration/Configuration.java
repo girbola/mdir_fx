@@ -6,49 +6,27 @@
  */
 package com.girbola.configuration;
 
-import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
-import static com.girbola.configuration.Configuration_Type.BETTERQUALITYTHUMBS;
-import static com.girbola.configuration.Configuration_Type.CONFIRMONEXIT;
-import static com.girbola.configuration.Configuration_Type.ID_COUNTER;
-import static com.girbola.configuration.Configuration_Type.SAVEFOLDER;
-import static com.girbola.configuration.Configuration_Type.SAVETHUMBS;
-import static com.girbola.configuration.Configuration_Type.SHOWFULLPATH;
-import static com.girbola.configuration.Configuration_Type.SHOWHINTS;
-import static com.girbola.configuration.Configuration_Type.SHOWTOOLTIPS;
-import static com.girbola.configuration.Configuration_Type.THEMEPATH;
-import static com.girbola.configuration.Configuration_Type.VLCPATH;
-import static com.girbola.configuration.Configuration_Type.VLCSUPPORT;
 import static com.girbola.configuration.Configuration_Type.WORKDIR;
 import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.misc.Misc_GUI;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
-import common.utils.ArrayUtils;
-import javafx.beans.property.Property;
 import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.control.TableColumn;
@@ -98,15 +76,16 @@ public class Configuration extends Configuration_defaults {
 	public boolean createConfiguration_db() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
-		// Create configuration table_cols which keeps tableview's widths 
+		// Create configuration table_cols which keeps tableview's widths
 		Configuration_SQL_Utils.createConfigurationTable_properties(connection);
-		// Create configuration for programs config like themePath, workDir, vlcPath etc.
+		// Create configuration for programs config like themePath, workDir, vlcPath
+		// etc.
 		Configuration_SQL_Utils.createConfiguration_columns(connection);
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);
 		SQL_Utils.createFolderInfoDatabase();
-		
+
 		try {
 			connection.close();
 			return true;
@@ -115,11 +94,9 @@ public class Configuration extends Configuration_defaults {
 			e.printStackTrace();
 			return false;
 		}
-	
-	}
-	
 
-	
+	}
+
 	public Rectangle2D getScreenBounds() {
 		return Screen.getPrimary().getBounds();
 	}
@@ -131,23 +108,11 @@ public class Configuration extends Configuration_defaults {
 				Main.conf.getConfiguration_db_fileName());
 
 		Configuration_SQL_Utils.loadTables(connection, model.tables());
-//		if (SQL_Utils.isDbConnected(connection)) {
 		try {
 			connection.close();
 		} catch (Exception e) {
-//				e.printStackTrace();
 			Messages.sprintfError("loadConfig_GUI error with closing SQL database");
 		}
-//		}
-		// loadTableWidths(model.tables().getSortIt_table().getColumns(), prop);
-		// loadTableWidths(model.tables().getSorted_table().getColumns(), prop);
-		// loadTableWidths(model.tables().getAsItIs_table().getColumns(), prop);
-
-		List<Path> ignoredList = ArrayUtils.readFileToArray(conf.getIgnoreListPath());
-		for (Path file : ignoredList) {
-			conf.addToIgnoredList(file);
-		}
-		ignoredList = null;
 	}
 
 	public boolean loadConfig_SQL() {

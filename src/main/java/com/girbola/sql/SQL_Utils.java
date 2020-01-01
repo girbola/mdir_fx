@@ -1184,6 +1184,9 @@ public class SQL_Utils {
 		}
 
 	}
+	public static void insertToFolderInfoDB(Connection connection, ObservableList<FolderInfo> table_row_list) {
+		
+	}
 
 
 }

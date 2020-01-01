@@ -258,9 +258,6 @@ public class Tables {
 					for (FolderInfo folderInfo : table_row_list) {
 						if (!folderInfo.getFolderPath()
 								.equals(System.getProperty("user.home") + File.separator + "Pictures")) {
-							Main.conf.addToIgnoredList(Paths.get(folderInfo.getFolderPath()));
-							folderInfo.setIgnored(true);
-							Main.setChanged(true);
 							listToRemove.add(folderInfo);
 						} else {
 							Messages.warningText(bundle.getString("folderIsUserHomeDirectory") + " Folder name is: "
@@ -271,7 +268,7 @@ public class Tables {
 					for (FolderInfo folderInfo : listToRemove) {
 						table.getItems().remove(folderInfo);
 					}
-					Configuration_SQL_Utils.insert_IgnoredList(connection, listToRemove);
+					Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
 					listToRemove.clear();
 					try {
 						connection.close();

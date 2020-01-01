@@ -116,7 +116,9 @@ public class Configuration_SQL_Utils {
 		}
 	}
 
-	public static void insert_IgnoredList(Connection connection, ArrayList<FolderInfo> listToRemove) {
+	public static void insert_IgnoredList(ArrayList<FolderInfo> listToRemove) {
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getConfiguration_db_fileName());
 		try {
 			connection.setAutoCommit(false);
 			String sql = "INSERT OR REPLACE INTO " + SQL_Enums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
@@ -127,7 +129,7 @@ public class Configuration_SQL_Utils {
 			}
 			pstmt.executeBatch();
 			pstmt.close();
-
+			connection.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -191,7 +193,7 @@ public class Configuration_SQL_Utils {
 				Messages.sprintf("insertAllProgram_config connection were connected");
 				try {
 				//@formatter:off
-				String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
+				String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
 				+ " "
 				+ "('" + betterQualityThumbs + "',"
 				+ "'" + confirmOnExit + "', " 

@@ -106,6 +106,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_addFolders_action(ActionEvent event) {
 		Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
+		model_main.getRegisterTableActivity().cancel();
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
 				Main.bundle);
 
@@ -126,6 +127,7 @@ public class MenuBarController {
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
+				model_main.getRegisterTableActivity().restart();
 				fc_stage.close();
 			}
 		});
@@ -151,7 +153,6 @@ public class MenuBarController {
 
 	@FXML
 	private void menuItem_file_close_action(ActionEvent event) {
-		// model_main.menu().closeStage(menuItem_file_close);
 		model_main.exitProgram();
 	}
 
@@ -383,7 +384,7 @@ public class MenuBarController {
 		menuItem_tools_themes_light.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
 				.add(getClass().getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
-		
+		Configuration_SQL_Utils.update_Configuration();
 	}
 
 	@FXML
@@ -393,6 +394,7 @@ public class MenuBarController {
 		menuItem_tools_themes_dark.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
 				.add(getClass().getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
+		Configuration_SQL_Utils.update_Configuration();
 	}
 
 	private void viewWebPage(String string) {
