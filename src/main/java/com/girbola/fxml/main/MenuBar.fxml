@@ -31,8 +31,6 @@
                   <CheckMenuItem fx:id="menuItem_tools_themes_light" mnemonicParsing="false" onAction="#menuItem_tools_themes_light_action" text="%light" />
               </items>
             </Menu>
-            <MenuItem fx:id="menuItem_tools_options_save" mnemonicParsing="false" onAction="#menuItem_tools_options_save_action" text="%save" />
-            <MenuItem fx:id="menuItem_tools_options_load" mnemonicParsing="false" onAction="#menuItem_tools_options_load_action" text="%load" />
             <MenuItem fx:id="menuItem_tools_options_viewIgnoredList" mnemonicParsing="false" onAction="#menuItem_tools_options_viewIgnoredList_action" text="View Ignoredlist" />
          </items>
       </Menu>

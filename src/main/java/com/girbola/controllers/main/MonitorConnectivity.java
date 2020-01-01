@@ -32,8 +32,7 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 
 			@Override
 			protected Void call() throws Exception {
-				Messages.sprintf("registerTableActivity.setPeriod(Duration.seconds= "
-						+ model_Main.getRegisterTableActivity().getPeriod());
+			
 				checkTableConnectivity(model_Main.tables().getSortIt_table());
 				checkTableConnectivity(model_Main.tables().getSorted_table());
 				checkTableConnectivity(model_Main.tables().getAsItIs_table());
@@ -63,24 +62,44 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 	}
 
 	private void checkWorkDirConnected() {
+		if (Main.conf.getWorkDir().equals("null")) {
+			Platform.runLater(() -> {
+				Messages.sprintf("checkWorkDirConnected null");
+				Main.conf.setDrive_connected(false);
+				Main.conf.setDrive_space("");
+				Main.conf.setDrive_spaceLeft("");
+				Main.conf.setDrive_name("");
+			});
+			return;
+		}
 		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			Platform.runLater(() -> {
+				Messages.sprintf("checkWorkDirConnected not connected");
 				Main.conf.setDrive_connected(false);
+				Main.conf.setDrive_space("");
+				Main.conf.setDrive_spaceLeft("");
+				Main.conf.setDrive_name("");
 			});
 		} else {
+
 			Platform.runLater(() -> {
-				Main.conf.setDrive_connected(true);
-				Main.conf.setDrive_name(Main.conf.getWorkDir());
 				try {
+					Messages.sprintf("checkWorkDirConnected connected");
 					Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
 							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
 					Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
 							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
+					Main.conf.setDrive_connected(true);
+					Main.conf.setDrive_name(Main.conf.getWorkDir());
 				} catch (Exception e) {
-					e.printStackTrace();
+					Platform.runLater(() -> {
+						Messages.sprintf("checkWorkDirConnected connected ERROR");
+						Main.conf.setDrive_connected(false);
+					});
 				}
 			});
 		}
+
 	}
 
 	private void checkTableConnectivity(TableView<FolderInfo> table) {

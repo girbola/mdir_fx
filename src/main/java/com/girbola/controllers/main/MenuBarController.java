@@ -79,10 +79,7 @@ public class MenuBarController {
 
 	@FXML
 	private MenuBar menuBar;
-	@FXML
-	private MenuItem menuItem_tools_options_load;
-	@FXML
-	private MenuItem menuItem_tools_options_save;
+	
 	@FXML
 	private MenuItem menuItem_file_addFolders;
 	@FXML
@@ -341,24 +338,6 @@ public class MenuBarController {
 
 	}
 
-	@FXML
-	private void menuItem_tools_options_load_action(ActionEvent event) {
-		try {
-			conf.loadConfig();
-		} catch (IOException ex) {
-			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-	}
-
-	@FXML
-	private void menuItem_tools_options_save_action(ActionEvent event) {
-		Configuration_SQL_Utils.update_Configuration();
-	}
-
-	// private void closeWindow(Stage stage) {
-	// stage.close();
-	// }
-
 	public void init(Model_main aModel_main) {
 		this.model_main = aModel_main;
 		sprintf("menuBarController....");
@@ -375,11 +354,6 @@ public class MenuBarController {
 			sprintf("Cannot find theme:" + conf.getThemePath());
 			Messages.errorSmth(ERROR, "Problem by find theme path", null, Misc.getLineNumber(), false);
 		}
-
-		// Stage stage = (Stage) menuBar.getScene().getWindow();
-		// model_main.setCloseRequest((Stage)
-		// model_main.getScene().getWindow());
-
 	}
 
 	@FXML
@@ -409,7 +383,7 @@ public class MenuBarController {
 		menuItem_tools_themes_light.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
 				.add(getClass().getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
-
+		
 	}
 
 	@FXML

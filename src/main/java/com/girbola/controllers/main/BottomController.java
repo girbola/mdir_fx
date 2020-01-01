@@ -27,6 +27,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
@@ -236,52 +237,84 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
-		List<String> notFound = new ArrayList<>();
-
+		List<String> conflictWithWorkdir = new ArrayList<>();
+		List<String> cantCopy = new ArrayList<>();
+		if (Main.conf.getWorkDir().equals("null")) {
+			Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet"));
+			return;
+		}
 		if (!Main.conf.getDrive_connected() || !Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotConnected"));
 			return;
 		}
+		Messages.sprintf("workDir: " + Main.conf.getWorkDir());
 
+//TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
 			@Override
 			protected List<FileInfo> call() throws Exception {
 				List<FileInfo> list = new ArrayList<>();
 				for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (Files.exists(Paths.get(fileInfo.getOrgPath())) 
-								&& !fileInfo.getDestination_Path().isEmpty()
-								&& Files.exists(Paths.get(fileInfo.getWorkDir()))
-								&& !fileInfo.isCopied()) {
-							if (fileInfo.getDestination_Path().toString().contains(Main.conf.getWorkDir())) {
+						if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
+							/*
+							 * 0 if good 1 if conflict with workdir 2 if copying is not possible
+							 */
+							int status = FileInfo_Utils.checkWorkDir(fileInfo);
+							if (status == 0) {
 								list.add(fileInfo);
-								Messages.sprintf("Sorted Batch file found: " + fileInfo);
+								Messages.sprintf("1file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else if (status == 1) {
+								conflictWithWorkdir.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+								Messages.sprintf("2file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else if (status == 2) {
+								cantCopy.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+								Messages.sprintf("3file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else {
+								Messages.sprintf("4file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 							}
-							notFound.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-							Messages.sprintf("Sorted file workdir were not found: " + fileInfo.getDestination_Path()
-									+ "Main.conf.getWorkDir(): " + Main.conf.getWorkDir());
 						}
 					}
 				}
 //prosessoi eri tavalla nämä. ensim tsekataan workdirrin olemassa olo. korjataan tarvittaessa workdir path
 				for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (Files.exists(Paths.get(fileInfo.getOrgPath())) 
-								&& !fileInfo.getDestination_Path().isEmpty()
-								&& Files.exists(Paths.get(fileInfo.getWorkDir())) 
-								&& !fileInfo.isCopied()) {
-							if (fileInfo.getDestination_Path().toString().contains(Main.conf.getWorkDir())) {
+						if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
+							/*
+							 * 0 if good 1 if conflict with workdir 2 if copying is not possible
+							 */
+							int status = FileInfo_Utils.checkWorkDir(fileInfo);
+							if (status == 0) {
 								list.add(fileInfo);
-								Messages.sprintf("SortIt Batch file found: " + fileInfo);
+								Messages.sprintf("1file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else if (status == 1) {
+								conflictWithWorkdir.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+								Messages.sprintf("2file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else if (status == 2) {
+								cantCopy.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+								Messages.sprintf("3file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+							} else {
+								Messages.sprintf("4file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 							}
-							notFound.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-							Messages.sprintf("SortIt file workdir were not found: " + fileInfo.getDestination_Path()
-									+ "Main.conf.getWorkDir(): " + Main.conf.getWorkDir());
 						}
 					}
 				}
-				
-				if (!notFound.isEmpty()) {
+
+				if (!conflictWithWorkdir.isEmpty()) {
+					Messages.warningText("conflictWithWorkdir were not empty");
+					for(String confw : conflictWithWorkdir) {
+						Messages.sprintf("Conflict dir: " + confw);
+					}
+					
+					return null;
+				}
+
+				if (!cantCopy.isEmpty()) {
+					Messages.warningText("cantCopy were not empty");
+					for(String confw : cantCopy) {
+						Messages.sprintf("cantCopy dir: " + confw);
+					}
+					
 					return null;
 				}
 				return list;
@@ -292,9 +325,11 @@ public class BottomController {
 			Messages.sprintf("Making list were made successfully");
 			try {
 				if (task.get() == null) {
-					Messages.warningTextList("There were files which had bad destination paths", notFound);
+					Messages.warningTextList("There were files which had bad destination paths", conflictWithWorkdir);
 					return;
 				}
+				List<FileInfo> list = task.get();
+
 				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
@@ -307,9 +342,14 @@ public class BottomController {
 					Messages.sprintf("operateFiles FAILED");
 					Main.setProcessCancelled(true);
 				});
-				Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
-				operateFiles_th.setDaemon(true);
-				operateFiles_th.start();
+				if (!list.isEmpty()) {
+
+					Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
+					operateFiles_th.setDaemon(true);
+					operateFiles_th.start();
+				} else {
+					Messages.warningText("The list of destination paths were empty");
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -410,9 +450,7 @@ public class BottomController {
 		drive_name.textProperty().bindBidirectional(Main.conf.drive_name_property());
 		drive_space.textProperty().bindBidirectional(Main.conf.drive_space_property());
 		drive_spaceLeft.textProperty().bindBidirectional(Main.conf.drive_spaceLeft_property());
-		Platform.runLater(() -> {
-			drive_name.setText("filli");
-		});
+
 		Main.conf.drive_connected_property().addListener(new ChangeListener<Boolean>() {
 
 			@Override
@@ -421,13 +459,17 @@ public class BottomController {
 					drive_connected.setStyle("-fx-background-color: green;");
 					start_copyBatch_btn.setDisable(false);
 
-				} else {
+				} else if (newValue == false) {
+
 					drive_connected.setStyle("-fx-background-color: red;");
 					start_copyBatch_btn.setDisable(true);
 				}
+				Messages.sprintf("drive connected? " + newValue);
 			}
 
 		});
+		Main.conf.setDrive_connected(true);
+		Main.conf.setDrive_connected(false);
 	}
 
 	public void init(Model_main aModel_main) {

@@ -124,7 +124,14 @@ public class OperateFiles extends Task<Boolean> {
 				model_operate.stopTimeLine();
 				return null;
 			}
-			model_operate.getTimeline().play();
+			if (!list.isEmpty()) {
+//				model_operate.getStart_btn().setDisable(false);
+				model_operate.getTimeline().play();
+			} else {
+				Messages.warningText("List were empty!!!!!!!");
+				return null;
+			}
+			
 
 			boolean copy = false;
 			for (FileInfo fileInfo : list) {

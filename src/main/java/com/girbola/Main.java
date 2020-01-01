@@ -94,6 +94,7 @@ public class Main extends Application {
 
 		conf.setModel(model_main);
 		conf.createProgramPaths();
+		Main.conf.loadConfig();
 		System.out.println("Java version: " + System.getProperty("java.version"));
 
 		Task<Void> task = new Task<Void>() {
@@ -108,12 +109,6 @@ public class Main extends Application {
 					ex.printStackTrace();
 					Messages.sprintf("error loading parent= " + ex.getMessage());
 					cancel();
-				}
-//				conf.loadConfig();
-				boolean databaseOK = conf.createSQL_Databases();
-				if (!databaseOK) {
-					Messages.sprintf("LOADING CONFIGURATION DATABASE");
-					conf.loadConfig_SQL();
 				}
 
 				scene = new Scene(parent);
@@ -201,10 +196,10 @@ public class Main extends Application {
 							model_main.tables().registerTableView_obs_listener();
 							stage.setOnCloseRequest(model_main.exitProgram);
 							try {
-								if(!load_FileInfosBackToTableViews.get()) {
+								if (!load_FileInfosBackToTableViews.get()) {
 									Messages.warningText("Can't load previous session!");
 								}
-								
+
 							} catch (Exception e) {
 								e.printStackTrace();
 							}

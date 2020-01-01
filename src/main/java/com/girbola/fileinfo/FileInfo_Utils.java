@@ -354,15 +354,39 @@ public class FileInfo_Utils {
 		return false;
 	}
 
-	//    public static void copyFileInfoToAnotherLocation(FileInfo fileInfo) {
+	// public static void copyFileInfoToAnotherLocation(FileInfo fileInfo) {
 	//
-	//    }
+	// }
 	public static Path renameFileToDate(Path path, FileInfo fileInfo) {
 		// C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 
-		Path source = Paths.get(path.getParent().toString() + File.separator + DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()) + "."
-				+ FileUtils.getExtension(path));
+		Path source = Paths
+				.get(path.getParent().toString() + File.separator
+						+ DateUtils.longToLocalDateTime(fileInfo.getDate())
+								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default())
+						+ "." + FileUtils.getExtension(path));
 		Messages.sprintf("source would be after: " + path + " to: " + source);
 		return source;
+	}
+
+	/**
+	 * Returns 2 if copying is not possible Returns 1 if conflict with workdir
+	 * Returns 0 if good
+	 * 
+	 * @param fileInfo
+	 * @return
+	 */
+	public static int checkWorkDir(FileInfo fileInfo) {
+		if (Main.conf.getDrive_connected() && !Main.conf.getWorkDir().equals("null")) {
+			return 2;
+		}
+		if (!fileInfo.getWorkDir().equals("null") && fileInfo.getWorkDir() != Main.conf.getWorkDir()) {
+			return 1;
+		}
+		if (!fileInfo.getWorkDir().equals("null") && fileInfo.getWorkDir() == Main.conf.getWorkDir()
+				&& Main.conf.getDrive_connected()) {
+			return 0;
+		}
+		return 2;
 	}
 }

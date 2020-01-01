@@ -129,6 +129,7 @@ public class Model_main {
 	}
 
 	public boolean save() {
+		Messages.sprintf("save started");
 		if (tables() == null) {
 			Messages.warningText("model.getTables() were null!");
 		}

@@ -6,6 +6,9 @@
  */
 package com.girbola.configuration;
 
+import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.sql.SQL_Utils;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -80,6 +83,7 @@ class Configuration_GUI {
 
 	public void setThemePath(String themePath) {
 		this.themePath = themePath;
+//		Configuration_SQL_Utils.saveConfig(Configuration_SQL_Utils.themePath, this.themePath);
 	}
 
 	public StringProperty workDir_property() {

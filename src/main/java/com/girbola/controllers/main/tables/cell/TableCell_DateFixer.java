@@ -60,7 +60,7 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 					@Override
 					public void handle(ActionEvent event) {
 
-						model_main.getRegisterTableActivity().cancel();
+//						model_main.getRegisterTableActivity().cancel();
 						Task<Void> dateFixer = new DateFixer(path, folderInfo, model_main, false);
 						Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
 						sprintf("dateFixer_th.getName(): " + dateFixer_th.getName());

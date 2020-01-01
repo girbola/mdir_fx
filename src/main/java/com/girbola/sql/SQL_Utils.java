@@ -29,7 +29,7 @@ import javafx.collections.ObservableList;
 
 public class SQL_Utils {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();
-
+	
 	//@formatter:off
 	final static String thumbInfoInsert = "INSERT OR REPLACE INTO "
 	+ SQL_Enums.THUMBINFO.getType()
@@ -128,7 +128,6 @@ public class SQL_Utils {
 	+ "'selected')"
 	+ " VALUES(?,?,?,?,?)";
 
-	final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
 
 	private static String getFileInfoTable(String tableType) {
 	String sql = "CREATE TABLE IF NOT EXISTS " + tableType + fileInfoTableColumns();
@@ -1186,92 +1185,5 @@ public class SQL_Utils {
 
 	}
 
-	/*
-	 * Ignored
-	 */
-	public static boolean createIgnoredList(Connection connection) {
-		if (connection == null) {
-			Messages.sprintfError("Can't connect folderInfo.db!!");
-			return false;
-		}
-		if (!isDbConnected(connection)) {
-			Messages.sprintf("createFolderInfoDatabase NOT connected");
-			return false;
-		}
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.execute(ignoredListTable);
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return false;
-		}
-	}
-
-	public static void addToIgnoredList(Connection connection, Path path) {
-		try {
-			createIgnoredList(connection);
-			// INSERT OR REPLACE INTO " +SQL_Enums.THUMBINFO.getType() + " ('id
-			String sql = "INSERT OR REPLACE INTO " + SQL_Enums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
-			PreparedStatement pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, path.toString());
-			pstmt.addBatch();
-			pstmt.executeBatch();
-			pstmt.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static boolean removeFromIgnoredList(Connection connection_open, Path path) {
-		Connection connection = null;
-
-		if (connection_open == null) {
-			connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
-		} else {
-			connection = connection_open;
-		}
-
-		String sql = "DELETE FROM " + SQL_Enums.IGNOREDLIST.getType() + " WHERE path = ?";
-		Messages.sprintf("removeFromIgnoredList SQL= " + sql);
-		try {
-			PreparedStatement pstmt = connection.prepareStatement(sql);
-			pstmt.setString(1, path.toString());
-			pstmt.executeUpdate();
-			pstmt.close();
-
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-	}
-
-	public static boolean loadIgnored_list(Connection connection, ObservableList<Path> obs) {
-		if (connection == null) {
-			Messages.sprintfError("loadIgnored_list Connection were null!");
-			return false;
-		}
-		if (!isDbConnected(connection)) {
-			Messages.sprintf("loadIgnored_list NOT connected");
-			return false;
-		}
-		try {
-			String sql = "SELECT * FROM " + SQL_Enums.IGNOREDLIST.getType();
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				Messages.sprintf("loadIgnored_list starting: " + sql);
-				String path = rs.getString("path");
-				obs.add(Paths.get(path));
-			}
-			stmt.close();
-
-			Messages.sprintf("loadIgnored_listsize of sel obs= " + obs.size());
-			return true;
-		} catch (Exception e) {
-			return false;
-		}
-	}
 
 }

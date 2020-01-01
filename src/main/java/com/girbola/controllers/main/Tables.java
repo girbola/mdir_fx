@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -258,7 +259,6 @@ public class Tables {
 						if (!folderInfo.getFolderPath()
 								.equals(System.getProperty("user.home") + File.separator + "Pictures")) {
 							Main.conf.addToIgnoredList(Paths.get(folderInfo.getFolderPath()));
-							SQL_Utils.addToIgnoredList(connection, Paths.get(folderInfo.getFolderPath()));
 							folderInfo.setIgnored(true);
 							Main.setChanged(true);
 							listToRemove.add(folderInfo);
@@ -267,12 +267,17 @@ public class Tables {
 									+ folderInfo.getFolderPath());
 							listToRemove.add(folderInfo);
 						}
-
 					}
 					for (FolderInfo folderInfo : listToRemove) {
 						table.getItems().remove(folderInfo);
 					}
+					Configuration_SQL_Utils.insert_IgnoredList(connection, listToRemove);
 					listToRemove.clear();
+					try {
+						connection.close();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
 
