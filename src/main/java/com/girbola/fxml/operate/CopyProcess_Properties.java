@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -15,9 +15,10 @@ import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-public class CopyProcess_Properties extends Basic_Values {
+public class CopyProcess_Properties extends CopyBasic_Values {
 
 	private final DecimalFormat df = new DecimalFormat("#.##");
 
@@ -39,24 +40,10 @@ public class CopyProcess_Properties extends Basic_Values {
 
 	private SimpleStringProperty timeLeft_property;
 	private SimpleStringProperty totalFiles_property;
-	private SimpleDoubleProperty totalFilesSize_property;
-	private SimpleDoubleProperty fileCopyProgress_property;
+	private SimpleLongProperty totalFilesSize_property;
+	private SimpleLongProperty fileCopyProgress_property;
 	private SimpleStringProperty transferRate_property;
 
-	public synchronized SimpleDoubleProperty totalProgress_property() {
-		return totalProgress_property;
-	}
-
-	public synchronized void setTotalProgress(double totalProgress) {
-		this.totalProgress_property.set(totalProgress);
-	}
-
-	public synchronized double getTotalProgress_property() {
-		return this.totalProgress_property.get();
-	}
-	public synchronized double getTotalProgress() {
-		return this.totalProgress_property.get();
-	}
 	public CopyProcess_Properties() {
 		copied_property = new SimpleIntegerProperty(0);
 		copyFrom_property = new SimpleStringProperty("");
@@ -71,11 +58,84 @@ public class CopyProcess_Properties extends Basic_Values {
 		timeElapsed_property = new SimpleStringProperty("");
 		timeLeft_property = new SimpleStringProperty("");
 		totalFiles_property = new SimpleStringProperty("");
-		totalFilesSize_property = new SimpleDoubleProperty(0);
-		fileCopyProgress_property = new SimpleDoubleProperty(0);
+		totalFilesSize_property = new SimpleLongProperty(0);
+		fileCopyProgress_property = new SimpleLongProperty(0);
 		transferRate_property = new SimpleStringProperty("");
 		totalProgress_property = new SimpleDoubleProperty(0);
 
+	}
+
+	public synchronized void update() {
+		// Messages.sprintf("Updating: " + getCopyFrom_tmp());
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				Messages.sprintf("Updating copyprocess");
+				setCopyFrom(getCopyFrom_tmp());
+				setCopyTo(getCopyTo_tmp());
+
+				setTimeLeft("" + getTimeLeft_tmp() + 1000);
+				setTimeElapsed("" + getTimeElapsed_tmp() + 1000);
+
+				setCopied(getCopied_tmp());
+				setRenamed(getRenamed_tmp());
+				setDuplicated(getDuplicated_tmp() + 1);
+//				Messages.sprintf("getdup 1SECs: " + getDuplicated_tmp());
+//				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
+				setTotalFiles("" + getTotalFiles_tmp());
+				setFileCopyProgress(Math.round(getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()));
+				addToLastSecondFileSize_list(getLastSecondFileSize_tmp());
+				setTransferRate(df.format(getAverageTransferRate() / 1024000) + " MB/sec");
+				setLastSecondFileSize_tmp(0);
+				if (getFileCopyProgress_tmp() != 0 && getFilesCopyProgress_MAX_tmp() != 0) {
+					setCopyProgress(
+							(int) Math.floor((getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()) * 100));
+				}
+				if (getFilesLeft_tmp() != 0 && getTotalFiles_tmp() != 0) {
+					setTotalProgress((int) Math.floor((getFilesLeft_tmp() / getTotalFiles_tmp()) * 100));
+				}
+				if (getStartTime() != null) {
+					setTimeLeft(LocalTime.ofSecondOfDay(Duration.between(getStartTime(), getEndTime()).getSeconds())
+							.toString());
+				}
+
+			}
+		});
+
+	}
+
+	public synchronized void reset() {
+		copyFrom_property.set("");
+		copyTo_property.set("");
+		copyProgress_property.set(0);
+		duplicated_property.set(0);
+		filesLeft_property.set(0);
+		progressed_property.set(0);
+		skipped_property.set(0);
+		timeElapsed_property.set("");
+		timeLeft_property.set("");
+		// timeLeftProperty.set(0);
+		totalFiles_property.set("0");
+
+		totalFilesSize_property.set(0);
+		fileCopyProgress_property.set(0);
+		transferRate_property.set("0");
+	}
+
+	public synchronized SimpleDoubleProperty totalProgress_property() {
+		return totalProgress_property;
+	}
+
+	public synchronized void setTotalProgress(double totalProgress) {
+		this.totalProgress_property.set(totalProgress);
+	}
+
+	public synchronized double getTotalProgress_property() {
+		return this.totalProgress_property.get();
+	}
+
+	public synchronized double getTotalProgress() {
+		return this.totalProgress_property.get();
 	}
 
 	/*
@@ -178,24 +238,6 @@ public class CopyProcess_Properties extends Basic_Values {
 		return this.renamed_property;
 	}
 
-	public synchronized void reset() {
-		copyFrom_property.set("");
-		copyTo_property.set("");
-		copyProgress_property.set(0);
-		duplicated_property.set(0);
-		filesLeft_property.set(0);
-		progressed_property.set(0);
-		skipped_property.set(0);
-		timeElapsed_property.set("");
-		timeLeft_property.set("");
-		// timeLeftProperty.set(0);
-		totalFiles_property.set("0");
-
-		totalFilesSize_property.set(0);
-		fileCopyProgress_property.set(0);
-		transferRate_property.set("0");
-	}
-
 	public synchronized void setCopied(int value) {
 		this.copied_property.set(value);
 	}
@@ -213,7 +255,7 @@ public class CopyProcess_Properties extends Basic_Values {
 	}
 
 	public synchronized void setDuplicated(int value) {
-		Messages.sprintf("duplicated: " + value);
+//		Messages.sprintf("duplicated: " + value);
 		this.duplicated_property.set(value);
 	}
 
@@ -245,7 +287,7 @@ public class CopyProcess_Properties extends Basic_Values {
 		this.totalFiles_property.set(value);
 	}
 
-	public synchronized void setFileCopyProgress(double value) {
+	public synchronized void setFileCopyProgress(long value) {
 		this.fileCopyProgress_property.set(value);
 	}
 
@@ -269,51 +311,12 @@ public class CopyProcess_Properties extends Basic_Values {
 		return this.totalFiles_property;
 	}
 
-	public synchronized SimpleDoubleProperty totalFilesSize_property() {
+	public synchronized SimpleLongProperty totalFilesSize_property() {
 		return this.totalFilesSize_property;
 	}
 
-	public synchronized SimpleDoubleProperty totalProcessedFileSizes_property() {
+	public synchronized SimpleLongProperty totalProcessedFileSizes_property() {
 		return this.fileCopyProgress_property;
-	}
-
-	public synchronized void update() {
-		// Messages.sprintf("Updating: " + getCopyFrom_tmp());
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				 Messages.sprintf("Updating copyprocess");
-				setCopyFrom(getCopyFrom_tmp());
-				setCopyTo(getCopyTo_tmp());
-
-				setTimeLeft("" + getTimeLeft_tmp() + 1000);
-				setTimeElapsed("" + getTimeElapsed_tmp() + 1000);
-
-				setCopied(getCopied_tmp());
-				setRenamed(getRenamed_tmp());
-				setDuplicated(getDuplicated_tmp() + 1);
-				Messages.sprintf("getdup 1SECs: "+getDuplicated_tmp());
-				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
-				setTotalFiles("" + getTotalFiles_tmp());
-				setFileCopyProgress(Math.floor(getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()));
-				addToLastSecondFileSize_list(getLastSecondFileSize_tmp());
-				setTransferRate(df.format(getAverageTransferRate() / 1024000) + " MB/sec");
-				setLastSecondFileSize_tmp(0);
-				if (getFileCopyProgress_tmp() != 0 && getFilesCopyProgress_MAX_tmp() != 0) {
-					setCopyProgress(
-							(int) Math.floor((getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()) * 100));
-				}
-				if (getFilesLeft_tmp() != 0 && getTotalFiles_tmp() != 0) {
-					setTotalProgress((int) Math.floor((getFilesLeft_tmp() / getTotalFiles_tmp()) * 100));
-				}
-				if (getStartTime() != null) {
-					setTimeLeft(LocalTime.ofSecondOfDay(Duration.between(getStartTime(), getEndTime()).getSeconds())
-							.toString());
-				}
-
-			}
-		});
-
 	}
 
 }

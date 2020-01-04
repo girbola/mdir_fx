@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -39,6 +39,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -253,7 +254,7 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, Double> param) -> new SimpleObjectProperty<>(
 						param.getValue().getDateDifferenceRatio()));
 		dateDifference_ratio_col.setCellFactory(model.tables().dateDifference_Status_cellFactory);
-
+		dateDifference_ratio_col.setSortType(SortType.ASCENDING);
 		folderFiles_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderFiles()));

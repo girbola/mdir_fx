@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -741,7 +741,7 @@ public class Model_datefix {
 
 	public void exitDateFixerWindow(GridPane gridPane, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
-		model_Main.getRegisterTableActivity().cancel();
+		model_Main.getMonitorConnectivity().cancel();
 		if (Main.getChanged()) {
 			Messages.sprintf("changes made");
 			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(bundle.getString("changesMade"));
@@ -751,7 +751,7 @@ public class Model_datefix {
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getRegisterTableActivity().restart();
+				model_Main.getMonitorConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -766,7 +766,7 @@ public class Model_datefix {
 				Messages.sprintf("No PRESSED: NO changes saved");
 
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getRegisterTableActivity().restart();
+				model_Main.getMonitorConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -1181,36 +1181,37 @@ public class Model_datefix {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				Path source = Paths.get(fileInfo.getOrgPath());
-				Path dest = FileInfo_Utils.renameFileToDate(source, fileInfo);
-				if (!source.equals(dest) && !Files.exists(dest)) {
-
-					try {
-						Files.move(source, dest);
-						fileInfo.setOrgPath(dest.toString());
-						if (!SQL_Utils.isDbConnected(getConnection())) {
-							Messages.sprintf("database is not connected!!!");
-							return;
-						}
-						SQL_Utils.insertFileInfoToDatabase(getConnection(), fileInfo);
-						TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-						if (model_Main.tables() == null) {
-							Main.setProcessCancelled(true);
-							errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-						}
-						model_Main.tables().refreshAllTables();
-						updateAllInfos(getFolderInfo_full().getFileInfoList());
-						getFolderInfo_full().setChanged(true);
-						sprintf("source is: " + source + " renamed name is: " + dest);
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		Messages.warningText("Not tested");
+//		for (Node node : getSelectionModel().getSelectionList()) {
+//			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+//			FileInfo fileInfo = (FileInfo) node.getUserData();
+//			if (fileInfo != null) {
+//				Path source = Paths.get(fileInfo.getOrgPath());
+//				Path dest = FileInfo_Utils.renameFileToDate(source, fileInfo);
+//				if (!source.equals(dest) && !Files.exists(dest)) {
+//
+//					try {
+//						Files.move(source, dest);
+//						fileInfo.setOrgPath(dest.toString());
+//						if (!SQL_Utils.isDbConnected(getConnection())) {
+//							Messages.sprintf("database is not connected!!!");
+//							return;
+//						}
+//						SQL_Utils.insertFileInfoToDatabase(getConnection(), fileInfo);
+//						TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
+//						if (model_Main.tables() == null) {
+//							Main.setProcessCancelled(true);
+//							errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+//						}
+//						model_Main.tables().refreshAllTables();
+//						updateAllInfos(getFolderInfo_full().getFileInfoList());
+//						getFolderInfo_full().setChanged(true);
+//						sprintf("source is: " + source + " renamed name is: " + dest);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			}
+//		}
 	}
 }

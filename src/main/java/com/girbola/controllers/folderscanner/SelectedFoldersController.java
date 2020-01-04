@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -69,7 +69,7 @@ public class SelectedFoldersController {
 			}
 		}
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
-		model_main.getRegisterTableActivity().cancel();
+		model_main.getMonitorConnectivity().cancel();
 		model_main.populate().populateTables_FolderScanner_list();
 		
 		Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();

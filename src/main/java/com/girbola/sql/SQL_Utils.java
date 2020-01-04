@@ -548,7 +548,7 @@ public class SQL_Utils {
 			return false;
 		}
 	}
-
+	
 	public static boolean insertFileInfoToDatabase(Connection connection, FileInfo fileInfo) {
 		Messages.sprintf("insertFileInfo_list");
 		createFileInfoTable(connection);

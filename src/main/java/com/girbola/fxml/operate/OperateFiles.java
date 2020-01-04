@@ -24,6 +24,7 @@ import com.girbola.controllers.main.Model_operate;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
@@ -45,6 +46,7 @@ public class OperateFiles extends Task<Boolean> {
 	private List<FileInfo> list = new ArrayList<>();
 	private Model_main model_main;
 	private String scene_NameType;
+	private List<FileInfo> listCopiedFiles = new ArrayList<>();
 
 	public OperateFiles(List<FileInfo> list, boolean close, Model_main aModel_main, String scene_NameType) {
 		Messages.sprintf("OperateFiles started LIST");
@@ -88,7 +90,7 @@ public class OperateFiles extends Task<Boolean> {
 			public void handle(WindowEvent event) {
 				Messages.warningText("CLosin");
 				Model_main model_Main = (Model_main) Main.getMain_stage().getUserData();
-				
+
 				Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
 				Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
 				event.consume();
@@ -133,7 +135,6 @@ public class OperateFiles extends Task<Boolean> {
 				Messages.warningText("List were empty!!!!!!!");
 				return null;
 			}
-			
 
 			boolean copy = false;
 			for (FileInfo fileInfo : list) {
@@ -146,12 +147,12 @@ public class OperateFiles extends Task<Boolean> {
 					cancel();
 					break;
 				}
-				
+
 				source = Paths.get(fileInfo.getOrgPath());
 				// dest = DestinationResolver.getDestinationFileName(fileInfo);
 
 				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-				
+
 				Messages.sprintf("source is: " + source + " dest: " + dest);
 				Platform.runLater(new Runnable() {
 					@Override
@@ -285,11 +286,13 @@ public class OperateFiles extends Task<Boolean> {
 							return null;
 						} else {
 							try {
-								Messages.sprintf("Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
+								Messages.sprintf("Renaming file .tmp back to org extension: " + dest.toString() + ".tmp"
+										+ " to dest: " + dest);
 								Files.move(Paths.get(dest.toString() + ".tmp"), dest);
 								String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
 								fileInfo.setDestination_Path(newName);
 								fileInfo.setCopied(true);
+								listCopiedFiles.add(fileInfo);
 								boolean added = model_main.getWorkDir_Handler().add(fileInfo);
 								if (added) {
 									Messages.sprintf("FileInfo added to destination succesfully");
@@ -395,26 +398,23 @@ public class OperateFiles extends Task<Boolean> {
 					return null;
 				}
 			};
-			//@formatter:off
-			saveWorkDirToDatabase.setOnSucceeded((eventti)-> {
+			//@formatter:on
+			saveWorkDirToDatabase.setOnSucceeded((eventti) -> {
 				Messages.sprintf("saveWorkDirListToDatabase finished success!");
-				try {
-					Messages.sprintf("Insert worked!");
-					Connection connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), Main.conf.getFileInfo_db_fileName());
-					connection.setAutoCommit(false);
-					boolean clean = model_main.getWorkDir_Handler().cleanDatabase(connection);
-					if(clean) {
-						Messages.sprintf("clean is done succeeded");
-					} else {
-						Messages.sprintfError("clean not worked");
-					}
-				} catch (Exception e) {
-				e.printStackTrace();
-				}
+				writeToDatabase();
+
 			});
-			saveWorkDirToDatabase.setOnCancelled((eventti)-> {Messages.sprintfError("saveWorkDirListToDatabase finished success!");});
-			saveWorkDirToDatabase.setOnFailed((eventti) -> {Messages.sprintf("Task failed!");});
-			
+			saveWorkDirToDatabase.setOnCancelled((eventti) -> {
+				Messages.sprintfError("saveWorkDirListToDatabase finished success!");
+				writeToDatabase();
+
+			});
+			saveWorkDirToDatabase.setOnFailed((eventti) -> {
+				Messages.sprintf("Task failed!");
+				writeToDatabase();
+
+			});
+
 			Thread savingWorkDirContent = new Thread(saveWorkDirToDatabase, "Saving workDir content");
 			savingWorkDirContent.setDaemon(true);
 			savingWorkDirContent.start();
@@ -422,9 +422,32 @@ public class OperateFiles extends Task<Boolean> {
 			sprintf("OperateFiles succeeded");
 		}
 
+		private void writeToDatabase() {
+			Messages.sprintf("Insert worked!");
+			if (Main.conf.getDrive_connected()) {
+				try {
+
+					Connection connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
+							Main.conf.getFileInfo_db_fileName());
+					connection.setAutoCommit(false);
+//					listCopiedFiles
+					SQL_Utils.insertFileInfoListToDatabase(connection, listCopiedFiles);
+//					boolean clean = model_main.getWorkDir_Handler().cleanDatabase(connection);
+//					if (clean) {
+//						Messages.sprintf("clean is done succeeded");
+//					} else {
+//						Messages.sprintfError("clean not worked");
+//					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+
 		@Override
 		protected void running() {
-			if(!isRunning()) {
+			if (!isRunning()) {
 				Messages.sprintf("OperateFiles running were stopped");
 			}
 			model_operate.getStart_btn().setDisable(true);
@@ -491,8 +514,8 @@ public class OperateFiles extends Task<Boolean> {
 					@Override
 					public void handle(ActionEvent event) {
 						Main.setProcessCancelled(true);
-						Messages.sprintf(
-								"Current file cancelled is: " + model_operate.getCopyProcess_values().getCopyTo_property());
+						Messages.sprintf("Current file cancelled is: "
+								+ model_operate.getCopyProcess_values().getCopyTo_property());
 						model_operate.stopTimeLine();
 						Main.setProcessCancelled(true);
 					}

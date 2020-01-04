@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -63,7 +63,7 @@ public class Model_main {
 	private SelectedFolderScanner selectedFolders;
 	private TablePositionHolder tablePositionHolder;
 	private List<ThumbInfo> thumbInfo = new ArrayList<>();
-	private ScheduledService<Void> registerTableActivity;
+	private ScheduledService<Void> monitorConnectivity;
 
 	public Model_main() {
 		sprintf("Model instantiated...");
@@ -80,8 +80,8 @@ public class Model_main {
 
 		tablePositionHolder = new TablePositionHolder(this);
 
-		registerTableActivity = new MonitorConnectivity(this);
-		registerTableActivity.setPeriod(Duration.seconds(15));
+		monitorConnectivity = new MonitorConnectivity(this);
+		monitorConnectivity.setPeriod(Duration.seconds(15));
 	}
 
 	public final List<ThumbInfo> getThumbInfo() {
@@ -243,7 +243,7 @@ public class Model_main {
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				save();
-				getRegisterTableActivity().cancel();
+				getMonitorConnectivity().cancel();
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 
 			}
@@ -252,13 +252,13 @@ public class Model_main {
 			sprintf("isShowOnExit was true");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getRegisterTableActivity().cancel();
+			getMonitorConnectivity().cancel();
 			Platform.exit();
 		} else {
 			sprintf("isShowOnExit was false");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getRegisterTableActivity().cancel();
+			getMonitorConnectivity().cancel();
 			Platform.exit();
 		}
 
@@ -271,8 +271,8 @@ public class Model_main {
 		return this.workDir_Handler;
 	}
 
-	public ScheduledService<Void> getRegisterTableActivity() {
-		return registerTableActivity;
+	public ScheduledService<Void> getMonitorConnectivity() {
+		return monitorConnectivity;
 	}
 
 	private BottomController bottomController;

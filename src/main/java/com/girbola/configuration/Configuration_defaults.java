@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -34,7 +34,7 @@ public class Configuration_defaults extends
 
 	private final String ERROR = Configuration_defaults.class.getSimpleName();
 
-	private final String programHomePage = "http://girbola.com/index.html";
+	
 
 	private StringProperty drive_name = new SimpleStringProperty("");
 	private StringProperty drive_space = new SimpleStringProperty("");
@@ -46,7 +46,7 @@ public class Configuration_defaults extends
 
 	public static final String programName = "Mdir";
 
-	private final String programVersion = "0.0.2019";
+	private final String programVersion = "0.0.2020";
 	private final LocalDate programDate = LocalDate.now();
 
 	private AtomicInteger id_counter = new AtomicInteger(0);
@@ -65,10 +65,6 @@ public class Configuration_defaults extends
 			// "--no-inhibit", /* we don't want interfaces */
 			"--no-disable-screensaver", /* we don't want interfaces */
 			"--no-snapshot-preview", /* no blending in dummy vout */ };
-
-	public String getProgramHomePage() {
-		return programHomePage;
-	}
 
 	public StringProperty drive_name_property() {
 		return drive_name;

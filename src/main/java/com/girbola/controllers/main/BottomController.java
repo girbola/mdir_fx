@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -32,6 +32,7 @@ import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
 import common.utils.date.DateUtils;
@@ -228,6 +229,7 @@ public class BottomController {
 
 	@FXML
 	private void help_btn_action(ActionEvent event) {
+		Messages.warningTextHelp("Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy", HTMLClass.help_html + "#sorter");
 	}
 
 	@FXML
@@ -238,7 +240,7 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
-		model_main.getRegisterTableActivity().cancel();
+		model_main.getMonitorConnectivity().cancel();
 		List<String> conflictWithWorkdir = new ArrayList<>();
 		List<String> cantCopy = new ArrayList<>();
 		if (Main.conf.getWorkDir().equals("null")) {
@@ -337,7 +339,7 @@ public class BottomController {
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
 					Messages.sprintf("operateFiles Succeeded");
-					model_main.getRegisterTableActivity().restart();
+					model_main.getMonitorConnectivity().restart();
 				});
 				operateFiles.setOnCancelled((workerStateEvent) -> {
 					Messages.sprintf("operateFiles CANCELLED");
@@ -414,30 +416,6 @@ public class BottomController {
 		}
 	}
 
-	// private boolean workDirExists(FileInfo fi, Path dest) {
-	// Path path = Paths.get(conf.getWorkDir() + File.separator +
-	// simpleDates.getSdf_Year().format(fi.getDate()) + File.separator +
-	// simpleDates.getSdf_Month().format(fi.getDate()) + File.separator);
-	// if (Files.exists(path)) {
-	//
-	// }
-	// String year = "";
-	// String month = "";
-	//
-	// return false;
-	// }
-	// private static String getCurrentTimezoneOffset(long date) {
-	//
-	// TimeZone tz = TimeZone.getDefault();
-	// // Calendar cal = GregorianCalendar.getInstance(tz);
-	// int offsetInMillis = tz.getOffset(date);
-	//
-	// String offset = String.format("%02d:%02d", Math.abs(offsetInMillis /
-	// 3600000), Math.abs((offsetInMillis / 60000) % 60));
-	// offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
-	//
-	// return offset;
-	// }
 	public static boolean hasCheckWorkDirConflict(ObservableList<FolderInfo> obs) {
 		for (FolderInfo fi : obs) {
 			if (Paths.get(fi.getFolderPath()).getParent().toString().equals(conf.getWorkDir())) {

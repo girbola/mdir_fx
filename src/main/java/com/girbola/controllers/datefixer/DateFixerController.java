@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -170,6 +170,8 @@ public class DateFixerController {
 	@FXML
 	private Button folderize_btn;
 	@FXML
+	private Button createFolder_btn;
+	@FXML
 	private Button lastModified_date_btn;
 	@FXML
 	private Button retrieveFileInfos_btn;
@@ -216,6 +218,15 @@ public class DateFixerController {
 	@FXML
 	FileOperationsController fileOperationsController;
 
+	@FXML
+	private void createFolder_btn_action(ActionEvent event) {
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		
+
+	}
 	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
@@ -1162,7 +1173,7 @@ public class DateFixerController {
 			return;
 		}
 		ConcurrencyUtils.stopExecThread();
-
+	
 		List<FileInfo> fileInfo_list = new ArrayList<>();
 
 		for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
@@ -1170,9 +1181,11 @@ public class DateFixerController {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
-				if (dest != null) {
+				if (dest != null && Main.conf.getDrive_connected()) {
 					Messages.sprintf("blaaadestination is: " + dest);
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
 					fileInfo.setDestination_Path(dest.toString());
+					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
 					Messages.sprintf("Dest were null. process is about to be cancelled");

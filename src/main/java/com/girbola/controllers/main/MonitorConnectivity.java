@@ -55,7 +55,7 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 			@Override
 			protected void succeeded() {
 				super.succeeded();
-				Messages.sprintf("Succedeed check");
+//				Messages.sprintf("Succedeed check");
 			}
 
 		};
@@ -84,7 +84,7 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 
 			Platform.runLater(() -> {
 				try {
-					Messages.sprintf("checkWorkDirConnected connected");
+//					Messages.sprintf("checkWorkDirConnected connected");
 					Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
 							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
 					Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(

@@ -1,5 +1,5 @@
 /*
-Copyright [2019] [Marko Lokka]
+Copyright [2020] [Marko Lokka]
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@ limitations under the License.
  */
 
 /*
-@(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+@(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
 @(#)Author:     Marko Lokka
 @(#)Product:    Image and Video Files Organizer Tool
 @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -188,6 +188,7 @@ public class Main extends Application {
 				Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 						Main.conf.getFolderInfo_db_fileName());
 				if (SQL_Utils.isDbConnected(connection)) {
+					Messages.sprintf("Loading workdir content");
 					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, connection);
 					load_FileInfosBackToTableViews.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 						@Override
@@ -204,7 +205,7 @@ public class Main extends Application {
 								e.printStackTrace();
 							}
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
-							model_main.getRegisterTableActivity().restart();
+							model_main.getMonitorConnectivity().restart();
 							boolean loaded = model_main.getWorkDir_Handler()
 									.loadAllLists(Paths.get(Main.conf.getWorkDir()));
 							if (loaded) {
@@ -339,7 +340,7 @@ public class Main extends Application {
 	@Override
 	public void stop() throws Exception {
 		super.stop();
-		model_main.getRegisterTableActivity().cancel();
+		model_main.getMonitorConnectivity().cancel();
 	}
 
 }

@@ -96,6 +96,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			Path path = Paths.get(folderInfo.getFolderPath());
 
 			if (Files.exists(path)) {
+				Messages.sprintf("Populating: " + path);
 				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
 				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);

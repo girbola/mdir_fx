@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -11,7 +11,6 @@ import static com.girbola.fileinfo.FileInfo_Utils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,6 @@ import com.girbola.controllers.main.tables.cell.TableCell_Status;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import javafx.application.Platform;
@@ -61,7 +59,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 

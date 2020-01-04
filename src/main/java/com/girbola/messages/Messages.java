@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -10,14 +10,13 @@ package com.girbola.messages;
 import static com.girbola.Main.DEBUG;
 import static com.girbola.Main.DEBUG_CONF;
 import static com.girbola.Main.conf;
-import static com.girbola.Main.country;
 import static com.girbola.controllers.misc.Misc_GUI.fastExit;
-import static com.girbola.messages.html.HTMLClass.urlExt;
 
 import java.util.List;
 import java.util.Optional;
 
 import com.girbola.Main;
+import com.girbola.messages.html.HTMLClass;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -270,16 +269,16 @@ public class Messages {
 		Image helpImg = new Image(Main.class.getResourceAsStream("/resources/img/helpSign.png"), 30, 0, true, true);
 		ImageView helpIcon = new ImageView(helpImg);
 
-		Button hl = new Button();
-		hl.setGraphic(helpIcon);
-		hl.setOnAction(new EventHandler<ActionEvent>() {
+		Button helpButton = new Button();
+		helpButton.setGraphic(helpIcon);
+		helpButton.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				sprintf("Help pressed: " + conf.getProgramHomePage() + "/" + country + "/" + helpURL + urlExt);
+				sprintf("Help pressed: " + HTMLClass.programHomePage + "/" + helpURL);
 			}
 		});
 
-		TextFlow lbl = new TextFlow(new Text("\nClick to get help"), hl);
+		TextFlow lbl = new TextFlow(new Text("\nClick to get help"), helpButton);
 
 		BorderPane bpane = new BorderPane();
 

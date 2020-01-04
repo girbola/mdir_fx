@@ -203,18 +203,7 @@ public class WorkDir_Handler {
 				}
 
 			}
-			/*
-			 * 
-			 * String sql = "DELETE FROM warehouses WHERE id = ?";
-			 * 
-			 * try (Connection conn = this.connect(); PreparedStatement pstmt =
-			 * conn.prepareStatement(sql)) {
-			 * 
-			 * // set the corresponding param pstmt.setInt(1, id); // execute the delete
-			 * statement pstmt.executeUpdate();
-			 * 
-			 * } catch (SQLException e) { System.out.println(e.getMessage()); }
-			 */
+			
 			String delete = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE fileInfo_id = ?";
 			PreparedStatement pstmt = connection.prepareStatement(delete);
 			Messages.sprintf("String list size is: " + rm_list.size());

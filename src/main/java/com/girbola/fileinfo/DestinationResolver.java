@@ -46,13 +46,13 @@ public class DestinationResolver {
 	}
 
 	public static Path getDestinationFileNameMisc(Path source, FileInfo fileInfo) {
-		if (Main.conf.getWorkDir().equals("null")) {
-			Messages.warningText(Main.bundle.getString("destinationDirNotSet"));
-			return null;
-		}
+//		if (Main.conf.getWorkDir().equals("null")) {
+//			Messages.warningText(Main.bundle.getString("destinationDirNotSet"));
+//			return null;
+//		}
 		LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-		// I:\\2017\\2017-06-23 Merikarvia - Kalassa �ijien kanssa
-		// I:\\2017\\2017-06-24 Merikarvia - Kalassa �ijien kanssa
+		// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
+		// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
 		
 		Path destPath = Paths.get(File.separator + ld.getYear() + File.separator

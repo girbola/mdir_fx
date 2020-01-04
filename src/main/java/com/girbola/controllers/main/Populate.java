@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -122,7 +122,7 @@ public class Populate {
 									loadingProcess_task.setMessage("Saving...");
 									// XMLFunctions.saveAll(model.getTables());
 									loadingProcess_task.closeStage();
-									model_main.getRegisterTableActivity().restart();
+									model_main.getMonitorConnectivity().restart();
 									
 									sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
 								} catch (InterruptedException | ExecutionException ex) {

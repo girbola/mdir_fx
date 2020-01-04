@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -35,8 +35,7 @@ import javafx.scene.control.TableView;
  *
  * @author Marko Lokka
  */
-public class AddToTable extends
-		Task<Integer> {
+public class AddToTable extends Task<Integer> {
 
 	private final String ERROR = AddToTable.class.getSimpleName();
 	private List<Path> list;
@@ -62,7 +61,7 @@ public class AddToTable extends
 				ConcurrencyUtils.stopExecThreadNow();
 				break;
 			}
-			//TODO Tämä uusiksi prkl!
+			// TODO Tämä uusiksi prkl!
 
 			if (folderHasFiles(p)) {
 				TableType tableType = resolvePath(p);
@@ -152,12 +151,11 @@ public class AddToTable extends
 		int characterTotal = 0;
 		int spaceCount = 0;
 
-		// String path = parseFileName(str.toString());
 		String path = p.getFileName().toString();
-		// sprintf("resolving path: " + path);
-		for (int i = 0;
-				i < path.length();
-				i++) {
+		if (path.contains("Pictures") || path.contains("Videos")) {
+			return TableType.SORTIT;
+		}
+		for (int i = 0; i < path.length(); i++) {
 			char c = path.charAt(i);
 			if (Character.isLetter(c)) {
 				letterTotal++;
@@ -169,21 +167,11 @@ public class AddToTable extends
 				characterTotal++;
 			}
 		}
-		/*
-		 * sprintf("numbertotal: " + numberTotal + " letterTotal: " + letterTotal +
-		 * " characterTotal: " + characterTotal + " spaceCount: " + spaceCount + "\n" +
-		 * str);
-		 */
-		// String pattern = ("\\d{3}\\W{1}\\w{4}|\\w{5}$");
 
-		/*
-		 * Pattern p = Pattern.compile("\\d{3}\\W{1}\\w[a-z]{4}|\\w[a-z]{5}$"); Matcher
-		 * m = p.matcher(path); if (m.find()) { sprintf( "1 PATTERN FOUND: " + path);
-		 * setTableData(sortit_data, str, SORTIT);
-		 */
 		/*
 		 * Lisää 2014-12-11 ja 2012_12_05
 		 */
+
 		// 100Canon jne
 		if (numberTotal == 3 && letterTotal == 5 && characterTotal == 0 && spaceCount == 0) { // The
 			// most
@@ -202,7 +190,5 @@ public class AddToTable extends
 		} else {
 			return TableType.SORTIT;
 		}
-
 	}
-
 }

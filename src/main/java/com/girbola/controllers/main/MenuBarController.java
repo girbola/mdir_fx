@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -12,9 +12,7 @@ import static com.girbola.messages.Messages.sprintf;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
@@ -34,6 +32,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -79,7 +78,7 @@ public class MenuBarController {
 
 	@FXML
 	private MenuBar menuBar;
-	
+
 	@FXML
 	private MenuItem menuItem_file_addFolders;
 	@FXML
@@ -106,7 +105,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_addFolders_action(ActionEvent event) {
 		Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
-		model_main.getRegisterTableActivity().cancel();
+		model_main.getMonitorConnectivity().cancel();
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
 				Main.bundle);
 
@@ -127,7 +126,7 @@ public class MenuBarController {
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				model_main.getRegisterTableActivity().restart();
+				model_main.getMonitorConnectivity().restart();
 				fc_stage.close();
 			}
 		});
@@ -264,7 +263,7 @@ public class MenuBarController {
 		Label programCopyRight = new Label("Copyright © 2012-2018");
 		Label programUserInfo = new Label("Marko Lokka. marko.lokka@gmail.com");
 		Label programMoreInfo = new Label("NOT FOR PUBLIC DISTRIBUTION");
-		Hyperlink programHomePage = new Hyperlink(conf.getProgramHomePage());
+		Hyperlink programHomePage = new Hyperlink(HTMLClass.programHomePage);
 		programHomePage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -310,7 +309,7 @@ public class MenuBarController {
 
 	@FXML
 	private void menuItem_tools_options_action(ActionEvent event) {
-		sprintf("menuItem_tools_options_action starting Theme path is: "+ conf.getThemePath());
+		sprintf("menuItem_tools_options_action starting Theme path is: " + conf.getThemePath());
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/options/Options.fxml"), bundle);
 		Parent parent = null;
 		try {
@@ -335,7 +334,6 @@ public class MenuBarController {
 			}
 		});
 		stage_opt.show();
-		
 
 	}
 
