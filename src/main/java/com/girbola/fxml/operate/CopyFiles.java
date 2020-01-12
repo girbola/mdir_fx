@@ -58,8 +58,8 @@ public class CopyFiles {
 	public void start() throws Exception {
 		if (!dest.toString().contains(Main.conf.getWorkDir())) {
 			Main.setProcessCancelled(true);
-			Messages.sprintfError(
-					"FATAL ERROR! Something went terribly wrong during copy process method at class: " + ERROR + " line: " + Misc.getLineNumber());
+			Messages.sprintfError("FATAL ERROR! Something went terribly wrong during copy process method at class: "
+					+ ERROR + " line: " + Misc.getLineNumber());
 
 			task.cancel();
 
@@ -101,7 +101,7 @@ public class CopyFiles {
 					STATE = Copy_State.DUPLICATE.getType();
 					sprintf("4STATE IS DUPLICATED? : " + STATE);
 					setDuplicated(true);
-				
+
 					fileInfo.setCopied(true);
 					if (!fileInfo.isCopied()) {
 						fileInfo.setCopied(true);
@@ -165,27 +165,29 @@ public class CopyFiles {
 				from.close();
 				to.close();
 
-				try {
-					Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-				} catch (Exception ex) {
-					Messages.sprintfError(ex.getMessage());
-				}
-				// fileInfo.setDestinationPath(dest.toString());
-				Platform.runLater(new Runnable() {
-
-					@Override
-					public void run() {
-						model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
-						model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
-					}
-				});
 				if (currentFileByte != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-//					sprintf("files were NOT fully copied. currentFileByte = " + currentFileByte + " filecopyprogress_max = "
-//							+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
+					Messages.sprintf("=====CopyFiles files were not copyed and it was cancelled.\nCurrentByte : "
+							+ currentFileByte + " to compare: "
+							+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
+					Files.delete(dest);
 					task.cancel();
 					Main.setProcessCancelled(true);
 				} else {
 					sprintf("files were fully copied");
+					try {
+						Files.move(Paths.get(dest.toString() + ".tmp"), dest);
+						// fileInfo.setDestinationPath(dest.toString());
+						Platform.runLater(new Runnable() {
+
+							@Override
+							public void run() {
+								model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
+								model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
+							}
+						});
+					} catch (Exception ex) {
+						Messages.sprintfError(ex.getMessage());
+					}
 				}
 				if (STATE.equals(Copy_State.COPY.getType())) {
 					Platform.runLater(new Runnable() {

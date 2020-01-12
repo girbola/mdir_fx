@@ -137,8 +137,8 @@ public class Main extends Application {
 				mainController.initialize(model_main);
 
 				stage.setTitle(conf.getProgramName());
-				stage.setMaxWidth(conf.getScreenBounds().getWidth());
-				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
+//				stage.setMaxWidth(conf.getScreenBounds().getWidth());
+//				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
 				// stage.setMinWidth(600);
 				// stage.setMinHeight(600);
 				stage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {

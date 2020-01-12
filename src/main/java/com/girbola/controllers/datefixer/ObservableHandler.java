@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 public class ObservableHandler {
 	private ObservableList<String> event_obs = FXCollections.observableArrayList();
 	private ObservableList<String> location_obs = FXCollections.observableArrayList();
+	private ObservableList<String> user_obs = FXCollections.observableArrayList();
 
 	public void addIfExists(String obs, String value) {
 		Iterator<String> it = null;
@@ -28,7 +29,6 @@ public class ObservableHandler {
 			location_obs.add(value);
 		}
 	}
-	
 
 	public ObservableList<String> getEvent_obs() {
 		return this.event_obs;
@@ -38,8 +38,13 @@ public class ObservableHandler {
 		return this.location_obs;
 	}
 
+	public ObservableList<String> getUser_obs() {
+		return this.user_obs;
+	}
+	
 	enum ObservabeleListType {
 		EVENT("event"), LOCATION("location");
+
 		private String type;
 
 		private ObservabeleListType(String type) {

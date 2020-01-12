@@ -7,6 +7,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.messages.Messages;
 
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 public class CopyBasic_Values {
 
 	private String copyFrom_tmp;
@@ -18,21 +21,23 @@ public class CopyBasic_Values {
 
 	private AtomicInteger totalFiles_tmp = new AtomicInteger(0);
 	private AtomicInteger filesLeft_tmp = new AtomicInteger(0);
-	
-	private String transferRate_tmp;
-	private long timeLeft_tmp;
-	private long timeElapsed_tmp;
 
-	private long fileCopyProgress_tmp;
+	private SimpleStringProperty transferRate_tmp = new SimpleStringProperty("");
+	private SimpleLongProperty timeLeft_tmp = new SimpleLongProperty(0);
+	private SimpleLongProperty timeElapsed_tmp = new SimpleLongProperty(0);
 
-	private long filesCopyProgress_MAX_tmp;
-	private long lastSecondFileSize_tmp = 0;
+	private SimpleLongProperty fileCopyProgress_tmp = new SimpleLongProperty(0);
+
+	private SimpleLongProperty filesCopyProgress_MAX_tmp = new SimpleLongProperty(0);
+	private SimpleLongProperty fileCurrentCopied_Size_tmp = new SimpleLongProperty(0);
 
 	private Deque<Long> transferRate_list = new LinkedList<>();
 
 	private LocalTime startTime = LocalTime.now();
 	private LocalTime endTime = LocalTime.now();
 
+	
+	
 	public synchronized double getAverageTransferRate() {
 		long count = 0;
 		if (transferRate_list.isEmpty()) {
@@ -45,9 +50,9 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized void increaseLastSecondFileSize_tmp(long value) {
-		this.lastSecondFileSize_tmp += value;
-		long sum = (this.lastSecondFileSize_tmp / filesCopyProgress_MAX_tmp);
-		setFileCopyProgress_tmp((long) Math.floor(sum));
+		this.fileCurrentCopied_Size_tmp.set(this.fileCurrentCopied_Size_tmp.get() + value);
+		long sum = (Math.round(this.fileCurrentCopied_Size_tmp.get() / (double)filesCopyProgress_MAX_tmp.get()));
+		this.setFileCopyProgress_tmp(sum);
 	}
 
 	public synchronized void addToLastSecondFileSize_list(long value) {
@@ -61,7 +66,7 @@ public class CopyBasic_Values {
 			}
 		}
 	}
-	
+
 	/**
 	 * getStartTime
 	 * 
@@ -88,10 +93,8 @@ public class CopyBasic_Values {
 		this.endTime = endTime;
 	}
 
-	
-
-	public synchronized long getLastSecondFileSize_tmp() {
-		return lastSecondFileSize_tmp;
+	public synchronized long getFileCurrentCopied_Size_tmp() {
+		return fileCurrentCopied_Size_tmp.get();
 	}
 
 	public synchronized Deque<Long> getTransferRate_list() {
@@ -99,7 +102,7 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized void setLastSecondFileSize_tmp(long lastSecondFileSize) {
-		this.lastSecondFileSize_tmp = lastSecondFileSize;
+		this.fileCurrentCopied_Size_tmp.set(lastSecondFileSize);
 	}
 
 	public synchronized int getTotalFiles_tmp() {
@@ -111,11 +114,11 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized long getFilesCopyProgress_MAX_tmp() {
-		return filesCopyProgress_MAX_tmp;
+		return filesCopyProgress_MAX_tmp.get();
 	}
 
 	public synchronized void setFilesCopyProgress_MAX_tmp(long processMaxSize_tmp) {
-		this.filesCopyProgress_MAX_tmp = processMaxSize_tmp;
+		this.filesCopyProgress_MAX_tmp.set(processMaxSize_tmp);
 	}
 
 	public synchronized void decreaseFilesLeft_tmp() {
@@ -147,19 +150,19 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized long getTimeElapsed_tmp() {
-		return timeElapsed_tmp;
+		return this.timeElapsed_tmp.get();
 	}
 
 	public synchronized long getTimeLeft_tmp() {
-		return timeLeft_tmp;
+		return this.timeLeft_tmp.get();
 	}
 
 	public synchronized long getFileCopyProgress_tmp() {
-		return fileCopyProgress_tmp;
+		return this.fileCopyProgress_tmp.get();
 	}
 
 	public synchronized String getTransferRate_tmp() {
-		return transferRate_tmp;
+		return this.transferRate_tmp.get();
 	}
 
 	public synchronized void increaseCopied_tmp() {
@@ -203,19 +206,19 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized void setTimeElapsed_tmp(long timeElapsed_tmp) {
-		this.timeElapsed_tmp = timeElapsed_tmp;
+		this.timeElapsed_tmp.set(timeElapsed_tmp);
 	}
 
 	public synchronized void setTimeLeft_tmp(long timeLeft_tmp) {
-		this.timeLeft_tmp = timeLeft_tmp;
+		this.timeLeft_tmp.set(timeLeft_tmp);
 	}
 
 	public synchronized void setFileCopyProgress_tmp(long value) {
-		this.fileCopyProgress_tmp = value;
+		this.fileCopyProgress_tmp.set(value);
 	}
 
 	public synchronized void setTransferRate_tmp(String value) {
-		this.transferRate_tmp = value;
+		this.transferRate_tmp.set(value);
 	}
 
 }

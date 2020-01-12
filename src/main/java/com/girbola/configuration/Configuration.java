@@ -153,22 +153,22 @@ public class Configuration extends Configuration_defaults {
 		}
 		return false;
 	}
-
-	private void saveTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns) {
-		for (TableColumn tc : columns) {
-			if (tc.getId() != null) {
-				prop.setProperty(tc.getId(), String.valueOf(tc.getWidth()));
-			}
-		}
-	}
-
-	private void loadTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns, Properties prop) {
-		for (TableColumn tc : columns) {
-			if (prop.containsKey(tc.getId())) {
-				tc.setPrefWidth(Double.parseDouble(prop.getProperty(tc.getId())));
-			}
-		}
-	}
+//
+//	private void saveTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns) {
+//		for (TableColumn tc : columns) {
+//			if (tc.getId() != null) {
+//				prop.setProperty(tc.getId(), String.valueOf(tc.getWidth()));
+//			}
+//		}
+//	}
+//
+//	private void loadTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns, Properties prop) {
+//		for (TableColumn tc : columns) {
+//			if (prop.containsKey(tc.getId())) {
+//				tc.setPrefWidth(Double.parseDouble(prop.getProperty(tc.getId())));
+//			}
+//		}
+//	}
 
 	public void setModel(Model_main model) {
 		this.model = model;

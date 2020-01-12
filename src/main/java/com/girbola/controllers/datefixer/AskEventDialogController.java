@@ -14,6 +14,7 @@ import com.girbola.Scene_NameType;
 import com.girbola.controllers.datefixer.ObservableHandler.ObservabeleListType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
@@ -48,6 +49,9 @@ public class AskEventDialogController {
 	private Label location_lbl;
 	@FXML
 	private ComboBox<String> location_cmb;
+	@FXML
+	private ComboBox<String> user_cmb;
+	
 	@FXML
 	private Button apply_btn;
 	@FXML
@@ -118,7 +122,6 @@ public class AskEventDialogController {
 		stage.close();
 
 	}
-
 	@FXML
 	private void apply_and_copy_btn_action(ActionEvent event) {
 		Messages.sprintf("apply_and_copy_btn_action started");
@@ -142,6 +145,7 @@ public class AskEventDialogController {
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 
 			Messages.sprintf("operateFiles Succeeded");
+			UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
 		});
 		operateFiles.setOnCancelled((workerStateEvent) -> {
 			Messages.sprintf("operateFiles CANCELLED");
@@ -199,9 +203,12 @@ public class AskEventDialogController {
 		GUI_Events.textField_file_listener(location_cmb.getEditor());
 		new AutoCompleteComboBoxListener<>(event_cmb);
 		GUI_Events.textField_file_listener(event_cmb.getEditor());
+		new AutoCompleteComboBoxListener<>(user_cmb);
+		GUI_Events.textField_file_listener(user_cmb.getEditor());
+		
 		event_cmb.setItems(model_dateFix.getObservableHandler().getEvent_obs());
-		location_cmb.setItems(model_dateFix.getObservableHandler().getLocation_obs());
-
+		user_cmb.setItems(model_dateFix.getObservableHandler().getUser_obs());
+		
 	}
 
 }

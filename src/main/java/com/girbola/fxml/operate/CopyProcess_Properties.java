@@ -22,46 +22,46 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 
 	private final DecimalFormat df = new DecimalFormat("#.##");
 
-	private SimpleIntegerProperty copied_property;
+	private SimpleIntegerProperty copied;
 
-	private SimpleStringProperty copyFrom_property;
-	private SimpleDoubleProperty copyProgress_property;
-	private SimpleDoubleProperty totalProgress_property;
+	private SimpleStringProperty copyFrom;
+	private SimpleDoubleProperty copyProgress;
+	private SimpleDoubleProperty totalProgress;
 
-	private SimpleStringProperty copyTo_property;
-	private SimpleIntegerProperty duplicated_property;
-	private SimpleIntegerProperty filesLeft_property;
+	private SimpleStringProperty copyTo;
+	private SimpleIntegerProperty duplicated;
+	private SimpleIntegerProperty filesLeft;
 
-	private SimpleIntegerProperty progressed_property;
+	private SimpleIntegerProperty progressed;
 
-	private SimpleIntegerProperty renamed_property;
-	private SimpleIntegerProperty skipped_property;
-	private SimpleStringProperty timeElapsed_property;
+	private SimpleIntegerProperty renamed;
+	private SimpleIntegerProperty skipped;
+	private SimpleStringProperty timeElapsed;
 
-	private SimpleStringProperty timeLeft_property;
-	private SimpleStringProperty totalFiles_property;
+	private SimpleStringProperty timeLeft;
+	private SimpleStringProperty totalFiles;
 	private SimpleLongProperty totalFilesSize_property;
 	private SimpleLongProperty fileCopyProgress_property;
 	private SimpleStringProperty transferRate_property;
 
 	public CopyProcess_Properties() {
-		copied_property = new SimpleIntegerProperty(0);
-		copyFrom_property = new SimpleStringProperty("");
-		copyProgress_property = new SimpleDoubleProperty(0);
+		copied = new SimpleIntegerProperty(0);
+		copyFrom = new SimpleStringProperty("");
+		copyProgress = new SimpleDoubleProperty(0);
 
-		copyTo_property = new SimpleStringProperty("");
-		duplicated_property = new SimpleIntegerProperty(0);
-		filesLeft_property = new SimpleIntegerProperty(0);
-		progressed_property = new SimpleIntegerProperty(0);
-		renamed_property = new SimpleIntegerProperty(0);
-		skipped_property = new SimpleIntegerProperty(0);
-		timeElapsed_property = new SimpleStringProperty("");
-		timeLeft_property = new SimpleStringProperty("");
-		totalFiles_property = new SimpleStringProperty("");
+		copyTo = new SimpleStringProperty("");
+		duplicated = new SimpleIntegerProperty(0);
+		filesLeft = new SimpleIntegerProperty(0);
+		progressed = new SimpleIntegerProperty(0);
+		renamed = new SimpleIntegerProperty(0);
+		skipped = new SimpleIntegerProperty(0);
+		timeElapsed = new SimpleStringProperty("");
+		timeLeft = new SimpleStringProperty("");
+		totalFiles = new SimpleStringProperty("");
 		totalFilesSize_property = new SimpleLongProperty(0);
 		fileCopyProgress_property = new SimpleLongProperty(0);
 		transferRate_property = new SimpleStringProperty("");
-		totalProgress_property = new SimpleDoubleProperty(0);
+		totalProgress = new SimpleDoubleProperty(0);
 
 	}
 
@@ -84,7 +84,7 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 //				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
 				setTotalFiles("" + getTotalFiles_tmp());
 				setFileCopyProgress(Math.round(getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()));
-				addToLastSecondFileSize_list(getLastSecondFileSize_tmp());
+				addToLastSecondFileSize_list(getFileCurrentCopied_Size_tmp());
 				setTransferRate(df.format(getAverageTransferRate() / 1024000) + " MB/sec");
 				setLastSecondFileSize_tmp(0);
 				if (getFileCopyProgress_tmp() != 0 && getFilesCopyProgress_MAX_tmp() != 0) {
@@ -105,17 +105,17 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 	}
 
 	public synchronized void reset() {
-		copyFrom_property.set("");
-		copyTo_property.set("");
-		copyProgress_property.set(0);
-		duplicated_property.set(0);
-		filesLeft_property.set(0);
-		progressed_property.set(0);
-		skipped_property.set(0);
-		timeElapsed_property.set("");
-		timeLeft_property.set("");
+		copyFrom.set("");
+		copyTo.set("");
+		copyProgress.set(0);
+		duplicated.set(0);
+		filesLeft.set(0);
+		progressed.set(0);
+		skipped.set(0);
+		timeElapsed.set("");
+		timeLeft.set("");
 		// timeLeftProperty.set(0);
-		totalFiles_property.set("0");
+		totalFiles.set("0");
 
 		totalFilesSize_property.set(0);
 		fileCopyProgress_property.set(0);
@@ -123,95 +123,93 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 	}
 
 	public synchronized SimpleDoubleProperty totalProgress_property() {
-		return totalProgress_property;
+		return totalProgress;
 	}
 
 	public synchronized void setTotalProgress(double totalProgress) {
-		this.totalProgress_property.set(totalProgress);
-	}
-
-	public synchronized double getTotalProgress_property() {
-		return this.totalProgress_property.get();
+		this.totalProgress.set(totalProgress);
 	}
 
 	public synchronized double getTotalProgress() {
-		return this.totalProgress_property.get();
+		return this.totalProgress.get();
 	}
+
+	
 
 	/*
 	 * private int totalFiles_tmp; to String private long fileCopyProgress_tmp to
 	 * double;
 	 */
 	public synchronized SimpleIntegerProperty copied_property() {
-		return this.copied_property;
+		return this.copied;
 	}
 
 	public synchronized SimpleStringProperty copyFrom_property() {
-		return this.copyFrom_property;
+		return this.copyFrom;
 	}
 
 	public synchronized SimpleDoubleProperty copyProgress_property() {
-		return this.copyProgress_property;
+		return this.copyProgress;
 	}
 
 	public synchronized SimpleStringProperty copyTo_property() {
-		return this.copyTo_property;
+		return this.copyTo;
 	}
 
 	public synchronized SimpleIntegerProperty duplicated_property() {
-		return this.duplicated_property;
+		return this.duplicated;
 	}
 
 	public synchronized SimpleIntegerProperty filesLeft_property() {
-		return this.filesLeft_property;
+		return this.filesLeft;
 	}
 
-	public synchronized int getCopied_property() {
-		return this.copied_property.get();
+	public synchronized int getCopied() {
+		return this.copied.get();
 	}
 
-	public synchronized String getCopyFrom_property() {
-		return this.copyFrom_property.get();
+	public synchronized String getCopyFrom() {
+		return this.copyFrom.get();
 	}
 
-	public synchronized double getCopyProgress_property() {
-		return copyProgress_property.get();
+	public synchronized double getCopyProgress() {
+		return copyProgress.get();
 	}
 
-	public synchronized String getCopyTo_property() {
-		return this.copyTo_property.get();
+	public synchronized String getCopyTo() {
+		return this.copyTo.get();
 	}
 
-	public synchronized int getDuplicated_property() {
-		return this.duplicated_property.get();
+	public synchronized int getDuplicated() {
+		return this.duplicated.get();
 	}
 
-	public synchronized int getFilesLeft_property() {
-		return this.filesLeft_property.get();
+	public synchronized int getFilesLeft() {
+		return this.filesLeft.get();
 	}
 
-	public synchronized int getProgressed_property() {
-		return this.progressed_property.get();
+	public synchronized int getProgressed() {
+		return this.progressed.get();
 	}
 
-	public synchronized int getRenamed_property() {
-		return this.renamed_property.get();
+	public synchronized int getRenamed() {
+		return this.renamed.get();
 	}
 
-	public synchronized int getSkipped_property() {
-		return this.skipped_property.get();
+	public synchronized int getSkipped() {
+		return this.skipped.get();
 	}
 
-	public synchronized String getTimeElapsed_property() {
-		return timeElapsed_property.get();
+	public synchronized String getTimeElapsed() {
+		return timeElapsed.get();
 	}
 	//
 	// public synchronized String getTimeLeft() {
 	// return this.timeLeft.get();
 	// }
 
-	public synchronized String getTotalFiles_property() {
-		return this.totalFiles_property.get();
+	public synchronized String getTotalFiles() {
+		return this.totalFiles.get();
 	}
 
 	public synchronized double getTotalFilesSize_property() {
@@ -231,60 +229,60 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 	}
 
 	public synchronized SimpleIntegerProperty progressed_property() {
-		return this.progressed_property;
+		return this.progressed;
 	}
 
 	public synchronized SimpleIntegerProperty renamed_property() {
-		return this.renamed_property;
+		return this.renamed;
 	}
 
 	public synchronized void setCopied(int value) {
-		this.copied_property.set(value);
+		this.copied.set(value);
 	}
 
 	public synchronized void setCopyFrom(String value) {
-		this.copyFrom_property.set(value);
+		this.copyFrom.set(value);
 	}
 
 	public synchronized void setCopyProgress(double value) {
-		this.copyProgress_property.set(value);
+		this.copyProgress.set(value);
 	}
 
 	public synchronized void setCopyTo(String value) {
-		this.copyTo_property.set(value);
+		this.copyTo.set(value);
 	}
 
 	public synchronized void setDuplicated(int value) {
 //		Messages.sprintf("duplicated: " + value);
-		this.duplicated_property.set(value);
+		this.duplicated.set(value);
 	}
 
 	public synchronized void setFilesLeft(int value) {
-		this.filesLeft_property.set(value);
+		this.filesLeft.set(value);
 	}
 
 	public synchronized void setProgressed(int value) {
-		this.progressed_property.set(value);
+		this.progressed.set(value);
 	}
 
 	public synchronized void setRenamed(int value) {
-		this.renamed_property.set(value);
+		this.renamed.set(value);
 	}
 
 	public synchronized void setSkipped(int value) {
-		this.skipped_property.set(value);
+		this.skipped.set(value);
 	}
 
 	public synchronized void setTimeElapsed(String value) {
-		this.timeElapsed_property.set(value);
+		this.timeElapsed.set(value);
 	}
 
 	public synchronized void setTimeLeft(String value) {
-		this.timeLeft_property.set(value);
+		this.timeLeft.set(value);
 	}
 
 	public synchronized void setTotalFiles(String value) {
-		this.totalFiles_property.set(value);
+		this.totalFiles.set(value);
 	}
 
 	public synchronized void setFileCopyProgress(long value) {
@@ -296,19 +294,19 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 	}
 
 	public synchronized SimpleIntegerProperty skipped_property() {
-		return this.skipped_property;
+		return this.skipped;
 	}
 
 	public synchronized SimpleStringProperty timeElapsed_property() {
-		return this.timeElapsed_property;
+		return this.timeElapsed;
 	}
 
 	public synchronized SimpleStringProperty timeLeft_property() {
-		return this.timeLeft_property;
+		return this.timeLeft;
 	}
 
 	public synchronized SimpleStringProperty totalFiles_property() {
-		return this.totalFiles_property;
+		return this.totalFiles;
 	}
 
 	public synchronized SimpleLongProperty totalFilesSize_property() {

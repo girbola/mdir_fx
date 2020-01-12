@@ -6,6 +6,8 @@
  */
 package com.girbola.fileinfo;
 
+import java.time.LocalDateTime;
+
 /**
  *
  * @author Marko Lokka
@@ -15,14 +17,6 @@ public class FileInfo extends Metadata {
 	private String orgPath;
 	private String destination_Path;
 	private String workDir;
-
-	public String getWorkDir() {
-		return workDir;
-	}
-
-	public void setWorkDir(String workDir) {
-		this.workDir = workDir;
-	}
 
 	/**
 	 * FileInfo version 1 ================== fileInfo_version number created
@@ -53,12 +47,22 @@ public class FileInfo extends Metadata {
 	// private byte[] thumb;
 	private int orientation;
 	private int thumb_length;
+	public LocalDateTime getLocalDateTime() {
+		return localDateTime;
+	}
+
+	public void setLocalDateTime(LocalDateTime localDateTime) {
+		this.localDateTime = localDateTime;
+	}
+
 	private long timeShift;
 	private long date;
 	private long size;
 	private boolean tableDuplicated;
 	private String user;
 
+	private LocalDateTime localDateTime;
+	
 	@Override
 	public String toString() {
 		return this.orgPath;
@@ -70,11 +74,11 @@ public class FileInfo extends Metadata {
 	 * @see java.lang.Object#toString()
 	 */
 	public String showAllValues() {
-		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", destination_Path="
-				+ destination_Path + ", fileInfo_version=" + fileInfo_version + ", event=" + event + ", location="
-				+ location + ", tags=" + tags + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model
-				+ ", bad=" + bad + ", confirmed=" + confirmed + ", copied=" + copied + ", good=" + good + ", ignored="
-				+ ignored + ", image=" + image + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video
+		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", destination_Path=" + destination_Path
+				+ ", fileInfo_version=" + fileInfo_version + ", event=" + event + ", location=" + location + ", tags="
+				+ tags + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad
+				+ ", confirmed=" + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored
+				+ ", image=" + image + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video
 				+ ", orientation=" + orientation + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift
 				+ ", date=" + date + ", size=" + size + ", tableDuplicated=" + tableDuplicated + ", thumb_offset="
 				+ thumb_offset + " user " + user + "]";
@@ -116,8 +120,8 @@ public class FileInfo extends Metadata {
 	 *
 	 */
 	public FileInfo() {
-		this(null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false, false, false,
-				false, false, 0, 0, 0, 0);
+		this(null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false, false,
+				false, false, false, 0, 0, 0, 0);
 	}
 
 	/**
@@ -147,11 +151,11 @@ public class FileInfo extends Metadata {
 	 * @param aThumb_offset
 	 * @param aThumb_length
 	 */
-	public FileInfo(String aOrgPath, String aWorkDir, String aDestinationStructure, String aEvent, String aLocation, String aTags,
-			String aCamera_model, String user, int aOrientation, long aTimeShift, int aFileInfo_id, boolean aBad,
-			boolean aGood, boolean aSuggested, boolean aConfirmed, boolean aImage, boolean aRaw, boolean aVideo,
-			boolean aIgnored, boolean aCopied, boolean aTableDuplicated, long aDate, long aSize, int aThumb_offset,
-			int aThumb_length) {
+	public FileInfo(String aOrgPath, String aWorkDir, String aDestinationStructure, String aEvent, String aLocation,
+			String aTags, String aCamera_model, String user, int aOrientation, long aTimeShift, int aFileInfo_id,
+			boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed, boolean aImage, boolean aRaw,
+			boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated, long aDate, long aSize,
+			int aThumb_offset, int aThumb_length) {
 		this.orgPath = aOrgPath;
 		this.workDir = aWorkDir;
 		this.destination_Path = aDestinationStructure;
@@ -177,6 +181,14 @@ public class FileInfo extends Metadata {
 		this.thumb_offset = aThumb_offset;
 		this.thumb_length = aThumb_length;
 		this.user = user;
+	}
+
+	public String getWorkDir() {
+		return workDir;
+	}
+
+	public void setWorkDir(String workDir) {
+		this.workDir = workDir;
 	}
 
 	public int getFileInfo_id() {

@@ -21,6 +21,8 @@ import java.util.logging.Logger;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -402,7 +404,6 @@ public class OperateFiles extends Task<Boolean> {
 			saveWorkDirToDatabase.setOnSucceeded((eventti) -> {
 				Messages.sprintf("saveWorkDirListToDatabase finished success!");
 				writeToDatabase();
-
 			});
 			saveWorkDirToDatabase.setOnCancelled((eventti) -> {
 				Messages.sprintfError("saveWorkDirListToDatabase finished success!");
@@ -515,7 +516,7 @@ public class OperateFiles extends Task<Boolean> {
 					public void handle(ActionEvent event) {
 						Main.setProcessCancelled(true);
 						Messages.sprintf("Current file cancelled is: "
-								+ model_operate.getCopyProcess_values().getCopyTo_property());
+								+ model_operate.getCopyProcess_values().getCopyTo());
 						model_operate.stopTimeLine();
 						Main.setProcessCancelled(true);
 					}

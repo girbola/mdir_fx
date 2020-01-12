@@ -269,6 +269,7 @@ public class TableUtils {
 				map.put(localDate, 0);
 			}
 		}
+		Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video));
 		folderInfo.setConfirmed(confirmed);
 		folderInfo.setFolderFiles((image + raw + video));
 

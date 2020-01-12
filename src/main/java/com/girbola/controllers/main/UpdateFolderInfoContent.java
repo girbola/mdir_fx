@@ -18,6 +18,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
 
 import javafx.concurrent.Task;
 
@@ -51,6 +52,9 @@ public class UpdateFolderInfoContent extends Task<Integer> {
 
     @Override
     protected Integer call() throws Exception {
+    	Messages.sprintf("Running now updatefolerinfocontent");
+    	TableUtils.updateFolderInfos_FileInfo(folderInfo);
+    	/*
         for (FileInfo fi : folderInfo.getFileInfoList()) {
             if (Main.getProcessCancelled()) {
                 break;
@@ -114,7 +118,7 @@ public class UpdateFolderInfoContent extends Task<Integer> {
 
         folderInfo.setGoodFiles(good);
 
-        folderInfo.setCopied(mformat);
+        folderInfo.setCopied(copied);
 
         folderInfo.setFolderImageFiles(image);
 
@@ -148,7 +152,7 @@ public class UpdateFolderInfoContent extends Task<Integer> {
         image = 0;
         raw = 0;
         video = 0;
-        confirmed = 0;
+        confirmed = 0; */
         return null;
     }
 

@@ -35,7 +35,7 @@
                 <MenuItem mnemonicParsing="false" onAction="#checkChanges_action" text="check" />
               </items>
             </MenuButton>
-				<Button fx:id="reload_btn" mnemonicParsing="false" onAction="#reload_btn_action" prefWidth="35.0">
+				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
 					<graphic>
 						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
 							<image>

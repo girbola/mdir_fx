@@ -23,12 +23,15 @@
               <rowConstraints>
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
                   <Label fx:id="location_lbl" text="%location" />
                   <ComboBox fx:id="location_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="Location" GridPane.columnIndex="1" />
                   <Label fx:id="event_lbl" text="%event" GridPane.rowIndex="1" />
                   <ComboBox fx:id="event_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="1.7976931348623157E308" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
             <HBox alignment="CENTER_LEFT" spacing="3.0">

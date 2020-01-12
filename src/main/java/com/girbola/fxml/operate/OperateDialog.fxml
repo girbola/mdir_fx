@@ -140,7 +140,7 @@
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="cp_time_Input" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11">
+                  <Label fx:id="cp_timeElapsed_Input" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="11">
                      <padding>
                         <Insets left="5.0" />
                      </padding>

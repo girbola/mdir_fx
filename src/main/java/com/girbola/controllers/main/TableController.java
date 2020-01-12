@@ -17,6 +17,8 @@ import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
@@ -43,7 +45,6 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -67,7 +68,7 @@ public class TableController {
 	@FXML
 	private ImageView hide_btn_iv;
 	@FXML
-	private Button reload_btn;
+	private Button updateFolderInfo_btn;
 	@FXML
 	private Button select_bad_btn;
 	@FXML
@@ -149,9 +150,39 @@ public class TableController {
 	}
 
 	@FXML
+	private void updateFolderInfo_btn_action(ActionEvent event) {
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		for (FolderInfo folderInfo : model.tables().getSortIt_table().getSelectionModel().getSelectedItems()) {
+			UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
+			up.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo cancelled: " + folderInfo.getFolderPath());
+				}
+			});
+			up.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
+				}
+			});
+			up.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath());
+				}
+			});
+			exec.submit(up);
+		}
+	}
+
+	@FXML
 	private void reload_all_action(ActionEvent event) {
 		sprintf("Reload All");
-		Stage stage = (Stage) reload_btn.getScene().getWindow();
+		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
 		LoadingProcess_Task lpt = new LoadingProcess_Task();
 		//
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table);
