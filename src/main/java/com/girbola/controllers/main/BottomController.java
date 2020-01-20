@@ -243,6 +243,8 @@ public class BottomController {
 		model_main.getMonitorConnectivity().cancel();
 		List<String> conflictWithWorkdir = new ArrayList<>();
 		List<String> cantCopy = new ArrayList<>();
+		List<String> okFiles = new ArrayList<>();
+		
 		if (Main.conf.getWorkDir().equals("null")) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet"));
 			return;
@@ -252,57 +254,22 @@ public class BottomController {
 			return;
 		}
 		Messages.sprintf("workDir: " + Main.conf.getWorkDir());
-
+		/*
+		 * List files and handle actions with lists. For example ok files, conflict files(Handle this before ok files), bad files(Handle this before okfiles)
+		 * When everything are good will be operateFiles starts.
+		 * Notice! Everything are in memory already so concurrency can be used to prevent the lagging.
+		 */
+		
+		CopyBatch copyBatch = new CopyBatch(model_main);
+		copyBatch.start();
+		
+		
 //TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
 			@Override
 			protected List<FileInfo> call() throws Exception {
 				List<FileInfo> list = new ArrayList<>();
-				for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
-							/*
-							 * 0 if good 1 if conflict with workdir 2 if copying is not possible
-							 */
-							int status = FileInfo_Utils.checkWorkDir(fileInfo);
-							if (status == 0) {
-								list.add(fileInfo);
-								Messages.sprintf("1file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else if (status == 1) {
-								conflictWithWorkdir.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								Messages.sprintf("2file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else if (status == 2) {
-								cantCopy.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								Messages.sprintf("3file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else {
-								Messages.sprintf("4file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							}
-						}
-					}
-				}
-//prosessoi eri tavalla nämä. ensim tsekataan workdirrin olemassa olo. korjataan tarvittaessa workdir path
-				for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
-							/*
-							 * 0 if good 1 if conflict with workdir 2 if copying is not possible
-							 */
-							int status = FileInfo_Utils.checkWorkDir(fileInfo);
-							if (status == 0) {
-								list.add(fileInfo);
-								Messages.sprintf("1file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else if (status == 1) {
-								conflictWithWorkdir.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								Messages.sprintf("2file: " + " workdir: " + fileInfo.getWorkDir() + " destP "  + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else if (status == 2) {
-								cantCopy.add(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								Messages.sprintf("3file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							} else {
-								Messages.sprintf("4file: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-							}
-						}
-					}
-				}
+			
 
 				if (!conflictWithWorkdir.isEmpty()) {
 //					Messages.warningText("conflictWithWorkdir were not empty");

@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.main.CopyBatch;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.fileinfo.FileInfo;
@@ -257,6 +258,8 @@ public class Main extends Application {
 				} else {
 					lpt.closeStage();
 				}
+				CopyBatch cp = new CopyBatch(model_main);
+				cp.showConflictTable();
 			}
 		});
 		task.setOnFailed(new EventHandler<WorkerStateEvent>() {

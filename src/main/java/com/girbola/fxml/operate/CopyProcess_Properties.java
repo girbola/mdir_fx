@@ -70,7 +70,7 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				Messages.sprintf("Updating copyprocess");
+//				Messages.sprintf("Updating copyprocess");
 				setCopyFrom(getCopyFrom_tmp());
 				setCopyTo(getCopyTo_tmp());
 
@@ -83,7 +83,9 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 //				Messages.sprintf("getdup 1SECs: " + getDuplicated_tmp());
 //				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
 				setTotalFiles("" + getTotalFiles_tmp());
-				setFileCopyProgress(Math.round(getFileCopyProgress_tmp() / getFilesCopyProgress_MAX_tmp()));
+
+				setFileCopyProgress(
+						Math.round((double) getFileCopyProgress_tmp() / (double) getFilesCopyProgress_MAX_tmp()));
 				addToLastSecondFileSize_list(getFileCurrentCopied_Size_tmp());
 				setTransferRate(df.format(getAverageTransferRate() / 1024000) + " MB/sec");
 				setLastSecondFileSize_tmp(0);
@@ -133,8 +135,6 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 	public synchronized double getTotalProgress() {
 		return this.totalProgress.get();
 	}
-
-	
 
 	/*
 	 * private int totalFiles_tmp; to String private long fileCopyProgress_tmp to

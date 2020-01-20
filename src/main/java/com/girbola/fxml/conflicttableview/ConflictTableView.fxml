@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="481.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.conflicttableview.ConflictTableViewController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TableView VBox.vgrow="ALWAYS">
+              <columns>
+                <TableColumn fx:id="canCopy" prefWidth="63.0" text="O" />
+                  <TableColumn fx:id="canCopy" prefWidth="63.0" text="%status" />
+                <TableColumn fx:id="folderName" prefWidth="380.0" text="%folderName" />
+                  <TableColumn fx:id="destination" prefWidth="944.0" text="%destination" />
+              </columns>
+            </TableView>
+            <HBox fillHeight="false" spacing="3.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button mnemonicParsing="false" text="Fix conflict" />
+                  <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Apply" />
+                  <Button layoutX="62.0" layoutY="10.0" mnemonicParsing="false" text="Close" />
+                  <Button layoutX="114.0" layoutY="10.0" mnemonicParsing="false" text="Button" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

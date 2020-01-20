@@ -411,7 +411,7 @@ public class OperateFiles extends Task<Boolean> {
 
 			});
 			saveWorkDirToDatabase.setOnFailed((eventti) -> {
-				Messages.sprintf("Task failed!");
+				Messages.sprintf("saveWorkDirToDatabase Task failed!");
 				writeToDatabase();
 
 			});
