@@ -22,10 +22,10 @@
 				</TableView>
 				<HBox fillHeight="false" spacing="3.0" VBox.vgrow="NEVER">
 					<children>
-						<Button mnemonicParsing="false" text="Fix conflict" />
-						<Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Apply" />
-						<Button layoutX="62.0" layoutY="10.0" mnemonicParsing="false" text="Close" />
-						<Button layoutX="114.0" layoutY="10.0" mnemonicParsing="false" text="Button" />
+						<Button fx:id="fixConflicts_btn" mnemonicParsing="false" onAction="#fixConflicts_btn_action" text="Fix conflicts" />
+						<Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#apply_btn_action" text="Apply" />
+                  <Button layoutX="121.0" layoutY="10.0" mnemonicParsing="false" onAction="#copy_btn_action" text="Copy" />
+            						<Button mnemonicParsing="false" onAction="#close_btn_action" text="Close" />
 					</children>
 					<VBox.margin>
 						<Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />

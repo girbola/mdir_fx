@@ -1,5 +1,7 @@
 package com.girbola.fxml.conflicttableview;
 
+import com.girbola.fileinfo.FileInfo;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 
@@ -9,9 +11,14 @@ public class ConflictFile {
 	private SimpleStringProperty destination;
 	private SimpleStringProperty workDir;
 	private SimpleBooleanProperty canCopy;
+	private FileInfo fileInfo;
 
-	public ConflictFile(String folderName, String destination, String workDir, boolean canCopy) {
+	public FileInfo getFileInfo() {
+		return fileInfo;
+	}
 
+	public ConflictFile(FileInfo fileInfo, String folderName, String destination, String workDir, boolean canCopy) {
+		this.fileInfo = fileInfo;
 		this.folderName = new SimpleStringProperty(folderName);
 		this.destination = new SimpleStringProperty(destination);
 		this.workDir = new SimpleStringProperty(workDir);
@@ -50,8 +57,8 @@ public class ConflictFile {
 		return workDir.get();
 	}
 
-	public void setWorkDir(SimpleStringProperty workDir) {
-		this.workDir = workDir;
+	public void setWorkDir(String workDir) {
+		this.workDir.set(workDir);
 	}
 
 	public SimpleBooleanProperty canCopy_property() {

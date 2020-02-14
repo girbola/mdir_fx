@@ -12,12 +12,14 @@ import java.util.logging.Logger;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fxml.conflicttableview.ConflictFile;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.messages.Messages;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -35,18 +37,21 @@ public class CopyBatch {
 	List<FileInfo> conflictWithWorkdir_list = new ArrayList<>();
 	List<FileInfo> cantCopy_list = new ArrayList<>();
 	List<FileInfo> okFiles_list = new ArrayList<>();
+	ObservableList<ConflictFile> list = FXCollections.observableArrayList();
 
 	private void showConflictFileInfos() {
 		Messages.sprintf("showConflictFileInfos: ");
-//		for (FileInfo fileInfo : conflictWithWorkdir) {
-//			fileInfo.getWorkDir() + fileInfo.getDestination_Path();
-//		}
-		boolean userChoise = DialogShow(conflictWithWorkdir_list);
-		if (userChoise) {
-			// Do something
-		} else {
-			// Do something
+		for (FileInfo fileInfo : conflictWithWorkdir_list) {
+			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
+					fileInfo.getWorkDir(), true);
+			list.add(cf);
 		}
+//		boolean userChoise = DialogShow(conflictWithWorkdir_list);
+//		if (userChoise) {
+//			// Do something
+//		} else {
+//			// Do something
+//		}
 
 	}
 
@@ -59,22 +64,20 @@ public class CopyBatch {
 		Messages.sprintf("showCantCopyFileInfos: ");
 
 		for (FileInfo fileInfo : cantCopy_list) {
-
+			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
+					fileInfo.getWorkDir(), false);
+			list.add(cf);
 		}
 
-		boolean userChoise = DialogShow(cantCopy_list);
-		if (userChoise) {
-			// Do something
-		} else {
-			// Do something
-		}
 	}
 
 	private void showOkFileInfos() {
 		Messages.sprintf("showCantCopyFileInfos: ");
 
 		for (FileInfo fileInfo : okFiles_list) {
-
+			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
+					fileInfo.getWorkDir(), false);
+			list.add(cf);
 		}
 
 	}
@@ -83,7 +86,10 @@ public class CopyBatch {
 
 		handleTable(model_Main.tables().getSorted_table());
 		handleTable(model_Main.tables().getSortIt_table());
+		showCantCopyFileInfos();
 		showConflictFileInfos();
+		showOkFileInfos();
+		showConflictTable();
 	}
 
 	public void showConflictTable() {
@@ -100,9 +106,10 @@ public class CopyBatch {
 
 			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
 					.getController();
-			conflictTableViewController.init(model_Main);
+			conflictTableViewController.init(model_Main, list);
 			Scene scene_conflictTableView = new Scene(parent);
-			scene_conflictTableView.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
+			scene_conflictTableView.getStylesheets()
+					.add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
 
 			Stage window = new Stage();
 			window.setScene(scene_conflictTableView);
