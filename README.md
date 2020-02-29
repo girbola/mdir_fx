@@ -45,4 +45,4 @@ Supported file formats for thumbnail creation
 - NEF
 
 This project is not yet ready for public use.
-Any inconvenience caused by this project is your responsibility.
+Any inconvenience caused by this project is in your responsibility.
