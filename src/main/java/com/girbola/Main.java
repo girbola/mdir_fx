@@ -31,8 +31,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.jcodec.common.logging.Message;
-
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -174,12 +172,7 @@ public class Main extends Application {
 
 			@Override
 			public void handle(WorkerStateEvent event) {
-				/*
-				 * TODO 1. turhat duplicated jo tableviewissä pois ensin sorted ylhäältä alas
-				 * etsien sortit ja jos on sortit duplicoitu niin skippaa haussa. sen jälkeen
-				 * sortit ylhäältä alas 2. sen jälkeen sortit järjestyksessä ylhäältä alas
-				 * etsitään sopivaa kansiota workdirrin päivyksistä TÄMÄ TOIMII!!UIIIJJJUIIII!!!
-				 */
+
 				Messages.sprintf("main succeeded");
 				scene_Switcher.setWindow(stage);
 				scene_Switcher.setScene_main(scene);
@@ -218,11 +211,7 @@ public class Main extends Application {
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 							}
-							Messages.warningText(
-									"Remeber to fix destination folder chooser that choosing workdir path has no duplicated path. Like using memory cardreasder and external drive\n"
-											+ "For example D:/MDir USB Stick or D:/Memory card will make a conflict. Perhaps make a better regocnition system or find a prober tool for that"
-											+ "");
-
+							Messages.warningText("Implement OSHI to workout with different media recognition");
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -264,8 +253,6 @@ public class Main extends Application {
 				} else {
 					lpt.closeStage();
 				}
-//				CopyBatch cp = new CopyBatch(model_main);
-//				cp.showConflictTable();
 			}
 		});
 		task.setOnFailed(new EventHandler<WorkerStateEvent>() {

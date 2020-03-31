@@ -56,34 +56,28 @@ public class CopyBatch {
 	}
 
 	private boolean DialogShow(List<FileInfo> conflictWithWorkdir2) {
-
 		return false;
 	}
 
 	private void showCantCopyFileInfos() {
 		Messages.sprintf("showCantCopyFileInfos: ");
-
 		for (FileInfo fileInfo : cantCopy_list) {
 			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
 					fileInfo.getWorkDir(), false);
 			list.add(cf);
 		}
-
 	}
 
 	private void showOkFileInfos() {
-		Messages.sprintf("showCantCopyFileInfos: ");
-
+		Messages.sprintf("showOkFileInfos: ");
 		for (FileInfo fileInfo : okFiles_list) {
 			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
-					fileInfo.getWorkDir(), false);
+					fileInfo.getWorkDir(), true);
 			list.add(cf);
 		}
-
 	}
 
 	public void start() {
-
 		handleTable(model_Main.tables().getSorted_table());
 		handleTable(model_Main.tables().getSortIt_table());
 		showCantCopyFileInfos();

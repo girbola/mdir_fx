@@ -28,7 +28,6 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
@@ -50,6 +49,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -82,12 +82,17 @@ public class BottomController {
 	private Label drive_spaceLeft;
 	@FXML
 	private Label drive_connected;
+	@FXML
+	private HBox drive_pane;
 
 	@FXML
 	private void collect_action(ActionEvent event) {
 		Collector collect = new Collector();
 		collect.collectAll(model_main.tables());
 		collect.listMap();
+
+//		drive_pane.visibleProperty().model_main
+
 	}
 
 	@FXML
@@ -191,9 +196,6 @@ public class BottomController {
 
 		copyTables(model_main.tables(), model_main.tables().getSorted_table(), TableType.SORTED.getType());
 		copyTables(model_main.tables(), model_main.tables().getSortIt_table(), TableType.SORTIT.getType());
-		// copyTables(workDir_Handler, model_main.tables(),
-		// model_main.tables().getAsItIs_table(), TableType.ASITIS.getType());
-
 	}
 
 	private void copyTables(Tables tables, TableView<FolderInfo> table, String tableType) {
@@ -229,7 +231,9 @@ public class BottomController {
 
 	@FXML
 	private void help_btn_action(ActionEvent event) {
-		Messages.warningTextHelp("Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy", HTMLClass.help_html + "#sorter");
+		Messages.warningTextHelp(
+				"Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy",
+				HTMLClass.help_html + "#sorter");
 	}
 
 	@FXML
@@ -244,7 +248,7 @@ public class BottomController {
 		List<String> conflictWithWorkdir = new ArrayList<>();
 		List<String> cantCopy = new ArrayList<>();
 		List<String> okFiles = new ArrayList<>();
-		
+
 		if (Main.conf.getWorkDir().equals("null")) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet"));
 			return;
@@ -255,38 +259,36 @@ public class BottomController {
 		}
 		Messages.sprintf("workDir: " + Main.conf.getWorkDir());
 		/*
-		 * List files and handle actions with lists. For example ok files, conflict files(Handle this before ok files), bad files(Handle this before okfiles)
-		 * When everything are good will be operateFiles starts.
-		 * Notice! Everything are in memory already so concurrency can be used to prevent the lagging.
+		 * List files and handle actions with lists. For example ok files, conflict
+		 * files(Handle this before ok files), bad files(Handle this before okfiles)
+		 * When everything are good will be operateFiles starts. Notice! Everything are
+		 * in memory already so concurrency can be used to prevent the lagging.
 		 */
-		
+
 		CopyBatch copyBatch = new CopyBatch(model_main);
 		copyBatch.start();
-		
-		
+
 //TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
 			@Override
 			protected List<FileInfo> call() throws Exception {
 				List<FileInfo> list = new ArrayList<>();
-			
-
 				if (!conflictWithWorkdir.isEmpty()) {
 //					Messages.warningText("conflictWithWorkdir were not empty");
-					Messages.sprintf("Workdir: " + Main.conf.getWorkDir()) ;
-					for(String confw : conflictWithWorkdir) {
+					Messages.sprintf("Workdir: " + Main.conf.getWorkDir());
+					for (String confw : conflictWithWorkdir) {
 						Messages.sprintf("Conflict dir: " + confw);
 					}
-					
+
 					return null;
 				}
 
 				if (!cantCopy.isEmpty()) {
 //					Messages.warningText("cantCopy were not empty");
-					for(String confw : cantCopy) {
+					for (String confw : cantCopy) {
 						Messages.sprintf("cantCopy dir: " + confw);
 					}
-					
+
 					return null;
 				}
 				return list;
@@ -332,18 +334,16 @@ public class BottomController {
 			Messages.sprintf("Making list were cancelled");
 		});
 		task.setOnFailed((event2) -> {
-				try {
-					Messages.sprintf("Making list were made cancelled: " + task.get().size());
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}	
+			try {
+				Messages.sprintf("Making list were made cancelled: " + task.get().size());
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
 		});
-		Thread th = new Thread(task, "Start Threads");
-		th.start();
+//		Thread th = new Thread(task, "Start Threads");
+//		th.start();
 
 	}
 
@@ -407,7 +407,7 @@ public class BottomController {
 		drive_name.textProperty().bindBidirectional(Main.conf.drive_name_property());
 		drive_space.textProperty().bindBidirectional(Main.conf.drive_space_property());
 		drive_spaceLeft.textProperty().bindBidirectional(Main.conf.drive_spaceLeft_property());
-
+		drive_pane.visibleProperty().bindBidirectional(Main.conf.drive_connected_property());
 		Main.conf.drive_connected_property().addListener(new ChangeListener<Boolean>() {
 
 			@Override

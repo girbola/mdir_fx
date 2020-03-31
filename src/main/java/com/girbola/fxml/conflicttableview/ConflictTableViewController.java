@@ -55,6 +55,7 @@ public class ConflictTableViewController {
 	private void copy_btn_action(ActionEvent event) {
 //		Task<Boolean> task = new OperateFiles(list, close, aModel_main, scene_NameType)
 //aerg;
+		
 	}
 
 	@FXML

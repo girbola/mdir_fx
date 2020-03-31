@@ -32,7 +32,7 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 
 			@Override
 			protected Void call() throws Exception {
-			
+
 				checkTableConnectivity(model_Main.tables().getSortIt_table());
 				checkTableConnectivity(model_Main.tables().getSorted_table());
 				checkTableConnectivity(model_Main.tables().getAsItIs_table());
@@ -81,7 +81,6 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 				Main.conf.setDrive_name("");
 			});
 		} else {
-
 			Platform.runLater(() -> {
 				try {
 //					Messages.sprintf("checkWorkDirConnected connected");

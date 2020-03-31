@@ -204,16 +204,16 @@
 			<plugin>
 				<groupId>org.openjfx</groupId>
 				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.3</version>
+				<version>0.0.4</version>
 				<configuration>
-					<arg>javafx.graphics/com.sun.glass.ui=org.openjfx.hellofx</arg>
+<!-- 					<arg>javafx.graphics/com.sun.glass.ui=org.openjfx.Main</arg> -->
 					<mainClass>com.girbola.Main</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.2.2</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
