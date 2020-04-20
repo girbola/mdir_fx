@@ -244,7 +244,7 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
-		model_main.getMonitorConnectivity().cancel();
+		model_main.getMonitorExternalDriveConnectivity().cancel();
 		List<String> conflictWithWorkdir = new ArrayList<>();
 		List<String> cantCopy = new ArrayList<>();
 		List<String> okFiles = new ArrayList<>();
@@ -308,7 +308,7 @@ public class BottomController {
 						Scene_NameType.MAIN.getType());
 				operateFiles.setOnSucceeded((workerStateEvent) -> {
 					Messages.sprintf("operateFiles Succeeded");
-					model_main.getMonitorConnectivity().restart();
+					model_main.getMonitorExternalDriveConnectivity().restart();
 				});
 				operateFiles.setOnCancelled((workerStateEvent) -> {
 					Messages.sprintf("operateFiles CANCELLED");

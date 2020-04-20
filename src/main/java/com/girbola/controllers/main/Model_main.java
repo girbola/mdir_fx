@@ -63,7 +63,7 @@ public class Model_main {
 	private SelectedFolderScanner selectedFolders;
 	private TablePositionHolder tablePositionHolder;
 	private List<ThumbInfo> thumbInfo = new ArrayList<>();
-	private ScheduledService<Void> monitorConnectivity;
+	private ScheduledService<Void> monitorExternalDriveConnectivity;
 
 	public Model_main() {
 		sprintf("Model instantiated...");
@@ -80,8 +80,8 @@ public class Model_main {
 
 		tablePositionHolder = new TablePositionHolder(this);
 
-		monitorConnectivity = new MonitorConnectivity(this);
-		monitorConnectivity.setPeriod(Duration.seconds(15));
+		monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
+		monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
 	}
 
 	public final List<ThumbInfo> getThumbInfo() {
@@ -243,7 +243,7 @@ public class Model_main {
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				save();
-				getMonitorConnectivity().cancel();
+				getMonitorExternalDriveConnectivity().cancel();
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 
 			}
@@ -252,13 +252,13 @@ public class Model_main {
 			sprintf("isShowOnExit was true");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getMonitorConnectivity().cancel();
+			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();
 		} else {
 			sprintf("isShowOnExit was false");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getMonitorConnectivity().cancel();
+			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();
 		}
 
@@ -271,8 +271,8 @@ public class Model_main {
 		return this.workDir_Handler;
 	}
 
-	public ScheduledService<Void> getMonitorConnectivity() {
-		return monitorConnectivity;
+	public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
+		return monitorExternalDriveConnectivity;
 	}
 
 	private BottomController bottomController;

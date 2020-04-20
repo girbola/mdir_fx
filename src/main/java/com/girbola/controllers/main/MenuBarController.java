@@ -105,7 +105,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_addFolders_action(ActionEvent event) {
 		Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
-		model_main.getMonitorConnectivity().cancel();
+		model_main.getMonitorExternalDriveConnectivity().cancel();
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
 				Main.bundle);
 
@@ -126,7 +126,7 @@ public class MenuBarController {
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				model_main.getMonitorConnectivity().restart();
+				model_main.getMonitorExternalDriveConnectivity().restart();
 				fc_stage.close();
 			}
 		});

@@ -122,7 +122,7 @@ public class Populate {
 									loadingProcess_task.setMessage("Saving...");
 									// XMLFunctions.saveAll(model.getTables());
 									loadingProcess_task.closeStage();
-									model_main.getMonitorConnectivity().restart();
+									model_main.getMonitorExternalDriveConnectivity().restart();
 									
 									sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
 								} catch (InterruptedException | ExecutionException ex) {

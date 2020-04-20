@@ -206,7 +206,7 @@ public class SQL_Utils {
 			pstmt.setBoolean(2, driveInfo.isConnected());
 			pstmt.setBoolean(3, driveInfo.getSelected());
 			pstmt.setLong(4, driveInfo.getDriveTotalSize());
-			pstmt.setString(5, driveInfo.getIndentifier());
+			pstmt.setString(5, driveInfo.getIdentifier());
 			
 			pstmt.executeUpdate();
 			pstmt.close();
@@ -229,7 +229,7 @@ public class SQL_Utils {
 			pstmt.setBoolean(2, driveInfo.isConnected());
 			pstmt.setBoolean(3, driveInfo.getSelected());
 			pstmt.setLong(4, driveInfo.getDriveTotalSize());
-			pstmt.setString(5, driveInfo.getIndentifier());
+			pstmt.setString(5, driveInfo.getIdentifier());
 			pstmt.addBatch();
 		}
 		pstmt.executeBatch();
@@ -257,7 +257,7 @@ public class SQL_Utils {
 				String identifier = rs.getString("identifier");
 				// SelectedFolder sel = new SelectedFolder(isConnected, drivePath);
 				DriveInfo driveInfo = new DriveInfo(drivePath, driveTotalSize, isConnected, isSelected, identifier);
-				model_folderScanner.drive().getDrivesList().add(driveInfo);
+				model_folderScanner.drive().getDrivesList_obs().add(driveInfo);
 			}
 			return true;
 		} catch (Exception e) {

@@ -12,21 +12,27 @@ import java.sql.Connection;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import common.utils.OSHI_Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import oshi.SystemInfo;
+import oshi.hardware.HWDiskStore;
+import oshi.hardware.HWPartition;
+import oshi.hardware.HardwareAbstractionLayer;
 
-public class Drive {
+public class DrivesListHandler {
 
-	private final String ERROR = Drive.class.getSimpleName();
+	private final String ERROR = DrivesListHandler.class.getSimpleName();
 
-	private ObservableList<DriveInfo> drivesList = FXCollections.observableArrayList();
+	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
-	public boolean exists(DriveInfo drive) {
-		for (DriveInfo di : drivesList) {
-			if (di.getDrivePath().equals(drive.getDrivePath())) {
+	public boolean exists(DriveInfo driveInfoToSearch) {
+		for (DriveInfo driveInfo : drivesList_obs) {
+			if (driveInfo.getDrivePath().equals(driveInfoToSearch.getDrivePath())) {
 				return true;
 			}
 		}
@@ -43,8 +49,8 @@ public class Drive {
 		}
 	}
 
-	public ObservableList<DriveInfo> getDrivesList() {
-		return this.drivesList;
+	public ObservableList<DriveInfo> getDrivesList_obs() {
+		return this.drivesList_obs;
 	}
 
 	public void saveList() {
@@ -53,7 +59,7 @@ public class Drive {
 			SQL_Utils.createFolderInfoDatabase(connection);
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
-		SQL_Utils.addDriveInfo_list(connection, drivesList);
+		SQL_Utils.addDriveInfo_list(connection, drivesList_obs);
 		try {
 			connection.close();
 		} catch (Exception e) {
@@ -61,9 +67,9 @@ public class Drive {
 		}
 	}
 
-	public boolean hasDrive(String drive) {
-		for (DriveInfo di : drivesList) {
-			if (di.getDrivePath().equals(drive)) {
+	public boolean isDriveAlreadyInRegister(String drive) {
+		for (DriveInfo driveInfo : drivesList_obs) {
+			if (driveInfo.getDrivePath().equals(drive)) {
 				return true;
 			}
 		}
@@ -73,10 +79,10 @@ public class Drive {
 	public void createDriveInfo(String path, boolean selected) {
 		boolean found = false;
 		File file = new File(path);
-		if (!drivesList.isEmpty()) {
-			for (DriveInfo di : drivesList) {
-				if (di.getDrivePath().equals(file.toString())) {
-					di.setSelected(selected);
+		if (!drivesList_obs.isEmpty()) {
+			for (DriveInfo driveInfo : drivesList_obs) {
+				if (driveInfo.getDrivePath().equals(file.toString())) {
+					driveInfo.setSelected(selected);
 					found = true;
 					break;
 				} else {
@@ -85,13 +91,17 @@ public class Drive {
 			}
 			if (!found) {
 				Messages.sprintf("2createDriveInfo path: " + path);
-				drivesList.add(new DriveInfo(file.toString(), file.getTotalSpace(), file.exists(), selected, ""));
+				String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(path);
+//				if(driveSerialNumber == null) {
+//					Messages.errorSmth(ERROR, "Drive serial number can't be read", null, Misc.getLineNumber(), false);
+//				}
+				drivesList_obs.add(new DriveInfo(file.toString(), file.getTotalSpace(), file.exists(), selected, driveSerialNumber));
 			}
 		} else {
 			Messages.sprintf("3createDriveInfo path: " + path);
-
-			drivesList.add(new DriveInfo(file.toString(), file.getTotalSpace(), file.exists(), selected, ""));
-			Messages.sprintf("drivesList size: " + drivesList.size());
+			String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(path);
+			drivesList_obs.add(new DriveInfo(file.toString(), file.getTotalSpace(), file.exists(), selected, driveSerialNumber));
+			Messages.sprintf("drivesList size: " + drivesList_obs.size());
 
 		}
 	}

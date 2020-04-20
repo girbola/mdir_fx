@@ -43,7 +43,7 @@ public class Configuration extends Configuration_defaults {
 	private Model_main model;
 
 	private Properties prop = new Properties();
-	private final String programName = "MDir - Image and Video organizer";
+	private final String programName = "MDir - Image and Video Organizer";
 
 	public String getProgramName() {
 		return programName;

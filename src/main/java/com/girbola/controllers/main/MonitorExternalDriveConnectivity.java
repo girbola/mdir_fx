@@ -18,11 +18,11 @@ import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 
-public class MonitorConnectivity extends ScheduledService<Void> {
+public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 
 	private Model_main model_Main;
 
-	public MonitorConnectivity(Model_main model_Main) {
+	public MonitorExternalDriveConnectivity(Model_main model_Main) {
 		this.model_Main = model_Main;
 	}
 

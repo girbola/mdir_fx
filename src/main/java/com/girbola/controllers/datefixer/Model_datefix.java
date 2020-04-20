@@ -741,7 +741,7 @@ public class Model_datefix {
 
 	public void exitDateFixerWindow(GridPane gridPane, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
-		model_Main.getMonitorConnectivity().cancel();
+		model_Main.getMonitorExternalDriveConnectivity().cancel();
 		if (Main.getChanged()) {
 			Messages.sprintf("changes made");
 			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(bundle.getString("changesMade"));
@@ -751,7 +751,7 @@ public class Model_datefix {
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getMonitorConnectivity().restart();
+				model_Main.getMonitorExternalDriveConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -766,7 +766,7 @@ public class Model_datefix {
 				Messages.sprintf("No PRESSED: NO changes saved");
 
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getMonitorConnectivity().restart();
+				model_Main.getMonitorExternalDriveConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());

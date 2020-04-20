@@ -20,6 +20,8 @@ public class Configuration_GetsSets extends Configuration_GUI {
 
 	private Path appDataPath = Paths.get(System.getenv("APPDATA") + File.separator + programName);
 
+	private final String userHome = System.getProperty("user.home");
+	
 	private Path saveFolder = Paths.get(appDataPath.toString());
 	private String iniFile = appDataPath + File.separator + programName.toLowerCase() + "." + "dat";
 
@@ -126,5 +128,9 @@ public class Configuration_GetsSets extends Configuration_GUI {
 
 	public String getSelectedFolders_db_fileName() {
 		return selectedFolders_db_fileName;
+	}
+
+	public String getUserHome() {
+		return userHome;
 	}
 }

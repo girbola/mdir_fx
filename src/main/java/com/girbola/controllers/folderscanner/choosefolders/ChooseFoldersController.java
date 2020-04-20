@@ -117,7 +117,7 @@ public class ChooseFoldersController {
 
 	public void loadTreeView() {
 		sprintf("loadTreeview started: ");
-		for (Path selectedFolder : model_folderScanner.getDrivesList_selected_obs()) {
+		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			sprintf("loadTreeView is: " + selectedFolder);
 			CheckBoxTreeItem<Path> tree = createCheckBoxTreeItem(selectedFolder);
 			createTreeView(selectedFolder, tree);

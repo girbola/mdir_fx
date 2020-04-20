@@ -75,18 +75,23 @@ public class Main extends Application {
 	public final static String lang = "en";
 
 	private static AtomicBoolean processCancelled = new AtomicBoolean(false);
-
 	private static AtomicBoolean changed = new AtomicBoolean(false);
+
 	private Model_main model_main = new Model_main();
+
 	private static Stage main_stage;
+	
 	private Task<Boolean> load_FileInfosBackToTableViews = null;
+	
 	public static SceneSwitcher scene_Switcher = new SceneSwitcher();
-	private Scene scene;
+	
+	private Scene primaryScene;
 
 	@Override
-	public void start(Stage stage) throws Exception {
-		stage.setUserData(model_main);
-		Main.setMain_stage(stage);
+	public void start(Stage primaryStage) throws Exception {
+		new OshiTest().test();
+		primaryStage.setUserData(model_main);
+		Main.setMain_stage(primaryStage);
 		setChanged(false);
 		sprintf("Program starting");
 		locale = new Locale(lang, country);
@@ -97,7 +102,7 @@ public class Main extends Application {
 		Main.conf.loadConfig();
 		System.out.println("Java version: " + System.getProperty("java.version"));
 
-		Task<Void> task = new Task<Void>() {
+		Task<Void> mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
 				FXMLLoader main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
@@ -111,16 +116,15 @@ public class Main extends Application {
 					cancel();
 				}
 
-				scene = new Scene(parent);
-				scene.widthProperty().addListener(new ChangeListener<Number>() {
-
+				primaryScene = new Scene(parent);
+				primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
 							Number newValue) {
 						Messages.sprintf("Scene width changing: " + newValue);
 					}
 				});
-				scene.heightProperty().addListener(new ChangeListener<Number>() {
+				primaryScene.heightProperty().addListener(new ChangeListener<Number>() {
 
 					@Override
 					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
@@ -129,19 +133,19 @@ public class Main extends Application {
 					}
 				});
 
-				scene.getStylesheets()
+				primaryScene.getStylesheets()
 						.add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
 
 				Messages.sprintf("theme path is: " + conf.getThemePath());
 				MainController mainController = (MainController) main_loader.getController();
 				mainController.initialize(model_main);
 
-				stage.setTitle(conf.getProgramName());
+				primaryStage.setTitle(conf.getProgramName());
 //				stage.setMaxWidth(conf.getScreenBounds().getWidth());
 //				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
 				// stage.setMinWidth(600);
 				// stage.setMinHeight(600);
-				stage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
+				primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
 
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -150,32 +154,29 @@ public class Main extends Application {
 					}
 				});
 				// stage.setMaximized(true);
-				stage.setOnCloseRequest(model_main.dontExit);
+				primaryStage.setOnCloseRequest(model_main.dontExit);
 				// ScenicView.show(parent);
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
-						stage.setScene(scene);
-						stage.show();
+						primaryStage.setScene(primaryScene);
+						primaryStage.show();
 						model_main.getBottomController().initBottomWorkdirMonitors();
 					}
 				});
-
-				// stage.show();
 				return null;
 			}
-
 		};
 		LoadingProcess_Task lpt = new LoadingProcess_Task();
 
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+		mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
 			@Override
 			public void handle(WorkerStateEvent event) {
 
 				Messages.sprintf("main succeeded");
-				scene_Switcher.setWindow(stage);
-				scene_Switcher.setScene_main(scene);
+				scene_Switcher.setWindow(primaryStage);
+				scene_Switcher.setScene_main(primaryScene);
 
 				Misc.checkOS();
 				conf.loadConfig_GUI();
@@ -190,7 +191,7 @@ public class Main extends Application {
 						public void handle(WorkerStateEvent event) {
 							lpt.closeStage();
 							model_main.tables().registerTableView_obs_listener();
-							stage.setOnCloseRequest(model_main.exitProgram);
+							primaryStage.setOnCloseRequest(model_main.exitProgram);
 							try {
 								if (!load_FileInfosBackToTableViews.get()) {
 									Messages.warningText("Can't load previous session!");
@@ -200,7 +201,7 @@ public class Main extends Application {
 								e.printStackTrace();
 							}
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
-							model_main.getMonitorConnectivity().restart();
+							model_main.getMonitorExternalDriveConnectivity().restart();
 							boolean loaded = model_main.getWorkDir_Handler()
 									.loadAllLists(Paths.get(Main.conf.getWorkDir()));
 							if (loaded) {
@@ -226,7 +227,7 @@ public class Main extends Application {
 								Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
 										Misc.getLineNumber(), true);
 							}
-							stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+							primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 								@Override
 								public void handle(WindowEvent event) {
 									model_main.exitProgram_NOSAVE();
@@ -238,7 +239,7 @@ public class Main extends Application {
 					load_FileInfosBackToTableViews.setOnFailed(new EventHandler<WorkerStateEvent>() {
 						@Override
 						public void handle(WorkerStateEvent event) {
-							stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+							primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 								@Override
 								public void handle(WindowEvent event) {
 									model_main.exitProgram_NOSAVE();
@@ -255,14 +256,14 @@ public class Main extends Application {
 				}
 			}
 		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+		mainTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Main Task failed");
 				lpt.closeStage();
 			}
 		});
-		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+		mainTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Main Task cancelled");
@@ -270,7 +271,7 @@ public class Main extends Application {
 			}
 		});
 		// lp.showLoadStage();
-		Thread thread = new Thread(task, "Main Thread");
+		Thread thread = new Thread(mainTask, "Main Thread");
 		thread.start();
 	}
 
@@ -336,7 +337,7 @@ public class Main extends Application {
 	@Override
 	public void stop() throws Exception {
 		super.stop();
-		model_main.getMonitorConnectivity().cancel();
+		model_main.getMonitorExternalDriveConnectivity().cancel();
 	}
 
 }
