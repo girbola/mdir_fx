@@ -212,7 +212,6 @@ public class Main extends Application {
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 							}
-							Messages.warningText("Implement OSHI to workout with different media recognition");
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {

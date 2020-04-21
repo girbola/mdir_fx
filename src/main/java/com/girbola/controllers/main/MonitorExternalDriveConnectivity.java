@@ -13,6 +13,7 @@ import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
+import common.utils.OSHI_Utils;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -55,7 +56,6 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 			@Override
 			protected void succeeded() {
 				super.succeeded();
-//				Messages.sprintf("Succedeed check");
 			}
 
 		};
@@ -63,42 +63,55 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 
 	private void checkWorkDirConnected() {
 		if (Main.conf.getWorkDir().equals("null")) {
-			Platform.runLater(() -> {
-				Messages.sprintf("checkWorkDirConnected null");
-				Main.conf.setDrive_connected(false);
-				Main.conf.setDrive_space("");
-				Main.conf.setDrive_spaceLeft("");
-				Main.conf.setDrive_name("");
-			});
+			disConnectedDrive("checkWorkDirConnected WorkDir is null");
 			return;
 		}
-		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-			Platform.runLater(() -> {
-				Messages.sprintf("checkWorkDirConnected not connected");
-				Main.conf.setDrive_connected(false);
-				Main.conf.setDrive_space("");
-				Main.conf.setDrive_spaceLeft("");
-				Main.conf.setDrive_name("");
-			});
-		} else {
-			Platform.runLater(() -> {
-				try {
-//					Messages.sprintf("checkWorkDirConnected connected");
-					Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
-							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
-					Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
-							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
-					Main.conf.setDrive_connected(true);
-					Main.conf.setDrive_name(Main.conf.getWorkDir());
-				} catch (Exception e) {
-					Platform.runLater(() -> {
-						Messages.sprintf("checkWorkDirConnected connected ERROR");
-						Main.conf.setDrive_connected(false);
-					});
-				}
-			});
+		if (Main.conf.getWorkDir().isEmpty()) {
+			disConnectedDrive("checkWorkDirConnected WorkDir is empty");
+			return;
 		}
 
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			disConnectedDrive("checkWorkDirConnected not connected");
+		} else {
+			String testSerial = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
+			Messages.sprintf("testSerial is: " + testSerial);
+			if (Main.conf.getWorkDirSerialNumber().equals(testSerial)) {
+				driveConnected();
+			} else {
+				disConnectedDrive("checkWorkDirConnected not connected. Drive serial number has been changed since last check");
+			}
+		}
+
+	}
+
+	private void driveConnected() {
+		Platform.runLater(() -> {
+			try {
+				Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
+						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
+				Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
+						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
+				Main.conf.setDrive_connected(true);
+				Main.conf.setDrive_name(Main.conf.getWorkDir());
+			} catch (Exception e) {
+				Platform.runLater(() -> {
+					Messages.sprintf("checkWorkDirConnected connected ERROR");
+					Main.conf.setDrive_connected(false);
+				});
+			}
+		});
+
+	}
+
+	private void disConnectedDrive(String debugMessage) {
+		Platform.runLater(() -> {
+			Messages.sprintf(debugMessage);
+			Main.conf.setDrive_connected(false);
+			Main.conf.setDrive_space("");
+			Main.conf.setDrive_spaceLeft("");
+			Main.conf.setDrive_name("");
+		});
 	}
 
 	private void checkTableConnectivity(TableView<FolderInfo> table) {

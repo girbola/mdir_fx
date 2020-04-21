@@ -135,8 +135,8 @@ public class BottomController {
 					Misc.getLineNumber(), true);
 		}
 		Stage fc_stage = new Stage();
-		fc_stage.setWidth(conf.getScreenBounds().getWidth());
-		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
+//		fc_stage.setWidth(conf.getScreenBounds().getWidth());
+//		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {

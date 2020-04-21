@@ -27,6 +27,8 @@ class Configuration_GUI {
 	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
 	private BooleanProperty savingThumb = new SimpleBooleanProperty(true);
 	private SimpleStringProperty workDir = new SimpleStringProperty("null");
+	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("null");
+
 	private String themePath = ThemePath.DARK.getType();
 
 	public boolean isSavingThumb() {
@@ -88,6 +90,14 @@ class Configuration_GUI {
 
 	public StringProperty workDir_property() {
 		return this.workDir;
+	}
+
+	public void setWorkDirSerialNumber(String value) {
+		this.workDirSerialNumber.set(value);
+	}
+
+	public String getWorkDirSerialNumber() {
+		return this.workDirSerialNumber.get();
 	}
 
 	public String getWorkDir() {

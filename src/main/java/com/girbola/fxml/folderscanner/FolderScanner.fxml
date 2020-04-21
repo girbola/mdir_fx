@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
 	<children>
-		<SplitPane fx:id="splitPane_root" dividerPositions="0.5509" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<SplitPane fx:id="splitPane_root" dividerPositions="0.6140939597315436" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<items>
 				<fx:include fx:id="selectedFolders" source="SelectedFolders.fxml" />
 				<AnchorPane>
@@ -33,7 +33,7 @@
                         												<HBox alignment="CENTER">
                         													<children>
                         														<Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false" onAction="#addToSelectedFolders_btn_action" text="&lt;-" />
-                        														<Button fx:id="list" maxHeight="50.0" maxWidth="50.0" minHeight="50.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="50.0" prefWidth="50.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />
+                        														<Button fx:id="list" maxHeight="50.0" maxWidth="75.0" minHeight="30.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="30.0" prefWidth="75.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />
                         													</children>
                         												</HBox>
 											</children>

@@ -36,6 +36,7 @@ public class Configuration_SQL_Utils {
 	public static final String vlcSupport = "vlcSupport";
 	public static final String saveDataToHD = "saveDataToHD";
 	public static final String workDir = "workDir";
+	public static final String workDirSerialNumber = "workDirSerialNumber";
 
 	public static boolean createConfiguration_columns(Connection connection) {
 		try {
@@ -55,6 +56,7 @@ public class Configuration_SQL_Utils {
 		    	    + vlcPath + " STRING,"
 		    	    + vlcSupport + " BOOLEAN,"
 		    	    + saveDataToHD + " STRING, "
+		    	    + workDirSerialNumber + " STRING, "
 		    	    + workDir + " STRING)";
 			//@formatter:on
 			Statement stmt = connection.createStatement();
@@ -87,8 +89,9 @@ public class Configuration_SQL_Utils {
 				configuration.setVlcPath(rs.getString(vlcPath));
 				configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(vlcSupport)));
 				configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(saveDataToHD)));
+				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				configuration.setWorkDir(rs.getString(workDir));
-				Messages.sprintf("Workdir loaded: " + rs.getString(workDir));
+				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = " + rs.getString(workDirSerialNumber));
 				return true;
 			}
 
@@ -205,8 +208,9 @@ public class Configuration_SQL_Utils {
 				+ "'" + vlcPath + "', "
 				+ "'" + vlcSupport + "', "
 				+ "'" + saveDataToHD + "', "
+				+ "'" + workDirSerialNumber + "', "
 				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -220,8 +224,9 @@ public class Configuration_SQL_Utils {
 					pstmt.setString(8, configuration.getVlcPath());
 					pstmt.setBoolean(9, configuration.isVlcSupport());
 					pstmt.setBoolean(10, configuration.isSaveDataToHD());
-					pstmt.setString(11, configuration.getWorkDir());
-					Messages.sprintf(" configuration.getWorkDir()" + configuration.getWorkDir());
+					pstmt.setString(11, configuration.getWorkDirSerialNumber());
+					pstmt.setString(12, configuration.getWorkDir());
+					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
 					pstmt.close();
 					return true;

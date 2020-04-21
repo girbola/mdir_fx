@@ -23,6 +23,7 @@ import java.util.Properties;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -134,42 +135,6 @@ public class Configuration extends Configuration_defaults {
 
 	}
 
-	public boolean loadPropertyToMem_() throws IOException, FileNotFoundException {
-		Path path = Paths.get(getIniFile());
-		if (!Files.exists(path)) {
-			sprintf("Config file doesn't exists");
-			return true;
-		}
-		sprintf("loadconfig path: " + path);
-		prop = new Properties();
-		FileInputStream fi = new FileInputStream(path.toFile());
-		prop.load(fi);
-
-		if (prop.containsKey(WORKDIR.getType())) {
-			sprintf("com.girbola.workdir exists: " + prop.getProperty(WORKDIR.getType()));
-			if (!prop.getProperty(WORKDIR.getType()).isEmpty()) {
-				setWorkDir(prop.getProperty(WORKDIR.getType()));
-			}
-		}
-		return false;
-	}
-//
-//	private void saveTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns) {
-//		for (TableColumn tc : columns) {
-//			if (tc.getId() != null) {
-//				prop.setProperty(tc.getId(), String.valueOf(tc.getWidth()));
-//			}
-//		}
-//	}
-//
-//	private void loadTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns, Properties prop) {
-//		for (TableColumn tc : columns) {
-//			if (prop.containsKey(tc.getId())) {
-//				tc.setPrefWidth(Double.parseDouble(prop.getProperty(tc.getId())));
-//			}
-//		}
-//	}
-
 	public void setModel(Model_main model) {
 		this.model = model;
 	}
@@ -177,4 +142,7 @@ public class Configuration extends Configuration_defaults {
 	public Model_main getModel() {
 		return this.model;
 	}
+
+	
+
 }

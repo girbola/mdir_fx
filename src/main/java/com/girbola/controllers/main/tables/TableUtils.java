@@ -546,26 +546,11 @@ public class TableUtils {
 		Messages.sprintf("Can't find!: " + current);
 		return false;
 	}
-
-//	public static void updateCopiedStatus(FolderInfo folderInfo) {
-//		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//			if (fileInfo.getDestinationPath() != null) {
-//				if (!fileInfo.getDestinationPath().isEmpty()) {
-//					if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
-//						fileInfo.setCopied(false);
-//					}
-//				}
-//			}
-//			updateFolderInfos_FileInfo(folderInfo);
-//		}
-//
-//	}
-
+	
 	public static boolean hasDuplicates(FolderInfo folderInfo, TableView<FolderInfo> table) {
 		if (table.getItems().isEmpty()) {
 			return false;
 		}
-		Messages.sprintf("Has duplicated test");
 		Iterator<FolderInfo> it = table.getItems().iterator();
 		while (it.hasNext()) {
 			if (it.next().getFolderPath().equals(folderInfo.getFolderPath())) {
