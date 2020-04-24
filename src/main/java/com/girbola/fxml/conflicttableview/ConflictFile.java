@@ -10,19 +10,22 @@ public class ConflictFile {
 	private SimpleStringProperty folderName;
 	private SimpleStringProperty destination;
 	private SimpleStringProperty workDir;
+	private SimpleStringProperty workDirSerial;
 	private SimpleBooleanProperty canCopy;
 	private FileInfo fileInfo;
 
-	public FileInfo getFileInfo() {
-		return fileInfo;
-	}
-
-	public ConflictFile(FileInfo fileInfo, String folderName, String destination, String workDir, boolean canCopy) {
+	public ConflictFile(FileInfo fileInfo, String folderName, String destination, String workDir, String aWorkDirSerial,
+			boolean canCopy) {
 		this.fileInfo = fileInfo;
 		this.folderName = new SimpleStringProperty(folderName);
 		this.destination = new SimpleStringProperty(destination);
 		this.workDir = new SimpleStringProperty(workDir);
+		this.workDirSerial = new SimpleStringProperty(aWorkDirSerial);
 		this.canCopy = new SimpleBooleanProperty(canCopy);
+	}
+
+	public FileInfo getFileInfo() {
+		return fileInfo;
 	}
 
 	public SimpleStringProperty folderName_property() {
@@ -47,6 +50,10 @@ public class ConflictFile {
 
 	public void setDestination(SimpleStringProperty destination) {
 		this.destination = destination;
+	}
+
+	public String getWorkDirSerial() {
+		return workDirSerial.get();
 	}
 
 	public SimpleStringProperty workDir_property() {

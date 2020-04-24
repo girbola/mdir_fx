@@ -224,16 +224,16 @@ public class DateFixerController {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		
 
 	}
+
 	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		if(!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			warningText(Main.bundle.getString("workDirHasNotConnected"));
 			return;
 		}
@@ -249,6 +249,7 @@ public class DateFixerController {
 				if (dest != null) {
 					Messages.sprintf("blaaadestination is: " + dest);
 					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(dest.toString());
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
@@ -434,18 +435,18 @@ public class DateFixerController {
 		}
 	}
 
-	private void addToMiscFolder(FileInfo fileInfo) {
-		LocalDate ldl = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		fileInfo.setWorkDir(Main.conf.getWorkDir());
-		fileInfo.setDestination_Path(File.separator + ldl.getYear() + File.separator
-				+ Conversion.formatStringTwoDigits(ldl.getMonthValue()) + File.separator + fileName + "."
-				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-
-		ldl = null;
-
-	}
+//	private void addToMiscFolder(FileInfo fileInfo) {
+//		LocalDate ldl = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+//		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+//				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+//		fileInfo.setWorkDir(Main.conf.getWorkDir());
+//		fileInfo.setDestination_Path(File.separator + ldl.getYear() + File.separator
+//				+ Conversion.formatStringTwoDigits(ldl.getMonthValue()) + File.separator + fileName + "."
+//				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+//
+//		ldl = null;
+//
+//	}
 
 	@FXML
 
@@ -1165,6 +1166,7 @@ public class DateFixerController {
 			infoTables_visible.set(true);
 		}
 	}
+	
 
 	@FXML
 	private void copyToMisc_btn_action(ActionEvent event) {
@@ -1184,6 +1186,7 @@ public class DateFixerController {
 				if (dest != null && Main.conf.getDrive_connected()) {
 					Messages.sprintf("blaaadestination is: " + dest);
 					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(dest.toString());
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);

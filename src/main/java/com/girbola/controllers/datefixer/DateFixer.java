@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.Model_main;
@@ -113,7 +114,7 @@ public class DateFixer extends Task<Void> {
 
 			sprintf("conf.getThemePath(): " + conf.getThemePath());
 			scene_dateFixer.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + "dateFixer.css").toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
 
 			Platform.runLater(() -> {
 				Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);

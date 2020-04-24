@@ -58,7 +58,6 @@ public class Model_main {
 	private VBox main_vbox;
 	private Buttons buttons;
 	private Populate populate;
-	private Menu menu;
 	private Scene scene;
 	private SelectedFolderScanner selectedFolders;
 	private TablePositionHolder tablePositionHolder;
@@ -71,8 +70,6 @@ public class Model_main {
 		tables = new Tables(this);
 
 		buttons = new Buttons(this);
-
-		menu = new Menu(this);
 
 		selectedFolders = new SelectedFolderScanner();
 
@@ -103,14 +100,6 @@ public class Model_main {
 	public Buttons buttons() {
 		return this.buttons;
 	}
-
-	public Menu menu() {
-		return this.menu;
-	}
-	//
-	// public Tables tables() {
-	// return this.tables;
-	// }
 
 	void setMainContainer(AnchorPane main_container) {
 		this.main_container = main_container;
@@ -183,10 +172,12 @@ public class Model_main {
 		for (FolderInfo folderInfo : items) {
 			folderInfo.setTableType(tableType);
 			try {
-				SQL_Utils.addToFolderInfoDB(connection, folderInfo); // Adds FolderInfo into database folderInfo.db.
-																		// FolderPath, TableType and Connection status
-																		// when this was saved
-				// Connects to current folder for existing or creates new one called fileinfo.db
+				SQL_Utils.addToFolderInfoDB(connection, folderInfo);
+				/*
+				 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
+				 * Connection status when this was saved Connects to current folder for existing
+				 * or creates new one called fileinfo.db
+				 */
 				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
 				// Inserts all data info fileinfo.db

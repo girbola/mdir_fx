@@ -29,7 +29,7 @@ import javafx.collections.ObservableList;
 
 public class SQL_Utils {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();
-	
+
 	//@formatter:off
 	final static String thumbInfoInsert = "INSERT OR REPLACE INTO "
 	+ SQL_Enums.THUMBINFO.getType()
@@ -86,6 +86,7 @@ public class SQL_Utils {
 			+ "'fileInfo_id', "
 			+ "'orgPath', "
 			+ "'workDir', "
+			+ "'workDirDriveSerialNumber', "
 			+ "'destination_Path', "
 			+ "'camera_model', "
 			+ "'user', "
@@ -108,7 +109,7 @@ public class SQL_Utils {
 			+ "'location', "
 			+ "'thumb_offset', "
 			+ "'thumb_length')"
-			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
@@ -141,6 +142,7 @@ public class SQL_Utils {
 		String sql = " (fileInfo_id  INTEGER PRIMARY KEY,"
 				+ "orgPath STRING UNIQUE,"
 				+ "workDir STRING,"
+				+ "workDirDriveSerialNumber STRING,"
 				+ "destination_Path STRING,"
 				+ "event           STRING,"
 				+ "location        STRING,"
@@ -645,9 +647,8 @@ public class SQL_Utils {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-		
 				FileInfo finfo = loadFileInfo(rs);
-						list.add(finfo);
+				list.add(finfo);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -658,6 +659,7 @@ public class SQL_Utils {
 	public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
 		String orgPath = rs.getString("orgPath");
 		String workDir = rs.getString("workDir");
+		String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
 		String destPath = rs.getString("destination_Path");
 		String event = rs.getString("event");
 		String location = rs.getString("location");
@@ -681,7 +683,7 @@ public class SQL_Utils {
 		long size = rs.getLong("size");
 		int thumb_offset = rs.getInt("thumb_offset");
 		int thumb_lenght = rs.getInt("thumb_length");
-		FileInfo finfo = new FileInfo(orgPath, workDir, destPath, event, location, tags, camera_model, user, orientation, timeShift,
+		FileInfo finfo = new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift,
 				fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date,
 				size, thumb_offset, thumb_lenght);
 		return finfo;
@@ -911,28 +913,29 @@ public class SQL_Utils {
 			pstmt.setInt(1, fileInfo.getFileInfo_id());
 			pstmt.setString(2, fileInfo.getOrgPath());
 			pstmt.setString(3, fileInfo.getWorkDir());
-			pstmt.setString(4, fileInfo.getDestination_Path());
-			pstmt.setString(5, fileInfo.getCamera_model());
-			pstmt.setString(6, fileInfo.getUser());
-			pstmt.setInt(7, fileInfo.getOrientation());
-			pstmt.setBoolean(8, fileInfo.isBad());
-			pstmt.setBoolean(9, fileInfo.isGood());
-			pstmt.setBoolean(10, fileInfo.isConfirmed());
-			pstmt.setBoolean(11, fileInfo.isCopied());
-			pstmt.setBoolean(12, fileInfo.isIgnored());
-			pstmt.setBoolean(13, fileInfo.isSuggested());
-			pstmt.setBoolean(14, fileInfo.isImage());
-			pstmt.setBoolean(15, fileInfo.isRaw());
-			pstmt.setBoolean(16, fileInfo.isVideo());
-			pstmt.setLong(17, fileInfo.getTimeShift());
-			pstmt.setLong(18, fileInfo.getDate());
-			pstmt.setLong(19, fileInfo.getSize());
-			pstmt.setBoolean(20, fileInfo.isTableDuplicated());
-			pstmt.setString(21, fileInfo.getTags());
-			pstmt.setString(22, fileInfo.getEvent());
-			pstmt.setString(23, fileInfo.getLocation());
-			pstmt.setInt(24, fileInfo.getThumb_offset());
-			pstmt.setInt(25, fileInfo.getThumb_length());
+			pstmt.setString(4, fileInfo.getWorkDirDriveSerialNumber());
+			pstmt.setString(5, fileInfo.getDestination_Path());
+			pstmt.setString(6, fileInfo.getCamera_model());
+			pstmt.setString(7, fileInfo.getUser());
+			pstmt.setInt(8, fileInfo.getOrientation());
+			pstmt.setBoolean(9, fileInfo.isBad());
+			pstmt.setBoolean(10, fileInfo.isGood());
+			pstmt.setBoolean(11, fileInfo.isConfirmed());
+			pstmt.setBoolean(12, fileInfo.isCopied());
+			pstmt.setBoolean(13, fileInfo.isIgnored());
+			pstmt.setBoolean(14, fileInfo.isSuggested());
+			pstmt.setBoolean(15, fileInfo.isImage());
+			pstmt.setBoolean(16, fileInfo.isRaw());
+			pstmt.setBoolean(17, fileInfo.isVideo());
+			pstmt.setLong(18, fileInfo.getTimeShift());
+			pstmt.setLong(19, fileInfo.getDate());
+			pstmt.setLong(20, fileInfo.getSize());
+			pstmt.setBoolean(21, fileInfo.isTableDuplicated());
+			pstmt.setString(22, fileInfo.getTags());
+			pstmt.setString(23, fileInfo.getEvent());
+			pstmt.setString(24, fileInfo.getLocation());
+			pstmt.setInt(25, fileInfo.getThumb_offset());
+			pstmt.setInt(26, fileInfo.getThumb_length());
 			pstmt.addBatch();
 			return true;
 		} catch (Exception e) {
@@ -995,7 +998,7 @@ public class SQL_Utils {
 						TableUtils.updateFolderInfos_FileInfo(folderInfo);
 						return folderInfo;
 					} else {
-						Messages.sprintf("List were emptyyyyy");
+						Messages.sprintf("loadFolderInfo List were emptyyyyy");
 						folderInfo.setConnected(false);
 					}
 				} else {
@@ -1184,9 +1187,9 @@ public class SQL_Utils {
 		}
 
 	}
-	public static void insertToFolderInfoDB(Connection connection, ObservableList<FolderInfo> table_row_list) {
-		
-	}
 
+	public static void insertToFolderInfoDB(Connection connection, ObservableList<FolderInfo> table_row_list) {
+
+	}
 
 }

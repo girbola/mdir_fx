@@ -9,17 +9,22 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.DateFixer;
+import com.girbola.Scene_NameType;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.conflicttableview.ConflictFile;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
+import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -30,64 +35,83 @@ public class CopyBatch {
 
 	private Model_main model_Main;
 
+	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
+	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
+	private ObservableList<FileInfo> okFiles_list =FXCollections.observableArrayList();
+	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
+
 	public CopyBatch(Model_main model_Main) {
 		this.model_Main = model_Main;
 	}
 
-	List<FileInfo> conflictWithWorkdir_list = new ArrayList<>();
-	List<FileInfo> cantCopy_list = new ArrayList<>();
-	List<FileInfo> okFiles_list = new ArrayList<>();
-	ObservableList<ConflictFile> list = FXCollections.observableArrayList();
-
 	private void showConflictFileInfos() {
 		Messages.sprintf("showConflictFileInfos: ");
 		for (FileInfo fileInfo : conflictWithWorkdir_list) {
-			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
-					fileInfo.getWorkDir(), true);
-			list.add(cf);
+			conflictWithWorkdir_list.add(fileInfo);
 		}
-//		boolean userChoise = DialogShow(conflictWithWorkdir_list);
-//		if (userChoise) {
-//			// Do something
-//		} else {
-//			// Do something
-//		}
-
-	}
-
-	private boolean DialogShow(List<FileInfo> conflictWithWorkdir2) {
-		return false;
 	}
 
 	private void showCantCopyFileInfos() {
 		Messages.sprintf("showCantCopyFileInfos: ");
 		for (FileInfo fileInfo : cantCopy_list) {
-			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
-					fileInfo.getWorkDir(), false);
-			list.add(cf);
+			cantCopy_list.add(fileInfo);
 		}
 	}
 
-	private void showOkFileInfos() {
-		Messages.sprintf("showOkFileInfos: ");
-		for (FileInfo fileInfo : okFiles_list) {
-			ConflictFile cf = new ConflictFile(fileInfo, fileInfo.getOrgPath(), fileInfo.getDestination_Path(),
-					fileInfo.getWorkDir(), true);
-			list.add(cf);
-		}
-	}
+
+//	private void handleOKFiles(TableView<FolderInfo> table) {
+//		for (FolderInfo folderInfo : table.getItems()) {
+//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+//				if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
+//
+//				}
+//			}
+//		}
+//	}
 
 	public void start() {
 		handleTable(model_Main.tables().getSorted_table());
 		handleTable(model_Main.tables().getSortIt_table());
-		showCantCopyFileInfos();
-		showConflictFileInfos();
-		showOkFileInfos();
-		showConflictTable();
+		if (!conflictWithWorkdir_list.isEmpty()) {
+//			showConflictFileInfos();
+			showConflictTable(conflictWithWorkdir_list);
+		}
+//		showCantCopyFileInfos();
+
+//		showOkFileInfos();
+
+		if (!list.isEmpty()) {
+//			showConflictTable();
+		} else {
+
+			Task<Boolean> task = new OperateFiles(list, true, model_Main, Scene_NameType.MAIN.getType());
+			task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("ConflictTable copy cancelled");
+				}
+			});
+			task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("ConflictTable copy failed");
+				}
+			});
+			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("ConflictTable copy Succeeded");
+				}
+			});
+			new Thread(task).start();
+		}
 	}
 
-	public void showConflictTable() {
-		// FXMLLoader fxml
+	public void showConflictTable(ObservableList<FileInfo> list) {
+		
 		try {
 			Parent parent = null;
 			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"),
@@ -95,15 +119,15 @@ public class CopyBatch {
 			try {
 				parent = loader.load();
 			} catch (IOException ex) {
-				Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(CopyBatch.class.getName()).log(Level.SEVERE, null, ex);
 			}
 
 			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
 					.getController();
 			conflictTableViewController.init(model_Main, list);
 			Scene scene_conflictTableView = new Scene(parent);
-			scene_conflictTableView.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
+			scene_conflictTableView.getStylesheets().add(
+					Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
 
 			Stage window = new Stage();
 			window.setScene(scene_conflictTableView);

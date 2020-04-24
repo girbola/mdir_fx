@@ -354,9 +354,7 @@ public class FileInfo_Utils {
 		return false;
 	}
 
-	// public static void copyFileInfoToAnotherLocation(FileInfo fileInfo) {
-	//
-	// }
+	
 	public static Path renameFileToDate(Path path, FileInfo fileInfo) {
 		// C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 

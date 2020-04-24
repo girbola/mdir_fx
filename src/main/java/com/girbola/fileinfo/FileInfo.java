@@ -13,28 +13,14 @@ import java.time.LocalDateTime;
  * @author Marko Lokka
  */
 public class FileInfo extends Metadata {
-
-	private String orgPath;
-	private String destination_Path;
-	private String workDir;
-
+	private final int fileInfo_version = 2;
 	/**
 	 * FileInfo version 1 ================== fileInfo_version number created
 	 * fileName changed from thumbfile.xml to fileinfo.dat
 	 * 
+	 * FileInfo version 2 ==================
+	 * workDirDriveSerialNumber added
 	 */
-	private final int fileInfo_version = 2;
-
-	private String event;
-	private String location;
-	private String tags;
-	// private ArrayList<byte[]> thumbs = new ArrayList<>();
-
-	// private ThumbInfo thumbInfo;
-
-	private int fileInfo_id;
-
-	private String camera_model;
 	private boolean bad;
 	private boolean confirmed;
 	private boolean copied;
@@ -43,10 +29,36 @@ public class FileInfo extends Metadata {
 	private boolean image;
 	private boolean raw;
 	private boolean suggested;
+	private boolean tableDuplicated;
 	private boolean video;
-	// private byte[] thumb;
+	
+	private int fileInfo_id;
 	private int orientation;
 	private int thumb_length;
+	private int thumb_offset;
+	private LocalDateTime localDateTime;
+	private long date;
+	private long size;
+	private long timeShift;
+	private String camera_model;
+	private String destination_Path;
+	private String event;
+	private String location;
+	private String orgPath;
+	private String tags;
+	private String user;
+	private String workDir;
+	private String workDirDriveSerialNumber;
+
+	public String getWorkDirDriveSerialNumber() {
+		return workDirDriveSerialNumber;
+	}
+
+	public void setWorkDirDriveSerialNumber(String workDirSerial) {
+		this.workDirDriveSerialNumber = workDirSerial;
+	}
+
+	
 	public LocalDateTime getLocalDateTime() {
 		return localDateTime;
 	}
@@ -55,14 +67,7 @@ public class FileInfo extends Metadata {
 		this.localDateTime = localDateTime;
 	}
 
-	private long timeShift;
-	private long date;
-	private long size;
-	private boolean tableDuplicated;
-	private String user;
 
-	private LocalDateTime localDateTime;
-	
 	@Override
 	public String toString() {
 		return this.orgPath;
@@ -74,14 +79,14 @@ public class FileInfo extends Metadata {
 	 * @see java.lang.Object#toString()
 	 */
 	public String showAllValues() {
-		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", destination_Path=" + destination_Path
-				+ ", fileInfo_version=" + fileInfo_version + ", event=" + event + ", location=" + location + ", tags="
-				+ tags + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad
-				+ ", confirmed=" + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored
-				+ ", image=" + image + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video
-				+ ", orientation=" + orientation + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift
-				+ ", date=" + date + ", size=" + size + ", tableDuplicated=" + tableDuplicated + ", thumb_offset="
-				+ thumb_offset + " user " + user + "]";
+		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", workDirDriveSerialNumber="
+				+ workDirDriveSerialNumber + ", destination_Path=" + destination_Path + ", fileInfo_version="
+				+ fileInfo_version + ", event=" + event + ", location=" + location + ", tags=" + tags
+				+ ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad + ", confirmed="
+				+ confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored + ", image=" + image
+				+ ", raw=" + raw + ", suggested=" + suggested + ", video=" + video + ", orientation=" + orientation
+				+ ", thumb_length=" + thumb_length + ", timeShift=" + timeShift + ", date=" + date + ", size=" + size
+				+ ", tableDuplicated=" + tableDuplicated + ", thumb_offset=" + thumb_offset + " user " + user + "]";
 	}
 
 	/**
@@ -120,8 +125,8 @@ public class FileInfo extends Metadata {
 	 *
 	 */
 	public FileInfo() {
-		this(null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false, false,
-				false, false, false, 0, 0, 0, 0);
+		this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
+				false, false, false, false, 0, 0, 0, 0);
 	}
 
 	/**
@@ -151,13 +156,14 @@ public class FileInfo extends Metadata {
 	 * @param aThumb_offset
 	 * @param aThumb_length
 	 */
-	public FileInfo(String aOrgPath, String aWorkDir, String aDestinationStructure, String aEvent, String aLocation,
-			String aTags, String aCamera_model, String user, int aOrientation, long aTimeShift, int aFileInfo_id,
-			boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed, boolean aImage, boolean aRaw,
-			boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated, long aDate, long aSize,
-			int aThumb_offset, int aThumb_length) {
+	public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
+			String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
+			long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
+			boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
+			long aDate, long aSize, int aThumb_offset, int aThumb_length) {
 		this.orgPath = aOrgPath;
 		this.workDir = aWorkDir;
+		this.workDirDriveSerialNumber = aWorkDirDriveSerialNumber;
 		this.destination_Path = aDestinationStructure;
 		this.event = aEvent;
 		this.location = aLocation;
@@ -242,16 +248,6 @@ public class FileInfo extends Metadata {
 	public void setCamera_model(String camera_model) {
 		this.camera_model = camera_model;
 	}
-
-	// public byte[] getThumb() {
-	// return this.thumb;
-	// }
-	//
-	// public void setThumb(byte[] thumb) {
-	// this.thumb = thumb;
-	// }
-
-	private int thumb_offset;
 
 	public int getThumb_offset() {
 		return this.thumb_offset;

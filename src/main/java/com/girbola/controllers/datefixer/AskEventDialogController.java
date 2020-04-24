@@ -99,6 +99,7 @@ public class AskEventDialogController {
 						+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
 					fileInfo.setWorkDir(workDir);
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(destPath.toString());
 					fileInfo.setCopied(false);
 					Main.setChanged(true);

@@ -82,7 +82,6 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 				disConnectedDrive("checkWorkDirConnected not connected. Drive serial number has been changed since last check");
 			}
 		}
-
 	}
 
 	private void driveConnected() {
