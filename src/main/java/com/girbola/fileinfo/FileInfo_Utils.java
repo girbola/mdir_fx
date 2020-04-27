@@ -354,7 +354,6 @@ public class FileInfo_Utils {
 		return false;
 	}
 
-	
 	public static Path renameFileToDate(Path path, FileInfo fileInfo) {
 		// C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 
@@ -371,8 +370,8 @@ public class FileInfo_Utils {
 	/**
 	 * Returns 0 if good 
 	 * Returns 1 if conflict with workdir 
-	 * Returns 2 if copying is not possible
-	 * 
+	 * Returns 2 if copying is not possible because fileinfo workDir is null OR drive is not connected
+	 *  Returns 3 
 	 * @param fileInfo
 	 * @return
 	 */
@@ -380,9 +379,9 @@ public class FileInfo_Utils {
 	public static int checkWorkDir(FileInfo fileInfo) {
 		if (Main.conf.getDrive_connected()) {
 			if (!fileInfo.getWorkDir().equals("null")) {
-				if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir()) || Main.conf.getWorkDir().contains(fileInfo.getWorkDir()) ) {
-					if (Files.exists(Paths.get(fileInfo.getWorkDir()))
-							&& Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+				if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir())
+						&& Main.conf.getWorkDirSerialNumber().equals(fileInfo.getWorkDirDriveSerialNumber())) {
+					if (Files.exists(Paths.get(fileInfo.getWorkDir()))) {
 						return 0;
 					} else {
 						return 2;

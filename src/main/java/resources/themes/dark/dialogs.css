@@ -96,7 +96,7 @@ Custom styleclasses
     -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 10.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 30.0%));
 }
 .alertDiag > *.label.content{    
-    -fx-text-fill: -fx-text-color;
+    -fx-text-fill: #ffffff;
 }
 .alertDiag:header *.header-panel *.label{
     -fx-font-size: 12.0px;

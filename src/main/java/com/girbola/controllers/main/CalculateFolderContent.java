@@ -105,7 +105,7 @@ public class CalculateFolderContent extends
 		TableUtils.refreshTableContent(model.tables().getAsItIs_table());
 
 	}
-
+	
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
 		Path fileInfo_databaseFilePath = Paths.get(folderInfo.getFolderPath() + File.separator + conf.getFileInfo_db_fileName());
 		Messages.sprintf("sortit thumbFilePath is: " + fileInfo_databaseFilePath);
@@ -117,7 +117,7 @@ public class CalculateFolderContent extends
 						Main.conf.getFolderInfo_db_fileName());
 				//XMLFunctions.loadXMLData(thumbFilePath);
 				if (loaded_FolderInfo == null) {
-					Messages.sprintf("loaded_FolderInfo were null!");
+					Messages.sprintf("loaded_FolderInfo were null at: " + fileInfo_databaseFilePath + " Creating new one");
 					List<FileInfo> li = createFileInfo_list(folderInfo);
 					loaded_FolderInfo = new FolderInfo(fileInfo_databaseFilePath.getParent());
 					folderInfo.setFileInfoList(li);

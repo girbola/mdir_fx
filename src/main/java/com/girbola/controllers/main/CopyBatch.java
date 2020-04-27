@@ -158,7 +158,14 @@ public class CopyBatch {
 						cantCopy_list.add(fileInfo);
 						Messages.sprintf(
 								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else {
+					}else if (status == 3) {
+						// Workdir is not connected
+//						Messages.errorSmth(className, message, exception, line, exit);
+//						cantCopy_list.add(fileInfo);
+						Messages.sprintf(
+								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
+					}  
+					else {
 						Messages.sprintf("something else?!?!?!: " + fileInfo.getDestination_Path() + " isCopied? "
 								+ fileInfo.isCopied());
 					}

@@ -25,6 +25,7 @@ import javafx.scene.control.TableView;
 public class Configuration_SQL_Utils {
 
 	private static final String ERROR = Configuration_SQL_Utils.class.getName();
+	public static final String id = "id";
 	public static final String betterQualityThumbs = "betterQualityThumbs";
 	public static final String confirmOnExit = "confirmOnExit";
 	public static final String id_counter = "id_counter";
@@ -46,7 +47,8 @@ public class Configuration_SQL_Utils {
 			}
 			//@formatter:off
 			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.CONFIGURATION.getType()+ " ("
-		        	+ betterQualityThumbs + " BOOLEAN, "
+					+ id + " INTEGER PRIMARY KEY CHECK (id = 0),"
+					+ betterQualityThumbs + " BOOLEAN, "
 		        	+ confirmOnExit + " BOOLEAN,"
 		    	    + id_counter + " INTEGER UNIQUE,"
 		    	    + showFullPath + " BOOLEAN,"
@@ -56,8 +58,8 @@ public class Configuration_SQL_Utils {
 		    	    + vlcPath + " STRING,"
 		    	    + vlcSupport + " BOOLEAN,"
 		    	    + saveDataToHD + " STRING, "
-		    	    + workDirSerialNumber + " STRING, "
-		    	    + workDir + " STRING)";
+		    	    + workDirSerialNumber + " STRING UNIQUE NOT NULL, "
+		    	    + workDir + " STRING NOT NULL)";
 			//@formatter:on
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
@@ -72,6 +74,7 @@ public class Configuration_SQL_Utils {
 	final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType()
 			+ " (path STRING UNIQUE)";
 
+	private static int configuration_id = 0;
 	public static boolean loadConfiguration(Connection connection, Configuration configuration) {
 		String sql = "SELECT * FROM " + SQL_Enums.CONFIGURATION.getType();
 		try {
@@ -79,6 +82,7 @@ public class Configuration_SQL_Utils {
 			pstmt.executeQuery();
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
+				configuration_id = (Integer.parseInt(rs.getString(id)));
 				configuration.setBetterQualityThumbs(Boolean.parseBoolean(rs.getString(betterQualityThumbs)));
 				configuration.setConfirmOnExit(Boolean.parseBoolean(rs.getString(confirmOnExit)));
 				configuration.setId_counter(Integer.parseInt(rs.getString(id_counter)));
@@ -91,7 +95,8 @@ public class Configuration_SQL_Utils {
 				configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(saveDataToHD)));
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				configuration.setWorkDir(rs.getString(workDir));
-				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = " + rs.getString(workDirSerialNumber));
+				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
+						+ rs.getString(workDirSerialNumber));
 				return true;
 			}
 
@@ -198,7 +203,8 @@ public class Configuration_SQL_Utils {
 				//@formatter:off
 				String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
 				+ " "
-				+ "('" + betterQualityThumbs + "',"
+				+ "('" + id + "', " 
+				+ "'" + betterQualityThumbs + "',"
 				+ "'" + confirmOnExit + "', " 
 				+ "'" + id_counter + "', " 
 				+ "'" + showFullPath + "', " 
@@ -210,22 +216,23 @@ public class Configuration_SQL_Utils {
 				+ "'" + saveDataToHD + "', "
 				+ "'" + workDirSerialNumber + "', "
 				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
-					pstmt.setBoolean(1, configuration.isBetterQualityThumbs());
-					pstmt.setBoolean(2, configuration.isConfirmOnExit());
-					pstmt.setInt(3, configuration.getId_counter().get());
-					pstmt.setBoolean(4, configuration.isShowFullPath());
-					pstmt.setBoolean(5, configuration.isShowHints());
-					pstmt.setBoolean(6, configuration.isShowTooltips());
-					pstmt.setString(7, configuration.getThemePath());
-					pstmt.setString(8, configuration.getVlcPath());
-					pstmt.setBoolean(9, configuration.isVlcSupport());
-					pstmt.setBoolean(10, configuration.isSaveDataToHD());
-					pstmt.setString(11, configuration.getWorkDirSerialNumber());
-					pstmt.setString(12, configuration.getWorkDir());
+					pstmt.setInt(1, configuration_id);
+					pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
+					pstmt.setBoolean(3, configuration.isConfirmOnExit());
+					pstmt.setInt(4, configuration.getId_counter().get());
+					pstmt.setBoolean(5, configuration.isShowFullPath());
+					pstmt.setBoolean(6, configuration.isShowHints());
+					pstmt.setBoolean(7, configuration.isShowTooltips());
+					pstmt.setString(8, configuration.getThemePath());
+					pstmt.setString(9, configuration.getVlcPath());
+					pstmt.setBoolean(10, configuration.isVlcSupport());
+					pstmt.setBoolean(11, configuration.isSaveDataToHD());
+					pstmt.setString(12, configuration.getWorkDirSerialNumber());
+					pstmt.setString(13, configuration.getWorkDir());
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
 					pstmt.close();
@@ -242,43 +249,43 @@ public class Configuration_SQL_Utils {
 		}
 	}
 
-	public static boolean set_WorkDirToConfig(Connection connection, String workDir) {
-		if (SQL_Utils.isDbConnected(connection)) {
-			Messages.sprintf("insertAllProgram_config connection were connected");
-			try {
-				String sql = "INSERT OR UPDATE INTO " + SQL_Enums.CONFIG.getType() + "('workdir')" + " VALUES(?)";
+//	public static boolean set_WorkDirToConfig(Connection connection, String workDir) {
+//		if (SQL_Utils.isDbConnected(connection)) {
+//			Messages.sprintf("insertAllProgram_config connection were connected");
+//			try {
+//				String sql = "INSERT OR UPDATE INTO " + SQL_Enums.CONFIG.getType() + "('workdir')" + " VALUES(?)";
+//
+//				PreparedStatement pstmt = connection.prepareStatement(sql);
+//				pstmt.setString(1, workDir);
+//				pstmt.executeUpdate();
+//				pstmt.close();
+//				return true;
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				return false;
+//			}
+//		}
+//		return false;
+//	}
 
-				PreparedStatement pstmt = connection.prepareStatement(sql);
-				pstmt.setString(1, workDir);
-				pstmt.executeUpdate();
-				pstmt.close();
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-		}
-		return false;
-	}
-
-	public static boolean set_VLCPathToConfig(Connection connection, String vlcpath) {
-		if (SQL_Utils.isDbConnected(connection)) {
-			Messages.sprintf("insertAllProgram_config connection were connected");
-			try {
-				String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIG.getType() + "('vlcpath')" + " VALUES(?)";
-
-				PreparedStatement pstmt = connection.prepareStatement(sql);
-				pstmt.setString(1, vlcpath);
-				pstmt.executeUpdate();
-				pstmt.close();
-				return true;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-		}
-		return false;
-	}
+//	public static boolean set_VLCPathToConfig(Connection connection, String vlcpath) {
+//		if (SQL_Utils.isDbConnected(connection)) {
+//			Messages.sprintf("insertAllProgram_config connection were connected");
+//			try {
+//				String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIG.getType() + "('vlcpath')" + " VALUES(?)";
+//
+//				PreparedStatement pstmt = connection.prepareStatement(sql);
+//				pstmt.setString(1, vlcpath);
+//				pstmt.executeUpdate();
+//				pstmt.close();
+//				return true;
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//				return false;
+//			}
+//		}
+//		return false;
+//	}
 
 	/**
 	 * Creates configuration table
@@ -419,6 +426,13 @@ public class Configuration_SQL_Utils {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 	insert_Configuration(connection, Main.conf);
+
+	try {
+		connection.close();
+	} catch (Exception e) {
+		System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());
+		e.printStackTrace();
+	}
 	}
 
 	public static void saveConfig(String columnToUpdate, String attribute) {

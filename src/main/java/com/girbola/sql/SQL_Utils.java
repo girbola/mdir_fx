@@ -972,7 +972,7 @@ public class SQL_Utils {
 
 	public static FolderInfo loadFolderInfo(Path path, String table, String value) {
 		Messages.sprintf("loadFolderInfo; " + path);
-		FolderInfo folderInfo = null;
+		FolderInfo folderInfo = new FolderInfo();
 		try {
 			Connection connection = SqliteConnection.connector(path, Main.conf.getFolderInfo_db_fileName());
 			if (!SqliteConnection.tableExists(connection, Main.conf.getFolderInfo_db_fileName())) {

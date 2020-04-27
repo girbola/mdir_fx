@@ -39,7 +39,7 @@ public class SqliteConnection {
 			rs.last();
 			return rs.getRow() > 0;
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+//			ex.printStackTrace();
 			return false;
 		}
 	}

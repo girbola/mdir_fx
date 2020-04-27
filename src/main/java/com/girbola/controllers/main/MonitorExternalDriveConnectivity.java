@@ -74,9 +74,9 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
 			disConnectedDrive("checkWorkDirConnected not connected");
 		} else {
-			String testSerial = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
-			Messages.sprintf("testSerial is: " + testSerial);
-			if (Main.conf.getWorkDirSerialNumber().equals(testSerial)) {
+			String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
+			Messages.sprintf("testSerial is: " + driveSerialNumber);
+			if (Main.conf.getWorkDirSerialNumber().equals(driveSerialNumber)) {
 				driveConnected();
 			} else {
 				disConnectedDrive("checkWorkDirConnected not connected. Drive serial number has been changed since last check");
@@ -85,6 +85,10 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 	}
 
 	private void driveConnected() {
+		/*
+		 * Shows connected workdir drive's state
+		 * 
+		 */
 		Platform.runLater(() -> {
 			try {
 				Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
@@ -95,7 +99,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 				Main.conf.setDrive_name(Main.conf.getWorkDir());
 			} catch (Exception e) {
 				Platform.runLater(() -> {
-					Messages.sprintf("checkWorkDirConnected connected ERROR");
+					Messages.sprintf("driveConnected connected ERROR");
 					Main.conf.setDrive_connected(false);
 				});
 			}

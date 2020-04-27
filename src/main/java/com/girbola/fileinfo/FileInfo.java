@@ -118,6 +118,8 @@ public class FileInfo extends Metadata {
 		this.thumb_offset = 0;
 		this.thumb_length = 0;
 		this.user = "";
+		this.workDir = "";
+		this.workDirDriveSerialNumber = "";
 		// this.thumbInfo = new ThumbInfo(orgPath, fileInfo_id);
 	}
 

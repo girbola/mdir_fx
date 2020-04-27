@@ -212,6 +212,10 @@ public class Main extends Application {
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 							}
+//							Messages.errorSmth(ERROR, "Test1",null, Misc.getLineNumber(), false);
+//							Messages.errorSmth(ERROR, "Test2",null, Misc.getLineNumber(), true);
+//							Messages.errorSmth(ERROR, "Test23",null, Misc.getLineNumber(), false);
+							
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {
