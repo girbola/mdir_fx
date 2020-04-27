@@ -14,7 +14,7 @@ public class OSHI_Utils {
 		for (HWDiskStore disk : hal.getDiskStores()) {
 			for (HWPartition part : disk.getPartitions()) {
 				if (part.getMountPoint().equals(path)) {
-					Messages.sprintf("Disk serial is: " + disk.getSerial());
+//					Messages.sprintf("Disk serial is: " + disk.getSerial());
 					return disk.getSerial();
 				}
 			}

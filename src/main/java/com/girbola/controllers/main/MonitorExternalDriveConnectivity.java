@@ -75,7 +75,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 			disConnectedDrive("checkWorkDirConnected not connected");
 		} else {
 			String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
-			Messages.sprintf("testSerial is: " + driveSerialNumber);
+//			Messages.sprintf("testSerial is: " + driveSerialNumber);
 			if (Main.conf.getWorkDirSerialNumber().equals(driveSerialNumber)) {
 				driveConnected();
 			} else {

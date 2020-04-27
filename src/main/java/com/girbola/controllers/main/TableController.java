@@ -220,7 +220,6 @@ public class TableController {
 
 	@FXML
 	private void hide_btn_action(ActionEvent event) {
-
 		model.tables().getHideButtons().hide_show_table(hide_btn, tableType);
 	}
 
@@ -268,7 +267,7 @@ public class TableController {
 	public void init(Model_main model, String tableName, String tableType) {
 		this.model = model;
 		this.model.tables().setDeleteKeyPressed(table);
-		this.tableType = TableType.ASITIS.getType();
+		this.tableType = tableType;
 		tableDescription_tf.setText(tableName);
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		table.setEditable(true);
