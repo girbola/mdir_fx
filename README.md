@@ -1,4 +1,4 @@
-** THE PROJECT IS NOT READY TO USE. FOR TESTING ONLY. USE IT IN YOUR OWN RISK! **
+** The project is not ready yet. Any harm caused by this program is at your own risk! **
 
 
 # MDir_FX
