@@ -1,2 +1,3 @@
 /target/
 /MDir_FXDiag.ucls
+src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
