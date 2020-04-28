@@ -164,7 +164,8 @@ public class DateFixPopulateGridPane extends Task<Void> {
 				public void handle(ActionEvent event) {
 					String date = tf.getText();
 					tf.setText("" + date);
-					tf.setStyle(model_dateFix.getCssStyles().getModified_style());
+					model_dateFix.getCssStyles();
+					tf.setStyle(CssStylesController.getModified_style());
 					sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: "
 							+ model_dateFix.start_time().getTime());
 				}
@@ -220,15 +221,20 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		textField.setMinHeight(25);
 		textField.setPrefHeight(25);
 		if (fileInfo.isBad()) {
-			textField.setStyle(model_dateFix.getCssStyles().getBad_style());
+			model_dateFix.getCssStyles();
+			textField.setStyle(CssStylesController.getBad_style());
 		} else if (fileInfo.isGood()) {
-			textField.setStyle(model_dateFix.getCssStyles().getGood_style());
+			model_dateFix.getCssStyles();
+			textField.setStyle(CssStylesController.getGood_style());
 		} else if (fileInfo.isConfirmed()) {
-			textField.setStyle(model_dateFix.getCssStyles().getConfirmed_style());
+			model_dateFix.getCssStyles();
+			textField.setStyle(CssStylesController.getConfirmed_style());
 		} else if (fileInfo.isVideo()) {
-			textField.setStyle(model_dateFix.getCssStyles().getVideo_style());
+			model_dateFix.getCssStyles();
+			textField.setStyle(CssStylesController.getVideo_style());
 		} else if (fileInfo.isSuggested()) {
-			textField.setStyle(model_dateFix.getCssStyles().getSuggested_style());
+			model_dateFix.getCssStyles();
+			textField.setStyle(CssStylesController.getSuggested_style());
 		}
 
 		return textField;

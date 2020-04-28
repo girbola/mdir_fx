@@ -224,6 +224,7 @@ public class DateFixerController {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
+		warningText("createFolder_btn_action Not ready");
 
 	}
 
@@ -660,7 +661,8 @@ public class DateFixerController {
 					try {
 						TextField tf = (TextField) it.next();
 						tf.setText(it2.next());
-						tf.setStyle(model_datefix.getCssStyles().getModified_style());
+						model_datefix.getCssStyles();
+						tf.setStyle(CssStylesController.getModified_style());
 					} catch (Exception ex) {
 						errorSmth(ERROR, "Cannot make textfield changes", ex, Misc.getLineNumber(), true);
 					}
@@ -857,10 +859,7 @@ public class DateFixerController {
 		 */
 	}
 
-	@FXML
-	private void select_acceptable_btn_action(ActionEvent event) {
-		Messages.warningText("not ready yet!");
-	}
+	
 
 	@FXML
 	private void listFileInfo_btn_action(ActionEvent event) {
@@ -879,7 +878,21 @@ public class DateFixerController {
 	 */
 	// @formatter:on
 	@FXML
+	private void select_acceptable_btn_action(ActionEvent event) {
+		sprintf("select_acceptable_btn_action");
+		for (Node root : df_gridPane.getChildren()) {
+			Node hboxi = root.lookup("#fileDate");
+			if (hboxi instanceof TextField) {
+				if (hboxi.getStyle().equals(CssStylesController.getSuggested_style())) {
+					model_datefix.getSelectionModel().add(root);
+				}
+			}
+		}
+		
+	}
+	@FXML
 	private void select_video_bad_btn_action(ActionEvent event) {
+		Messages.sprintf("select_video_bad_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
 			sprintf("video_good_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -895,8 +908,8 @@ public class DateFixerController {
 
 	@FXML
 	private void select_video_good_btn_action(ActionEvent event) {
+		Messages.sprintf("select_video_good_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("video_good_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) root.getUserData();
 				if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
@@ -910,8 +923,8 @@ public class DateFixerController {
 
 	@FXML
 	private void select_modified_video_btn_action(ActionEvent event) {
+		Messages.sprintf("select_modified_video_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("select_confirmable_video_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) root.getUserData();
 				if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
@@ -919,11 +932,7 @@ public class DateFixerController {
 					if (hboxi instanceof TextField) {
 						TextField tf = (TextField) hboxi;
 						if (tf != null) {
-							Messages.sprintf("Tf found: " + tf.getStyle() + " style to find ======= "
-									+ CssStylesController.getConfirmed_style());
-
 							if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-								Messages.sprintf("selecting found");
 								model_datefix.getSelectionModel().add(root);
 							}
 						}
@@ -935,19 +944,15 @@ public class DateFixerController {
 
 	@FXML
 	private void select_modified_btn_action(ActionEvent event) {
+		Messages.sprintf("select_modified_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("select_confirmable_video_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) root.getUserData();
+//				FileInfo fileInfo = (FileInfo) root.getUserData();
 				Node hboxi = root.lookup("#fileDate");
 				if (hboxi instanceof TextField) {
 					TextField tf = (TextField) hboxi;
 					if (tf != null) {
-						Messages.sprintf("Tf found: " + tf.getStyle() + " style to find ======= "
-								+ CssStylesController.getConfirmed_style());
-
 						if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-							Messages.sprintf("selecting found");
 							model_datefix.getSelectionModel().add(root);
 						}
 					}
@@ -959,7 +964,7 @@ public class DateFixerController {
 
 	@FXML
 	private void select_bad_video_btn_action(ActionEvent event) {
-
+		Messages.sprintf("select_bad_video_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
 			sprintf("video_bad_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -992,15 +997,14 @@ public class DateFixerController {
 				.forEachOrdered((n) -> {
 					model_datefix.getSelectionModel().addAll(n);
 				});
-		FolderInfo fo = model_datefix.getFolderInfo_full();
-		for (FileInfo fileInfo : fo.getFileInfoList()) {
-			fileInfo.toString();
-		}
+//		FolderInfo fo = model_datefix.getFolderInfo_full();
+//		for (FileInfo fileInfo : fo.getFileInfoList()) {
+//			fileInfo.toString();
+//		}
 		ObservableList<EXIF_Data_Selector> listi = model_datefix.getCameras_TableView().getItems();
 
 		for (EXIF_Data_Selector eds : listi) {
 			eds.setIsShowing(false);
-			Messages.sprintf("EXIF_Data_Selector: " + eds);
 		}
 	}
 
@@ -1008,7 +1012,6 @@ public class DateFixerController {
 	private void select_bad_btn_action(ActionEvent event) {
 		sprintf("select_bad_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("Testing bad: " + root);
 			Node hboxi = root.lookup("#fileDate");
 			if (hboxi instanceof TextField) {
 				if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
@@ -1016,7 +1019,6 @@ public class DateFixerController {
 				}
 			}
 		}
-
 	}
 
 	@FXML
@@ -1027,10 +1029,9 @@ public class DateFixerController {
 				for (Node vbox : ((VBox) root).getChildren()) {
 					if (vbox instanceof HBox) {
 						for (Node hbox : ((HBox) vbox).getChildren()) {
-							sprintf("hbox child: " + hbox);
 							if (hbox instanceof TextField) {
 								if (hbox.getId().contains("fileDate")) {
-									if (hbox.getStyle().equals(model_datefix.getCssStyles().getGood_style())) {
+									if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
 										model_datefix.getSelectionModel().add(root);
 									}
 								}
@@ -1065,6 +1066,7 @@ public class DateFixerController {
 
 	@FXML
 	private void remove_btn_action(ActionEvent event) {
+		Messages.sprintf("remove_btn_action");
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
@@ -1118,35 +1120,35 @@ public class DateFixerController {
 	 * ENDS
 	 */
 
-	private void applyChangestoAllNodes(FileInfo fileInfo_toFind) {
-		Messages.sprintf("applyChangestoAllNodes started: " + model_datefix.getAllNodes().size());
-		for (Node node : model_datefix.getAllNodes()) {
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-					if (fileInfo.equals(fileInfo_toFind)) {
-						Messages.sprintf("All ready wroted info writing userData!");
-					}
-					node.setUserData(fileInfo_toFind);
-				}
-			} else {
-				Messages.sprintf("Nodeee: " + node.getId());
-			}
-		}
-
-	}
-
-	private void updateFileInfo(ObservableList<Node> observableList, FileInfo fileInfo_toFind) {
-		Iterator<Node> it = observableList.iterator();
-		while (it.hasNext()) {
-			Node node = it.next();
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-				fileInfo = fileInfo_toFind;
-				return;
-			}
-		}
-	}
+//	private void applyChangestoAllNodes(FileInfo fileInfo_toFind) {
+//		Messages.sprintf("applyChangestoAllNodes started: " + model_datefix.getAllNodes().size());
+//		for (Node node : model_datefix.getAllNodes()) {
+//			if (node instanceof VBox && node.getId().equals("imageFrame")) {
+//				FileInfo fileInfo = (FileInfo) node.getUserData();
+//				if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
+//					if (fileInfo.equals(fileInfo_toFind)) {
+//						Messages.sprintf("All ready wroted info writing userData!");
+//					}
+//					node.setUserData(fileInfo_toFind);
+//				}
+//			} else {
+//				Messages.sprintf("Nodeee: " + node.getId());
+//			}
+//		}
+//
+//	}
+//
+//	private void updateFileInfo(ObservableList<Node> observableList, FileInfo fileInfo_toFind) {
+//		Iterator<Node> it = observableList.iterator();
+//		while (it.hasNext()) {
+//			Node node = it.next();
+//			FileInfo fileInfo = (FileInfo) node.getUserData();
+//			if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
+//				fileInfo = fileInfo_toFind;
+//				return;
+//			}
+//		}
+//	}
 
 	@FXML
 	private void hideInfoTables_btn_action(ActionEvent event) {
@@ -1184,7 +1186,7 @@ public class DateFixerController {
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null && Main.conf.getDrive_connected()) {
-					Messages.sprintf("blaaadestination is: " + dest);
+					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
 					fileInfo.setWorkDir(Main.conf.getWorkDir());
 					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(dest.toString());

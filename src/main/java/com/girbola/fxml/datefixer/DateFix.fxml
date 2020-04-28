@@ -13,6 +13,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -27,7 +28,7 @@
 
 <AnchorPane minHeight="650.0" minWidth="1200.0" prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
 	<children>
-		<BorderPane layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+		<BorderPane layoutX="1.0" layoutY="1.0" prefHeight="650.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<top>
 				<VBox maxHeight="152.0" BorderPane.alignment="TOP_LEFT">
 					<children>
@@ -35,7 +36,7 @@
 							<children>
 								<VBox spacing="3.0" HBox.hgrow="NEVER">
 									<children>
-										<GridPane hgap="2.0" vgap="2.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
+										<GridPane gridLinesVisible="true" hgap="2.0" vgap="2.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
 											<columnConstraints>
 												<ColumnConstraints hgrow="NEVER" />
 												<ColumnConstraints hgrow="NEVER" />
@@ -180,18 +181,14 @@
 												<Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
 											</padding>
 										</GridPane>
-										<HBox spacing="2.0" VBox.vgrow="ALWAYS">
+										<HBox spacing="4.0" VBox.vgrow="NEVER">
 											<children>
-												<VBox>
-													<children>
 														<Label text="%selected">
 															<font>
 																<Font size="12.0" />
 															</font>
 														</Label>
-														<Label fx:id="selected" />
-													</children>
-												</VBox>
+														<Label fx:id="selected" text="999999999" />
 											</children>
                                  <padding>
                                     <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
@@ -363,7 +360,10 @@
 												<Label text="%batch" />
 												<Button fx:id="copyToMisc_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#copyToMisc_btn_action" prefWidth="80.0" text="%copyToMisc" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 												<Button fx:id="remove_btn" focusTraversable="false" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#remove_btn_action" prefWidth="80.0" text="%remove" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                    <Button fx:id="addToBatch_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="80.0" text="%addToBatch" GridPane.rowIndex="3" />
+                                    <Button fx:id="addToBatch_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="80.0" text="%copyToMisc" GridPane.rowIndex="3">
+                                       <tooltip>
+                                          <Tooltip text="%copyToMiscTip" />
+                                       </tooltip></Button>
                                     <Label text="%action" GridPane.columnIndex="1" />
                                     <Button fx:id="createFolder_btn" layoutX="133.0" layoutY="61.0" maxWidth="80.0" minWidth="100.0" mnemonicParsing="false" onAction="#createFolder_btn_action" prefWidth="100.0" text="Create Folder(s)" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 											</children>
@@ -477,7 +477,7 @@
                                     <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                                  </padding>
 										</GridPane>
-										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" minWidth="82.0" spacing="2.0" style="-fx-border-color: orange;" HBox.hgrow="SOMETIMES">
+										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" minWidth="82.0" spacing="2.0" HBox.hgrow="SOMETIMES">
 											<children>
 												<VBox VBox.vgrow="NEVER">
 													<children>
@@ -538,7 +538,7 @@
 					<children>
 						<AnchorPane HBox.hgrow="ALWAYS">
 							<children>
-								<ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="474.0" prefWidth="664.0" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+								<ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="460.0" prefWidth="806.0" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 									<content>
 										<GridPane fx:id="df_gridPane" gridLinesVisible="true" hgap="1.0" styleClass="imagesContainer" vgap="1.0">
 											<rowConstraints>

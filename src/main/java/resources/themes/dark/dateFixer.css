@@ -222,6 +222,7 @@
 
 .selection {
     -fx-background-color: transparent;
+    -fx-border-color: derive(orange, 70%);
     /*-fx-border-color:  derive(-fx-base, 40%);*/
     /*-fx-border-color: -fx-mid-border-color; */
 }
