@@ -6,6 +6,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -32,6 +33,7 @@
             <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
           <RowConstraints valignment="CENTER" />
           <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" prefHeight="50.0" valignment="CENTER" vgrow="NEVER" />
         </rowConstraints>
          <children>
             <Label prefWidth="40.0" text="%start" GridPane.rowIndex="1">
@@ -53,7 +55,7 @@
                      </font></TextField>
                   <VBox alignment="TOP_CENTER" fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="start_hour_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_hour_btn_up" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -65,7 +67,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="start_hour_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_hour_btn_down" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -86,7 +88,7 @@
                      </font></TextField>
                   <VBox fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="start_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -98,7 +100,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="start_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -119,7 +121,7 @@
                      </font></TextField>
                   <VBox fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="start_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -131,7 +133,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="start_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="start_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -164,7 +166,7 @@
                      </font></TextField>
                   <VBox fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="end_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -176,7 +178,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="end_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_down" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_down" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -197,7 +199,7 @@
                      </font></TextField>
                   <VBox fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="end_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -209,7 +211,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="end_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -230,7 +232,7 @@
                      </font></TextField>
                   <VBox fillWidth="false" HBox.hgrow="NEVER">
                      <children>
-                        <Button fx:id="end_hour_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_hour_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
@@ -242,7 +244,7 @@
                               </ImageView>
                            </graphic>
                         </Button>
-                        <Button fx:id="end_hour_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                        <Button id="selectTimeButton" fx:id="end_hour_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -267,7 +269,7 @@
                <font>
                   <Font size="10.0" />
                </font></Label>
-            <Button fx:id="copy_startToEnd" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#copy_startToEnd_action" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            <Button fx:id="copy_startToEnd" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxWidth="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_action" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -275,7 +277,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#copy_endToStart_action" styleClass="switchButton" text="uppp" GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+            <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxWidth="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefWidth="25.0" styleClass="switchButton" text="uppp" GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -283,6 +285,14 @@
                      </image>
                   </ImageView>
                </graphic></Button>
+            <Button id="actionButtons" fx:id="selectRange_btn" mnemonicParsing="false" onAction="#selectRange_btn_action" text="%selectRange" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <tooltip>
+                  <Tooltip text="%selectRangeTooltip" />
+               </tooltip></Button>
+            <Button fx:id="setDateTimeRange_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefWidth="80.0" text="%applyDateAndTime" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
+               <tooltip>
+                  <Tooltip text="%applyDateAndTimeTooltip" />
+               </tooltip></Button>
          </children>
       </GridPane>
    </children>

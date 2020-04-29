@@ -12,7 +12,7 @@ public class CssStylesController {
 	private static final String confirmed_style = "-fx-background-color: derive(green, 50%)";
 	private static final String good_style = "-fx-background-color: derive(grey, 50%)";
 	private static final String modified_style = "-fx-background-color: derive(blue, 50%)";
-	private static final String suggested_style = "-fx-background-color: derive(cyan, 50%); -fx-text-fill: black;";
+	private static final String suggested_style = "-fx-background-color: derive(pink, 50%); -fx-text-fill: black;";
 	private static final String video_style = "-fx-background-color: orange;  -fx-text-fill: black;";
 
 	public static String getConfirmed_style() {

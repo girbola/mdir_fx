@@ -3,7 +3,7 @@
     -fx-dark-border-color: darkgrey;
     -fx-mid-border-color: grey;
     -fx-light-border-color: white;
-
+-fx-button-color: #4f4f4f;
     /* One of these colors will be chosen based upon a ladder calculation
  * that uses the brightness of a background color.  Instead of using these
  * colors directly as -fx-text-fill values, the sections in this file should
@@ -17,6 +17,10 @@
     -fx-dark-text-color: black;
     -fx-mid-text-color: #292929;
     -fx-light-text-color: white;
+    -fx-font-family: "Gaduci";
+    
+    -fx-font-weight: 700;
+    -fx-font-smoothing-type: lcd;
 /*    -fx-background-color: -fx-base; */
     /*-fx-padding: 0 3 3 3;*/
   /*  -fx-border-color:  -fx-dark-border-color; */
@@ -25,28 +29,37 @@
 .anchor-pane{
     -fx-background-color:  -fx-base;
 }
-.anchor-pane{
-    -fx-background-color: yellow;
-}
 .button,
 .toggle-button {
     -fx-background-color: 
-        grey,
+        orange,
         transparent,
         transparent,
-        linear-gradient(darkgrey 0.0%, grey 38.0%, grey 61.0%, darkgrey 100.0%);
+        linear-gradient(darkgrey 0.0%, -fx-base 25.0%, -fx-base 75.0%, darkgrey 100.0%);
     -fx-background-insets: 1.0, 2.0, 1.0, 2.0;
     -fx-background-radius: 4.0px;
     
-    -fx-padding: 6.0;
+    
     -fx-font-family: "Gaduci";
     -fx-font-size: 10.0px;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255.0,255.0,255.0,0.2) , 1.0, 0.0 , 0.0 , 1.0);
 }
 .button:disabled {
-    -fx-opacity: 0.1;
+    -fx-opacity: 0.4;
     -fx-background-color: grey;
+}
+.button:hover {
+	 -fx-background-color: 
+        red,
+        blue,
+        transparent,
+        linear-gradient(grey 0.0%, darkgrey 25.0%, darkgrey 75.0%, grey 100.0%);
+}
+#actionButtons {
+	-fx-pref-height: 30.0px;
+	-fx-text-alignment: center;
+	-fx-alignment: center;
 }
 .combo-box {
     -fx-background-color: 
@@ -222,7 +235,7 @@
 
 .selection {
     -fx-background-color: transparent;
-    -fx-border-color: derive(orange, 70%);
+    -fx-border-color: derive(orange, 70.0%);
     /*-fx-border-color:  derive(-fx-base, 40%);*/
     /*-fx-border-color: -fx-mid-border-color; */
 }
@@ -250,10 +263,11 @@
 
 }
 .selection_text {
-    -fx-font-size: 10.0px;
+    -fx-font-size: 14.0px;
+    -fx-font-family: -fx-font-name;
     /*-fx-background-color: cyan;*/
     -fx-text-fill: -fx-light-text-color;
-    -fx-underline: true;   
+    /*-fx-underline: true; */   
 }
 
 .split-pane{
@@ -396,9 +410,11 @@
     -fx-control-inner-background: derive(-fx-base, 90.0%);
     -fx-control-inner-background-alt: derive(-fx-base, 50.0%);
 }
-
+.showAndHideContent {
+	-fx-background-color: red;
+}
 .table-view {
-    -fx-background-color: -fx-base;
+    /*-fx-background-color: -fx-base;*/
     -fx-control-inner-background: -fx-base;
     }
 .table-view .column-header.table_media .label {
@@ -460,7 +476,7 @@
 {
     -fx-background-color:
        -fx-base,
-        linear-gradient(to bottom, derive(-fx-base,-2.0%), derive(-fx-base,65.0%) 12.0%,      derive(-fx-base,23.0%) 88.0%, derive(-fx-base,50.0%) 99.0%, -fx-base);
+        linear-gradient(to bottom, derive(-fx-base,-2.0%), derive(-fx-base,65.0%) 12.0%, derive(-fx-base,23.0%) 88.0%, derive(-fx-base,50.0%) 99.0%, -fx-base);
     -fx-background-insets: 0.0, 0.0 1.0 1.0 1.0;
     -fx-padding: 0.167em;
 }
@@ -477,10 +493,15 @@
     -fx-border-color: -fx-light-text-color;
 }
 
-.selectionButton {
-   -fx-background-insets: 0.0;
-    -fx-background-radius: 0.0;
-    -fx-padding: 0.0;
+#selectTimeButton {
+   	-fx-background-color: white;
+   	-fx-background-radius: 2.0;
+   	-fx-background-insets: 0.0;
+	-fx-background-color: 
+        -fx-base,
+        transparent,
+        transparent,
+        linear-gradient(whitesmoke 0.0%, white 25.0%, white 75.0%, whitesmoke 100.0%);
     
 	/*-fx-shape: "M 0 0 L 4 8 L 8 0 Z";*/
 }
@@ -506,6 +527,16 @@
 .selector_scrollPane .corner {
 	-fx-background-color: transparent;
 }		
+#showAndHideButton {
+	-fx-pref-height: 50px;
+}
 .switchButton {
-	-fx-background-radius: 35.0px;
+	-fx-background-radius: 40.0px;
+	-fx-background-color: red;
+	-fx-background-color: 
+        -fx-base,
+        transparent,
+        transparent,
+        linear-gradient(whitesmoke 0.0%, white 25.0%, white 75.0%, whitesmoke 100.0%);
+	
 }
