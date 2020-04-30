@@ -10,9 +10,9 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
 	<children>
-      <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" vbarPolicy="ALWAYS" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <content>
-            <VBox fx:id="selector_root" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" spacing="1.0">
+            <VBox fx:id="selector_root" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" spacing="1.0">
                <children>
                   <TitledPane fx:id="dates_titledPane" text="%dates" VBox.vgrow="NEVER">
                      <content>
