@@ -29,5 +29,20 @@ public class Dialogs {
 		return dialog;
 
 	}
+	public static Dialog<ButtonType> createDialog_YesNo(final String contentText) {
+		Dialog<ButtonType> dialog = new Dialog<>();
+		DialogPane dialogPane = new DialogPane();
+		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "dialogsStyle.css").toExternalForm());
+		dialog.setDialogPane(dialogPane);
+		//dialogPane.getStyleClass().add("dialogPane");
+		dialogPane.setContentText(contentText);
+
+		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
+		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
+		dialog.getDialogPane().getButtonTypes().addAll(yes, no);
+
+		return dialog;
+
+	}
 
 }

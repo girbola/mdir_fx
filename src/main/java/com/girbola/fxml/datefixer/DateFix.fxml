@@ -575,7 +575,7 @@
                   												</VBox>
                   												<VBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
                   													<children>
-                  														<Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" prefHeight="30.0" prefWidth="30.0" rotate="-180.0">
+                  														<Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" prefHeight="30.0" prefWidth="30.0">
                   															<graphic>
                   																<ImageView id="showAndHideButton" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                   																	<image>

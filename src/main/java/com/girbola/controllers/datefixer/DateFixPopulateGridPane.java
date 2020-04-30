@@ -164,7 +164,6 @@ public class DateFixPopulateGridPane extends Task<Void> {
 				public void handle(ActionEvent event) {
 					String date = tf.getText();
 					tf.setText("" + date);
-					model_dateFix.getCssStyles();
 					tf.setStyle(CssStylesController.getModified_style());
 					sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: "
 							+ model_dateFix.start_time().getTime());
@@ -221,19 +220,14 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		textField.setMinHeight(25);
 		textField.setPrefHeight(25);
 		if (fileInfo.isBad()) {
-			model_dateFix.getCssStyles();
 			textField.setStyle(CssStylesController.getBad_style());
 		} else if (fileInfo.isGood()) {
-			model_dateFix.getCssStyles();
 			textField.setStyle(CssStylesController.getGood_style());
 		} else if (fileInfo.isConfirmed()) {
-			model_dateFix.getCssStyles();
 			textField.setStyle(CssStylesController.getConfirmed_style());
 		} else if (fileInfo.isVideo()) {
-			model_dateFix.getCssStyles();
 			textField.setStyle(CssStylesController.getVideo_style());
 		} else if (fileInfo.isSuggested()) {
-			model_dateFix.getCssStyles();
 			textField.setStyle(CssStylesController.getSuggested_style());
 		}
 

@@ -86,8 +86,8 @@ public class DateFixerController {
 
 	private static final String ERROR = DateFixerController.class.getSimpleName();
 	// private boolean infoTables_visible = true;
-	private SimpleBooleanProperty infoTables_visible = new SimpleBooleanProperty(true);
-	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty leftInfoTables_visible = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
 	private QuickPick_Navigator quickPick_Navigator;
 	private Model_datefix model_datefix;
@@ -506,7 +506,8 @@ public class DateFixerController {
 		// }
 		// workDir_Handler.load_All_WorkDirSub(workDir, start_year, end_year)
 		Main.setProcessCancelled(false);
-
+//		rightInfo_visible hideInfoTables_btn.visibleProperty()
+//		leftInfoTables_visible.bind(info.visibleProperty()); 
 		this.model_datefix.setCurrentFolderPath(currentPath);
 		this.model_datefix.setFolderInfo_full(folderInfo);
 		this.model_datefix.setGridPane(df_gridPane);
@@ -617,6 +618,18 @@ public class DateFixerController {
 		 * String> cellData) -> new
 		 * SimpleObjectProperty<>(cellData.getValue().getValue()));
 		 */
+		rightInfoPanel_scrollPane.setMinWidth(0);
+		rightInfoPanel_scrollPane.setPrefWidth(0);
+		rightInfoPanel_scrollPane.setMaxWidth(0);
+		rightInfoPanel.setVisible(false);
+		rightInfoPanel.setMinWidth(-100);
+		rightInfoPanel.setMaxWidth(-100);
+		rightInfoPanel.setPrefWidth(-100);
+		
+
+		selectorController.getInfoTables_container().setMinWidth(250);
+		selectorController.getInfoTables_container().setMaxWidth(250);
+		selectorController.getInfoTables_container().setPrefWidth(250);
 	}
 
 	
@@ -912,20 +925,20 @@ public class DateFixerController {
 
 	@FXML
 	private void hideInfoTables_btn_action(ActionEvent event) {
-		if (infoTables_visible.get()) {
-			hideInfoTables_btn.setRotate(90);
+		if (leftInfoTables_visible.get()) {
+			hideInfoTables_btn.setRotate(0);
 			selectorController.getInfoTables_container().setVisible(false);
 			selectorController.getInfoTables_container().setMinWidth(-100);
 			selectorController.getInfoTables_container().setMaxWidth(-100);
 			selectorController.getInfoTables_container().setPrefWidth(-100);
-			infoTables_visible.set(false);
+			leftInfoTables_visible.set(false);
 		} else {
-			hideInfoTables_btn.setRotate(0);
+			hideInfoTables_btn.setRotate(180);
 			selectorController.getInfoTables_container().setVisible(true);
 			selectorController.getInfoTables_container().setMinWidth(250);
 			selectorController.getInfoTables_container().setMaxWidth(250);
 			selectorController.getInfoTables_container().setPrefWidth(250);
-			infoTables_visible.set(true);
+			leftInfoTables_visible.set(true);
 		}
 	}
 	
@@ -981,15 +994,23 @@ public class DateFixerController {
 	@FXML
 	private void hideRightInfo_btn_action(ActionEvent event) {
 		if (rightInfo_visible.get()) {
+			hideRightInfo_btn.setRotate(0);
 			rightInfoPanel_scrollPane.setVisible(false);
+
+			rightInfoPanel_scrollPane.setMinWidth(0);
+			rightInfoPanel_scrollPane.setPrefWidth(0);
+			rightInfoPanel_scrollPane.setMaxWidth(0);
 			rightInfoPanel.setVisible(false);
 			rightInfoPanel.setMinWidth(-100);
 			rightInfoPanel.setMaxWidth(-100);
 			rightInfoPanel.setPrefWidth(-100);
 			rightInfo_visible.set(false);
 		} else {
-
+			hideRightInfo_btn.setRotate(180);
 			rightInfoPanel_scrollPane.setVisible(true);
+			rightInfoPanel_scrollPane.setMinWidth(250);
+			rightInfoPanel_scrollPane.setPrefWidth(250);
+			rightInfoPanel_scrollPane.setMaxWidth(250);
 			rightInfoPanel.setVisible(true);
 			rightInfoPanel.setMinWidth(250);
 			rightInfoPanel.setMaxWidth(250);

@@ -377,7 +377,6 @@ public class DateTimeAdjusterController {
 					try {
 						TextField tf = (TextField) it.next();
 						tf.setText(it2.next());
-						model_datefix.getCssStyles();
 						tf.setStyle(CssStylesController.getModified_style());
 					} catch (Exception ex) {
 						errorSmth(ERROR, "Cannot make textfield changes", ex, Misc.getLineNumber(), true);

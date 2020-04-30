@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -178,10 +177,6 @@ public class Model_datefix {
 
 	public DateFix_Utils getDateFix_Utils() {
 		return dateFix_Utils;
-	}
-
-	public CssStylesController getCssStyles() {
-		return cssStyles;
 	}
 
 	public final ObservableList<Node> getCurrentNodes() {
@@ -596,43 +591,52 @@ public class Model_datefix {
 	public void acceptEverything() {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
-
-		for (Node node : getGridPane().getChildren()) {
-			TextField tf = getTextField(node);
-			if (tf != null) {
-				if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
-					FileInfo fileInfo = (FileInfo) node.getUserData();
-					if (fileInfo != null) {
-						if (!fileInfo.isIgnored()) {
-							fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
-									simpleDates.getSdf_ymd_hms_minusDots_default()));
-							fileInfo.setGood(true);
-							fileInfo.setSuggested(false);
-							fileInfo.setBad(false);
-							fileInfo.setConfirmed(true);
-							node.setStyle(CssStylesController.getGood_style());
-							changed = true;
+		Dialog<ButtonType> changesDialog = Dialogs
+				.createDialog_YesNo(bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Optional<ButtonType> result = changesDialog.showAndWait();
+		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+			warningText("Yes");
+			for (Node node : getGridPane().getChildren()) {
+				TextField tf = getTextField(node);
+				if (tf != null) {
+					if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
+						FileInfo fileInfo = (FileInfo) node.getUserData();
+						if (fileInfo != null) {
+							if (!fileInfo.isIgnored()) {
+								fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
+										simpleDates.getSdf_ymd_hms_minusDots_default()));
+								fileInfo.setGood(true);
+								fileInfo.setSuggested(false);
+								fileInfo.setBad(false);
+								fileInfo.setConfirmed(true);
+								node.setStyle(CssStylesController.getGood_style());
+								changed = true;
+							}
 						}
 					}
 				}
 			}
-		}
-		if (changed) {
-			// TODO Korjaa apply_btn;
-			TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-			if (model_Main.tables() == null) {
-				Main.setProcessCancelled(true);
-				errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+			if (changed) {
+				// TODO Korjaa apply_btn;
+				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
+				if (model_Main.tables() == null) {
+					Main.setProcessCancelled(true);
+					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+				}
+				model_Main.tables().refreshAllTables();
+				updateAllInfos(getFolderInfo_full().getFileInfoList());
+
+				getFolderInfo_full().setChanged(true);
+				setDateTime(getFolderInfo_full().getMinDate(), true);
+				setDateTime(getFolderInfo_full().getMaxDate(), false);
 			}
-			model_Main.tables().refreshAllTables();
-			updateAllInfos(getFolderInfo_full().getFileInfoList());
-
-			getFolderInfo_full().setChanged(true);
-			setDateTime(getFolderInfo_full().getMinDate(), true);
-			setDateTime(getFolderInfo_full().getMaxDate(), false);
+			getSelectionModel().clearAll();
+		} else {
+			warningText("No");
 		}
-		getSelectionModel().clearAll();
-
+		/*
+		
+		*/
 	}
 
 	public TextField getTextField(Node node) {
@@ -668,11 +672,9 @@ public class Model_datefix {
 					if (tf != null) {
 						tf.setText("" + DateUtils.longToLocalDateTime(date)
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						getCssStyles();
 						tf.setStyle(CssStylesController.getGood_style());
 					}
 				} else {
-					getCssStyles();
 					tf.setStyle(CssStylesController.getBad_style());
 				}
 			}
@@ -690,21 +692,26 @@ public class Model_datefix {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
 			if (fileInfo != null) {
 				File file = new File(fileInfo.getOrgPath());
-				long date = DateTaken.getCreationDate(file.toPath());
+				try {
+					fileInfo = FileInfo_Utils.createFileInfo(file.toPath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+//				long date = DateTaken.getCreationDate(file.toPath());
+
 				// sdv;
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
+				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(fileInfo.getDate())
 						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 
 				TextField tf = getTextField(node);
-				if (date != 0) {
+				if (fileInfo.getDate() != 0) {
 					if (tf != null) {
-						tf.setText("" + DateUtils.longToLocalDateTime(date)
+						tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						getCssStyles();
 						tf.setStyle(CssStylesController.getGood_style());
 					}
 				} else {
-					getCssStyles();
 					// tf.setText("" +
 					// DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 					tf.setStyle(CssStylesController.getBad_style());
@@ -730,13 +737,10 @@ public class Model_datefix {
 				if (tf != null) {
 					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
 							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					getCssStyles();
 					tf.setStyle(CssStylesController.getModified_style());
 				}
 			}
 		}
-		acceptEverything();
-		
 	}
 
 	public void exitDateFixerWindow(GridPane gridPane, WindowEvent event) {
@@ -918,7 +922,6 @@ public class Model_datefix {
 						if (vbox instanceof HBox) {
 							for (Node hbox : ((HBox) vbox).getChildren()) {
 								if (hbox instanceof TextField) {
-									getCssStyles();
 									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
 										counter++;
 									}
