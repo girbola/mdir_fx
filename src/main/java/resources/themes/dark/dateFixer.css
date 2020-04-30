@@ -3,7 +3,12 @@
     -fx-dark-border-color: darkgrey;
     -fx-mid-border-color: grey;
     -fx-light-border-color: white;
--fx-button-color: #4f4f4f;
+	
+	/* Button basic colors */
+	-fx-button-color: #4f4f4f;
+	-fx-button-fade-color: #484848;
+	-fx-button-border: #a36911;
+	
     /* One of these colors will be chosen based upon a ladder calculation
  * that uses the brightness of a background color.  Instead of using these
  * colors directly as -fx-text-fill values, the sections in this file should
@@ -19,7 +24,7 @@
     -fx-light-text-color: white;
     -fx-font-family: "Gaduci";
     
-    -fx-font-weight: 700;
+    -fx-font-weight: 700.0;
     -fx-font-smoothing-type: lcd;
 /*    -fx-background-color: -fx-base; */
     /*-fx-padding: 0 3 3 3;*/
@@ -32,10 +37,10 @@
 .button,
 .toggle-button {
     -fx-background-color: 
-        orange,
+        -fx-button-border,
         transparent,
         transparent,
-        linear-gradient(darkgrey 0.0%, -fx-base 25.0%, -fx-base 75.0%, darkgrey 100.0%);
+        linear-gradient(-fx-button-fade-color 0.0%, -fx-base 25.0%, -fx-base 75.0%, -fx-button-fade-color 100.0%);
     -fx-background-insets: 1.0, 2.0, 1.0, 2.0;
     -fx-background-radius: 4.0px;
     
@@ -241,16 +246,11 @@
 }
 
 .selection_btns {
-    -fx-background-color: 
-        -fx-base,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-base, 10.0%), derive(-fx-base, 20.0%), derive(-fx-base, 30.0%), derive(-fx-base, 40.0%));
-    -fx-background-insets: 1.0 2.0 1.0 2.0;
+
     -fx-background-radius: 4.0;
-    -fx-padding: 2.0;
+    
     /*-fx-text-fill: -fx-light-text-color;*/
-    /*-fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);*/
+    /*-fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
 }
 .selection-gridPane {
     /*-fx-background-color: derive(-fx-base, 10%);*/
@@ -527,8 +527,16 @@
 .selector_scrollPane .corner {
 	-fx-background-color: transparent;
 }		
+#showHideMediaBasedOnSelectionButton {
+	-fx-background-color: 
+        -fx-base,
+        transparent,
+        transparent,
+        linear-gradient(whitesmoke 0.0%, white 25.0%, white 75.0%, whitesmoke 100.0%);
+	
+}
 #showAndHideButton {
-	-fx-pref-height: 50px;
+	/*-fx-pref-height: 50px;*/
 }
 .switchButton {
 	-fx-background-radius: 40.0px;
