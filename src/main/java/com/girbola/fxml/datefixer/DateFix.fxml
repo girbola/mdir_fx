@@ -36,18 +36,18 @@
 							<children>
 								<VBox minWidth="-Infinity" spacing="3.0" HBox.hgrow="NEVER">
 									<children>
-										<GridPane hgap="2.0" minWidth="-Infinity" vgap="2.0" HBox.hgrow="NEVER" VBox.vgrow="NEVER">
+										<GridPane hgap="4.0" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="NEVER">
 											<columnConstraints>
                                     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="30.0" />
-												<ColumnConstraints hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
 												<ColumnConstraints hgrow="NEVER" />
 												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" minWidth="30.0" prefWidth="30.0" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="30.0" prefWidth="30.0" />
 											</columnConstraints>
 											<rowConstraints>
-												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+												<RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
 												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
 												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
 												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
@@ -60,9 +60,9 @@
 														<Font size="12.0" />
 													</font>
 												</Label>
-												<Button fx:id="select_all" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button fx:id="select_all" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAll.png" />
 															</image>
@@ -72,9 +72,9 @@
                                           <Tooltip text="%selectAllTooltip" />
                                        </tooltip>
 												</Button>
-												<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_none_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_none_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectNone.png" />
 															</image>
@@ -84,9 +84,9 @@
                                           <Tooltip text="%selectNoneTooltip" />
                                        </tooltip>
 												</Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectInvert.png" />
 															</image>
@@ -96,9 +96,9 @@
                                           <Tooltip text="%selectInvertTooltip" />
                                        </tooltip>
 												</Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectGood.png" />
 															</image>
@@ -108,9 +108,9 @@
                                           <Tooltip text="%selectAllGoodFilesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectBad.png" />
 															</image>
@@ -120,9 +120,9 @@
                                           <Tooltip text="%selectAllBadFilesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAllModified.png" />
 															</image>
@@ -132,9 +132,9 @@
                                           <Tooltip text="%selectAllModifiedFilesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button fx:id="select_acceptable_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_acceptable_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button fx:id="select_acceptable_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_acceptable_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAcceptable.png" />
 															</image>
@@ -144,9 +144,9 @@
                                           <Tooltip text="%selectAllSuggestedFilesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_good.png" />
 															</image>
@@ -156,9 +156,9 @@
                                           <Tooltip text="%selectAllGoodImagesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="52.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="52.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_bad.png" />
 															</image>
@@ -168,9 +168,9 @@
                                           <Tooltip text="%selectAllBadImagesTooltip" />
                                        </tooltip>
 												</Button>
-												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="76.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="76.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_modified.png" />
 															</image>
@@ -180,9 +180,9 @@
                                           <Tooltip text="%selectAllModifiedImagesTooltip" />
                                        </tooltip>
 												</Button>
-                                    <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                    <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                        <graphic>
-                                          <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../../../resources/img/image_suggested.png" />
                                              </image>
@@ -192,9 +192,9 @@
                                           <Tooltip text="%selectAllSuggestedFilesTooltip" />
                                        </tooltip>
                                     </Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/video_good.png" />
 															</image>
@@ -204,9 +204,9 @@
                                           <Tooltip text="%selectAllGoodVideosTooltip" />
                                        </tooltip>
 												</Button>
-												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/video_bad.png" />
 															</image>
@@ -216,9 +216,9 @@
                                           <Tooltip text="%selectAllBadVideosTooltip" />
                                        </tooltip>
 												</Button>
-												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/video_confirmable.png" />
 															</image>
@@ -228,9 +228,9 @@
                                           <Tooltip text="%selectAllModifiedVideosTooltip" />
                                        </tooltip>
 												</Button>
-                                    <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                    <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="30.0" prefWidth="30.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                        <graphic>
-                                          <ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                                          <ImageView fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                                              <image>
                                                 <Image url="@../../../../resources/img/video_suggested.png" />
                                              </image>
@@ -250,19 +250,6 @@
 												<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 											</padding>
 										</GridPane>
-										<HBox spacing="4.0" VBox.vgrow="NEVER">
-											<children>
-														<Label text="%selected">
-															<font>
-																<Font size="12.0" />
-															</font>
-														</Label>
-														<Label fx:id="selected" text="999999999" />
-											</children>
-                                 <padding>
-                                    <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
-                                 </padding>
-										</HBox>
                               <HBox maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER">
                                  <children>
       										<Button id="showAndHideButton" fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action" prefHeight="30.0" prefWidth="30.0">
@@ -274,6 +261,22 @@
       												</ImageView>
       											</graphic>
       										</Button>
+      										<HBox alignment="CENTER" fillHeight="false" nodeOrientation="LEFT_TO_RIGHT" spacing="4.0" HBox.hgrow="NEVER">
+      											<children>
+      														<Label text="%selected">
+      															<font>
+      																<Font size="12.0" />
+      															</font>
+      														</Label>
+      														<Label fx:id="selected" text="999999999" />
+      											</children>
+                                       <padding>
+                                          <Insets bottom="2.0" left="15.0" right="5.0" top="2.0" />
+                                       </padding>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+      										</HBox>
                                  </children>
                               </HBox>
 									</children>
