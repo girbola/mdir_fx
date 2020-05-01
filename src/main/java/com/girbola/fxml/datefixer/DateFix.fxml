@@ -240,7 +240,7 @@
                                           <Tooltip text="%selectAllSuggestedVideosTooltip" />
                                        </tooltip>
                                     </Button>
-      												<Button fx:id="listFileInfo_btn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" minWidth="35.0" mnemonicParsing="false" onAction="#listFileInfo_btn_action" text="FI">
+      												<Button fx:id="listFileInfo_btn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" minWidth="35.0" mnemonicParsing="false" onAction="#listFileInfo_btn_action" text="FI" GridPane.rowIndex="2">
                                        <tooltip>
                                           <Tooltip text="Empty Tooltip" />
                                        </tooltip>
