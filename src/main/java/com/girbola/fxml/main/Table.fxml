@@ -17,7 +17,7 @@
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
-				<Button fx:id="hide_btn" mnemonicParsing="false" onAction="#hide_btn_action" prefWidth="35.0">
+				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" prefWidth="35.0" styleClass="showAndHide">
 					<graphic>
 						<ImageView fx:id="hide_btn_iv" fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
 							<image>
@@ -28,6 +28,9 @@
 					<padding>
 						<Insets bottom="1.0" top="1.0" />
 					</padding>
+               <tooltip>
+                  <Tooltip text="%showAndHideTableTooltip" />
+               </tooltip>
 				</Button>
             <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload" HBox.hgrow="ALWAYS">
               <items>
@@ -46,6 +49,9 @@
 					<padding>
 						<Insets bottom="1.0" top="1.0" />
 					</padding>
+               <tooltip>
+                  <Tooltip text="%reloadsSelectedRow" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
 					<graphic>
@@ -58,6 +64,9 @@
 					<padding>
 						<Insets bottom="1.0" top="1.0" />
 					</padding>
+               <tooltip>
+                  <Tooltip text="%selectAllTableTooltip" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
 					<graphic>
@@ -70,6 +79,9 @@
 					<padding>
 						<Insets bottom="1.0" top="1.0" />
 					</padding>
+               <tooltip>
+                  <Tooltip text="%selectInvertTableTooltip" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
 					<graphic>
@@ -85,6 +97,9 @@
 					<HBox.margin>
 						<Insets />
 					</HBox.margin>
+               <tooltip>
+                  <Tooltip text="%selectNoneTableTooltip" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
 					<graphic>
@@ -100,6 +115,9 @@
 					<HBox.margin>
 						<Insets />
 					</HBox.margin>
+               <tooltip>
+                  <Tooltip text="%selectBadTableTooltip" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
 					<graphic>
@@ -115,15 +133,18 @@
 					<HBox.margin>
 						<Insets />
 					</HBox.margin>
+               <tooltip>
+                  <Tooltip text="%selectGoodTableTooltip" />
+               </tooltip>
 				</Button>
 				<Button fx:id="select_dateDifference" mnemonicParsing="false" onAction="#select_dateDifference_action" prefWidth="40.0" text="DD">
                <tooltip>
-                  <Tooltip text="Empty Tooltip" />
+                  <Tooltip text="%selectDateDifferencesTableTooltip" />
                </tooltip></Button>
-				<TextField fx:id="tableDescription_tf" styleClass="textfield-info" HBox.hgrow="ALWAYS" />
+				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="wefwef" HBox.hgrow="ALWAYS" />
 			</children>
 		</HBox>
-		<TableView fx:id="table" editable="true" VBox.vgrow="ALWAYS">
+		<TableView fx:id="table" VBox.vgrow="ALWAYS">
 			<columns>
 				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
 				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="35.0" prefWidth="-1.0" resizable="false" sortable="false" />

@@ -13,7 +13,7 @@
 <!-- 					</children> -->
 <!-- 				</HBox> -->
 
-<AnchorPane fx:id="main_container" maxHeight="1000.0" maxWidth="1800.0" minHeight="480.0" minWidth="640.0" prefHeight="700.0" prefWidth="1200.0" styleClass="main" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
+<AnchorPane fx:id="main_container" maxHeight="1000.0" maxWidth="1800.0" minHeight="480.0" minWidth="800.0" prefHeight="700.0" prefWidth="1200.0" styleClass="main" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
 	<children>
 		<VBox fx:id="main_vbox" prefHeight="502.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<children>
