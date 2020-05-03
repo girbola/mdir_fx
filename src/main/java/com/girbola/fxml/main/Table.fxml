@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -10,10 +11,11 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox minHeight="200.0" minWidth="200.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox minHeight="200.0" minWidth="200.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -26,122 +28,128 @@
 						</ImageView>
 					</graphic>
 					<padding>
-						<Insets bottom="1.0" top="1.0" />
+						<Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
 					</padding>
                <tooltip>
                   <Tooltip text="%showAndHideTableTooltip" />
                </tooltip>
 				</Button>
-            <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload" HBox.hgrow="ALWAYS">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#reload_all_action" text="%reloadAll" />
-                <MenuItem mnemonicParsing="false" onAction="#checkChanges_action" text="check" />
-              </items>
-            </MenuButton>
-				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/reload.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
+            <FlowPane hgap="1.0" vgap="1.0">
+               <children>
+                  <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#reload_all_action" text="%reloadAll" />
+                      <MenuItem mnemonicParsing="false" onAction="#checkChanges_action" text="check" />
+                    </items>
+                  </MenuButton>
+      				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/reload.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectAll.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_all_btn_tooltip" text="%selectAllTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectInvert.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_invert_btn_tooltip" text="%selectInvertTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectNone.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_none_btn_tooltip" text="%selectNoneTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectBad.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_bad_btn_tooltip" text="%selectBadTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectGood.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_dateDifference" mnemonicParsing="false" onAction="#select_dateDifference_action" prefHeight="25.0" prefWidth="35.0" text="DD">
+                     <tooltip>
+                        <Tooltip fx:id="select_dateDifference_tooltip" text="%selectDateDifferencesTableTooltip" />
+                     </tooltip>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="1.0" left="2.0" top="1.0" />
+               </padding>
+            </FlowPane>
+				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip">
                <tooltip>
-                  <Tooltip text="%reloadsSelectedRow" />
+                  <Tooltip fx:id="tableDescription_tf_tooltip" />
                </tooltip>
-				</Button>
-				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/selectAll.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
-               <tooltip>
-                  <Tooltip text="%selectAllTableTooltip" />
-               </tooltip>
-				</Button>
-				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/selectInvert.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
-               <tooltip>
-                  <Tooltip text="%selectInvertTableTooltip" />
-               </tooltip>
-				</Button>
-				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/selectNone.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
-					<HBox.margin>
-						<Insets />
-					</HBox.margin>
-               <tooltip>
-                  <Tooltip text="%selectNoneTableTooltip" />
-               </tooltip>
-				</Button>
-				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/selectBad.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
-					<HBox.margin>
-						<Insets />
-					</HBox.margin>
-               <tooltip>
-                  <Tooltip text="%selectBadTableTooltip" />
-               </tooltip>
-				</Button>
-				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
-					<graphic>
-						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-							<image>
-								<Image url="@../../../../resources/img/selectGood.png" />
-							</image>
-						</ImageView>
-					</graphic>
-					<padding>
-						<Insets bottom="1.0" top="1.0" />
-					</padding>
-					<HBox.margin>
-						<Insets />
-					</HBox.margin>
-               <tooltip>
-                  <Tooltip text="%selectGoodTableTooltip" />
-               </tooltip>
-				</Button>
-				<Button fx:id="select_dateDifference" mnemonicParsing="false" onAction="#select_dateDifference_action" prefWidth="40.0" text="DD">
-               <tooltip>
-                  <Tooltip text="%selectDateDifferencesTableTooltip" />
-               </tooltip></Button>
-				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="wefwef" HBox.hgrow="ALWAYS" />
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </TextField>
 			</children>
 		</HBox>
 		<TableView fx:id="table" VBox.vgrow="ALWAYS">

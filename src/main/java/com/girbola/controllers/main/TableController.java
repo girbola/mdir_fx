@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -30,6 +31,8 @@ import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -38,6 +41,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -47,7 +51,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
 
 public class TableController {
 //@formatter:off
@@ -64,9 +67,10 @@ public class TableController {
 	@FXML
 	private HBox buttons_hbox;
 	@FXML
-	private Button hide_btn;
-	@FXML
 	private ImageView hide_btn_iv;
+	
+	@FXML
+	private Button hide_btn;
 	@FXML
 	private Button updateFolderInfo_btn;
 	@FXML
@@ -79,6 +83,22 @@ public class TableController {
 	private Button select_none_btn;
 	@FXML
 	private Button select_dateDifference;
+	
+	@FXML
+	private Tooltip updateFolderInfo_btn_tooltip;
+	@FXML
+	private Tooltip select_bad_btn_tooltip;
+	@FXML
+	private Tooltip select_good_btn_tooltip;
+	@FXML
+	private Tooltip select_invert_btn_tooltip;
+	@FXML
+	private Tooltip select_none_btn_tooltip;
+	@FXML
+	private Tooltip select_dateDifference_tooltip;
+	@FXML
+	private Tooltip tableDescription_tf_tooltip;
+	
 	@FXML
 	private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
 	@FXML
@@ -155,21 +175,18 @@ public class TableController {
 		for (FolderInfo folderInfo : model.tables().getSortIt_table().getSelectionModel().getSelectedItems()) {
 			UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
 			up.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-
 				@Override
 				public void handle(WorkerStateEvent event) {
 					Messages.sprintf("Updating folderinfo cancelled: " + folderInfo.getFolderPath());
 				}
 			});
 			up.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
 				@Override
 				public void handle(WorkerStateEvent event) {
 					Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
 				}
 			});
 			up.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
 				@Override
 				public void handle(WorkerStateEvent event) {
 					Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath());
@@ -182,7 +199,7 @@ public class TableController {
 	@FXML
 	private void reload_all_action(ActionEvent event) {
 		sprintf("Reload All");
-		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
+//		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
 		LoadingProcess_Task lpt = new LoadingProcess_Task();
 		//
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table);
@@ -269,6 +286,7 @@ public class TableController {
 		this.model.tables().setDeleteKeyPressed(table);
 		this.tableType = tableType;
 		tableDescription_tf.setText(tableName);
+
 		table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		table.setEditable(true);
 		table.setPlaceholder(new Label(bundle.getString("tableContentEmpty")));
@@ -333,16 +351,77 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getCopied()));
 		copied_col.setCellFactory(model.tables().copied_cellFactory);
+		if (hide_btn == null) {
+			Messages.errorSmth(ERROR, "model.tables().getHideButtons(). were null", null, Misc.getLineNumber(), true);
+		}
 
-		model.tables().getHideButtons().setAccelerator(select_all_btn, TableType.SORTED, 2);
+//		if (tableType.equals(TableType.ASITIS.getType())) {
+//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.ASITIS, 3);
+//		} else if (tableType.equals(TableType.SORTED.getType())) {
+//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTED, 2);
+//		} else if (tableType.equals(TableType.SORTIT.getType())) {
+//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTIT, 1);
+//		}
 		Messages.sprintf("sorted table were editable? " + table.isEditable() + " just fold editable?  "
 				+ justFolderName_col.isEditable());
-		select_dateDifference.setTooltip(new Tooltip("Selects by datedifference ratio\nwhich is higher than 1"));
-		select_bad_btn.setTooltip(new Tooltip("Selects folders which hasn't got properly date & time"));
-		select_good_btn.setTooltip(new Tooltip("Selects folders which has proper date & time info"));
-		select_invert_btn.setTooltip(new Tooltip("Invert selection"));
-		select_none_btn.setTooltip(new Tooltip("Selects none"));
-		select_all_btn.setTooltip(new Tooltip("Selects all"));
+//		select_dateDifference.setTooltip(new Tooltip("Selects by datedifference ratio\nwhich is higher than 1"));
+//		select_bad_btn.setTooltip(new Tooltip("Selects folders which hasn't got properly date & time"));
+//		select_good_btn.setTooltip(new Tooltip("Selects folders which has proper date & time info"));
+//		select_invert_btn.setTooltip(new Tooltip("Invert selection"));
+//		select_none_btn.setTooltip(new Tooltip("Selects none"));
+//		select_all_btn.setTooltip(new Tooltip("Selects all"));
+
+		if (tableType == TableType.ASITIS.getType()) {
+			tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
+			tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+		} else if (tableType == TableType.SORTIT.getType()) {
+			tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
+			tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+		} else if (tableType == TableType.SORTED.getType()) {
+			tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
+			tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+		}
+
+		Main.conf.showTooltips_property().addListener(new ChangeListener<Boolean>() {
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if (newValue == true) {
+					updateFolderInfo_btn.setTooltip(updateFolderInfo_btn_tooltip);
+					select_bad_btn.setTooltip(select_bad_btn_tooltip);
+					select_good_btn.setTooltip(select_good_btn_tooltip);
+					select_invert_btn.setTooltip(select_invert_btn_tooltip);
+					select_none_btn.setTooltip(select_none_btn_tooltip);
+					select_dateDifference.setTooltip(select_dateDifference_tooltip);
+
+					if (tableType == TableType.ASITIS.getType()) {
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
+						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+					} else if (tableType == TableType.SORTIT.getType()) {
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
+						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+					} else if (tableType == TableType.SORTED.getType()) {
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
+						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
+					}
+				} else {
+					hideTooltip(updateFolderInfo_btn);
+					hideTooltip(select_bad_btn);
+					hideTooltip(select_good_btn);
+					hideTooltip(select_invert_btn);
+					hideTooltip(select_none_btn);
+					hideTooltip(select_dateDifference);
+
+				}
+			}
+
+		});
+	}
+
+	private void hideTooltip(Control control) {
+
+		control.getTooltip().setText("");
+		control.getTooltip().hide();
+
 	}
 
 }

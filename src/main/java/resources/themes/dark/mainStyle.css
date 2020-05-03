@@ -30,8 +30,17 @@ Main /theme/dark/main.css
 	-fx-mid-text-color: #292929;
 	-fx-light-text-color: white;
 	-fx-font-family: 'Gaduci';
+	/*
+innershadow( <blur-type> , <color> , <number> , <number> , <number> , <number> )
 
-	-fx-effect: innershadow(gaussian, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
+<blur-type> = [ gaussian | one-pass-box | three-pass-box | two-pass-box ]
+<color> The shadow Color.
+<number> The radius of the shadow blur kernel. In the range [0.0 ... 127.0], typical value 10.
+<number> The choke of the shadow. The choke is the portion of the radius where the contribution of the source material will be 100%. The remaining portion of the radius will have a contribution controlled by the blur kernel. A choke of 0.0 will result in a distribution of the shadow determined entirely by the blur algorithm. A choke of 1.0 will result in a solid growth inward of the shadow from the edges to the limit of the radius with a very sharp cutoff to transparency inside the radius. Values should be in the range [0.0 ... 1.0].
+<number> The shadow offset in the x direction, in pixels.
+<number> The shadow offset in the y direction, in pixels.
+*/
+	-fx-effect: innershadow(gaussian, rgba(133, 131, 131, 0.5), 5, 0.4, 2, 3);
 	-fx-font-weight: 900;
 	-fx-font-smoothing-type: lcd;
 	/*    -fx-background-color: -fx-base; */
@@ -171,10 +180,7 @@ Main /theme/dark/main.css
 	-fx-text-fill: -fx-light-text-color;
 }
 .textfield-info {
-	-fx-background-color: derive(-fx-base, 40%);
-	-fx-font-family: 'Gaduci';
-	-fx-font-size: 9pt;
-	-fx-font-weight: 900;
+	-fx-background-color: derive(-fx-base, 24%);
 	-fx-text-fill: -fx-light-text-color;
 }
 .topButtons {
@@ -204,4 +210,7 @@ Main /theme/dark/main.css
 }
 .showAndHide:hover {
 	-fx-background-color: rgb(221, 180, 180);
+}
+.bottomBar {
+	-fx-background-color: derive(-fx-base, 70%);
 }

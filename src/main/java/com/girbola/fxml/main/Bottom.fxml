@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox spacing="3.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
+<HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
    <children>
       <Button fx:id="options_btn" mnemonicParsing="false" onAction="#options_btn_action" text="Options" />
       <Button fx:id="start_copyBatch_btn" mnemonicParsing="false" onAction="#start_copyBatch_btn_action" text="%startBatchCopy" />
@@ -19,7 +19,7 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+      <HBox alignment="TOP_RIGHT" prefHeight="25.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="drive_pane" alignment="CENTER" spacing="7.0">
                <padding>
@@ -34,9 +34,15 @@
             </HBox>
             <Button fx:id="help_btn" mnemonicParsing="false" onAction="#help_btn_action" text="Help" />
          </children>
+         <HBox.margin>
+            <Insets />
+         </HBox.margin>
+         <padding>
+            <Insets right="1.0" />
+         </padding>
       </HBox>
    </children>
    <padding>
-      <Insets bottom="1.0" left="1.0" top="1.0" />
+      <Insets left="1.0" />
    </padding>
 </HBox>

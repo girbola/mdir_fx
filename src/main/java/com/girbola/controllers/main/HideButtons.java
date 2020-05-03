@@ -147,7 +147,6 @@ public class HideButtons {
 	}
 
 	public void setAccelerator(Button button, TableType tableType, int number) {
-		// button.setMnemonicParsing(true);
 		KeyCode numberKey = null;
 		if (number == 1) {
 			numberKey = KeyCode.DIGIT1;
