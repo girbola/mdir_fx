@@ -51,8 +51,11 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.robot.Robot;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -80,11 +83,11 @@ public class Main extends Application {
 	private Model_main model_main = new Model_main();
 
 	private static Stage main_stage;
-	
+
 	private Task<Boolean> load_FileInfosBackToTableViews = null;
-	
+
 	public static SceneSwitcher scene_Switcher = new SceneSwitcher();
-	
+
 	private Scene primaryScene;
 
 	@Override
@@ -160,8 +163,53 @@ public class Main extends Application {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
+						defineScreenBounds(primaryStage);
 						primaryStage.show();
 						model_main.getBottomController().initBottomWorkdirMonitors();
+					}
+
+					private void defineScreenBounds(Stage stage) {
+						int screens = Screen.getScreens().size();
+						if (Main.conf.getWindowStartPosX() == -1 && Main.conf.getWindowStartPosY() == -1
+								&& Main.conf.getWindowStartWidth() == -1 && Main.conf.getWindowStartHeight() == -1) {
+							stage.setX(0);
+							stage.setY(0);
+
+						} else {
+							if (screens > 1) {
+
+								double x = Main.conf.getWindowStartPosX();
+								double y = Main.conf.getWindowStartPosY();
+								double width = Main.conf.getWindowStartWidth();
+								double heigth = Main.conf.getWindowStartHeight();
+								for(Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
+									if(width >= sc.getVisualBounds().getWidth()) {
+										stage.setWidth(width - 100);
+									} else {
+										stage.setWidth(sc.getVisualBounds().getWidth());
+									}
+									if(heigth >= sc.getVisualBounds().getHeight()) {
+										stage.setHeight(Main.conf.getWindowStartWidth());
+									} else {
+										stage.setHeight(Main.conf.getWindowStartHeight());
+									}
+								}
+								
+								stage.setWidth(Main.conf.getWindowStartWidth());
+								
+							} else {
+								stage.setX(0);
+								stage.setY(0);
+
+							}
+						}
+					}
+
+					private Point2D defineScreenWithMouseCursor() {
+						Robot r = new Robot();
+						Point2D d = r.getMousePosition();
+						return d;
+
 					}
 				});
 				return null;
@@ -205,7 +253,6 @@ public class Main extends Application {
 							boolean loaded = model_main.getWorkDir_Handler()
 									.loadAllLists(Paths.get(Main.conf.getWorkDir()));
 							if (loaded) {
-
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
 									Messages.sprintf("fileInfo loading: " + finfo.getOrgPath());
 								}
@@ -215,7 +262,7 @@ public class Main extends Application {
 //							Messages.errorSmth(ERROR, "Test1",null, Misc.getLineNumber(), false);
 //							Messages.errorSmth(ERROR, "Test2",null, Misc.getLineNumber(), true);
 //							Messages.errorSmth(ERROR, "Test23",null, Misc.getLineNumber(), false);
-							
+
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -327,6 +374,20 @@ public class Main extends Application {
 				}
 			});
 		}
+	}
+
+	public Screen getScreen() {
+		Robot r = new Robot();
+		Point2D d = r.getMousePosition();
+		for (Screen sc : Screen.getScreens()) {
+			double minX = sc.getVisualBounds().getMinX();
+			double maxX = sc.getVisualBounds().getMaxX();
+			if (d.getX() >= minX && d.getX() <= maxX) {
+				return sc;
+			}
+
+		}
+		return Screen.getPrimary();
 	}
 
 	public static Stage getMain_stage() {

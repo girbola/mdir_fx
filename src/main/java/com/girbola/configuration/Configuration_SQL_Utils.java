@@ -26,6 +26,7 @@ public class Configuration_SQL_Utils {
 
 	private static final String ERROR = Configuration_SQL_Utils.class.getName();
 	public static final String id = "id";
+
 	public static final String betterQualityThumbs = "betterQualityThumbs";
 	public static final String confirmOnExit = "confirmOnExit";
 	public static final String id_counter = "id_counter";
@@ -36,10 +37,14 @@ public class Configuration_SQL_Utils {
 	public static final String vlcPath = "vlcPath";
 	public static final String vlcSupport = "vlcSupport";
 	public static final String saveDataToHD = "saveDataToHD";
+	public static final String windowStartPosX = "windowStartPosX";
+	public static final String windowStartPosY = "windowStartPosY";
+	public static final String windowStartWidth = "windowStartWidth";
+	public static final String windowStartHeigth = "windowStartHeigth";
 	public static final String workDir = "workDir";
 	public static final String workDirSerialNumber = "workDirSerialNumber";
 
-	public static boolean createConfiguration_columns(Connection connection) {
+	public static boolean createConfiguration_Table(Connection connection) {
 		try {
 			if (!SQL_Utils.isDbConnected(connection)) {
 				Messages.sprintf("createConfiguration connection failed");
@@ -57,7 +62,11 @@ public class Configuration_SQL_Utils {
 		    	    + themePath + " STRING,"
 		    	    + vlcPath + " STRING,"
 		    	    + vlcSupport + " BOOLEAN,"
-		    	    + saveDataToHD + " STRING, "
+		    	    + saveDataToHD + " STRING,"
+		    	    + windowStartPosX  + " DOUBLE DEFAULT ( -1),"
+					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
+					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
+					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
 		    	    + workDirSerialNumber + " STRING UNIQUE NOT NULL, "
 		    	    + workDir + " STRING NOT NULL)";
 			//@formatter:on
@@ -75,6 +84,7 @@ public class Configuration_SQL_Utils {
 			+ " (path STRING UNIQUE)";
 
 	private static int configuration_id = 0;
+
 	public static boolean loadConfiguration(Connection connection, Configuration configuration) {
 		String sql = "SELECT * FROM " + SQL_Enums.CONFIGURATION.getType();
 		try {
@@ -93,6 +103,10 @@ public class Configuration_SQL_Utils {
 				configuration.setVlcPath(rs.getString(vlcPath));
 				configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(vlcSupport)));
 				configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(saveDataToHD)));
+				configuration.setWindowStartPosX(Double.parseDouble(rs.getString(windowStartPosX)));
+				configuration.setWindowStartPosY(Double.parseDouble(rs.getString(windowStartPosY)));
+				configuration.setWindowStartWidth(Double.parseDouble(rs.getString(windowStartWidth)));
+				configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeigth)));
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				configuration.setWorkDir(rs.getString(workDir));
 				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
@@ -214,9 +228,13 @@ public class Configuration_SQL_Utils {
 				+ "'" + vlcPath + "', "
 				+ "'" + vlcSupport + "', "
 				+ "'" + saveDataToHD + "', "
+				 +"'" + windowStartPosX + "', "
+				+ "'" + windowStartPosY + "', "
+				+ "'" + windowStartWidth + "', "
+				+ "'" + windowStartHeigth + "', "
 				+ "'" + workDirSerialNumber + "', "
 				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -231,8 +249,12 @@ public class Configuration_SQL_Utils {
 					pstmt.setString(9, configuration.getVlcPath());
 					pstmt.setBoolean(10, configuration.isVlcSupport());
 					pstmt.setBoolean(11, configuration.isSaveDataToHD());
-					pstmt.setString(12, configuration.getWorkDirSerialNumber());
-					pstmt.setString(13, configuration.getWorkDir());
+					pstmt.setDouble(12, configuration.getWindowStartPosX());
+					pstmt.setDouble(13, configuration.getWindowStartPosY());
+					pstmt.setDouble(14, configuration.getWindowStartWidth());
+					pstmt.setDouble(15, configuration.getWindowStartHeight());
+					pstmt.setString(16, configuration.getWorkDirSerialNumber());
+					pstmt.setString(17, configuration.getWorkDir());
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
 					pstmt.close();

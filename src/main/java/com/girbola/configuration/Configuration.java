@@ -25,6 +25,7 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -57,21 +58,25 @@ public class Configuration extends Configuration_defaults {
 	public void loadConfig() {
 
 		if (!Files.exists(Paths.get(getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
-			boolean sqlDatabase = conf.createConfiguration_db();
-			Messages.sprintf("Configuration databases were created successfully");
+			boolean sqlDatabaseCreated = conf.createConfiguration_db();
+			if (!sqlDatabaseCreated) {
+				Messages.errorSmth(ERROR, "Could not be able to create configuration file", null, Misc.getLineNumber(),
+						true);
+				Messages.sprintf("Could not be able to create configuration file failed");
+			} else {
+				Messages.sprintf("Configuration databases were created successfully");
+			}
 		} else {
 			Messages.sprintf("LOADING CONFIGURATION DATABASE");
 			conf.loadConfig_SQL();
+			conf.defineScreenBounds();
 //			loadIgnored()
 		}
+	}
 
-		/*
-		 * List<Path> list = ArrayUtils.readFileToArray(conf.getIgnoreListPath()); if
-		 * (list.size() > 1) { for (Path file : list) {
-		 * 
-		 * conf.addToIgnoredList(file); } }
-		 */
-
+	private void defineScreenBounds() {
+		
+		
 	}
 
 	public boolean createConfiguration_db() {
@@ -81,7 +86,7 @@ public class Configuration extends Configuration_defaults {
 		Configuration_SQL_Utils.createConfigurationTable_properties(connection);
 		// Create configuration for programs config like themePath, workDir, vlcPath
 		// etc.
-		Configuration_SQL_Utils.createConfiguration_columns(connection);
+		Configuration_SQL_Utils.createConfiguration_Table(connection);
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);
@@ -104,7 +109,6 @@ public class Configuration extends Configuration_defaults {
 
 	public void loadConfig_GUI() {
 		Messages.sprintf("loadConfig_GUI Started");
-
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 
@@ -142,7 +146,4 @@ public class Configuration extends Configuration_defaults {
 	public Model_main getModel() {
 		return this.model;
 	}
-
-	
-
 }
