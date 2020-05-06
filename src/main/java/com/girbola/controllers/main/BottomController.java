@@ -18,13 +18,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
@@ -84,6 +87,79 @@ public class BottomController {
 	private Label drive_connected;
 	@FXML
 	private HBox drive_pane;
+
+	@FXML
+	private Button removeDuplicates_btn;
+	private AtomicInteger duplicateCounter = new AtomicInteger(0);
+	private AtomicInteger folderCounter = new AtomicInteger(0);
+	private AtomicInteger fileCounter = new AtomicInteger(0);
+	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
+	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
+
+	@FXML
+	private void removeDuplicates_btn_action(ActionEvent event) {
+		Iterator<FolderInfo> itFolderInfo = model_main.tables().getSorted_table().getItems().iterator();
+		while (itFolderInfo.hasNext()) {
+			folderCounter.incrementAndGet();
+			FolderInfo folderInfo = itFolderInfo.next();
+			Iterator<FileInfo> itFileInfo = folderInfo.getFileInfoList().iterator();
+			while (itFileInfo.hasNext()) {
+				FileInfo fileInfoToFind = itFileInfo.next();
+				findDuplicate(fileInfoToFind, model_main.tables().getSorted_table(),
+						model_main.tables().getSortIt_table());
+			}
+			TableUtils.updateFolderInfos_FileInfo(folderInfo);
+//			Messages.sprintf("Updated folderInfo: " + folderInfo);
+		}
+		Messages.warningText("There were " + duplicateCounter + " duplicateCounter " + " folderCounter " + folderCounter
+				+ " fileEnterCounter " + fileEnterCounter);
+		duplicateCounter.set(0);
+		folderCounter.set(0);
+		fileCounter.set(0);
+		folderEnterCounter.set(0);
+		fileEnterCounter.set(0);
+	}
+
+	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> sortedTable,
+			TableView<FolderInfo> sortitTable) {
+		Iterator<FolderInfo> sorted = sortedTable.getItems().iterator();
+		Iterator<FolderInfo> sortit = sortitTable.getItems().iterator();
+
+		while (sorted.hasNext()) {
+			Iterator<FileInfo> fileInfo_list = sorted.next().getFileInfoList().iterator();
+			while (fileInfo_list.hasNext()) {
+				FileInfo fileInfoSearch = fileInfo_list.next();
+				if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
+					
+					if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
+							&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
+						if (!fileInfoSearch.isTableDuplicated()) {
+							fileInfoSearch.setTableDuplicated(true);
+							duplicateCounter.incrementAndGet();
+
+							Messages.sprintf("Updated fileInfo: " + fileInfoSearch.getOrgPath());
+						}
+					}
+				}
+			}
+		}
+		while (sortit.hasNext()) {
+			Iterator<FileInfo> fileInfo_list = sortit.next().getFileInfoList().iterator();
+			while (fileInfo_list.hasNext()) {
+				FileInfo fileInfoSearch = fileInfo_list.next();
+				fileEnterCounter.incrementAndGet();
+				if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
+					if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
+							&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
+						if (!fileInfoSearch.isTableDuplicated()) {
+							fileInfoSearch.setTableDuplicated(true);
+							duplicateCounter.incrementAndGet();
+						}
+					}
+				}
+			}
+		}
+	}
 
 	@FXML
 	private void collect_action(ActionEvent event) {

@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -227,10 +228,11 @@ public class Model_main {
 		// erg;
 		Messages.sprintf("Exiting program");
 //		Configuration_SQL_Utils.update_Configuration();
-
+		Configuration_SQL_Utils.update_Configuration();
+		
 		if (Main.getChanged()) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(bundle.getString("saveBeforeExit"));
-
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("saveBeforeExit"));
+			Messages.sprintf("dialog changesDialog width: " +dialog.getWidth());
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				save();

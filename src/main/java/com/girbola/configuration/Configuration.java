@@ -69,14 +69,8 @@ public class Configuration extends Configuration_defaults {
 		} else {
 			Messages.sprintf("LOADING CONFIGURATION DATABASE");
 			conf.loadConfig_SQL();
-			conf.defineScreenBounds();
 //			loadIgnored()
 		}
-	}
-
-	private void defineScreenBounds() {
-		
-		
 	}
 
 	public boolean createConfiguration_db() {

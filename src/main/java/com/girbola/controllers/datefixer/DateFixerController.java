@@ -212,7 +212,6 @@ public class DateFixerController {
 	@FXML
 	FileOperationsController fileOperationsController;
 
-
 	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
@@ -373,7 +372,6 @@ public class DateFixerController {
 //
 //	}
 
-
 	@FXML
 	private void dateFix_btn_action(ActionEvent event) {
 		Path p = Paths.get(model_datefix.getFolderInfo_full().getFolderPath());
@@ -492,7 +490,6 @@ public class DateFixerController {
 		return null;
 	}
 
-
 	public void init(Model_datefix aModel_datefix, Model_main aModel_main, Path currentPath, FolderInfo folderInfo,
 			boolean isImported) {
 		this.model_datefix = aModel_datefix;
@@ -598,7 +595,7 @@ public class DateFixerController {
 			public void handle(WindowEvent event) {
 				Messages.sprintf("Close request pressed");
 				model_datefix.getSelector_exec().shutdownNow();
-				model_datefix.exitDateFixerWindow(model_datefix.getGridPane(), event);
+				model_datefix.exitDateFixerWindow(model_datefix.getGridPane(), Main.scene_Switcher.getWindow(), event);
 				// KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
 				// event.consume();
@@ -625,14 +622,11 @@ public class DateFixerController {
 		rightInfoPanel.setMinWidth(-100);
 		rightInfoPanel.setMaxWidth(-100);
 		rightInfoPanel.setPrefWidth(-100);
-		
 
 		selectorController.getInfoTables_container().setMinWidth(250);
 		selectorController.getInfoTables_container().setMaxWidth(250);
 		selectorController.getInfoTables_container().setPrefWidth(250);
 	}
-
-	
 
 	@FXML
 	private void listFileInfo_btn_action(ActionEvent event) {
@@ -661,8 +655,9 @@ public class DateFixerController {
 				}
 			}
 		}
-		
+
 	}
+
 	@FXML
 	private void select_video_bad_btn_action(ActionEvent event) {
 		Messages.sprintf("select_video_bad_btn_action");

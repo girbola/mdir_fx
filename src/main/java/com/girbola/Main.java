@@ -120,21 +120,22 @@ public class Main extends Application {
 				}
 
 				primaryScene = new Scene(parent);
-				primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
-					@Override
-					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-							Number newValue) {
-						Messages.sprintf("Scene width changing: " + newValue);
-					}
-				});
-				primaryScene.heightProperty().addListener(new ChangeListener<Number>() {
 
-					@Override
-					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-							Number newValue) {
-						Messages.sprintf("Scene height changing: " + newValue);
-					}
-				});
+//				primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
+//					@Override
+//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+//							Number newValue) {
+//						Messages.sprintf("Scene width changing: " + newValue);
+//					}
+//				});
+//				primaryScene.heightProperty().addListener(new ChangeListener<Number>() {
+//
+//					@Override
+//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+//							Number newValue) {
+//						Messages.sprintf("Scene height changing: " + newValue);
+//					}
+//				});
 
 				primaryScene.getStylesheets()
 						.add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
@@ -146,10 +147,9 @@ public class Main extends Application {
 				primaryStage.setTitle(conf.getProgramName());
 //				stage.setMaxWidth(conf.getScreenBounds().getWidth());
 //				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
-				// stage.setMinWidth(600);
-				// stage.setMinHeight(600);
+				primaryStage.setMinWidth(800);
+				primaryStage.setMinHeight(600);
 				primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
-
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
 							Boolean newValue) {
@@ -163,6 +163,7 @@ public class Main extends Application {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
+//						
 						defineScreenBounds(primaryStage);
 						primaryStage.show();
 						model_main.getBottomController().initBottomWorkdirMonitors();
@@ -182,25 +183,42 @@ public class Main extends Application {
 								double y = Main.conf.getWindowStartPosY();
 								double width = Main.conf.getWindowStartWidth();
 								double heigth = Main.conf.getWindowStartHeight();
-								for(Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
-									if(width >= sc.getVisualBounds().getWidth()) {
-										stage.setWidth(width - 100);
-									} else {
-										stage.setWidth(sc.getVisualBounds().getWidth());
+								if (x < 0) {
+									x = 0;
+								}
+								if (y < 0) {
+									y = 0;
+								}
+								/*
+								 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0, maxY=768.0, width=1366.0, height=768.0]
+								   window x pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0 height 728.0
+								   sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0, minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0]
+								   window x pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 3440.0 height 1400.0
+								 * 
+								 */
+								for (Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
+									Messages.sprintf("sc.getBounds().getHeight(): " + sc.getBounds());
+									Messages.sprintf("window x pos: " + x + " y POS: " + y + " window width: " + width
+											+ " height: " + heigth + " sc.getVisualBounds().getWidth() "
+											+ sc.getVisualBounds().getWidth() + " height "
+											+ sc.getVisualBounds().getHeight());
+									if (width >= sc.getBounds().getWidth()) {
+										width = (sc.getBounds().getWidth() - 100);
 									}
-									if(heigth >= sc.getVisualBounds().getHeight()) {
-										stage.setHeight(Main.conf.getWindowStartWidth());
-									} else {
-										stage.setHeight(Main.conf.getWindowStartHeight());
+
+									if (heigth >= sc.getBounds().getHeight()) {
+										heigth = (sc.getBounds().getHeight() - 100);
 									}
 								}
-								
-								stage.setWidth(Main.conf.getWindowStartWidth());
-								
+								stage.setX(x);
+								stage.setY(y);
+								stage.setWidth(width);
+								stage.setHeight(heigth);
 							} else {
 								stage.setX(0);
 								stage.setY(0);
-
+								stage.setWidth(800);
+								stage.setHeight(640);
 							}
 						}
 					}
@@ -218,10 +236,8 @@ public class Main extends Application {
 		LoadingProcess_Task lpt = new LoadingProcess_Task();
 
 		mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
 			@Override
 			public void handle(WorkerStateEvent event) {
-
 				Messages.sprintf("main succeeded");
 				scene_Switcher.setWindow(primaryStage);
 				scene_Switcher.setScene_main(primaryScene);
@@ -263,6 +279,52 @@ public class Main extends Application {
 //							Messages.errorSmth(ERROR, "Test2",null, Misc.getLineNumber(), true);
 //							Messages.errorSmth(ERROR, "Test23",null, Misc.getLineNumber(), false);
 
+							primaryStage.xProperty().addListener(new ChangeListener<Number>() {
+
+								@Override
+								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+										Number newValue) {
+									if (Main.conf != null) {
+										Main.conf.setWindowStartPosX((double) newValue);
+										Messages.sprintf("windowstartposX: " + newValue);
+									}
+								}
+							});
+							primaryStage.yProperty().addListener(new ChangeListener<Number>() {
+
+								@Override
+								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+										Number newValue) {
+									if (Main.conf != null) {
+										Main.conf.setWindowStartPosY((double) newValue);
+										Messages.sprintf("windowstartposY: " + newValue);
+									}
+								}
+							});
+							primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
+
+								@Override
+								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+										Number newValue) {
+									if (Main.conf != null) {
+										Main.conf.setWindowStartWidth((double) newValue);
+										Messages.sprintf("setWindowStartWidth: " + newValue);
+									}
+								}
+							});
+							primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
+
+								@Override
+								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+										Number newValue) {
+									if (Main.conf != null) {
+										Main.conf.setWindowStartHeight((double) newValue);
+										Messages.sprintf("setWindowStartWidth: " + newValue);
+									}
+								}
+							});
+//							Main.conf.windowStartPosX_property().bind(primaryScene.xProperty());
+//							Main.conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {

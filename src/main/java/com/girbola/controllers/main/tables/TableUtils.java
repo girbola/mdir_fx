@@ -271,7 +271,7 @@ public class TableUtils {
 		}
 		Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video));
 		folderInfo.setConfirmed(confirmed);
-		folderInfo.setFolderFiles((image + raw + video));
+		folderInfo.setFolderFiles((image + raw + video) - ignored);
 
 		folderInfo.setBadFiles(bad);
 
@@ -546,7 +546,7 @@ public class TableUtils {
 		Messages.sprintf("Can't find!: " + current);
 		return false;
 	}
-	
+
 	public static boolean hasDuplicates(FolderInfo folderInfo, TableView<FolderInfo> table) {
 		if (table.getItems().isEmpty()) {
 			return false;

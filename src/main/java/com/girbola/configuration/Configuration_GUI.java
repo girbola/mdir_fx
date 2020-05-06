@@ -11,6 +11,7 @@ import com.girbola.sql.SQL_Utils;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -26,10 +27,77 @@ class Configuration_GUI {
 	private BooleanProperty showFullPath = new SimpleBooleanProperty(true);
 	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
 	private BooleanProperty savingThumb = new SimpleBooleanProperty(true);
+
+	private SimpleDoubleProperty windowStartPosX = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartPosY = new SimpleDoubleProperty(-1);
+
+	private SimpleDoubleProperty windowStartWidth = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartHeight = new SimpleDoubleProperty(-1);
+
 	private SimpleStringProperty workDir = new SimpleStringProperty("null");
 	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("null");
 
 	private String themePath = ThemePath.DARK.getType();
+
+	public SimpleDoubleProperty windowStartPosX_property() {
+		return this.windowStartPosX;
+	}
+
+	public void setWindowStartPosX(SimpleDoubleProperty windowStartPosX) {
+		this.windowStartPosX = windowStartPosX;
+	}
+
+	public SimpleDoubleProperty windowStartPosY_property() {
+		return this.windowStartPosY;
+	}
+
+	public void setWindowStartPosY(SimpleDoubleProperty windowStartPosY) {
+		this.windowStartPosY = windowStartPosY;
+	}
+
+	public SimpleDoubleProperty windowStartWidth_property() {
+		return this.windowStartWidth;
+	}
+
+	public void setWindowStartWidth(SimpleDoubleProperty windowStartWidth) {
+		this.windowStartWidth = windowStartWidth;
+	}
+
+	public SimpleDoubleProperty windowStartHeight_property() {
+		return this.windowStartHeight;
+	}
+
+	public void setWindowStartPosX(double value) {
+		this.windowStartPosX.set(value);
+	}
+
+	public void setWindowStartPosY(double value) {
+		this.windowStartPosY.set(value);
+	}
+
+	public void setWindowStartWidth(double value) {
+		this.windowStartWidth.set(value);
+	}
+
+	public void setWindowStartHeight(double value) {
+		this.windowStartHeight.set(value);
+	}
+
+	public double getWindowStartPosX() {
+		return this.windowStartPosX.get();
+	}
+
+	public double getWindowStartPosY() {
+		return this.windowStartPosY.get();
+	}
+
+	public double getWindowStartWidth() {
+		return this.windowStartWidth.get();
+	}
+
+	public double getWindowStartHeight() {
+		return this.windowStartHeight.get();
+	}
 
 	public boolean isSavingThumb() {
 		return this.savingThumb.get();

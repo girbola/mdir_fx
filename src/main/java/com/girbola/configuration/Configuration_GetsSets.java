@@ -40,43 +40,8 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	private final String fileInfo_db_fileName = "fileInfo.db";
 	private final String thumbInfo_db_fileName = "thumbinfo.db";
 
-	private double windowStartPosX;
-	private double windowStartPosY;
-	private double windowStartWidth;
-	private double windowStartHeight;
-
 	private ObservableList<Path> ignoredFoldersScanList = FXCollections.observableArrayList();
 
-	public void setWindowStartPosX(double value) {
-		this.windowStartPosX = value;
-	}
-
-	public void setWindowStartPosY(double value) {
-		this.windowStartPosY = value;
-	}
-
-	public void setWindowStartWidth(double value) {
-		this.windowStartWidth = value;
-	}
-
-	public void setWindowStartHeight(double value) {
-		this.windowStartHeight = value;
-	}
-	public double getWindowStartPosX() {
-		return windowStartPosX;
-	}
-
-	public double getWindowStartPosY() {
-		return windowStartPosY;
-	}
-
-	public double getWindowStartWidth() {
-		return windowStartWidth;
-	}
-
-	public double getWindowStartHeight() {
-		return windowStartHeight;
-	}
 
 //    public final String getFolderInfo_FileName() {
 //	return folderInfo_FileName;

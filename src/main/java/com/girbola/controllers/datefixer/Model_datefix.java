@@ -84,6 +84,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
 
@@ -743,12 +744,13 @@ public class Model_datefix {
 		}
 	}
 
-	public void exitDateFixerWindow(GridPane gridPane, WindowEvent event) {
+	public void exitDateFixerWindow(GridPane gridPane, Window owner, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
 		model_Main.getMonitorExternalDriveConnectivity().cancel();
 		if (Main.getChanged()) {
 			Messages.sprintf("changes made");
-			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(bundle.getString("changesMade"));
+			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
+			Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
 			Optional<ButtonType> result = changesDialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				acceptEverything();
@@ -789,7 +791,9 @@ public class Model_datefix {
 		}
 		int badDates = checkIfRedDates(gridPane);
 		if (badDates != 0) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(bundle.getString("badFilesFoundWantToClose"));
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("badFilesFoundWantToClose"));
+		
+			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
