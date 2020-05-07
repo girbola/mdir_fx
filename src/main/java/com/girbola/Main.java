@@ -57,6 +57,7 @@ import javafx.scene.Scene;
 import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 public class Main extends Application {
@@ -149,6 +150,9 @@ public class Main extends Application {
 //				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
 				primaryStage.setMinWidth(800);
 				primaryStage.setMinHeight(600);
+				scene_Switcher.setWindow(primaryStage);
+				scene_Switcher.setScene_main(primaryScene);
+
 				primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
@@ -163,7 +167,6 @@ public class Main extends Application {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
-//						
 						defineScreenBounds(primaryStage);
 						primaryStage.show();
 						model_main.getBottomController().initBottomWorkdirMonitors();
@@ -190,10 +193,13 @@ public class Main extends Application {
 									y = 0;
 								}
 								/*
-								 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0, maxY=768.0, width=1366.0, height=768.0]
-								   window x pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0 height 728.0
-								   sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0, minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0]
-								   window x pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 3440.0 height 1400.0
+								 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0,
+								 * maxY=768.0, width=1366.0, height=768.0] window x pos: 250.0 y POS: 73.0
+								 * window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0
+								 * height 728.0 sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0,
+								 * minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0] window x
+								 * pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0
+								 * sc.getVisualBounds().getWidth() 3440.0 height 1400.0
 								 * 
 								 */
 								for (Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
@@ -239,8 +245,8 @@ public class Main extends Application {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("main succeeded");
-				scene_Switcher.setWindow(primaryStage);
-				scene_Switcher.setScene_main(primaryScene);
+//				scene_Switcher.setWindow(primaryStage);
+//				scene_Switcher.setScene_main(primaryScene);
 
 				Misc.checkOS();
 				conf.loadConfig_GUI();

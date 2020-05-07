@@ -99,6 +99,7 @@ private Window owner;
 		Stage loadingStage = new Stage();
 		loadingStage.initOwner(owner);
 		loadingStage.initStyle(StageStyle.UNDECORATED);
+		Messages.sprintf("Owner is: " + loadingStage.getOwner());
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 		loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
 		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "dialogs.css").toExternalForm());
