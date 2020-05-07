@@ -7,23 +7,14 @@
 package com.girbola.controllers.datefixer;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static com.girbola.misc.Misc.getLineNumber;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -44,7 +35,6 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
-import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -53,7 +43,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -301,7 +290,7 @@ public class DateFixerController {
 			Messages.warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		loadingProcess_task.setTask(null);
 		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
 				loadingProcess_task);
@@ -312,7 +301,7 @@ public class DateFixerController {
 
 		model_datefix.getSelectionModel().clearAll();
 		model_datefix.deselectAllExifDataSelectors();
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
 		//
 		// AddToGridPane2 apg2 = new AddToGridPane2(model_datefix,
@@ -526,7 +515,7 @@ public class DateFixerController {
 		events_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 			}
@@ -535,7 +524,7 @@ public class DateFixerController {
 		locations_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 			}
@@ -543,7 +532,7 @@ public class DateFixerController {
 		copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 			}
@@ -551,7 +540,7 @@ public class DateFixerController {
 		ignored_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 			}
@@ -865,7 +854,7 @@ public class DateFixerController {
 			}
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 			} else {

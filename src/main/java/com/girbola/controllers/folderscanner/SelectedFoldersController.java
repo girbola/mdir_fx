@@ -70,7 +70,7 @@ public class SelectedFoldersController {
 		}
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
 		model_main.getMonitorExternalDriveConnectivity().cancel();
-		model_main.populate().populateTables_FolderScanner_list();
+		model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
 		
 		Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
 		stage.close();

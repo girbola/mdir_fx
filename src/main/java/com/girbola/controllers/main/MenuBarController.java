@@ -227,7 +227,7 @@ public class MenuBarController {
 				return null;
 			}
 		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
+		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override

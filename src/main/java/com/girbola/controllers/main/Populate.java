@@ -30,6 +30,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Window;
 
 /**
  *
@@ -50,7 +51,7 @@ public class Populate {
 		ConcurrencyUtils.initExecutionService();
 	}
 
-	public void populateTables_FolderScanner_list() {
+	public void populateTables_FolderScanner_list(Window owner) {
 		sprintf("SorterTest action started");
 		Main.setProcessCancelled(false);
 
@@ -82,7 +83,7 @@ public class Populate {
 			sprintf("SelectedFolder is: " + pt);
 		}
 		Task<List<Path>> createFileList = new SubList(list);
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(owner);
 		createFileList.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {

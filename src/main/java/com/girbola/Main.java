@@ -233,7 +233,7 @@ public class Main extends Application {
 				return null;
 			}
 		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
+		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 
 		mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override

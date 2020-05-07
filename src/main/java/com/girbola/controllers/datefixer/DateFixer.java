@@ -141,7 +141,7 @@ public class DateFixer extends Task<Void> {
 	protected void succeeded() {
 		sprintf("dateFixLoader.setOnSucceeded");
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 
 		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),
 				model_datefix, loadingProcess_task);

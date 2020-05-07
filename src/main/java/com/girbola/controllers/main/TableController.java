@@ -200,7 +200,7 @@ public class TableController {
 	private void reload_all_action(ActionEvent event) {
 		sprintf("Reload All");
 //		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
+		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		//
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table);
 		updateTableValuesUsingFileInfo_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {

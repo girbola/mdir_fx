@@ -34,6 +34,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 public class LoadingProcess_Task {
@@ -44,10 +45,12 @@ public class LoadingProcess_Task {
 	private double yOffset;
 //	private Scene inheritedScene;
 	private Parent parent = null;
+private Window owner;
 
-	public LoadingProcess_Task() {
+	public LoadingProcess_Task(Window owner) {
 //		this.inheritedScene = inheritedScene;
 		loadGUI();
+		this.owner = owner;
 	}
 
 	/*
@@ -94,8 +97,10 @@ public class LoadingProcess_Task {
 		lpc.init(model_loading);
 		Scene loadingScene = new Scene(parent);
 		Stage loadingStage = new Stage();
+		loadingStage.initOwner(owner);
 		loadingStage.initStyle(StageStyle.UNDECORATED);
-		loadingStage.setTitle("loadingprocess_task");
+//		loadingStage.setX(Main.conf.getWindowStartPosX());
+		loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
 		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "dialogs.css").toExternalForm());
 
 		xOffset = loadingStage.getX();
@@ -212,6 +217,7 @@ public class LoadingProcess_Task {
 		Messages.sprintf("Showing stage!");
 
 		Stage stage = Main.scene_Switcher.getWindow_loadingprogress();
+		stage.initOwner(owner);
 		if (stage != null) {
 			stage.show();
 		} else {

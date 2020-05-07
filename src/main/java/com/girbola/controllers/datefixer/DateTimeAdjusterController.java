@@ -385,7 +385,7 @@ public class DateTimeAdjusterController {
 				return null;
 			}
 		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
+		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		changeDates.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {

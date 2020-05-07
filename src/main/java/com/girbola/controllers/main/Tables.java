@@ -29,6 +29,7 @@ import com.girbola.controllers.main.tables.cell.TableCell_DateDifference_Status;
 import com.girbola.controllers.main.tables.cell.TableCell_DateFixer;
 import com.girbola.controllers.main.tables.cell.TableCell_ProgressBar;
 import com.girbola.controllers.main.tables.cell.TableCell_Status;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -231,19 +232,19 @@ public class Tables {
 		table.setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == (KeyCode.DELETE)) {
 				ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
-				Dialog<ButtonType> dialog = new Dialog<>();
+				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("removePermanently"));
 				dialog.initStyle(StageStyle.UNDECORATED);
 
-				DialogPane dialogPane = new DialogPane();
-				dialogPane.setPrefHeight(Math.floor(200 / 1.5));
-				dialogPane.setContentText(bundle.getString("removePermanently"));
-				dialog.setDialogPane(dialogPane);
+//				DialogPane dialogPane = new DialogPane();
+//				dialogPane.setPrefHeight(Math.floor(200 / 1.5));
+//				dialogPane.setContentText();
+//				dialog.setDialogPane(dialogPane);
+//
+//				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
+//				ButtonType no = new ButtonType(bundle.getString("no"), ButtonBar.ButtonData.NO);
+//				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
-				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
-				ButtonType no = new ButtonType(bundle.getString("no"), ButtonBar.ButtonData.NO);
-				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-
-				dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
+//				dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
 
 				Optional<ButtonType> result = dialog.showAndWait();
 				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
@@ -453,63 +454,6 @@ public class Tables {
 			}
 			((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(true);
 		});
-	}
-
-	void updateFolderInfoFileInfo_(TableView<FolderInfo> table) {
-		ConcurrencyUtils.initExecutionService();
-
-//		Stage stage = (Stage) table.getScene().getWindow();
-		AtomicInteger ai = new AtomicInteger(0);
-		Task<Void> task = new Task<Void>() {
-			@SuppressWarnings("deprecation")
-			@Override
-			protected Void call() throws Exception {
-				updateProgress(ai.get(), table.getSelectionModel().getSelectedItems().size());
-				sprintf("Update Progress: " + ai.get() + " max " + table.getSelectionModel().getSelectedItems().size());
-				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					sprintf("Reloading: " + folderInfo.getFolderPath());
-					List<FileInfo> list = createFileInfo_list(folderInfo);
-					if (list != null) {
-						folderInfo.setFileInfoList(list);
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
-						TableUtils.refreshTableContent(table);
-						updateProgress(ai.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());
-						sprintf("Update Progress: " + ai.get() + " max "
-								+ table.getSelectionModel().getSelectedItems().size());
-						Main.setChanged(true);
-					} else {
-						Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-					}
-				}
-				return null;
-			}
-		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf("updateTableValuesFileInfo done successfully");
-				lpt.closeStage();
-			}
-		});
-
-		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.warningText("Creating file info cancelled");
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-			}
-		});
-		lpt.setTask(task);
-		ConcurrencyUtils.exec[ConcurrencyUtils.getExecCounter()].submit(task);
-
 	}
 
 	public void registerTableView_obs_listener() {

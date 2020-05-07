@@ -35,8 +35,8 @@ public class Dialogs {
 
 			}
 		});
-		dialog.setHeight(150);
-		dialog.setWidth(400);
+//		dialog.setHeight(150);
+//		dialog.setWidth(400);
 //		double main_width = Main.conf.getWindowStartWidth();
 //		double main_height = Main.conf.getWindowStartHeight();
 //		double x = Main.conf.getWindowStartPosX();

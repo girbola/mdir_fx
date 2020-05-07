@@ -229,16 +229,21 @@ public class Model_main {
 		Messages.sprintf("Exiting program");
 //		Configuration_SQL_Utils.update_Configuration();
 		Configuration_SQL_Utils.update_Configuration();
-		
+
 		if (Main.getChanged()) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("saveBeforeExit"));
-			Messages.sprintf("dialog changesDialog width: " +dialog.getWidth());
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+					bundle.getString("saveBeforeExit"));
+			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				save();
 				getMonitorExternalDriveConnectivity().cancel();
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+				Messages.sprintf("No pressed. This is not finished!");
+				Messages.warningText("Not ready yet!");
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-
+				Messages.sprintf("Cancel pressed. This is not finished!");
+				Messages.warningText("Not ready yet!");
 			}
 		}
 		if (conf.isConfirmOnExit()) {
