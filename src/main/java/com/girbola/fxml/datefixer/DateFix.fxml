@@ -423,7 +423,7 @@
                                   <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                                     <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                                     <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-                                  <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                  <RowConstraints vgrow="NEVER" />
                                     <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                                 </rowConstraints>
                                  <children>
@@ -432,7 +432,7 @@
             																<Font size="10.0" />
             															</font>
             														</Button>
-            														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" minWidth="90.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
             															<font>
             																<Font size="10.0" />
             															</font>
@@ -448,27 +448,27 @@
                                        </tooltip>
                                     </Button>
                                     <Label text="%action" />
-												<Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" mnemonicParsing="false" onAction="#folderize_btn_action" prefWidth="71.0" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+												<Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" minWidth="90.0" mnemonicParsing="false" onAction="#folderize_btn_action" prefWidth="71.0" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                        <tooltip>
                                           <Tooltip text="Make folder and choose to copy now or later" />
                                        </tooltip>
                                     </Button>
 												<Label text="%batch" GridPane.columnIndex="1" />
-                                    <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="71.0" text="%addToMisc" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                    <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="71.0" text="%addToMisc" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                        <tooltip>
                                           <Tooltip text="%copyToMiscTip" />
                                        </tooltip>
                                     </Button>
-                                    <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minHeight="40.0" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" prefWidth="71.0" text="%addToAsItIs" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                    <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minHeight="40.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" prefWidth="71.0" text="%addToAsItIs" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                        <tooltip>
                                           <Tooltip text="%copyToAsItIsTip" />
                                        </tooltip>
                                     </Button>
-            														<Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer" GridPane.rowIndex="3">
-            															<font>
-            																<Font size="10.0" />
-            															</font>
-            														</Button>
+                                    <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minHeight="40.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" prefWidth="71.0" text="%addToAsUnsorted" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <tooltip>
+                                          <Tooltip text="%copyToAsItIsTip" />
+                                       </tooltip>
+                                    </Button>
                                  </children>
                                  <padding>
                                     <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
@@ -558,6 +558,11 @@
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
+            														<Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            															<font>
+            																<Font size="10.0" />
+            															</font>
+            														</Button>
                   											</children>
                   											<columnConstraints>
                   												<ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
@@ -572,6 +577,7 @@
                   												<RowConstraints fillHeight="false" vgrow="NEVER" />
                   												<RowConstraints fillHeight="false" vgrow="NEVER" />
                   												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" vgrow="NEVER" />
                   											</rowConstraints>
                                  <padding>
                                     <Insets bottom="2.0" left="5.0" right="5.0" top="15.0" />

@@ -202,11 +202,44 @@ public class DateFixerController {
 	FileOperationsController fileOperationsController;
 
 	@FXML
+	private Button addToUnsorted_btn;
+
+	@FXML
+	private void addToUnsorted_btn_action(ActionEvent event) {
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
+		ConcurrencyUtils.stopExecThread();
+
+		Messages.warningText("Not ready yet!");
+	}
+
+	@FXML
 	private Button addToAsItIs_btn;
+
 	@FXML
 	private void addToAsItIs_btn_action(ActionEvent event) {
 //		addToAsItIs
+		// Copy files to workdir root as it is. If folder name is empty files will be
+		// under Unsorted
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
+		ConcurrencyUtils.stopExecThread();
+
+		Messages.warningText("Not ready yet!");
 	}
+
 	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
