@@ -19,7 +19,7 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
    <children>
-      <GridPane alignment="CENTER_LEFT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
           <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
           <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
@@ -31,17 +31,17 @@
         </columnConstraints>
         <rowConstraints>
             <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-          <RowConstraints valignment="CENTER" />
           <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-            <RowConstraints fillHeight="false" prefHeight="50.0" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
         </rowConstraints>
          <children>
-            <Label prefWidth="40.0" text="%start" GridPane.rowIndex="1">
+            <Label text="%start" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                <GridPane.margin>
                   <Insets />
                </GridPane.margin>
                <padding>
-                  <Insets left="2.0" />
+                  <Insets bottom="5.0" left="2.0" right="10.0" top="5.0" />
                </padding>
                <font>
                   <Font size="10.0" />
@@ -146,9 +146,9 @@
                   </VBox>
                </children>
             </HBox>
-            <Label prefWidth="40.0" text="%end" GridPane.rowIndex="2">
+            <Label text="%end" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                <padding>
-                  <Insets left="2.0" />
+                  <Insets bottom="5.0" left="2.0" right="10.0" top="5.0" />
                </padding>
                <font>
                   <Font size="10.0" />
@@ -289,7 +289,7 @@
                <tooltip>
                   <Tooltip text="%selectRangeTooltip" />
                </tooltip></Button>
-            <Button fx:id="setDateTimeRange_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefWidth="80.0" text="%applyDateAndTime" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxWidth="107.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="50.0" prefWidth="107.0" text="%applyDateAndTime" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
                <tooltip>
                   <Tooltip text="%applyDateAndTimeTooltip" />
                </tooltip></Button>
