@@ -123,6 +123,9 @@
 	-fx-stroke-width: 1;
 	-fx-font-smoothing-type: lcd;
 }
+.label {
+	-fx-font-size: 10px;
+}
 .list-cell:filled:selected:focused,
 .list-cell:filled:selected {
 	/* 3:, 4: */
@@ -541,4 +544,12 @@ selector_scrollPane .scroll-bar:vertical .increment-button,
 	-fx-background-color: red;
 	-fx-background-color: -fx-base, transparent, transparent,
 		linear-gradient(whitesmoke 0%, white 25%, white 75%, whitesmoke 100%);
+}
+.closeButton {
+	/* -fx-insets: 12px 0 0 0; */
+	-fx-background-color: rgb(212, 22, 22);
+	-fx-background-radius: 10px;
+	-fx-border-color: rgb(252, 195, 89);
+	-fx-border-radius: 10px;
+	-fx-border-width: 0.2em;
 }

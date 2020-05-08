@@ -298,7 +298,7 @@ public class OperateFiles extends Task<Boolean> {
 								boolean added = model_main.getWorkDir_Handler().add(fileInfo);
 								if (added) {
 									Messages.sprintf("FileInfo added to destination succesfully");
-									model_main.getWorkDir_Handler().add(fileInfo);
+//									model_main.getWorkDir_Handler().add(fileInfo);
 								} else {
 									Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
 								}

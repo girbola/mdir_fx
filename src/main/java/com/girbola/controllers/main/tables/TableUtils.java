@@ -269,9 +269,9 @@ public class TableUtils {
 				map.put(localDate, 0);
 			}
 		}
-		Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video));
+		Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video) + " ignored: " + ignored);
 		folderInfo.setConfirmed(confirmed);
-		folderInfo.setFolderFiles((image + raw + video) - ignored);
+		folderInfo.setFolderFiles(image + raw + video);
 
 		folderInfo.setBadFiles(bad);
 
@@ -282,8 +282,6 @@ public class TableUtils {
 		folderInfo.setGoodFiles(good);
 
 		folderInfo.setCopied(copied);
-
-		// folderInfo.setFolderImageFiles(image);
 
 		folderInfo.setFolderSize(size);
 		folderInfo.setFolderImageFiles(image);
@@ -454,6 +452,7 @@ public class TableUtils {
 
 	public static void refreshTableContent(TableView<?> table) {
 		if (table == null) {
+			Messages.sprintfError("refreshTableContent - Table were null at TableUtils. Line: " + Misc.getLineNumber());
 			return;
 		}
 		if (table.getColumns().get(0) != null) {

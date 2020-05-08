@@ -108,7 +108,7 @@ public class CalculateFolderContent extends
 	
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
 		Path fileInfo_databaseFilePath = Paths.get(folderInfo.getFolderPath() + File.separator + conf.getFileInfo_db_fileName());
-		Messages.sprintf("sortit thumbFilePath is: " + fileInfo_databaseFilePath);
+		Messages.sprintf("handleFolderInfo trying to find folderinfo path: " + fileInfo_databaseFilePath);
 		if (Files.exists(fileInfo_databaseFilePath)) {
 
 			FolderInfo loaded_FolderInfo = null;

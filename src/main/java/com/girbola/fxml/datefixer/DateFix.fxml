@@ -36,7 +36,7 @@
 							<children>
 								<VBox minWidth="-Infinity" spacing="3.0" HBox.hgrow="NEVER">
 									<children>
-										<GridPane hgap="4.0" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
+										<GridPane hgap="4.0" vgap="1.0" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
 											<columnConstraints>
                                     <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
 												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
@@ -443,10 +443,31 @@
                                                 <Tooltip text="%copyToMiscTip" />
                                              </tooltip>
                                           </Button>
+                                          <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" layoutX="10.0" layoutY="55.0" minHeight="40.0" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" prefWidth="71.0" text="%addToAsItIs" textAlignment="CENTER" wrapText="true">
+                                             <tooltip>
+                                                <Tooltip text="%copyToAsItIsTip" />
+                                             </tooltip>
+                                          </Button>
                                        </children>
                                     </VBox>
                                  </children>
                               </HBox>
+      														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" VBox.vgrow="NEVER">
+      															<font>
+      																<Font size="10.0" />
+      															</font>
+                                 <VBox.margin>
+                                    <Insets top="15.0" />
+                                 </VBox.margin>
+      														</Button>
+      														<Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" styleClass="closeButton" text="%close" VBox.vgrow="NEVER">
+      															<font>
+      																<Font size="10.0" />
+      															</font>
+                                 <VBox.margin>
+                                    <Insets top="10.0" />
+                                 </VBox.margin>
+      														</Button>
 									</children>
                            <padding>
                               <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
@@ -454,19 +475,9 @@
 								</VBox>
                   								<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
                   									<children>
-                  										<GridPane hgap="2.0" minWidth="-Infinity" vgap="2.0" HBox.hgrow="NEVER">
+                  										<GridPane hgap="2.0" vgap="2.0" HBox.hgrow="NEVER">
                   											<children>
-                  												<Label focusTraversable="false" text="%images">
-                  													<font>
-                  														<Font size="10.0" />
-                  													</font>
-                  												</Label>
-                  												<Label focusTraversable="false" text="%videos" GridPane.rowIndex="1">
-                  													<font>
-                  														<Font size="10.0" />
-                  													</font>
-                  												</Label>
-                  												<Label focusTraversable="false" text="%bad" GridPane.rowIndex="4">
+                  												<Label focusTraversable="false" graphicTextGap="0.0" text="%images">
                   													<font>
                   														<Font size="10.0" />
                   													</font>
@@ -476,16 +487,21 @@
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
+                  												<Label focusTraversable="false" text="%videos" GridPane.rowIndex="1">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
                   												<Label fx:id="videos_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                   													<font>
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
-                  												<Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="6">
-                  													<font>
-                  														<Font size="10.0" />
-                  													</font>
-                  												</Label>
+                  												<Separator GridPane.columnSpan="2" GridPane.rowIndex="2">
+                  													<padding>
+                  														<Insets top="3.0" />
+                  													</padding>
+                  												</Separator>
                   												<Label focusTraversable="false" text="%good" GridPane.rowIndex="3">
                   													<font>
                   														<Font size="10.0" />
@@ -496,12 +512,7 @@
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
-                  												<Label focusTraversable="false" text="%confirmed" GridPane.rowIndex="5">
-                  													<font>
-                  														<Font size="10.0" />
-                  													</font>
-                  												</Label>
-                  												<Label focusTraversable="false" text="%suggested" GridPane.rowIndex="6">
+                  												<Label focusTraversable="false" text="%bad" GridPane.rowIndex="4">
                   													<font>
                   														<Font size="10.0" />
                   													</font>
@@ -511,16 +522,26 @@
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
+                  												<Label focusTraversable="false" text="%confirmed" GridPane.rowIndex="5">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
                   												<Label fx:id="confirmed_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                   													<font>
                   														<Font size="10.0" />
                   													</font>
                   												</Label>
-                  												<Separator GridPane.columnSpan="2" GridPane.rowIndex="2">
-                  													<padding>
-                  														<Insets top="3.0" />
-                  													</padding>
-                  												</Separator>
+                  												<Label focusTraversable="false" text="%suggested" GridPane.rowIndex="6">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
                   												<Label focusTraversable="false" text="%ignored" GridPane.rowIndex="7">
                   													<font>
                   														<Font size="10.0" />
@@ -553,21 +574,11 @@
                                     <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                                  </HBox.margin>
                   										</GridPane>
-                  										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" minWidth="82.0" spacing="2.0" HBox.hgrow="SOMETIMES">
+                  										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" spacing="2.0" HBox.hgrow="SOMETIMES">
                   											<children>
                   												<VBox VBox.vgrow="NEVER">
                   													<children>
-                  														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply">
-                  															<font>
-                  																<Font size="10.0" />
-                  															</font>
-                  														</Button>
-                  														<Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" disable="true" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer">
-                  															<font>
-                  																<Font size="10.0" />
-                  															</font>
-                  														</Button>
-                  														<Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" text="%close">
+                  														<Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer">
                   															<font>
                   																<Font size="10.0" />
                   															</font>

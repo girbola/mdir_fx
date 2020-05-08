@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
@@ -95,9 +96,11 @@ public class BottomController {
 	private AtomicInteger fileCounter = new AtomicInteger(0);
 	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
 	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
+	private AtomicBoolean folderNeedsToUpdate = new AtomicBoolean(false);
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
+		folderNeedsToUpdate.set(false);
 		Iterator<FolderInfo> itFolderInfo = model_main.tables().getSorted_table().getItems().iterator();
 		while (itFolderInfo.hasNext()) {
 			folderCounter.incrementAndGet();
@@ -105,12 +108,29 @@ public class BottomController {
 			Iterator<FileInfo> itFileInfo = folderInfo.getFileInfoList().iterator();
 			while (itFileInfo.hasNext()) {
 				FileInfo fileInfoToFind = itFileInfo.next();
-				findDuplicate(fileInfoToFind, model_main.tables().getSorted_table(),
-						model_main.tables().getSortIt_table());
+				findDuplicate(fileInfoToFind, model_main.tables().getSortIt_table());
 			}
-			TableUtils.updateFolderInfos_FileInfo(folderInfo);
+
 //			Messages.sprintf("Updated folderInfo: " + folderInfo);
 		}
+		if (folderNeedsToUpdate.get() == true) {
+			List<FolderInfo> toRemove = new ArrayList<>();
+			Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
+			while (foi.hasNext()) {
+				FolderInfo folderInfo = foi.next();
+				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				if (folderInfo.getFolderFiles() <= 0) {
+					toRemove.add(folderInfo);
+				}
+				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
+				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
+			}
+			Main.setChanged(true);
+			if (!toRemove.isEmpty()) {
+				model_main.tables().getSortIt_table().getItems().removeAll(toRemove);
+			}
+		}
+		folderNeedsToUpdate.set(false);
 		Messages.warningText("There were " + duplicateCounter + " duplicateCounter " + " folderCounter " + folderCounter
 				+ " fileEnterCounter " + fileEnterCounter);
 		duplicateCounter.set(0);
@@ -120,40 +140,31 @@ public class BottomController {
 		fileEnterCounter.set(0);
 	}
 
-	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> sortedTable,
-			TableView<FolderInfo> sortitTable) {
-		Iterator<FolderInfo> sorted = sortedTable.getItems().iterator();
+	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> sortitTable) {
 		Iterator<FolderInfo> sortit = sortitTable.getItems().iterator();
 
-		while (sorted.hasNext()) {
-			Iterator<FileInfo> fileInfo_list = sorted.next().getFileInfoList().iterator();
-			while (fileInfo_list.hasNext()) {
-				FileInfo fileInfoSearch = fileInfo_list.next();
-				if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
-					
-					if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
-							&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
-						if (!fileInfoSearch.isTableDuplicated()) {
-							fileInfoSearch.setTableDuplicated(true);
-							duplicateCounter.incrementAndGet();
-
-							Messages.sprintf("Updated fileInfo: " + fileInfoSearch.getOrgPath());
-						}
-					}
-				}
-			}
-		}
 		while (sortit.hasNext()) {
-			Iterator<FileInfo> fileInfo_list = sortit.next().getFileInfoList().iterator();
-			while (fileInfo_list.hasNext()) {
-				FileInfo fileInfoSearch = fileInfo_list.next();
-				fileEnterCounter.incrementAndGet();
-				if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
-					if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
-							&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
-						if (!fileInfoSearch.isTableDuplicated()) {
-							fileInfoSearch.setTableDuplicated(true);
-							duplicateCounter.incrementAndGet();
+			FolderInfo folderInfo = sortit.next();
+			Iterator<FileInfo> fileInfo_list = folderInfo.getFileInfoList().iterator();
+			if (folderInfo.getFolderFiles() > 0) {
+				while (fileInfo_list.hasNext()) {
+					FileInfo fileInfoSearch = fileInfo_list.next();
+					fileEnterCounter.incrementAndGet();
+					if (!fileInfoSearch.isTableDuplicated()) {
+						if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
+							if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
+									&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
+								fileInfoSearch.setTableDuplicated(true);
+								duplicateCounter.incrementAndGet();
+//								if ((folderInfo.getFolderFiles() - 1) > 0) {
+//									folderInfo.setFolderFiles(folderInfo.getFolderFiles() - 1);
+//								}
+								if (!folderNeedsToUpdate.get()) {
+									folderNeedsToUpdate.set(true);
+								}
+								Messages.sprintf("sortit FOUND fileInfoToFind: " + fileInfoToFind + " DUPLICATED file: "
+										+ fileInfoSearch.getOrgPath() + " folderNeedsToUpdate? " + folderNeedsToUpdate);
+							}
 						}
 					}
 				}

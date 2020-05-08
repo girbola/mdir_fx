@@ -202,6 +202,12 @@ public class DateFixerController {
 	FileOperationsController fileOperationsController;
 
 	@FXML
+	private Button addToAsItIs_btn;
+	@FXML
+	private void addToAsItIs_btn_action(ActionEvent event) {
+//		addToAsItIs
+	}
+	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));

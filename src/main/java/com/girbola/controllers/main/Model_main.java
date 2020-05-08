@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.sqlite.SQLiteConfig.Pragma;
+
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
@@ -169,8 +171,10 @@ public class Model_main {
 			Messages.sprintfError("saveTablecontent connection error!!!");
 			return false;
 		}
+		
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
+			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
 			folderInfo.setTableType(tableType);
 			try {
 				SQL_Utils.addToFolderInfoDB(connection, folderInfo);
@@ -181,15 +185,17 @@ public class Model_main {
 				 */
 				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
+			
 				// Inserts all data info fileinfo.db
 				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
 				if (fileList_connection != null) {
 					fileList_connection.close();
 				}
+				Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE!");
 			} catch (Exception e) {
 				e.printStackTrace();
-				Messages.sprintfError(
-						"Something went wrong writing folderinfo to database at line: " + Misc.getLineNumber());
+				Messages.sprintfError("Something went wrong writing folderinfo to database at line: "
+						+ Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
 				return false;
 			}
 		}

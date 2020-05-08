@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.sqlite.SQLiteConfig.Pragma;
+
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
@@ -591,6 +593,7 @@ public class SQL_Utils {
 	}
 	
 	public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list) {
+		Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
 		boolean tableCreated = createFileInfoTable(connection);
 		if(tableCreated) {
 			Messages.sprintf("insertFileInfoListToDatabase tableCreated");
@@ -606,19 +609,27 @@ public class SQL_Utils {
 			PreparedStatement pstmt = null;
 			pstmt = connection.prepareStatement(fileInfoInsert);
 			for (FileInfo fileInfo : list) {
+				long start = System.currentTimeMillis();
+				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
+				Messages.sprintf("============addToFileInfoDB ENDED and it took: " + (System.currentTimeMillis() - start));
 			}
 			pstmt.executeBatch();
+			Messages.sprintf("**********addToFileInfoDB pstmt.executeBatch();");
 			connection.commit();
+			Messages.sprintf("****connection.commit();");
+			
 			if (connection != null) {
 				connection.close();
 			}
 			if(pstmt != null) {
 				pstmt.close();
 			}
+			Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
+			Messages.sprintf("insertFileInfoListToDatabase tableCreated FAILED");
 			return false;
 		}
 	}
