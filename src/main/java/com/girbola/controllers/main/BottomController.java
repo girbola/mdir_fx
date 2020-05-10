@@ -355,6 +355,11 @@ public class BottomController {
 		CopyBatch copyBatch = new CopyBatch(model_main);
 		copyBatch.start();
 
+		// check Destinatiin duplicates/existens
+		/*
+		 * Main.conf.work if(!copyBatch.getConflictList().isEmpty()) {
+		 * copyBatch.getConflictList(); }
+		 */
 //TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
 		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
 			@Override
@@ -460,7 +465,6 @@ public class BottomController {
 							}
 						});
 					}
-
 				}
 			}
 			min = null;

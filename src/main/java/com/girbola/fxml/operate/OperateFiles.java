@@ -21,8 +21,6 @@ import java.util.logging.Logger;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
-import com.girbola.controllers.main.UpdateFolderInfoContent;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -135,6 +133,7 @@ public class OperateFiles extends Task<Boolean> {
 				model_operate.getTimeline().play();
 			} else {
 				Messages.warningText("List were empty!!!!!!!");
+				cancel();
 				return null;
 			}
 
@@ -143,6 +142,7 @@ public class OperateFiles extends Task<Boolean> {
 				copy = false;
 				if (isCancelled()) {
 					Main.setProcessCancelled(true);
+					cancel();
 					break;
 				}
 				if (Main.getProcessCancelled()) {
@@ -190,6 +190,7 @@ public class OperateFiles extends Task<Boolean> {
 								STATE = Copy_State.RENAME.getType();
 								String newDest = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
 								fileInfo.setDestination_Path(newDest);
+								fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 								Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
 								Platform.runLater(new Runnable() {
 									@Override
@@ -210,7 +211,10 @@ public class OperateFiles extends Task<Boolean> {
 						}
 					} catch (IOException ex) {
 						ex.printStackTrace();
+						cancel();
+						Main.setProcessCancelled(true);
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+
 					}
 
 				} else {
@@ -293,6 +297,7 @@ public class OperateFiles extends Task<Boolean> {
 								Files.move(Paths.get(dest.toString() + ".tmp"), dest);
 								String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
 								fileInfo.setDestination_Path(newName);
+								fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 								fileInfo.setCopied(true);
 								listCopiedFiles.add(fileInfo);
 								boolean added = model_main.getWorkDir_Handler().add(fileInfo);
@@ -515,8 +520,8 @@ public class OperateFiles extends Task<Boolean> {
 					@Override
 					public void handle(ActionEvent event) {
 						Main.setProcessCancelled(true);
-						Messages.sprintf("Current file cancelled is: "
-								+ model_operate.getCopyProcess_values().getCopyTo());
+						Messages.sprintf(
+								"Current file cancelled is: " + model_operate.getCopyProcess_values().getCopyTo());
 						model_operate.stopTimeLine();
 						Main.setProcessCancelled(true);
 					}
