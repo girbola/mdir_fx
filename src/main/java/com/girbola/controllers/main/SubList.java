@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.girbola.Main;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -45,6 +46,9 @@ public class SubList extends Task<List<Path>> {
 		sprintf("SubList - calculate: " + p);
 		DirectoryStream<Path> ds = Files.newDirectoryStream(p);
 		for (Path path : ds) {
+			if(Main.getProcessCancelled()) {
+				break;
+			}
 			if (ValidatePathUtils.validFolder(path)) {
 				sprintf("----calculating: " + path);
 				if (!list.contains(path)) {
@@ -58,6 +62,9 @@ public class SubList extends Task<List<Path>> {
 	@Override
 	protected List<Path> call() throws Exception {
 		for (Path p : selectedFolderScanner_list) {
+			if(Main.getProcessCancelled()) {
+				break;
+			}
 			if (ValidatePathUtils.hasMediaFilesInFolder(p)) {
 				list.add(p);
 			}

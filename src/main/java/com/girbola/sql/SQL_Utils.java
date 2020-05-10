@@ -433,7 +433,13 @@ public class SQL_Utils {
 			connection.setAutoCommit(false);
 			for (SelectedFolder selectedFolder : selectedFolder_list) {
 				Messages.sprintf("select: " + selectedFolder.getFolder());
-				addToSelectedFoldersDB(connection, pstmt, selectedFolder);
+				if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
+					addToSelectedFoldersDB(connection, pstmt, selectedFolder);
+				} else {
+					Messages.sprintfError("insertSelectedFolders_List_ToDB SelectedFolder did not exist: "
+							+ selectedFolder.getFolder());
+					break;
+				}
 			}
 			pstmt.executeBatch();
 			connection.commit();

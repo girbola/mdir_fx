@@ -596,7 +596,6 @@ public class Model_datefix {
 				.createDialog_YesNo(bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 		Optional<ButtonType> result = changesDialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-			warningText("Yes");
 			for (Node node : getGridPane().getChildren()) {
 				TextField tf = getTextField(node);
 				if (tf != null) {
@@ -747,6 +746,28 @@ public class Model_datefix {
 	public void exitDateFixerWindow(GridPane gridPane, Window owner, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
 		model_Main.getMonitorExternalDriveConnectivity().cancel();
+
+		int badDates = checkIfRedDates(gridPane);
+		if (badDates != 0) {
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
+					bundle.getString("badFilesFoundWantToClose"));
+
+			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
+			Optional<ButtonType> result = dialog.showAndWait();
+			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
+				saveThumbs();
+				event.consume();
+//				return;
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+				event.consume();
+				return;
+			}
+		}
+		if (Main.conf.isSavingThumb()) {
+			saveThumbs();
+		}
 		if (Main.getChanged()) {
 			Messages.sprintf("changes made");
 			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
@@ -788,26 +809,6 @@ public class Model_datefix {
 			Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
 			Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 			event.consume();
-		}
-		int badDates = checkIfRedDates(gridPane);
-		if (badDates != 0) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("badFilesFoundWantToClose"));
-		
-			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
-			Optional<ButtonType> result = dialog.showAndWait();
-			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-				saveThumbs();
-				event.consume();
-//				return;
-			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-				event.consume();
-				return;
-			}
-		}
-		if (Main.conf.isSavingThumb()) {
-			saveThumbs();
 		}
 		getSelectionModel().clearAll();
 		selector_exec.shutdownNow();

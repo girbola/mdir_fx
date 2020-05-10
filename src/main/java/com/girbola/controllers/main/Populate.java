@@ -55,7 +55,6 @@ public class Populate {
 		sprintf("SorterTest action started");
 		Main.setProcessCancelled(false);
 
-
 		if (model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
 			sprintf("getSelection_FolderScanner list were empty");
 			return;
@@ -112,6 +111,7 @@ public class Populate {
 						sprintf("sorter.setOnSucceeded total: " + total);
 						loadingProcess_task.setTask(sorter);
 						loadingProcess_task.setMessage("Sorter");
+						//Folder content checkki tähän. TArkistaa että onko tiedostot olemassa. Ja palauttaa varoituksen jos ei löydy tiedostoja.
 						
 						Task<Void> calculateFolderContent = new CalculateFolderContent(model_main, loadingProcess_task, total);
 						loadingProcess_task.setTask(calculateFolderContent);

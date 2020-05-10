@@ -17,6 +17,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -35,6 +36,8 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class SelectedFoldersController {
+	private final String ERROR = SelectedFoldersController.class.getName();
+	
 	private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
 	private Model_main model_main;
 	private Model_folderScanner model_folderScanner;
@@ -66,12 +69,13 @@ public class SelectedFoldersController {
 				connection.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+				Messages.errorSmth(ERROR, "Something went wrong with selecting folders", e, Misc.getLineNumber(), true);
 			}
 		}
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
 		model_main.getMonitorExternalDriveConnectivity().cancel();
 		model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
-		
+
 		Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
 		stage.close();
 	}
