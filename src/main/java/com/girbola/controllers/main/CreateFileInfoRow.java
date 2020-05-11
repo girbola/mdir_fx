@@ -9,18 +9,25 @@ package com.girbola.controllers.main;
 import static com.girbola.fileinfo.FileInfo_Utils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 
 import javafx.concurrent.Task;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
+import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
  *
@@ -47,23 +54,41 @@ public class CreateFileInfoRow extends Task<Void> {
 			if (Main.getProcessCancelled() || isCancelled()) {
 				// cancel();
 				break;
-
 			}
 			if (folderInfo.isConnected()) {
-				sprintf("Reloading: " + folderInfo.getFolderPath());
-				long start = System.currentTimeMillis();
-				List<FileInfo> list = createFileInfo_list(folderInfo);
-				Messages.sprintf("creating fileinfo list took: " + (System.currentTimeMillis() - start) + " list size: " + list.size());
-				if (list != null) {
-					folderInfo.setFileInfoList(list);
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
-					TableUtils.refreshTableContent(table);
+				if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
+					sprintf("Reloading: " + folderInfo.getFolderPath());
+					long start = System.currentTimeMillis();
+					List<FileInfo> list = createFileInfo_list(folderInfo);
+					Messages.sprintf("creating fileinfo list took: " + (System.currentTimeMillis() - start)
+							+ " list size: " + list.size());
+					if (list != null) {
+						folderInfo.setFileInfoList(list);
+						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.refreshTableContent(table);
 
-					updateProgress(counter.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());
-					updateMessage(folderInfo.getFolderPath());
-					sprintf("Update Progress: " + counter.get() + " max " + table.getSelectionModel().getSelectedItems().size());
+						updateProgress(counter.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());
+						updateMessage(folderInfo.getFolderPath());
+						sprintf("Update Progress: " + counter.get() + " max "
+								+ table.getSelectionModel().getSelectedItems().size());
+					}
 				} else {
-					Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+					Dialog<ButtonType> dialog = Dialogs
+							.createDialog_YesNo(Main.bundle.getString("folderDoesNotExists"));
+					ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonData.YES);
+					ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonData.NO);
+					dialog.getDialogPane().getButtonTypes().addAll(yes, no);
+					dialog.setContentText(Main.bundle.getString("doYouWantToIgnoreTheseFiles"));
+
+					Optional<ButtonType> result = dialog.showAndWait();
+					result = dialog.showAndWait();
+					if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+						Messages.sprintf("yes pressed!");
+
+					} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+						cancel();
+						Main.setProcessCancelled(true);
+					}
 				}
 			}
 		}

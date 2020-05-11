@@ -25,6 +25,7 @@ import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -171,29 +172,7 @@ public class TableController {
 
 	@FXML
 	private void updateFolderInfo_btn_action(ActionEvent event) {
-		ExecutorService exec = Executors.newSingleThreadExecutor();
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
-			up.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("Updating folderinfo cancelled: " + folderInfo.getFolderPath());
-				}
-			});
-			up.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
-				}
-			});
-			up.setOnFailed(new EventHandler<WorkerStateEvent>() {
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath());
-				}
-			});
-			exec.submit(up);
-		}
+		TableUtils.updateTableContent(table);
 	}
 
 	@FXML

@@ -35,55 +35,36 @@ public class CopyBatch {
 
 	private Model_main model_Main;
 
-	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
-	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
-	private ObservableList<FileInfo> okFiles_list = FXCollections.observableArrayList();
-	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
+//	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
+//	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
+//	private ObservableList<FileInfo> okFiles_list = FXCollections.observableArrayList();
+//	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
 
 	public CopyBatch(Model_main model_Main) {
 		this.model_Main = model_Main;
 	}
 
-	private void showConflictFileInfos() {
-		Messages.sprintf("showConflictFileInfos: ");
-		for (FileInfo fileInfo : conflictWithWorkdir_list) {
-			conflictWithWorkdir_list.add(fileInfo);
-		}
-	}
 
-	private void showCantCopyFileInfos() {
-		Messages.sprintf("showCantCopyFileInfos: ");
-		for (FileInfo fileInfo : cantCopy_list) {
-			cantCopy_list.add(fileInfo);
-		}
-	}
-
-//	private void handleOKFiles(TableView<FolderInfo> table) {
-//		for (FolderInfo folderInfo : table.getItems()) {
-//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//				if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
-//
-//				}
-//			}
-//		}
-//	}
 
 	public void start() {
-		handleTable(model_Main.tables().getSorted_table());
-		handleTable(model_Main.tables().getSortIt_table());
-		if (!conflictWithWorkdir_list.isEmpty()) {
-//			showConflictFileInfos();
-			showConflictTable(conflictWithWorkdir_list);
-		}
+		List<FileInfo> filesReadyToCopy = new ArrayList<>();
+		CheckTableContent sorted_TableContent = new CheckTableContent(model_Main.tables().getSorted_table(), model_Main);
+		filesReadyToCopy.addAll(sorted_TableContent.getFileInfoList());
+		CheckTableContent sortIt_TableContent = new CheckTableContent(model_Main.tables().getSortIt_table(), model_Main);
+		filesReadyToCopy.addAll(sortIt_TableContent.getFileInfoList());
+//		handleTable(model_Main.tables().getSorted_table());
+//		handleTable(model_Main.tables().getSortIt_table());
+//		if (!conflictWithWorkdir_list.isEmpty()) {
+////			showConflictFileInfos();
+//			showConflictTable(conflictWithWorkdir_list);
+//		}
 //		showCantCopyFileInfos();
 
 //		showOkFileInfos();
 
-		if (!list.isEmpty()) {
+		if (!filesReadyToCopy.isEmpty()) {
 //			showConflictTable();
-		} else {
-
-			Task<Boolean> task = new OperateFiles(list, true, model_Main, Scene_NameType.MAIN.getType());
+			Task<Boolean> task = new OperateFiles(filesReadyToCopy, true, model_Main, Scene_NameType.MAIN.getType());
 			task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 
 				@Override
@@ -109,8 +90,7 @@ public class CopyBatch {
 		}
 	}
 
-	public void showConflictTable(ObservableList<FileInfo> list) {
-
+	public void showConflictTable(ObservableList<FileInfo> obs) {
 		try {
 			Parent parent = null;
 			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"),
@@ -123,7 +103,7 @@ public class CopyBatch {
 
 			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
 					.getController();
-			conflictTableViewController.init(model_Main, list);
+			conflictTableViewController.init(model_Main, obs);
 			Scene scene_conflictTableView = new Scene(parent);
 			scene_conflictTableView.getStylesheets().add(
 					Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
@@ -137,85 +117,5 @@ public class CopyBatch {
 		}
 	}
 
-	private void checkTables(TableView<FolderInfo> table) {
-		if(!Main.conf.getDrive_connected()) {
-			Messages.warningText("Destination drive is not connected. Connect drive and try again");
-		}
-		for (FolderInfo folderInfo : table.getItems()) {
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
-					/*
-					 * 0 = is good,
-					 * 1 = is conflict with workdir. Workdir (destination path) is not connected,
-					 * 2 if copying is not possible
-					 */
-					int status = FileInfo_Utils.checkWorkDir(fileInfo);
-					if (status == 0) {
-						okFiles_list.add(fileInfo);
-						Messages.sprintf(
-								"okFiles: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 1) {
-						conflictWithWorkdir_list.add(fileInfo);
-						Messages.sprintf(
-								"conflicts: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 2) {
-						cantCopy_list.add(fileInfo);
-						Messages.sprintf(
-								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 3) {
-						// Workdir is not connected
-//						Messages.errorSmth(className, message, exception, line, exit);
-						cantCopy_list.add(fileInfo);
-						Messages.sprintf(
-								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else {
-						Messages.sprintf("something else?!?!?!: " + fileInfo.getDestination_Path() + " isCopied? "
-								+ fileInfo.isCopied());
-					}
-				}
-			}
-		}
-	}
-	
-	private void handleTable(TableView<FolderInfo> table) {
-
-		ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
-		ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
-		ObservableList<FileInfo> okFiles_list = FXCollections.observableArrayList();
-		ObservableList<FileInfo> list = FXCollections.observableArrayList();
-
-		for (FolderInfo folderInfo : table.getItems()) {
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				if (!fileInfo.getDestination_Path().isEmpty() && !fileInfo.isCopied()) {
-					/*
-					 * 0 if good 1 if conflict with workdir 2 if copying is not possible
-					 */
-					int status = FileInfo_Utils.checkWorkDir(fileInfo);
-					if (status == 0) {
-						okFiles_list.add(fileInfo);
-						Messages.sprintf(
-								"okFiles: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 1) {
-						conflictWithWorkdir_list.add(fileInfo);
-						Messages.sprintf(
-								"conflicts: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 2) {
-						cantCopy_list.add(fileInfo);
-						Messages.sprintf(
-								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 3) {
-						// Workdir is not connected
-//						Messages.errorSmth(className, message, exception, line, exit);
-						cantCopy_list.add(fileInfo);
-						Messages.sprintf(
-								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else {
-						Messages.sprintf("something else?!?!?!: " + fileInfo.getDestination_Path() + " isCopied? "
-								+ fileInfo.isCopied());
-					}
-				}
-			}
-		}
-	}
 
 }

@@ -23,10 +23,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.filelisting.GetRootFiles;
@@ -38,6 +41,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
@@ -49,6 +54,7 @@ import javafx.scene.text.Text;
 public class TableUtils {
 
 	private static final String ERROR = TableUtils.class.getSimpleName();
+
 //
 //	public static void updateCopiedStatus(TableView<FolderInfo> table) {
 //		ObservableList<FolderInfo> list = table.getItems();
@@ -66,6 +72,31 @@ public class TableUtils {
 //		}
 //
 //	}
+	public static void updateTableContent(TableView<FolderInfo> table) {
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
+			up.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo cancelled: " + folderInfo.getFolderPath());
+				}
+			});
+			up.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
+				}
+			});
+			up.setOnFailed(new EventHandler<WorkerStateEvent>() {
+				@Override
+				public void handle(WorkerStateEvent event) {
+					Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath());
+				}
+			});
+			exec.submit(up);
+		}
+	}
 
 	public static double calculateDateDifferenceRatio(TreeMap<LocalDate, Integer> map) {
 		List<Double> list = new ArrayList<>();
