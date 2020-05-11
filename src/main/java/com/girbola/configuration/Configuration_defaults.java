@@ -34,8 +34,6 @@ public class Configuration_defaults extends
 
 	private final String ERROR = Configuration_defaults.class.getSimpleName();
 
-	
-
 	private StringProperty drive_name = new SimpleStringProperty("");
 	private StringProperty drive_space = new SimpleStringProperty("");
 	private StringProperty drive_spaceLeft = new SimpleStringProperty("");

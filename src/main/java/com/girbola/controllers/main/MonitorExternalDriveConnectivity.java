@@ -33,7 +33,6 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 
 			@Override
 			protected Void call() throws Exception {
-
 				checkTableConnectivity(model_Main.tables().getSortIt_table());
 				checkTableConnectivity(model_Main.tables().getSorted_table());
 				checkTableConnectivity(model_Main.tables().getAsItIs_table());
@@ -72,7 +71,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 		}
 
 		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-			disConnectedDrive("checkWorkDirConnected not connected");
+			disConnectedDrive("checkWorkDirConnected destination drive is not connected");
 		} else {
 			String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
 //			Messages.sprintf("testSerial is: " + driveSerialNumber);

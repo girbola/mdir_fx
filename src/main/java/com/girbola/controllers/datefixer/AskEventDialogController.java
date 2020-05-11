@@ -144,7 +144,6 @@ public class AskEventDialogController {
 
 		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main, Scene_NameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
-
 			Messages.sprintf("operateFiles Succeeded");
 			UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
 		});

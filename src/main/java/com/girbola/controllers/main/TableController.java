@@ -172,7 +172,7 @@ public class TableController {
 	@FXML
 	private void updateFolderInfo_btn_action(ActionEvent event) {
 		ExecutorService exec = Executors.newSingleThreadExecutor();
-		for (FolderInfo folderInfo : model.tables().getSortIt_table().getSelectionModel().getSelectedItems()) {
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
 			up.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 				@Override
