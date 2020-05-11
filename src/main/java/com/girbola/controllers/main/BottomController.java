@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -30,6 +30,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
@@ -48,6 +49,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -285,12 +289,18 @@ public class BottomController {
 			warningText(bundle.getString("cannotFindWorkDir"));
 			return;
 		}
-
-		copyTables(model_main.tables(), model_main.tables().getSorted_table(), TableType.SORTED.getType());
-		copyTables(model_main.tables(), model_main.tables().getSortIt_table(), TableType.SORTIT.getType());
+		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs
+				.createDialog_YesNo(bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
+		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+			Messages.sprintf("Starting copying files");
+			copySelectedTableRows(model_main.tables(), model_main.tables().getSorted_table(), TableType.SORTED.getType());
+			copySelectedTableRows(model_main.tables(), model_main.tables().getSortIt_table(), TableType.SORTIT.getType());
+		}
+		
 	}
 
-	private void copyTables(Tables tables, TableView<FolderInfo> table, String tableType) {
+	private void copySelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			int badFiles = 0;
 
@@ -337,9 +347,6 @@ public class BottomController {
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
 		model_main.getMonitorExternalDriveConnectivity().cancel();
-		List<String> conflictWithWorkdir = new ArrayList<>();
-		List<String> cantCopy = new ArrayList<>();
-		List<String> okFiles = new ArrayList<>();
 
 		if (Main.conf.getWorkDir().equals("null")) {
 			Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet"));

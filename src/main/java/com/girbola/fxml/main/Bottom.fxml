@@ -11,8 +11,8 @@
       <Button fx:id="options_btn" mnemonicParsing="false" onAction="#options_btn_action" text="Options" />
       <Button fx:id="start_copyBatch_btn" mnemonicParsing="false" onAction="#start_copyBatch_btn_action" text="%startBatchCopy" />
       <Button fx:id="removeDuplicates_btn" mnemonicParsing="false" onAction="#removeDuplicates_btn_action" text="%removeDuplicates" />
-      <Button fx:id="copySelected_btn" disable="true" mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected" visible="false" />
-      <Button fx:id="copy_ok_date_btn" disable="true" mnemonicParsing="false" onAction="#copy_ok_date_btn_action" text="Copy good" visible="false" />
+      <Button fx:id="copySelected_btn" mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected" />
+      <Button fx:id="copy_ok_date_btn" mnemonicParsing="false" onAction="#copy_ok_date_btn_action" text="Copy good" />
       <Button fx:id="workDir_btn" disable="true" mnemonicParsing="false" onAction="#workDir_btn_action" text="GOTO WorkDir" visible="false" />
       <Button fx:id="collect" disable="true" mnemonicParsing="false" onAction="#collect_action" text="Collect" visible="false" />
       <Button fx:id="addFolders_btn" disable="true" mnemonicParsing="false" onAction="#addFolders_btn_action" text="Add" visible="false">

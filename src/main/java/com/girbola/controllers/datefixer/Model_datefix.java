@@ -631,8 +631,6 @@ public class Model_datefix {
 				setDateTime(getFolderInfo_full().getMaxDate(), false);
 			}
 			getSelectionModel().clearAll();
-		} else {
-			warningText("No");
 		}
 		/*
 		
