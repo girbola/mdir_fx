@@ -49,21 +49,14 @@ public class CopyBatch {
 	public void start() {
 		List<FileInfo> filesReadyToCopy = new ArrayList<>();
 		CheckTableContent sorted_TableContent = new CheckTableContent(model_Main.tables().getSorted_table(), model_Main);
+		sorted_TableContent.checkTables();
 		filesReadyToCopy.addAll(sorted_TableContent.getFileInfoList());
+		
 		CheckTableContent sortIt_TableContent = new CheckTableContent(model_Main.tables().getSortIt_table(), model_Main);
+		sortIt_TableContent .checkTables();
 		filesReadyToCopy.addAll(sortIt_TableContent.getFileInfoList());
-//		handleTable(model_Main.tables().getSorted_table());
-//		handleTable(model_Main.tables().getSortIt_table());
-//		if (!conflictWithWorkdir_list.isEmpty()) {
-////			showConflictFileInfos();
-//			showConflictTable(conflictWithWorkdir_list);
-//		}
-//		showCantCopyFileInfos();
-
-//		showOkFileInfos();
 
 		if (!filesReadyToCopy.isEmpty()) {
-//			showConflictTable();
 			Task<Boolean> task = new OperateFiles(filesReadyToCopy, true, model_Main, Scene_NameType.MAIN.getType());
 			task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 
@@ -89,33 +82,4 @@ public class CopyBatch {
 			new Thread(task).start();
 		}
 	}
-
-	public void showConflictTable(ObservableList<FileInfo> obs) {
-		try {
-			Parent parent = null;
-			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"),
-					bundle);
-			try {
-				parent = loader.load();
-			} catch (IOException ex) {
-				Logger.getLogger(CopyBatch.class.getName()).log(Level.SEVERE, null, ex);
-			}
-
-			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
-					.getController();
-			conflictTableViewController.init(model_Main, obs);
-			Scene scene_conflictTableView = new Scene(parent);
-			scene_conflictTableView.getStylesheets().add(
-					Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
-
-			Stage window = new Stage();
-			window.setScene(scene_conflictTableView);
-			window.show();
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-
 }

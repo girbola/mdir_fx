@@ -20,19 +20,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.ListIterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
@@ -43,7 +41,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -100,18 +97,28 @@ public class BottomController {
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table());
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table());
+
+	}
+
+	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch) {
+
+//		model_main.tables().getSorted_table()
 		folderNeedsToUpdate.set(false);
-		Iterator<FolderInfo> itFolderInfo = model_main.tables().getSorted_table().getItems().iterator();
-		while (itFolderInfo.hasNext()) {
+		for (FolderInfo folderInfo : table.getItems()) {
 			folderCounter.incrementAndGet();
-			FolderInfo folderInfo = itFolderInfo.next();
-			Iterator<FileInfo> itFileInfo = folderInfo.getFileInfoList().iterator();
-			while (itFileInfo.hasNext()) {
-				FileInfo fileInfoToFind = itFileInfo.next();
-				findDuplicate(fileInfoToFind, model_main.tables().getSortIt_table());
+			for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
+				if (fileInfoToFind.isIgnored() == false) {
+					if (fileInfoToFind.isTableDuplicated() == false) {
+						Messages.sprintf(
+								"fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
+						findDuplicate(fileInfoToFind, tableToSearch);
+					}
+				}
 			}
 
-//			Messages.sprintf("Updated folderInfo: " + folderInfo);
+//		Messages.sprintf("Updated folderInfo: " + folderInfo);
 		}
 		if (folderNeedsToUpdate.get() == true) {
 			List<FolderInfo> toRemove = new ArrayList<>();
@@ -140,15 +147,10 @@ public class BottomController {
 		fileEnterCounter.set(0);
 	}
 
-	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> sortitTable) {
-		Iterator<FolderInfo> sortit = sortitTable.getItems().iterator();
-
-		while (sortit.hasNext()) {
-			FolderInfo folderInfo = sortit.next();
-			Iterator<FileInfo> fileInfo_list = folderInfo.getFileInfoList().iterator();
+	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
+		for (FolderInfo folderInfo : table.getItems()) {
 			if (folderInfo.getFolderFiles() > 0) {
-				while (fileInfo_list.hasNext()) {
-					FileInfo fileInfoSearch = fileInfo_list.next();
+				for (FileInfo fileInfoSearch : folderInfo.getFileInfoList()) {
 					fileEnterCounter.incrementAndGet();
 					if (!fileInfoSearch.isTableDuplicated()) {
 						if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
@@ -162,8 +164,11 @@ public class BottomController {
 								if (!folderNeedsToUpdate.get()) {
 									folderNeedsToUpdate.set(true);
 								}
-								Messages.sprintf("sortit FOUND fileInfoToFind: " + fileInfoToFind + " DUPLICATED file: "
-										+ fileInfoSearch.getOrgPath() + " folderNeedsToUpdate? " + folderNeedsToUpdate);
+								Messages.sprintf("sortit FOUND fileInfoToFind: " + fileInfoToFind
+										+ "  fileInfoToFind.isTableDuplicated() " + fileInfoToFind.isTableDuplicated()
+										+ " DUPLICATED file: " + fileInfoSearch.getOrgPath()
+										+ " fileInfoSearch.isTableDuplicated() " + fileInfoSearch.isTableDuplicated()
+										+ " folderNeedsToUpdate? " + folderNeedsToUpdate);
 							}
 						}
 					}
@@ -361,81 +366,6 @@ public class BottomController {
 		 * copyBatch.getConflictList(); }
 		 */
 //TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
-		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
-			@Override
-			protected List<FileInfo> call() throws Exception {
-				List<FileInfo> list = new ArrayList<>();
-				if (!conflictWithWorkdir.isEmpty()) {
-//					Messages.warningText("conflictWithWorkdir were not empty");
-					Messages.sprintf("Workdir: " + Main.conf.getWorkDir());
-					for (String confw : conflictWithWorkdir) {
-						Messages.sprintf("Conflict dir: " + confw);
-					}
-
-					return null;
-				}
-
-				if (!cantCopy.isEmpty()) {
-//					Messages.warningText("cantCopy were not empty");
-					for (String confw : cantCopy) {
-						Messages.sprintf("cantCopy dir: " + confw);
-					}
-
-					return null;
-				}
-				return list;
-			}
-
-		};
-		task.setOnSucceeded((event2) -> {
-			Messages.sprintf("Making list were made successfully");
-			try {
-				if (task.get() == null) {
-					Messages.warningTextList("There were files which had bad destination paths", conflictWithWorkdir);
-					return;
-				}
-				List<FileInfo> list = task.get();
-
-				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
-						Scene_NameType.MAIN.getType());
-				operateFiles.setOnSucceeded((workerStateEvent) -> {
-					Messages.sprintf("operateFiles Succeeded");
-					model_main.getMonitorExternalDriveConnectivity().restart();
-				});
-				operateFiles.setOnCancelled((workerStateEvent) -> {
-					Messages.sprintf("operateFiles CANCELLED");
-				});
-				operateFiles.setOnFailed((workerStateEvent) -> {
-					Messages.sprintf("operateFiles FAILED");
-					Main.setProcessCancelled(true);
-				});
-				if (!list.isEmpty()) {
-
-					Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
-					operateFiles_th.setDaemon(true);
-					operateFiles_th.start();
-				} else {
-					Messages.warningText("The list of destination paths were empty");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		});
-		task.setOnCancelled((event2) -> {
-			Messages.sprintf("Making list were cancelled");
-		});
-		task.setOnFailed((event2) -> {
-			try {
-				Messages.sprintf("Making list were made cancelled: " + task.get().size());
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
-		});
-//		Thread th = new Thread(task, "Start Threads");
-//		th.start();
 
 	}
 

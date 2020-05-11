@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -396,7 +397,7 @@ public class OperateFiles extends Task<Boolean> {
 					}
 					boolean saveWorkDirList = model_main.getWorkDir_Handler().saveWorkDirListToDatabase();
 					Messages.sprintf("Step2");
-
+					TableUtils.refreshAllTableContent(model_main.tables());
 					if (saveWorkDirList) {
 						Messages.sprintf("saveWorkDirList DONE!!!");
 					} else {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
@@ -19,7 +20,6 @@ public class CheckTableContent {
 
 	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
 	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
-	private ObservableList<FileInfo> okFiles_list = FXCollections.observableArrayList();
 	private List<FileInfo> fileInfoList = new ArrayList<>();
 
 	public List<FileInfo> getFileInfoList() {
@@ -32,7 +32,7 @@ public class CheckTableContent {
 		this.model_Main = model_Main;
 	}
 
-	private void checkTables() {
+	public void checkTables() {
 		if (!Main.conf.getDrive_connected()) {
 			Messages.warningText("Destination drive is not connected. Connect drive and try again");
 		}
@@ -45,7 +45,7 @@ public class CheckTableContent {
 					 */
 					int status = FileInfo_Utils.checkWorkDir(fileInfo);
 					if (status == 0) {
-						okFiles_list.add(fileInfo);
+						fileInfoList.add(fileInfo);
 						Messages.sprintf(
 								"okFiles: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 					} else if (status == 1) {
@@ -53,12 +53,6 @@ public class CheckTableContent {
 						Messages.sprintf(
 								"conflicts: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
 					} else if (status == 2) {
-						cantCopy_list.add(fileInfo);
-						Messages.sprintf(
-								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
-					} else if (status == 3) {
-						// Workdir is not connected
-//						Messages.errorSmth(className, message, exception, line, exit);
 						cantCopy_list.add(fileInfo);
 						Messages.sprintf(
 								"can't copy: " + fileInfo.getDestination_Path() + " isCopied? " + fileInfo.isCopied());
@@ -70,19 +64,11 @@ public class CheckTableContent {
 			}
 		}
 
-	}
-
-	private void showConflictFileInfos() {
-		Messages.sprintf("showConflictFileInfos: ");
-		for (FileInfo fileInfo : conflictWithWorkdir_list) {
-			conflictWithWorkdir_list.add(fileInfo);
+		if (!cantCopy_list.isEmpty()) {
+			TableUtils.showConflictTable(model_Main, cantCopy_list);
 		}
-	}
-
-	private void showCantCopyFileInfos() {
-		Messages.sprintf("showCantCopyFileInfos: ");
-		for (FileInfo fileInfo : cantCopy_list) {
-			cantCopy_list.add(fileInfo);
+		if (!conflictWithWorkdir_list.isEmpty()) {
+			TableUtils.showConflictTable(model_Main, conflictWithWorkdir_list);
 		}
 	}
 }

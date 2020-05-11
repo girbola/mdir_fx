@@ -7,6 +7,7 @@
 package com.girbola.controllers.main.tables;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
@@ -25,14 +26,19 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.main.CopyBatch;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.filelisting.GetRootFiles;
+import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
@@ -43,9 +49,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 /**
  *
@@ -54,6 +64,33 @@ import javafx.scene.text.Text;
 public class TableUtils {
 
 	private static final String ERROR = TableUtils.class.getSimpleName();
+
+	public static void showConflictTable(Model_main model_Main, ObservableList<FileInfo> obs) {
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"),
+					bundle);
+			try {
+				parent = loader.load();
+			} catch (IOException ex) {
+				Logger.getLogger(CopyBatch.class.getName()).log(Level.SEVERE, null, ex);
+			}
+
+			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
+					.getController();
+			conflictTableViewController.init(model_Main, obs);
+			Scene scene_conflictTableView = new Scene(parent);
+			scene_conflictTableView.getStylesheets().add(
+					Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+
+			Stage window = new Stage();
+			window.setScene(scene_conflictTableView);
+			window.showAndWait();
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 //
 //	public static void updateCopiedStatus(TableView<FolderInfo> table) {
