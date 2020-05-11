@@ -29,6 +29,7 @@ import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
@@ -145,9 +146,8 @@ public class MenuBarController {
 
 	@FXML
 	private void menuItem_file_clear_action(ActionEvent event) {
-		model_main.tables().getAsItIs_table().getItems().clear();
-		model_main.tables().getSortIt_table().getItems().clear();
-		model_main.tables().getSorted_table().getItems().clear();
+		TableUtils.clearTablesContents(model_main.tables());
+		Main.setChanged(false);
 	}
 
 	@FXML
@@ -204,17 +204,25 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_load_action(ActionEvent event) {
 		Messages.sprintf("menuItem_file_load_action");
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
-		if (SQL_Utils.isDbConnected(connection)) {
-			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(
-					model_main, connection);
+		boolean load = true;
+		if (Main.getChanged()) {
 
-			Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
-			load_thread.start();
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+					bundle.getString("changesMadeDataLost"));
+			dialog.getDialogPane().getButtonTypes().remove(1);
+			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
+			Optional<ButtonType> result = dialog.showAndWait();
+			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+				Main.setChanged(false);
+				model_main.load();
+				Main.setChanged(false);
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+
+			}
 		} else {
-			Messages.sprintf("Loading folderinfos back to tables was empty");
+			model_main.load();
 		}
+
 	}
 
 	@FXML
@@ -248,6 +256,7 @@ public class MenuBarController {
 				lpt.closeStage();
 			}
 		});
+		
 		lpt.setTask(task);
 		Thread thread = new Thread(task, "Saving Thread");
 		thread.setDaemon(true);
@@ -260,7 +269,7 @@ public class MenuBarController {
 		root.setAlignment(Pos.CENTER);
 		Label programName = new Label("Organize and backup image & video files");
 		Label programVersion = new Label(conf.getProgramVersion());
-		Label programCopyRight = new Label("Copyright © 2012-2018");
+		Label programCopyRight = new Label("Copyright © 2012-2020");
 		Label programUserInfo = new Label("Marko Lokka. marko.lokka@gmail.com");
 		Label programMoreInfo = new Label("NOT FOR PUBLIC DISTRIBUTION");
 		Hyperlink programHomePage = new Hyperlink(HTMLClass.programHomePage);

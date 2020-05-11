@@ -593,7 +593,7 @@ public class Model_datefix {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
 		Dialog<ButtonType> changesDialog = Dialogs
-				.createDialog_YesNo(bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+				.createDialog_YesNo(Main.scene_Switcher.getScene_dateFixer().getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 		Optional<ButtonType> result = changesDialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			for (Node node : getGridPane().getChildren()) {

@@ -602,28 +602,34 @@ public class TableUtils {
 		return null;
 	}
 
-	private static boolean hasCurrentPath(Path current, List<FileInfo> list) {
-
-		for (FileInfo fi : list) {
-			if (current.toString().equals(fi.getOrgPath())) {
-				Messages.sprintf("Current found!: " + current);
-				return true;
-			}
-		}
-		Messages.sprintf("Can't find!: " + current);
-		return false;
-	}
-
-	public static boolean hasDuplicates(FolderInfo folderInfo, TableView<FolderInfo> table) {
+	public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
 		if (table.getItems().isEmpty()) {
 			return false;
 		}
-		Iterator<FolderInfo> it = table.getItems().iterator();
-		while (it.hasNext()) {
-			if (it.next().getFolderPath().equals(folderInfo.getFolderPath())) {
+		for (FolderInfo folderInfo : table.getItems()) {
+			if (folderInfo.getFolderPath().equals(folderInfoToFind.getFolderPath())) {
 				return true;
 			}
 		}
+		return false;
+	}
+
+	public static boolean checkAllTablesForDuplicates(FolderInfo folderInfoToFind, Tables tables) {
+		Messages.sprintf("checkAllTablesForDuplicates started");
+		if (checkTableDuplicates(folderInfoToFind, tables.getSorted_table())) {
+			Messages.sprintf("1checkAllTablesForDuplicates dup found " + folderInfoToFind.getFolderPath());
+			return true;
+		}
+		if (checkTableDuplicates(folderInfoToFind, tables.getSortIt_table())) {
+			Messages.sprintf("2checkAllTablesForDuplicates dup found " + folderInfoToFind.getFolderPath());
+			return true;
+
+		}
+		if (checkTableDuplicates(folderInfoToFind, tables.getAsItIs_table())) {
+			Messages.sprintf("3checkAllTablesForDuplicates dup found " + folderInfoToFind.getFolderPath());
+			return true;
+		}
+		Messages.sprintf("checkAllTablesForDuplicates NOT dup found? " + folderInfoToFind.getFolderPath());
 		return false;
 	}
 
@@ -631,7 +637,16 @@ public class TableUtils {
 		refreshTableContent(tables.getAsItIs_table());
 		refreshTableContent(tables.getSorted_table());
 		refreshTableContent(tables.getSortIt_table());
-
 	}
 
+	public static void clearTablesContents(Tables tables) {
+		tables.getAsItIs_table().getItems().removeAll();
+		tables.getSorted_table().getItems().removeAll();
+		tables.getSortIt_table().getItems().removeAll();
+		tables.getAsItIs_table().getItems().clear();
+		tables.getSorted_table().getItems().clear();
+		tables.getSortIt_table().getItems().clear();
+		refreshAllTableContent(tables);
+		
+	}
 }

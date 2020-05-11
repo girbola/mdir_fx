@@ -27,6 +27,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
+import javafx.stage.Window;
 import javafx.scene.control.ButtonBar.ButtonData;
 
 /**
@@ -38,11 +39,13 @@ public class CreateFileInfoRow extends Task<Void> {
 	private AtomicInteger counter = new AtomicInteger(0);
 	private final String ERROR = CreateFileInfoRow.class.getSimpleName();
 	private Model_main model_Main;
+	private Window owner;
 	private TableView<FolderInfo> table;
 
-	CreateFileInfoRow(Model_main aModel, TableView<FolderInfo> aTable) {
-		this.model_Main = aModel;
+	CreateFileInfoRow(Model_main aModel_main, TableView<FolderInfo> aTable,  Window anOwner) {
+		this.model_Main = aModel_main;
 		this.table = aTable;
+		this.owner = anOwner;
 	}
 
 	@Override
@@ -74,7 +77,7 @@ public class CreateFileInfoRow extends Task<Void> {
 					}
 				} else {
 					Dialog<ButtonType> dialog = Dialogs
-							.createDialog_YesNo(Main.bundle.getString("folderDoesNotExists"));
+							.createDialog_YesNo(owner, Main.bundle.getString("folderDoesNotExists"));
 					ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonData.YES);
 					ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonData.NO);
 					dialog.getDialogPane().getButtonTypes().addAll(yes, no);

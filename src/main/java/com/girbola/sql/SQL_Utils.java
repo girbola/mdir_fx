@@ -12,8 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.sqlite.SQLiteConfig.Pragma;
-
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;

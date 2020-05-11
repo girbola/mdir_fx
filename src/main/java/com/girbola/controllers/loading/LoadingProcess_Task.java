@@ -45,7 +45,7 @@ public class LoadingProcess_Task {
 	private double yOffset;
 //	private Scene inheritedScene;
 	private Parent parent = null;
-private Window owner;
+	private Window owner;
 
 	public LoadingProcess_Task(Window owner) {
 //		this.inheritedScene = inheritedScene;

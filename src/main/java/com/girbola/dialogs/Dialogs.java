@@ -60,7 +60,7 @@ public class Dialogs {
 
 	}
 
-	public static Dialog<ButtonType> createDialog_YesNo(final String contentText) {
+	public static Dialog<ButtonType> createDialog_YesNo(Window owner, final String contentText) {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		Messages.sprintf("width: " + dialog.getWidth());
@@ -69,7 +69,8 @@ public class Dialogs {
 		dialog.setDialogPane(dialogPane);
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
-
+		dialog.initOwner(owner);
+		
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
 		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
 		dialog.getDialogPane().getButtonTypes().addAll(yes, no);

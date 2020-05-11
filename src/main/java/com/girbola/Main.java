@@ -93,7 +93,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		new OshiTest().test();
+//		new OshiTest().test();
 		primaryStage.setUserData(model_main);
 		Main.setMain_stage(primaryStage);
 		setChanged(false);

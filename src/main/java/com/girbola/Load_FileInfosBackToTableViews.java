@@ -31,7 +31,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 	@Override
 	protected Boolean call() throws Exception {
 		Messages.sprintf("Load_FileInfosBackToTableViews starts ");
-		
+
 		if (!Files.exists(
 				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
 			Messages.sprintf("Can't find "
@@ -51,16 +51,15 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		if (!folderInfo_list.isEmpty()) {
 			for (FolderInfo folderInfo : folderInfo_list) {
 				if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getSortIt_table())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSortIt_table().getItems().add(folderInfo);
 					}
-
 				} else if (folderInfo.getTableType().equals(TableType.SORTED.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getSorted_table())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSorted_table().getItems().add(folderInfo);
 					}
 				} else if (folderInfo.getTableType().equals(TableType.ASITIS.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getAsItIs_table())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getAsItIs_table().getItems().add(folderInfo);
 					}
 				} else {
@@ -71,7 +70,6 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
 			for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 				populateTable(folderInfo);
-				// aerg;
 			}
 		}
 		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {

@@ -290,7 +290,7 @@ public class BottomController {
 			return;
 		}
 		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs
-				.createDialog_YesNo(bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+				.createDialog_YesNo(Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("Starting copying files");

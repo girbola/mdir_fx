@@ -50,7 +50,7 @@ public class OperateFiles extends Task<Boolean> {
 	private List<FileInfo> listCopiedFiles = new ArrayList<>();
 
 	public OperateFiles(List<FileInfo> list, boolean close, Model_main aModel_main, String scene_NameType) {
-		Messages.sprintf("OperateFiles started LIST");
+		Messages.sprintf("OperateFiles starting LIST");
 		this.list = list;
 		this.close = close;
 		this.model_main = aModel_main;
@@ -89,9 +89,7 @@ public class OperateFiles extends Task<Boolean> {
 		Main.scene_Switcher.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
-				Messages.warningText("CLosin");
 				Model_main model_Main = (Model_main) Main.getMain_stage().getUserData();
-
 				Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
 				Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
 				event.consume();
@@ -117,6 +115,7 @@ public class OperateFiles extends Task<Boolean> {
 				Messages.warningText(Main.bundle.getString("cannotFindWorkDir"));
 				cancel();
 				model_operate.stopTimeLine();
+				Main.setProcessCancelled(true);
 				return null;
 			}
 			if (isCancelled()) {
@@ -135,6 +134,7 @@ public class OperateFiles extends Task<Boolean> {
 			} else {
 				Messages.warningText("List were empty!!!!!!!");
 				cancel();
+				Main.setProcessCancelled(true);
 				return null;
 			}
 
@@ -148,6 +148,7 @@ public class OperateFiles extends Task<Boolean> {
 				}
 				if (Main.getProcessCancelled()) {
 					cancel();
+					Main.setProcessCancelled(true);
 					break;
 				}
 
@@ -157,13 +158,7 @@ public class OperateFiles extends Task<Boolean> {
 				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 
 				Messages.sprintf("source is: " + source + " dest: " + dest);
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						model_operate.getCopyProcess_values().setCopyFrom(source.toString());
-						model_operate.getCopyProcess_values().setCopyTo(dest.toString());
-					}
-				});
+				updateSourceAndDestProcessValues();
 				if (source.getParent().toString().contains(Main.conf.getWorkDir())) {
 					Messages.warningText(Main.bundle.getString("conflictWithWorkDir"));
 					Main.setProcessCancelled(true);
@@ -174,14 +169,8 @@ public class OperateFiles extends Task<Boolean> {
 					try {
 						Path dest_test = FileUtils.renameFile(source, dest);
 						if (dest_test == null) {
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									model_operate.getCopyProcess_values().increaseDuplicated_tmp();
-									Messages.sprintf("Increader dups is now: "
-											+ model_operate.getCopyProcess_values().getDuplicated_tmp());
-								}
-							});
+							updateIncreaseDuplicatesProcessValues();
+
 							copy = false;
 							STATE = Copy_State.DUPLICATE.getType();
 						} else {
@@ -193,21 +182,11 @@ public class OperateFiles extends Task<Boolean> {
 								fileInfo.setDestination_Path(newDest);
 								fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 								Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
-								Platform.runLater(new Runnable() {
-									@Override
-									public void run() {
-										model_operate.getCopyProcess_values().increaseRenamed_tmp();
-									}
-								});
+								updateIncreaseRenamedProcessValues();
 							} else if (dest_test == dest) {
 								copy = false;
 								STATE = Copy_State.DUPLICATE.getType();
-								Platform.runLater(new Runnable() {
-									@Override
-									public void run() {
-										model_operate.getCopyProcess_values().increaseDuplicated_tmp();
-									}
-								});
+								updateIncreaseDuplicatesProcessValues();
 							}
 						}
 					} catch (IOException ex) {
@@ -238,23 +217,21 @@ public class OperateFiles extends Task<Boolean> {
 					}
 
 					if (!Files.exists(dest.getParent())) {
-						Messages.sprintf("Files.exists dest: " + dest.getParent());
+						Messages.sprintf("Folder were not able to create dest: " + dest.getParent());
+						Main.setProcessCancelled(true);
+						break;
 					}
 					// long fileSize = source.toFile().length();
 					try {
 						//
+						Path destTmp = Paths.get(dest.toFile() + ".tmp");
+
+						Files.deleteIfExists(destTmp);
+
 						InputStream from = new FileInputStream(source.toString());
-						OutputStream to = new FileOutputStream(dest.toFile() + ".tmp");
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
-								model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
-								model_operate.getCopyProcess_values().setCopyProgress(0);
-								model_operate.getCopyProcess_values()
-										.setFilesCopyProgress_MAX_tmp(source.toFile().length());
-							}
-						});
+						OutputStream to = new FileOutputStream(destTmp.toFile());
+						resetAndupdateSourceAndDestProcessValues();
+
 						long nread = 0L;
 						byteRead = 0;
 						byte[] buf = new byte[8192];
@@ -267,23 +244,12 @@ public class OperateFiles extends Task<Boolean> {
 							}
 							to.write(buf, 0, byteRead);
 							nread += byteRead;
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
-								}
-							});
+							//updateIncreaseLastSecondFileSizeProcessValues();
+
 						}
 						from.close();
 						to.close();
-
-						Platform.runLater(new Runnable() {
-							@Override
-							public void run() {
-								model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
-								model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
-							}
-						});
+						resetAndUpdateFileCopiedProcessValues();
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
 							sprintf("files were NOT fully copied. currentFileByte = " + nread
 									+ " filecopyprogress_max = "
@@ -350,8 +316,70 @@ public class OperateFiles extends Task<Boolean> {
 			return null;
 		}
 
+		private void resetAndUpdateFileCopiedProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
+					model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
+				}
+			});
+		}
+
+		private void updateIncreaseLastSecondFileSizeProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
+				}
+			});
+		}
+
+		private void resetAndupdateSourceAndDestProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
+					model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
+					model_operate.getCopyProcess_values().setCopyProgress(0);
+					model_operate.getCopyProcess_values().setFilesCopyProgress_MAX_tmp(source.toFile().length());
+				}
+			});
+		}
+
+		private void updateIncreaseRenamedProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().increaseRenamed_tmp();
+				}
+			});
+		}
+
+		private void updateIncreaseDuplicatesProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().increaseDuplicated_tmp();
+					Messages.sprintf(
+							"Increader dups is now: " + model_operate.getCopyProcess_values().getDuplicated_tmp());
+				}
+			});
+		}
+
+		private void updateSourceAndDestProcessValues() {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					model_operate.getCopyProcess_values().setCopyFrom(source.toString());
+					model_operate.getCopyProcess_values().setCopyTo(dest.toString());
+				}
+			});
+
+		}
+
 		private void cleanCancelledFile(InputStream from, OutputStream to) {
-			sprintf("cancelled");
+			sprintf("cleanCancelledFile cancelled");
 			try {
 				from.close();
 				to.close();
@@ -370,6 +398,7 @@ public class OperateFiles extends Task<Boolean> {
 		protected void failed() {
 			model_operate.stopTimeLine();
 
+			TableUtils.refreshAllTableContent(model_main.tables());
 //			model_operate.doneButton(scene_NameType, close);
 			Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
 		}
@@ -379,7 +408,7 @@ public class OperateFiles extends Task<Boolean> {
 			Messages.sprintf("OperateFiles COPY were cancelled");
 			model_operate.stopTimeLine();
 			model_operate.doneButton(scene_NameType, close);
-
+			TableUtils.refreshAllTableContent(model_main.tables());
 		}
 
 		@Override
@@ -388,6 +417,7 @@ public class OperateFiles extends Task<Boolean> {
 			model_operate.stopTimeLine();
 			model_operate.doneButton(scene_NameType, close);
 			model_operate.stopTimeLine();
+			TableUtils.refreshAllTableContent(model_main.tables());
 			Task<Void> saveWorkDirToDatabase = new Task<Void>() {
 				@Override
 				protected Void call() throws Exception {
@@ -406,7 +436,7 @@ public class OperateFiles extends Task<Boolean> {
 					return null;
 				}
 			};
-			//@formatter:on
+			// @formatter:on
 			saveWorkDirToDatabase.setOnSucceeded((eventti) -> {
 				Messages.sprintf("saveWorkDirListToDatabase finished success!");
 				writeToDatabase();

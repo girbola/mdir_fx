@@ -181,7 +181,7 @@ public class TableController {
 //		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
 		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		//
-		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table);
+		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table,Main.scene_Switcher.getWindow());
 		updateTableValuesUsingFileInfo_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {

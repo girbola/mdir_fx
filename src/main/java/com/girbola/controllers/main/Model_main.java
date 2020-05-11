@@ -16,12 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.sqlite.SQLiteConfig.Pragma;
-
+import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.ThumbInfo;
@@ -171,7 +171,7 @@ public class Model_main {
 			Messages.sprintfError("saveTablecontent connection error!!!");
 			return false;
 		}
-		
+
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
 			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
@@ -185,7 +185,7 @@ public class Model_main {
 				 */
 				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
-			
+
 				// Inserts all data info fileinfo.db
 				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
 				if (fileList_connection != null) {
@@ -246,10 +246,10 @@ public class Model_main {
 				getMonitorExternalDriveConnectivity().cancel();
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 				Messages.sprintf("No pressed. This is not finished!");
-				Messages.warningText("Not ready yet!");
+//				Messages.warningText("Not ready yet!");
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 				Messages.sprintf("Cancel pressed. This is not finished!");
-				Messages.warningText("Not ready yet!");
+//				Messages.warningText("Not ready yet!");
 			}
 		}
 		if (conf.isConfirmOnExit()) {
@@ -288,6 +288,21 @@ public class Model_main {
 
 	public BottomController getBottomController() {
 		return this.bottomController;
+	}
+
+	public void load() {
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getFolderInfo_db_fileName());
+		if (SQL_Utils.isDbConnected(connection)) {
+			TableUtils.clearTablesContents(tables());
+			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(
+					this, connection);
+
+			Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
+			load_thread.start();
+		} else {
+			Messages.sprintf("Loading folderinfos back to tables was empty");
+		}
 	}
 
 }
