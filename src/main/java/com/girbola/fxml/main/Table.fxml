@@ -147,6 +147,11 @@
                         <Tooltip fx:id="addToBatch_tooltip" text="%addToBatch_tooltip" />
                      </tooltip>
                   </Button>
+                  <Button fx:id="mergeCopy_btn" layoutX="12.0" layoutY="37.0" mnemonicParsing="false" onAction="#mergeCopy_btn_action" prefHeight="25.0" prefWidth="35.0" text="MC">
+                     <tooltip>
+                        <Tooltip fx:id="mergeCopy_btn_tooltip" text="%mergeCopy_tooltip" />
+                     </tooltip>
+                  </Button>
                </children>
                <padding>
                   <Insets bottom="1.0" left="2.0" top="1.0" />

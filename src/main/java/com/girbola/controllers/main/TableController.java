@@ -11,14 +11,12 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,12 +33,12 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -51,6 +49,9 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -65,11 +66,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
+import javafx.stage.Window;
 
 public class TableController {
-//@formatter:off
+
 	private Model_main model_main;
 
+	private Window owner;
+	
 	private final String ERROR = TableController.class.getSimpleName();
 
 	private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
@@ -82,7 +87,7 @@ public class TableController {
 	private HBox buttons_hbox;
 	@FXML
 	private ImageView hide_btn_iv;
-	
+
 	@FXML
 	private Button hide_btn;
 	@FXML
@@ -101,7 +106,9 @@ public class TableController {
 	private Button copySelected_btn;
 	@FXML
 	private Button addToBatch_btn;
-	
+	@FXML
+	private Button mergeCopy_btn;
+
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
 	@FXML
@@ -116,7 +123,15 @@ public class TableController {
 	private Tooltip select_dateDifference_tooltip;
 	@FXML
 	private Tooltip tableDescription_tf_tooltip;
-	
+
+	@FXML
+	private Tooltip mergeCopy_btn_tooltip;
+
+	@FXML
+	Tooltip copySelected_btn_tooltip;
+	@FXML
+	Tooltip addToBatch_tooltip;
+
 	@FXML
 	private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
 	@FXML
@@ -155,6 +170,44 @@ public class TableController {
 	private TableColumn<FolderInfo, String> dateFix_col;
 
 	@FXML
+	private void mergeCopy_btn_action(ActionEvent event) {
+		Main.setProcessCancelled(false);
+		try {
+			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
+				warningText(bundle.getString("cannotFindWorkDir"));
+				return;
+			}
+		} catch (IOException ex) {
+			warningText(bundle.getString("cannotFindWorkDir"));
+			return;
+		}
+		FXMLLoader loader = null;
+
+		Parent root = null;
+
+		try {
+			loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/MergeDialog.fxml"), Main.bundle);
+			root = loader.load();
+			Stage stage = new Stage();
+			Scene scene = new Scene(root);
+			MergeDialogController mergeDialogController = loader.getController();
+			mergeDialogController.init(model_main, model_main.tables(), table, tableType);
+			stage.setScene(scene);
+			stage.showAndWait();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+//		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs.createDialog_YesNo(
+//				Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+//		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
+//		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+//			Messages.sprintf("Starting moving files from sortit to sorted");
+//			mergeAndCopySelectedTableRows(eventName, locationName, model_main.tables(), table,tableType);
+//		}
+	}
+
+	@FXML
 	private void copySelected_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
 		try {
@@ -171,9 +224,10 @@ public class TableController {
 		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("Starting moving files from sortit to sorted");
-			copySelectedTableRows(model_main.tables(), table,tableType);
+			copySelectedTableRows(model_main.tables(), table, tableType);
 		}
 	}
+
 	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
@@ -186,8 +240,9 @@ public class TableController {
 			warningText(bundle.getString("cannotFindWorkDir"));
 			return;
 		}
-		addToBatchSelectedTableRows(model_main.tables(), table,tableType);
+		addToBatchSelectedTableRows(model_main.tables(), table, tableType);
 	}
+
 	//@formatter:on
 	@FXML
 	private void checkChanges_action(ActionEvent event) {
