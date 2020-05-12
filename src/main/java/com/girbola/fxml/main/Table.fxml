@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox minHeight="200.0" minWidth="200.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox minHeight="200.0" minWidth="200.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -135,6 +135,16 @@
       				<Button fx:id="select_dateDifference" mnemonicParsing="false" onAction="#select_dateDifference_action" prefHeight="25.0" prefWidth="35.0" text="DD">
                      <tooltip>
                         <Tooltip fx:id="select_dateDifference_tooltip" text="%selectDateDifferencesTableTooltip" />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="copySelected_btn" layoutX="329.0" layoutY="11.0" mnemonicParsing="false" onAction="#copySelected_btn_action" prefHeight="25.0" prefWidth="35.0" text="CP">
+                     <tooltip>
+                        <Tooltip fx:id="copySelected_btn_tooltip" text="%copySelected_btn_tooltip" />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="addToBatch_btn" layoutX="365.0" layoutY="11.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefHeight="25.0" prefWidth="35.0" text="%add">
+                     <tooltip>
+                        <Tooltip fx:id="addToBatch_tooltip" text="%addToBatch_tooltip" />
                      </tooltip>
                   </Button>
                </children>

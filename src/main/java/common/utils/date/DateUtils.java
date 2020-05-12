@@ -47,7 +47,6 @@ public class DateUtils {
 	public static LocalDate parseLocalDateFromString(String string) {
 		if (string.length() > 10) {
 			string = string.substring(0, 10);
-			sprintf("substring date: " + string);
 		}
 		LocalDate ld = null;
 		try {

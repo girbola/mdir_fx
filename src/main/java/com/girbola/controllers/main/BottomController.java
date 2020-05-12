@@ -12,6 +12,7 @@ import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,10 +22,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
+import com.girbola.Scene_NameType;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -32,16 +36,19 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
+import common.utils.FileUtils;
 import common.utils.date.DateUtils;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -185,7 +192,7 @@ public class BottomController {
 	private void collect_action(ActionEvent event) {
 		Collector collect = new Collector();
 		collect.collectAll(model_main.tables());
-		collect.listMap();
+		collect.listMap(model_main.tables());
 
 //		drive_pane.visibleProperty().model_main
 
@@ -279,44 +286,27 @@ public class BottomController {
 	 */
 	@FXML
 	private void copySelected_btn_action(ActionEvent event) {
-		Main.setProcessCancelled(false);
-		try {
-			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
-				warningText(bundle.getString("cannotFindWorkDir"));
-				return;
-			}
-		} catch (IOException ex) {
-			warningText(bundle.getString("cannotFindWorkDir"));
-			return;
-		}
-		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs
-				.createDialog_YesNo(Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
-		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
-		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-			Messages.sprintf("Starting copying files");
-			copySelectedTableRows(model_main.tables(), model_main.tables().getSorted_table(), TableType.SORTED.getType());
-			copySelectedTableRows(model_main.tables(), model_main.tables().getSortIt_table(), TableType.SORTIT.getType());
-		}
 		
 	}
 
-	private void copySelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			int badFiles = 0;
-
+	private void findSameDateFileInfosFromSortedAndWorkdir(Tables tables) {
+		// TEsting possible move from sortit to sorted
+		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				Path src = Paths.get(fileInfo.getOrgPath());
 				FileInfo possibleDuplicate = model_main.getWorkDir_Handler().exists(fileInfo);
-				if (possibleDuplicate == null) {
-					fileInfo.setCopied(false);
+				if (possibleDuplicate != null) {
+					Messages.sprintf(
+							"File were already copied to destination: " + possibleDuplicate.getDestination_Path());
+//					fileInfo.setDestination_Path(possibleDuplicate.getDestination_Path());
 				} else {
-					fileInfo.setCopied(true);
-					sprintf("File existed already: " + fileInfo.getOrgPath());
+					TableUtils.findPossibleNewDestinationByDate(fileInfo, tables);
 				}
 			}
+
 		}
 	}
 
+	
 	private boolean checkDuplicates(TableView<FolderInfo> table) {
 		if (table.getId().equals(TableType.SORTED.getType())) {
 			for (FolderInfo folderInfo : table.getItems()) {
@@ -374,41 +364,6 @@ public class BottomController {
 		 */
 //TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
 
-	}
-
-	private void handleSortIt(ObservableList<FolderInfo> sortit, FileInfo fi_src) {
-
-		// Iterator<FolderInfo> it = sortit.iterator();
-		for (FolderInfo foi : sortit) {
-			Messages.sprintf("Finding files: " + foi.getFolderPath());
-			LocalDate min = DateUtils.parseLocalDateTimeFromString(foi.getMinDate()).toLocalDate().minusDays(1);
-			LocalDate max = DateUtils.parseLocalDateTimeFromString(foi.getMinDate()).toLocalDate().plusDays(1);
-			LocalDate run = DateUtils.longToLocalDateTime(fi_src.getDate()).toLocalDate();
-			if (run.isAfter(min) && run.isBefore(max)) {
-				Messages.sprintf("Date were between this date scane");
-				// foi.getFileInfo().parallelStream().filter(fi_src);
-				for (FileInfo fileInfo : foi.getFileInfoList()) {
-					// Messages.sprintf("----ffff: " + fileInfo);
-					if (fileInfo.getDate() == fi_src.getDate() && fileInfo.getSize() == fi_src.getSize()) {
-						Messages.sprintf("Duplicated value found at sortit: " + fileInfo.getOrgPath());
-						foi.getFileInfoList().remove(fileInfo);
-						Platform.runLater(new Runnable() {
-
-							@Override
-							public void run() {
-								if (foi.getChanged() == false) {
-									foi.setChanged(true);
-								}
-							}
-						});
-					}
-				}
-			}
-			min = null;
-			max = null;
-			run = null;
-
-		}
 	}
 
 	public static boolean hasCheckWorkDirConflict(ObservableList<FolderInfo> obs) {

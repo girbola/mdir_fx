@@ -12,11 +12,13 @@ import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +37,8 @@ import com.girbola.controllers.main.CopyBatch;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.UpdateFolderInfoContent;
+import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.fileinfo.DestinationResolver;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.filelisting.GetRootFiles;
@@ -42,6 +46,9 @@ import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
+import common.utils.Conversion;
+import common.utils.FileUtils;
+import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -647,6 +654,49 @@ public class TableUtils {
 		tables.getSorted_table().getItems().clear();
 		tables.getSortIt_table().getItems().clear();
 		refreshAllTableContent(tables);
-		
+
+	}
+
+	public static void findPossibleNewDestinationByDate(FileInfo fileInfoToFind, Tables tables) {
+		for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+			LocalDate start = DateUtils.parseLocalDateFromString(folderInfo.getMinDate());
+			LocalDate end = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate());
+			LocalDate toFind = DateUtils.longToLocalDateTime(fileInfoToFind.getDate()).toLocalDate();
+
+//			if(folderInfo.getMinDate())
+//			for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
+//				FileInfo possibleDuplicate = model_main.getWorkDir_Handler().exists(fileInfo);
+//				if(possibleDuplicate!=null) {
+//					Messages.sprintf("File were already copied to destination: " + possibleDuplicate.getDestination_Path());
+////					fileInfo.setDestination_Path(possibleDuplicate.getDestination_Path());
+//				} else {
+//					TableUtils.findPossibleNewDestinationByDate(path, tableValues)
+//				}
+//			}
+
+		}
+
+	}
+
+	public static Path resolveFileDestinationPath(String justFolderName, FileInfo fileInfo, String tableType) {
+
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+
+		if (tableType.equals(TableType.SORTED.getType())) {
+			Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld + " - " + justFolderName
+					+ File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+			return destPath;
+		} else if (tableType.equals(TableType.SORTIT.getType())) {
+			Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + Conversion.formatStringTwoDigits(ld.getMonthValue())
+					+ File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+			return destPath;
+		} else if (tableType.equals(TableType.ASITIS.getType())) {
+			Path destPath = Paths.get(File.separator + justFolderName + File.separator + fileName + "."
+					+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+			return destPath;
+		}
+		return null;
 	}
 }

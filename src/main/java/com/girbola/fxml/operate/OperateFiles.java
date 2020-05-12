@@ -119,11 +119,13 @@ public class OperateFiles extends Task<Boolean> {
 				return null;
 			}
 			if (isCancelled()) {
+				Messages.sprintf("Copy process is cancelled");
 				Main.setProcessCancelled(true);
 				model_operate.stopTimeLine();
 				return null;
 			}
 			if (Main.getProcessCancelled()) {
+				Messages.sprintf("Copy process getProcessCancelled is cancelled");
 				cancel();
 				model_operate.stopTimeLine();
 				return null;
@@ -140,6 +142,7 @@ public class OperateFiles extends Task<Boolean> {
 
 			boolean copy = false;
 			for (FileInfo fileInfo : list) {
+				Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 				copy = false;
 				if (isCancelled()) {
 					Main.setProcessCancelled(true);
@@ -151,9 +154,22 @@ public class OperateFiles extends Task<Boolean> {
 					Main.setProcessCancelled(true);
 					break;
 				}
+				if (fileInfo.getDestination_Path() == null) {
+					Messages.warningText("getDestination_Path were null: " + fileInfo.getOrgPath());
+					cancel();
+					Main.setProcessCancelled(true);
+					break;
+				}
+				
+				if (fileInfo.getDestination_Path().isEmpty()) {
+					Messages.warningText("getDestination_Path were empty: " + fileInfo.getOrgPath());
+					cancel();
+					Main.setProcessCancelled(true);
+					break;
+				}
 
 				source = Paths.get(fileInfo.getOrgPath());
-				// dest = DestinationResolver.getDestinationFileName(fileInfo);
+//dest = DestinationResolver.getDestinationFileName(fileInfo);
 
 				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 
@@ -244,8 +260,7 @@ public class OperateFiles extends Task<Boolean> {
 							}
 							to.write(buf, 0, byteRead);
 							nread += byteRead;
-							//updateIncreaseLastSecondFileSizeProcessValues();
-
+							updateIncreaseLastSecondFileSizeProcessValues();
 						}
 						from.close();
 						to.close();

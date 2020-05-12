@@ -116,11 +116,12 @@ public class WorkDir_Handler {
 	public FileInfo exists(FileInfo fileInfo_toFind) {
 		Iterator<FileInfo> it = workDir_List.iterator();
 		final LocalDate ld_toFind = DateUtils.longToLocalDateTime(fileInfo_toFind.getDate()).toLocalDate();
+		final int year= ld_toFind.getYear();
 		final int month = ld_toFind.getMonthValue();
 
 		while (it.hasNext()) {
 			FileInfo fileInfo = it.next();
-			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month) {
+			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == year && DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month)  {
 				if (new File(fileInfo.getOrgPath()).length() == new File(fileInfo.getOrgPath()).length()) {
 					Messages.sprintf("FileInfo exists at workdir: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 					return fileInfo;

@@ -6,17 +6,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.TreeMap;
 
+import com.girbola.Main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
-import java.util.TreeMap;
 
 import common.utils.date.DateUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.TableView;
 
 public class Collector {
@@ -26,13 +31,16 @@ public class Collector {
 	public ObservableList<FileInfo> collect(TableView<FolderInfo> table) {
 		ObservableList<FileInfo> obs = FXCollections.observableArrayList();
 
-		for (FolderInfo table_v : table.getItems()) {
-			LocalDateTime max = DateUtils.parseLocalDateTimeFromString(table_v.getMaxDate()).plusDays(1);
-			LocalDateTime min = DateUtils.parseLocalDateTimeFromString(table_v.getMinDate()).minusDays(1);
+		for (FolderInfo folderInfo : table.getItems()) {
+			LocalDateTime start = DateUtils.parseLocalDateTimeFromString(folderInfo.getMaxDate()).minusDays(1);
+			LocalDateTime end = DateUtils.parseLocalDateTimeFromString(folderInfo.getMinDate()).plusDays(1);
 
-			for (FileInfo fileInfo : table_v.getFileInfoList()) {
+			// (date.isAfter(ldt_start) && date.isBefore(ldt_end)) {
+				
+			
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 				LocalDateTime date_ld = DateUtils.longToLocalDateTime(fileInfo.getDate());
-				if (date_ld.isBefore(max) && date_ld.isAfter(min)) {
+				if (date_ld.isAfter(start) && date_ld.isBefore(end)) {
 					add(date_ld.toLocalDate(), fileInfo);
 				}
 			}
@@ -66,10 +74,34 @@ public class Collector {
 		return false;
 	}
 
-	public void listMap() {
+	public void listMap(Tables tables) {
 		for (Entry<LocalDate, List<FileInfo>> entry : map.entrySet()) {
+			LocalDate localDateToFind = entry.getKey();
+			List<FolderInfo> listOfPossibleFolders = new ArrayList<>();
+			for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+				LocalDate start = DateUtils.parseLocalDateFromString(folderInfo.getMinDate()).plusDays(1);
+				LocalDate end = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate()).minusDays(1);
+				if (localDateToFind.isBefore(end) && localDateToFind.isAfter(start)) {
+					listOfPossibleFolders.add(folderInfo);
+					Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
+				}
+
+			}
+			if (!listOfPossibleFolders.isEmpty()) {
+				Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
+						Main.scene_Switcher.getWindow(),
+						" There were possible foldernames. Choose one");
+				Optional<ButtonType> result = changesDialog.showAndWait();
+				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+					for (FolderInfo folderInfo : listOfPossibleFolders) {
+						Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
+					}
+					listOfPossibleFolders.clear();
+				}
+			}
 			Messages.sprintf("Date: " + entry.getKey() + "\n" + "=====================" + entry.getValue().size());
 		}
+		
 	}
 
 	public Map<LocalDate, List<FileInfo>> getMap() {
@@ -78,7 +110,7 @@ public class Collector {
 
 	public void collectAll(Tables tables) {
 		collect(tables.getSorted_table());
-		// collect(tables.getSortIt_table());
+		collect(tables.getSortIt_table());
 		// collect(tables.getAsItIs_table());
 
 	}

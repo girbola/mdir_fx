@@ -7,30 +7,40 @@
 package com.girbola.controllers.main;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.messages.Messages.warningText;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import com.girbola.Main;
+import com.girbola.Scene_NameType;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
+import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,7 +52,10 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -55,7 +68,7 @@ import javafx.scene.layout.HBox;
 
 public class TableController {
 //@formatter:off
-	private Model_main model;
+	private Model_main model_main;
 
 	private final String ERROR = TableController.class.getSimpleName();
 
@@ -84,6 +97,10 @@ public class TableController {
 	private Button select_none_btn;
 	@FXML
 	private Button select_dateDifference;
+	@FXML
+	private Button copySelected_btn;
+	@FXML
+	private Button addToBatch_btn;
 	
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
@@ -137,6 +154,40 @@ public class TableController {
 	@FXML
 	private TableColumn<FolderInfo, String> dateFix_col;
 
+	@FXML
+	private void copySelected_btn_action(ActionEvent event) {
+		Main.setProcessCancelled(false);
+		try {
+			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
+				warningText(bundle.getString("cannotFindWorkDir"));
+				return;
+			}
+		} catch (IOException ex) {
+			warningText(bundle.getString("cannotFindWorkDir"));
+			return;
+		}
+		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs.createDialog_YesNo(
+				Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
+		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+			Messages.sprintf("Starting moving files from sortit to sorted");
+			copySelectedTableRows(model_main.tables(), table,tableType);
+		}
+	}
+	@FXML
+	private void addToBatch_btn_action(ActionEvent event) {
+		Main.setProcessCancelled(false);
+		try {
+			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
+				warningText(bundle.getString("cannotFindWorkDir"));
+				return;
+			}
+		} catch (IOException ex) {
+			warningText(bundle.getString("cannotFindWorkDir"));
+			return;
+		}
+		addToBatchSelectedTableRows(model_main.tables(), table,tableType);
+	}
 	//@formatter:on
 	@FXML
 	private void checkChanges_action(ActionEvent event) {
@@ -181,7 +232,8 @@ public class TableController {
 //		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
 		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		//
-		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model, table,Main.scene_Switcher.getWindow());
+		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table,
+				Main.scene_Switcher.getWindow());
 		updateTableValuesUsingFileInfo_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
@@ -211,43 +263,43 @@ public class TableController {
 
 	@FXML
 	private void select_all_btn_action(ActionEvent event) {
-		model.buttons().select_all_Table(table);
+		model_main.buttons().select_all_Table(table);
 	}
 
 	@FXML
 	private void hide_btn_action(ActionEvent event) {
-		model.tables().getHideButtons().hide_show_table(hide_btn, tableType);
+		model_main.tables().getHideButtons().hide_show_table(hide_btn, tableType);
 	}
 
 	@FXML
 	private void reload_btn_action(ActionEvent event) {
 
-		// model.getTables().updateFolderInfoFileInfo(table);
+		// model_main.getTables().updateFolderInfoFileInfo(table);
 	}
 
 	@FXML
 	private void select_bad_btn_action(ActionEvent event) {
-		model.buttons().select_bad_Table(table);
+		model_main.buttons().select_bad_Table(table);
 	}
 
 	@FXML
 	private void select_dateDifference_action(ActionEvent event) {
-		model.buttons().select_dateDifference_Table(table);
+		model_main.buttons().select_dateDifference_Table(table);
 	}
 
 	@FXML
 	private void select_good_btn_action(ActionEvent event) {
-		model.buttons().select_good_Table(table);
+		model_main.buttons().select_good_Table(table);
 	}
 
 	@FXML
 	private void select_invert_btn_action(ActionEvent event) {
-		model.buttons().select_invert_Table(table);
+		model_main.buttons().select_invert_Table(table);
 	}
 
 	@FXML
 	private void select_none_btn_action(ActionEvent event) {
-		model.buttons().select_none_Table(table);
+		model_main.buttons().select_none_Table(table);
 	}
 
 	public TableView<FolderInfo> getTable() {
@@ -260,9 +312,9 @@ public class TableController {
 
 	private String tableType;
 
-	public void init(Model_main model, String tableName, String tableType) {
-		this.model = model;
-		this.model.tables().setDeleteKeyPressed(table);
+	public void init(Model_main aModel_main, String tableName, String tableType) {
+		this.model_main = aModel_main;
+		this.model_main.tables().setDeleteKeyPressed(table);
 		this.tableType = tableType;
 		tableDescription_tf.setText(tableName);
 
@@ -272,11 +324,11 @@ public class TableController {
 		hide_btn_iv.setImage(GUI_Methods.loadImage("showtable.png", GUIPrefs.BUTTON_WIDTH));
 		table.setId(tableType);
 		table.setItems(data_obs);
-		model.tables().setDrag(table);
+		model_main.tables().setDrag(table);
 		connected_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Boolean> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().isConnected()));
-		connected_col.setCellFactory(model.tables().connected_cellFactory);
+		connected_col.setCellFactory(model_main.tables().connected_cellFactory);
 		badFiles_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getBadFiles()));
@@ -284,7 +336,7 @@ public class TableController {
 		dateDifference_ratio_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Double> param) -> new SimpleObjectProperty<>(
 						param.getValue().getDateDifferenceRatio()));
-		dateDifference_ratio_col.setCellFactory(model.tables().dateDifference_Status_cellFactory);
+		dateDifference_ratio_col.setCellFactory(model_main.tables().dateDifference_Status_cellFactory);
 		dateDifference_ratio_col.setSortType(SortType.ASCENDING);
 		folderFiles_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
@@ -317,7 +369,7 @@ public class TableController {
 		status_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getStatus()));
-		// status_col.setCellFactory(model.tables().cell_Status_cellFactory);
+		// status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
 		suggested_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getSuggested()));
@@ -325,21 +377,22 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderVideoFiles()));
 //		dateFix_col.setCellValueFactory(new PropertyValueFactory<>("DUMMY"));
-		dateFix_col.setCellFactory(model.tables().dateFixer_cellFactory);
+		dateFix_col.setCellFactory(model_main.tables().dateFixer_cellFactory);
 		copied_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getCopied()));
-		copied_col.setCellFactory(model.tables().copied_cellFactory);
+		copied_col.setCellFactory(model_main.tables().copied_cellFactory);
 		if (hide_btn == null) {
-			Messages.errorSmth(ERROR, "model.tables().getHideButtons(). were null", null, Misc.getLineNumber(), true);
+			Messages.errorSmth(ERROR, "model_main.tables().getHideButtons(). were null", null, Misc.getLineNumber(),
+					true);
 		}
 
 //		if (tableType.equals(TableType.ASITIS.getType())) {
-//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.ASITIS, 3);
+//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.ASITIS, 3);
 //		} else if (tableType.equals(TableType.SORTED.getType())) {
-//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTED, 2);
+//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTED, 2);
 //		} else if (tableType.equals(TableType.SORTIT.getType())) {
-//			model.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTIT, 1);
+//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTIT, 1);
 //		}
 		Messages.sprintf("sorted table were editable? " + table.isEditable() + " just fold editable?  "
 				+ justFolderName_col.isEditable());
@@ -400,6 +453,111 @@ public class TableController {
 
 		control.getTooltip().setText("");
 		control.getTooltip().hide();
+
+	}
+
+	private void addToBatchSelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
+		if (Main.conf.getWorkDir() == null) {
+			Messages.warningText("copySelectedTableRows Workdir were null");
+			return;
+		}
+		if (Main.conf.getWorkDir().isEmpty()) {
+			Messages.warningText("copySelectedTableRows Workdir were empty");
+			return;
+		}
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			if (folderInfo.getBadFiles() >= 1) {
+				Messages.warningText(Main.bundle.getString("badDatesFound"));
+				return;
+			}
+
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+
+				Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo,
+						tableType);
+				if (destPath != null) {
+					if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+						fileInfo.setWorkDir(Main.conf.getWorkDir());
+						fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+						fileInfo.setDestination_Path(destPath.toString());
+						fileInfo.setCopied(false);
+						Main.setChanged(true);
+					}
+				}
+				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+			}
+		}
+	}
+
+	private void copySelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
+		if (Main.conf.getWorkDir() == null) {
+			Messages.warningText("copySelectedTableRows Workdir were null");
+			return;
+		}
+		if (Main.conf.getWorkDir().isEmpty()) {
+			Messages.warningText("copySelectedTableRows Workdir were empty");
+			return;
+		}
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			if (folderInfo.getBadFiles() >= 1) {
+				Messages.warningText(Main.bundle.getString("badDatesFound"));
+				return;
+			}
+
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo,
+						tableType);
+				if (destPath != null) {
+					if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+						fileInfo.setWorkDir(Main.conf.getWorkDir());
+						fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+						fileInfo.setDestination_Path(destPath.toString());
+						fileInfo.setCopied(false);
+						Main.setChanged(true);
+					}
+				}
+				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+			}
+		}
+		List<FileInfo> list = new ArrayList<>();
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			if (folderInfo.getBadFiles() >= 1) {
+				Messages.warningText(Main.bundle.getString("badDatesFound"));
+				return;
+			}
+			list.addAll(folderInfo.getFileInfoList());
+
+		}
+
+		Task<Boolean> operate = new OperateFiles(list, true, model_main, Scene_NameType.MAIN.getType());
+
+		operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				}
+				TableUtils.refreshAllTableContent(tables);
+			}
+		});
+		operate.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.warningText("Copy process failed");
+			}
+		});
+
+		operate.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("Copy process were cancelled");
+			}
+		});
+
+		Thread thread = new Thread(operate, "Operate Thread");
+//		thread.start();
+		exec.submit(thread);
 
 	}
 
