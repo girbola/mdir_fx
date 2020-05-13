@@ -183,6 +183,8 @@ public class TableController {
 
 	@FXML
 	private void resetSelectedFileInfos_btn_action(ActionEvent event) {
+		LoadingProcess_Task ldt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		ldt.showLoadStage();
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 				fileInfo.setWorkDir("");
@@ -199,8 +201,10 @@ public class TableController {
 			}
 			TableUtils.updateFolderInfos_FileInfo(folderInfo);
 			TableUtils.refreshAllTableContent(model_main.tables());
+			
 		}
 		Messages.sprintf("Resetting selected fileinfo's done!");
+		ldt.closeStage();
 	}
 
 	@FXML
