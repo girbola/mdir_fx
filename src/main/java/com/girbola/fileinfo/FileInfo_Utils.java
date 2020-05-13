@@ -397,4 +397,10 @@ public class FileInfo_Utils {
 			return 2;
 		}
 	}
+
+
+	public static void removeFileInfoFromList(List<FileInfo> fileInfoList, Path p) {
+
+		
+	}
 }

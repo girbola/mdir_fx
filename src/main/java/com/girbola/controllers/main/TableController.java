@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +34,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
@@ -58,6 +60,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Control;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.SortType;
@@ -74,7 +77,7 @@ public class TableController {
 	private Model_main model_main;
 
 	private Window owner;
-	
+
 	private final String ERROR = TableController.class.getSimpleName();
 
 	private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
@@ -108,6 +111,8 @@ public class TableController {
 	private Button addToBatch_btn;
 	@FXML
 	private Button mergeCopy_btn;
+	@FXML
+	private Button resetSelectedFileInfos_btn;
 
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
@@ -128,9 +133,16 @@ public class TableController {
 	private Tooltip mergeCopy_btn_tooltip;
 
 	@FXML
-	Tooltip copySelected_btn_tooltip;
+	private Tooltip copySelected_btn_tooltip;
 	@FXML
-	Tooltip addToBatch_tooltip;
+	private Tooltip addToBatch_tooltip;
+	@FXML
+	private Tooltip resetSelectedFileInfos_btn_tooltip;
+
+	@FXML
+	private MenuItem checkChanges_mi;
+	@FXML
+	private MenuItem reload_all_mi;
 
 	@FXML
 	private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
@@ -170,6 +182,28 @@ public class TableController {
 	private TableColumn<FolderInfo, String> dateFix_col;
 
 	@FXML
+	private void resetSelectedFileInfos_btn_action(ActionEvent event) {
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				fileInfo.setWorkDir("");
+				fileInfo.setWorkDirDriveSerialNumber("");
+				fileInfo.setDestination_Path("");
+				fileInfo.setCopied(false);
+				fileInfo.setConfirmed(false);
+				fileInfo.setEvent("");
+				fileInfo.setLocation("");
+				fileInfo.setIgnored(false);
+				fileInfo.setTableDuplicated(false);
+				fileInfo.setTags("");
+				Main.setChanged(true);
+			}
+			TableUtils.updateFolderInfos_FileInfo(folderInfo);
+			TableUtils.refreshAllTableContent(model_main.tables());
+		}
+		Messages.sprintf("Resetting selected fileinfo's done!");
+	}
+
+	@FXML
 	private void mergeCopy_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
 		try {
@@ -197,14 +231,6 @@ public class TableController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-//		Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs.createDialog_YesNo(
-//				Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
-//		Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
-//		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-//			Messages.sprintf("Starting moving files from sortit to sorted");
-//			mergeAndCopySelectedTableRows(eventName, locationName, model_main.tables(), table,tableType);
-//		}
 	}
 
 	@FXML
@@ -245,13 +271,16 @@ public class TableController {
 
 	//@formatter:on
 	@FXML
-	private void checkChanges_action(ActionEvent event) {
+	private void checkChanges_mi_action(ActionEvent event) {
 		Task<Void> checkForChanges = new Task<Void>() {
 
 			@Override
 			protected Void call() throws Exception {
-				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-
+				Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
+				
+				while(it.hasNext()) {
+					FolderInfo folderInfo = it.next();
+					
 					DirectoryStream<Path> list = null;
 					try {
 						list = Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()),
@@ -260,7 +289,17 @@ public class TableController {
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 					}
 					List<Path> listOfFiles = new ArrayList<>();
-					for (Path p : list) {
+					Iterator<Path> fileList = list.iterator();
+					while(fileList.hasNext()) {
+						Path p = fileList.next();
+						boolean compareFile = compareFile(p, folderInfo.getFileInfoList());
+						if(!compareFile ) {
+							FileInfo_Utils.removeFileInfoFromList(folderInfo.getFileInfoList(), p);
+							
+						}
+						else {
+							//exists -> size match, does not exists-> createnewFileInfo and add to list, 
+						}
 						listOfFiles.add(p);
 					}
 					if (listOfFiles.size() != folderInfo.getFolderFiles()) {
@@ -270,6 +309,11 @@ public class TableController {
 					}
 				}
 				return null;
+			}
+
+			private boolean compareFile(Path p, List<FileInfo> fileInfoList) {
+				// TODO Auto-generated method stub
+				return false;
 			}
 
 		};
@@ -282,11 +326,9 @@ public class TableController {
 	}
 
 	@FXML
-	private void reload_all_action(ActionEvent event) {
+	private void reload_all_mi_action(ActionEvent event) {
 		sprintf("Reload All");
-//		Stage stage = (Stage) updateFolderInfo_btn.getScene().getWindow();
 		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		//
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table,
 				Main.scene_Switcher.getWindow());
 		updateTableValuesUsingFileInfo_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {

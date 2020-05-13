@@ -97,12 +97,14 @@ public class LoadingProcess_Task {
 		lpc.init(model_loading);
 		Scene loadingScene = new Scene(parent);
 		Stage loadingStage = new Stage();
-		loadingStage.initOwner(owner);
+		if (owner != null) {
+			loadingStage.initOwner(owner);
+		}
 		loadingStage.initStyle(StageStyle.UNDECORATED);
 		Messages.sprintf("Owner is: " + loadingStage.getOwner());
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 		loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
-		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "dialogs.css").toExternalForm());
+		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
 
 		xOffset = loadingStage.getX();
 		yOffset = loadingStage.getY();
@@ -178,7 +180,7 @@ public class LoadingProcess_Task {
 		stopTask();
 		unbind();
 		Timeline timeline = new Timeline();
-		KeyFrame key = new KeyFrame(Duration.millis(1000),
+		KeyFrame key = new KeyFrame(Duration.millis(2000),
 				new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {

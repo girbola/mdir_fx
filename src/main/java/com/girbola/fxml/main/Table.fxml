@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox minHeight="200.0" minWidth="200.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -38,8 +38,8 @@
                <children>
                   <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
                     <items>
-                      <MenuItem mnemonicParsing="false" onAction="#reload_all_action" text="%reloadAll" />
-                      <MenuItem mnemonicParsing="false" onAction="#checkChanges_action" text="check" />
+                      <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
+                      <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="check" />
                     </items>
                   </MenuButton>
       				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
@@ -150,6 +150,11 @@
                   <Button fx:id="mergeCopy_btn" layoutX="12.0" layoutY="37.0" mnemonicParsing="false" onAction="#mergeCopy_btn_action" prefHeight="25.0" prefWidth="35.0" text="MC">
                      <tooltip>
                         <Tooltip fx:id="mergeCopy_btn_tooltip" text="%mergeCopy_tooltip" />
+                     </tooltip>
+                  </Button>
+                  <Button fx:id="resetSelectedFileInfos_btn" layoutX="48.0" layoutY="37.0" mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" prefHeight="25.0" prefWidth="35.0" text="RF">
+                     <tooltip>
+                        <Tooltip fx:id="resetSelectedFileInfos_btn_tooltip" text="%resetSelectedFileInfos_btn_tooltip" />
                      </tooltip>
                   </Button>
                </children>

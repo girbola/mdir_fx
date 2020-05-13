@@ -142,7 +142,8 @@ public class OperateFiles extends Task<Boolean> {
 
 			boolean copy = false;
 			for (FileInfo fileInfo : list) {
-				Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+				Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir()
+						+ fileInfo.getDestination_Path());
 				copy = false;
 				if (isCancelled()) {
 					Main.setProcessCancelled(true);
@@ -160,7 +161,7 @@ public class OperateFiles extends Task<Boolean> {
 					Main.setProcessCancelled(true);
 					break;
 				}
-				
+
 				if (fileInfo.getDestination_Path().isEmpty()) {
 					Messages.warningText("getDestination_Path were empty: " + fileInfo.getOrgPath());
 					cancel();
@@ -169,7 +170,8 @@ public class OperateFiles extends Task<Boolean> {
 				}
 
 				source = Paths.get(fileInfo.getOrgPath());
-//dest = DestinationResolver.getDestinationFileName(fileInfo);
+				
+				//dest = DestinationResolver.getDestinationFileName(fileInfo);
 
 				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 
@@ -233,18 +235,19 @@ public class OperateFiles extends Task<Boolean> {
 					}
 
 					if (!Files.exists(dest.getParent())) {
-						Messages.sprintf("Folder were not able to create dest: " + dest.getParent());
+						Messages.errorSmth(ERROR, "Folder were not able to create. Folder name: " + dest.getParent(), null, Misc.getLineNumber(), true);
 						Main.setProcessCancelled(true);
 						break;
 					}
 					// long fileSize = source.toFile().length();
+					copyFile(source, dest);
 					try {
 						//
 						Path destTmp = Paths.get(dest.toFile() + ".tmp");
 
 						Files.deleteIfExists(destTmp);
 
-						InputStream from = new FileInputStream(source.toString());
+						InputStream from = new FileInputStream(source.toFile());
 						OutputStream to = new FileOutputStream(destTmp.toFile());
 						resetAndupdateSourceAndDestProcessValues();
 
@@ -260,12 +263,15 @@ public class OperateFiles extends Task<Boolean> {
 							}
 							to.write(buf, 0, byteRead);
 							nread += byteRead;
+							Messages.sprintf("Nread: " + nread + " of "
+									+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
 							updateIncreaseLastSecondFileSizeProcessValues();
 						}
 						from.close();
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
+							Messages.errorSmth(ERROR, "Corrupted file found!. Cancelling process", null, Misc.getLineNumber(), true);
 							sprintf("files were NOT fully copied. currentFileByte = " + nread
 									+ " filecopyprogress_max = "
 									+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
@@ -329,6 +335,11 @@ public class OperateFiles extends Task<Boolean> {
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
+		}
+
+		private void copyFile(Path source2, Path dest2) {
+			// TODO Auto-generated method stub
+			
 		}
 
 		private void resetAndUpdateFileCopiedProcessValues() {

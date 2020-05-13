@@ -11,10 +11,10 @@ import java.util.concurrent.Executors;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
-import com.girbola.controllers.datefixer.AskEventDialogController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
@@ -35,7 +35,7 @@ import javafx.stage.Stage;
 
 public class MergeDialogController {
 
-	private final String ERROR = AskEventDialogController.class.getSimpleName();
+	private final String ERROR = MergeDialogController.class.getSimpleName();
 
 	private Model_main model_main;
 	private Tables tables;
@@ -64,8 +64,89 @@ public class MergeDialogController {
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
 		stage.close();
 	}
+
 	@FXML
 	private void apply_btn_action(ActionEvent event) {
+		if (Main.conf.getWorkDir() == null) {
+			Messages.warningText("copySelectedTableRows Workdir were null");
+			return;
+		}
+		if (Main.conf.getWorkDir().isEmpty()) {
+			Messages.warningText("copySelectedTableRows Workdir were empty");
+			return;
+		}
+		String eventName = "";
+		String locationName = "";
+		String userName = "";
+
+		String event_str = "";
+		String location_str = "";
+
+		if (!event_cmb.getEditor().getText().isEmpty()) {
+			eventName = event_cmb.getEditor().getText();
+		}
+		if (!location_cmb.getEditor().getText().isEmpty()) {
+			locationName = location_cmb.getEditor().getText();
+		}
+		if (!user_cmb.getEditor().getText().isEmpty()) {
+			userName = user_cmb.getEditor().getText();
+		}
+		Messages.sprintf(
+				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
+
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			if (folderInfo.getBadFiles() >= 1) {
+				Messages.warningText(Main.bundle.getString("badDatesFound"));
+				return;
+			}
+
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+
+				fileInfo.setEvent(eventName);
+				fileInfo.setLocation(locationName);
+				fileInfo.setUser(userName);
+
+				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
+					location_str = " - " + fileInfo.getLocation();
+				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
+					event_str = " - " + fileInfo.getEvent();
+				} else {
+					location_str = " - " + fileInfo.getLocation();
+					event_str = " - " + fileInfo.getEvent();
+				}
+
+				if (!user_cmb.getEditor().getText().isEmpty()) {
+					userName = user_cmb.getEditor().getText();
+				}
+				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+				Messages.sprintf("locationName were= '" + locationName + "'");
+				Messages.sprintf("eventName were= '" + eventName + "'");
+				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
+				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
+				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+				Path destPath = Paths.get(
+						File.separator + ld.getYear() + File.separator + ld + location_str + event_str + File.separator
+								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+				fileInfo.setWorkDir(Main.conf.getWorkDir());
+				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+				fileInfo.setDestination_Path(destPath.toString());
+				fileInfo.setCopied(false);
+				fileInfo.setUser(userName);
+				Main.setChanged(true);
+				location_str = "";
+				event_str = "";
+				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+			}
+
+		}
+		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+		TableUtils.refreshAllTableContent(tables);
+		close();
+	}
+
+	@FXML
+	private void apply_and_copy_btn_action(ActionEvent event) {
 		if (Main.conf.getWorkDir() == null) {
 			Messages.warningText("copySelectedTableRows Workdir were null");
 			return;
@@ -87,7 +168,7 @@ public class MergeDialogController {
 		if (!user_cmb.getEditor().getText().isEmpty()) {
 			userName = user_cmb.getEditor().getText();
 		}
-		
+
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getBadFiles() >= 1) {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
@@ -100,98 +181,15 @@ public class MergeDialogController {
 					fileInfo.setEvent(eventName);
 					Main.setChanged(true);
 				}
-				if(!locationName.isEmpty()) {
+				if (!locationName.isEmpty()) {
 					fileInfo.setLocation(locationName);
 					Main.setChanged(true);
 				}
-				if(!userName.isEmpty()) {
+				if (!userName.isEmpty()) {
 					fileInfo.setUser(userName);
 					Main.setChanged(true);
 				}
-				
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					locationName = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					eventName = " - " + fileInfo.getEvent();
-				} else {
-					locationName = " - " + fileInfo.getLocation();
-					eventName = " - " + fileInfo.getEvent();
-				}
-
-				if (!user_cmb.getEditor().getText().isEmpty()) {
-					userName = user_cmb.getEditor().getText();
-				}
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("locationName were= '" + locationName + "'");
-				Messages.sprintf("eventName were= '" + eventName + "'");
-				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(
-						File.separator + ld.getYear() + File.separator + ld + locationName + eventName + File.separator
-								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
-					fileInfo.setWorkDir(Main.conf.getWorkDir());
-					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-					fileInfo.setDestination_Path(destPath.toString());
-					fileInfo.setCopied(false);
-					fileInfo.setUser(userName);
-					Main.setChanged(true);
-				}
-				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-			}
-
-		}
-		close();
-	}
-
-	@FXML
-	private void apply_and_copy_btn_action(ActionEvent event) {
-		if (Main.conf.getWorkDir() == null) {
-			Messages.warningText("copySelectedTableRows Workdir were null");
-			return;
-		}
-		if (Main.conf.getWorkDir().isEmpty()) {
-			Messages.warningText("copySelectedTableRows Workdir were empty");
-			return;
-		}
-		String eventName = "";
-		String locationName = "";
-		String userName ="";
-		if (!event_cmb.getEditor().getText().isEmpty()) {
-			eventName = event_cmb.getEditor().getText();
-		}
-		if (!location_cmb.getEditor().getText().isEmpty()) {
-			locationName = location_cmb.getEditor().getText();
-		}
-		if (!user_cmb.getEditor().getText().isEmpty()) {
-			userName = user_cmb.getEditor().getText();
-		}
-		
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
-			}
-
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-
-				if (!eventName.isEmpty()) {
-					fileInfo.setEvent(eventName);
-					Main.setChanged(true);
-				}
-				if(!locationName.isEmpty()) {
-					fileInfo.setLocation(locationName);
-					Main.setChanged(true);
-				}
-				if(!userName.isEmpty()) {
-					fileInfo.setUser(userName);
-					Main.setChanged(true);
-				}
-				
-				
 				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
 					locationName = " - " + fileInfo.getLocation();
 				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
@@ -223,6 +221,8 @@ public class MergeDialogController {
 			}
 
 		}
+		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+
 		List<FileInfo> list = new ArrayList<>();
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {

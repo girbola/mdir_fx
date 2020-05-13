@@ -1,8 +1,13 @@
 package com.girbola.controllers.main.tables;
 
+import java.util.Iterator;
 import java.util.List;
 
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
+
+import javafx.scene.control.TableView;
 
 public class FolderInfo_Utils {
 
@@ -28,6 +33,15 @@ public class FolderInfo_Utils {
 			}
 		}
 		return changed;
+	}
+
+	public static void moveToAnotherTable(Tables tables, TableView<FolderInfo> table, String tableType) {
+
+		if(tableType.equals(TableType.SORTIT.getType())) {
+			tables.getSorted_table().getItems().addAll(table.getSelectionModel().getSelectedItems());
+			tables.getSortIt_table().getItems().removeAll(table.getSelectionModel().getSelectedItems());
+		}
+		
 	}
 
 }

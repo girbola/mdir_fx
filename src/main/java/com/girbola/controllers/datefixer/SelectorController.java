@@ -161,8 +161,6 @@ public class SelectorController {
 					@Override
 					public void changed(ObservableValue<? extends EXIF_Data_Selector> observable,
 							EXIF_Data_Selector oldValue, EXIF_Data_Selector newValue) {
-						Messages.sprintf("Selected: " + newValue);
-						Messages.sprintf("Selected: " + newValue.getInfo());
 						Task<Void> task = new Task<Void>() {
 							@Override
 							protected Void call() throws Exception {
