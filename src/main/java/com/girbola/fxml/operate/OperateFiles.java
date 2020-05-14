@@ -246,9 +246,10 @@ public class OperateFiles extends Task<Boolean> {
 						break;
 					}
 					// long fileSize = source.toFile().length();
-					copyFile(source, dest);
+					// Not ready yet copyFile(source, dest);
 					try {
 						//
+
 						Path destTmp = Paths.get(dest.toFile() + ".tmp");
 
 						Files.deleteIfExists(destTmp);
@@ -280,9 +281,11 @@ public class OperateFiles extends Task<Boolean> {
 							Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(
 									Main.scene_Switcher.getScene_operate().getWindow(),
 									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") + "\n"
-											+ Main.bundle.getString("sourceFile" + source + " "
-													+ source.toFile().length()
-													+ Main.bundle.getString("copied").toLowerCase() + ": " + nread));
+											+ Main.bundle
+													.getString("sourceFile" + source + " " + source.toFile().length()
+															+ Main.bundle.getString("copied").toLowerCase() + ": "
+															+ model_operate.getCopyProcess_values()
+																	.getFilesCopyProgress_MAX_tmp()));
 
 							ButtonType abort = new ButtonType(Main.bundle.getString("abort"),
 									ButtonBar.ButtonData.CANCEL_CLOSE);
