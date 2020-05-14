@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -22,6 +23,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -37,6 +39,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.stage.WindowEvent;
 
 public class OperateFiles extends Task<Boolean> {
@@ -170,8 +175,8 @@ public class OperateFiles extends Task<Boolean> {
 				}
 
 				source = Paths.get(fileInfo.getOrgPath());
-				
-				//dest = DestinationResolver.getDestinationFileName(fileInfo);
+
+				// dest = DestinationResolver.getDestinationFileName(fileInfo);
 
 				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 
@@ -235,7 +240,8 @@ public class OperateFiles extends Task<Boolean> {
 					}
 
 					if (!Files.exists(dest.getParent())) {
-						Messages.errorSmth(ERROR, "Folder were not able to create. Folder name: " + dest.getParent(), null, Misc.getLineNumber(), true);
+						Messages.errorSmth(ERROR, "Folder were not able to create. Folder name: " + dest.getParent(),
+								null, Misc.getLineNumber(), true);
 						Main.setProcessCancelled(true);
 						break;
 					}
@@ -271,48 +277,50 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-							Messages.errorSmth(ERROR, "Corrupted file found!. Cancelling process", null, Misc.getLineNumber(), true);
-							sprintf("files were NOT fully copied. currentFileByte = " + nread
-									+ " filecopyprogress_max = "
-									+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
-							cancel();
-							Main.setProcessCancelled(true);
-							return null;
-						} else {
-							try {
-								Messages.sprintf("Renaming file .tmp back to org extension: " + dest.toString() + ".tmp"
-										+ " to dest: " + dest);
-								Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-								String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-								fileInfo.setDestination_Path(newName);
-								fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-								fileInfo.setCopied(true);
-								listCopiedFiles.add(fileInfo);
-								boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-								if (added) {
-									Messages.sprintf("FileInfo added to destination succesfully");
-//									model_main.getWorkDir_Handler().add(fileInfo);
-								} else {
-									Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
-								}
-							} catch (Exception ex) {
-								Messages.sprintfError(ex.getMessage());
+							Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(
+									Main.scene_Switcher.getScene_operate().getWindow(),
+									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") + "\n"
+											+ Main.bundle.getString("sourceFile" + source + " "
+													+ source.toFile().length()
+													+ Main.bundle.getString("copied").toLowerCase() + ": " + nread));
+
+							ButtonType abort = new ButtonType(Main.bundle.getString("abort"),
+									ButtonBar.ButtonData.CANCEL_CLOSE);
+							dialog.getDialogPane().getButtonTypes().remove(2);
+							dialog.getDialogPane().getButtonTypes().add(2, abort);
+
+							Optional<ButtonType> result = dialog.showAndWait();
+							if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+								renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
+							} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
+								Files.deleteIfExists(destTmp);
+							} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+								Messages.sprintf("Cancel pressed. This is not finished!");
+								cancel();
+								Main.setProcessCancelled(true);
+								return null;
 							}
+
+							/*
+							 * sprintf("files were NOT fully copied. currentFileByte = " + nread +
+							 * " filecopyprogress_max = " +
+							 * model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()); if
+							 * (source.toString().toLowerCase().contains("jpg")) {
+							 * renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest); } else {
+							 * cancel(); Main.setProcessCancelled(true); return null; }
+							 */
+						} else {
+							renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
 						}
 						if (STATE.equals(Copy_State.COPY.getType())) {
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									model_operate.getCopyProcess_values().increaseCopied_tmp();
-								}
+							Platform.runLater(() -> {
+								model_operate.getCopyProcess_values().increaseCopied_tmp();
 							});
 							fileInfo.setCopied(true);
 						} else if (STATE.equals(Copy_State.RENAME.getType())) {
-							Platform.runLater(new Runnable() {
-								@Override
-								public void run() {
-									model_operate.getCopyProcess_values().increaseRenamed_tmp();
-								}
+							Platform.runLater(() -> {
+								model_operate.getCopyProcess_values().increaseRenamed_tmp();
 							});
 							fileInfo.setCopied(true);
 						} else {
@@ -326,80 +334,81 @@ public class OperateFiles extends Task<Boolean> {
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 					}
 				}
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
-					}
+				Platform.runLater(() -> {
+					model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
 				});
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
 		}
 
+		private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest2) {
+			try {
+				Messages.sprintf(
+						"Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
+				Files.move(Paths.get(dest.toString() + ".tmp"), dest);
+				String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+				fileInfo.setDestination_Path(newName);
+				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+				fileInfo.setCopied(true);
+				listCopiedFiles.add(fileInfo);
+				boolean added = model_main.getWorkDir_Handler().add(fileInfo);
+				if (added) {
+					Messages.sprintf("FileInfo added to destination succesfully");
+//					model_main.getWorkDir_Handler().add(fileInfo);
+				} else {
+					Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
+				}
+			} catch (Exception ex) {
+				Messages.sprintfError(ex.getMessage());
+			}
+
+		}
+
 		private void copyFile(Path source2, Path dest2) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 		private void resetAndUpdateFileCopiedProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
-					model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
+				model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
 			});
 		}
 
 		private void updateIncreaseLastSecondFileSizeProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
 			});
 		}
 
 		private void resetAndupdateSourceAndDestProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
-					model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
-					model_operate.getCopyProcess_values().setCopyProgress(0);
-					model_operate.getCopyProcess_values().setFilesCopyProgress_MAX_tmp(source.toFile().length());
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
+				model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
+				model_operate.getCopyProcess_values().setCopyProgress(0);
+				model_operate.getCopyProcess_values().setFilesCopyProgress_MAX_tmp(source.toFile().length());
 			});
 		}
 
 		private void updateIncreaseRenamedProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().increaseRenamed_tmp();
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().increaseRenamed_tmp();
 			});
 		}
 
 		private void updateIncreaseDuplicatesProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().increaseDuplicated_tmp();
-					Messages.sprintf(
-							"Increader dups is now: " + model_operate.getCopyProcess_values().getDuplicated_tmp());
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().increaseDuplicated_tmp();
+				Messages.sprintf("Increader dups is now: " + model_operate.getCopyProcess_values().getDuplicated_tmp());
 			});
 		}
 
 		private void updateSourceAndDestProcessValues() {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					model_operate.getCopyProcess_values().setCopyFrom(source.toString());
-					model_operate.getCopyProcess_values().setCopyTo(dest.toString());
-				}
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().setCopyFrom(source.toString());
+				model_operate.getCopyProcess_values().setCopyTo(dest.toString());
 			});
 
 		}
@@ -537,54 +546,48 @@ public class OperateFiles extends Task<Boolean> {
 
 		Messages.sprintf(
 				"totalSize: " + totalSize + 10000000L + " workdir: " + new File(Main.conf.getWorkDir()).getFreeSpace());
-		Platform.runLater(new Runnable() {
+		Platform.runLater(() -> {
 
-			@Override
-			public void run() {
+			model_operate.getStart_btn().setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent event) {
+					Task<Integer> copy = new Copy();
+					copy.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+						@Override
+						public void handle(WorkerStateEvent event) {
+							Messages.sprintf("copy succeeded");
+						}
+					});
+					copy.setOnFailed(new EventHandler<WorkerStateEvent>() {
 
-				model_operate.getStart_btn().setOnAction(new EventHandler<ActionEvent>() {
-					@Override
-					public void handle(ActionEvent event) {
-						Task<Integer> copy = new Copy();
-						copy.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-							@Override
-							public void handle(WorkerStateEvent event) {
-								Messages.sprintf("copy succeeded");
-							}
-						});
-						copy.setOnFailed(new EventHandler<WorkerStateEvent>() {
+						@Override
+						public void handle(WorkerStateEvent event) {
+							Messages.sprintf("copy failed");
+						}
+					});
+					copy.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 
-							@Override
-							public void handle(WorkerStateEvent event) {
-								Messages.sprintf("copy failed");
-							}
-						});
-						copy.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+						@Override
+						public void handle(WorkerStateEvent event) {
+							model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
+							model_operate.doneButton(scene_NameType, close);
+							Messages.sprintf("copy cancelled");
+						}
+					});
+					Thread copy_thread = new Thread(copy, "Copy Thread");
+					copy_thread.start();
+				}
+			});
+			model_operate.getCancel_btn().setOnAction(new EventHandler<ActionEvent>() {
 
-							@Override
-							public void handle(WorkerStateEvent event) {
-								model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
-								model_operate.doneButton(scene_NameType, close);
-								Messages.sprintf("copy cancelled");
-							}
-						});
-						Thread copy_thread = new Thread(copy, "Copy Thread");
-						copy_thread.start();
-					}
-				});
-				model_operate.getCancel_btn().setOnAction(new EventHandler<ActionEvent>() {
-
-					@Override
-					public void handle(ActionEvent event) {
-						Main.setProcessCancelled(true);
-						Messages.sprintf(
-								"Current file cancelled is: " + model_operate.getCopyProcess_values().getCopyTo());
-						model_operate.stopTimeLine();
-						Main.setProcessCancelled(true);
-					}
-				});
-
-			}
+				@Override
+				public void handle(ActionEvent event) {
+					Main.setProcessCancelled(true);
+					Messages.sprintf("Current file cancelled is: " + model_operate.getCopyProcess_values().getCopyTo());
+					model_operate.stopTimeLine();
+					Main.setProcessCancelled(true);
+				}
+			});
 		});
 
 	}
