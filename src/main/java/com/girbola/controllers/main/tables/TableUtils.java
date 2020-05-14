@@ -699,4 +699,16 @@ public class TableUtils {
 		}
 		return null;
 	}
+
+	public static void updateAllFolderInfos(Tables tables) {
+		for(FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+			updateFolderInfos_FileInfo(folderInfo);
+		}
+		for(FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+			updateFolderInfos_FileInfo(folderInfo);
+		}
+		for(FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
+			updateFolderInfos_FileInfo(folderInfo);
+		}
+	}
 }

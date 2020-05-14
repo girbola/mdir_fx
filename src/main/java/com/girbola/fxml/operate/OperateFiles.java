@@ -452,7 +452,6 @@ public class OperateFiles extends Task<Boolean> {
 			model_operate.stopTimeLine();
 			model_operate.doneButton(scene_NameType, close);
 			model_operate.stopTimeLine();
-			TableUtils.refreshAllTableContent(model_main.tables());
 			Task<Void> saveWorkDirToDatabase = new Task<Void>() {
 				@Override
 				protected Void call() throws Exception {
@@ -468,6 +467,8 @@ public class OperateFiles extends Task<Boolean> {
 					} else {
 						Messages.sprintf("saveWorkDirList FAILED");
 					}
+					TableUtils.updateAllFolderInfos(model_main.tables());
+					TableUtils.refreshAllTableContent(model_main.tables());
 					return null;
 				}
 			};
