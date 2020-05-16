@@ -41,9 +41,11 @@ public class Dialogs {
 //		double main_height = Main.conf.getWindowStartHeight();
 //		double x = Main.conf.getWindowStartPosX();
 //		double y = Main.conf.getWindowStartPosY();
-		dialog.initOwner(owner);
-		
+		if (owner != null) {
+			dialog.initOwner(owner);
+		}
 		Messages.sprintf("createDialog_YesNoCancel width: " + dialog.getWidth());
+
 		DialogPane dialogPane = new DialogPane();
 		dialogPane.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + "dialogsStyle.css").toExternalForm());
@@ -70,7 +72,7 @@ public class Dialogs {
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
 		dialog.initOwner(owner);
-		
+
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
 		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
 		dialog.getDialogPane().getButtonTypes().addAll(yes, no);

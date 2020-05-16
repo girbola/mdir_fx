@@ -278,8 +278,9 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
+							
 							Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(
-									Main.scene_Switcher.getScene_operate().getWindow(),
+									null,
 									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") 
 									+ "\n"
 											+ Main.bundle.getString("sourceFile") + " " + source + " "
