@@ -280,12 +280,12 @@ public class OperateFiles extends Task<Boolean> {
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
 							Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(
 									Main.scene_Switcher.getScene_operate().getWindow(),
-									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") + "\n"
-											+ Main.bundle
-													.getString("sourceFile" + source + " " + source.toFile().length()
-															+ Main.bundle.getString("copied").toLowerCase() + ": "
-															+ model_operate.getCopyProcess_values()
-																	.getFilesCopyProgress_MAX_tmp()));
+									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") 
+									+ "\n"
+											+ Main.bundle.getString("sourceFile") + " " + source + " "
+											+ source.toFile().length() + Main.bundle.getString("copied").toLowerCase()
+											+ ": "
+											+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
 
 							ButtonType abort = new ButtonType(Main.bundle.getString("abort"),
 									ButtonBar.ButtonData.CANCEL_CLOSE);
