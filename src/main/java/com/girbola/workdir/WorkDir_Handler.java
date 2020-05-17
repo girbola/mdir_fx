@@ -1,6 +1,7 @@
 package com.girbola.workdir;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,6 +22,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -38,6 +40,7 @@ public class WorkDir_Handler {
 	public boolean isWorkDir_connected() {
 		return this.workDir;
 	}
+
 	public void addAllTables(Tables tables) {
 		addTable(tables.getSorted_table());
 		addTable(tables.getSortIt_table());
@@ -87,7 +90,7 @@ public class WorkDir_Handler {
 				List<FileInfo> fileInfo_list = SQL_Utils.loadFileInfoDatabase(connection);
 				if (!fileInfo_list.isEmpty()) {
 					workDir_List.addAll(fileInfo_list);
-					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list);
+					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
 				}
 			}
 			try {
@@ -116,14 +119,16 @@ public class WorkDir_Handler {
 	public FileInfo exists(FileInfo fileInfo_toFind) {
 		Iterator<FileInfo> it = workDir_List.iterator();
 		final LocalDate ld_toFind = DateUtils.longToLocalDateTime(fileInfo_toFind.getDate()).toLocalDate();
-		final int year= ld_toFind.getYear();
+		final int year = ld_toFind.getYear();
 		final int month = ld_toFind.getMonthValue();
 
 		while (it.hasNext()) {
 			FileInfo fileInfo = it.next();
-			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == year && DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month)  {
+			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == year
+					&& DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month) {
 				if (new File(fileInfo.getOrgPath()).length() == new File(fileInfo.getOrgPath()).length()) {
-					Messages.sprintf("FileInfo exists at workdir: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+					Messages.sprintf(
+							"FileInfo exists at workdir: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 					return fileInfo;
 				}
 			}
@@ -136,7 +141,18 @@ public class WorkDir_Handler {
 	}
 
 	public boolean add(FileInfo fileInfo) {
+		for (FileInfo fileInfo_Workdir : workDir_List) {
+			if (fileInfo_Workdir.getDate() == fileInfo.getDate()) {
+				if (fileInfo_Workdir.getSize() == fileInfo.getSize()) {
+					if (fileInfo_Workdir.getOrgPath().equals(fileInfo.getOrgPath())) {
+						return false;
+					}
+				}
+			}
+
+		}
 		return this.workDir_List.add(fileInfo);
+
 	}
 
 	public boolean saveWorkDirListToDatabase() {
@@ -158,7 +174,8 @@ public class WorkDir_Handler {
 					if (inserting) {
 						Messages.sprintf("Insert worked!");
 					} else {
-						Messages.sprintfError("inserting not worked");
+						Messages.sprintfError("inserting not working!");
+
 					}
 				}
 			}
@@ -182,9 +199,26 @@ public class WorkDir_Handler {
 		return true;
 	}
 
+	public void createWorkDirContentForMissingDatabase() {
+		Main.conf.getWorkDir();
+		List<Path> listOfWorkDirFiles = GetAllMediaFiles.getAllMediaFiles(Paths.get(Main.conf.getWorkDir()));
+		if (!listOfWorkDirFiles.isEmpty()) {
+			for (Path p : listOfWorkDirFiles) {
+				if (Main.getProcessCancelled()) {
+					try {
+						FileInfo fileInfo = FileInfo_Utils.createFileInfo(p);
+						add(fileInfo);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
 	public boolean cleanDatabase(Connection connection) {
 		Messages.sprintf("Cleaning database...: ");
-		if(!SQL_Utils.isDbConnected(connection)) {
+		if (!SQL_Utils.isDbConnected(connection)) {
 			Messages.sprintfError("cleaning Database failed");
 			return false;
 		}
@@ -204,7 +238,7 @@ public class WorkDir_Handler {
 				}
 
 			}
-			
+
 			String delete = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE fileInfo_id = ?";
 			PreparedStatement pstmt = connection.prepareStatement(delete);
 			Messages.sprintf("String list size is: " + rm_list.size());

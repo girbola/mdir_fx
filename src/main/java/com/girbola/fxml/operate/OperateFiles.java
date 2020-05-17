@@ -15,6 +15,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,15 +35,21 @@ import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 public class OperateFiles extends Task<Boolean> {
@@ -217,7 +225,6 @@ public class OperateFiles extends Task<Boolean> {
 						cancel();
 						Main.setProcessCancelled(true);
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-
 					}
 
 				} else {
@@ -248,8 +255,6 @@ public class OperateFiles extends Task<Boolean> {
 					// long fileSize = source.toFile().length();
 					// Not ready yet copyFile(source, dest);
 					try {
-						//
-
 						Path destTmp = Paths.get(dest.toFile() + ".tmp");
 
 						Files.deleteIfExists(destTmp);
@@ -278,28 +283,18 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-							
-							Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(
-									null,
-									Main.bundle.getString("corruptedFileFoundDoYouWantToKeepIt") 
-									+ "\n"
-											+ Main.bundle.getString("sourceFile") + " " + source + " "
-											+ source.toFile().length() + Main.bundle.getString("copied").toLowerCase()
-											+ ": "
-											+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
+							int answer = -1;
+							FutureTask<Integer> task = new FutureTask(
+									new Dialogue(Main.scene_Switcher.getScene_operate().getWindow(), fileInfo));
+							Platform.runLater(task);
+							answer = task.get();
 
-							ButtonType abort = new ButtonType(Main.bundle.getString("abort"),
-									ButtonBar.ButtonData.CANCEL_CLOSE);
-							dialog.getDialogPane().getButtonTypes().remove(2);
-							dialog.getDialogPane().getButtonTypes().add(2, abort);
-
-							Optional<ButtonType> result = dialog.showAndWait();
-							if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+							if (answer == 0) {
 								renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
-							} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+							} else if (answer == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
-							} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+							} else if (answer == 2) {
 								Messages.sprintf("Cancel pressed. This is not finished!");
 								cancel();
 								Main.setProcessCancelled(true);
@@ -366,11 +361,6 @@ public class OperateFiles extends Task<Boolean> {
 			} catch (Exception ex) {
 				Messages.sprintfError(ex.getMessage());
 			}
-
-		}
-
-		private void copyFile(Path source2, Path dest2) {
-			// TODO Auto-generated method stub
 
 		}
 
@@ -557,28 +547,16 @@ public class OperateFiles extends Task<Boolean> {
 				@Override
 				public void handle(ActionEvent event) {
 					Task<Integer> copy = new Copy();
-					copy.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-						@Override
-						public void handle(WorkerStateEvent event) {
-							Messages.sprintf("copy succeeded");
-						}
-					});
-					copy.setOnFailed(new EventHandler<WorkerStateEvent>() {
 
-						@Override
-						public void handle(WorkerStateEvent event) {
-							Messages.sprintf("copy failed");
-						}
-					});
-					copy.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-
-						@Override
-						public void handle(WorkerStateEvent event) {
-							model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
-							model_operate.doneButton(scene_NameType, close);
-							Messages.sprintf("copy cancelled");
-						}
-					});
+					/*
+					 * copy.setOnSucceeded((WorkerStateEvent eventWorker) -> {
+					 * Messages.sprintf("copy succeeded"); }); copy.setOnFailed((WorkerStateEvent
+					 * eventWorker) -> { Messages.sprintf("copy failed"); });
+					 * copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
+					 * model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
+					 * model_operate.doneButton(scene_NameType, close);
+					 * Messages.sprintf("copy cancelled"); });
+					 */
 					Thread copy_thread = new Thread(copy, "Copy Thread");
 					copy_thread.start();
 				}
@@ -607,6 +585,64 @@ public class OperateFiles extends Task<Boolean> {
 	protected void failed() {
 		super.failed();
 		Messages.warningText("OperateFiles were cancelled!");
+	}
+
+	class Dialogue implements Callable<Integer> {
+		private Window owner;
+		private int answer;
+		private FileInfo fileInfo;
+
+		public Dialogue(Window owner, FileInfo fileInfo) {
+			this.owner = owner;
+			this.fileInfo = fileInfo;
+		}
+
+		@Override
+		public Integer call() throws Exception {
+			final Stage dialog = new Stage();
+			dialog.setTitle(Main.bundle.getString("corruptedFile"));
+			dialog.initOwner(owner);
+			dialog.initStyle(StageStyle.UTILITY);
+			dialog.initModality(Modality.WINDOW_MODAL);
+
+			final Button yesButton = new Button(Main.bundle.getString("yes"));
+			final Button noButton = new Button(Main.bundle.getString("no"));
+			final Button abortButton = new Button(Main.bundle.getString("abort"));
+			yesButton.setDefaultButton(true);
+
+			yesButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent t) {
+					answer = 0;
+					dialog.close();
+				}
+			});
+			noButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent t) {
+					answer = 1;
+					dialog.close();
+				}
+			});
+
+			abortButton.setOnAction(new EventHandler<ActionEvent>() {
+				@Override
+				public void handle(ActionEvent t) {
+					answer = 2;
+					dialog.close();
+				}
+			});
+
+			final VBox layout = new VBox(10);
+			layout.setAlignment(Pos.CENTER_RIGHT);
+			layout.setStyle("-fx-background-color: azure; -fx-padding: 10;");
+			layout.getChildren().setAll(yesButton, noButton, abortButton);
+
+			dialog.setScene(new Scene(layout));
+			dialog.showAndWait();
+			return answer;
+		}
+
 	}
 
 }

@@ -65,22 +65,23 @@ public class LoadingProcess_Task {
 			model_loading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 		});
 		if (current_Task == null) {
-			Messages.sprintf("Task were set to null!!");
-			return;
-		}
-		if (!Main.getProcessCancelled()) {
-			if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
-				if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+			Messages.sprintf("LoadingProcess_Task Task were set to null!!");
+//			return;
+		} else {
+			if (!Main.getProcessCancelled()) {
+				if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
+					if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+						model_loading.setTask(current_Task);
+						bind();
+					}
+				} else {
 					model_loading.setTask(current_Task);
 					bind();
+					loadGUI();
 				}
 			} else {
-				model_loading.setTask(current_Task);
-				bind();
-				loadGUI();
+				closeStage();
 			}
-		} else {
-			closeStage();
 		}
 	}
 
@@ -104,7 +105,8 @@ public class LoadingProcess_Task {
 		Messages.sprintf("Owner is: " + loadingStage.getOwner());
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 		loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
-		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
+		loadingScene.getStylesheets()
+				.add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
 
 		xOffset = loadingStage.getX();
 		yOffset = loadingStage.getY();
@@ -220,9 +222,13 @@ public class LoadingProcess_Task {
 		Messages.sprintf("Showing stage!");
 
 		Stage stage = Main.scene_Switcher.getWindow_loadingprogress();
-		stage.initOwner(owner);
+		/*
+		 * if (owner != null) { stage.initOwner(owner); }
+		 */
 		if (stage != null) {
+
 			stage.show();
+
 		} else {
 			Messages.errorSmth(ERROR, "Loading scene haven't been initialisiz. It was null null!!!", null,
 					Misc.getLineNumber(), true);

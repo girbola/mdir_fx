@@ -57,7 +57,6 @@ import javafx.scene.Scene;
 import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 public class Main extends Application {

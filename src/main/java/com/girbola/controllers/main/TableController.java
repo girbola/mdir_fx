@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
@@ -184,27 +185,65 @@ public class TableController {
 	@FXML
 	private void resetSelectedFileInfos_btn_action(ActionEvent event) {
 		LoadingProcess_Task ldt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		ldt.showLoadStage();
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				fileInfo.setWorkDir("");
-				fileInfo.setWorkDirDriveSerialNumber("");
-				fileInfo.setDestination_Path("");
-				fileInfo.setCopied(false);
-				fileInfo.setConfirmed(false);
-				fileInfo.setEvent("");
-				fileInfo.setLocation("");
-				fileInfo.setIgnored(false);
-				fileInfo.setTableDuplicated(false);
-				fileInfo.setTags("");
-				Main.setChanged(true);
+		AtomicInteger counter = new AtomicInteger(0);
+		
+		Task<Void> task = new Task<Void>() {
+
+			@Override
+			protected Void call() throws Exception {
+				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+						fileInfo.setWorkDir("");
+						fileInfo.setWorkDirDriveSerialNumber("");
+						fileInfo.setDestination_Path("");
+						fileInfo.setCopied(false);
+						fileInfo.setConfirmed(false);
+						fileInfo.setEvent("");
+						fileInfo.setLocation("");
+						fileInfo.setIgnored(false);
+						fileInfo.setTableDuplicated(false);
+						fileInfo.setTags("");
+						Main.setChanged(true);
+					}
+					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.refreshAllTableContent(model_main.tables());
+					ldt.setMessage("counter; " + counter.get());
+					counter.getAndIncrement();
+					
+				}
+				return null;
 			}
-			TableUtils.updateFolderInfos_FileInfo(folderInfo);
-			TableUtils.refreshAllTableContent(model_main.tables());
-			
-		}
+
+		};
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("resetSelectedFileInfos were succeeded");
+
+				ldt.closeStage();
+			}
+		});
+		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("resetSelectedFileInfos were cancelled");
+				ldt.closeStage();
+			}
+		});
+		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("resetSelectedFileInfos were failed");
+				ldt.closeStage();
+			}
+		});
+		ldt.setTask(task);
+//		totalProcesses = table.getSelectionModel().getSelectedItems().size();
+		ldt.showLoadStage();
+		new Thread(task, "resettingSelecteFileInfos_thread").start();
+
 		Messages.sprintf("Resetting selected fileinfo's done!");
-		ldt.closeStage();
+//		ldt.closeStage();
 	}
 
 	@FXML
@@ -281,10 +320,10 @@ public class TableController {
 			@Override
 			protected Void call() throws Exception {
 				Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
-				
-				while(it.hasNext()) {
+
+				while (it.hasNext()) {
 					FolderInfo folderInfo = it.next();
-					
+
 					DirectoryStream<Path> list = null;
 					try {
 						list = Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()),
@@ -294,15 +333,14 @@ public class TableController {
 					}
 					List<Path> listOfFiles = new ArrayList<>();
 					Iterator<Path> fileList = list.iterator();
-					while(fileList.hasNext()) {
+					while (fileList.hasNext()) {
 						Path p = fileList.next();
 						boolean compareFile = compareFile(p, folderInfo.getFileInfoList());
-						if(!compareFile ) {
+						if (!compareFile) {
 							FileInfo_Utils.removeFileInfoFromList(folderInfo.getFileInfoList(), p);
-							
-						}
-						else {
-							//exists -> size match, does not exists-> createnewFileInfo and add to list, 
+
+						} else {
+							// exists -> size match, does not exists-> createnewFileInfo and add to list,
 						}
 						listOfFiles.add(p);
 					}

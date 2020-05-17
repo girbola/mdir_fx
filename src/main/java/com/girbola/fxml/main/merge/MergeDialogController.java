@@ -263,8 +263,8 @@ public class MergeDialogController {
 		});
 
 		Thread thread = new Thread(operate, "Operate Thread");
-//		thread.start();
 		exec.submit(thread);
+		
 	}
 
 	@FXML
