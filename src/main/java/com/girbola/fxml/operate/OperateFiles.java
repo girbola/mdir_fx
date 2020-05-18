@@ -14,7 +14,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -25,7 +24,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.dialogs.Dialogs;
+import com.girbola.dialogs.YesNoCancelDialogController;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -34,18 +33,13 @@ import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
@@ -282,10 +276,37 @@ public class OperateFiles extends Task<Boolean> {
 						from.close();
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
+
+						Window window = (Window) model_operate.getStart_btn().getScene().getWindow();
+						if (window == null) {
+							Messages.sprintfError("Error! Window were null");
+						} else {
+							Messages.sprintf("THIS WORKS!");
+						}
+						int answer = -1;
+						FutureTask<Integer> task = new FutureTask(
+								new Dialogue((Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
+										model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer));
+						Platform.runLater(task);
+						answer = task.get();
+						Messages.sprintf("ANSWER ISSSSSSSSSSS: " + answer);
+						if (answer == 0) {
+							renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
+						} else if (answer == 1) {
+							Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
+							Files.deleteIfExists(destTmp);
+						} else if (answer == 2) {
+							Messages.sprintf("Cancel pressed. This is not finished!");
+							cancel();
+							Main.setProcessCancelled(true);
+							return null;
+						}
+
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-							int answer = -1;
-							FutureTask<Integer> task = new FutureTask(
-									new Dialogue(Main.scene_Switcher.getScene_operate().getWindow(), fileInfo));
+							answer = -1;
+							task = new FutureTask(new Dialogue(
+									(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
+									model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer));
 							Platform.runLater(task);
 							answer = task.get();
 
@@ -588,59 +609,48 @@ public class OperateFiles extends Task<Boolean> {
 	}
 
 	class Dialogue implements Callable<Integer> {
-		private Window owner;
-		private int answer;
-		private FileInfo fileInfo;
+		private SimpleIntegerProperty answer;
 
-		public Dialogue(Window owner, FileInfo fileInfo) {
+		private Window owner;
+		private FileInfo fileInfo;
+		private long copyedFileCurrentSize;
+
+		Dialogue(Window owner, FileInfo fileInfo, long copyedFileCurrentSize, int answer) {
 			this.owner = owner;
 			this.fileInfo = fileInfo;
+			this.copyedFileCurrentSize = copyedFileCurrentSize;
+			this.answer = new SimpleIntegerProperty(answer);
 		}
 
 		@Override
 		public Integer call() throws Exception {
-			final Stage dialog = new Stage();
-			dialog.setTitle(Main.bundle.getString("corruptedFile"));
-			dialog.initOwner(owner);
-			dialog.initStyle(StageStyle.UTILITY);
-			dialog.initModality(Modality.WINDOW_MODAL);
+			FXMLLoader loader = null;
+			Parent parent = null;
+			YesNoCancelDialogController yesNoCancelDialogController = null;
+			try {
+				loader = new FXMLLoader(Main.class.getResource("dialogs/YesNoCancelDialog.fxml"), Main.bundle);
+				parent = loader.load();
 
-			final Button yesButton = new Button(Main.bundle.getString("yes"));
-			final Button noButton = new Button(Main.bundle.getString("no"));
-			final Button abortButton = new Button(Main.bundle.getString("abort"));
-			yesButton.setDefaultButton(true);
+				yesNoCancelDialogController = (YesNoCancelDialogController) loader.getController();
 
-			yesButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent t) {
-					answer = 0;
-					dialog.close();
-				}
-			});
-			noButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent t) {
-					answer = 1;
-					dialog.close();
-				}
-			});
+				final Stage stage = new Stage();
+				stage.setTitle(Main.bundle.getString("corruptedFile"));
+				stage.initOwner(owner);
+				stage.initStyle(StageStyle.UTILITY);
+				stage.initModality(Modality.WINDOW_MODAL);
+				yesNoCancelDialogController.init(stage, answer, fileInfo, "Corrupted file",
+						"Corrupted file found at " + fileInfo.getOrgPath() + " size should be: " + fileInfo.getSize()
+								+ " but it is now " + copyedFileCurrentSize + "\n"
+								+ Main.bundle.getString("doYouWantToKeepTheFile") + "",
+						Main.bundle.getString("yes"), Main.bundle.getString("no"), Main.bundle.getString("abort"));
 
-			abortButton.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent t) {
-					answer = 2;
-					dialog.close();
-				}
-			});
+				stage.setScene(new Scene(parent));
+				stage.showAndWait();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
-			final VBox layout = new VBox(10);
-			layout.setAlignment(Pos.CENTER_RIGHT);
-			layout.setStyle("-fx-background-color: azure; -fx-padding: 10;");
-			layout.getChildren().setAll(yesButton, noButton, abortButton);
-
-			dialog.setScene(new Scene(layout));
-			dialog.showAndWait();
-			return answer;
+			return answer.get();
 		}
 
 	}
