@@ -228,39 +228,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
-		Task<Void> task = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				model_main.save();
-				return null;
-			}
-		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-		
-		lpt.setTask(task);
-		Thread thread = new Thread(task, "Saving Thread");
-		thread.setDaemon(true);
-		thread.start();
+		model_main.saveTablesToDatabases();
 	}
 
 	@FXML

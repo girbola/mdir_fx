@@ -25,6 +25,10 @@ import java.util.Optional;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
@@ -55,6 +59,7 @@ public class DateTimeAdjusterController {
 	private final String ERROR = DateTimeAdjusterController.class.getSimpleName();
 	private GridPane df_gridPane;
 	private TilePane quickPick_tilePane;
+	private Model_main model_main;
 	private Model_datefix model_datefix;
 
 	@FXML
@@ -67,6 +72,48 @@ public class DateTimeAdjusterController {
 	private Button selectRange_btn;
 	@FXML
 	private Button setDateTimeRange_btn;
+	@FXML
+	private Button markFilesAccordingTheDateScale_btn;
+
+	@FXML
+	private void markFilesAccordingTheDateScale_btn_action() {
+		LocalDateTime ldt_start = null;
+		LocalDateTime ldt_end = null;
+
+		try {
+			model_datefix.start_time().getTime();
+			model_datefix.end_time().getTime();
+			ldt_start = model_datefix.getLocalDateTime(true);
+			ldt_end = model_datefix.getLocalDateTime(false);
+		} catch (Exception ex) {
+			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
+			Main.setProcessCancelled(true);
+		}
+		List<FileInfo> collectedList = new ArrayList<>();
+
+		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+			if (Main.getProcessCancelled()) {
+				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
+				break;
+			} /*
+				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
+				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
+				 */
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
+					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+						collectedList.add(fileInfo);
+						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
+								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+					}
+				}
+			}
+		}
+		Messages.warningText(
+				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+
+	}
 
 	@FXML
 	private void copy_startToEnd_action(ActionEvent event) {
@@ -502,7 +549,9 @@ public class DateTimeAdjusterController {
 		return sec;
 	}
 
-	public void init(Model_datefix aModel_datefix, GridPane aDf_gridPane, TilePane aQuickPick_tilePane) {
+	public void init(Model_main aModel_main, Model_datefix aModel_datefix, GridPane aDf_gridPane,
+			TilePane aQuickPick_tilePane) {
+		this.model_main = aModel_main;
 		this.model_datefix = aModel_datefix;
 		this.df_gridPane = aDf_gridPane;
 		this.quickPick_tilePane = aQuickPick_tilePane;

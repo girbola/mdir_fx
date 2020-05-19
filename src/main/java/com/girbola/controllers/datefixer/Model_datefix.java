@@ -1187,7 +1187,7 @@ public class Model_datefix {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		Messages.warningText("Not tested");
+		Messages.warningText("Not ready nor tested");
 //		for (Node node : getSelectionModel().getSelectionList()) {
 //			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
 //			FileInfo fileInfo = (FileInfo) node.getUserData();

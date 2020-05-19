@@ -78,14 +78,9 @@ public class DateFixPopulateGridPane extends Task<Void> {
 	private ScrollPane scrollPane;
 	private Scene scene;
 	private DoubleProperty node_height = new SimpleDoubleProperty(0);
-	// private ExecutorService populate_exe = Executors.newSingleThreadExecutor();
-	// private long start = System.currentTimeMillis();
-	// private long end = 0;
+
 	private VBox frame;
 	private SimpleIntegerProperty counter = new SimpleIntegerProperty(0);
-	// private SimpleIntegerProperty x = new SimpleIntegerProperty(0);
-	// private SimpleIntegerProperty y = new SimpleIntegerProperty(0);
-	// private int imagesPerLine;
 	private LoadingProcess_Task loadingProcess_task;
 
 	public DateFixPopulateGridPane(Scene scene, Model_datefix aModel_datefix, LoadingProcess_Task loadingProcess_task) {

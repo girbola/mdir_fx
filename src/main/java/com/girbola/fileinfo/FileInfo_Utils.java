@@ -392,15 +392,41 @@ public class FileInfo_Utils {
 			} else {
 				return 2;
 			}
-
 		} else {
 			return 2;
 		}
 	}
 
+	public static void ignoreFileInfoFromList(FileInfo fileInfo, FolderInfo folderInfo) {
+		fileInfo.setIgnored(true);
+	}
 
-	public static void removeFileInfoFromList(List<FileInfo> fileInfoList, Path p) {
+	public static boolean findDuplicates(FileInfo fileInfo, FolderInfo folderInfoList) {
+		for (FileInfo fileInfo_dest : folderInfoList.getFileInfoList()) {
+			if (fileInfo.getOrgPath() != fileInfo_dest.getOrgPath()) {
+				if (fileInfo.getSize() == fileInfo_dest.getSize()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
-		
+	/**
+	 * Find possible duplicates from FolderInfo
+	 * 
+	 * @param file
+	 * @param folderInfo
+	 * @return
+	 */
+	public static boolean findDuplicates(Path file, FolderInfo folderInfo) {
+		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+			if (file.toString().equals(fileInfo.getOrgPath())) {
+				if (file.toFile().length() == fileInfo.getSize()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

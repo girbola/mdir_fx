@@ -80,8 +80,8 @@ public class LocalTimeDifference {
 
 	public long getTimeInSeconds(LocalTime start_lt, LocalTime end_lt) {
 		// Duration d = Duration.between(start_lt, end_lt);
-		long start_tm = convertTimeInMillies(start_lt);
-		long end_tm = convertTimeInMillies(end_lt);
+		long start_tm = convertTimeToMillis(start_lt);
+		long end_tm = convertTimeToMillis(end_lt);
 		sprintf("getTimeInSeconds start: " + start_tm + " end: " + end_tm);
 		if (start_tm > end_tm) {
 			isOverDay = true;
@@ -106,7 +106,7 @@ public class LocalTimeDifference {
 		return daysTotal;
 	}
 
-	private long convertTimeInMillies(LocalTime startTime) {
+	private long convertTimeToMillis(LocalTime startTime) {
 		long h = (startTime.getHour() * 60 * 60);
 		long m = (startTime.getMinute() * 60);
 		long s = (startTime.getSecond());

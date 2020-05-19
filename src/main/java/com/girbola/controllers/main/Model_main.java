@@ -20,6 +20,7 @@ import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -34,6 +35,8 @@ import com.girbola.workdir.WorkDir_Handler;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
@@ -303,6 +306,45 @@ public class Model_main {
 		} else {
 			Messages.sprintf("Loading folderinfos back to tables was empty");
 		}
+	}
+
+	public void saveTablesToDatabases() {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				save();
+				return null;
+			}
+		};
+		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("Database were successfully saved");
+				lpt.closeStage();
+			}
+		});
+
+		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintfError("Saving database has been cancelled");
+				lpt.closeStage();
+			}
+		});
+		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintfError("Saving database has been failed");
+				lpt.closeStage();
+			}
+		});
+		
+		lpt.setTask(task);
+		Thread thread = new Thread(task, "Saving Thread");
+		thread.start();
+		
 	}
 
 }

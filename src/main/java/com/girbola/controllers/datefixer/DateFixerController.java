@@ -594,7 +594,7 @@ public class DateFixerController {
 
 		filePath_tf.setText(this.model_datefix.getCurrentFolderPath().toString());
 
-		dateTimeAdjusterController.init(aModel_datefix, df_gridPane, quickPick_tilePane);
+		dateTimeAdjusterController.init(model_main, aModel_datefix, df_gridPane, quickPick_tilePane);
 		selectorController.init(aModel_datefix, df_gridPane);
 		timeShiftController.init(aModel_datefix);
 
@@ -624,7 +624,7 @@ public class DateFixerController {
 				Messages.sprintf("Close request pressed");
 				model_datefix.getSelector_exec().shutdownNow();
 				model_datefix.exitDateFixerWindow(model_datefix.getGridPane(), Main.scene_Switcher.getWindow(), event);
-				// KORJAA TÄMÄ EXITDATEFIXERWINDOW!
+				// TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
 				// event.consume();
 			}
@@ -915,36 +915,6 @@ public class DateFixerController {
 	 * ============================================ Selection buttons==============
 	 * ENDS
 	 */
-
-//	private void applyChangestoAllNodes(FileInfo fileInfo_toFind) {
-//		Messages.sprintf("applyChangestoAllNodes started: " + model_datefix.getAllNodes().size());
-//		for (Node node : model_datefix.getAllNodes()) {
-//			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-//				FileInfo fileInfo = (FileInfo) node.getUserData();
-//				if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-//					if (fileInfo.equals(fileInfo_toFind)) {
-//						Messages.sprintf("All ready wroted info writing userData!");
-//					}
-//					node.setUserData(fileInfo_toFind);
-//				}
-//			} else {
-//				Messages.sprintf("Nodeee: " + node.getId());
-//			}
-//		}
-//
-//	}
-//
-//	private void updateFileInfo(ObservableList<Node> observableList, FileInfo fileInfo_toFind) {
-//		Iterator<Node> it = observableList.iterator();
-//		while (it.hasNext()) {
-//			Node node = it.next();
-//			FileInfo fileInfo = (FileInfo) node.getUserData();
-//			if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-//				fileInfo = fileInfo_toFind;
-//				return;
-//			}
-//		}
-//	}
 
 	@FXML
 	private void hideInfoTables_btn_action(ActionEvent event) {

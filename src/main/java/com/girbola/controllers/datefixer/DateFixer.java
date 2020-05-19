@@ -142,7 +142,8 @@ public class DateFixer extends Task<Void> {
 		sprintf("dateFixLoader.setOnSucceeded");
 
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-
+// Check if files are already in destination
+		
 		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),
 				model_datefix, loadingProcess_task);
 		dateFixPopulateGridPane_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {

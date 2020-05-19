@@ -31,6 +31,7 @@ import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -186,7 +187,7 @@ public class TableController {
 	private void resetSelectedFileInfos_btn_action(ActionEvent event) {
 		LoadingProcess_Task ldt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		AtomicInteger counter = new AtomicInteger(0);
-		
+
 		Task<Void> task = new Task<Void>() {
 
 			@Override
@@ -209,7 +210,7 @@ public class TableController {
 					TableUtils.refreshAllTableContent(model_main.tables());
 					ldt.setMessage("counter; " + counter.get());
 					counter.getAndIncrement();
-					
+
 				}
 				return null;
 			}
@@ -320,10 +321,9 @@ public class TableController {
 			@Override
 			protected Void call() throws Exception {
 				Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
-
+				boolean changed = false;
 				while (it.hasNext()) {
 					FolderInfo folderInfo = it.next();
-
 					DirectoryStream<Path> list = null;
 					try {
 						list = Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()),
@@ -331,31 +331,30 @@ public class TableController {
 					} catch (IOException ex) {
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 					}
-					List<Path> listOfFiles = new ArrayList<>();
 					Iterator<Path> fileList = list.iterator();
 					while (fileList.hasNext()) {
-						Path p = fileList.next();
-						boolean compareFile = compareFile(p, folderInfo.getFileInfoList());
-						if (!compareFile) {
-							FileInfo_Utils.removeFileInfoFromList(folderInfo.getFileInfoList(), p);
+						Path file = fileList.next();
 
-						} else {
-							// exists -> size match, does not exists-> createnewFileInfo and add to list,
+						boolean compareFile = FileInfo_Utils.findDuplicates(file, folderInfo);
+						if (!compareFile) {
+							Messages.sprintf("New file appeared!");
+							FileInfo fileInfo = FileInfo_Utils.createFileInfo(file);
+							folderInfo.getFileInfoList().add(fileInfo);
+							changed = true;
 						}
-						listOfFiles.add(p);
 					}
-					if (listOfFiles.size() != folderInfo.getFolderFiles()) {
+					if (changed) {
 						folderInfo.setState("Folder content changed!");
+						Messages.sprintf("Folder content changed!");
+						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.refreshAllTableContent(model_main.tables());
+						model_main.saveTablesToDatabases();
 					} else {
-						folderInfo.setState("Nothing new :(");
+						folderInfo.setState("Nothing new");
+						Messages.sprintf("Nothing new");
 					}
 				}
 				return null;
-			}
-
-			private boolean compareFile(Path p, List<FileInfo> fileInfoList) {
-				// TODO Auto-generated method stub
-				return false;
 			}
 
 		};

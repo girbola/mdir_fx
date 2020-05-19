@@ -326,6 +326,10 @@ public class FileUtils {
 		return finalName;
 	}
 
+	public boolean findDuplicateFile(Path src, Path dest) {
+		
+		return false;
+	}
 	/**
 	 * Compare files if they are same. Checking also if file size are different and
 	 * file paths aren't the same
@@ -335,7 +339,7 @@ public class FileUtils {
 	 * @return
 	 * @throws IOException
 	 */
-	public static final boolean compareFiles(final Path source, final Path destination) throws IOException {
+	public static boolean compareFiles(final Path source, final Path destination) throws IOException {
 		if (Files.size(source) != Files.size(destination) && !source.equals(destination)) {
 			return false;
 		}

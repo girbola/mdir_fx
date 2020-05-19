@@ -283,28 +283,10 @@ public class OperateFiles extends Task<Boolean> {
 						} else {
 							Messages.sprintf("THIS WORKS!");
 						}
-						int answer = -1;
-						FutureTask<Integer> task = new FutureTask(
-								new Dialogue((Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
-										model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer));
-						Platform.runLater(task);
-						answer = task.get();
-						Messages.sprintf("ANSWER ISSSSSSSSSSS: " + answer);
-						if (answer == 0) {
-							renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
-						} else if (answer == 1) {
-							Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
-							Files.deleteIfExists(destTmp);
-						} else if (answer == 2) {
-							Messages.sprintf("Cancel pressed. This is not finished!");
-							cancel();
-							Main.setProcessCancelled(true);
-							return null;
-						}
 
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-							answer = -1;
-							task = new FutureTask(new Dialogue(
+							int answer = -1;
+							FutureTask<Integer> task = new FutureTask(new Dialogue(
 									(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
 									model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer));
 							Platform.runLater(task);
@@ -321,15 +303,6 @@ public class OperateFiles extends Task<Boolean> {
 								Main.setProcessCancelled(true);
 								return null;
 							}
-
-							/*
-							 * sprintf("files were NOT fully copied. currentFileByte = " + nread +
-							 * " filecopyprogress_max = " +
-							 * model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()); if
-							 * (source.toString().toLowerCase().contains("jpg")) {
-							 * renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest); } else {
-							 * cancel(); Main.setProcessCancelled(true); return null; }
-							 */
 						} else {
 							renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
 						}
