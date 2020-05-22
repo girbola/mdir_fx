@@ -288,6 +288,7 @@ public class TableUtils {
 			Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
 			return;
 		}
+
 		for (FileInfo fi : folderInfo.getFileInfoList()) {
 			if (Main.getProcessCancelled()) {
 				return;

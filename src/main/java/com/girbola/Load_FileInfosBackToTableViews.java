@@ -50,6 +50,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		}
 		if (!folderInfo_list.isEmpty()) {
 			for (FolderInfo folderInfo : folderInfo_list) {
+				
 				if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
 					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSortIt_table().getItems().add(folderInfo);

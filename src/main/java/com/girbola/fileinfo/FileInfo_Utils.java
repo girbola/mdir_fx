@@ -21,12 +21,14 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -42,6 +44,7 @@ import common.utils.date.DateUtils;
  * @author Marko Lokka
  */
 public class FileInfo_Utils {
+
 
 	private final static String ERROR = FileInfo_Utils.class.getSimpleName();
 
@@ -354,6 +357,12 @@ public class FileInfo_Utils {
 		return false;
 	}
 
+	/**
+	 * 
+	 * @param path
+	 * @param fileInfo
+	 * @return
+	 */
 	public static Path renameFileToDate(Path path, FileInfo fileInfo) {
 		// C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 
@@ -413,20 +422,21 @@ public class FileInfo_Utils {
 	}
 
 	/**
-	 * Find possible duplicates from FolderInfo
+	 * Find possible duplicates from FolderInfo's List<FileInfo>
 	 * 
 	 * @param file
 	 * @param folderInfo
 	 * @return
 	 */
-	public static boolean findDuplicates(Path file, FolderInfo folderInfo) {
+	public static FileInfo findFileInFolderInfo(Path file, FolderInfo folderInfo) {
 		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 			if (file.toString().equals(fileInfo.getOrgPath())) {
 				if (file.toFile().length() == fileInfo.getSize()) {
-					return true;
+					return fileInfo;
 				}
 			}
 		}
-		return false;
+		return null;
 	}
+
 }

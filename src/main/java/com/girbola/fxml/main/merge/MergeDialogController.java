@@ -140,7 +140,7 @@ public class MergeDialogController {
 			}
 
 		}
-		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
 		TableUtils.refreshAllTableContent(tables);
 		close();
 	}
@@ -221,7 +221,7 @@ public class MergeDialogController {
 			}
 
 		}
-		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
 
 		List<FileInfo> list = new ArrayList<>();
 		ExecutorService exec = Executors.newSingleThreadExecutor();
@@ -231,7 +231,6 @@ public class MergeDialogController {
 				return;
 			}
 			list.addAll(folderInfo.getFileInfoList());
-
 		}
 
 		Task<Boolean> operate = new OperateFiles(list, true, model_main, Scene_NameType.MAIN.getType());

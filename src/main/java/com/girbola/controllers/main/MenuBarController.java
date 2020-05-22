@@ -16,16 +16,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
-import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
-import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -35,11 +32,8 @@ import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -204,7 +198,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_load_action(ActionEvent event) {
 		Messages.sprintf("menuItem_file_load_action");
-		boolean load = true;
+//		boolean load = true;
 		if (Main.getChanged()) {
 
 			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
@@ -228,14 +222,14 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
-		model_main.saveTablesToDatabases();
+		model_main.saveTablesToDatabases(Main.scene_Switcher.getWindow());
 	}
 
 	@FXML
 	private void menuItem_help_about_action(ActionEvent event) {
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);
-		Label programName = new Label("Organize and backup image & video files");
+		Label programName = new Label("Organizer tool for backing up image & video files");
 		Label programVersion = new Label(conf.getProgramVersion());
 		Label programCopyRight = new Label("Copyright © 2012-2020");
 		Label programUserInfo = new Label("Marko Lokka. marko.lokka@gmail.com");

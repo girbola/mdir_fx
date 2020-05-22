@@ -24,7 +24,11 @@ import java.util.ArrayList;
 
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
+/**
+ * Get all possible media files under given folder
+ * @author marko_000
+ *
+ */
 public class GetAllMediaFiles {
 	private final static String ERROR = GetAllMediaFiles.class.getSimpleName();
 

@@ -164,12 +164,12 @@ public class Messages {
 	 *                  exit is false it won't quit
 	 */
 	public static void errorSmth(String className, String message, Exception exception, int line, boolean exit) {
-		Messages.sprintf("errorSmth triggered. " + " className= " + className + " Line is: " + line);
+		Messages.sprintf("errorSmth triggered. " + " message: " + message + " className= " + className + " at line: " + line);
 		if (exit) {
 			Main.setProcessCancelled(true);
 			// sit näytetään showAndWait muuten jokin toinen dialigi tyyli
 		}
-
+//TODO TÄMÄ TÄYTYY VAIHTAA Dialogiksi mutta stagea käyttäen
 //		Node node = alert.getDialogPane().getContent();
 		if (alert == null) {
 			alert = createAlert(AlertType.ERROR);

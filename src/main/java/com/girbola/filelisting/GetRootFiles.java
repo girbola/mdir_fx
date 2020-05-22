@@ -31,6 +31,11 @@ import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
+/**
+ * List only media files in root folder. Subfolder scan will be ignored 
+ * @author marko_000
+ *
+ */
 public class GetRootFiles {
 //	private final static String ERROR = GetRootFiles.class.getSimpleName();
 

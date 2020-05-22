@@ -35,13 +35,13 @@ public class FolderInfo_Utils {
 		return changed;
 	}
 
-	public static void moveToAnotherTable(Tables tables, TableView<FolderInfo> table, String tableType) {
-
-		if(tableType.equals(TableType.SORTIT.getType())) {
-			tables.getSorted_table().getItems().addAll(table.getSelectionModel().getSelectedItems());
-			tables.getSortIt_table().getItems().removeAll(table.getSelectionModel().getSelectedItems());
-		}
-		
-	}
+//	public static void moveToAnotherTable_(Tables tables, TableView<FolderInfo> table, String tableType) {
+//
+//		if(tableType.equals(TableType.SORTIT.getType())) {
+//			tables.getSorted_table().getItems().addAll(table.getSelectionModel().getSelectedItems());
+//			tables.getSortIt_table().getItems().removeAll(table.getSelectionModel().getSelectedItems());
+//		}
+//		
+//	}
 
 }

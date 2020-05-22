@@ -12,13 +12,11 @@ import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -31,18 +29,16 @@ import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
-import common.utils.FileUtils;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -316,49 +312,11 @@ public class TableController {
 	//@formatter:on
 	@FXML
 	private void checkChanges_mi_action(ActionEvent event) {
-		Task<Void> checkForChanges = new Task<Void>() {
+		LoadingProcess_Task loadingProcess = new LoadingProcess_Task(owner);
+		Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main, loadingProcess);
 
-			@Override
-			protected Void call() throws Exception {
-				Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
-				boolean changed = false;
-				while (it.hasNext()) {
-					FolderInfo folderInfo = it.next();
-					DirectoryStream<Path> list = null;
-					try {
-						list = Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()),
-								FileUtils.filter_directories);
-					} catch (IOException ex) {
-						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-					}
-					Iterator<Path> fileList = list.iterator();
-					while (fileList.hasNext()) {
-						Path file = fileList.next();
-
-						boolean compareFile = FileInfo_Utils.findDuplicates(file, folderInfo);
-						if (!compareFile) {
-							Messages.sprintf("New file appeared!");
-							FileInfo fileInfo = FileInfo_Utils.createFileInfo(file);
-							folderInfo.getFileInfoList().add(fileInfo);
-							changed = true;
-						}
-					}
-					if (changed) {
-						folderInfo.setState("Folder content changed!");
-						Messages.sprintf("Folder content changed!");
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
-						TableUtils.refreshAllTableContent(model_main.tables());
-						model_main.saveTablesToDatabases();
-					} else {
-						folderInfo.setState("Nothing new");
-						Messages.sprintf("Nothing new");
-					}
-				}
-				return null;
-			}
-
-		};
-		new Thread(checkForChanges).start();
+		Thread thread = new Thread(checkTask, "Checking changes thread");
+		thread.start();
 	}
 
 	@FXML

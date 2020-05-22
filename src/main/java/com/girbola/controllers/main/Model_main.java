@@ -123,7 +123,7 @@ public class Model_main {
 		return this.populate;
 	}
 
-	public boolean save() {
+	public boolean saveAllTableContents() {
 		Messages.sprintf("save started");
 		if (tables() == null) {
 			Messages.warningText("model.getTables() were null!");
@@ -154,6 +154,7 @@ public class Model_main {
 		if (asitis) {
 			Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
+		
 		try {
 			if (connection != null) {
 				connection.close();
@@ -166,7 +167,7 @@ public class Model_main {
 		return true;
 	}
 
-	private boolean saveTableContent(Connection connection, ObservableList<FolderInfo> items, String tableType) {
+	public boolean saveTableContent(Connection connection, ObservableList<FolderInfo> items, String tableType) {
 		if (items.isEmpty()) {
 			return false;
 		}
@@ -245,7 +246,7 @@ public class Model_main {
 			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				save();
+				saveAllTableContents();
 				getMonitorExternalDriveConnectivity().cancel();
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 				Messages.sprintf("No pressed. This is not finished!");
@@ -308,21 +309,21 @@ public class Model_main {
 		}
 	}
 
-	public void saveTablesToDatabases() {
+	public void saveTablesToDatabases(Stage stage) {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				save();
+				saveAllTableContents();
 				return null;
 			}
 		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		LoadingProcess_Task lpt = new LoadingProcess_Task(stage);
 
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Database were successfully saved");
-				lpt.closeStage();
+//				lpt.closeStage();
 			}
 		});
 
@@ -330,18 +331,18 @@ public class Model_main {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintfError("Saving database has been cancelled");
-				lpt.closeStage();
+//				lpt.closeStage();
 			}
 		});
 		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintfError("Saving database has been failed");
-				lpt.closeStage();
+//				lpt.closeStage();
 			}
 		});
 		
-		lpt.setTask(task);
+//		lpt.setTask(task);
 		Thread thread = new Thread(task, "Saving Thread");
 		thread.start();
 		
