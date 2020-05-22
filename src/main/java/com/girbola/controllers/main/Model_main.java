@@ -154,7 +154,7 @@ public class Model_main {
 		if (asitis) {
 			Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
-		
+
 		try {
 			if (connection != null) {
 				connection.close();
@@ -309,7 +309,7 @@ public class Model_main {
 		}
 	}
 
-	public void saveTablesToDatabases(Stage stage) {
+	public void saveTablesToDatabases_(Stage stage, LoadingProcess_Task loadingProcess_Task, boolean closeLoadingStage) {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -317,13 +317,17 @@ public class Model_main {
 				return null;
 			}
 		};
-//		LoadingProcess_Task lpt = new LoadingProcess_Task(stage);
+		if (loadingProcess_Task == null) {
+			loadingProcess_Task = new LoadingProcess_Task(stage);
+		}
 
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Database were successfully saved");
-//				lpt.closeStage();
+				if (closeLoadingStage) {
+					//loadingProcess_Task.closeStage();
+				}
 			}
 		});
 
@@ -341,11 +345,11 @@ public class Model_main {
 //				lpt.closeStage();
 			}
 		});
-		
+
 //		lpt.setTask(task);
 		Thread thread = new Thread(task, "Saving Thread");
 		thread.start();
-		
+
 	}
 
 }

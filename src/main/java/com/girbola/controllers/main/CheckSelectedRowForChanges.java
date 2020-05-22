@@ -106,8 +106,11 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 				updated = cleanTask.get();
 				if (updated) {
 					TableUtils.refreshTableContent(tableView);
-					model_main.saveTablesToDatabases(Main.scene_Switcher.getWindow());
-					loadingProcess.closeStage();
+					Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(), loadingProcess, true);
+					Thread thread = new Thread(saveTablesToDatabases, "Saving data Thread");
+					thread.start();
+	//				model_main.saveTablesToDatabases();
+					//loadingProcess.closeStage();
 				} else {
 					Messages.sprintf("No changes");
 					loadingProcess.closeStage();

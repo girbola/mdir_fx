@@ -222,7 +222,10 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
-		model_main.saveTablesToDatabases(Main.scene_Switcher.getWindow());
+		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(), null, true);
+		Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
+		thread.start();
+		
 	}
 
 	@FXML
