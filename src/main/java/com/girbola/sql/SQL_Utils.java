@@ -1085,7 +1085,7 @@ public class SQL_Utils {
 	}
 
 	public static boolean clearTable(Connection connection, String table) {
-		final String sql = "DELETE FROM " + table;
+		final String sql = "DROP TABLE " + table;
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.executeUpdate(sql);
