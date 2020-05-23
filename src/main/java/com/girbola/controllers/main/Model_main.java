@@ -158,8 +158,10 @@ public class Model_main {
 		try {
 			if (connection != null) {
 				connection.close();
+				Main.setChanged(false);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Main.setChanged(true);
 			return false;
 		}

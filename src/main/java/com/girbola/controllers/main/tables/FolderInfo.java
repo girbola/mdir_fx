@@ -76,7 +76,7 @@ public class FolderInfo implements TableValues_inf {
 		this.status = new SimpleIntegerProperty(0);
 		this.suggested = new SimpleIntegerProperty(0);
 		this.tableType = new SimpleStringProperty("");
-		//		Bindings.subtract(folderFiles, copied);
+		// Bindings.subtract(folderFiles, copied);
 		Bindings.subtract(folderFiles, badFiles);
 
 	}
@@ -85,7 +85,7 @@ public class FolderInfo implements TableValues_inf {
 	 *
 	 * @param folderPath
 	 */
-	public FolderInfo(Path folderPath, String tableType, boolean connected) {
+	public FolderInfo(Path folderPath, String tableType, String justFolderName, boolean connected) {
 		this.badFiles = new SimpleIntegerProperty(0);
 		this.changed = new SimpleBooleanProperty(false);
 		this.confirmed = new SimpleIntegerProperty(0);
@@ -95,7 +95,8 @@ public class FolderInfo implements TableValues_inf {
 		this.fileInfoList = new ArrayList<>();
 		this.folderFiles = new SimpleIntegerProperty(0);
 		this.folderImageFiles = new SimpleIntegerProperty(0);
-		this.justFolderName = new SimpleStringProperty(folderPath.getFileName().toString());
+		this.justFolderName = new SimpleStringProperty(
+				justFolderName.isEmpty() ? folderPath.getFileName().toString() : justFolderName);
 		this.folderPath = new SimpleStringProperty(folderPath.toString());
 		this.folderRawFiles = new SimpleIntegerProperty(0);
 		this.folderSize = new SimpleLongProperty(0);
@@ -108,7 +109,7 @@ public class FolderInfo implements TableValues_inf {
 		this.status = new SimpleIntegerProperty(0);
 		this.suggested = new SimpleIntegerProperty(0);
 		this.tableType = new SimpleStringProperty(tableType);
-		//		Bindings.subtract(folderFiles, copied);
+		// Bindings.subtract(folderFiles, copied);
 		Bindings.subtract(folderFiles, badFiles);
 	}
 
@@ -139,7 +140,7 @@ public class FolderInfo implements TableValues_inf {
 		this.status = new SimpleIntegerProperty(0);
 		this.suggested = new SimpleIntegerProperty(0);
 		this.tableType = new SimpleStringProperty("");
-		//		Bindings.subtract(folderFiles, copied);
+		// Bindings.subtract(folderFiles, copied);
 		Bindings.subtract(folderFiles, badFiles);
 
 	}
@@ -310,15 +311,14 @@ public class FolderInfo implements TableValues_inf {
 	}
 
 	@Override
-	public Map<String,
-			String> getFileList() {
-		Map<String,
-				String> map = new HashMap<>();
+	public Map<String, String> getFileList() {
+		Map<String, String> map = new HashMap<>();
 		Iterator<FileInfo> it = getFileInfoList().iterator();
 		while (it.hasNext()) {
 			FileInfo fileInfo = it.next();
 			if (!fileInfo.isIgnored()) {
-				map.put(fileInfo.getOrgPath(), simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
+				map.put(fileInfo.getOrgPath(),
+						simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
 			}
 		}
 		return map;

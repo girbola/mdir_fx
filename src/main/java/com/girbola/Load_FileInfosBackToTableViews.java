@@ -6,6 +6,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.girbola.controllers.main.Model_main;
@@ -50,7 +52,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		}
 		if (!folderInfo_list.isEmpty()) {
 			for (FolderInfo folderInfo : folderInfo_list) {
-				
+
 				if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
 					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSortIt_table().getItems().add(folderInfo);
@@ -69,24 +71,31 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			}
 		}
 		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-				populateTable(folderInfo);
-			}
+			populateTable(model_main.tables().getSortIt_table().getItems().iterator());
 		}
 		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-				populateTable(folderInfo);
-			}
+			populateTable(model_main.tables().getSorted_table().getItems().iterator());
 		}
 		if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getAsItIs_table().getItems()) {
-				populateTable(folderInfo);
-			}
+			populateTable(model_main.tables().getAsItIs_table().getItems().iterator());
 		}
 
 		return true;
 	}
 
+	private boolean populateTable(Iterator<FolderInfo> folderInfo_it) {
+		Iterator<FolderInfo> sortit = folderInfo_it;
+		while (sortit.hasNext()) {
+			FolderInfo folderInfo = sortit.next();
+			boolean addTable = populateTable(folderInfo);
+			if (!addTable) {
+				sortit.remove();
+				return false;
+			}
+
+		}
+		return true;
+	}
 	private boolean populateTable(FolderInfo folderInfo) {
 		Messages.sprintf("populateTable: " + folderInfo.getFolderFiles() + " connected? " + folderInfo.isConnected());
 
@@ -99,9 +108,33 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 						Main.conf.getFileInfo_db_fileName());
 				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+				int counter = 0;
+				List<FileInfo> fileInfoList = new ArrayList<>();
+
 				if (!list.isEmpty()) {
-					folderInfo.getFileInfoList().addAll(list);
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+//					Messages.sprintf("FolderInfo loading: " + folderInfo.getFolderPath() + " files == " + list.size());
+					for (FileInfo fileInfo : list) {
+						if (fileInfo.isTableDuplicated() || fileInfo.isCopied() || fileInfo.isIgnored()) {
+							counter++;
+						} else {
+							fileInfoList.add(fileInfo);
+						}
+					}
+					if (fileInfoList.size() > 0) {
+
+						folderInfo.getFileInfoList().addAll(fileInfoList);
+						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
+								+ " List were empty. Path" + folderInfo.getFolderPath() + " files == "
+								+ folderInfo.getFolderFiles());
+					} else {
+						return false;
+					}
+
+				} else {
+					Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
+							+ " List were empty. Path" + folderInfo.getFolderPath() + " files == "
+							+ folderInfo.getFolderFiles());
 				}
 			}
 			if (connection != null) {

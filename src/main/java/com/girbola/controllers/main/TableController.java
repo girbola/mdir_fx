@@ -61,10 +61,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
@@ -445,9 +447,33 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderImageFiles()));
 		// justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
+		justFolderName_col.setEditable(true);
 		justFolderName_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getJustFolderName()));
+		justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
+		
+		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo,String>>() {
+
+			@Override
+			public void handle(CellEditEvent<FolderInfo, String> event) {
+
+				Messages.sprintf("start edit " + event.getNewValue());
+				
+			}
+		});
+		justFolderName_col.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<FolderInfo,String>>() {
+
+			@Override
+			public void handle(CellEditEvent<FolderInfo, String> event) {
+				Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
+				if(event.getRowValue().getJustFolderName() != event.getNewValue()) {
+					event.getRowValue().setJustFolderName(event.getNewValue());
+					Main.setChanged(true);
+					event.getRowValue().setChanged(true);
+				}
+			}
+		});
 		maxDates_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getMaxDate()));
@@ -482,7 +508,11 @@ public class TableController {
 			Messages.errorSmth(ERROR, "model_main.tables().getHideButtons(). were null", null, Misc.getLineNumber(),
 					true);
 		}
-
+if(tableType.equals(TableType.ASITIS.getType())) {
+	mergeCopy_btn.setVisible(false);
+	
+//	disableActionFewButtons like MC = Merge 
+}
 //		if (tableType.equals(TableType.ASITIS.getType())) {
 //			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.ASITIS, 3);
 //		} else if (tableType.equals(TableType.SORTED.getType())) {

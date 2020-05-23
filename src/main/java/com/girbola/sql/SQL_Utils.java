@@ -50,6 +50,7 @@ public class SQL_Utils {
 			"CREATE TABLE IF NOT EXISTS "
 			+ SQL_Enums.FOLDERINFO.getType()
 			+ " (path STRING NOT NULL UNIQUE PRIMARY KEY, "
+			+ "justFolderName STRING, "
 			+ "tableType STRING NOT NULL, "
 			+ "connected BOOLEAN)";
 	
@@ -116,8 +117,9 @@ public class SQL_Utils {
 	final static String folderInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FOLDERINFO.getType() + " ("
 			+ "'path', "
 			+ "'tableType', "
+			+ "'justFolderName', "
 			+ "'connected')"
-			+ " VALUES(?,?,?)";
+			+ " VALUES(?,?,?,?)";
 	
 	final static String insertDriveInfo =
 			"INSERT OR REPLACE INTO "
@@ -327,7 +329,9 @@ public class SQL_Utils {
 			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
 			pstmt.setString(1, folderInfo.getFolderPath());
 			pstmt.setString(2, folderInfo.getTableType());
-			pstmt.setBoolean(3, folderInfo.isConnected());
+			pstmt.setString(3, folderInfo.getJustFolderName());
+			pstmt.setBoolean(4, folderInfo.isConnected());
+			
 			pstmt.executeUpdate();
 			pstmt.close();
 			return true;
@@ -357,6 +361,7 @@ public class SQL_Utils {
 			while (rs.next()) {
 				Path path = Paths.get(rs.getString("path"));
 				String tableType = rs.getString("tableType");
+				String justFolderName = rs.getString("justFolderName");
 				boolean isConnected = rs.getBoolean("connected");
 				if (path == null) {
 					Messages.sprintf("Something went badly wrong!");
@@ -364,7 +369,7 @@ public class SQL_Utils {
 							true);
 					return null;
 				}
-				FolderInfo folderInfo = new FolderInfo(path, tableType, isConnected);
+				FolderInfo folderInfo = new FolderInfo(path, tableType, justFolderName, isConnected);
 				folderInfo.setConnected(Files.exists(path));
 				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected());
 				arrayList.add(folderInfo);

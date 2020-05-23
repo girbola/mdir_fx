@@ -211,7 +211,7 @@ public class MenuBarController {
 				model_main.load();
 				Main.setChanged(false);
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-
+				Messages.sprintf("Cancel_Close pressed. Doing nothing than closing the window");
 			}
 		} else {
 			model_main.load();
@@ -222,10 +222,11 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
-		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(), null, true);
+		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
+				null, true);
 		Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
 		thread.start();
-		
+
 	}
 
 	@FXML
