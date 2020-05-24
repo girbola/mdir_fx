@@ -78,16 +78,11 @@ public class SaveTablesToDatabases extends Task<Integer> {
 		return null;
 	}
 
-	@Override
-	protected void running() {
-		super.running();
-		loadingProcess_Task.setMessage("Running...");
-	}
 
 	@Override
 	protected void succeeded() {
-		// TODO Auto-generated method stub
 		super.succeeded();
+		Messages.sprintf("Saving succeeded");
 		if (closeLoadingStage) {
 			loadingProcess_Task.closeStage();
 		}

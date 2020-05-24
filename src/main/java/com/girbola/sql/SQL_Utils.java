@@ -371,7 +371,7 @@ public class SQL_Utils {
 				}
 				FolderInfo folderInfo = new FolderInfo(path, tableType, justFolderName, isConnected);
 				folderInfo.setConnected(Files.exists(path));
-				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected());
+				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected() + " folderInfo: " + folderInfo.getFolderFiles());
 				arrayList.add(folderInfo);
 			}
 			return arrayList;

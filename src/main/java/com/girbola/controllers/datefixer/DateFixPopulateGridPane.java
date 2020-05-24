@@ -15,11 +15,14 @@ import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -46,6 +49,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -229,7 +233,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		return textField;
 	}
 
-	private void setSelectedImageRoutine(String path, VBox frame) {
+	private void setSelectedImageRoutine(FileInfo fileInfo, VBox frame) {
 		frame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
@@ -237,13 +241,14 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 					if (event.getClickCount() == 1) {
 						Messages.sprintf("Clicked once");
+						File file = new File(fileInfo.getOrgPath());
 						model_dateFix.getRightInfoPanel().getChildren().clear();
 						model_dateFix.getMetaDataTableView_obs().clear();
 						model_dateFix.getMetaDataTableView_obs()
-								.add(new MetaData(Main.bundle.getString("filename"), path));
+								.add(new MetaData(Main.bundle.getString("filename"), file.toString()));
 						Metadata metaData = null;
 						try {
-							metaData = ImageMetadataReader.readMetadata(Paths.get(path).toFile());
+							metaData = ImageMetadataReader.readMetadata(file);
 						} catch (Exception e) {
 
 						}
@@ -272,16 +277,26 @@ public class DateFixPopulateGridPane extends Task<Void> {
 					}
 
 					if (event.getClickCount() == 2) {
-						if (Files.exists(Paths.get(path))) {
-							ImageUtils.view(Paths.get(path));
+						List<FileInfo> list = getFileList(gridPane.getChildren());
+						if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+							ImageUtils.view(list, fileInfo);
 						} else {
-							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + path, null,
+							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + fileInfo.getOrgPath(), null,
 									getLineNumber(), true);
 						}
 					} else {
 						model_dateFix.getSelectionModel().add(frame);
 					}
 				}
+			}
+
+			private List<FileInfo> getFileList(ObservableList<Node> children) {
+				List<FileInfo> list = new ArrayList<>();
+				for(Node node : children) {
+					
+				}
+				
+				return null;
 			}
 
 			private void adjustTableHeight(TableView<MetaData> table, ObservableList<MetaData> obs) {
@@ -386,7 +401,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 					frame = null;
 					if (fi.isImage() || fi.isRaw()) {
 						frame = createFrame(fi, counter.get());
-						setSelectedImageRoutine(fi.getOrgPath(), frame);
+						setSelectedImageRoutine(fi, frame);
 					} else if (fi.isVideo()) {
 						frame = createFrame(fi, counter.get());
 						setSelectedVideoRoutine(Paths.get(fi.getOrgPath()), frame);

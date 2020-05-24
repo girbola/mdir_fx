@@ -97,8 +97,10 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		return true;
 	}
 	private boolean populateTable(FolderInfo folderInfo) {
-		Messages.sprintf("populateTable: " + folderInfo.getFolderFiles() + " connected? " + folderInfo.isConnected());
-
+		Messages.sprintf("populateTable getFolderFiles() is: " + folderInfo.getFolderFiles() + " connected? " + folderInfo.isConnected());
+if(folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit") ){
+	Messages.sprintf("HMMMMMMMMM");
+}
 		if (folderInfo.isConnected()) {
 			Connection connection = null;
 			Path path = Paths.get(folderInfo.getFolderPath());

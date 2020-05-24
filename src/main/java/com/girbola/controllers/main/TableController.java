@@ -457,8 +457,17 @@ public class TableController {
 
 			@Override
 			public void handle(CellEditEvent<FolderInfo, String> event) {
-
 				Messages.sprintf("start edit " + event.getNewValue());
+//				if (event.getNewValue().contains("\\") || event.getNewValue().contains("/") || event.getNewValue().contains(":") || event.getNewValue().contains("*") || event.getNewValue().contains("?")
+//						|| event.getNewValue().contains("<") || event.getNewValue().contains(">") || event.getNewValue().contains("|")) {
+//				Messages.sprintf("Bad words");
+//				}
+//				if (newValue.length() > 160) {
+//					if (!tooltip_tooLongFileName.isShowing()) {
+//						show(tooltip_tooLongFileName, textField);
+//					}
+//					textField.setText(oldValue);
+//				}
 				
 			}
 		});
