@@ -206,7 +206,7 @@ public class TableController {
 					}
 					TableUtils.updateFolderInfos_FileInfo(folderInfo);
 					TableUtils.refreshAllTableContent(model_main.tables());
-					ldt.setMessage("counter; " + counter.get());
+				//	ldt.setMessage("counter; " + counter.get());
 					counter.getAndIncrement();
 
 				}
