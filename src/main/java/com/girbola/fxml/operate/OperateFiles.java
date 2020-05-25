@@ -274,6 +274,7 @@ public class OperateFiles extends Task<Boolean> {
 							updateIncreaseLastSecondFileSizeProcessValues();
 						}
 						from.close();
+						to.flush();
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 
