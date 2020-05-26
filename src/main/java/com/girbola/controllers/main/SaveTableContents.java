@@ -35,7 +35,7 @@ public class SaveTableContents {
 							Main.conf.getFileInfo_db_fileName());
 					boolean created = SQL_Utils.createFileInfoTable(connection);
 					if (created) {
-						SQL_Utils.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList());
+						SQL_Utils.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList(), false);
 					}
 				}
 

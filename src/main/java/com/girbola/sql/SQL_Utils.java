@@ -331,7 +331,7 @@ public class SQL_Utils {
 			pstmt.setString(2, folderInfo.getTableType());
 			pstmt.setString(3, folderInfo.getJustFolderName());
 			pstmt.setBoolean(4, folderInfo.isConnected());
-			
+
 			pstmt.executeUpdate();
 			pstmt.close();
 			return true;
@@ -371,7 +371,8 @@ public class SQL_Utils {
 				}
 				FolderInfo folderInfo = new FolderInfo(path, tableType, justFolderName, isConnected);
 				folderInfo.setConnected(Files.exists(path));
-				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected() + " folderInfo: " + folderInfo.getFolderFiles());
+				Messages.sprintf("path: " + path + " Folderinfo were connected? " + folderInfo.isConnected()
+						+ " folderInfo: " + folderInfo.getFolderFiles());
 				arrayList.add(folderInfo);
 			}
 			return arrayList;
@@ -600,54 +601,59 @@ public class SQL_Utils {
 			return 0;
 		}
 	}
-	
-	public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list) {
+	/**
+	 * 
+	 * @param connection
+	 * @param list
+	 * @return
+	 */
+	//@formatter:on
+	public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
 		Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
 		boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
-		if(clearTable) {
-			boolean tableCreated = createFileInfoTable(connection);
-			if(tableCreated) {
-				Messages.sprintf("insertFileInfoListToDatabase tableCreated");
-			} else {
-				Messages.sprintf("insertFileInfoListToDatabase NOT tableCreated");
-			}
-			if (!isDbConnected(connection)) {
-				Messages.sprintf("insertFileInfoListToDatabase Not connected");
-				return false;
-			}
-			try {
-				connection.setAutoCommit(false);
-				PreparedStatement pstmt = null;
-				pstmt = connection.prepareStatement(fileInfoInsert);
-				for (FileInfo fileInfo : list) {
-					long start = System.currentTimeMillis();
-					Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
-					addToFileInfoDB(connection, pstmt, fileInfo);
-					Messages.sprintf("============addToFileInfoDB ENDED and it took: " + (System.currentTimeMillis() - start));
+		if (!isWorkDir) {
+			if (clearTable) {
+				boolean tableCreated = createFileInfoTable(connection);
+				if (tableCreated) {
+					Messages.sprintf("insertFileInfoListToDatabase tableCreated");
+				} else {
+					Messages.sprintf("insertFileInfoListToDatabase NOT tableCreated");
 				}
-				pstmt.executeBatch();
-				Messages.sprintf("**********addToFileInfoDB pstmt.executeBatch();");
-				connection.commit();
-				Messages.sprintf("****connection.commit();");
-				
-				if (connection != null) {
-					connection.close();
+				if (!isDbConnected(connection)) {
+					Messages.sprintf("insertFileInfoListToDatabase Not connected");
+					return false;
 				}
-				if(pstmt != null) {
-					pstmt.close();
-				}
-				Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
-				return true;
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				Messages.sprintf("insertFileInfoListToDatabase tableCreated FAILED");
-				return false;
 			}
-		} else {
-			Messages.sprintfError("Cannot remove table from SQL database");
-			return false;	
 		}
-		
+		try {
+			connection.setAutoCommit(false);
+			PreparedStatement pstmt = null;
+			pstmt = connection.prepareStatement(fileInfoInsert);
+			for (FileInfo fileInfo : list) {
+				long start = System.currentTimeMillis();
+				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
+				addToFileInfoDB(connection, pstmt, fileInfo);
+				Messages.sprintf(
+						"============addToFileInfoDB ENDED and it took: " + (System.currentTimeMillis() - start));
+			}
+			pstmt.executeBatch();
+			Messages.sprintf("**********addToFileInfoDB pstmt.executeBatch();");
+			connection.commit();
+			Messages.sprintf("****connection.commit();");
+
+			if (connection != null) {
+				connection.close();
+			}
+			if (pstmt != null) {
+				pstmt.close();
+			}
+			Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Messages.sprintf("insertFileInfoListToDatabase tableCreated FAILED");
+			return false;
+		}
 	}
 
 	//@formatter:off

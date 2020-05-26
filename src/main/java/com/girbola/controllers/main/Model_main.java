@@ -193,7 +193,7 @@ public class Model_main {
 						Main.conf.getFileInfo_db_fileName());
 
 				// Inserts all data info fileinfo.db
-				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
+				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
 				if (fileList_connection != null) {
 					fileList_connection.close();
 				}

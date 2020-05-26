@@ -170,7 +170,7 @@ public class WorkDir_Handler {
 			}
 			if (connection != null) {
 				if (SQL_Utils.isDbConnected(connection)) {
-					boolean inserting = SQL_Utils.insertFileInfoListToDatabase(connection, workDir_List);
+					boolean inserting = SQL_Utils.insertFileInfoListToDatabase(connection, workDir_List, true);
 					if (inserting) {
 						Messages.sprintf("Insert worked!");
 					} else {

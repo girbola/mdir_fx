@@ -525,7 +525,7 @@ public class OperateFiles extends Task<Boolean> {
 							Main.conf.getFileInfo_db_fileName());
 					connection.setAutoCommit(false);
 //					listCopiedFiles
-					SQL_Utils.insertFileInfoListToDatabase(connection, listCopiedFiles);
+					SQL_Utils.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
 //					boolean clean = model_main.getWorkDir_Handler().cleanDatabase(connection);
 //					if (clean) {
 //						Messages.sprintf("clean is done succeeded");
