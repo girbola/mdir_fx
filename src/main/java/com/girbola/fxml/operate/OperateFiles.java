@@ -271,8 +271,6 @@ public class OperateFiles extends Task<Boolean> {
 							}
 							to.write(buf, 0, byteRead);
 							nread += byteRead;
-							Messages.sprintf("Nread: " + nread + " of "
-									+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
 							updateIncreaseLastSecondFileSizeProcessValues();
 						}
 						from.close();
@@ -280,7 +278,7 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 
-						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
+						if (nread != source.toFile().length()) {
 							SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
 
 							switch (rememberAnswer.get()) {
