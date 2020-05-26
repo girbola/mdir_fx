@@ -34,6 +34,8 @@ import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -114,6 +116,7 @@ public class OperateFiles extends Task<Boolean> {
 		private String STATE = "";
 		private Path source = null;
 		private Path dest = null;
+		private SimpleStringProperty rememberAnswer = new SimpleStringProperty(CopyAnswerType.ASK);
 
 		@Override
 		protected Integer call() throws Exception {
@@ -278,23 +281,28 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 
-						Window window = (Window) model_operate.getStart_btn().getScene().getWindow();
-						if (window == null) {
-							Messages.sprintfError("Error! Window were null");
-						} else {
-							Messages.sprintf("THIS WORKS!");
-						}
-
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
 							int answer = -1;
-							FutureTask<Integer> task = new FutureTask(new Dialogue(
-									(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
-									model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer));
-							Platform.runLater(task);
-							answer = task.get();
+					
+							switch (rememberAnswer.get()) {
+							case CopyAnswerType.COPY:
+								answer = 0;
+								break;
+							case CopyAnswerType.DONTCOPY:
+								answer = 1;
+								break;
+							case CopyAnswerType.ASK:
+								FutureTask<Integer> task = new FutureTask(new Dialogue(
+										(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
+										model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer,
+										rememberAnswer));
+								Platform.runLater(task);
+								answer = task.get();
+								break;
+							}
 
 							if (answer == 0) {
-								renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
+								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
 							} else if (answer == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
@@ -336,6 +344,28 @@ public class OperateFiles extends Task<Boolean> {
 			return null;
 		}
 
+		private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
+			try {
+				Messages.sprintf(
+						"Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
+				Files.move(Paths.get(dest.toString() + ".tmp"), dest);
+				String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+				fileInfo.setDestination_Path(newName);
+				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+				fileInfo.setCopied(true);
+				listCopiedFiles.add(fileInfo);
+				boolean added = model_main.getWorkDir_Handler().add(fileInfo);
+				if (added) {
+					Messages.sprintf("FileInfo added to destination succesfully");
+//					model_main.getWorkDir_Handler().add(fileInfo);
+				} else {
+					Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
+				}
+			} catch (Exception ex) {
+				Messages.sprintfError(ex.getMessage());
+			}
+		}
+
 		private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest2) {
 			try {
 				Messages.sprintf(
@@ -359,20 +389,20 @@ public class OperateFiles extends Task<Boolean> {
 
 		}
 
-		private void resetAndUpdateFileCopiedProcessValues() {
+		private synchronized void resetAndUpdateFileCopiedProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
 				model_operate.getCopyProcess_values().decreaseFilesLeft_tmp();
 			});
 		}
 
-		private void updateIncreaseLastSecondFileSizeProcessValues() {
+		private synchronized void updateIncreaseLastSecondFileSizeProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
 			});
 		}
 
-		private void resetAndupdateSourceAndDestProcessValues() {
+		private synchronized void resetAndupdateSourceAndDestProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
 				model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
@@ -381,20 +411,20 @@ public class OperateFiles extends Task<Boolean> {
 			});
 		}
 
-		private void updateIncreaseRenamedProcessValues() {
+		private synchronized void updateIncreaseRenamedProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().increaseRenamed_tmp();
 			});
 		}
 
-		private void updateIncreaseDuplicatesProcessValues() {
+		private synchronized void updateIncreaseDuplicatesProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().increaseDuplicated_tmp();
 				Messages.sprintf("Increader dups is now: " + model_operate.getCopyProcess_values().getDuplicated_tmp());
 			});
 		}
 
-		private void updateSourceAndDestProcessValues() {
+		private synchronized void updateSourceAndDestProcessValues() {
 			Platform.runLater(() -> {
 				model_operate.getCopyProcess_values().setCopyFrom(source.toString());
 				model_operate.getCopyProcess_values().setCopyTo(dest.toString());
@@ -588,12 +618,15 @@ public class OperateFiles extends Task<Boolean> {
 		private Window owner;
 		private FileInfo fileInfo;
 		private long copyedFileCurrentSize;
+		private SimpleStringProperty rememberAnswer;
 
-		Dialogue(Window owner, FileInfo fileInfo, long copyedFileCurrentSize, int answer) {
+		Dialogue(Window owner, FileInfo fileInfo, long copyedFileCurrentSize, int answer,
+				SimpleStringProperty rememberAnswer) {
 			this.owner = owner;
 			this.fileInfo = fileInfo;
 			this.copyedFileCurrentSize = copyedFileCurrentSize;
 			this.answer = new SimpleIntegerProperty(answer);
+			this.rememberAnswer = rememberAnswer;
 		}
 
 		@Override
@@ -612,7 +645,7 @@ public class OperateFiles extends Task<Boolean> {
 				stage.initOwner(owner);
 				stage.initStyle(StageStyle.UTILITY);
 				stage.initModality(Modality.WINDOW_MODAL);
-				yesNoCancelDialogController.init(stage, answer, fileInfo, "Corrupted file",
+				yesNoCancelDialogController.init(stage, answer, fileInfo, rememberAnswer, "Corrupted file",
 						"Corrupted file found at " + fileInfo.getOrgPath() + " size should be: " + fileInfo.getSize()
 								+ " but it is now " + copyedFileCurrentSize + "\n"
 								+ Main.bundle.getString("doYouWantToKeepTheFile") + "",
