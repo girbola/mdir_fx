@@ -281,17 +281,17 @@ public class OperateFiles extends Task<Boolean> {
 						resetAndUpdateFileCopiedProcessValues();
 
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
-							int answer = -1;
+							SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
 
 							switch (rememberAnswer.get()) {
 							case CopyAnswerType.COPY:
-								answer = 0;
+								answer.set(0);
 								break;
 							case CopyAnswerType.DONTCOPY:
-								answer = 1;
+								answer.set(1);
 								break;
 							case CopyAnswerType.ASK:
-								FutureTask<Integer> task = new FutureTask(new Dialogue(
+								FutureTask<SimpleIntegerProperty> task = new FutureTask(new Dialogue(
 										(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
 										model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer,
 										rememberAnswer));
@@ -300,15 +300,12 @@ public class OperateFiles extends Task<Boolean> {
 								break;
 							}
 
-							if (answer == 0) {
-								Path destCorrupted = Paths.get(dest.toFile() + "_crp." + FileUtils.getExtension(dest));
-								Messages.sprintf("destCorrupted = " + destCorrupted);
-								dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, destCorrupted);
-							} else if (answer == 1) {
+							if (answer.get() == 0) {
+									renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
+							} else if (answer.get() == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
-							} else if (answer == 2) {
+							} else if (answer.get() == 2) {
 								Messages.sprintf("Cancel pressed. This is not finished!");
 								cancel();
 								Main.setProcessCancelled(true);
@@ -349,9 +346,17 @@ public class OperateFiles extends Task<Boolean> {
 		private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
 			try {
 				Messages.sprintf(
-						"Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
-				Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-				String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+						"Renaming corrupted file to: " + dest);
+				
+				String fileName= FileUtils.parseExtension(dest);
+				Path destPath = Paths.get(dest.getParent().toString() + File.separator + fileName + "_crp." + FileUtils.getExtension(dest));
+				if(Files.exists(destPath)) {
+					destPath = FileUtils.renameFile(dest, destPath);				
+				}
+				Files.move(Paths.get(dest.toString() + ".tmp"), destPath);
+				
+				String newName = FileUtils.parseWorkDir(destPath.toString(), fileInfo.getWorkDir());
+				
 				fileInfo.setDestination_Path(newName);
 				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 				fileInfo.setCopied(true);
@@ -364,11 +369,13 @@ public class OperateFiles extends Task<Boolean> {
 					Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
 				}
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				Messages.sprintfError(ex.getMessage());
+				Main.setProcessCancelled(true);
 			}
 		}
 
-		private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest2) {
+		private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest) {
 			try {
 				Messages.sprintf(
 						"Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
@@ -525,7 +532,7 @@ public class OperateFiles extends Task<Boolean> {
 							Main.conf.getFileInfo_db_fileName());
 					connection.setAutoCommit(false);
 //					listCopiedFiles
-					SQL_Utils.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
+					SQL_Utils.insertFileInfoListToWorkdirDatabase(connection, listCopiedFiles, true);
 //					boolean clean = model_main.getWorkDir_Handler().cleanDatabase(connection);
 //					if (clean) {
 //						Messages.sprintf("clean is done succeeded");
@@ -614,25 +621,24 @@ public class OperateFiles extends Task<Boolean> {
 		Messages.warningText("OperateFiles were cancelled!");
 	}
 
-	class Dialogue implements Callable<Integer> {
-		private SimpleIntegerProperty answer;
-
+	class Dialogue implements Callable<SimpleIntegerProperty> {
 		private Window owner;
 		private FileInfo fileInfo;
 		private long copyedFileCurrentSize;
+		private SimpleIntegerProperty answer;
 		private SimpleStringProperty rememberAnswer;
 
-		Dialogue(Window owner, FileInfo fileInfo, long copyedFileCurrentSize, int answer,
+		Dialogue(Window owner, FileInfo fileInfo, long copyedFileCurrentSize, SimpleIntegerProperty answer,
 				SimpleStringProperty rememberAnswer) {
 			this.owner = owner;
 			this.fileInfo = fileInfo;
 			this.copyedFileCurrentSize = copyedFileCurrentSize;
-			this.answer = new SimpleIntegerProperty(answer);
+			this.answer = answer;
 			this.rememberAnswer = rememberAnswer;
 		}
 
 		@Override
-		public Integer call() throws Exception {
+		public SimpleIntegerProperty call() throws Exception {
 			FXMLLoader loader = null;
 			Parent parent = null;
 			YesNoCancelDialogController yesNoCancelDialogController = null;
@@ -658,10 +664,7 @@ public class OperateFiles extends Task<Boolean> {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
-			return answer.get();
+			return answer;
 		}
-
 	}
-
 }
