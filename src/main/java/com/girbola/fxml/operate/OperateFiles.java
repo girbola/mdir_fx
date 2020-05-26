@@ -34,7 +34,6 @@ import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -283,7 +282,7 @@ public class OperateFiles extends Task<Boolean> {
 
 						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
 							int answer = -1;
-					
+
 							switch (rememberAnswer.get()) {
 							case CopyAnswerType.COPY:
 								answer = 0;
@@ -302,7 +301,10 @@ public class OperateFiles extends Task<Boolean> {
 							}
 
 							if (answer == 0) {
-								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
+								Path destCorrupted = Paths.get(dest.toFile() + "_crp." + FileUtils.getExtension(dest));
+								Messages.sprintf("destCorrupted = " + destCorrupted);
+								dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, destCorrupted);
 							} else if (answer == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
