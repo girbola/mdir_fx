@@ -278,7 +278,7 @@ public class OperateFiles extends Task<Boolean> {
 						to.close();
 						resetAndUpdateFileCopiedProcessValues();
 
-						if (nread != model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp()) {
+						if (nread != source.toFile().length()) {
 							SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
 
 							switch (rememberAnswer.get()) {
