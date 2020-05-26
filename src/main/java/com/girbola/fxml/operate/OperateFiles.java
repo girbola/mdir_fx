@@ -271,8 +271,6 @@ public class OperateFiles extends Task<Boolean> {
 							}
 							to.write(buf, 0, byteRead);
 							nread += byteRead;
-							Messages.sprintf("Nread: " + nread + " of "
-									+ model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp());
 							updateIncreaseLastSecondFileSizeProcessValues();
 						}
 						from.close();
@@ -286,22 +284,26 @@ public class OperateFiles extends Task<Boolean> {
 							switch (rememberAnswer.get()) {
 							case CopyAnswerType.COPY:
 								answer.set(0);
+								Messages.sprintf("Copy will be done. Value is: " + answer.get());
 								break;
 							case CopyAnswerType.DONTCOPY:
 								answer.set(1);
+								Messages.sprintf("Copy won't be done. Value is: " + answer.get());
 								break;
 							case CopyAnswerType.ASK:
+								Messages.sprintf("Prompting dialogue");
 								FutureTask<SimpleIntegerProperty> task = new FutureTask(new Dialogue(
 										(Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
 										model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer,
 										rememberAnswer));
 								Platform.runLater(task);
 								answer = task.get();
+								Messages.sprintf("And the answer is: " + answer.get());
 								break;
 							}
 
 							if (answer.get() == 0) {
-									renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
+								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
 							} else if (answer.get() == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
@@ -345,18 +347,18 @@ public class OperateFiles extends Task<Boolean> {
 
 		private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
 			try {
-				Messages.sprintf(
-						"Renaming corrupted file to: " + dest);
-				
-				String fileName= FileUtils.parseExtension(dest);
-				Path destPath = Paths.get(dest.getParent().toString() + File.separator + fileName + "_crp." + FileUtils.getExtension(dest));
-				if(Files.exists(destPath)) {
-					destPath = FileUtils.renameFile(dest, destPath);				
+				Messages.sprintf("Renaming corrupted file to: " + dest);
+
+				String fileName = FileUtils.parseExtension(dest);
+				Path destPath = Paths.get(dest.getParent().toString() + File.separator + fileName + "_crp."
+						+ FileUtils.getExtension(dest));
+				if (Files.exists(destPath)) {
+					destPath = FileUtils.renameFile(dest, destPath);
 				}
 				Files.move(Paths.get(dest.toString() + ".tmp"), destPath);
-				
+
 				String newName = FileUtils.parseWorkDir(destPath.toString(), fileInfo.getWorkDir());
-				
+
 				fileInfo.setDestination_Path(newName);
 				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 				fileInfo.setCopied(true);
