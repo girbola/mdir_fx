@@ -266,7 +266,7 @@ public class OperateFiles extends Task<Boolean> {
 						while ((byteRead = from.read(buf)) > 0) {
 							if (Main.getProcessCancelled()) {
 								cleanCancelledFile(from, to);
-								Messages.sprintf("Cleanup is done");
+								Messages.sprintf("Cleanup is done ");
 								return null;
 							}
 							to.write(buf, 0, byteRead);
