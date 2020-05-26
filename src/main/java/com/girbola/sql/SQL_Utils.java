@@ -30,167 +30,85 @@ import javafx.collections.ObservableList;
 public class SQL_Utils {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();
 
-	//@formatter:off
-	final static String thumbInfoInsert = "INSERT OR REPLACE INTO "
-	+ SQL_Enums.THUMBINFO.getType()
-	+ " ('id',"
-	+ "'filepath', "
-	+ "'thumb_width', "
-	+ "'thumb_height', "
-	+ "'thumb_fast_width', "
-	+ "'thumb_fast_height', "
-	+ "'orientation', "
-	+ "'image_0', "
-	+ "'image_1', "
-	+ "'image_2', "
-	+ "'image_3', "
-	+ "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+	// @formatter:off
+	final static String thumbInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.THUMBINFO.getType() + " ('id',"
+			+ "'filepath', " + "'thumb_width', " + "'thumb_height', " + "'thumb_fast_width', " + "'thumb_fast_height', "
+			+ "'orientation', " + "'image_0', " + "'image_1', " + "'image_2', " + "'image_3', "
+			+ "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	final static String folderInfoDatabaseSQL =
-			"CREATE TABLE IF NOT EXISTS "
-			+ SQL_Enums.FOLDERINFO.getType()
-			+ " (path STRING NOT NULL UNIQUE PRIMARY KEY, "
-			+ "justFolderName STRING, "
-			+ "tableType STRING NOT NULL, "
+	final static String folderInfoDatabaseSQL = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
+			+ " (path STRING NOT NULL UNIQUE PRIMARY KEY, " + "justFolderName STRING, " + "tableType STRING NOT NULL, "
 			+ "connected BOOLEAN)";
-	
-	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS "
-			+ SQL_Enums.SELECTEDFOLDERS.getType() + " (path STRING PRIMARY KEY, connected BOOLEAN)";
-	
+
+	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.SELECTEDFOLDERS.getType()
+			+ " (path STRING PRIMARY KEY, connected BOOLEAN)";
+
 	/*
-	 * 	this.orgPath = aOrgPath;
-		this.fileInfo_id = fileInfo_id;
-		this.destinationPath = "";
-		this.event = "";
-		this.location = "";
-		this.tags = "";
-		this.camera_model = "Unknown";
-		this.orientation = 0;
-		this.timeShift = 0;
-		this.bad = false;
-		this.good = false;
-		this.suggested = false;
-		this.confirmed = false;
-		this.raw = false;
-		this.image = false;
-		this.video = false;
-		this.ignored = false;
-		this.tableDuplicated = false;
-		this.date = 0;
-		this.size = 0;
-		this.thumb_offset = 0;
-		this.thumb_length = 0;
-		this.user = "";
-	 * */
-	final static String fileInfoInsert =
-			"INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " ("
-			+ "'fileInfo_id', "
-			+ "'orgPath', "
-			+ "'workDir', "
-			+ "'workDirDriveSerialNumber', "
-			+ "'destination_Path', "
-			+ "'camera_model', "
-			+ "'user', "
-			+ "'orientation', "
-			+ "'bad',"
-			+ "'good', "
-			+ "'confirmed', "
-			+ "'copied',"
-			+ "'ignored', "
-			+ "'suggested', "
-			+ "'image', "
-			+ "'raw', "
-			+ "'video', "
-			+ "'timeshift', "
-			+ "'date', "
-			+ "'size', "
-			+ "'tableduplicated', "
-			+ "'tags', "
-			+ "'event', "
-			+ "'location', "
-			+ "'thumb_offset', "
-			+ "'thumb_length')"
+	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
+	 * = ""; this.event = ""; this.location = ""; this.tags = ""; this.camera_model
+	 * = "Unknown"; this.orientation = 0; this.timeShift = 0; this.bad = false;
+	 * this.good = false; this.suggested = false; this.confirmed = false; this.raw =
+	 * false; this.image = false; this.video = false; this.ignored = false;
+	 * this.tableDuplicated = false; this.date = 0; this.size = 0; this.thumb_offset
+	 * = 0; this.thumb_length = 0; this.user = "";
+	 */
+	final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " ("
+			+ "'fileInfo_id', " + "'orgPath', " + "'workDir', " + "'workDirDriveSerialNumber', "
+			+ "'destination_Path', " + "'camera_model', " + "'user', " + "'orientation', " + "'bad'," + "'good', "
+			+ "'confirmed', " + "'copied'," + "'ignored', " + "'suggested', " + "'image', " + "'raw', " + "'video', "
+			+ "'timeshift', " + "'date', " + "'size', " + "'tableduplicated', " + "'tags', " + "'event', "
+			+ "'location', " + "'thumb_offset', " + "'thumb_length')"
 			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
 	final static String folderInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FOLDERINFO.getType() + " ("
-			+ "'path', "
-			+ "'tableType', "
-			+ "'justFolderName', "
-			+ "'connected')"
-			+ " VALUES(?,?,?,?)";
-	
-	final static String insertDriveInfo =
-			"INSERT OR REPLACE INTO "
-	+ SQL_Enums.DRIVEINFO.getType()
-	+ "('drivePath', "
-	+ "'identifier', "
-	+ "'totalSize', "
-	+ "'connected,' "
-	+ "'selected')"
-	+ " VALUES(?,?,?,?,?)";
+			+ "'path', " + "'tableType', " + "'justFolderName', " + "'connected')" + " VALUES(?,?,?,?)";
 
+	final static String insertDriveInfo = "INSERT OR REPLACE INTO " + SQL_Enums.DRIVEINFO.getType() + "('drivePath', "
+			+ "'identifier', " + "'totalSize', " + "'connected,' " + "'selected')" + " VALUES(?,?,?,?,?)";
 
 	private static String getFileInfoTable(String tableType) {
-	String sql = "CREATE TABLE IF NOT EXISTS " + tableType + fileInfoTableColumns();
+		String sql = "CREATE TABLE IF NOT EXISTS " + tableType + fileInfoTableColumns();
 		return sql;
 	}
+
 	private static String alterTableColumn_(String tableType) {
 		String sql = "ALTER TABLE " + tableType + fileInfoTableColumns();
 		return sql;
 	}
+
 	private static String fileInfoTableColumns() {
-		String sql = " (fileInfo_id  INTEGER PRIMARY KEY,"
-				+ "orgPath STRING UNIQUE,"
-				+ "workDir STRING,"
-				+ "workDirDriveSerialNumber STRING,"
-				+ "destination_Path STRING,"
-				+ "event           STRING,"
-				+ "location        STRING,"
-				+ "tags            STRING,"
-				+ "camera_model    STRING,"
-				+ "user			   STRING,"
-				+ "orientation 	   INTEGER,"
-				+ "timeshift       INTEGER,"
-				+ "bad             BOOLEAN,"
-				+ "good            BOOLEAN,"
-				+ "suggested       BOOLEAN,"
-				+ "confirmed       BOOLEAN,"
-				+ "copied          BOOLEAN,"
-				+ "ignored         BOOLEAN,"
-				+ "tableduplicated BOOLEAN,"
-				+ "image           BOOLEAN,"
-				+ "video           BOOLEAN,"
-				+ "raw             BOOLEAN,"
-				+ "date            NUMERIC,"
-				+ "size            NUMERIC,"
-				+ "thumb_offset    INTEGER,"
-				+ "thumb_length    INTEGER)";
-		
+		String sql = " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING,"
+				+ "workDirDriveSerialNumber STRING," + "destination_Path STRING," + "event           STRING,"
+				+ "location        STRING," + "tags            STRING," + "camera_model    STRING,"
+				+ "user			   STRING," + "orientation 	   INTEGER," + "timeshift       INTEGER,"
+				+ "bad             BOOLEAN," + "good            BOOLEAN," + "suggested       BOOLEAN,"
+				+ "confirmed       BOOLEAN," + "copied          BOOLEAN," + "ignored         BOOLEAN,"
+				+ "tableduplicated BOOLEAN," + "image           BOOLEAN," + "video           BOOLEAN,"
+				+ "raw             BOOLEAN," + "date            NUMERIC," + "size            NUMERIC,"
+				+ "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
+
 		return sql;
 	}
-	
+
 	/*
 	 * DriveInfo
 	 */
 	private static boolean createDriveInfoTable(Connection connection) {
 		Messages.sprintf("createDriveInfoTable creating..." + connection);
-		if(connection == null) {
+		if (connection == null) {
 			return false;
 		}
 		if (!isDbConnected(connection)) {
-		Messages.sprintf("NOT connected");
+			Messages.sprintf("NOT connected");
 			return false;
 		}
 		try {
 			Statement stmt = connection.createStatement();
 			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.DRIVEINFO.getType() + " ("
-					+ "drivePath STRING NOT NULL, "
-					+ "driveTotalSize INTEGER, "
-					+ "identifier STRING, "
-					+ "driveSelected STRING,"
-					+ "driveConnected BOOLEAN)";
+					+ "drivePath STRING NOT NULL, " + "driveTotalSize INTEGER, " + "identifier STRING, "
+					+ "driveSelected STRING," + "driveConnected BOOLEAN)";
 			stmt.execute(sql);
 			return true;
 		} catch (Exception ex) {
@@ -198,7 +116,7 @@ public class SQL_Utils {
 			return false;
 		}
 	}
-	
+
 	public boolean addDriveInfo(Connection connection, DriveInfo driveInfo) {
 		if (connection == null) {
 			return false;
@@ -211,42 +129,42 @@ public class SQL_Utils {
 			pstmt.setBoolean(3, driveInfo.getSelected());
 			pstmt.setLong(4, driveInfo.getDriveTotalSize());
 			pstmt.setString(5, driveInfo.getIdentifier());
-			
+
 			pstmt.executeUpdate();
 			pstmt.close();
 			return true;
 		} catch (Exception e) {
-		return false;
+			return false;
 		}
 	}
-	
+
 	public static boolean addDriveInfo_list(Connection connection, List<DriveInfo> driveInfo_list) {
 		if (connection == null) {
 			return false;
 		}
 		createDriveInfoTable(connection);
-		
+
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(insertDriveInfo);
-		for(DriveInfo driveInfo : driveInfo_list) {
-			pstmt.setString(1, driveInfo.getDrivePath());
-			pstmt.setBoolean(2, driveInfo.isConnected());
-			pstmt.setBoolean(3, driveInfo.getSelected());
-			pstmt.setLong(4, driveInfo.getDriveTotalSize());
-			pstmt.setString(5, driveInfo.getIdentifier());
-			pstmt.addBatch();
-		}
-		pstmt.executeBatch();
-		if(pstmt != null) {
-			pstmt.close();
-		}
+			for (DriveInfo driveInfo : driveInfo_list) {
+				pstmt.setString(1, driveInfo.getDrivePath());
+				pstmt.setBoolean(2, driveInfo.isConnected());
+				pstmt.setBoolean(3, driveInfo.getSelected());
+				pstmt.setLong(4, driveInfo.getDriveTotalSize());
+				pstmt.setString(5, driveInfo.getIdentifier());
+				pstmt.addBatch();
+			}
+			pstmt.executeBatch();
+			if (pstmt != null) {
+				pstmt.close();
+			}
 			return true;
 		} catch (Exception e) {
-		return false;
+			return false;
 		}
 	}
-	
-	//@formatter:on
+
+	// @formatter:on
 	public static boolean loadDriveInfo(Connection connection, Model_folderScanner model_folderScanner) {
 		String sql = "SELECT * FROM " + SQL_Enums.DRIVEINFO.getType();
 		try {
@@ -319,7 +237,7 @@ public class SQL_Utils {
 		return true;
 	}
 
-	//@formatter:on
+	// @formatter:on
 	public static boolean addToFolderInfoDB(Connection connection, FolderInfo folderInfo) {
 		if (connection == null) {
 			return false;
@@ -547,7 +465,7 @@ public class SQL_Utils {
 	/*
 	 * FileInfo
 	 */
-	//@formatter:off
+	// @formatter:off
 	public static boolean createFileInfoTable(Connection connection) {
 		if (connection == null) {
 			Messages.sprintf("Connection were null!");
@@ -562,7 +480,7 @@ public class SQL_Utils {
 			return false;
 		}
 	}
-	
+
 	public static boolean insertFileInfoToDatabase(Connection connection, FileInfo fileInfo) {
 		Messages.sprintf("insertFileInfo_list");
 		createFileInfoTable(connection);
@@ -577,9 +495,9 @@ public class SQL_Utils {
 			addToFileInfoDB(connection, pstmt, fileInfo);
 			int[] count = pstmt.executeBatch();
 			connection.commit();
-		if(count.length>=1) {
-			Messages.sprintf("counted= " + count);
-		}
+			if (count.length >= 1) {
+				Messages.sprintf("counted= " + count);
+			}
 			connection.close();
 			pstmt.close();
 			return true;
@@ -592,8 +510,8 @@ public class SQL_Utils {
 	public static int countTableRows(Connection connection, String table) {
 		try {
 			Statement stmt = connection.createStatement();
-			ResultSet res = stmt. executeQuery("select * from " + table);
-			res. last(); // record pointer is placed on the last row.
+			ResultSet res = stmt.executeQuery("select * from " + table);
+			res.last(); // record pointer is placed on the last row.
 			int counter = res.getRow();
 			System.out.println("Number of records in ResultSet: " + counter);
 			return counter;
@@ -601,17 +519,18 @@ public class SQL_Utils {
 			return 0;
 		}
 	}
+
 	/**
 	 * 
 	 * @param connection
 	 * @param list
 	 * @return
 	 */
-	//@formatter:on
+	// @formatter:on
 	public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
 		Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
 		if (!isWorkDir) {
-		boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
+			boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
 			if (clearTable) {
 				boolean tableCreated = createFileInfoTable(connection);
 				if (tableCreated) {
@@ -656,7 +575,7 @@ public class SQL_Utils {
 		}
 	}
 
-	//@formatter:off
+	// @formatter:off
 	public static List<FileInfo> loadFileInfoDatabase(Connection connection) {
 
 		if (connection == null) {
@@ -668,10 +587,10 @@ public class SQL_Utils {
 		}
 		List<FileInfo> list = new ArrayList<>();
 		String sql = "SELECT * FROM " + SQL_Enums.FILEINFO.getType();
-		
+
 		try {
 			boolean tableCreated = createFileInfoTable(connection);
-			if(tableCreated) {
+			if (tableCreated) {
 				Messages.sprintf("tableCreated");
 			} else {
 				Messages.sprintf("NOT tableCreated");
@@ -716,9 +635,9 @@ public class SQL_Utils {
 		long size = rs.getLong("size");
 		int thumb_offset = rs.getInt("thumb_offset");
 		int thumb_lenght = rs.getInt("thumb_length");
-		FileInfo finfo = new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift,
-				fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date,
-				size, thumb_offset, thumb_lenght);
+		FileInfo finfo = new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags,
+				camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw,
+				video, ignored, copied, tableDuplicated, date, size, thumb_offset, thumb_lenght);
 		return finfo;
 	}
 	/*
@@ -737,15 +656,11 @@ public class SQL_Utils {
 
 			final int tsize = thumbInfo.getThumbs().size();
 			int c = 8;
-			for (int i = 0;
-					i < (tsize);
-					i++) {
+			for (int i = 0; i < (tsize); i++) {
 				pstmt.setBytes((i + 8), thumbInfo.getThumbs().get(i));
 				c++;
 			}
-			for (int i = c;
-					i < (13);
-					i++) {
+			for (int i = c; i < (13); i++) {
 				pstmt.setBytes((i), null);
 			}
 
@@ -762,7 +677,7 @@ public class SQL_Utils {
 		}
 	}
 
-	//@formatter:off
+	// @formatter:off
 	public static boolean createThumbInfoTable(Connection connection) {
 		if (connection == null) {
 			return false;
@@ -770,20 +685,11 @@ public class SQL_Utils {
 		try {
 			Statement stmt = connection.createStatement();
 			connection.setAutoCommit(false);
-			String sql = "CREATE TABLE IF NOT EXISTS "
-			+ SQL_Enums.THUMBINFO.getType()
-			+ " (id INTEGER PRIMARY KEY,"
-			+ " filepath STRING UNIQUE NOT NULL,"
-			+ " thumb_width  DOUBLE,"
-			+ " thumb_height DOUBLE,"
-			+ " thumb_fast_width  DOUBLE,"
-			+ " thumb_fast_height DOUBLE,"
-			+ " orientation INTEGER,"
-			+ " image_0 BLOB NULL,"
-			+ " image_1  BLOB NULL,"
-			+ " image_2 BLOB NULL,"
-			+ " image_3  BLOB NULL,"
-			+ " image_4  BLOB NULL)";
+			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.THUMBINFO.getType() + " (id INTEGER PRIMARY KEY,"
+					+ " filepath STRING UNIQUE NOT NULL," + " thumb_width  DOUBLE," + " thumb_height DOUBLE,"
+					+ " thumb_fast_width  DOUBLE," + " thumb_fast_height DOUBLE," + " orientation INTEGER,"
+					+ " image_0 BLOB NULL," + " image_1  BLOB NULL," + " image_2 BLOB NULL," + " image_3  BLOB NULL,"
+					+ " image_4  BLOB NULL)";
 
 			stmt.execute(sql);
 			connection.commit();
@@ -794,7 +700,8 @@ public class SQL_Utils {
 			return false;
 		}
 	}
-	//@formatter:on
+
+	// @formatter:on
 	public static boolean insertThumbInfo(Connection connection, int id, ThumbInfo thumbInfo) {
 		createThumbInfoTable(connection);
 		if (!isDbConnected(connection)) {
@@ -884,7 +791,7 @@ public class SQL_Utils {
 		return thumbInfo;
 	}
 
-	//@formatter:off
+	// @formatter:off
 	public static ThumbInfo loadThumbInfo(Connection connection, int thumbInfo_ID) {
 		Messages.sprintf("Loading thumbinfo SQL id= " + thumbInfo_ID);
 		if (connection == null) {
@@ -896,21 +803,10 @@ public class SQL_Utils {
 		}
 		ThumbInfo thumbInfo = null;
 		try {
-			String sql =
-					"SELECT id, "
-					+ "filename, "
-					+ "thumb_width, "
-					+ "thumb_height, "
-					+ "thumb_fast_width, "
-					+ "thumb_fast_height, "
-					+ "orientation, "
-					+ "image_0, "
-					+ "image_1, "
-					+ "image_2, "
-					+ "image_3, "
-					+ "image_4 FROM "
-							+ SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
-			//@formatter:on
+			String sql = "SELECT id, " + "filename, " + "thumb_width, " + "thumb_height, " + "thumb_fast_width, "
+					+ "thumb_fast_height, " + "orientation, " + "image_0, " + "image_1, " + "image_2, " + "image_3, "
+					+ "image_4 FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
+			// @formatter:on
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 			pstmt.setInt(1, thumbInfo_ID);
 			pstmt.executeQuery();
@@ -940,7 +836,7 @@ public class SQL_Utils {
 		return thumbInfo;
 	}
 
-	//@formatter:on
+	// @formatter:on
 	public static boolean addToFileInfoDB(Connection connection, PreparedStatement pstmt, FileInfo fileInfo) {
 		try {
 			pstmt.setInt(1, fileInfo.getFileInfo_id());
@@ -1221,8 +1117,10 @@ public class SQL_Utils {
 
 	}
 
-	public static void insertToFolderInfoDB(Connection connection, ObservableList<FolderInfo> table_row_list) {
+	public static void insertFileInfoListToWorkdirDatabase(Connection connection, List<FileInfo> listCopiedFiles,
+			boolean isWorkdir) {
 
+		
 	}
 
 }
