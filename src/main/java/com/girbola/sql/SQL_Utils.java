@@ -610,8 +610,8 @@ public class SQL_Utils {
 	//@formatter:on
 	public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
 		Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
-		boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
 		if (!isWorkDir) {
+		boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
 			if (clearTable) {
 				boolean tableCreated = createFileInfoTable(connection);
 				if (tableCreated) {
