@@ -37,7 +37,7 @@ public class SQL_Utils {
 			+ "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	final static String folderInfoDatabaseSQL = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
-			+ " (path STRING NOT NULL UNIQUE PRIMARY KEY, " + "justFolderName STRING, " + "tableType STRING NOT NULL, "
+			+ " (path STRING NOT NULL PRIMARY KEY, " + "justFolderName STRING, " + "tableType STRING NOT NULL, "
 			+ "connected BOOLEAN)";
 
 	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.SELECTEDFOLDERS.getType()
