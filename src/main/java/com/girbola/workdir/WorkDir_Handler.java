@@ -23,11 +23,13 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.filelisting.GetAllMediaFiles;
+import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import common.utils.Conversion;
 import common.utils.date.DateUtils;
 import javafx.scene.control.TableView;
 
@@ -214,6 +216,30 @@ public class WorkDir_Handler {
 				}
 			}
 		}
+	}
+
+	public List<Path> findPossibleExistsFoldersInWorkdir(FileInfo fileInfoToSearch) {
+		List<Path> list = new ArrayList<>();
+
+		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
+
+		String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
+		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
+		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
+
+		Path workDirToSearch = Paths.get(Main.conf.getWorkDir() + File.separator + year + File.separator + month);
+		try {
+			List<Path> paths = GetRootFiles.getRootFiles(workDirToSearch);
+			for (Path p : paths) {
+				if (p.toString().contains(workDirToSearch.toString() + File.separator + day)) {
+					list.add(p);
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	public boolean cleanDatabase(Connection connection) {

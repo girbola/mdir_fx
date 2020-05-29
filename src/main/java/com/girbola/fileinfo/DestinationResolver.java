@@ -56,7 +56,7 @@ public class DestinationResolver {
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
 		
 		Path destPath = Paths.get(File.separator + ld.getYear() + File.separator
-				+ Conversion.formatStringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(source));
+				+ Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(source));
 		return destPath;
 	}
 

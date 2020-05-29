@@ -688,8 +688,9 @@ public class TableUtils {
 					+ File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 			return destPath;
 		} else if (tableType.equals(TableType.SORTIT.getType())) {
-			Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + Conversion.formatStringTwoDigits(ld.getMonthValue())
-					+ File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+			Path destPath = Paths.get(File.separator + ld.getYear() + File.separator
+					+ Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "."
+					+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 			return destPath;
 		} else if (tableType.equals(TableType.ASITIS.getType())) {
 			Path destPath = Paths.get(File.separator + justFolderName + File.separator + fileName + "."
@@ -700,13 +701,13 @@ public class TableUtils {
 	}
 
 	public static void updateAllFolderInfos(Tables tables) {
-		for(FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
 			updateFolderInfos_FileInfo(folderInfo);
 		}
-		for(FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+		for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
 			updateFolderInfos_FileInfo(folderInfo);
 		}
-		for(FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
+		for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
 			updateFolderInfos_FileInfo(folderInfo);
 		}
 	}

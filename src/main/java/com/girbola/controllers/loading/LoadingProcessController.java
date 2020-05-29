@@ -52,6 +52,7 @@ public class LoadingProcessController {
 	private void cancel_btn_action(ActionEvent event) {
 		sprintf("Cancel pressed!");
 		Main.setProcessCancelled(true);
+		closeWindow();
 	}
 
 	public void closeWindow() {
@@ -71,7 +72,7 @@ public class LoadingProcessController {
 		if (Main.scene_Switcher.getWindow_loadingprogress().getScene() == null) {
 			sprintf("model.getStage().getScene(). WERE nULL");
 		}
-		KeyFrame key = new KeyFrame(Duration.millis(1000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
+		KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {
 

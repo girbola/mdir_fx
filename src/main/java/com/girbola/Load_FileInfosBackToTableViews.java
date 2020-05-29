@@ -79,7 +79,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
 			populateTable(model_main.tables().getAsItIs_table().getItems().iterator());
 		}
-
+		
 		return true;
 	}
 
@@ -96,11 +96,13 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		}
 		return true;
 	}
+
 	private boolean populateTable(FolderInfo folderInfo) {
-		Messages.sprintf("populateTable getFolderFiles() is: " + folderInfo.getFolderFiles() + " connected? " + folderInfo.isConnected());
-if(folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit") ){
-	Messages.sprintf("HMMMMMMMMM");
-}
+		Messages.sprintf("populateTable getFolderFiles() is: " + folderInfo.getFolderFiles() + " connected? "
+				+ folderInfo.isConnected());
+		if (folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit")) {
+			Messages.sprintf("HMMMMMMMMM");
+		}
 		if (folderInfo.isConnected()) {
 			Connection connection = null;
 			Path path = Paths.get(folderInfo.getFolderPath());
@@ -156,12 +158,14 @@ if(folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit") ){
 	protected void cancelled() {
 		super.cancelled();
 		Messages.sprintfError("Load fileinfo back to table cancelled!");
+		Main.setChanged(false);
 	}
 
 	@Override
 	protected void failed() {
 		super.failed();
 		Messages.sprintfError("Load fileinfo back to table FAILED!");
+		Main.setChanged(false);
 	}
 
 	@Override
@@ -171,6 +175,7 @@ if(folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit") ){
 		TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 		TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 		TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());
+		Main.setChanged(false);
 	}
 
 }

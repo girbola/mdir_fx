@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -200,7 +201,6 @@ public class MenuBarController {
 		Messages.sprintf("menuItem_file_load_action");
 //		boolean load = true;
 		if (Main.getChanged()) {
-
 			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
 					bundle.getString("changesMadeDataLost"));
 			dialog.getDialogPane().getButtonTypes().remove(1);
@@ -208,15 +208,23 @@ public class MenuBarController {
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				Main.setChanged(false);
-				model_main.load();
+				loadTablesContents();
 				Main.setChanged(false);
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 				Messages.sprintf("Cancel_Close pressed. Doing nothing than closing the window");
 			}
 		} else {
+			loadTablesContents();
+		}
+	}
+
+	private void loadTablesContents() {
+		if (Files.exists(
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
+			Messages.sprintf("Folderinfo database foudn at appdata path: "
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()));
 			model_main.load();
 		}
-
 	}
 
 	@FXML
@@ -225,6 +233,7 @@ public class MenuBarController {
 		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
 				null, true);
 		Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
+		thread.setDaemon(true);
 		thread.start();
 
 	}

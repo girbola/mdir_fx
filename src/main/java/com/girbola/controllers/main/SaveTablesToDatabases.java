@@ -29,6 +29,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
 		this.stage = stage;
 		if (loadingProcess_Task == null) {
 			loadingProcess_Task = new LoadingProcess_Task(stage);
+			loadingProcess_Task.setTask(this);
 		}
 		this.loadingProcess_Task = loadingProcess_Task;
 		this.closeLoadingStage = closeLoadingStage;
@@ -50,18 +51,21 @@ public class SaveTablesToDatabases extends Task<Integer> {
 					Misc.getLineNumber(), true);
 		}
 		long start = System.currentTimeMillis();
+		updateMessage("Loading Sortit");
 		boolean sorted = model_main.saveTableContent(connection, model_main.tables().getSorted_table().getItems(),
 				TableType.SORTED.getType());
 		if (sorted) {
 			Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 		start = System.currentTimeMillis();
+		updateMessage("Loading Sorted");
 		boolean sortit = model_main.saveTableContent(connection, model_main.tables().getSortIt_table().getItems(),
 				TableType.SORTIT.getType());
 		if (sortit) {
 			Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 		start = System.currentTimeMillis();
+		updateMessage("Loading AsItIs");
 		boolean asitis = model_main.saveTableContent(connection, model_main.tables().getAsItIs_table().getItems(),
 				TableType.ASITIS.getType());
 		if (asitis) {
