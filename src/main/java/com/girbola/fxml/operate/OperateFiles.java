@@ -214,6 +214,7 @@ public class OperateFiles extends Task<Boolean> {
 								copy = false;
 								STATE = Copy_State.DUPLICATE.getType();
 								updateIncreaseDuplicatesProcessValues();
+								fileInfo.setCopied(true);
 							}
 						}
 					} catch (IOException ex) {
