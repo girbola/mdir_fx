@@ -206,13 +206,13 @@ public class OperateFiles extends Task<Boolean> {
 								copy = true;
 								STATE = Copy_State.RENAME.getType();
 								String newDest = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-								fileInfo.setDestination_Path(newDest);
-								fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+								updateFileInfo(fileInfo, newDest);
 								Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
 								updateIncreaseRenamedProcessValues();
 							} else if (dest_test == dest) {
 								copy = false;
 								STATE = Copy_State.DUPLICATE.getType();
+								updateFileInfo(fileInfo, dest.toString());
 								updateIncreaseDuplicatesProcessValues();
 								fileInfo.setCopied(true);
 							}
@@ -337,6 +337,10 @@ public class OperateFiles extends Task<Boolean> {
 						cancel();
 						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 					}
+				} else if (dest != null && STATE.equals(Copy_State.DUPLICATE.getType())) {
+					fileInfo.setCopied(true);
+				} else {
+					Messages.sprintfError("OperateFiles had other state: " + STATE + " and dest were: " + dest);
 				}
 				Platform.runLater(() -> {
 					model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
@@ -344,6 +348,11 @@ public class OperateFiles extends Task<Boolean> {
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
+		}
+
+		private void updateFileInfo(FileInfo fileInfo, String destPath) {
+			fileInfo.setDestination_Path(destPath);
+			fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 		}
 
 		private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
