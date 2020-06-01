@@ -641,19 +641,24 @@ public class TableUtils {
 	}
 
 	public static void refreshAllTableContent(Tables tables) {
-		refreshTableContent(tables.getAsItIs_table());
-		refreshTableContent(tables.getSorted_table());
-		refreshTableContent(tables.getSortIt_table());
+		Platform.runLater(() -> {
+			refreshTableContent(tables.getAsItIs_table());
+			refreshTableContent(tables.getSorted_table());
+			refreshTableContent(tables.getSortIt_table());
+		});
 	}
 
 	public static void clearTablesContents(Tables tables) {
-		tables.getAsItIs_table().getItems().removeAll();
-		tables.getSorted_table().getItems().removeAll();
-		tables.getSortIt_table().getItems().removeAll();
-		tables.getAsItIs_table().getItems().clear();
-		tables.getSorted_table().getItems().clear();
-		tables.getSortIt_table().getItems().clear();
-		refreshAllTableContent(tables);
+		Platform.runLater(() -> {
+
+			tables.getAsItIs_table().getItems().removeAll();
+			tables.getSorted_table().getItems().removeAll();
+			tables.getSortIt_table().getItems().removeAll();
+			tables.getAsItIs_table().getItems().clear();
+			tables.getSorted_table().getItems().clear();
+			tables.getSortIt_table().getItems().clear();
+			refreshAllTableContent(tables);
+		});
 
 	}
 
