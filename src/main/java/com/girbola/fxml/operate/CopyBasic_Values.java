@@ -122,7 +122,7 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized void decreaseFilesLeft_tmp() {
-		setFilesLeft_tmp(getFilesLeft_tmp() - 1);
+		this.setFilesLeft_tmp(getFilesLeft_tmp() - 1);
 	}
 
 	public synchronized int getCopied_tmp() {
@@ -130,11 +130,11 @@ public class CopyBasic_Values {
 	}
 
 	public synchronized String getCopyFrom_tmp() {
-		return copyFrom_tmp;
+		return this.copyFrom_tmp;
 	}
 
 	public synchronized String getCopyTo_tmp() {
-		return copyTo_tmp;
+		return this.copyTo_tmp;
 	}
 
 	public synchronized int getDuplicated_tmp() {

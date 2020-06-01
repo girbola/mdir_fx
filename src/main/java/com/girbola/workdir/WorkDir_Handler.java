@@ -43,10 +43,10 @@ public class WorkDir_Handler {
 		return this.workDir;
 	}
 
-	public void addAllTables(Tables tables) {
-		addTable(tables.getSorted_table());
-		addTable(tables.getSortIt_table());
-	}
+//	public void addAllTables(Tables tables) {
+//		addTable(tables.getSorted_table());
+//		addTable(tables.getSortIt_table());
+//	}
 
 	private void addTable(TableView<FolderInfo> table) {
 		List<Long> dateList = new ArrayList<>();
@@ -177,7 +177,6 @@ public class WorkDir_Handler {
 						Messages.sprintf("Insert worked!");
 					} else {
 						Messages.sprintfError("inserting not working!");
-
 					}
 				}
 			}

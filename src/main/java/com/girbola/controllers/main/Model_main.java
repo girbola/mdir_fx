@@ -196,8 +196,9 @@ public class Model_main {
 				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
 				if (fileList_connection != null) {
 					fileList_connection.close();
+
+					Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
 				}
-				Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE!");
 			} catch (Exception e) {
 				e.printStackTrace();
 				Messages.sprintfError("Something went wrong writing folderinfo to database at line: "

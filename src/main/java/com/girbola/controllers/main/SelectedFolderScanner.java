@@ -62,7 +62,7 @@ public class SelectedFolderScanner {
 			SQL_Utils.loadFolders_list(connection, model_Main);
 			return true;
 		} else {
-			Messages.sprintf("Nothing to load");
+			Messages.sprintf("Nothing to load from database");
 			return false;
 		}
 	}

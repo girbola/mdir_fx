@@ -6,11 +6,13 @@
  */
 package com.girbola.fxml.operate;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalTime;
-
-import com.girbola.messages.Messages;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -65,6 +67,10 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 
 	}
 
+	private AtomicLong timeElapsed_counter = new AtomicLong(0);
+
+	private DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+
 	public synchronized void update() {
 		// Messages.sprintf("Updating: " + getCopyFrom_tmp());
 		Platform.runLater(new Runnable() {
@@ -75,7 +81,8 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 				setCopyTo(getCopyTo_tmp());
 
 				setTimeLeft("" + getTimeLeft_tmp() + 1000);
-				setTimeElapsed("" + getTimeElapsed_tmp() + 1000);
+				timeElapsed_counter.set(timeElapsed_counter.get() + 1000);
+				setTimeElapsed("" + timeFormat.format(timeElapsed_counter.get()));
 
 				setCopied(getCopied_tmp());
 				setRenamed(getRenamed_tmp());
@@ -83,7 +90,6 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 //				Messages.sprintf("getdup 1SECs: " + getDuplicated_tmp());
 //				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
 				setTotalFiles("" + getTotalFiles_tmp());
-
 				setFileCopyProgress(
 						Math.round((double) getFileCopyProgress_tmp() / (double) getFilesCopyProgress_MAX_tmp()));
 				addToLastSecondFileSize_list(getFileCurrentCopied_Size_tmp());

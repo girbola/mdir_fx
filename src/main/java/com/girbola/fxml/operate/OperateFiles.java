@@ -193,64 +193,25 @@ public class OperateFiles extends Task<Boolean> {
 					break;
 				}
 				if (Files.exists(dest)) {
-					try {
-						Path dest_test = FileUtils.renameFile(source, dest);
-						if (dest_test == null) {
-							updateIncreaseDuplicatesProcessValues();
-
-							copy = false;
-							STATE = Copy_State.DUPLICATE.getType();
-						} else {
-							if (dest_test != dest) {
-								dest = dest_test;
-								copy = true;
-								STATE = Copy_State.RENAME.getType();
-								String newDest = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-								updateFileInfo(fileInfo, newDest);
-								Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
-								updateIncreaseRenamedProcessValues();
-							} else if (dest_test == dest) {
-								copy = false;
-								STATE = Copy_State.DUPLICATE.getType();
-								updateFileInfo(fileInfo, dest.toString());
-								updateIncreaseDuplicatesProcessValues();
-								fileInfo.setCopied(true);
-							}
-						}
-					} catch (IOException ex) {
-						ex.printStackTrace();
-						cancel();
-						Main.setProcessCancelled(true);
-						Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+					boolean renamed = rename(fileInfo, dest);
+					if (renamed) {
+						STATE = Copy_State.COPY.getType();
+					} else {
+						STATE = Copy_State.DUPLICATE.getType();
 					}
-
 				} else {
 					STATE = Copy_State.COPY.getType();
-					copy = true;
 				}
 
 				Messages.sprintf("Dest: " + dest + " copy? " + copy);
-				if (dest != null && copy) {
-					try {
-						if (!Files.exists(dest.getParent())) {
-							Messages.sprintf("destFolder: " + dest.getParent() + " did NOT exists");
-							Files.createDirectories(dest.getParent());
-						}
-					} catch (Exception ex) {
-						Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories"), ex,
-								Misc.getLineNumber(), true);
-						cancel();
-						Main.setProcessCancelled(true);
-					}
-
-					if (!Files.exists(dest.getParent())) {
-						Messages.errorSmth(ERROR, "Folder were not able to create. Folder name: " + dest.getParent(),
-								null, Misc.getLineNumber(), true);
+				if (dest != null && STATE.equals(Copy_State.COPY.getType())
+						|| STATE.equals(Copy_State.RENAME.getType())) {
+					boolean destinationDirectoriesCreated = createDirectories(dest);
+					if (!destinationDirectoriesCreated) {
+						Messages.sprintfError("Couldn't not be able to create folder");
 						Main.setProcessCancelled(true);
 						break;
 					}
-					// long fileSize = source.toFile().length();
-					// Not ready yet copyFile(source, dest);
 					try {
 						Path destTmp = Paths.get(dest.toFile() + ".tmp");
 
@@ -266,8 +227,13 @@ public class OperateFiles extends Task<Boolean> {
 						sprintf("----] Starting copying: " + source);
 						while ((byteRead = from.read(buf)) > 0) {
 							if (Main.getProcessCancelled()) {
-								cleanCancelledFile(from, to);
-								Messages.sprintf("Cleanup is done ");
+								boolean cancelledSucceeded = cleanCancelledFile(from, to);
+								if (cancelledSucceeded) {
+									Messages.sprintf("Cleanup is done ");
+								} else {
+									Messages.sprintf(
+											"Cleanup is FAILED. There will be tmp file will remain: " + destTmp);
+								}
 								return null;
 							}
 							to.write(buf, 0, byteRead);
@@ -339,20 +305,87 @@ public class OperateFiles extends Task<Boolean> {
 					}
 				} else if (dest != null && STATE.equals(Copy_State.DUPLICATE.getType())) {
 					fileInfo.setCopied(true);
+					updateIncreaseDuplicatesProcessValues();
 				} else {
 					Messages.sprintfError("OperateFiles had other state: " + STATE + " and dest were: " + dest);
 				}
-				Platform.runLater(() -> {
-					model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
-				});
+				updateFilesLeftCounter();
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
 		}
 
-		private void updateFileInfo(FileInfo fileInfo, String destPath) {
+		private void updateFilesLeftCounter() {
+			Platform.runLater(() -> {
+				model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
+			});
+		}
+
+		private boolean createDirectories(Path destinationDirectories) {
+			Messages.sprintf("About to create folder if does not exists: " + destinationDirectories);
+			try {
+				if (!Files.exists(destinationDirectories.getParent())) {
+					Messages.sprintf(
+							"destinationDirectories: " + destinationDirectories.getParent() + " did NOT exists");
+					Files.createDirectories(destinationDirectories.getParent());
+					return true;
+				} else {
+					return true;
+				}
+			} catch (Exception ex) {
+				Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories"), ex, Misc.getLineNumber(),
+						true);
+				cancel();
+				Main.setProcessCancelled(true);
+				return false;
+			}
+		}
+
+		private boolean rename(FileInfo fileInfo, Path dest) {
+			try {
+				Path dest_test = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), dest);
+				if (dest_test == null) {
+					updateIncreaseDuplicatesProcessValues();
+					return false;
+
+				} else {
+					if (dest_test != dest) {
+						dest = dest_test;
+						STATE = Copy_State.RENAME.getType();
+						String newDest = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+						updateFileInfoWorkDirPathAndSerial(fileInfo, newDest);
+						Messages.sprintf("Renamed: " + fileInfo.getDestination_Path());
+						updateIncreaseRenamedProcessValues();
+						return true;
+					} else if (dest_test == dest) {
+						STATE = Copy_State.DUPLICATE.getType();
+						updateFileInfoWorkDirPathAndSerial(fileInfo, dest.toString());
+						updateIncreaseDuplicatesProcessValues();
+						fileInfo.setCopied(true);
+						return true;
+					}
+				}
+			} catch (IOException ex) {
+				ex.printStackTrace();
+				cancel();
+				Main.setProcessCancelled(true);
+				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+				return false;
+			}
+			return false;
+		}
+
+		private void updateFileInfoWorkDirPathAndSerial(FileInfo fileInfo, String destPath) {
 			fileInfo.setDestination_Path(destPath);
 			fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+//			model_main.getWorkDir_Handler().add(fileInfo);
+			boolean added = model_main.getWorkDir_Handler().add(fileInfo);
+			if (added) {
+				Messages.sprintf("FileInfo added to workdir_handler succesfully");
+//				model_main.getWorkDir_Handler().add(fileInfo);
+			} else {
+				Messages.sprintf("FileInfo were not added to workdir_handler somehow...: " + fileInfo);
+			}
 		}
 
 		private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
@@ -367,19 +400,25 @@ public class OperateFiles extends Task<Boolean> {
 				}
 				Files.move(Paths.get(dest.toString() + ".tmp"), destPath);
 
-				String newName = FileUtils.parseWorkDir(destPath.toString(), fileInfo.getWorkDir());
-
+//				listCopiedFiles.add(fileInfo);
+//
+//				String newName = FileUtils.parseWorkDir(destPath.toString(), fileInfo.getWorkDir());
+//				updateFileInfoWorkDirPathAndSerial(fileInfo, newName);
+//				fileInfo.setCopied(true);
+				String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+				model_main.getWorkDir_Handler().add(fileInfo);
 				fileInfo.setDestination_Path(newName);
 				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 				fileInfo.setCopied(true);
 				listCopiedFiles.add(fileInfo);
 				boolean added = model_main.getWorkDir_Handler().add(fileInfo);
 				if (added) {
-					Messages.sprintf("FileInfo added to destination succesfully");
+					Messages.sprintf("FileInfo - corrupted added to destination succesfully");
 //					model_main.getWorkDir_Handler().add(fileInfo);
 				} else {
-					Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
+					Messages.sprintf("FileInfo - corrupted were not added because it did exists " + fileInfo.getDestination_Path());
 				}
+				
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Messages.sprintfError(ex.getMessage());
@@ -393,6 +432,7 @@ public class OperateFiles extends Task<Boolean> {
 						"Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
 				Files.move(Paths.get(dest.toString() + ".tmp"), dest);
 				String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
+				model_main.getWorkDir_Handler().add(fileInfo);
 				fileInfo.setDestination_Path(newName);
 				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 				fileInfo.setCopied(true);
@@ -402,7 +442,7 @@ public class OperateFiles extends Task<Boolean> {
 					Messages.sprintf("FileInfo added to destination succesfully");
 //					model_main.getWorkDir_Handler().add(fileInfo);
 				} else {
-					Messages.sprintf("FileInfo were not added somehow...: " + fileInfo);
+					Messages.sprintf("FileInfo were not added because it did exists " + fileInfo.getDestination_Path());
 				}
 			} catch (Exception ex) {
 				Messages.sprintfError(ex.getMessage());
@@ -453,20 +493,22 @@ public class OperateFiles extends Task<Boolean> {
 
 		}
 
-		private void cleanCancelledFile(InputStream from, OutputStream to) {
+		private boolean cleanCancelledFile(InputStream from, OutputStream to) {
 			sprintf("cleanCancelledFile cancelled");
 			try {
 				from.close();
+				to.flush();
 				to.close();
 				if (Files.size(source) != Files.size(dest)) {
 					Files.deleteIfExists(Paths.get(dest.toString() + ".tmp"));
 					sprintf("2file is gonna be deleted! " + dest.toString());
 				}
+				return true;
 			} catch (Exception ex) {
-				// task.cancel();
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+				Main.setProcessCancelled(true);
+				return false;
 			}
-			// task.cancel();
 		}
 
 		@Override
@@ -515,16 +557,16 @@ public class OperateFiles extends Task<Boolean> {
 			// @formatter:on
 			saveWorkDirToDatabase.setOnSucceeded((eventti) -> {
 				Messages.sprintf("saveWorkDirListToDatabase finished success!");
-				writeToDatabase();
+//				writeToDatabase();
 			});
 			saveWorkDirToDatabase.setOnCancelled((eventti) -> {
 				Messages.sprintfError("saveWorkDirListToDatabase finished success!");
-				writeToDatabase();
+//				writeToDatabase();
 
 			});
 			saveWorkDirToDatabase.setOnFailed((eventti) -> {
 				Messages.sprintf("saveWorkDirToDatabase Task failed!");
-				writeToDatabase();
+//				writeToDatabase();
 
 			});
 

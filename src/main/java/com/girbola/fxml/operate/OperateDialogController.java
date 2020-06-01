@@ -73,8 +73,11 @@ public class OperateDialogController {
 		cp_filesLeft_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().filesLeft_property(), new NumberStringConverter());
 		cp_copied_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().copied_property(), new NumberStringConverter());
 		cp_renamedFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().renamed_property(), new NumberStringConverter());
+		
 		cp_timeLeft_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().timeLeft_property());
+		
 		cp_timeElapsed_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().timeElapsed_property());
+		
 		cp_totalFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().totalFiles_property());
 		cp_transferRate_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().transferRate_property());
 		cp_duplicatedFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().duplicated_property(),

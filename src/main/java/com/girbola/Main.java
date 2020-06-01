@@ -170,69 +170,6 @@ public class Main extends Application {
 						model_main.getBottomController().initBottomWorkdirMonitors();
 					}
 
-					private void defineScreenBounds(Stage stage) {
-						int screens = Screen.getScreens().size();
-						if (Main.conf.getWindowStartPosX() == -1 && Main.conf.getWindowStartPosY() == -1
-								&& Main.conf.getWindowStartWidth() == -1 && Main.conf.getWindowStartHeight() == -1) {
-							stage.setX(0);
-							stage.setY(0);
-
-						} else {
-							if (screens > 1) {
-
-								double x = Main.conf.getWindowStartPosX();
-								double y = Main.conf.getWindowStartPosY();
-								double width = Main.conf.getWindowStartWidth();
-								double heigth = Main.conf.getWindowStartHeight();
-								if (x < 0) {
-									x = 0;
-								}
-								if (y < 0) {
-									y = 0;
-								}
-								/*
-								 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0,
-								 * maxY=768.0, width=1366.0, height=768.0] window x pos: 250.0 y POS: 73.0
-								 * window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0
-								 * height 728.0 sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0,
-								 * minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0] window x
-								 * pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0
-								 * sc.getVisualBounds().getWidth() 3440.0 height 1400.0
-								 * 
-								 */
-								for (Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
-									Messages.sprintf("sc.getBounds().getHeight(): " + sc.getBounds());
-									Messages.sprintf("window x pos: " + x + " y POS: " + y + " window width: " + width
-											+ " height: " + heigth + " sc.getVisualBounds().getWidth() "
-											+ sc.getVisualBounds().getWidth() + " height "
-											+ sc.getVisualBounds().getHeight());
-									if (width >= sc.getBounds().getWidth()) {
-										width = (sc.getBounds().getWidth() - 100);
-									}
-
-									if (heigth >= sc.getBounds().getHeight()) {
-										heigth = (sc.getBounds().getHeight() - 100);
-									}
-								}
-								stage.setX(x);
-								stage.setY(y);
-								stage.setWidth(width);
-								stage.setHeight(heigth);
-							} else {
-								stage.setX(0);
-								stage.setY(0);
-								stage.setWidth(800);
-								stage.setHeight(640);
-							}
-						}
-					}
-
-					private Point2D defineScreenWithMouseCursor() {
-						Robot r = new Robot();
-						Point2D d = r.getMousePosition();
-						return d;
-
-					}
 				});
 				return null;
 			}
@@ -246,7 +183,13 @@ public class Main extends Application {
 //				scene_Switcher.setWindow(primaryStage);
 //				scene_Switcher.setScene_main(primaryScene);
 
-				Misc.checkOS();
+				boolean isValidOS = Misc.checkOS();
+				if(isValidOS) {
+					Messages.sprintf("Valid OS found");
+				} else {
+					Messages.sprintfError("Valid OS found");
+				}
+				
 				conf.loadConfig_GUI();
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
 				Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
@@ -389,6 +332,71 @@ public class Main extends Application {
 		// lp.showLoadStage();
 		Thread thread = new Thread(mainTask, "Main Thread");
 		thread.start();
+	}
+
+	private void defineScreenBounds(Stage stage) {
+		int screens = Screen.getScreens().size();
+		if(stage.isFullScreen()) {
+			return;
+		}
+		if (Main.conf.getWindowStartPosX() == -1 && Main.conf.getWindowStartPosY() == -1
+				&& Main.conf.getWindowStartWidth() == -1 && Main.conf.getWindowStartHeight() == -1) {
+			stage.setX(0);
+			stage.setY(0);
+
+		} else {
+			if (screens > 1) {
+				double x = Main.conf.getWindowStartPosX();
+				double y = Main.conf.getWindowStartPosY();
+				double width = Main.conf.getWindowStartWidth();
+				double heigth = Main.conf.getWindowStartHeight();
+				if (x < 0) {
+					x = 0;
+				}
+				if (y < 0) {
+					y = 0;
+				}
+				/*
+				 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0,
+				 * maxY=768.0, width=1366.0, height=768.0] window x pos: 250.0 y POS: 73.0
+				 * window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0
+				 * height 728.0 sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0,
+				 * minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0] window x
+				 * pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0
+				 * sc.getVisualBounds().getWidth() 3440.0 height 1400.0
+				 * 
+				 */
+				for (Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
+					Messages.sprintf("sc.getBounds().getHeight(): " + sc.getBounds());
+					Messages.sprintf("window x pos: " + x + " y POS: " + y + " window width: " + width + " height: "
+							+ heigth + " sc.getVisualBounds().getWidth() " + sc.getVisualBounds().getWidth()
+							+ " height " + sc.getVisualBounds().getHeight());
+					if (width >= sc.getBounds().getWidth()) {
+						width = (sc.getBounds().getWidth() - 100);
+					}
+
+					if (heigth >= sc.getBounds().getHeight()) {
+						heigth = (sc.getBounds().getHeight() - 100);
+					}
+				}
+				stage.setX(x);
+				stage.setY(y);
+				stage.setWidth(width);
+				stage.setHeight(heigth);
+			} else {
+				stage.setX(0);
+				stage.setY(0);
+				stage.setWidth(800);
+				stage.setHeight(640);
+			}
+		}
+	}
+
+	private Point2D defineScreenWithMouseCursor() {
+		Robot r = new Robot();
+		Point2D d = r.getMousePosition();
+		return d;
+
 	}
 
 	public static AtomicBoolean processCancelled_property() {

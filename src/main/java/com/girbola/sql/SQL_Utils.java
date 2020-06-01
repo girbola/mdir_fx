@@ -444,7 +444,6 @@ public class SQL_Utils {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
-
 				Messages.sprintf("loadFolders_list starting: " + sql);
 				String path = rs.getString("path");
 				boolean connected = rs.getBoolean("connected");
@@ -458,6 +457,7 @@ public class SQL_Utils {
 			}
 			return true;
 		} catch (Exception e) {
+			Messages.sprintfError("Can't find selectedfolders list.");
 			return false;
 		}
 	}
@@ -532,19 +532,20 @@ public class SQL_Utils {
 		if (!isWorkDir) {
 			boolean clearTable = clearTable(connection, SQL_Enums.FILEINFO.getType());
 			if (clearTable) {
-				boolean tableCreated = createFileInfoTable(connection);
-				if (tableCreated) {
-					Messages.sprintf("insertFileInfoListToDatabase tableCreated");
-				} else {
-					Messages.sprintf("insertFileInfoListToDatabase NOT tableCreated");
-				}
-				if (!isDbConnected(connection)) {
-					Messages.sprintf("insertFileInfoListToDatabase Not connected");
-					return false;
-				}
+				Messages.sprintf("FileInfo table cleared");
 			}
 		}
 		try {
+			boolean tableCreated = createFileInfoTable(connection);
+			if (tableCreated) {
+				Messages.sprintf("insertFileInfoListToDatabase tableCreated");
+			} else {
+				Messages.sprintf("insertFileInfoListToDatabase NOT tableCreated");
+			}
+			if (!isDbConnected(connection)) {
+				Messages.sprintf("insertFileInfoListToDatabase Not connected");
+				return false;
+			}
 			connection.setAutoCommit(false);
 			PreparedStatement pstmt = null;
 			pstmt = connection.prepareStatement(fileInfoInsert);
@@ -552,14 +553,10 @@ public class SQL_Utils {
 				long start = System.currentTimeMillis();
 				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
-				Messages.sprintf(
-						"============addToFileInfoDB ENDED and it took: " + (System.currentTimeMillis() - start));
-			}
+				}
 			pstmt.executeBatch();
-			Messages.sprintf("**********addToFileInfoDB pstmt.executeBatch();");
 			connection.commit();
-			Messages.sprintf("****connection.commit();");
-
+			
 			if (connection != null) {
 				connection.close();
 			}

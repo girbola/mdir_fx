@@ -294,6 +294,7 @@ public class TableUtils {
 				return;
 			}
 			if (fi.isIgnored() || fi.isTableDuplicated()) {
+				Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
 				ignored++;
 			} else {
 				size += fi.getSize();

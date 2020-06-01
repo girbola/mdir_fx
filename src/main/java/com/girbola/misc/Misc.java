@@ -30,15 +30,17 @@ public class Misc {
 
 	private static final String ERROR = Misc.class.getSimpleName();
 
-	public static void checkOS() {
+	public static boolean checkOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		Messages.sprintf("OS is: " + os);
 		if (os.contains("win")) {
 			// setNative_Library_Search_Path("C:\\Program Files\\");
+			return true;
 		} else {
 			Main.setProcessCancelled(true);
 			Messages.errorSmth(ERROR, bundle.getString("osNotSupported") + "\n\n" + bundle.getString("homePage") + ": "
 					+ HTMLClass.programHomePage, null, Misc.getLineNumber(), true);
+			return false;
 		}
 	}
 

@@ -71,28 +71,28 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			}
 		}
 		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getSortIt_table().getItems().iterator());
+			populateTable(model_main.tables().getSortIt_table().getItems());
 		}
 		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getSorted_table().getItems().iterator());
+			populateTable(model_main.tables().getSorted_table().getItems());
 		}
 		if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getAsItIs_table().getItems().iterator());
+			populateTable(model_main.tables().getAsItIs_table().getItems());
 		}
 		
 		return true;
 	}
 
-	private boolean populateTable(Iterator<FolderInfo> folderInfo_it) {
-		Iterator<FolderInfo> sortit = folderInfo_it;
-		while (sortit.hasNext()) {
-			FolderInfo folderInfo = sortit.next();
-			boolean addTable = populateTable(folderInfo);
-			if (!addTable) {
-				sortit.remove();
-				return false;
-			}
+	private boolean populateTable(List<FolderInfo> folderInfo_list) {
 
+		for(FolderInfo folderInfo : folderInfo_list) {
+			if(folderInfo.getFolderPath().equals("C:\\Users\\marko_000\\Pictures\\2018\\Väinön rippijuhlat\\Väinön kuvat UUDET\\Editoi")) {
+				Messages.sprintf("Väinö found!");
+			}
+			boolean addTable = populateTable(folderInfo);
+			if(!addTable) {
+				Messages.sprintf("Skipping folder scan: " + folderInfo.getFolderPath());
+			}
 		}
 		return true;
 	}
@@ -118,14 +118,13 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 				if (!list.isEmpty()) {
 //					Messages.sprintf("FolderInfo loading: " + folderInfo.getFolderPath() + " files == " + list.size());
 					for (FileInfo fileInfo : list) {
-						if (fileInfo.isTableDuplicated() || fileInfo.isCopied() || fileInfo.isIgnored()) {
+						if (fileInfo.isTableDuplicated() ||fileInfo.isIgnored()) {
 							counter++;
 						} else {
 							fileInfoList.add(fileInfo);
 						}
 					}
 					if (fileInfoList.size() > 0) {
-
 						folderInfo.getFileInfoList().addAll(fileInfoList);
 						TableUtils.updateFolderInfos_FileInfo(folderInfo);
 						Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()

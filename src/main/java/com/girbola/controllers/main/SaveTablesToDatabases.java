@@ -40,9 +40,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
 
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
-		if(connection == null) {
-			
-		}
+		
 		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
 		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
 		
@@ -51,14 +49,14 @@ public class SaveTablesToDatabases extends Task<Integer> {
 					Misc.getLineNumber(), true);
 		}
 		long start = System.currentTimeMillis();
-		updateMessage("Loading Sortit");
+		updateMessage("Loading Sorted");
 		boolean sorted = model_main.saveTableContent(connection, model_main.tables().getSorted_table().getItems(),
 				TableType.SORTED.getType());
 		if (sorted) {
 			Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 		start = System.currentTimeMillis();
-		updateMessage("Loading Sorted");
+		updateMessage("Loading SortIt");
 		boolean sortit = model_main.saveTableContent(connection, model_main.tables().getSortIt_table().getItems(),
 				TableType.SORTIT.getType());
 		if (sortit) {
