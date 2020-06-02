@@ -800,17 +800,17 @@ public class SQL_Utils {
 		}
 		ThumbInfo thumbInfo = null;
 		try {
-			String sql = "SELECT id, " + "filename, " + "thumb_width, " + "thumb_height, " + "thumb_fast_width, "
-					+ "thumb_fast_height, " + "orientation, " + "image_0, " + "image_1, " + "image_2, " + "image_3, "
-					+ "image_4 FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
+			String sql = "SELECT * FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
+//			String sql = "SELECT id, " + "filename, " + "thumb_width, " + "thumb_height, " + "thumb_fast_width, "
+//					+ "thumb_fast_height, " + "orientation, " + "image_0, " + "image_1, " + "image_2, " + "image_3, "
+//					+ "image_4 FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
 			// @formatter:on
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 			pstmt.setInt(1, thumbInfo_ID);
-			pstmt.executeQuery();
 			ResultSet rs = pstmt.executeQuery();
 			while (rs.next()) {
 				int id = rs.getInt("id");
-				String filePath = rs.getString("filename");
+				String filePath = rs.getString("filepath");
 				double thumb_width = rs.getDouble("thumb_width");
 				double thumb_height = rs.getDouble("thumb_height");
 				double thumb_fast_width = rs.getDouble("thumb_fast_width");
@@ -821,13 +821,14 @@ public class SQL_Utils {
 				byte[] image_2 = rs.getBytes("image_2");
 				byte[] image_3 = rs.getBytes("image_3");
 				byte[] image_4 = rs.getBytes("image_4");
-
+				Messages.sprintf("ID WERE: " + id);
 				thumbInfo = new ThumbInfo(id, filePath, thumb_width, thumb_height, thumb_fast_width, thumb_fast_height,
 						orientation, new ArrayList<>(Arrays.asList(image_0, image_1, image_2, image_3, image_4)));
-				thumbInfo = thumbInfoCreation(rs);
+//				thumbInfo = thumbInfoCreation(rs);
 				return thumbInfo;
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			return null;
 		}
 		return thumbInfo;
