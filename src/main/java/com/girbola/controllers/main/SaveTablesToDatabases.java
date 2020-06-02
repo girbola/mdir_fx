@@ -88,6 +88,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
 		if (closeLoadingStage) {
 			loadingProcess_Task.closeStage();
 		}
+		Main.setChanged(false);
 	}
 
 	@Override

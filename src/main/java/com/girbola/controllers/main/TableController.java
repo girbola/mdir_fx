@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,6 +37,7 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
+import common.utils.Conversion;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -59,6 +59,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableColumn.SortType;
@@ -67,6 +68,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -205,7 +207,7 @@ public class TableController {
 					}
 					TableUtils.updateFolderInfos_FileInfo(folderInfo);
 					TableUtils.refreshAllTableContent(model_main.tables());
-				//	ldt.setMessage("counter; " + counter.get());
+					// ldt.setMessage("counter; " + counter.get());
 					counter.getAndIncrement();
 
 				}
@@ -399,6 +401,13 @@ public class TableController {
 		model_main.buttons().select_none_Table(table);
 	}
 
+	@FXML
+	private void handleMouseClicked(MouseEvent mouseEvent) {
+		if (mouseEvent.getClickCount() == 2) {
+			Messages.sprintf("Mouse clicked on tableview: " + mouseEvent);
+		}
+	}
+
 	public TableView<FolderInfo> getTable() {
 		return this.table;
 	}
@@ -451,8 +460,8 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getJustFolderName()));
 		justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
-		
-		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo,String>>() {
+
+		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
 
 			@Override
 			public void handle(CellEditEvent<FolderInfo, String> event) {
@@ -467,15 +476,15 @@ public class TableController {
 //					}
 //					textField.setText(oldValue);
 //				}
-				
+
 			}
 		});
-		justFolderName_col.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<FolderInfo,String>>() {
+		justFolderName_col.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
 
 			@Override
 			public void handle(CellEditEvent<FolderInfo, String> event) {
 				Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
-				if(event.getRowValue().getJustFolderName() != event.getNewValue()) {
+				if (event.getRowValue().getJustFolderName() != event.getNewValue()) {
 					event.getRowValue().setJustFolderName(event.getNewValue());
 					Main.setChanged(true);
 					event.getRowValue().setChanged(true);
@@ -495,7 +504,18 @@ public class TableController {
 		size_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Long> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderSize()));
-		size_col.setCellFactory(new DecimalColumnFactory<>(new DecimalFormat("0000")));
+//		size_col.setCellFactory(new DecimalColumnFactory<>(new DecimalFormat("0000")));
+		size_col.setCellFactory(tableColumn -> new TableCell<FolderInfo, Long>() {
+			  @Override
+	            protected void updateItem(Long value, boolean empty) {
+	                super.updateItem(value, empty);
+	                if (value == null || empty) {
+	                    setText("");
+	                } else {
+	                    setText("" + (Conversion.convertToSmallerConversion(value)));
+	                }
+	            }
+		});
 		status_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getStatus()));
@@ -516,26 +536,14 @@ public class TableController {
 			Messages.errorSmth(ERROR, "model_main.tables().getHideButtons(). were null", null, Misc.getLineNumber(),
 					true);
 		}
-if(tableType.equals(TableType.ASITIS.getType())) {
-	mergeCopy_btn.setVisible(false);
-	
-//	disableActionFewButtons like MC = Merge 
-}
-//		if (tableType.equals(TableType.ASITIS.getType())) {
-//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.ASITIS, 3);
-//		} else if (tableType.equals(TableType.SORTED.getType())) {
-//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTED, 2);
-//		} else if (tableType.equals(TableType.SORTIT.getType())) {
-//			model_main.tables().getHideButtons().setAccelerator(hide_btn, TableType.SORTIT, 1);
-//		}
-		Messages.sprintf("sorted table were editable? " + table.isEditable() + " just fold editable?  "
+		/*
+		 * Disabling buttons
+		 */
+		if (tableType.equals(TableType.ASITIS.getType())) {
+			mergeCopy_btn.setVisible(false);
+		}
+		Messages.sprintf("table is editable? " + table.isEditable() + " just fold editable?  "
 				+ justFolderName_col.isEditable());
-//		select_dateDifference.setTooltip(new Tooltip("Selects by datedifference ratio\nwhich is higher than 1"));
-//		select_bad_btn.setTooltip(new Tooltip("Selects folders which hasn't got properly date & time"));
-//		select_good_btn.setTooltip(new Tooltip("Selects folders which has proper date & time info"));
-//		select_invert_btn.setTooltip(new Tooltip("Invert selection"));
-//		select_none_btn.setTooltip(new Tooltip("Selects none"));
-//		select_all_btn.setTooltip(new Tooltip("Selects all"));
 
 		if (tableType == TableType.ASITIS.getType()) {
 			tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));

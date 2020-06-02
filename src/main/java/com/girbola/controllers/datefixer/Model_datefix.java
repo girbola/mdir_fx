@@ -53,7 +53,6 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDir_Handler;
 
-import common.media.DateTaken;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
@@ -97,6 +96,7 @@ public class Model_datefix {
 	private Model_main model_Main;
 
 	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
+//	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
 
 	private VBox infoTables_container;
 	private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
@@ -592,8 +592,9 @@ public class Model_datefix {
 	public void acceptEverything() {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
-		Dialog<ButtonType> changesDialog = Dialogs
-				.createDialog_YesNo(Main.scene_Switcher.getScene_dateFixer().getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
+				Main.scene_Switcher.getScene_dateFixer().getWindow(),
+				bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 		Optional<ButtonType> result = changesDialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			for (Node node : getGridPane().getChildren()) {
