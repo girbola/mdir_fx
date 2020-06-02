@@ -583,7 +583,6 @@ public class TableController {
 					hideTooltip(select_invert_btn);
 					hideTooltip(select_none_btn);
 					hideTooltip(select_dateDifference);
-
 				}
 			}
 

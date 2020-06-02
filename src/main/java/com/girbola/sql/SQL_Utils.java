@@ -25,8 +25,6 @@ import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
-import javafx.collections.ObservableList;
-
 public class SQL_Utils {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();
 
@@ -553,10 +551,10 @@ public class SQL_Utils {
 				long start = System.currentTimeMillis();
 				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
-				}
+			}
 			pstmt.executeBatch();
 			connection.commit();
-			
+
 			if (connection != null) {
 				connection.close();
 			}
@@ -828,7 +826,10 @@ public class SQL_Utils {
 				return thumbInfo;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+//			if (Main.DEBUG) {
+//				e.printStackTrace();
+//			}
+
 			return null;
 		}
 		return thumbInfo;
@@ -1118,7 +1119,6 @@ public class SQL_Utils {
 	public static void insertFileInfoListToWorkdirDatabase(Connection connection, List<FileInfo> listCopiedFiles,
 			boolean isWorkdir) {
 
-		
 	}
 
 }

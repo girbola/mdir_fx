@@ -3,6 +3,7 @@ package com.girbola.controllers.main.tables.cell;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
+import com.girbola.messages.Messages;
 
 import javafx.scene.control.TableCell;
 
@@ -12,6 +13,7 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 	protected void updateItem(Integer item, boolean empty) {
 		super.updateItem(item, empty);
 		if (empty) {
+			setStyle("null");
 			setGraphic(null);
 			setText(null);
 		} else {
@@ -44,12 +46,20 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 						setStyle("null");
 						setGraphic(null);
 						setText(null);
+
+						Messages.sprintf("TableCellfolderInfo ELSE");
 					}
 				} else {
 					setStyle("null");
 					setGraphic(null);
 					setText(null);
+					Messages.sprintf("folderInfo.getFileInfoList().size() == 0");
 				}
+			} else {
+				Messages.sprintf("END END");
+				setStyle("null");
+				setGraphic(null);
+				setText(null);
 			}
 
 		}
