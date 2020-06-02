@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
@@ -196,5 +197,15 @@
 				<TableColumn fx:id="fullPath_col" editable="false" minWidth="50.0" prefWidth="250.0" text="%fullPath" />
 			</columns>
 		</TableView>
+      <HBox alignment="CENTER" minHeight="20.0" spacing="40.0" VBox.vgrow="NEVER">
+         <children>
+            <Label text="%totalFilesWithColon" />
+            <Label fx:id="allFilesTotal" layoutX="10.0" layoutY="10.0" />
+            <Label layoutX="10.0" layoutY="10.0" text="%allFilesCopiedWithColon" />
+            <Label fx:id="allFilesCopiedWithColon" layoutX="72.0" layoutY="10.0" />
+            <Label layoutX="72.0" layoutY="10.0" text="%allFilesSizeWithColon" />
+            <Label fx:id="allFilesSizeWithColon" layoutX="162.0" layoutY="10.0" />
+         </children>
+      </HBox>
 	</children>
 </VBox>

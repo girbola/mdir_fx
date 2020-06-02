@@ -116,6 +116,14 @@ public class TableController {
 	private Button resetSelectedFileInfos_btn;
 
 	@FXML
+	private Label allFilesTotal;
+
+	@FXML
+	private Label allFilesSize;
+	@FXML
+	private Label allFilesCopied;
+
+	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
 	@FXML
 	private Tooltip select_bad_btn_tooltip;
@@ -505,15 +513,15 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, Long> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderSize()));
 		size_col.setCellFactory(tableColumn -> new TableCell<FolderInfo, Long>() {
-			  @Override
-	            protected void updateItem(Long value, boolean empty) {
-	                super.updateItem(value, empty);
-	                if (value == null || empty) {
-	                    setText("");
-	                } else {
-	                    setText("" + (Conversion.convertToSmallerConversion(value)));
-	                }
-	            }
+			@Override
+			protected void updateItem(Long value, boolean empty) {
+				super.updateItem(value, empty);
+				if (value == null || empty) {
+					setText("");
+				} else {
+					setText("" + (Conversion.convertToSmallerConversion(value)));
+				}
+			}
 		});
 		status_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
