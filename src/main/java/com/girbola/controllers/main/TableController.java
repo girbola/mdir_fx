@@ -504,7 +504,6 @@ public class TableController {
 		size_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Long> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getFolderSize()));
-//		size_col.setCellFactory(new DecimalColumnFactory<>(new DecimalFormat("0000")));
 		size_col.setCellFactory(tableColumn -> new TableCell<FolderInfo, Long>() {
 			  @Override
 	            protected void updateItem(Long value, boolean empty) {

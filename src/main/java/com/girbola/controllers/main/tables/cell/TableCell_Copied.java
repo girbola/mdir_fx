@@ -18,9 +18,15 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 
 			FolderInfo folderInfo = (FolderInfo) getTableView().getItems().get(getIndex());
 			if (folderInfo == null || item == null) {
+				setStyle("null");
+				setGraphic(null);
+				setText(null);
 				return;
 			}
 			if (folderInfo.getFileInfoList() == null) {
+				setStyle("null");
+				setGraphic(null);
+				setText(null);
 				return;
 			}
 //			TableUtils.updateCopiedStatus(folderInfo);
