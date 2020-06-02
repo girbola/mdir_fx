@@ -37,22 +37,17 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
 		<javafx.version>14</javafx.version>
-		<metadata-extractor.version>2.12.0</metadata-extractor.version>
-		<vlcj.version>4.1.0</vlcj.version>
+		<metadata-extractor.version>2.14.0</metadata-extractor.version>
+		<vlcj.version>4.5.2</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.4.1</imageio-jpeg.version>
-		<imageio-tiff.version>3.4.1</imageio-tiff.version>
+		<imageio-jpeg.version>3.5</imageio-jpeg.version>
+		<imageio-tiff.version>3.5</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j-log4j12.version>1.7.5</slf4j-log4j12.version>
-		<slf4j-api.version>1.7.5</slf4j-api.version>
+		<slf4j-log4j12.version>1.7.7</slf4j-log4j12.version>
+		<slf4j-api.version>1.7.7</slf4j-api.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
-		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.13.1</version>
-		</dependency>
 
 		<!-- JavaFX deps -->
 		<dependency>
