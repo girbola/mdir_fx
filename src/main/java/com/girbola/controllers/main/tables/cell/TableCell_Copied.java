@@ -15,7 +15,6 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 			setGraphic(null);
 			setText(null);
 		} else {
-
 			FolderInfo folderInfo = (FolderInfo) getTableView().getItems().get(getIndex());
 			if (folderInfo == null || item == null) {
 				setStyle("null");
@@ -29,16 +28,27 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 				setText(null);
 				return;
 			}
-//			TableUtils.updateCopiedStatus(folderInfo);
 			if (folderInfo.getFolderFiles() != 0) {
-				if (item == folderInfo.getFileInfoList().size() && folderInfo.getFileInfoList().size() != 0) {
-					folderInfo.setState(FolderInfoType.DONE.getType());
-					setStyle("-fx-background-color: blue; ");
-					setText("" + item);
+				if (folderInfo.getFileInfoList().size() != 0) {
+					if (item == folderInfo.getFileInfoList().size()) {
+						folderInfo.setState(FolderInfoType.DONE.getType());
+						setStyle("-fx-background-color: blue; -fx-text-fill:yellow;");
+						setText("" + item);
+					} else if (item > 0) {
+						setStyle("-fx-background-color: orange; -fx-text-fill:white;");
+						setText("" + item);
+					} else if (item == 0) {
+						setStyle("-fx-background-color: red; -fx-text-fill:yellow;");
+						setText("" + item);
+					} else {
+						setStyle("null");
+						setGraphic(null);
+						setText(null);
+					}
 				} else {
-					setStyle("-fx-background-color: orange;");
-					setText("" + item);
-					// setStyle("null");
+					setStyle("null");
+					setGraphic(null);
+					setText(null);
 				}
 			}
 
