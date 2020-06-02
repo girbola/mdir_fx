@@ -32,11 +32,13 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.imagehandling.ConvertImage_Byte;
 import com.girbola.imagehandling.ConvertVideo_Byte;
+import com.girbola.imagehandling.ImageHandling;
 import com.girbola.imagehandling.VideoThumbMaker;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
 import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
@@ -156,7 +158,7 @@ public class RenderVisibleNode {
 						if (imageView.getImage() == null) {
 							if (FileUtils.supportedMediaFormat(file.toFile())) {
 								ThumbInfo thumbInfo = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
-
+								
 								int value = handle_thumb(fileInfo, thumbInfo, Main.conf.isBetterQualityThumbs());
 								/*
 								 * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.
@@ -192,9 +194,11 @@ public class RenderVisibleNode {
 									} else if (FileUtils.supportedImage(file)) {
 										if (FileUtils.isTiff(file.toFile())) {
 											Messages.sprintf(
-													"1 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
-													imageView);
+													"Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
+//											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
+//													imageView);
+											Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo,
+													GUIPrefs.thumb_x_MAX, imageView);
 											imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
 											needToConvert_Image_list.add(imageThumb);
 										} else {
@@ -239,6 +243,7 @@ public class RenderVisibleNode {
 					+ exec_single.isShutdown());
 			for (Task<?> image_Task : needToConvert_Image_list) {
 				if (image_Task != null && !Main.getProcessCancelled()) {
+					Messages.sprintf("Adding needToConvert_Image_list to exec to create a thumbnail");
 					exec_single.submit(image_Task);
 				}
 			}
@@ -276,16 +281,19 @@ public class RenderVisibleNode {
 	 */
 	private int handle_thumb(FileInfo fileInfo, ThumbInfo thumbInfo, boolean betterQuality) {
 		if (thumbInfo == null) {
+			Messages.sprintf("thumbsInfo were null! " + fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs() == null) {
+			Messages.sprintf("getThumbswere null"+ fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs().get(0) == null) {
+			Messages.sprintf("getThumbs.get(0) is empty"+ fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs().isEmpty()) {
-			Messages.sprintf("getThumbs list is empty");
+			Messages.sprintf("getThumbs list is empty"+ fileInfo.getOrgPath());
 			return 1;
 		} else {
 			Messages.sprintf("getThumbs() were not empty");

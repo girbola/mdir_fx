@@ -388,14 +388,13 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
-		Iterator<FileInfo> it = folderInfo.getFileInfoList().iterator();
-		while (it.hasNext()) {
+		
+		for(FileInfo fi : folderInfo.getFileInfoList()) {
 			if (Main.getProcessCancelled()) {
 				cancel();
 				sprintf("Process has been cancelled!");
 				return null;
 			}
-			FileInfo fi = it.next();
 			if (Files.exists(Paths.get(fi.getOrgPath()))) {
 				if (fi.isImage() || fi.isVideo() || fi.isRaw()) {
 					frame = null;
