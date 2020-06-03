@@ -495,7 +495,7 @@ public class TableController {
 			public void handle(CellEditEvent<FolderInfo, String> event) {
 				Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
 				if (event.getRowValue().getJustFolderName() != event.getNewValue()) {
-					event.getRowValue().setJustFolderName(event.getNewValue());
+					event.getRowValue().setJustFolderName(event.getNewValue().trim());
 					Main.setChanged(true);
 					event.getRowValue().setChanged(true);
 				}
