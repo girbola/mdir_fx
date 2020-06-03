@@ -56,7 +56,6 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 					Messages.sprintf("folderInfo.getFileInfoList().size() == 0");
 				}
 			} else {
-				Messages.sprintf("END END");
 				setStyle("null");
 				setGraphic(null);
 				setText(null);

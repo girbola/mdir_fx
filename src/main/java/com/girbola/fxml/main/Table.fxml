@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -35,7 +35,7 @@
                   <Tooltip text="%showAndHideTableTooltip" />
                </tooltip>
 				</Button>
-            <FlowPane hgap="1.0" vgap="1.0">
+            <FlowPane fx:id="topMenuButtonFlowPane" hgap="1.0" vgap="1.0">
                <children>
                   <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
                     <items>
@@ -197,15 +197,15 @@
 				<TableColumn fx:id="fullPath_col" editable="false" minWidth="50.0" prefWidth="250.0" text="%fullPath" />
 			</columns>
 		</TableView>
-      <HBox alignment="CENTER" minHeight="20.0" spacing="40.0" VBox.vgrow="NEVER">
+      <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" VBox.vgrow="SOMETIMES">
          <children>
             <Label text="%totalFilesWithColon" />
-            <Label fx:id="allFilesTotal" layoutX="10.0" layoutY="10.0" />
-            <Label layoutX="10.0" layoutY="10.0" text="%allFilesCopiedWithColon" />
-            <Label fx:id="allFilesCopiedWithColon" layoutX="72.0" layoutY="10.0" />
-            <Label layoutX="72.0" layoutY="10.0" text="%allFilesSizeWithColon" />
-            <Label fx:id="allFilesSizeWithColon" layoutX="162.0" layoutY="10.0" />
+            <Label fx:id="allFilesTotal" />
+            <Label text="%allFilesCopiedWithColon" />
+            <Label fx:id="allFilesCopiedWithColon" />
+            <Label text="%allFilesSizeWithColon" />
+            <Label fx:id="allFilesSizeWithColon" />
          </children>
-      </HBox>
+      </FlowPane>
 	</children>
 </VBox>

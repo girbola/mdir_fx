@@ -19,13 +19,14 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.Separator;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -109,12 +110,18 @@ public class HideButtons {
 		if (node instanceof VBox) {
 			VBox vbox = (VBox) node;
 			for (Node v : vbox.getChildren()) {
+				Messages.sprintf("VBOX Found:" + v);
 				if (v instanceof HBox) {
 					// HBox
 					HBox hbox = (HBox) v;
 					setRegionSize(hbox, bound.getWidth(), bound.getHeight());
-					for (Node buttons : ((HBox) v).getChildren()) {
+					for (Node buttons : hbox.getChildren()) {
+						Messages.sprintf("buttons: " + buttons);
 						// Button
+						if (buttons instanceof FlowPane) {
+							FlowPane fp = (FlowPane) buttons;
+							fp.setVisible(!fp.isVisible());
+						}
 						if (buttons instanceof Button) {
 							if (buttons.getId().equals(button.getId())) {
 								if (value) {
@@ -123,17 +130,25 @@ public class HideButtons {
 									setRegionSize(vbox, bound.getWidth(), bound.getHeight());
 								}
 							} else {
-								buttons.setVisible(value);
+								buttons.setVisible(!buttons.isVisible());
 							}
+						}
+
+						if (buttons instanceof TextField) {
+							TextField tf = (TextField) buttons;
+							tf.setVisible(!tf.isVisible());
 						}
 					}
 				}
-				if (v instanceof TextField) {
-					v.setVisible(value);
+				if (v instanceof FlowPane) {
+					FlowPane fp = (FlowPane) v;
+					fp.setVisible(!fp.isVisible());
 				}
-				if (v instanceof Separator) {
-					v.setVisible(value);
+				if (v instanceof TableView) {
+					TableView<?> table = (TableView<?>) v;
+					table.setVisible(!table.isVisible());
 				}
+				
 			}
 		}
 	}
@@ -170,16 +185,16 @@ public class HideButtons {
 				});
 	}
 
-	void hide_show_table2(Button button, String tableType) {
-		if (tableType.equals(TableType.ASITIS.getType())) {
-//			setAsItIs(show);
-		} else if (tableType.equals(TableType.SORTED.getType())) {
-
-		} else if (tableType.equals(TableType.SORTIT.getType())) {
-
-		}
-
-	}
+//	void hide_show_table2(Button button, String tableType) {
+//		if (tableType.equals(TableType.ASITIS.getType())) {
+////			setAsItIs(show);
+//		} else if (tableType.equals(TableType.SORTED.getType())) {
+//
+//		} else if (tableType.equals(TableType.SORTIT.getType())) {
+//
+//		}
+//
+//	}
 
 	void hide_show_table(Button button, String tableType) {
 		if (tableType.equals(TableType.ASITIS.getType())) {

@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.scenicview.ScenicView;
+
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -160,17 +162,19 @@ public class Main extends Application {
 				});
 				// stage.setMaximized(true);
 				primaryStage.setOnCloseRequest(model_main.dontExit);
-				// ScenicView.show(parent);
+			
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
 						defineScreenBounds(primaryStage);
 						primaryStage.show();
+						
 						model_main.getBottomController().initBottomWorkdirMonitors();
 					}
 
 				});
+//				ScenicView.show(parent);
 				return null;
 			}
 		};

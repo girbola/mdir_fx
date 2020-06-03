@@ -69,6 +69,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -91,7 +92,8 @@ public class TableController {
 	private HBox buttons_hbox;
 	@FXML
 	private ImageView hide_btn_iv;
-
+	@FXML
+	private FlowPane topMenuButtonFlowPane;
 	@FXML
 	private Button hide_btn;
 	@FXML
@@ -114,14 +116,14 @@ public class TableController {
 	private Button mergeCopy_btn;
 	@FXML
 	private Button resetSelectedFileInfos_btn;
+	@FXML
+	private Label allFilesCopied;
 
 	@FXML
 	private Label allFilesTotal;
 
 	@FXML
 	private Label allFilesSize;
-	@FXML
-	private Label allFilesCopied;
 
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
