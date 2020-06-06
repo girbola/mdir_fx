@@ -21,6 +21,7 @@ import javafx.beans.property.StringProperty;
  */
 class Configuration_GUI {
 
+	
 	private BooleanProperty betterQualityThumbs = new SimpleBooleanProperty(false);
 	private BooleanProperty confirmOnExit = new SimpleBooleanProperty(true);
 	private BooleanProperty showHints = new SimpleBooleanProperty(true);

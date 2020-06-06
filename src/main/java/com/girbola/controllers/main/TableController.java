@@ -475,7 +475,8 @@ public class TableController {
 
 			@Override
 			public void handle(CellEditEvent<FolderInfo, String> event) {
-				Messages.sprintf("start edit " + event.getNewValue());
+				Messages.sprintf("start edit " + event.getSource() + " old " + event.getOldValue() + " new value "
+						+ event.getNewValue());
 //				if (event.getNewValue().contains("\\") || event.getNewValue().contains("/") || event.getNewValue().contains(":") || event.getNewValue().contains("*") || event.getNewValue().contains("?")
 //						|| event.getNewValue().contains("<") || event.getNewValue().contains(">") || event.getNewValue().contains("|")) {
 //				Messages.sprintf("Bad words");

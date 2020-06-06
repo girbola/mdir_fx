@@ -41,6 +41,9 @@ public class Configuration_SQL_Utils {
 	public static final String windowStartPosY = "windowStartPosY";
 	public static final String windowStartWidth = "windowStartWidth";
 	public static final String windowStartHeigth = "windowStartHeigth";
+	public static final String imageViewXPos = "imageViewXPos";
+	public static final String imageViewYPos = "imageViewYPos";
+
 	public static final String workDir = "workDir";
 	public static final String workDirSerialNumber = "workDirSerialNumber";
 
@@ -67,6 +70,8 @@ public class Configuration_SQL_Utils {
 					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
+					+ imageViewXPos + " DOUBLE DEFAULT ( -1),"
+					+ imageViewYPos + " DOUBLE DEFAULT ( -1),"
 		    	    + workDirSerialNumber + " STRING UNIQUE NOT NULL, "
 		    	    + workDir + " STRING NOT NULL)";
 			//@formatter:on
@@ -107,6 +112,9 @@ public class Configuration_SQL_Utils {
 				configuration.setWindowStartPosY(Double.parseDouble(rs.getString(windowStartPosY)));
 				configuration.setWindowStartWidth(Double.parseDouble(rs.getString(windowStartWidth)));
 				configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeigth)));
+				configuration.setImageViewXProperty(Double.parseDouble(rs.getString(imageViewXPos)));
+				configuration.setImageViewYProperty(Double.parseDouble(rs.getString(imageViewYPos)));
+
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				configuration.setWorkDir(rs.getString(workDir));
 				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
@@ -232,9 +240,11 @@ public class Configuration_SQL_Utils {
 				+ "'" + windowStartPosY + "', "
 				+ "'" + windowStartWidth + "', "
 				+ "'" + windowStartHeigth + "', "
+				+ "'" + imageViewXPos+ "', "
+				+ "'" + imageViewYPos+ "', "
 				+ "'" + workDirSerialNumber + "', "
 				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -254,7 +264,9 @@ public class Configuration_SQL_Utils {
 					pstmt.setDouble(14, configuration.getWindowStartWidth());
 					pstmt.setDouble(15, configuration.getWindowStartHeight());
 					pstmt.setString(16, configuration.getWorkDirSerialNumber());
-					pstmt.setString(17, configuration.getWorkDir());
+					pstmt.setDouble(17, configuration.getImageViewXPosition());
+					pstmt.setDouble(18, configuration.getImageViewYPosition());
+					pstmt.setString(19, configuration.getWorkDir());
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
 					pstmt.close();
@@ -448,13 +460,12 @@ public class Configuration_SQL_Utils {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 	insert_Configuration(connection, Main.conf);
-
-	try {
-		connection.close();
-	} catch (Exception e) {
-		System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());
-		e.printStackTrace();
-	}
+		try {
+			connection.close();
+		} catch (Exception e) {
+			System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());
+			e.printStackTrace();
+		}
 	}
 
 	public static void saveConfig(String columnToUpdate, String attribute) {

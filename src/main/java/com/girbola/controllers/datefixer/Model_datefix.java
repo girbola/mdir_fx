@@ -124,7 +124,17 @@ public class Model_datefix {
 
 	private VBox rightInfoPanel;
 	private TableView<MetaData> metaDataTableView;
+	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
+	public boolean getRightInfo_visible() {
+		return rightInfo_visible.get();
+	}
+
+	public void setRightInfo_visible(boolean value) {
+		this.rightInfo_visible.set(value);
+	}
+
+	
 	private ObservableList<Node> allNodes = FXCollections.observableArrayList();
 	private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
 	private CssStylesController cssStyles = new CssStylesController();

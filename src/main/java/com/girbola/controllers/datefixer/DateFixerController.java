@@ -76,7 +76,6 @@ public class DateFixerController {
 	private static final String ERROR = DateFixerController.class.getSimpleName();
 	// private boolean infoTables_visible = true;
 	private SimpleBooleanProperty leftInfoTables_visible = new SimpleBooleanProperty(true);
-	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
 	private QuickPick_Navigator quickPick_Navigator;
 	private Model_datefix model_datefix;
@@ -591,7 +590,6 @@ public class DateFixerController {
 		df_gridPane.getChildren().clear();
 		df_gridPane.getRowConstraints().removeAll();
 		df_gridPane.getColumnConstraints().removeAll();
-
 		filePath_tf.setText(this.model_datefix.getCurrentFolderPath().toString());
 
 		dateTimeAdjusterController.init(model_main, aModel_datefix, df_gridPane, quickPick_tilePane);
@@ -986,7 +984,7 @@ public class DateFixerController {
 
 	@FXML
 	private void hideRightInfo_btn_action(ActionEvent event) {
-		if (rightInfo_visible.get()) {
+		if (model_datefix.getRightInfo_visible()) {
 			hideRightInfo_btn.setRotate(0);
 			rightInfoPanel_scrollPane.setVisible(false);
 
@@ -997,7 +995,7 @@ public class DateFixerController {
 			rightInfoPanel.setMinWidth(-100);
 			rightInfoPanel.setMaxWidth(-100);
 			rightInfoPanel.setPrefWidth(-100);
-			rightInfo_visible.set(false);
+			model_datefix.setRightInfo_visible(false);
 		} else {
 			hideRightInfo_btn.setRotate(180);
 			rightInfoPanel_scrollPane.setVisible(true);
@@ -1008,7 +1006,7 @@ public class DateFixerController {
 			rightInfoPanel.setMinWidth(250);
 			rightInfoPanel.setMaxWidth(250);
 			rightInfoPanel.setPrefWidth(250);
-			rightInfo_visible.set(true);
+			model_datefix.setRightInfo_visible(true);
 		}
 	}
 

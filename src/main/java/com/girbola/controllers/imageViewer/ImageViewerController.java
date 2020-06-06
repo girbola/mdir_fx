@@ -11,10 +11,10 @@ import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.rotate.Rotate;
@@ -44,36 +44,15 @@ public class ImageViewerController {
 
 	private final static String ERROR = ImageViewerController.class.getSimpleName();
 
-	private List<Path> list = new ArrayList<>();
+//	private List<Path> list = new ArrayList<>();
 
 	private List<FileInfo> fileInfoList;
 	private FileInfo currentFileInfo;
 	private SimpleIntegerProperty currentImageIndex;
 
-	@FXML
-	private AnchorPane anchor_main;
-
-	@FXML
-	private HBox bottom_controls;
-	@FXML
-	private StackPane stackPane;
-
-	// private AnchorPane anchorPane;
-	@FXML
-	private HBox top_bar;
-
-	@FXML
-	private AnchorPane image_anchor;
-	@FXML
-	private Button view_next;
-	@FXML
-	private Button view_prev;
-
 	private final int zoomPos_x = 64;
 	private double zoomPos_y = 64;
 
-//	private Image image;
-//	private Path path;
 	private Path currentFile;
 	private Scene scene;
 	private Stage stage;
@@ -92,6 +71,24 @@ public class ImageViewerController {
 
 	private DoubleProperty C_WIDTH = new SimpleDoubleProperty();
 	private DoubleProperty C_HEIGHT = new SimpleDoubleProperty();
+
+	@FXML
+	private AnchorPane anchor_main;
+
+	@FXML
+	private HBox bottom_controls;
+	@FXML
+	private StackPane stackPane;
+
+	@FXML
+	private HBox top_bar;
+
+	@FXML
+	private AnchorPane image_anchor;
+	@FXML
+	private Button view_next;
+	@FXML
+	private Button view_prev;
 
 	@FXML
 	private Button close;
@@ -172,38 +169,42 @@ public class ImageViewerController {
 	}
 
 	private void loadImage(FileInfo fileInfo) {
-		Image image = new Image(new File(fileInfo.getOrgPath()).toURI().toString(), 0, 0, true, true, true);
-		image.progressProperty().addListener(new ChangeListener<Number>() {
+		if (fileInfo.isImage()) {
+			Image image = new Image(new File(fileInfo.getOrgPath()).toURI().toString(), 0, 0, true, true, true);
+			image.progressProperty().addListener(new ChangeListener<Number>() {
 
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				if ((double) newValue == 1.0) {
-					double imageRatio = (image.getWidth() / image.getHeight());
-					if(imageRatio >= 1 ) { // Horizontal
-						double height = Screen.getPrimary().getBounds().getHeight() - 100;
-						double width = height / imageRatio;
-						stage.setWidth(width);
-						stage.setHeight(height);
-					} else if( imageRatio < 1) { //Vertical image
-						double height = Screen.getPrimary().getBounds().getHeight() - 100;
-						double width = height * imageRatio;
-						stage.setWidth(width);
-						stage.setHeight(height);
-					} else { // Square image
-						double height = Screen.getPrimary().getBounds().getHeight() - 100;
-						double width = height;
-						stage.setWidth(width);
-						stage.setHeight(height);
+				@Override
+				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+					if ((double) newValue == 1.0) {
+						double imageRatio = (image.getWidth() / image.getHeight());
+						if (imageRatio >= 1) { // Horizontal
+							double height = Screen.getPrimary().getBounds().getHeight() - 100;
+							double width = height / imageRatio;
+							stage.setWidth(width);
+							stage.setHeight(height);
+						} else if (imageRatio < 1) { // Vertical image
+							double height = Screen.getPrimary().getBounds().getHeight() - 100;
+							double width = height * imageRatio;
+							stage.setWidth(width);
+							stage.setHeight(height);
+						} else { // Square image
+							double height = Screen.getPrimary().getBounds().getHeight() - 100;
+							double width = height;
+							stage.setWidth(width);
+							stage.setHeight(height);
+						}
+						stage.setHeight(Screen.getPrimary().getBounds().getHeight() - 100);
+						Messages.sprintf("progressing: " + newValue + " Image width: " + image.getWidth()
+								+ " Image heigth: " + image.getHeight());
+						imageView.setRotate(0);
+						imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
+						imageView.setImage(image);
 					}
-					stage.setHeight(Screen.getPrimary().getBounds().getHeight() - 100);
-					Messages.sprintf("progressing: " + newValue + " Image width: " + image.getWidth()
-							+ " Image heigth: " + image.getHeight());
-					imageView.setRotate(0);
-					imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
-					imageView.setImage(image);
 				}
-			}
-		});
+			});
+		} else if (fileInfo.isVideo()) {
+//			SQL_Utils.loadth
+		}
 //		image.widthProperty().addListener(new ChangeListener<Number>() {
 //
 //			@Override
@@ -224,8 +225,10 @@ public class ImageViewerController {
 	private void view_prev_action(ActionEvent event) {
 		currentImageIndex.set(currentImageIndex.get() - 1);
 		if (currentImageIndex.get() < 0) {
-			currentImageIndex.set(fileInfoList.size() + 1);
+			Messages.sprintf("min exceeded currentImageIndex.get(): " + currentImageIndex.get());
+			currentImageIndex.set(fileInfoList.size());
 		}
+		Messages.sprintf("currentImageIndex.get(): " + currentImageIndex.get());
 		FileInfo fileInfo = fileInfoList.get(currentImageIndex.get());
 		loadImage(fileInfo);
 	}
@@ -241,7 +244,6 @@ public class ImageViewerController {
 	}
 
 	public void init(List<FileInfo> fileInfoList, FileInfo currentFileInfo, Scene scene, Stage stage) {
-
 		this.fileInfoList = fileInfoList;
 		this.currentFileInfo = currentFileInfo;
 		this.scene = scene;
@@ -250,14 +252,34 @@ public class ImageViewerController {
 			view_next.setVisible(false);
 			view_prev.setVisible(false);
 			currentImageIndex = new SimpleIntegerProperty(0);
-
 		} else {
 			currentImageIndex = new SimpleIntegerProperty(getCurrentNumber(fileInfoList, currentFileInfo));
 		}
 		imageView.setPreserveRatio(true);
 
 		loadImage(currentFileInfo);
+		stage.xProperty().addListener(new ChangeListener<Number>() {
 
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				Messages.sprintf("stage Xproperty: " + newValue);
+				Main.conf.setImageViewXProperty((double) newValue);
+			}
+		});
+		stage.yProperty().addListener(new ChangeListener<Number>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				Messages.sprintf("stage Yproperty: " + newValue);
+				Main.conf.setImageViewYProperty((double) newValue);
+			}
+		});
+		for(Screen scr : Screen.getScreens()) {
+//			Main.conf.getWindowStartHeight()
+//			scr.getBounds().getMaxX();
+		}
+		stage.setX(Main.conf.getWindowStartPosX());
+		stage.setY(Main.conf.getWindowStartPosY());
 //		stage.heightProperty().addListener(new ChangeListener<Number>() {
 //			@Override
 //			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {

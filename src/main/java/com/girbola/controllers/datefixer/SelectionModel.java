@@ -59,16 +59,18 @@ public class SelectionModel {
 		}
 	}
 
-	public synchronized void add(Node node) {
+	public synchronized boolean add(Node node) {
 		// sprintf("add: " + node);
 
 		if (!contains(node)) {
 			node.setStyle(style_selected);
 			this.selectionList.add(node);
+			return false;
 			// }
 		} else {
 			sprintf("remove: " + node);
 			remove(node);
+			return true;
 		}
 
 	}

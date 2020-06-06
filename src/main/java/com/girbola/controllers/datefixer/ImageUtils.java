@@ -31,6 +31,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 /**
@@ -72,12 +73,11 @@ public class ImageUtils {
 		}
 
 	}*/
-	public static void view(List<FileInfo> fileInfoList, FileInfo fileInfo) {
+	public static void view(List<FileInfo> fileInfoList, FileInfo fileInfo, Window window) {
 
 		ImageViewerController imageViewerController = null;
 		Parent parent = null;
 
-		// Parent parent = null;
 		FXMLLoader loader = null;
 		try {
 			loader = new FXMLLoader(Main.class.getResource("fxml/imageView/ImageViewer.fxml"), bundle);
@@ -91,6 +91,7 @@ public class ImageUtils {
 			stage.centerOnScreen();
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.setScene(scene);
+			stage.initOwner(window);
 			imageViewerController.init(fileInfoList, fileInfo, scene, stage);
 
 			stage.show();

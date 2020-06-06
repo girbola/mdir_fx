@@ -21,7 +21,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -238,53 +237,56 @@ public class DateFixPopulateGridPane extends Task<Void> {
 			@Override
 			public void handle(MouseEvent event) {
 				if (event.getButton().equals(MouseButton.PRIMARY)) {
-
+					long start = System.currentTimeMillis();
 					if (event.getClickCount() == 1) {
 						Messages.sprintf("Clicked once");
 						File file = new File(fileInfo.getOrgPath());
 						model_dateFix.getRightInfoPanel().getChildren().clear();
 						model_dateFix.getMetaDataTableView_obs().clear();
-						model_dateFix.getMetaDataTableView_obs()
-								.add(new MetaData(Main.bundle.getString("filename"), file.toString()));
-						Metadata metaData = null;
-						try {
-							metaData = ImageMetadataReader.readMetadata(file);
-						} catch (Exception e) {
-
-						}
-						if (metaData != null) {
-							for (Directory dir : metaData.getDirectories()) {
-								if (dir != null) {
-									if (!dir.getTags().isEmpty()) {
-										TitledPane titledPane = createTitledPane();
-										model_dateFix.getRightInfoPanel().getChildren().add(titledPane);
-										titledPane.setText(dir.getName());
-										ObservableList<MetaData> obs = FXCollections.observableArrayList();
-										TableView<MetaData> table = createTableView();
-										table.setItems(obs);
-
-										titledPane.setContent(table);
-
-										for (Tag tag : dir.getTags()) {
-											obs.add(new MetaData(tag.getTagName(), tag.getDescription()));
-
+						boolean deselected = model_dateFix.getSelectionModel().add(frame);
+						if (model_dateFix.getRightInfo_visible()) {
+							model_dateFix.getMetaDataTableView_obs()
+									.add(new MetaData(Main.bundle.getString("filename"), file.toString()));
+							Metadata metaData = null;
+							try {
+								metaData = ImageMetadataReader.readMetadata(file);
+							} catch (Exception e) {
+								deselected = false;
+							}
+							if (!deselected) {
+								if (metaData != null) {
+									for (Directory dir : metaData.getDirectories()) {
+										if (dir != null) {
+											if (!dir.getTags().isEmpty()) {
+												TitledPane titledPane = createTitledPane();
+												model_dateFix.getRightInfoPanel().getChildren().add(titledPane);
+												titledPane.setText(dir.getName());
+												ObservableList<MetaData> obs = FXCollections.observableArrayList();
+												TableView<MetaData> table = createTableView();
+												table.setItems(obs);
+												titledPane.setContent(table);
+												for (Tag tag : dir.getTags()) {
+													obs.add(new MetaData(tag.getTagName(), tag.getDescription()));
+												}
+												adjustTableHeight(table, obs);
+											}
 										}
-										adjustTableHeight(table, obs);
 									}
+									Messages.sprintf("Metadata reading took: " + (System.currentTimeMillis() - start));
 								}
 							}
 						}
-					}
-
-					if (event.getClickCount() == 2) {
+					} else if (event.getClickCount() == 2) {
+						Messages.sprintf("Clickcount were 2");
 						List<FileInfo> list = getFileList(gridPane.getChildren());
 						if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
-							ImageUtils.view(list, fileInfo);
+							ImageUtils.view(list, fileInfo, Main.scene_Switcher.getScene_dateFixer().getWindow());
 						} else {
-							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + fileInfo.getOrgPath(), null,
-									getLineNumber(), true);
+							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + fileInfo.getOrgPath(),
+									null, getLineNumber(), true);
 						}
 					} else {
+						Messages.sprintf("getselectionmodel. adding frame to selectionmodel");
 						model_dateFix.getSelectionModel().add(frame);
 					}
 				}
@@ -292,11 +294,13 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 			private List<FileInfo> getFileList(ObservableList<Node> children) {
 				List<FileInfo> list = new ArrayList<>();
-				for(Node node : children) {
-					
+				for (Node node : children) {
+					FileInfo fileInfo = (FileInfo) node.getUserData();
+					Messages.sprintf("getFileList: " + node + " fileInfo is: " + fileInfo.getOrgPath());
+					list.add(fileInfo);
 				}
-				
-				return null;
+
+				return list;
 			}
 
 			private void adjustTableHeight(TableView<MetaData> table, ObservableList<MetaData> obs) {
@@ -388,8 +392,8 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
-		
-		for(FileInfo fi : folderInfo.getFileInfoList()) {
+
+		for (FileInfo fi : folderInfo.getFileInfoList()) {
 			if (Main.getProcessCancelled()) {
 				cancel();
 				sprintf("Process has been cancelled!");

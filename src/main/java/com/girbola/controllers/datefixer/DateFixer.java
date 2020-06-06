@@ -102,7 +102,8 @@ public class DateFixer extends Task<Void> {
 								sprintf("fileInfo: " + fileInfo.toString());
 								if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
 										|| FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
-									ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo);
+									
+									ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo, Main.scene_Switcher.getScene_dateFixer().getWindow());
 								} else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
 									ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
 								}

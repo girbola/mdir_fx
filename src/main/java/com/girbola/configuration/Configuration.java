@@ -7,31 +7,23 @@
 package com.girbola.configuration;
 
 import static com.girbola.Main.conf;
-import static com.girbola.configuration.Configuration_Type.WORKDIR;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Properties;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
-import javafx.collections.ObservableList;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.control.TableColumn;
 import javafx.stage.Screen;
 
 /**
@@ -46,6 +38,25 @@ public class Configuration extends Configuration_defaults {
 
 	private Properties prop = new Properties();
 	private final String programName = "MDir - Image and Video Organizer";
+
+	protected SimpleDoubleProperty imageViewXProperty = new SimpleDoubleProperty(0);
+	protected SimpleDoubleProperty imageViewYProperty = new SimpleDoubleProperty(0);
+
+	public double getImageViewXPosition() {
+		return imageViewXProperty.get();
+	}
+
+	public void setImageViewXProperty(double value) {
+		this.imageViewXProperty.set(value);
+	}
+
+	public double getImageViewYPosition() {
+		return imageViewYProperty.get();
+	}
+
+	public void setImageViewYProperty(double value) {
+		this.imageViewYProperty.set(value);
+	}
 
 	public String getProgramName() {
 		return programName;
