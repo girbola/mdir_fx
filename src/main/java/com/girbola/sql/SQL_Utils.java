@@ -549,7 +549,7 @@ public class SQL_Utils {
 			pstmt = connection.prepareStatement(fileInfoInsert);
 			for (FileInfo fileInfo : list) {
 				long start = System.currentTimeMillis();
-				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
+				//Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
 			}
 			pstmt.executeBatch();

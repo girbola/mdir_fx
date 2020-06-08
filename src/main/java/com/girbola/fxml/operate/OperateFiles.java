@@ -149,11 +149,11 @@ public class OperateFiles extends Task<Boolean> {
 				return null;
 			}
 
-			boolean copy = false;
+			// boolean copy = false;
 			for (FileInfo fileInfo : list) {
 				Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir()
 						+ fileInfo.getDestination_Path());
-				copy = false;
+				// copy = false;
 				if (isCancelled()) {
 					Main.setProcessCancelled(true);
 					cancel();
@@ -192,10 +192,12 @@ public class OperateFiles extends Task<Boolean> {
 					cancel();
 					break;
 				}
+
 				if (Files.exists(dest)) {
 					boolean renamed = rename(fileInfo, dest);
+					
 					if (renamed) {
-						STATE = Copy_State.COPY.getType();
+						STATE = Copy_State.RENAME.getType();
 					} else {
 						STATE = Copy_State.DUPLICATE.getType();
 					}
@@ -203,7 +205,7 @@ public class OperateFiles extends Task<Boolean> {
 					STATE = Copy_State.COPY.getType();
 				}
 
-				Messages.sprintf("Dest: " + dest + " copy? " + copy);
+				Messages.sprintf("Dest: " + dest + " STATE: " + STATE);
 				if (dest != null && STATE.equals(Copy_State.COPY.getType())
 						|| STATE.equals(Copy_State.RENAME.getType())) {
 					boolean destinationDirectoriesCreated = createDirectories(dest);
@@ -271,6 +273,7 @@ public class OperateFiles extends Task<Boolean> {
 
 							if (answer.get() == 0) {
 								renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest);
+								Messages.sprintf("renameTmpFileToCorruptedFile: " + destTmp);
 							} else if (answer.get() == 1) {
 								Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
 								Files.deleteIfExists(destTmp);
@@ -282,6 +285,7 @@ public class OperateFiles extends Task<Boolean> {
 							}
 						} else {
 							renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest);
+							Messages.sprintf("renameTmpFileBackToOriginalExtentension: " + destTmp + " dest: " + dest);
 						}
 						if (STATE.equals(Copy_State.COPY.getType())) {
 							Platform.runLater(() -> {
@@ -293,7 +297,13 @@ public class OperateFiles extends Task<Boolean> {
 								model_operate.getCopyProcess_values().increaseRenamed_tmp();
 							});
 							fileInfo.setCopied(true);
-						} else {
+						} else if (STATE.equals(Copy_State.DUPLICATE.getType())) {
+							Platform.runLater(() -> {
+								model_operate.getCopyProcess_values().increaseDuplicated_tmp();
+							});
+							fileInfo.setCopied(true);
+						}  
+						else {
 							sprintf("STATE ERROR! : " + STATE);
 						}
 					} catch (Exception ex) {
@@ -416,9 +426,10 @@ public class OperateFiles extends Task<Boolean> {
 					Messages.sprintf("FileInfo - corrupted added to destination succesfully");
 //					model_main.getWorkDir_Handler().add(fileInfo);
 				} else {
-					Messages.sprintf("FileInfo - corrupted were not added because it did exists " + fileInfo.getDestination_Path());
+					Messages.sprintf("FileInfo - corrupted were not added because it did exists "
+							+ fileInfo.getDestination_Path());
 				}
-				
+
 			} catch (Exception ex) {
 				ex.printStackTrace();
 				Messages.sprintfError(ex.getMessage());
@@ -445,6 +456,7 @@ public class OperateFiles extends Task<Boolean> {
 					Messages.sprintf("FileInfo were not added because it did exists " + fileInfo.getDestination_Path());
 				}
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				Messages.sprintfError(ex.getMessage());
 			}
 

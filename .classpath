@@ -29,6 +29,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX14"/>
-	<classpathentry kind="lib" path="C:/Users/marko_000/Downloads/scenicview.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marko/Downloads/scenicview/lib/scenicview.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

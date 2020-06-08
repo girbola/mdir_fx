@@ -50,21 +50,22 @@ public class FileUtils {
 		return newPath;
 	}
 
-	//	public static void renameExistingFile(Path orgFilePath) {
-	//		String filePath = orgFilePath.getParent().toString();
-	//		String fileName = orgFilePath.getFileName().toString();
+	// public static void renameExistingFile(Path orgFilePath) {
+	// String filePath = orgFilePath.getParent().toString();
+	// String fileName = orgFilePath.getFileName().toString();
 	//
-	//		String extension = getExtension(orgFilePath.getFileName().toString());
-	//		File[] list = new File(orgFilePath.getParent().toString()).listFiles();
-	//		for (int i = 0; i < list.length; i++) {
-	////			String file = filePath + File.separator + fileName + "." + extension;
-	//			sprintf("Listing files: " + list[i]);
-	//			if (list[i].equals(orgFilePath.toFile())) {
-	//				sprintf("File found!");
-	//			}
-	//		}
-	//		sprintf("filePath is: " + filePath + File.separator + fileName + "." + extension);
-	//	}
+	// String extension = getExtension(orgFilePath.getFileName().toString());
+	// File[] list = new File(orgFilePath.getParent().toString()).listFiles();
+	// for (int i = 0; i < list.length; i++) {
+	//// String file = filePath + File.separator + fileName + "." + extension;
+	// sprintf("Listing files: " + list[i]);
+	// if (list[i].equals(orgFilePath.toFile())) {
+	// sprintf("File found!");
+	// }
+	// }
+	// sprintf("filePath is: " + filePath + File.separator + fileName + "." +
+	// extension);
+	// }
 
 	/**
 	 * Rename file to new file name if file exists and it is different size example:
@@ -86,14 +87,11 @@ public class FileUtils {
 		if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
 			sprintf("file name exists but they are different size: ");
 			File[] fileList = destFile.getParent().toFile().listFiles();
-			for (int i = 1;
-					i < fileList.length + 1;
-					i++) {
-				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString().substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "."
-						+ ext;
+			for (int i = 1; i < fileList.length + 1; i++) {
+				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
+						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "." + ext;
 				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
 				if (Files.exists(Paths.get(fileName))) {
-					sprintf("--->File name exists: " + fileName + "size is: " + Files.size(Paths.get(fileName)) + "dest : " + destFile + " size: " + Files.size(destFile));
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
 						sprintf("File existed!: " + destFile + " filename: " + fileName);
 						return null;
@@ -113,7 +111,8 @@ public class FileUtils {
 	public static DirectoryStream.Filter<Path> filter_directories = new DirectoryStream.Filter<Path>() {
 		@Override
 		public boolean accept(Path path) throws IOException {
-			return !Files.isDirectory(path) && supportedMediaFormat(path.toFile()); // Failed to determine if it's a directory.
+			return !Files.isDirectory(path) && supportedMediaFormat(path.toFile()); // Failed to determine if it's a
+																					// directory.
 		}
 	};
 
@@ -251,8 +250,10 @@ public class FileUtils {
 	public static boolean videoFormat(File file) {
 		String result;
 		result = getExtension(file.getName());
-		if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx") || result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
-				|| result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob") || result.equals("wmv") || result.equals("mkv")) {
+		if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx")
+				|| result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
+				|| result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob")
+				|| result.equals("wmv") || result.equals("mkv")) {
 			return true;
 		}
 		return false;
@@ -290,7 +291,8 @@ public class FileUtils {
 	 */
 	public static String getFileExtension(Path path) {
 		// int mid =
-		return path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf(".") + 1, path.getFileName().toString().length());
+		return path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf(".") + 1,
+				path.getFileName().toString().length());
 		// return ext;
 	}
 
@@ -325,9 +327,10 @@ public class FileUtils {
 	}
 
 	public boolean findDuplicateFile(Path src, Path dest) {
-		
+
 		return false;
 	}
+
 	/**
 	 * Compare files if they are same. Checking also if file size are different and
 	 * file paths aren't the same
@@ -347,9 +350,7 @@ public class FileUtils {
 		try (FileChannel chana = (FileChannel) Files.newByteChannel(source);
 				FileChannel chanb = (FileChannel) Files.newByteChannel(destination)) {
 
-			for (long position = 0;
-					position < size;
-					position += mapSpan) {
+			for (long position = 0; position < size; position += mapSpan) {
 				MappedByteBuffer mba = mapChannel(chana, position, size, mapSpan);
 				MappedByteBuffer mbb = mapChannel(chanb, position, size, mapSpan);
 				if (mba.compareTo(mbb) != 0) {
@@ -360,14 +361,16 @@ public class FileUtils {
 		return true;
 	}
 
-	private static MappedByteBuffer mapChannel(FileChannel channel, long position, long size, int mapspan) throws IOException {
+	private static MappedByteBuffer mapChannel(FileChannel channel, long position, long size, int mapspan)
+			throws IOException {
 		final long end = Math.min(size, position + mapspan);
 		final long maplen = (int) (end - position);
 		return channel.map(FileChannel.MapMode.READ_ONLY, position, maplen);
 	}
 
 	/**
-	 * Replaces from filepath a workdir to none. For example c:\pictures\2019\09\pictures001.jpg to \2019\09\pictures001.jpg
+	 * Replaces from filepath a workdir to none. For example
+	 * c:\pictures\2019\09\pictures001.jpg to \2019\09\pictures001.jpg
 	 * 
 	 * @param dest
 	 * @param workDir
