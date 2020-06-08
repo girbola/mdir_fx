@@ -31,8 +31,6 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.scenicview.ScenicView;
-
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -146,6 +144,27 @@ public class Main extends Application {
 				mainController.initialize(model_main);
 
 				primaryStage.setTitle(conf.getProgramName());
+				primaryStage.xProperty().addListener(new ChangeListener<Number>() {
+					@Override
+					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+							Number newValue) {
+						if (!primaryStage.isFullScreen()) {
+							Main.conf.setWindowStartPosX((double) newValue);
+						}
+					}
+
+				});
+
+				primaryStage.yProperty().addListener(new ChangeListener<Number>() {
+					@Override
+					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+							Number newValue) {
+						if (!primaryStage.isFullScreen()) {
+							Main.conf.setWindowStartPosY((double) newValue);
+						}
+					}
+
+				});
 //				stage.setMaxWidth(conf.getScreenBounds().getWidth());
 //				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
 				primaryStage.setMinWidth(800);
@@ -162,14 +181,14 @@ public class Main extends Application {
 				});
 				// stage.setMaximized(true);
 				primaryStage.setOnCloseRequest(model_main.dontExit);
-			
+
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
 						defineScreenBounds(primaryStage);
 						primaryStage.show();
-						
+
 						model_main.getBottomController().initBottomWorkdirMonitors();
 					}
 
@@ -181,6 +200,7 @@ public class Main extends Application {
 		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 
 		mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("main succeeded");
@@ -188,12 +208,12 @@ public class Main extends Application {
 //				scene_Switcher.setScene_main(primaryScene);
 
 				boolean isValidOS = Misc.checkOS();
-				if(isValidOS) {
+				if (isValidOS) {
 					Messages.sprintf("Valid OS found");
 				} else {
 					Messages.sprintfError("Valid OS found");
 				}
-				
+
 				conf.loadConfig_GUI();
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
 				Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
@@ -320,6 +340,7 @@ public class Main extends Application {
 			}
 		});
 		mainTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Main Task failed");
@@ -340,7 +361,7 @@ public class Main extends Application {
 
 	private void defineScreenBounds(Stage stage) {
 		int screens = Screen.getScreens().size();
-		if(stage.isFullScreen()) {
+		if (stage.isFullScreen()) {
 			return;
 		}
 		if (Main.conf.getWindowStartPosX() == -1 && Main.conf.getWindowStartPosY() == -1
@@ -445,11 +466,13 @@ public class Main extends Application {
 			});
 		} else {
 			Platform.runLater(new Runnable() {
+
 				@Override
 				public void run() {
 					getMain_stage().setTitle("");
 					getMain_stage().setTitle(conf.getProgramName());
 				}
+
 			});
 		}
 	}
