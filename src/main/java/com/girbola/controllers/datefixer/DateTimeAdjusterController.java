@@ -74,6 +74,10 @@ public class DateTimeAdjusterController {
 	private Button setDateTimeRange_btn;
 	@FXML
 	private Button markFilesAccordingTheDateScale_btn;
+	@FXML
+	private Button findExistsPath_btn;
+
+
 
 	@FXML
 	private void markFilesAccordingTheDateScale_btn_action() {

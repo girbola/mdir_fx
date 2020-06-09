@@ -219,12 +219,14 @@ public class LocalTimeDifference {
 					runc = runc.plusDays(1);
 					runc = runc.of(runc.getYear(), runc.getMonth(), runc.getDayOfMonth(), getStart().getHour(),
 							getStart().getMinute(), getStart().getSecond());
+					Messages.sprintf("1Possible flaw with localdatetime: " + runc);
 				}
 
 			} else {
 				runc = runc.plusDays(1);
 				runc = runc.of(runc.getYear(), runc.getMonth(), runc.getDayOfMonth(), getStart().getHour(),
 						getStart().getMinute(), getStart().getSecond());
+				Messages.sprintf("2Possible flaw with localdatetime: " + runc);
 
 			}
 		}

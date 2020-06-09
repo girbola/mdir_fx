@@ -18,26 +18,33 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.media.DateTaken;
 import common.media.VideoDateFinder;
+import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 /**
  *
@@ -45,8 +52,39 @@ import common.utils.date.DateUtils;
  */
 public class FileInfo_Utils {
 
-
 	private final static String ERROR = FileInfo_Utils.class.getSimpleName();
+
+	public static String findFileInfoByDate(FileInfo fileInfoToSearch, TableView<FolderInfo> table) {
+		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
+
+		String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
+		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
+		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
+
+		List<Path> list = Main.conf.getModel().getWorkDir_Handler()
+				.findPossibleExistsFoldersInWorkdir(fileInfoToSearch);
+		if (!list.isEmpty()) {
+			FXMLLoader loader = null;
+			Parent parent = null;
+			try {
+				loader = new FXMLLoader(Main.class.getResource("fxml/possibleFolderChooser.FXML"), Main.bundle);
+				parent = loader.load();
+				PossibleFolderChooserController pfcc = (PossibleFolderChooserController) loader.getController();
+				SimpleStringProperty path = new SimpleStringProperty();
+				pfcc.init(path);
+				Stage stage = new Stage();
+				Scene scene = new Scene(parent);
+				stage.setScene(scene);
+				stage.showAndWait();
+				return path.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+
+	}
 
 	public static FileInfo createFileInfo(Path fileName) throws IOException {
 		// sprintf("createFileInfo started: " + path);
