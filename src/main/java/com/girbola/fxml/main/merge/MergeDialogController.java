@@ -27,6 +27,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -58,6 +59,8 @@ public class MergeDialogController {
 	private Button apply_and_copy_btn;
 	@FXML
 	private Button cancel_btn;
+	@FXML
+	private CheckBox addEverythingInsameDir_chb;
 
 	private void close() {
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
@@ -95,7 +98,6 @@ public class MergeDialogController {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
 				return;
 			}
-
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 
 				fileInfo.setEvent(eventName);
@@ -108,6 +110,11 @@ public class MergeDialogController {
 					location_str = " - " + fileInfo.getLocation();
 				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
 					event_str = " - " + fileInfo.getEvent();
+					if (addEverythingInsameDir_chb.isSelected()) {
+						if (folderInfo.getJustFolderName() != eventName) {
+							folderInfo.setJustFolderName(eventName);
+						}
+					}
 				} else {
 					location_str = " - " + fileInfo.getLocation();
 					event_str = " - " + fileInfo.getEvent();
@@ -184,11 +191,15 @@ public class MergeDialogController {
 					location_str = " - " + fileInfo.getLocation();
 				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
 					event_str = " - " + fileInfo.getEvent();
+					if (addEverythingInsameDir_chb.isSelected()) {
+						if (folderInfo.getJustFolderName() != eventName) {
+							folderInfo.setJustFolderName(eventName);
+						}
+					}
 				} else {
 					location_str = " - " + fileInfo.getLocation();
 					event_str = " - " + fileInfo.getEvent();
 				}
-				
 
 				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
 					location_str = " - " + fileInfo.getLocation();
