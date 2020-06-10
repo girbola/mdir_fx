@@ -236,7 +236,7 @@ public class DateFixerController {
 		}
 		ConcurrencyUtils.stopExecThread();
 
-		Messages.warningText("Not ready yet!");
+//		Messages.warningText("Not ready yet!");
 		List<FileInfo> fileInfo_list = new ArrayList<>();
 
 		for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
@@ -244,6 +244,7 @@ public class DateFixerController {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameAsItIs(source, fileInfo);
+				Messages.sprintf("Dest: " + dest);
 				if (dest != null && Main.conf.getDrive_connected()) {
 					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
 					fileInfo.setWorkDir(Main.conf.getWorkDir());
