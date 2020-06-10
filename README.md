@@ -3,8 +3,8 @@
 
 # MDir_FX
 MDir_FX helps you organize your pictures and videos to an external hard drive.
-The project has been written with JDK 13 and JavaFX 13
-This project is my "learning environment" for JavaFX, CSS and other technologies.
+The project has been written with Open JDK 14 and OpenFX 14
+This project is my "learning environment" for JavaFX, CSS plus other technologies.
 
 ** Features **
 * Date and time editor for medias that does not have dates and times information
@@ -15,14 +15,19 @@ This project is my "learning environment" for JavaFX, CSS and other technologies
 
 External libraries used in this program
 
-##### Metadata-extractor 2.11.0
+##### Metadata-extractor 2.14.0
 https://github.com/drewnoakes/metadata-extractor
 
 ##### JCodec 0.2.3
 https://github.com/jcodec/jcodec
 
-##### VLCJ 4.1.0
+##### VLCJ 4.5.2
 https://github.com/caprica/vlcj
+
+##### TwelveMonkeys
+###### imageio-jpeg 3.5
+###### imageio-tiff 3.5
+https://github.com/haraldk/TwelveMonkeys
 
 Supported file formats for thumbnail creation
 
