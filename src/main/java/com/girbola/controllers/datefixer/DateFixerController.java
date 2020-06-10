@@ -237,6 +237,43 @@ public class DateFixerController {
 		ConcurrencyUtils.stopExecThread();
 
 		Messages.warningText("Not ready yet!");
+		List<FileInfo> fileInfo_list = new ArrayList<>();
+
+		for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
+			if (n instanceof VBox && n.getId().equals("imageFrame")) {
+				FileInfo fileInfo = (FileInfo) n.getUserData();
+				Path source = Paths.get(fileInfo.getOrgPath());
+				Path dest = DestinationResolver.getDestinationFileNameAsItIs(source, fileInfo);
+				if (dest != null && Main.conf.getDrive_connected()) {
+					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+					fileInfo.setDestination_Path(dest.toString());
+					fileInfo.setCopied(false);
+					fileInfo_list.add(fileInfo);
+				} else {
+					Messages.sprintf("Dest were null. process is about to be cancelled");
+					break;
+				}
+			}
+		}
+
+		Task<Boolean> operateFiles = new OperateFiles(fileInfo_list, true, model_main,
+				Scene_NameType.DATEFIXER.getType());
+		operateFiles.setOnSucceeded((workerStateEvent) -> {
+//			operateFiles.get
+			Messages.sprintf("operateFiles Succeeded");
+		});
+		operateFiles.setOnCancelled((workerStateEvent) -> {
+			Messages.sprintf("operateFiles CANCELLED");
+		});
+		operateFiles.setOnFailed((workerStateEvent) -> {
+			Messages.sprintf("operateFiles FAILED");
+			Main.setProcessCancelled(true);
+		});
+		Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
+		operateFiles_th.setDaemon(true);
+		operateFiles_th.start();
 	}
 
 	@FXML

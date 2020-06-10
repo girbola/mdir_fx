@@ -60,7 +60,7 @@ public class DestinationResolver {
 		return destPath;
 	}
 
-	public static Path getDestinationFileNameAsItIs(Path source, String justFolderName, FileInfo fileInfo) {
+	public static Path getDestinationFileNameAsItIs(Path source, FileInfo fileInfo) {
 //		if (Main.conf.getWorkDir().equals("null")) {
 //			Messages.warningText(Main.bundle.getString("destinationDirNotSet"));
 //			return null;
