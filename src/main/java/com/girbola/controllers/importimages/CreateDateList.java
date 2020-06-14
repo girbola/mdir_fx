@@ -19,7 +19,7 @@ import com.girbola.fileinfo.FileInfo;
 import javafx.concurrent.Task;
 
 /**
- *
+ *	Returns a map 2020-08-29
  * @author Marko Lokka
  */
 public class CreateDateList extends Task<Map<String, List<FileInfo>>> {
@@ -36,7 +36,7 @@ public class CreateDateList extends Task<Map<String, List<FileInfo>>> {
 	protected Map<String, List<FileInfo>> call() throws Exception {
 		List<String> dateMap = new ArrayList<>();
 
-		for (FileInfo fi : this.list) {
+		for (FileInfo fi : list) {
 			if (!dateMap.contains(simpleDates.getSdf_ymd_minus().format(fi.getDate()))) {
 				dateMap.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}

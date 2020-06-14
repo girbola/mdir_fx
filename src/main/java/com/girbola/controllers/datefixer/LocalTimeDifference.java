@@ -121,7 +121,7 @@ public class LocalTimeDifference {
 			return null;
 		}
 
-		ArrayList<LocalDateTime> ld = new ArrayList<>();
+//		ArrayList<LocalDateTime> ld = new ArrayList<>();
 
 		int days = getDays(start.toLocalDate(), end.toLocalDate());
 		int seconds = Math.round(getTimeInSeconds(start.toLocalTime(), end.toLocalTime()));
@@ -236,6 +236,13 @@ public class LocalTimeDifference {
 		return ld;
 	}
 
+	/**
+	 * 
+	 * @param files
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public ArrayList<LocalDateTime> createDateList_NODAYS(int files, LocalDateTime start, LocalDateTime end) {
 		sprintf("createDateList_NODAYS - files= " + files);
 		ArrayList<LocalDateTime> ld = new ArrayList<>();

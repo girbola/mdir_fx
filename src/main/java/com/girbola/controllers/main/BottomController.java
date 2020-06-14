@@ -12,43 +12,31 @@ import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
-import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -56,9 +44,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
@@ -189,6 +174,22 @@ public class BottomController {
 	}
 
 	@FXML
+	private Button dates_ttv_btn;
+
+	@FXML
+	private void dates_ttv_btn_action(ActionEvent event) {
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/DatesTreeTableView.fxml"), Main.bundle);
+			parent = loader.load();
+			DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader.getController();
+			datesTreeTableViewController.init(model_main);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@FXML
 	private void collect_action(ActionEvent event) {
 		Collector collect = new Collector();
 		collect.collectAll(model_main.tables());
@@ -286,7 +287,7 @@ public class BottomController {
 	 */
 	@FXML
 	private void copySelected_btn_action(ActionEvent event) {
-		
+
 	}
 
 	private void findSameDateFileInfosFromSortedAndWorkdir(Tables tables) {
@@ -306,7 +307,6 @@ public class BottomController {
 		}
 	}
 
-	
 	private boolean checkDuplicates(TableView<FolderInfo> table) {
 		if (table.getId().equals(TableType.SORTED.getType())) {
 			for (FolderInfo folderInfo : table.getItems()) {

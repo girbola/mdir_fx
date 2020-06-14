@@ -1,7 +1,7 @@
 .root {
 	-fx-base: #1d1d1d;
-	-fx-dark-border-color: darkgrey;
-	-fx-mid-border-color: grey;
+	-fx-dark-border-color: derive(-fx-base, 80%);
+	-fx-mid-border-color: derive(-fx-base, 60%);
 	-fx-light-border-color: white;
 
 	/* Button basic colors */
