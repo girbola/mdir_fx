@@ -1,5 +1,5 @@
 .root {
-	-fx-base: #1d1d1d;
+	-fx-base: #807c7ca4;
 	-fx-dark-border-color: derive(-fx-base, 80%);
 	-fx-mid-border-color: derive(-fx-base, 60%);
 	-fx-light-border-color: white;
@@ -21,7 +21,7 @@
  */
 	-fx-dark-text-color: black;
 	-fx-mid-text-color: #292929;
-	-fx-light-text-color: white;
+	-fx-light-text-color: rgb(228, 225, 225);
 	-fx-font-family: 'Gaduci';
 
 	-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
@@ -167,11 +167,10 @@
 	-fx-padding: 0;
 }
 .text-field {
-	-fx-background-color: derive(whitesmoke, 30%);
-	-fx-background-radius: 2;
-	-fx-border-color: -fx-dark-border-color;
-	-fx-border-radius: 2;
+	-fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
 	-fx-text-fill: -fx-light-text-color;
+	-fx-border-color: black;
+	-fx-border-radius: 3px;
 }
 .textfield-info {
 	-fx-background-color: derive(-fx-base, 24%);
@@ -181,7 +180,7 @@
 	-fx-background-color: -fx-base;
 }
 .view_btn {
-	-fx-background-color: orange;
+	-fx-background-color: whitesmoke;
 }
 
 .main {

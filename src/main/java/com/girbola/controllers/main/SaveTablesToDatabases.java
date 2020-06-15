@@ -40,13 +40,14 @@ public class SaveTablesToDatabases extends Task<Integer> {
 
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
-		
+
 		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
 		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
-		
+
 		if (connection == null) {
 			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
 					Misc.getLineNumber(), true);
+			return null;
 		}
 		long start = System.currentTimeMillis();
 		updateMessage("Loading Sorted");
@@ -76,10 +77,11 @@ public class SaveTablesToDatabases extends Task<Integer> {
 			}
 		} catch (Exception e) {
 			Main.setChanged(true);
+		} finally {
+			connection.close();
 		}
 		return null;
 	}
-
 
 	@Override
 	protected void succeeded() {

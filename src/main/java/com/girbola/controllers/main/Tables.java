@@ -232,7 +232,8 @@ public class Tables {
 		table.setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == (KeyCode.DELETE)) {
 				ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
-				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("removePermanently"));
+				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+						bundle.getString("removePermanently"));
 				dialog.initStyle(StageStyle.UNDECORATED);
 
 //				DialogPane dialogPane = new DialogPane();
@@ -391,6 +392,12 @@ public class Tables {
 	HBox getTables_Container() {
 		return this.tables_container;
 	}
+
+	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> p) {
+			return new EditingCell(model_Main);
+		}
+	};
 
 	public Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>> connected_cellFactory = new Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>>() {
 		@Override

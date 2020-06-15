@@ -11,6 +11,7 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -36,6 +37,7 @@ import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
 import javafx.beans.property.SimpleObjectProperty;
@@ -469,27 +471,28 @@ public class TableController {
 		justFolderName_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getJustFolderName()));
-		justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
-
-		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
-
-			@Override
-			public void handle(CellEditEvent<FolderInfo, String> event) {
-				Messages.sprintf("start edit " + event.getSource() + " old " + event.getOldValue() + " new value "
-						+ event.getNewValue());
-//				if (event.getNewValue().contains("\\") || event.getNewValue().contains("/") || event.getNewValue().contains(":") || event.getNewValue().contains("*") || event.getNewValue().contains("?")
-//						|| event.getNewValue().contains("<") || event.getNewValue().contains(">") || event.getNewValue().contains("|")) {
-//				Messages.sprintf("Bad words");
-//				}
-//				if (newValue.length() > 160) {
-//					if (!tooltip_tooLongFileName.isShowing()) {
-//						show(tooltip_tooLongFileName, textField);
-//					}
-//					textField.setText(oldValue);
-//				}
-
-			}
-		});
+		justFolderName_col.setCellFactory(model_main.tables().textFieldEditingCellFactory);
+//		justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
+//		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
+//
+//			@Override
+//			public void handle(CellEditEvent<FolderInfo, String> event) {
+//				Messages.sprintf("start edit " + event.getSource() + " old " + event.getOldValue() + " new value "
+//						+ event.getNewValue());
+////				if (event.getNewValue().contains("\\") || event.getNewValue().contains("/") || event.getNewValue().contains(":") || event.getNewValue().contains("*") || event.getNewValue().contains("?")
+////						|| event.getNewValue().contains("<") || event.getNewValue().contains(">") || event.getNewValue().contains("|")) {
+////				Messages.sprintf("Bad words");
+////				}
+////				if (newValue.length() > 160) {
+////					if (!tooltip_tooLongFileName.isShowing()) {
+////						show(tooltip_tooLongFileName, textField);
+////					}
+////					textField.setText(oldValue);
+////				}
+//
+//			}
+//		});
+		
 		justFolderName_col.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
 
 			@Override
@@ -497,6 +500,34 @@ public class TableController {
 				Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
 				if (event.getRowValue().getJustFolderName() != event.getNewValue()) {
 					event.getRowValue().setJustFolderName(event.getNewValue().trim());
+					Path src = Paths.get(event.getRowValue().getFolderPath());
+					Path dest = Paths
+							.get(src.getParent().toString() + File.separator + event.getRowValue().getJustFolderName());
+					if (Files.exists(dest)) {
+						 event.getRowValue().setJustFolderName(event.getOldValue());
+						Messages.sprintf("");
+						return;
+					}
+					try {
+						Path renamed = Files.move(src, dest);
+						if (Files.exists(renamed)) {
+							event.getRowValue().setFolderPath(dest.toString());
+							for (FileInfo fileInfo : event.getRowValue().getFileInfoList()) {
+								fileInfo.setOrgPath(dest + File.separator
+										+ Paths.get(fileInfo.getOrgPath()).getFileName().toString());
+								Messages.sprintf("FileInfo orgName changed to: " + dest + File.separator
+										+ Paths.get(fileInfo.getOrgPath()).getFileName().toString());
+
+							}
+
+							Messages.sprintf(
+									"Folder were renamed as: " + renamed + " and it exists? " + Files.exists(dest));
+							TableUtils.refreshAllTableContent(model_main.tables());
+							SQL_Utils.renameToFolderInfoDB(event.getRowValue(), src.toString());
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 					Main.setChanged(true);
 					event.getRowValue().setChanged(true);
 				}

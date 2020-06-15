@@ -34,13 +34,13 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 				if (folderInfo.getFileInfoList().size() != 0) {
 					if (item == folderInfo.getFileInfoList().size()) {
 						folderInfo.setState(FolderInfoType.DONE.getType());
-						setStyle("-fx-background-color: blue; -fx-text-fill:yellow;");
+						setStyle("-fx-background-color: green; -fx-text-fill: yellow;");
 						setText("" + item);
 					} else if (item > 0) {
-						setStyle("-fx-background-color: orange; -fx-text-fill:white;");
+						setStyle("-fx-text-fill: white;");
 						setText("" + item);
 					} else if (item == 0) {
-						setStyle("-fx-background-color: red; -fx-text-fill:yellow;");
+						setStyle("-fx-text-fill: yellow;");
 						setText("" + item);
 					} else {
 						setStyle("null");
@@ -50,7 +50,7 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 						Messages.sprintf("TableCellfolderInfo ELSE");
 					}
 				} else {
-					setStyle("null");
+//					setStyle("null");
 					setGraphic(null);
 					setText(null);
 					Messages.sprintf("folderInfo.getFileInfoList().size() == 0");

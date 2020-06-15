@@ -180,10 +180,16 @@ public class BottomController {
 	private void dates_ttv_btn_action(ActionEvent event) {
 		try {
 			Parent parent = null;
-			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/DatesTreeTableView.fxml"), Main.bundle);
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("fxml/datestreetableview/DatesTreeTableView.fxml"), Main.bundle);
 			parent = loader.load();
-			DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader.getController();
+			DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader
+					.getController();
 			datesTreeTableViewController.init(model_main);
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.show();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

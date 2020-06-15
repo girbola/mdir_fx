@@ -77,6 +77,9 @@ public class DrivesListHandler {
 	}
 
 	public void createDriveInfo(String path, boolean selected) {
+		if(Main.getProcessCancelled()) {
+			return;
+		}
 		boolean found = false;
 		File file = new File(path);
 		if (!drivesList_obs.isEmpty()) {

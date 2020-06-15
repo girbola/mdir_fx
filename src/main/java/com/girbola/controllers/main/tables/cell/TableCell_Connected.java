@@ -62,7 +62,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 
 	private void setBad(FolderInfo folderInfo) {
 		stackPane.getChildren().add(tryToReconnect);
-		stackPane.setStyle("-fx-background-color: red;");
+		stackPane.setStyle("-fx-background-color: derive(red, 50%);");
 		tryToReconnect.setOnAction(event -> {
 			if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
 				setGood();
@@ -89,7 +89,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 	}
 
 	private void setGood() {
-		stackPane.setStyle("-fx-background-color: blue;");
+		stackPane.setStyle("-fx-background-color: derive(blue, 20%);");
 		stackPane.getChildren().remove(tryToReconnect);
 
 	}

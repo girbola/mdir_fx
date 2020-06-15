@@ -130,6 +130,13 @@ public class Model_main {
 		}
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
+		try {
+			connection.setAutoCommit(false);
+		} catch (Exception e) {
+			Messages.sprintfError("Can't change to autocommit: " + e.getMessage());
+			e.printStackTrace();
+		}
+
 		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
 		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
 		if (connection == null) {
@@ -157,6 +164,7 @@ public class Model_main {
 
 		try {
 			if (connection != null) {
+				connection.commit();
 				connection.close();
 				Main.setChanged(false);
 			}
@@ -171,6 +179,7 @@ public class Model_main {
 
 	public boolean saveTableContent(Connection connection, ObservableList<FolderInfo> items, String tableType) {
 		if (items.isEmpty()) {
+			Messages.sprintfError("saveTableContent items list were empty!");
 			return false;
 		}
 		if (connection == null) {
@@ -183,7 +192,10 @@ public class Model_main {
 			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
 			folderInfo.setTableType(tableType);
 			try {
-				SQL_Utils.addToFolderInfoDB(connection, folderInfo);
+				boolean addingFolderInfoSuccessfully = SQL_Utils.addToFolderInfoDB(connection, folderInfo);
+				if (!addingFolderInfoSuccessfully) {
+					Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
+				}
 				/*
 				 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
 				 * Connection status when this was saved Connects to current folder for existing
@@ -196,8 +208,8 @@ public class Model_main {
 				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
 				if (fileList_connection != null) {
 					fileList_connection.close();
-
-					Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
+					Messages.sprintf(
+							"saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -312,7 +324,8 @@ public class Model_main {
 		}
 	}
 
-	public void saveTablesToDatabases_(Stage stage, LoadingProcess_Task loadingProcess_Task, boolean closeLoadingStage) {
+	public void saveTablesToDatabases_(Stage stage, LoadingProcess_Task loadingProcess_Task,
+			boolean closeLoadingStage) {
 		Task<Void> task = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -329,7 +342,7 @@ public class Model_main {
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("Database were successfully saved");
 				if (closeLoadingStage) {
-					//loadingProcess_Task.closeStage();
+					// loadingProcess_Task.closeStage();
 				}
 			}
 		});

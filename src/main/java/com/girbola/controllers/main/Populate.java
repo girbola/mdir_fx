@@ -141,7 +141,9 @@ public class Populate {
 							@Override
 							public void handle(WorkerStateEvent event) {
 								sprintf("calculateFolderContent setOnFailed");
+								loadingProcess_task.setMessage("FAILED...");
 								Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+								loadingProcess_task.closeStage();
 							}
 						});
 						exec[getExecCounter()].submit(calculateFolderContent);
@@ -151,13 +153,18 @@ public class Populate {
 					@Override
 					public void handle(WorkerStateEvent event) {
 						sprintf("sorter.setOnCancelled");
+						loadingProcess_task.closeStage();
 
 					}
 				});
 				sorter.setOnFailed(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent event) {
+						loadingProcess_task.setMessage("FAILED...");
+
 						sprintf("sorter.setOnFailed");
+						loadingProcess_task.closeStage();
+
 					}
 				});
 				Thread sorter_th = new Thread(sorter, "sorter_th");

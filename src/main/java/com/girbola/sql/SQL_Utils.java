@@ -200,6 +200,7 @@ public class SQL_Utils {
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.execute(folderInfoDatabaseSQL);
+			stmt.close();
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -250,6 +251,30 @@ public class SQL_Utils {
 
 			pstmt.executeUpdate();
 			pstmt.close();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean renameToFolderInfoDB(FolderInfo folderInfo, String previousName) {
+
+		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERINFO.getType() + "WHERE folderpath = " + previousName + ";";
+		try {
+			Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+					Main.conf.getFolderInfo_db_fileName());
+			connection.setAutoCommit(false);
+
+			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
+			pstmt.setString(1, folderInfo.getFolderPath());
+			pstmt.setString(2, folderInfo.getTableType());
+			pstmt.setString(3, folderInfo.getJustFolderName());
+			pstmt.setBoolean(4, folderInfo.isConnected());
+
+			pstmt.executeUpdate();
+			pstmt.close();
+			connection.close();
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -534,30 +559,31 @@ public class SQL_Utils {
 			}
 		}
 		try {
+			connection.setAutoCommit(false);
 			boolean tableCreated = createFileInfoTable(connection);
 			if (tableCreated) {
 				Messages.sprintf("insertFileInfoListToDatabase tableCreated");
 			} else {
-				Messages.sprintf("insertFileInfoListToDatabase NOT tableCreated");
+				Messages.sprintfError("insertFileInfoListToDatabase NOT tableCreated");
 			}
 			if (!isDbConnected(connection)) {
-				Messages.sprintf("insertFileInfoListToDatabase Not connected");
+				Messages.sprintfError("insertFileInfoListToDatabase were NOT connected");
 				return false;
 			}
-			connection.setAutoCommit(false);
+			
 			PreparedStatement pstmt = null;
 			pstmt = connection.prepareStatement(fileInfoInsert);
 			for (FileInfo fileInfo : list) {
 				long start = System.currentTimeMillis();
-				//Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
+				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
 			}
 			pstmt.executeBatch();
 			connection.commit();
 
-			if (connection != null) {
-				connection.close();
-			}
+//			if (connection != null) {
+//				connection.close();
+//			}
 			if (pstmt != null) {
 				pstmt.close();
 			}
@@ -998,7 +1024,7 @@ public class SQL_Utils {
 			stmt.close();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			Messages.sprintfError("Couldn't be able to clear table because table did not exists");
 			return false;
 		}
 	}

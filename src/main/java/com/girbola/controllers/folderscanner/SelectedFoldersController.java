@@ -37,7 +37,7 @@ import javafx.stage.Stage;
 
 public class SelectedFoldersController {
 	private final String ERROR = SelectedFoldersController.class.getName();
-	
+
 	private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
 	private Model_main model_main;
 	private Model_folderScanner model_folderScanner;
@@ -58,6 +58,15 @@ public class SelectedFoldersController {
 	@FXML
 	private void selectedFolders_ok_action(ActionEvent event) {
 		model_folderScanner.getScanDrives().stop();
+		
+		try {
+			model_folderScanner.getConnection().close();
+			Thread.sleep(5000);
+//			Main.setProcessCancelled(true);
+		} catch (Exception e) {
+			Messages.sprintfError("Couldn't be able to close folderscanner connection");
+		}
+		
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getFolderInfo_db_fileName());
 		SQL_Utils.createSelectedFoldersTable(connection);

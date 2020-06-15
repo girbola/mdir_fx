@@ -58,6 +58,7 @@ public class ScanDrives {
 	}
 
 	public void stop() {
+//		Main.setProcessCancelled(true);
 		scanner.cancel();
 		sprintf("Scanning cancelled? " + scanner.isRunning());
 	}
@@ -138,18 +139,24 @@ public class ScanDrives {
 					Set<DriveInfo> setOfRootDrives = new HashSet<>();
 
 					for (int i = 0; i < listOfRoots.length; i++) {
+						if (Main.getProcessCancelled()) {
+							break;
+						}
 						String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
 						Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
-						if (serial == null) {
-							Main.setProcessCancelled(true);
-							Messages.errorSmth(ERROR, "Can't read drives serialnumber with OSHI", null,
-									Misc.getLineNumber(), true);
-						}
+//						if (serial == null) {
+//							Main.setProcessCancelled(true);
+//							Messages.errorSmth(ERROR, "Can't read drives serialnumber with OSHI", null,
+//									Misc.getLineNumber(), true);
+//						}
 						setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(),
 								listOfRoots[i].exists(), false, serial));
 					}
 
 					for (DriveInfo driveInfo : setOfRootDrives) {
+						if (Main.getProcessCancelled()) {
+							break;
+						}
 						if (!findDuplicateDrive(driveInfo)) {
 							Messages.sprintf("Adding all to root Drives. DriveInfo: " + driveInfo.getDrivePath()
 									+ " serial: " + driveInfo.getIdentifier() + " setOfRootDrives size: "
@@ -164,6 +171,9 @@ public class ScanDrives {
 
 				private boolean findDuplicateDrive(DriveInfo driveInfoToSearch) {
 					for (DriveInfo driveInfo : rootDrives) {
+						if (Main.getProcessCancelled()) {
+							break;
+						}
 						Messages.sprintf(
 								"222driveInfo: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
 
@@ -251,6 +261,6 @@ public class ScanDrives {
 				}
 			};
 		}
-	};
 
+	};
 }

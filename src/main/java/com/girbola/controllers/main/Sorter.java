@@ -41,7 +41,7 @@ public class Sorter extends Task<Integer> {
 	protected Integer call() throws Exception {
 		if (!selectedList.isEmpty()) {
 			for (Path folder : selectedList) {
-				// sprintf("Adding folder: " + folder);
+				sprintf("Adding folder: " + folder);
 				if (Main.getProcessCancelled()) {
 					exec[getExecCounter()].shutdownNow();
 					break;

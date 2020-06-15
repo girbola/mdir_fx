@@ -175,11 +175,11 @@
 		</HBox>
 		<TableView fx:id="table" onMouseClicked="#handleMouseClicked" VBox.vgrow="ALWAYS">
 			<columns>
-				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
-				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="35.0" prefWidth="-1.0" resizable="false" sortable="false" />
-				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied" />
-				<TableColumn fx:id="dateFix_col" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" />
+				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
 				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
+				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
+				<TableColumn fx:id="copied_col" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="%copied" />
+				<TableColumn fx:id="dateFix_col" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" />
 				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%justFolderName" />
 				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
 				<TableColumn fx:id="badFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%badFiles" />
