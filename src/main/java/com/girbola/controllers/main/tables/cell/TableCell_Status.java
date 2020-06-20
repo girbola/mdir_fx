@@ -5,17 +5,14 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
 
 import javafx.scene.control.TableCell;
-import javafx.scene.paint.Color;
 
-public class TableCell_Status extends TableCell<FolderInfo,
-		Integer> {
+public class TableCell_Status extends TableCell<FolderInfo, Integer> {
 
-//	private Scene scene;
 	private Model_main model_main;
+	private int currentFilesTotal;
 
 	public TableCell_Status(Model_main model_main) {
 		this.model_main = model_main;
-
 	}
 
 	@Override
@@ -27,9 +24,27 @@ public class TableCell_Status extends TableCell<FolderInfo,
 		} else {
 			FolderInfo folderInfo = getTableView().getItems().get(getIndex());
 			if (folderInfo != null) {
-				setText(FolderInfoType.DONE.getType());
-				setTextFill(Color.BLUE);
-				setStyle("-fx-text-fill: white;");
+				if (folderInfo.getFileInfoList().size() > 0
+						&& folderInfo.getFileInfoList().size() == folderInfo.getCopied()
+						&& folderInfo.getBadFiles() == 0) {
+					setText(FolderInfoType.DONE.getType());
+					getStyleClass().add("tableCellStatus_DONE");
+				} else if (folderInfo.getFileInfoList().size() > 0 && folderInfo.getBadFiles() == 0) {
+					setText(FolderInfoType.READY.getType());
+					getStyleClass().add("tableCellStatus_READY");
+				} else {
+					int procentage = (int) Math.floor(
+							((double) folderInfo.getBadFiles() / (double) folderInfo.getFileInfoList().size()) * 100);
+					setText("" + procentage);
+					getStyleClass().add("tableCellStatus_BAD");
+				}
+				if (folderInfo.getFolderFiles() > 0) {
+					if (currentFilesTotal > folderInfo.getFolderFiles()) {
+						currentFilesTotal = folderInfo.getFolderFiles();
+						setText(FolderInfoType.ADD.getType());
+						getStyleClass().add("tableCellStatus_ADD");
+					}
+				}
 			} else {
 				setText(null);
 				setGraphic(null);

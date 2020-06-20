@@ -67,15 +67,13 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 			public void handle(KeyEvent e) {
 				if (e.getCode().equals(KeyCode.ENTER)) {
 //					setFocused(false);
-					textField.requestFocus();
+					textField.getParent().requestFocus();
 					Messages.sprintf("Enter pressed: " + e.getCode());
-				} else {
-					Messages.sprintf("Key pressed: " + e.getCode());
 				}
 			}
 		});
 		Messages.sprintf("createTextField: " + textField.getParent());
-		textField.getStyleClass().add("text-field");
+		textField.getStyleClass().add("tableTextField");
 
 		GUI_Events.textField_file_listener(textField);
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);

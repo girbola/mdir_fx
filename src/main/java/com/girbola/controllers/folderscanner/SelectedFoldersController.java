@@ -61,7 +61,7 @@ public class SelectedFoldersController {
 		
 		try {
 			model_folderScanner.getConnection().close();
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 //			Main.setProcessCancelled(true);
 		} catch (Exception e) {
 			Messages.sprintfError("Couldn't be able to close folderscanner connection");

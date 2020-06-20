@@ -89,9 +89,7 @@ public class Populate {
 				List<Path> list = null;
 				try {
 					list = createFileList.get();
-				} catch (InterruptedException ex) {
-					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-				} catch (ExecutionException ex) {
+				} catch (Exception ex) {
 					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 				}
 				if (list.isEmpty()) {

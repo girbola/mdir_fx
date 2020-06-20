@@ -15,6 +15,7 @@ import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
+import com.girbola.messages.Messages;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -50,7 +51,7 @@ public class Sorter extends Task<Integer> {
 				addToTable.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent event) {
-						// sprintf("Sorter done!");
+						 Messages.sprintf("addToTable Sorter done! " + folder);
 					}
 				});
 				addToTable.setOnFailed(new EventHandler<WorkerStateEvent>() {

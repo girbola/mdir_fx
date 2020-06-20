@@ -13,19 +13,19 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 	protected void updateItem(Integer item, boolean empty) {
 		super.updateItem(item, empty);
 		if (empty) {
-			setStyle("null");
+//			setStyle("null");
 			setGraphic(null);
 			setText(null);
 		} else {
 			FolderInfo folderInfo = (FolderInfo) getTableView().getItems().get(getIndex());
 			if (folderInfo == null || item == null) {
-				setStyle("null");
+//				setStyle("null");
 				setGraphic(null);
 				setText(null);
 				return;
 			}
 			if (folderInfo.getFileInfoList() == null) {
-				setStyle("null");
+//				setStyle("null");
 				setGraphic(null);
 				setText(null);
 				return;
@@ -43,10 +43,9 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 						setStyle("-fx-text-fill: yellow;");
 						setText("" + item);
 					} else {
-						setStyle("null");
+//						setStyle("null");
 						setGraphic(null);
 						setText(null);
-
 						Messages.sprintf("TableCellfolderInfo ELSE");
 					}
 				} else {
@@ -56,7 +55,7 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 					Messages.sprintf("folderInfo.getFileInfoList().size() == 0");
 				}
 			} else {
-				setStyle("null");
+//				setStyle("null");
 				setGraphic(null);
 				setText(null);
 			}

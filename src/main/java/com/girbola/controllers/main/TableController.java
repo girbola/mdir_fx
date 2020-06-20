@@ -560,7 +560,7 @@ public class TableController {
 		status_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getStatus()));
-		// status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
+		status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
 		suggested_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getSuggested()));
