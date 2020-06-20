@@ -41,6 +41,7 @@ public class SQL_Utils {
 	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " (path STRING PRIMARY KEY, connected BOOLEAN)";
 
+	
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
 	 * = ""; this.event = ""; this.location = ""; this.tags = ""; this.camera_model
