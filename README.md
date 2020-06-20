@@ -1,4 +1,4 @@
-** The project is not ready yet. Any harm caused by this program is at your own risk! **
+**This project is not fully completed. Any harm caused by this program is at your own risk**
 
 
 # MDir_FX
