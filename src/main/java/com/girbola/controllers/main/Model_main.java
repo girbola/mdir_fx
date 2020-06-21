@@ -129,7 +129,7 @@ public class Model_main {
 			Messages.warningText("model.getTables() were null!");
 		}
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
+				Main.conf.getFoldersState_db_fileName()); // folderInfo.db
 		try {
 			connection.setAutoCommit(false);
 		} catch (Exception e) {
@@ -138,7 +138,7 @@ public class Model_main {
 		}
 
 		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
-		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
+		SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
 		if (connection == null) {
 			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
 					Misc.getLineNumber(), true);
@@ -311,7 +311,7 @@ public class Model_main {
 
 	public void load() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
+				Main.conf.getFoldersState_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
 			TableUtils.clearTablesContents(tables());
 			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(

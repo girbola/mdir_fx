@@ -39,9 +39,9 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	protected Integer call() throws Exception {
 
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName()); // folderInfo.db
+				Main.conf.getFoldersState_db_fileName()); // folderInfo.db
 
-		SQL_Utils.createFolderInfoDatabase(connection); // create new folderinfodatabase folderInfo.db
+		SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
 		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
 
 		if (connection == null) {

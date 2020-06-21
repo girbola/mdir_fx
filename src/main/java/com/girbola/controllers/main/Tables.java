@@ -252,7 +252,7 @@ public class Tables {
 
 					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
 					Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-							Main.conf.getFolderInfo_db_fileName());
+							Main.conf.getFoldersState_db_fileName());
 
 					for (FolderInfo folderInfo : table_row_list) {
 						if (!folderInfo.getFolderPath()

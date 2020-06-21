@@ -21,7 +21,7 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	private Path appDataPath = Paths.get(System.getenv("APPDATA") + File.separator + programName);
 
 	private final String userHome = System.getProperty("user.home");
-	
+
 	private Path saveFolder = Paths.get(appDataPath.toString());
 	private String iniFile = appDataPath + File.separator + programName.toLowerCase() + "." + "dat";
 
@@ -36,12 +36,17 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	// private final String driveinfo_db_fileName = "driveinfo.db";
 	private final String selectedFolders_db_fileName = "selectedFolders.db";
 	private final String configuration_db_fileName = "configuration.db";
+	private final String foldersState_db_fileName = "foldersState.db";
 	private final String folderInfo_db_fileName = "folderInfo.db";
+	
+	public String getFolderInfo_db_fileName() {
+		return folderInfo_db_fileName;
+	}
+
 	private final String fileInfo_db_fileName = "fileInfo.db";
 	private final String thumbInfo_db_fileName = "thumbinfo.db";
 
 	private ObservableList<Path> ignoredFoldersScanList = FXCollections.observableArrayList();
-
 
 //    public final String getFolderInfo_FileName() {
 //	return folderInfo_FileName;
@@ -98,8 +103,8 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	/**
 	 * @return the folderInfo_db_fileName
 	 */
-	public final String getFolderInfo_db_fileName() {
-		return folderInfo_db_fileName;
+	public final String getFoldersState_db_fileName() {
+		return foldersState_db_fileName;
 	}
 
 	/**

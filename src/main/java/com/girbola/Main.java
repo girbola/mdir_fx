@@ -217,7 +217,7 @@ public class Main extends Application {
 				conf.loadConfig_GUI();
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
 				Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-						Main.conf.getFolderInfo_db_fileName());
+						Main.conf.getFoldersState_db_fileName());
 				if (SQL_Utils.isDbConnected(connection)) {
 					Messages.sprintf("Loading workdir content");
 					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, connection);

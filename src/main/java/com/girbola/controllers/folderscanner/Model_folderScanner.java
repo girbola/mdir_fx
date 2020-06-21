@@ -32,7 +32,7 @@ public class Model_folderScanner {
 	//	@SuppressWarnings("unused")
 	private Model_main model_main;
 
-	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 
 	private ScanDrives scanDrives;
 	private DrivesListHandler drivesListHandler = new DrivesListHandler();

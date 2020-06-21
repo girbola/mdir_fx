@@ -40,7 +40,7 @@ public class DrivesListHandler {
 	}
 
 	public boolean loadList(Model_folderScanner model_folderScanner) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 		boolean driveInfoLoaded = SQL_Utils.loadDriveInfo(connection, model_folderScanner);
 		if (driveInfoLoaded) {
 			return true;
@@ -54,9 +54,9 @@ public class DrivesListHandler {
 	}
 
 	public void saveList() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 		if(!SQL_Utils.isDbConnected(connection)) {
-			SQL_Utils.createFolderInfoDatabase(connection);
+			SQL_Utils.createFoldersStatesDatabase(connection);
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
 		SQL_Utils.addDriveInfo_list(connection, drivesList_obs);

@@ -25,7 +25,7 @@ import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
-public class SQL_Utils {
+public class SQL_Utils extends FolderInfo_SQL {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();
 
 	// @formatter:off
@@ -34,13 +34,12 @@ public class SQL_Utils {
 			+ "'orientation', " + "'image_0', " + "'image_1', " + "'image_2', " + "'image_3', "
 			+ "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
-	final static String folderInfoDatabaseSQL = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
+	final static String foldersStateDatabaseSQL = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERSSTATE.getType()
 			+ " (path STRING NOT NULL PRIMARY KEY, " + "justFolderName STRING, " + "tableType STRING NOT NULL, "
 			+ "connected BOOLEAN)";
 
 	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " (path STRING PRIMARY KEY, connected BOOLEAN)";
-
 	
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
@@ -61,13 +60,13 @@ public class SQL_Utils {
 
 	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
-	final static String folderInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FOLDERINFO.getType() + " ("
+	final static String foldersStateInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FOLDERSSTATE.getType() + " ("
 			+ "'path', " + "'tableType', " + "'justFolderName', " + "'connected')" + " VALUES(?,?,?,?)";
 
 	final static String insertDriveInfo = "INSERT OR REPLACE INTO " + SQL_Enums.DRIVEINFO.getType() + "('drivePath', "
 			+ "'identifier', " + "'totalSize', " + "'connected,' " + "'selected')" + " VALUES(?,?,?,?,?)";
 
-	private static String getFileInfoTable(String tableType) {
+	private static String getFileInfoTableSQL(String tableType) {
 		String sql = "CREATE TABLE IF NOT EXISTS " + tableType + fileInfoTableColumns();
 		return sql;
 	}
@@ -187,11 +186,11 @@ public class SQL_Utils {
 	}
 
 	/*
-	 * FolderInfo
+	 * FoldersStates
 	 */
-	public static boolean createFolderInfoDatabase(Connection connection) {
+	public static boolean createFoldersStatesDatabase(Connection connection) {
 		if (connection == null) {
-			Messages.sprintfError("Can't connect folderInfo.db!!");
+			Messages.sprintfError("Can't connect FoldersStates.db!!");
 			return false;
 		}
 		if (!isDbConnected(connection)) {
@@ -200,7 +199,7 @@ public class SQL_Utils {
 		}
 		try {
 			Statement stmt = connection.createStatement();
-			stmt.execute(folderInfoDatabaseSQL);
+			stmt.execute(foldersStateDatabaseSQL);
 			stmt.close();
 			return true;
 		} catch (Exception ex) {
@@ -211,7 +210,7 @@ public class SQL_Utils {
 
 	public static boolean createFolderInfoDatabase() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
+				Main.conf.getFoldersState_db_fileName());
 		if (connection == null) {
 			Messages.sprintfError("Can't connect folderInfo.db!!");
 		}
@@ -221,7 +220,7 @@ public class SQL_Utils {
 		}
 		try {
 			Statement stmt = connection.createStatement();
-			stmt.execute(folderInfoDatabaseSQL);
+			stmt.execute(foldersStateDatabaseSQL);
 			stmt.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -242,9 +241,9 @@ public class SQL_Utils {
 		if (connection == null) {
 			return false;
 		}
-		createFolderInfoDatabase(connection);
+		createFoldersStatesDatabase(connection);
 		try {
-			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
+			PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
 			pstmt.setString(1, folderInfo.getFolderPath());
 			pstmt.setString(2, folderInfo.getTableType());
 			pstmt.setString(3, folderInfo.getJustFolderName());
@@ -261,13 +260,13 @@ public class SQL_Utils {
 
 	public static boolean renameToFolderInfoDB(FolderInfo folderInfo, String previousName) {
 
-		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERINFO.getType() + "WHERE folderpath = " + previousName + ";";
+		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERSSTATE.getType() + "WHERE folderpath = " + previousName + ";";
 		try {
 			Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-					Main.conf.getFolderInfo_db_fileName());
+					Main.conf.getFoldersState_db_fileName());
 			connection.setAutoCommit(false);
 
-			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
+			PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
 			pstmt.setString(1, folderInfo.getFolderPath());
 			pstmt.setString(2, folderInfo.getTableType());
 			pstmt.setString(3, folderInfo.getJustFolderName());
@@ -283,7 +282,7 @@ public class SQL_Utils {
 		}
 	}
 
-	public static List<FolderInfo> loadFolderInfoTo_Tables(Connection connection, Model_main model_Main) {
+	public static List<FolderInfo> loadFoldersStateTo_Tables(Connection connection, Model_main model_Main) {
 		if (connection == null) {
 			Messages.sprintf("Not connected NULL!");
 		}
@@ -294,7 +293,7 @@ public class SQL_Utils {
 			return null;
 		}
 
-		String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
+		String sql = "SELECT * FROM " + SQL_Enums.FOLDERSSTATE.getType();
 		try {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -497,7 +496,7 @@ public class SQL_Utils {
 		}
 		try {
 			Statement stmt = connection.createStatement();
-			stmt.execute(getFileInfoTable(SQL_Enums.FILEINFO.getType()));
+			stmt.execute(getFileInfoTableSQL(SQL_Enums.FILEINFO.getType()));
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -911,26 +910,26 @@ public class SQL_Utils {
 
 	}
 
-	public String getRightTableFilename(String table) {
-		if (table.equals(SQL_Enums.FILEINFO.getType())) {
-			return Main.conf.getFileInfo_db_fileName();
-		} else if (table.equals(SQL_Enums.FOLDERINFO.getType())) {
-			return Main.conf.getFolderInfo_db_fileName();
-		} else if (table.equals(SQL_Enums.SELECTEDFOLDERS.getType())) {
-			return Main.conf.getSelectedFolders_db_fileName();
-		} else if (table.equals(SQL_Enums.THUMBINFO.getType())) {
-			return Main.conf.getThumbInfo_db_fileName();
-		}
-		return null;
-
-	}
+//	public String getRightTableFilename(String table) {
+//		if (table.equals(SQL_Enums.FILEINFO.getType())) {
+//			return Main.conf.getFileInfo_db_fileName();
+//		} else if (table.equals(SQL_Enums.FOLDERSSTATE.getType())) {
+//			return Main.conf.getFoldersState_db_fileName();
+//		} else if (table.equals(SQL_Enums.SELECTEDFOLDERS.getType())) {
+//			return Main.conf.getSelectedFolders_db_fileName();
+//		} else if (table.equals(SQL_Enums.THUMBINFO.getType())) {
+//			return Main.conf.getThumbInfo_db_fileName();
+//		} else {
+//			return null;
+//		}
+//	}
 
 	public static FolderInfo loadFolderInfo(Path path, String table, String value) {
 		Messages.sprintf("loadFolderInfo; " + path);
 		FolderInfo folderInfo = new FolderInfo();
 		try {
-			Connection connection = SqliteConnection.connector(path, Main.conf.getFolderInfo_db_fileName());
-			if (!SqliteConnection.tableExists(connection, Main.conf.getFolderInfo_db_fileName())) {
+			Connection connection = SqliteConnection.connector(path, Main.conf.getFoldersState_db_fileName());
+			if (!SqliteConnection.tableExists(connection, Main.conf.getFoldersState_db_fileName())) {
 				Messages.sprintf("loadFolderInfo TAble has NO data!");
 				return null;
 			}
@@ -1044,7 +1043,7 @@ public class SQL_Utils {
 		}
 		try {
 			Statement stmt = connection.createStatement();
-			stmt.execute(getFileInfoTable(SQL_Enums.WORKDIR.getType()));
+			stmt.execute(getFileInfoTableSQL(SQL_Enums.WORKDIR.getType()));
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();

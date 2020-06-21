@@ -220,9 +220,9 @@ public class MenuBarController {
 
 	private void loadTablesContents() {
 		if (Files.exists(
-				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFoldersState_db_fileName()))) {
 			Messages.sprintf("Folderinfo database foudn at appdata path: "
-					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()));
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getFoldersState_db_fileName()));
 			model_main.load();
 		}
 	}

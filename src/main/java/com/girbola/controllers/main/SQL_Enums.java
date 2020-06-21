@@ -10,7 +10,7 @@ public enum SQL_Enums {
 	WORKDIR("workdir"),
 	IGNOREDLIST("ignoredlist"),
 	CONFIG("config"),
-	TABLES_COLS("tables_cols");
+	TABLES_COLS("tables_cols"), FOLDERSSTATE("loadFolderStates");
 
 	private String type;
 

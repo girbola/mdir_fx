@@ -68,7 +68,7 @@ public class SelectedFoldersController {
 		}
 		
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
+				Main.conf.getFoldersState_db_fileName());
 		SQL_Utils.createSelectedFoldersTable(connection);
 
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection,
@@ -127,7 +127,7 @@ public class SelectedFoldersController {
 	private void removeFromTable(TableView<SelectedFolder> table) {
 		ArrayList<SelectedFolder> listToRemove = new ArrayList<>();
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
+				Main.conf.getFoldersState_db_fileName());
 
 		ObservableList<SelectedFolder> rows = table.getSelectionModel().getSelectedItems();
 		for (SelectedFolder rm : rows) {

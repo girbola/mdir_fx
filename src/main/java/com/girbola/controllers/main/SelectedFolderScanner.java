@@ -35,11 +35,11 @@ public class SelectedFolderScanner {
 	}
 
 	public void save_SelectedFolders_toSQL() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
-		SQL_Utils.createFolderInfoDatabase(connection);
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
+		SQL_Utils.createFoldersStatesDatabase(connection);
 		SQL_Utils.createSelectedFoldersTable(connection);
 		if(!SQL_Utils.isDbConnected(connection)) {
-			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getFolderInfo_db_fileName() + " database", null, Misc.getLineNumber(), false);
+			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getFoldersState_db_fileName() + " database", null, Misc.getLineNumber(), false);
 			return;
 		}
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
@@ -53,7 +53,7 @@ public class SelectedFolderScanner {
 	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 		if (connection == null) {
 			return false;
 		}
