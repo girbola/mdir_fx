@@ -170,7 +170,7 @@ public class Configuration_SQL_Utils {
 		Connection connection = null;
 
 		if (connection_open == null) {
-			connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
+			connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 		} else {
 			connection = connection_open;
 		}

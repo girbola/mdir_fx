@@ -83,8 +83,10 @@ public class FolderScannerController {
 		for (Path path : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			sprintf("Path is: " + path);
 			if (Files.exists(path)) {
-				if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
-					this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, path.toString()));
+				if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),
+						path)) {
+					this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
+							.add(new SelectedFolder(true, path.toString()));
 				}
 			}
 		}
@@ -123,13 +125,6 @@ public class FolderScannerController {
 	public void exit() {
 		model_folderScanner.getScanDrives().stop();
 		model_folderScanner.drive().saveList();
-		try {
-			if (model_folderScanner.getConnection() != null) {
-				model_folderScanner.getConnection().close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		folderScannerController_stage.close();
 	}
 

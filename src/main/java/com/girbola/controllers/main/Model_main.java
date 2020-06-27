@@ -28,6 +28,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDir_Handler;
@@ -129,7 +130,7 @@ public class Model_main {
 			Messages.warningText("model.getTables() were null!");
 		}
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName()); // folderInfo.db
+				Main.conf.getConfiguration_db_fileName()); // folderInfo.db
 		try {
 			connection.setAutoCommit(false);
 		} catch (Exception e) {
@@ -137,7 +138,7 @@ public class Model_main {
 			e.printStackTrace();
 		}
 
-		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
+		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderInfo.db
 		SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
 		if (connection == null) {
 			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
@@ -177,23 +178,32 @@ public class Model_main {
 		return true;
 	}
 
-	public boolean saveTableContent(Connection connection, ObservableList<FolderInfo> items, String tableType) {
+	public boolean saveTableContent(Connection connection_FoldersState, ObservableList<FolderInfo> items,
+			String tableType) {
 		if (items.isEmpty()) {
-			Messages.sprintfError("saveTableContent items list were empty!");
+			Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
 			return false;
 		}
-		if (connection == null) {
-			Messages.sprintfError("saveTablecontent connection error!!!");
+		if (connection_FoldersState == null) {
+			Messages.sprintfError("connection_FoldersState connection error!!!");
 			return false;
 		}
+		Connection foldersStateConnection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				SQL_Enums.FOLDERSSTATE.getType());
 
+		try {
+
+			foldersStateConnection.setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
 			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
 			folderInfo.setTableType(tableType);
 			try {
-				boolean addingFolderInfoSuccessfully = SQL_Utils.addToFolderInfoDB(connection, folderInfo);
-				if (!addingFolderInfoSuccessfully) {
+				boolean addingToFolderState = SQL_Utils.addToFolderStateDB(foldersStateConnection, folderInfo);
+				if (!addingToFolderState) {
 					Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
 				}
 				/*
@@ -206,10 +216,15 @@ public class Model_main {
 
 				// Inserts all data info fileinfo.db
 				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+				FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
 				if (fileList_connection != null) {
+					fileList_connection.commit();
 					fileList_connection.close();
 					Messages.sprintf(
 							"saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
+				} else {
+					Messages.sprintfError(
+							"ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath() + " FAILED! Closing connection");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -217,6 +232,14 @@ public class Model_main {
 						+ Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
 				return false;
 			}
+
+		}
+		try {
+			Messages.sprintf("foldersStateConnection.commit() " + " foldersStateConnection.close();");
+			foldersStateConnection.commit();
+			foldersStateConnection.close();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -311,7 +334,7 @@ public class Model_main {
 
 	public void load() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName());
+				Main.conf.getConfiguration_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
 			TableUtils.clearTablesContents(tables());
 			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(

@@ -35,9 +35,9 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		Messages.sprintf("Load_FileInfosBackToTableViews starts ");
 
 		if (!Files.exists(
-				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFoldersState_db_fileName()))) {
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
 			Messages.sprintf("Can't find "
-					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getFoldersState_db_fileName()));
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 			return false;
 		}
 

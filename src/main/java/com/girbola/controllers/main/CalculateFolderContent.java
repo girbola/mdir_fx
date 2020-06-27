@@ -113,14 +113,14 @@ public class CalculateFolderContent extends
 
 			FolderInfo loaded_FolderInfo = null;
 			try {
-				loaded_FolderInfo = SQL_Utils.loadFolderInfo(fileInfo_databaseFilePath.getParent(), SQL_Enums.FOLDERINFO.getType(),
-						Main.conf.getFoldersState_db_fileName());
+				loaded_FolderInfo = SQL_Utils.loadFoldersState(fileInfo_databaseFilePath.getParent(), SQL_Enums.FOLDERINFO.getType(),
+						Main.conf.getConfiguration_db_fileName());
 				//XMLFunctions.loadXMLData(thumbFilePath);
 				if (loaded_FolderInfo == null) {
 					Messages.sprintf("loaded_FolderInfo were null at: " + fileInfo_databaseFilePath + " Creating new one");
-					List<FileInfo> li = createFileInfo_list(folderInfo);
+					List<FileInfo> listOfFileInfos = createFileInfo_list(folderInfo);
 					loaded_FolderInfo = new FolderInfo(fileInfo_databaseFilePath.getParent());
-					folderInfo.setFileInfoList(li);
+					folderInfo.setFileInfoList(listOfFileInfos);
 					if (!folderInfo.getFileInfoList().isEmpty()) {
 						TableUtils.updateFolderInfos_FileInfo(folderInfo);
 						counter.set(counter.get() - 1);

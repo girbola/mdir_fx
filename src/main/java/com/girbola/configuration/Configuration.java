@@ -95,7 +95,7 @@ public class Configuration extends Configuration_defaults {
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);
-		SQL_Utils.createFolderInfoDatabase();
+		SQL_Utils.createFoldersStateDatabase();
 
 		try {
 			connection.close();

@@ -208,9 +208,9 @@ public class SQL_Utils extends FolderInfo_SQL {
 		}
 	}
 
-	public static boolean createFolderInfoDatabase() {
+	public static boolean createFoldersStateDatabase() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName());
+				Main.conf.getConfiguration_db_fileName());
 		if (connection == null) {
 			Messages.sprintfError("Can't connect folderInfo.db!!");
 		}
@@ -237,7 +237,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 	}
 
 	// @formatter:on
-	public static boolean addToFolderInfoDB(Connection connection, FolderInfo folderInfo) {
+	public static boolean addToFolderStateDB(Connection connection, FolderInfo folderInfo) {
 		if (connection == null) {
 			return false;
 		}
@@ -248,7 +248,6 @@ public class SQL_Utils extends FolderInfo_SQL {
 			pstmt.setString(2, folderInfo.getTableType());
 			pstmt.setString(3, folderInfo.getJustFolderName());
 			pstmt.setBoolean(4, folderInfo.isConnected());
-
 			pstmt.executeUpdate();
 			pstmt.close();
 			return true;
@@ -263,7 +262,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERSSTATE.getType() + "WHERE folderpath = " + previousName + ";";
 		try {
 			Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-					Main.conf.getFoldersState_db_fileName());
+					Main.conf.getConfiguration_db_fileName());
 			connection.setAutoCommit(false);
 
 			PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
@@ -375,7 +374,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 		try {
 			connection.setAutoCommit(false);
 			PreparedStatement pstmt = connection.prepareStatement(selectedFoldersInsert);
-			connection.setAutoCommit(false);
+			
 			for (SelectedFolder selectedFolder : selectedFolder_list) {
 				Messages.sprintf("select: " + selectedFolder.getFolder());
 				if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
@@ -579,19 +578,18 @@ public class SQL_Utils extends FolderInfo_SQL {
 				addToFileInfoDB(connection, pstmt, fileInfo);
 			}
 			pstmt.executeBatch();
+			pstmt.closeOnCompletion();
 			connection.commit();
 
 //			if (connection != null) {
 //				connection.close();
 //			}
-			if (pstmt != null) {
-				pstmt.close();
-			}
+			pstmt.close();
 			Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
 			return true;
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			Messages.sprintf("insertFileInfoListToDatabase tableCreated FAILED");
+			Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED");
 			return false;
 		}
 	}
@@ -910,27 +908,13 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 	}
 
-//	public String getRightTableFilename(String table) {
-//		if (table.equals(SQL_Enums.FILEINFO.getType())) {
-//			return Main.conf.getFileInfo_db_fileName();
-//		} else if (table.equals(SQL_Enums.FOLDERSSTATE.getType())) {
-//			return Main.conf.getFoldersState_db_fileName();
-//		} else if (table.equals(SQL_Enums.SELECTEDFOLDERS.getType())) {
-//			return Main.conf.getSelectedFolders_db_fileName();
-//		} else if (table.equals(SQL_Enums.THUMBINFO.getType())) {
-//			return Main.conf.getThumbInfo_db_fileName();
-//		} else {
-//			return null;
-//		}
-//	}
-
-	public static FolderInfo loadFolderInfo(Path path, String table, String value) {
-		Messages.sprintf("loadFolderInfo; " + path);
+	public static FolderInfo loadFoldersState(Path path, String table, String value) {
+		Messages.sprintf("loadFoldersState path is: " + path);
 		FolderInfo folderInfo = new FolderInfo();
 		try {
-			Connection connection = SqliteConnection.connector(path, Main.conf.getFoldersState_db_fileName());
-			if (!SqliteConnection.tableExists(connection, Main.conf.getFoldersState_db_fileName())) {
-				Messages.sprintf("loadFolderInfo TAble has NO data!");
+			Connection connection = SqliteConnection.connector(path, Main.conf.getConfiguration_db_fileName());
+			if (!SqliteConnection.tableExists(connection, Main.conf.getConfiguration_db_fileName())) {
+				Messages.sprintf("loadFolderInfo configuration table has NO data!");
 				return null;
 			}
 			String sql = "SELECT * FROM " + table + " WHERE path = " + value;

@@ -38,47 +38,48 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName()); // folderInfo.db
+		Connection connection_FoldersState = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getConfiguration_db_fileName()); // folderState.db
 
-		SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
-		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType()); // clear table folderInfo.db
+		SQL_Utils.createFoldersStatesDatabase(connection_FoldersState); // create new foldersStateDatabase folderState.db
+		SQL_Utils.clearTable(connection_FoldersState, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderState.db
 
-		if (connection == null) {
+		if (connection_FoldersState == null) {
 			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
 					Misc.getLineNumber(), true);
+			cancel();
 			return null;
 		}
 		long start = System.currentTimeMillis();
 		updateMessage("Loading Sorted");
-		boolean sorted = model_main.saveTableContent(connection, model_main.tables().getSorted_table().getItems(),
+		boolean sorted = model_main.saveTableContent(connection_FoldersState, model_main.tables().getSorted_table().getItems(),
 				TableType.SORTED.getType());
 		if (sorted) {
 			Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 		start = System.currentTimeMillis();
 		updateMessage("Loading SortIt");
-		boolean sortit = model_main.saveTableContent(connection, model_main.tables().getSortIt_table().getItems(),
+		boolean sortit = model_main.saveTableContent(connection_FoldersState, model_main.tables().getSortIt_table().getItems(),
 				TableType.SORTIT.getType());
 		if (sortit) {
 			Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 		start = System.currentTimeMillis();
 		updateMessage("Loading AsItIs");
-		boolean asitis = model_main.saveTableContent(connection, model_main.tables().getAsItIs_table().getItems(),
+		boolean asitis = model_main.saveTableContent(connection_FoldersState, model_main.tables().getAsItIs_table().getItems(),
 				TableType.ASITIS.getType());
 		if (asitis) {
 			Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
 
 		try {
-			if (connection != null) {
-				connection.close();
+			if (connection_FoldersState != null) {
+				connection_FoldersState.close();
 			}
 		} catch (Exception e) {
 			Main.setChanged(true);
 		} finally {
-			connection.close();
+			connection_FoldersState.close();
 		}
 		return null;
 	}

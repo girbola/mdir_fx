@@ -59,16 +59,9 @@ public class SelectedFoldersController {
 	private void selectedFolders_ok_action(ActionEvent event) {
 		model_folderScanner.getScanDrives().stop();
 		
-		try {
-			model_folderScanner.getConnection().close();
-			Thread.sleep(1000);
-//			Main.setProcessCancelled(true);
-		} catch (Exception e) {
-			Messages.sprintfError("Couldn't be able to close folderscanner connection");
-		}
-		
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName());
+				Main.conf.getConfiguration_db_fileName());
+		
 		SQL_Utils.createSelectedFoldersTable(connection);
 
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection,
@@ -127,7 +120,7 @@ public class SelectedFoldersController {
 	private void removeFromTable(TableView<SelectedFolder> table) {
 		ArrayList<SelectedFolder> listToRemove = new ArrayList<>();
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFoldersState_db_fileName());
+				Main.conf.getConfiguration_db_fileName());
 
 		ObservableList<SelectedFolder> rows = table.getSelectionModel().getSelectedItems();
 		for (SelectedFolder rm : rows) {

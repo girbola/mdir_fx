@@ -32,7 +32,7 @@ public class Model_folderScanner {
 	//	@SuppressWarnings("unused")
 	private Model_main model_main;
 
-	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
+//	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 
 	private ScanDrives scanDrives;
 	private DrivesListHandler drivesListHandler = new DrivesListHandler();
@@ -113,8 +113,8 @@ public class Model_folderScanner {
 		scanDrives = new ScanDrives(this.model_main, drives_rootItem, selectedDrivesFoldersList_obs, drivesListHandler, this);
 		scanDrives.restart();
 	}
-
-	public Connection getConnection() {
-		return connection;
-	}
+//
+//	public Connection getConnection() {
+//		return connection;
+//	}
 }
