@@ -159,7 +159,7 @@ public class Model_datefix {
 		this.currentFolderPath = aCurrentFolderPath;
 		Messages.sprintf("Model_datefix loading... " + currentFolderPath);
 		this.model_Main = model_Main;
-		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getFileInfo_db_fileName());
+		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
 		// this.thumbInfo_list = SQL_Utils.loadThumbInfo_list(this.connection);
 		// if (this.thumbInfo_list != null) {
 		// Messages.sprintf("thumbInfo_list were loaded!");

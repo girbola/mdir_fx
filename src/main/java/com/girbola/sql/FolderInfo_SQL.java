@@ -1,5 +1,7 @@
 package com.girbola.sql;
 
+import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -7,10 +9,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 
 public class FolderInfo_SQL {
@@ -68,17 +73,20 @@ public class FolderInfo_SQL {
 	+ "'tableType')"
 	+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+	/**
+	 * 
+	 * @param connection_mdirFile
+	 * @return
+	 */
 	//@formatter:on
-	private static Connection createFolderInfoTable(Path path) {
-		Connection connection = null;
+	private static boolean createFolderInfoTable(Connection connection_mdirFile) {
 		try {
-			connection = SqliteConnection.connector(path, SQL_Enums.FOLDERINFO.getType());
-			Statement stmt = connection.createStatement();
+			Statement stmt = connection_mdirFile.createStatement();
 			stmt.execute(folderInfoTable);
-			return connection;
+			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			return null;
+			return false;
 		}
 	}
 
@@ -95,9 +103,8 @@ public class FolderInfo_SQL {
 		return false;
 	}
 
-	private static void insertFolderInfo(Connection connection, FolderInfo folderInfo) {
+	private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
 		try {
-			connection.setAutoCommit(false);
 			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
 			pstmt.setInt(1, 0);
 			pstmt.setInt(2, folderInfo.getStatus());
@@ -121,21 +128,34 @@ public class FolderInfo_SQL {
 			pstmt.setString(20, folderInfo.getMinDate());
 			pstmt.setString(21, folderInfo.getState());
 			pstmt.setString(22, folderInfo.getTableType());
-			pstmt.executeBatch();
-			connection.commit();
+			pstmt.addBatch();
+			
+			int[] counter = pstmt.executeBatch();
+			Messages.sprintf("COUNTER WERE: " + counter.length);
 			pstmt.close();
+//			connection.commit();
+			return true;
 //			connection.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 
-	public static FolderInfo loadFolderInfo(Path path) {
+	public static FolderInfo loadFolderInfo(String path) {
+		Path src = Paths.get(path + File.separator + Main.conf.getMdir_db_fileName());
+		Messages.sprintf("loadFolderInfo src is: " + src);
+		if (!Files.exists(src)) {
+			return null;
+		}
 		FolderInfo folderInfo = null;
-		Connection connection = SqliteConnection.connector(path, Main.conf.getFileInfo_db_fileName());
+
+		Connection connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+//		createFolderInfoTable(src.getParent());
 
 		if (connection != null) {
 			try {
+				connection.setAutoCommit(false);
 				String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
 				Statement smtm = connection.createStatement();
 				ResultSet rs = smtm.executeQuery(sql);
@@ -161,9 +181,19 @@ public class FolderInfo_SQL {
 				String state = rs.getString("state");
 				String tableType = rs.getString("tableType");
 
+				List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
+
 				folderInfo = new FolderInfo();
+				if (fileInfo_list.isEmpty()) {
+					Messages.sprintf("FileInfo were empty!");
+					fileInfo_list = FileInfo_Utils.createFileInfo_list(folderInfo);
+					if (fileInfo_list.isEmpty()) {
+						Messages.sprintf("FileInfo creationg did not work this time or folder were empty.");
+					}
+				}
 				folderInfo.setChanged(changed);
 				folderInfo.setConnected(connected);
+				folderInfo.setFileInfoList(fileInfo_list);
 				folderInfo.setIgnored(ignored);
 				folderInfo.setDateDifferenceRatio(dateDifference);
 				folderInfo.setBadFiles(badFiles);
@@ -195,32 +225,27 @@ public class FolderInfo_SQL {
 		return null;
 	}
 
-	public static boolean saveFolderInfoToTable(FolderInfo folderInfo) {
-		Connection connection = createFolderInfoTable(Paths.get(folderInfo.getFolderPath()));
-		if (connection != null) {
-			insertFolderInfo(connection, folderInfo);
-			close(connection);
-			return true;
-		} else {
-			Messages.sprintfError("Something went wrong with creating FolderInfo table");
-			close(connection);
+	public static boolean saveFolderInfoToTable(Connection connection_mdirFile, FolderInfo folderInfo) {
+		boolean create = createFolderInfoTable(connection_mdirFile);
+		if (create) {
+			boolean insert = insertFolderInfo(connection_mdirFile, folderInfo);
+			if (!insert) {
+				return false;
+			} else {
+				return true;
+			}
 		}
-		close(connection);
 		return false;
-	}
-
-	public static boolean saveFolderInfoToTable(Connection aConnection, FolderInfo folderInfo) {
-		Connection connection = createFolderInfoTable(Paths.get(folderInfo.getFolderPath()));
-		try {
-			Statement stmt = connection.createStatement();
-			stmt.execute(folderInfoTable);
-			insertFolderInfo(connection, folderInfo);
-			connection.commit();
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			
-			return false;
-		}
+//		try {
+//			Statement stmt = connection_mdirFile.createStatement();
+//			stmt.execute(folderInfoTable);
+//			insertFolderInfo(connection_mdirFile, folderInfo);
+//			connection_mdirFile.commit();
+//			return true;
+//		} catch (Exception ex) {
+//			ex.printStackTrace();
+//
+//			return false;
+//		}
 	}
 }

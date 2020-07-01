@@ -28,7 +28,9 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.FolderState;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDir_Handler;
@@ -178,31 +180,21 @@ public class Model_main {
 		return true;
 	}
 
-	public boolean saveTableContent(Connection connection_FoldersState, ObservableList<FolderInfo> items,
+	public boolean saveTableContent(Connection connection_Configuration, ObservableList<FolderInfo> items,
 			String tableType) {
 		if (items.isEmpty()) {
 			Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
 			return false;
 		}
-		if (connection_FoldersState == null) {
-			Messages.sprintfError("connection_FoldersState connection error!!!");
-			return false;
-		}
-		Connection foldersStateConnection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				SQL_Enums.FOLDERSSTATE.getType());
-
-		try {
-
-			foldersStateConnection.setAutoCommit(false);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
 			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
 			folderInfo.setTableType(tableType);
 			try {
-				boolean addingToFolderState = SQL_Utils.addToFolderStateDB(foldersStateConnection, folderInfo);
+				FolderState folderState = new FolderState(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+				
+				boolean addingToFolderState = SQL_Utils.addToFolderStateDB(connection_Configuration, folderState);
 				if (!addingToFolderState) {
 					Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
 				}
@@ -212,10 +204,10 @@ public class Model_main {
 				 * or creates new one called fileinfo.db
 				 */
 				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-						Main.conf.getFileInfo_db_fileName());
-
+						Main.conf.getMdir_db_fileName());
+				fileList_connection.setAutoCommit(false);
 				// Inserts all data info fileinfo.db
-				SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+				FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
 				FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
 				if (fileList_connection != null) {
 					fileList_connection.commit();
@@ -223,8 +215,8 @@ public class Model_main {
 					Messages.sprintf(
 							"saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
 				} else {
-					Messages.sprintfError(
-							"ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath() + " FAILED! Closing connection");
+					Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
+							+ " FAILED! Closing connection");
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -236,8 +228,7 @@ public class Model_main {
 		}
 		try {
 			Messages.sprintf("foldersStateConnection.commit() " + " foldersStateConnection.close();");
-			foldersStateConnection.commit();
-			foldersStateConnection.close();
+			connection_Configuration.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

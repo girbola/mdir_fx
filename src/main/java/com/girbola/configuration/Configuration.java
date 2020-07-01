@@ -36,7 +36,6 @@ public class Configuration extends Configuration_defaults {
 
 	private Model_main model;
 
-	private Properties prop = new Properties();
 	private final String programName = "MDir - Image and Video Organizer";
 
 	protected SimpleDoubleProperty imageViewXProperty = new SimpleDoubleProperty(0);
@@ -95,7 +94,7 @@ public class Configuration extends Configuration_defaults {
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);
-		SQL_Utils.createFoldersStateDatabase();
+		SQL_Utils.createFoldersStatesDatabase(connection);
 
 		try {
 			connection.close();

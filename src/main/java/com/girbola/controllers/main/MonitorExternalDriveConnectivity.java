@@ -10,6 +10,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
@@ -122,7 +123,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 				if (!folderInfo.isConnected()) {
 					folderInfo.setConnected(true);
 					Messages.sprintf("===Updating folder exists: " + folderInfo.isConnected());
-					boolean loaded = SQL_Utils.loadFileInfoDatabase(folderInfo);
+					boolean loaded = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
 					if (!loaded) {
 						List<FileInfo> list = FileInfo_Utils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);

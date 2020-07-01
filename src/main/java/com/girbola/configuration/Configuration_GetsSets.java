@@ -36,15 +36,11 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	// private final String driveinfo_db_fileName = "driveinfo.db";
 	private final String selectedFolders_db_fileName = "selectedFolders.db";
 	private final String configuration_db_fileName = "configuration.db";
-	private final String foldersState_db_fileName = "foldersState.db";
-	private final String folderInfo_db_fileName = "folderInfo.db";
-	
-	public String getFolderInfo_db_fileName() {
-		return folderInfo_db_fileName;
-	}
+//	private final String foldersState_db_fileName = "foldersState.db";
+//	private final String folderInfo_db_fileName = "folderInfo.db";
 
-	private final String fileInfo_db_fileName = "fileInfo.db";
-	private final String thumbInfo_db_fileName = "thumbinfo.db";
+	private final String mdir_db_fileName = "mdir.db";
+//	private final String thumbInfo_db_fileName = "thumbinfo.db";
 
 	private ObservableList<Path> ignoredFoldersScanList = FXCollections.observableArrayList();
 
@@ -101,24 +97,10 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	}
 
 	/**
-	 * @return the folderInfo_db_fileName
-	 */
-	public final String getFoldersState_db_fileName() {
-		return foldersState_db_fileName;
-	}
-
-	/**
-	 * @return the thumbInfo_db_fileName
-	 */
-	public final String getThumbInfo_db_fileName() {
-		return thumbInfo_db_fileName;
-	}
-
-	/**
 	 * @return the fileInfo_db_fileName
 	 */
-	public final String getFileInfo_db_fileName() {
-		return fileInfo_db_fileName;
+	public final String getMdir_db_fileName() {
+		return mdir_db_fileName;
 	}
 
 	public String getSelectedFolders_db_fileName() {

@@ -26,6 +26,7 @@ import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -86,10 +87,10 @@ public class WorkDir_Handler {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
 		}
-		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getFileInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
 		if (connection != null) {
 			if (SQL_Utils.isDbConnected(connection)) {
-				List<FileInfo> fileInfo_list = SQL_Utils.loadFileInfoDatabase(connection);
+				List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				if (!fileInfo_list.isEmpty()) {
 					workDir_List.addAll(fileInfo_list);
 					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
@@ -109,9 +110,9 @@ public class WorkDir_Handler {
 	}
 
 	private void loadListFromWorkDir_To_List(String path) {
-		Connection connection = SqliteConnection.connector(Paths.get(path), Main.conf.getFileInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Paths.get(path), Main.conf.getMdir_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
-			List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+			List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 			if (!list.isEmpty()) {
 				workDir_List.addAll(list);
 			}
@@ -168,11 +169,11 @@ public class WorkDir_Handler {
 		try {
 			destionationPath = Paths.get(Main.conf.getWorkDir() + File.separator);
 			if (Files.exists(destionationPath)) {
-				connection = SqliteConnection.connector(destionationPath, Main.conf.getFileInfo_db_fileName());
+				connection = SqliteConnection.connector(destionationPath, Main.conf.getMdir_db_fileName());
 			}
 			if (connection != null) {
 				if (SQL_Utils.isDbConnected(connection)) {
-					boolean inserting = SQL_Utils.insertFileInfoListToDatabase(connection, workDir_List, true);
+					boolean inserting = FileInfo_SQL.insertFileInfoListToDatabase(connection, workDir_List, true);
 					if (inserting) {
 						Messages.sprintf("Insert worked!");
 					} else {

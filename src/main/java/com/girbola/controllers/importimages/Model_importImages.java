@@ -50,8 +50,7 @@ class Model_importImages {
 
 	public Model_importImages(Path currentFolderPath) {
 		this.currentFolderPath = currentFolderPath;
-		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getThumbInfo_db_fileName());
-		
+		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
 	}
 
 	private final String ERROR = Model_importImages.class.getSimpleName();

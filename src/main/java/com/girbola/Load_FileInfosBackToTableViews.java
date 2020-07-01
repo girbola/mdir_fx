@@ -7,7 +7,6 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.girbola.controllers.main.Model_main;
@@ -16,6 +15,9 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.FolderState;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -41,27 +43,34 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			return false;
 		}
 
-		List<FolderInfo> folderInfo_list = SQL_Utils.loadFoldersStateTo_Tables(connection, model_main);
+		List<FolderState> folderState_list = SQL_Utils.loadFoldersStateTo_Tables(connection, model_main);
 		if (connection == null) {
 			Messages.sprintf("Connection were null at " + Load_FileInfosBackToTableViews.class.getName());
 			return false;
 		}
-		if (folderInfo_list.isEmpty()) {
+		if (folderState_list.isEmpty()) {
 			Messages.sprintf("folderInfo_list were empty" + Load_FileInfosBackToTableViews.class.getName());
 			return false;
 		}
-		if (!folderInfo_list.isEmpty()) {
-			for (FolderInfo folderInfo : folderInfo_list) {
+		if (!folderState_list.isEmpty()) {
+			for (FolderState folderState : folderState_list) {
+				FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderState.getPath());
+				boolean loadFileInfoIntoFolderInfo = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
+				if (!loadFileInfoIntoFolderInfo) {
+					Messages.sprintfError("Something went wrong with loading folderstates!");
+					cancel();
+					Main.setProcessCancelled(true);
+				}
 
-				if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
+				if (folderState.getTableType().equals(TableType.SORTIT.getType())) {
 					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSortIt_table().getItems().add(folderInfo);
 					}
-				} else if (folderInfo.getTableType().equals(TableType.SORTED.getType())) {
+				} else if (folderState.getTableType().equals(TableType.SORTED.getType())) {
 					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSorted_table().getItems().add(folderInfo);
 					}
-				} else if (folderInfo.getTableType().equals(TableType.ASITIS.getType())) {
+				} else if (folderState.getTableType().equals(TableType.ASITIS.getType())) {
 					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getAsItIs_table().getItems().add(folderInfo);
 					}
@@ -69,28 +78,30 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 					Messages.sprintf("TableType were unknown!");
 				}
 			}
+		} else {
+			if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getSortIt_table().getItems());
+			}
+			if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getSorted_table().getItems());
+			}
+			if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getAsItIs_table().getItems());
+			}
 		}
-		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getSortIt_table().getItems());
-		}
-		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getSorted_table().getItems());
-		}
-		if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
-			populateTable(model_main.tables().getAsItIs_table().getItems());
-		}
-		
+
 		return true;
 	}
 
 	private boolean populateTable(List<FolderInfo> folderInfo_list) {
 
-		for(FolderInfo folderInfo : folderInfo_list) {
-			if(folderInfo.getFolderPath().equals("C:\\Users\\marko_000\\Pictures\\2018\\Väinön rippijuhlat\\Väinön kuvat UUDET\\Editoi")) {
+		for (FolderInfo folderInfo : folderInfo_list) {
+			if (folderInfo.getFolderPath()
+					.equals("C:\\Users\\marko_000\\Pictures\\2018\\Väinön rippijuhlat\\Väinön kuvat UUDET\\Editoi")) {
 				Messages.sprintf("Väinö found!");
 			}
 			boolean addTable = populateTable(folderInfo);
-			if(!addTable) {
+			if (!addTable) {
 				Messages.sprintf("Skipping folder scan: " + folderInfo.getFolderPath());
 			}
 		}
@@ -110,15 +121,15 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 			if (Files.exists(path)) {
 				Messages.sprintf("Populating: " + path);
 				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-						Main.conf.getFileInfo_db_fileName());
-				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+						Main.conf.getMdir_db_fileName());
+				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				int counter = 0;
 				List<FileInfo> fileInfoList = new ArrayList<>();
 
 				if (!list.isEmpty()) {
 //					Messages.sprintf("FolderInfo loading: " + folderInfo.getFolderPath() + " files == " + list.size());
 					for (FileInfo fileInfo : list) {
-						if (fileInfo.isTableDuplicated() ||fileInfo.isIgnored()) {
+						if (fileInfo.isTableDuplicated() || fileInfo.isIgnored()) {
 							counter++;
 						} else {
 							fileInfoList.add(fileInfo);

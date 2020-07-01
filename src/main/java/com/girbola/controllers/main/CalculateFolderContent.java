@@ -24,6 +24,7 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 
 import javafx.beans.property.IntegerProperty;
@@ -35,8 +36,7 @@ import javafx.scene.control.TableView;
  *
  * @author Marko Lokka
  */
-public class CalculateFolderContent extends
-		Task<Void> {
+public class CalculateFolderContent extends Task<Void> {
 
 	private final String ERROR = CalculateFolderContent.class.getSimpleName();
 
@@ -56,70 +56,71 @@ public class CalculateFolderContent extends
 		return null;
 	}
 
-	private void init() {
-		if (Main.getProcessCancelled()) {
-			return;
-		}
-		updateMessage(": SortIt");
-		// lpt.setMessage("SortIt");
-		for (FolderInfo folderInfo : model.tables().getSortIt_table().getItems()) {
-			sprintf("sortit createFileInfo_list: " + folderInfo.getFolderPath());
-			if (Main.getProcessCancelled()) {
-				cancel();
-				break;
-			}
-			handleFolderInfo(folderInfo, model.tables().getSortIt_table());
-			folderInfo.setTableType(TableType.SORTIT.getType());
-		}
-		TableUtils.refreshTableContent(model.tables().getSortIt_table());
+	private void loopFolderInfos(final String tableType) {
+		TableView<FolderInfo> tableView;
 
 		if (Main.getProcessCancelled()) {
 			cancel();
 			return;
 		}
-		sprintf("Starting Sorted");
-		updateMessage(" Sorted");
-		for (FolderInfo folderInfo : model.tables().getSorted_table().getItems()) {
-			sprintf("sorted createFileInfo_list: " + folderInfo.getFolderPath());
-			if (Main.getProcessCancelled()) {
-				cancel();
-				break;
-			}
-			handleFolderInfo(folderInfo, model.tables().getSorted_table());
-			folderInfo.setTableType(TableType.SORTED.getType());
-		}
-		TableUtils.refreshTableContent(model.tables().getSorted_table());
-		if (Main.getProcessCancelled()) {
+		if (tableType.equals(TableType.SORTED.getType())) {
+			tableView = model.tables().getSorted_table();
+		} else if (tableType.equals(TableType.SORTIT.getType())) {
+			tableView = model.tables().getSortIt_table();
+		} else if (tableType.equals(TableType.ASITIS.getType())) {
+			tableView = model.tables().getAsItIs_table();
+		} else {
+			Messages.errorSmth(ERROR, "Can't find Tabletype: " + tableType, null, Misc.getLineNumber(), true);
 			return;
 		}
-		for (FolderInfo folderInfo : model.tables().getAsItIs_table().getItems()) {
-			sprintf("asitis createFileInfo_list: " + folderInfo.getFolderPath());
-
+		for (FolderInfo folderInfo : tableView.getItems()) {
+			sprintf("tableType is: " + tableType + " createFileInfo_list: " + folderInfo.getFolderPath());
 			if (Main.getProcessCancelled()) {
 				cancel();
 				break;
 			}
-			handleFolderInfo(folderInfo, model.tables().getAsItIs_table());
-			folderInfo.setTableType(TableType.ASITIS.getType());
+			handleFolderInfo(folderInfo, tableView);
+			folderInfo.setTableType(tableType);
 		}
-		TableUtils.refreshTableContent(model.tables().getAsItIs_table());
-
+		TableUtils.refreshTableContent(tableView);
 	}
-	
+
+	private void init() {
+		checkIFCancelled();
+		updateMessage(TableType.SORTIT.getType());
+		loopFolderInfos(TableType.SORTIT.getType());
+		
+		checkIFCancelled();
+		updateMessage(TableType.SORTED.getType());
+		loopFolderInfos(TableType.SORTED.getType());
+		
+		checkIFCancelled();
+		updateMessage(TableType.ASITIS.getType());
+		loopFolderInfos(TableType.ASITIS.getType());
+		checkIFCancelled();
+	}
+
+	private void checkIFCancelled() {
+		if (Main.getProcessCancelled()) {
+			cancel();
+			return;
+		}
+	}
+
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
-		Path fileInfo_databaseFilePath = Paths.get(folderInfo.getFolderPath() + File.separator + conf.getFileInfo_db_fileName());
-		Messages.sprintf("handleFolderInfo trying to find folderinfo path: " + fileInfo_databaseFilePath);
-		if (Files.exists(fileInfo_databaseFilePath)) {
+		Path mdirDatabaseFilePath = Paths
+				.get(folderInfo.getFolderPath() + File.separator + conf.getMdir_db_fileName());
+		Messages.sprintf("handleFolderInfo trying to find folderinfo path: " + mdirDatabaseFilePath);
+		if (Files.exists(mdirDatabaseFilePath)) {
 
 			FolderInfo loaded_FolderInfo = null;
 			try {
-				loaded_FolderInfo = SQL_Utils.loadFoldersState(fileInfo_databaseFilePath.getParent(), SQL_Enums.FOLDERINFO.getType(),
-						Main.conf.getConfiguration_db_fileName());
-				//XMLFunctions.loadXMLData(thumbFilePath);
-				if (loaded_FolderInfo == null) {
-					Messages.sprintf("loaded_FolderInfo were null at: " + fileInfo_databaseFilePath + " Creating new one");
+				loaded_FolderInfo = SQL_Utils.loadFolderInfoCurrentDir(mdirDatabaseFilePath.getParent());
+			if (loaded_FolderInfo == null) {
+					Messages.sprintf(
+							"loaded_FolderInfo were null at: " + mdirDatabaseFilePath + " Creating new one");
 					List<FileInfo> listOfFileInfos = createFileInfo_list(folderInfo);
-					loaded_FolderInfo = new FolderInfo(fileInfo_databaseFilePath.getParent());
+					loaded_FolderInfo = new FolderInfo(mdirDatabaseFilePath.getParent());
 					folderInfo.setFileInfoList(listOfFileInfos);
 					if (!folderInfo.getFileInfoList().isEmpty()) {
 						TableUtils.updateFolderInfos_FileInfo(folderInfo);
@@ -151,7 +152,7 @@ public class CalculateFolderContent extends
 				TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				Messages.sprintf("folderInfo were not zero: " + folderInfo.getFolderPath());
 			} else {
-				Messages.sprintf("folderInfo were were zero: " + fileInfo_databaseFilePath);
+				Messages.sprintf("folderInfo were were zero: " + mdirDatabaseFilePath);
 			}
 			counter.set(counter.get() - 1);
 			updateProgress(counter.get(), total.get());

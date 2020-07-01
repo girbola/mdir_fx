@@ -11,6 +11,7 @@ import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -38,7 +39,7 @@ public class WorkDir_Loader {
 			return;
 		}
 		Connection connection = SqliteConnection.connector(workDir, SQL_Enums.WORKDIR.getType());
-		if (fileInfo_list.addAll(SQL_Utils.loadFileInfoDatabase(connection))) {
+		if (fileInfo_list.addAll(FileInfo_SQL.loadFileInfoDatabase(connection))) {
 			Messages.sprintf("workDir loaded: " + workDir);
 		} else {
 			Messages.sprintf("Can't find current workDir: " + workDir);

@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
@@ -28,7 +29,7 @@ import com.girbola.dialogs.YesNoCancelDialogController;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
@@ -195,7 +196,7 @@ public class OperateFiles extends Task<Boolean> {
 
 				if (Files.exists(dest)) {
 					boolean renamed = rename(fileInfo, dest);
-					
+
 					if (renamed) {
 						STATE = Copy_State.RENAME.getType();
 					} else {
@@ -302,8 +303,7 @@ public class OperateFiles extends Task<Boolean> {
 								model_operate.getCopyProcess_values().increaseDuplicated_tmp();
 							});
 							fileInfo.setCopied(true);
-						}  
-						else {
+						} else {
 							sprintf("STATE ERROR! : " + STATE);
 						}
 					} catch (Exception ex) {
@@ -595,10 +595,20 @@ public class OperateFiles extends Task<Boolean> {
 				try {
 
 					Connection connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
-							Main.conf.getFileInfo_db_fileName());
+							Main.conf.getMdir_db_fileName());
 					connection.setAutoCommit(false);
 //					listCopiedFiles
-					SQL_Utils.insertFileInfoListToWorkdirDatabase(connection, listCopiedFiles, true);
+					boolean inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
+					if (!inserted) {
+						connection.close();
+						connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
+								Main.conf.getMdir_db_fileName() + new Date().toString());
+						inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
+						if (!inserted) {
+							Messages.errorSmth(ERROR, "Can't save to destination dir", null, Misc.getLineNumber(),
+									true);
+						}
+					}
 //					boolean clean = model_main.getWorkDir_Handler().cleanDatabase(connection);
 //					if (clean) {
 //						Messages.sprintf("clean is done succeeded");
