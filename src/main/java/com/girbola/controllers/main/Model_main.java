@@ -334,7 +334,7 @@ public class Model_main {
 			Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
 			load_thread.start();
 		} else {
-			Messages.sprintf("Loading folderinfos back to tables was empty");
+			Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
 		}
 	}
 
