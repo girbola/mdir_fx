@@ -40,6 +40,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -68,13 +69,13 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.converter.NumberStringConverter;
 
 public class TableController {
 
@@ -85,6 +86,8 @@ public class TableController {
 	private final String ERROR = TableController.class.getSimpleName();
 
 	private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
+
+	private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
 
 	@FXML
 	private TextField tableDescription_tf;
@@ -119,13 +122,13 @@ public class TableController {
 	@FXML
 	private Button resetSelectedFileInfos_btn;
 	@FXML
-	private Label allFilesCopied;
+	private Label allFilesCopied_lbl;
 
 	@FXML
-	private Label allFilesTotal;
+	private Label allFilesTotal_lbl;
 
 	@FXML
-	private Label allFilesSize;
+	private Label allFilesSize_lbl;
 
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
@@ -141,7 +144,6 @@ public class TableController {
 	private Tooltip select_dateDifference_tooltip;
 	@FXML
 	private Tooltip tableDescription_tf_tooltip;
-
 	@FXML
 	private Tooltip mergeCopy_btn_tooltip;
 
@@ -154,6 +156,19 @@ public class TableController {
 
 	@FXML
 	private MenuItem checkChanges_mi;
+
+	public Label getAllFilesCopied_lbl() {
+		return allFilesCopied_lbl;
+	}
+
+	public Label getAllFilesTotal_lbl() {
+		return allFilesTotal_lbl;
+	}
+
+	public Label getAllFilesSize_lbl() {
+		return allFilesSize_lbl;
+	}
+
 	@FXML
 	private MenuItem reload_all_mi;
 
@@ -384,7 +399,7 @@ public class TableController {
 
 	@FXML
 	private void reload_btn_action(ActionEvent event) {
-
+		Messages.warningText("No methods for reload btn");
 		// model_main.getTables().updateFolderInfoFileInfo(table);
 	}
 
@@ -426,6 +441,18 @@ public class TableController {
 
 	public HBox getButtons_HBOX() {
 		return this.buttons_hbox;
+	}
+
+	public Label allFilesTotal_label() {
+		return this.allFilesTotal_lbl;
+	}
+
+	public Label allFilesCopied_label() {
+		return this.allFilesCopied_lbl;
+	}
+
+	public Label allFilesSize_label() {
+		return this.allFilesSize_lbl;
 	}
 
 	private String tableType;
@@ -472,6 +499,29 @@ public class TableController {
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getJustFolderName()));
 		justFolderName_col.setCellFactory(model_main.tables().textFieldEditingCellFactory);
+
+		allFilesTotal_lbl.textProperty().bindBidirectional(allFilesTotal_obs, new NumberStringConverter());
+//		data_obs.addListener(new ListChangeListener<FolderInfo>() {
+//
+//			@Override
+//			public void onChanged(Change<? extends FolderInfo> c) {
+//				if (c != null) {
+//					while (c.next()) {
+//						if (c.wasPermutated() || c.wasAdded() || c.wasUpdated()) {
+//							FolderInfo fo = (FolderInfo) c.getList();
+//							if (fo != null) {
+//
+//								if (fo.getFolderFiles() > 0) {
+//									Messages.sprintf("change c: " + c.toString());
+//									allFilesTotal_obs.set(fo.getFolderFiles());
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}
+//
+//		});
 //		justFolderName_col.setCellFactory(TextFieldTableCell.forTableColumn());
 //		justFolderName_col.setOnEditStart(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
 //
@@ -492,7 +542,7 @@ public class TableController {
 //
 //			}
 //		});
-		
+
 		justFolderName_col.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<FolderInfo, String>>() {
 
 			@Override
@@ -504,7 +554,7 @@ public class TableController {
 					Path dest = Paths
 							.get(src.getParent().toString() + File.separator + event.getRowValue().getJustFolderName());
 					if (Files.exists(dest)) {
-						 event.getRowValue().setJustFolderName(event.getOldValue());
+						event.getRowValue().setJustFolderName(event.getOldValue());
 						Messages.sprintf("");
 						return;
 					}

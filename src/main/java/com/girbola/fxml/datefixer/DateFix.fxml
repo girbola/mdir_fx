@@ -390,6 +390,7 @@
 																				<Button layoutX="82.0" layoutY="94.0" mnemonicParsing="false" onAction="#setBadDate_btn_action" text="Set bad date" GridPane.columnIndex="3" GridPane.rowIndex="2" />
 																				<Button mnemonicParsing="false" onAction="#setModifiedDate_btn_action" text="Set modified date" GridPane.columnIndex="3" GridPane.rowIndex="3" />
 																				<Button fx:id="setDateAsFileName_btn" mnemonicParsing="false" onAction="#setDateAsFileName_btn_action" text="%setDateTimeRange" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                            <Button fx:id="touchFileNameWithDate_btn1" mnemonicParsing="false" onAction="#touchFileNameWithDate_btn_action" text="Touch fillename to date" GridPane.columnIndex="2" GridPane.rowIndex="2" />
 																			</children>
 																		</GridPane>
 																	</children>

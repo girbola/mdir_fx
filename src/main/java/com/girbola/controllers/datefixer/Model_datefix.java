@@ -17,6 +17,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -134,7 +135,6 @@ public class Model_datefix {
 		this.rightInfo_visible.set(value);
 	}
 
-	
 	private ObservableList<Node> allNodes = FXCollections.observableArrayList();
 	private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
 	private CssStylesController cssStyles = new CssStylesController();
@@ -748,6 +748,42 @@ public class Model_datefix {
 							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 					tf.setStyle(CssStylesController.getModified_style());
 				}
+			}
+		}
+	}
+
+	public void touchFileNameWithDate() {
+		sprintf("touchFileNameWithDate pressed");
+		if (getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		for (Node node : getSelectionModel().getSelectionList()) {
+			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+			FileInfo fileInfo = (FileInfo) node.getUserData();
+			if (fileInfo != null) {
+				File file = new File(fileInfo.getOrgPath());
+				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
+						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+				TextField tf = getTextField(node);
+				Path target = Paths.get(fileInfo.getOrgPath());
+				Path source = Paths.get(target.getRoot().toString() + tf);
+				try {
+					Path newPath = FileUtils.renameFile(target, source);
+					if (newPath != null) {
+						fileInfo.setOrgPath(source.toString());
+						tf.setText("" + source.getFileName());
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+//				if (tf != null) {
+//					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
+//							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+//					tf.setStyle(CssStylesController.getModified_style());
+//				}
 			}
 		}
 	}

@@ -36,6 +36,7 @@ import com.girbola.configuration.Configuration;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -235,6 +236,7 @@ public class Main extends Application {
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
+							TableUtils.refreshAllTableContent(model_main.tables());
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
 							model_main.getMonitorExternalDriveConnectivity().restart();
 							boolean loaded = model_main.getWorkDir_Handler()
@@ -294,6 +296,7 @@ public class Main extends Application {
 									}
 								}
 							});
+							TableUtils.sumUp(model_main);
 //							Main.conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							Main.conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}

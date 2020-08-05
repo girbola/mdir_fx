@@ -158,6 +158,8 @@ public class DateFixerController {
 	@FXML
 	private Button lastModified_date_btn;
 	@FXML
+	private Button touchFileNameWithDate_btn;
+	@FXML
 	private Button retrieveFileInfos_btn;
 	@FXML
 	private Button select_btn;
@@ -521,6 +523,10 @@ public class DateFixerController {
 		model_datefix.restoreLastModified();
 	}
 
+	@FXML
+	private void touchFileNameWithDate_btn_action(ActionEvent event) {
+		model_datefix.touchFileNameWithDate();
+	}
 	@FXML
 	private void setDateAsFileName_btn_action(ActionEvent event) {
 		model_datefix.dateAsFileName();

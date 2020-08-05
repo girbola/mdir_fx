@@ -7,7 +7,6 @@
 package com.girbola.controllers.main;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.fileinfo.FileInfo_Utils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
@@ -15,14 +14,10 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
-import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.cell.TableCell_Connected;
 import com.girbola.controllers.main.tables.cell.TableCell_Copied;
 import com.girbola.controllers.main.tables.cell.TableCell_DateDifference_Status;
@@ -30,7 +25,6 @@ import com.girbola.controllers.main.tables.cell.TableCell_DateFixer;
 import com.girbola.controllers.main.tables.cell.TableCell_ProgressBar;
 import com.girbola.controllers.main.tables.cell.TableCell_Status;
 import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SqliteConnection;
@@ -38,14 +32,11 @@ import com.girbola.sql.SqliteConnection;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -74,11 +65,16 @@ public class Tables {
 	private Model_main model_Main;
 
 	private HideButtons hideButtons;
+	private TableStatistic tableStatistic;
 	private Sorter sorter;
 
 	private TableView<FolderInfo> sortIt_table;
 	private TableView<FolderInfo> sorted_table;
 	private TableView<FolderInfo> asitis_table;
+
+	private TableStatistic sortit_TableStatistic;
+	private TableStatistic sorted_TableStatistic;
+	private TableStatistic asitis_TableStatistic;
 
 	private HBox tables_container;
 
@@ -489,4 +485,31 @@ public class Tables {
 		getAsItIs_table().getItems().removeListener(listener);
 	}
 
+	public TableStatistic getSortit_TableStatistic() {
+		return this.sortit_TableStatistic;
+	}
+
+	public TableStatistic getSorted_TableStatistic() {
+		return this.sorted_TableStatistic;
+	}
+
+	public TableStatistic getAsItIs_TableStatistic() {
+		return this.asitis_TableStatistic;
+	}
+
+	public TableStatistic getAsitis_TableStatistic() {
+		return asitis_TableStatistic;
+	}
+
+	public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
+		this.asitis_TableStatistic = asitis_TableStatistic;
+	}
+
+	public void setSortit_TableStatistic(TableStatistic sortit_TableStatistic) {
+		this.sortit_TableStatistic = sortit_TableStatistic;
+	}
+
+	public void setSorted_TableStatistic(TableStatistic sorted_TableStatistic) {
+		this.sorted_TableStatistic = sorted_TableStatistic;
+	}
 }

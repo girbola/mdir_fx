@@ -717,4 +717,64 @@ public class TableUtils {
 			updateFolderInfos_FileInfo(folderInfo);
 		}
 	}
+
+	public static void sumUp(Model_main model_main) {
+
+//		
+//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
+//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
+//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
+//		
+//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
+//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
+//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
+//		
+//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
+//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
+//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
+//		
+//		int sumAllSorted = model_main.tables().sorted_TableStatistic();
+//		int sumAllSortIt = model_main.tables().sortit_TableStatistic();
+//		int sumAllAsItIs = model_main.tables().asitis_TableStatistic();
+
+		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+			model_main.tables().getSortit_TableStatistic().setTotalFiles(
+					model_main.tables().getSortit_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
+			model_main.tables().getSortit_TableStatistic()
+					.setTotalFilesCopied(model_main.tables().getSortit_TableStatistic().getTotalFilesCopied().get()
+							+ folderInfo.getCopied());
+
+			model_main.tables().getSortit_TableStatistic()
+					.setTotalFilesSize(model_main.tables().getSortit_TableStatistic().getTotalFilesSize().get()
+							+ folderInfo.getFolderSize());
+		}
+		for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
+			model_main.tables().getSorted_TableStatistic().setTotalFiles(
+					model_main.tables().getSorted_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
+			model_main.tables().getSorted_TableStatistic()
+					.setTotalFilesCopied(model_main.tables().getSorted_TableStatistic().getTotalFilesCopied().get()
+							+ folderInfo.getCopied());
+
+			model_main.tables().getSorted_TableStatistic()
+					.setTotalFilesSize(model_main.tables().getSorted_TableStatistic().getTotalFilesSize().get()
+							+ folderInfo.getFolderSize());
+		}
+		for (FolderInfo folderInfo : model_main.tables().getAsItIs_table().getItems()) {
+			model_main.tables().getAsItIs_TableStatistic().setTotalFiles(
+					model_main.tables().getAsItIs_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
+			model_main.tables().getAsItIs_TableStatistic()
+					.setTotalFilesCopied(model_main.tables().getAsItIs_TableStatistic().getTotalFilesCopied().get()
+							+ folderInfo.getCopied());
+
+			model_main.tables().getAsItIs_TableStatistic()
+					.setTotalFilesSize(model_main.tables().getAsItIs_TableStatistic().getTotalFilesSize().get()
+							+ folderInfo.getFolderSize());
+		}
+
+	}
+
+	private static int getTableTotalFiles(TableView<FolderInfo> sortIt_table) {
+
+		return 0;
+	}
 }

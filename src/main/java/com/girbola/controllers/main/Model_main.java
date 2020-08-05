@@ -73,6 +73,34 @@ public class Model_main {
 	private List<ThumbInfo> thumbInfo = new ArrayList<>();
 	private ScheduledService<Void> monitorExternalDriveConnectivity;
 
+	private TableStatistic sortitTableStatistic; 
+	private TableStatistic sortedTableStatistic ;
+	private TableStatistic asitisTableStatistic;
+	
+	public TableStatistic getSortitTableStatistic() {
+		return sortitTableStatistic;
+	}
+
+	public void setSortitTableStatistic(TableStatistic sortitTableStatistic) {
+		this.sortitTableStatistic = sortitTableStatistic;
+	}
+
+	public TableStatistic getSortedTableStatistic() {
+		return sortedTableStatistic;
+	}
+
+	public void setSortedTableStatistic(TableStatistic sortedTableStatistic) {
+		this.sortedTableStatistic = sortedTableStatistic;
+	}
+
+	public TableStatistic getAsitisTableStatistic() {
+		return asitisTableStatistic;
+	}
+
+	public void setAsitisTableStatistic(TableStatistic asitisTableStatistic) {
+		this.asitisTableStatistic = asitisTableStatistic;
+	}
+
 	public Model_main() {
 		sprintf("Model instantiated...");
 
