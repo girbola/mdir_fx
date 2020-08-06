@@ -1,7 +1,5 @@
 package com.girbola.configuration;
 
-import static com.girbola.Main.conf;
-
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -72,10 +70,10 @@ public class Configuration_SQL_Utils {
 					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
-					+ workDirSerialNumber + " STRING UNIQUE NOT NULL, "
 					+ imageViewXPos + " DOUBLE DEFAULT ( -1),"
 					+ imageViewYPos + " DOUBLE DEFAULT ( -1),"
-		    	    + workDir + " STRING NOT NULL)";
+					+ workDirSerialNumber + " STRING, "
+		    	    + workDir + " STRING DEFAULT ( \"\")";
 			
 			//@formatter:on
 			Statement stmt = connection.createStatement();
@@ -115,20 +113,33 @@ public class Configuration_SQL_Utils {
 				configuration.setWindowStartPosY(Double.parseDouble(rs.getString(windowStartPosY)));
 				configuration.setWindowStartWidth(Double.parseDouble(rs.getString(windowStartWidth)));
 				configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeigth)));
+
+				String imageViewXPosTemp = (rs.getString(imageViewXPos));
+				Messages.sprintf("imageViewXPosTemp: " + imageViewXPosTemp);
+
+				String imageViewYPosTemp = (rs.getString(imageViewYPos));
+				Messages.sprintf("imageViewYPosTemp: " + imageViewYPosTemp);
 				configuration.setImageViewXProperty(Double.parseDouble(rs.getString(imageViewXPos)));
 				configuration.setImageViewYProperty(Double.parseDouble(rs.getString(imageViewYPos)));
+
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
-				configuration.setWorkDir(rs.getString(workDir));
-				System.err.println("1conf.workDir_property(): " + configuration.workDir_property().hashCode());
+				String workDirTemp = rs.getString(workDir);
+				if (workDirTemp != null) {
+					configuration.setWorkDir(rs.getString(workDir));
+				}
+				System.err.println("1conf.workDir_property(): " + configuration.getWorkDir().hashCode());
 				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
-						+ rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
+						+ rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips()
+						+ " configuration.: " + configuration.getWorkDir());
 				return true;
 			}
 			connection.commit();
 			connection.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return false;
 		}
+		System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir());
 		return false;
 	}
 
@@ -229,7 +240,6 @@ public class Configuration_SQL_Utils {
 				try {
 				//@formatter:off
 				String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
-				+ " "
 				+ "('" + id + "', " 
 				+ "'" + betterQualityThumbs + "',"
 				+ "'" + confirmOnExit + "', " 
@@ -268,12 +278,13 @@ public class Configuration_SQL_Utils {
 					pstmt.setDouble(13, configuration.getWindowStartPosY());
 					pstmt.setDouble(14, configuration.getWindowStartWidth());
 					pstmt.setDouble(15, configuration.getWindowStartHeight());
-					pstmt.setString(16, configuration.getWorkDirSerialNumber());
-					pstmt.setDouble(17, configuration.getImageViewXPosition());
-					pstmt.setDouble(18, configuration.getImageViewYPosition());
+					pstmt.setDouble(16, configuration.getImageViewXPosition());
+					pstmt.setDouble(17, configuration.getImageViewYPosition());
+					pstmt.setString(18, configuration.getWorkDirSerialNumber());
 					pstmt.setString(19, configuration.getWorkDir());
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
+					connection.commit();
 					pstmt.close();
 					return true;
 				} catch (Exception e) {

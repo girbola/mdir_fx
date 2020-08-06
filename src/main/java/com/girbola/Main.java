@@ -104,7 +104,8 @@ public class Main extends Application {
 		conf.createProgramPaths();
 		Main.conf.loadConfig();
 		System.out.println("Java version: " + System.getProperty("java.version"));
-Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? " + Main.conf.getWorkDir());
+		Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
+				+ Main.conf.getWorkDir());
 		Task<Void> mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -221,7 +222,8 @@ Messages.sprintf("Created program path and loaded config. The workDir should som
 						Main.conf.getConfiguration_db_fileName());
 				if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
 					Messages.sprintf("Loading workdir content");
-					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, connection_loadConfigurationFile);
+					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
+							connection_loadConfigurationFile);
 					load_FileInfosBackToTableViews.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 						@Override
 						public void handle(WorkerStateEvent event) {

@@ -94,8 +94,8 @@ public class OptionsController {
 		betterQuality.selectedProperty().bindBidirectional(conf.betterQualityThumbs_property());
 //		conf.workDir_property().set(conf.getWorkDir());
 		String path = conf.getWorkDir();
-		
-		workDir_input.textProperty().bindBidirectional(conf.workDir_property());
+		workDir_input.setText("" + conf.getWorkDir());
+//		workDir_input.textProperty().bindBidirectional(conf.workDir_property());
 		
 		System.err.println("path " + path
 				+ " 2conf.workDir_property(): " + conf.workDir_property().hashCode() + " workdir: " + conf.workDir_property().get());
