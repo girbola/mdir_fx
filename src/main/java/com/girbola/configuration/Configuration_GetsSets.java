@@ -33,20 +33,11 @@ public class Configuration_GetsSets extends Configuration_GUI {
 
 	private ObservableList<Path> ignoredList = FXCollections.observableArrayList();
 
-	// private final String driveinfo_db_fileName = "driveinfo.db";
 	private final String selectedFolders_db_fileName = "selectedFolders.db";
 	private final String configuration_db_fileName = "configuration.db";
-//	private final String foldersState_db_fileName = "foldersState.db";
-//	private final String folderInfo_db_fileName = "folderInfo.db";
-
 	private final String mdir_db_fileName = "mdir.db";
-//	private final String thumbInfo_db_fileName = "thumbinfo.db";
 
 	private ObservableList<Path> ignoredFoldersScanList = FXCollections.observableArrayList();
-
-//    public final String getFolderInfo_FileName() {
-//	return folderInfo_FileName;
-//    }
 
 	public Path getIgnoreListPath() {
 		return ignoreListPath;

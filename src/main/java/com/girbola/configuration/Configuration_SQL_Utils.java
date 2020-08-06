@@ -1,5 +1,7 @@
 package com.girbola.configuration;
 
+import static com.girbola.Main.conf;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -70,10 +72,11 @@ public class Configuration_SQL_Utils {
 					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
+					+ workDirSerialNumber + " STRING UNIQUE NOT NULL, "
 					+ imageViewXPos + " DOUBLE DEFAULT ( -1),"
 					+ imageViewYPos + " DOUBLE DEFAULT ( -1),"
-		    	    + workDirSerialNumber + " STRING UNIQUE NOT NULL, "
 		    	    + workDir + " STRING NOT NULL)";
+			
 			//@formatter:on
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
@@ -114,14 +117,15 @@ public class Configuration_SQL_Utils {
 				configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeigth)));
 				configuration.setImageViewXProperty(Double.parseDouble(rs.getString(imageViewXPos)));
 				configuration.setImageViewYProperty(Double.parseDouble(rs.getString(imageViewYPos)));
-
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				configuration.setWorkDir(rs.getString(workDir));
+				System.err.println("1conf.workDir_property(): " + configuration.workDir_property().hashCode());
 				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
-						+ rs.getString(workDirSerialNumber));
+						+ rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
 				return true;
 			}
-
+			connection.commit();
+			connection.close();
 		} catch (Exception e) {
 			return false;
 		}
@@ -170,7 +174,8 @@ public class Configuration_SQL_Utils {
 		Connection connection = null;
 
 		if (connection_open == null) {
-			connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+			connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+					Main.conf.getConfiguration_db_fileName());
 		} else {
 			connection = connection_open;
 		}
@@ -468,13 +473,13 @@ public class Configuration_SQL_Utils {
 		}
 	}
 
-	public static void saveConfig(String columnToUpdate, String attribute) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-		String sql = 
-				"UPDATE " + SQL_Enums.CONFIGURATION.getType() + 
-				" SET " + columnToUpdate + "=" + attribute + " WHERE " ;
-		
-	}
+//	public static void saveConfig(String columnToUpdate, String attribute) {
+//		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//		String sql = 
+//				"UPDATE " + SQL_Enums.CONFIGURATION.getType() + 
+//				" SET " + columnToUpdate + "=" + attribute + " WHERE " ;
+//		
+//	}
 
 
 

@@ -302,9 +302,10 @@ public class MenuBarController {
 			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 		}
 		OptionsController optionsController = (OptionsController) loader.getController();
-		optionsController.init(model_main);
+		optionsController.init();
 
 		Stage stage_opt = new Stage();
+		stage_opt.setAlwaysOnTop(true);
 		Scene scene_opt = new Scene(parent);
 		scene_opt.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + "option_pane.css").toExternalForm());

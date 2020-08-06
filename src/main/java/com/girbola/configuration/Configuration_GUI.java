@@ -6,9 +6,6 @@
  */
 package com.girbola.configuration;
 
-import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.sql.SQL_Utils;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -16,12 +13,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- *
  * @author Marko Lokka
  */
 class Configuration_GUI {
 
-	
 	private BooleanProperty betterQualityThumbs = new SimpleBooleanProperty(false);
 	private BooleanProperty confirmOnExit = new SimpleBooleanProperty(true);
 	private BooleanProperty showHints = new SimpleBooleanProperty(true);
@@ -170,10 +165,13 @@ class Configuration_GUI {
 	}
 
 	public String getWorkDir() {
+		System.err.println("getWorkdDir: " + workDir);
+		
 		return this.workDir.get();
 	}
 
 	public void setWorkDir(String workDir) {
+		System.err.println("setWorkdDir: " + workDir);
 		this.workDir.set(workDir);
 	}
 

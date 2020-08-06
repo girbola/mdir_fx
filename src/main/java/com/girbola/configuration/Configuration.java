@@ -13,7 +13,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.Properties;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
@@ -79,7 +78,6 @@ public class Configuration extends Configuration_defaults {
 		} else {
 			Messages.sprintf("LOADING CONFIGURATION DATABASE");
 			conf.loadConfig_SQL();
-//			loadIgnored()
 		}
 	}
 
@@ -125,10 +123,12 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public boolean loadConfig_SQL() {
+		Messages.sprintf("Loading SQL config: " + Main.conf.getWorkDir());
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
-			Configuration_SQL_Utils.loadConfiguration(connection, this);
+			Configuration_SQL_Utils.loadConfiguration(connection, Main.conf);
+			Messages.sprintf("Loading stopped. SQL config: " + Main.conf.getWorkDir());
 			try {
 				connection.close();
 			} catch (Exception e) {

@@ -646,6 +646,7 @@ public class TableUtils {
 			refreshTableContent(tables.getSorted_table());
 			refreshTableContent(tables.getSortIt_table());
 		});
+		calculateTableViewsStatistic(tables);
 	}
 
 	public static void clearTablesContents(Tables tables) {
@@ -667,7 +668,7 @@ public class TableUtils {
 			LocalDate start = DateUtils.parseLocalDateFromString(folderInfo.getMinDate());
 			LocalDate end = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate());
 			LocalDate toFind = DateUtils.longToLocalDateTime(fileInfoToFind.getDate()).toLocalDate();
-
+			break;
 //			if(folderInfo.getMinDate())
 //			for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
 //				FileInfo possibleDuplicate = model_main.getWorkDir_Handler().exists(fileInfo);
@@ -680,6 +681,7 @@ public class TableUtils {
 //			}
 
 		}
+		Messages.warningText("findPossibleNewDestinationByDate is NOT available yet. ");
 
 	}
 
@@ -718,63 +720,36 @@ public class TableUtils {
 		}
 	}
 
-	public static void sumUp(Model_main model_main) {
+	public static void calculateTableViewsStatistic(Tables tables) {
 
-//		
-//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
-//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
-//		int sortitTotalFiles = getTableTotalFiles(model_main.tables().getSortIt_table());
-//		
-//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
-//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
-//		int sortedTotalFiles = getTableTotalFiles(model_main.tables().getSorted_table());
-//		
-//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
-//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
-//		int asitisTotalFiles = getTableTotalFiles(model_main.tables().getAsItIs_table());
-//		
-//		int sumAllSorted = model_main.tables().sorted_TableStatistic();
-//		int sumAllSortIt = model_main.tables().sortit_TableStatistic();
-//		int sumAllAsItIs = model_main.tables().asitis_TableStatistic();
+		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+			tables.getSortit_TableStatistic().setTotalFiles(
+					tables.getSortit_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+			tables.getSortit_TableStatistic().setTotalFilesCopied(
+					tables.getSortit_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
 
-		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-			model_main.tables().getSortit_TableStatistic().setTotalFiles(
-					model_main.tables().getSortit_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
-			model_main.tables().getSortit_TableStatistic()
-					.setTotalFilesCopied(model_main.tables().getSortit_TableStatistic().getTotalFilesCopied().get()
-							+ folderInfo.getCopied());
-
-			model_main.tables().getSortit_TableStatistic()
-					.setTotalFilesSize(model_main.tables().getSortit_TableStatistic().getTotalFilesSize().get()
-							+ folderInfo.getFolderSize());
+			tables.getSortit_TableStatistic().setTotalFilesSize(
+					tables.getSortit_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
 		}
-		for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-			model_main.tables().getSorted_TableStatistic().setTotalFiles(
-					model_main.tables().getSorted_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
-			model_main.tables().getSorted_TableStatistic()
-					.setTotalFilesCopied(model_main.tables().getSorted_TableStatistic().getTotalFilesCopied().get()
-							+ folderInfo.getCopied());
+		for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+			tables.getSorted_TableStatistic().setTotalFiles(
+					tables.getSorted_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+			tables.getSorted_TableStatistic().setTotalFilesCopied(
+					tables.getSorted_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
 
-			model_main.tables().getSorted_TableStatistic()
-					.setTotalFilesSize(model_main.tables().getSorted_TableStatistic().getTotalFilesSize().get()
-							+ folderInfo.getFolderSize());
+			tables.getSorted_TableStatistic().setTotalFilesSize(
+					tables.getSorted_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
 		}
-		for (FolderInfo folderInfo : model_main.tables().getAsItIs_table().getItems()) {
-			model_main.tables().getAsItIs_TableStatistic().setTotalFiles(
-					model_main.tables().getAsItIs_TableStatistic().getTotalFiles().get() + folderInfo.getFolderFiles());
-			model_main.tables().getAsItIs_TableStatistic()
-					.setTotalFilesCopied(model_main.tables().getAsItIs_TableStatistic().getTotalFilesCopied().get()
-							+ folderInfo.getCopied());
+		for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
+			tables.getAsItIs_TableStatistic().setTotalFiles(
+					tables.getAsItIs_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+			tables.getAsItIs_TableStatistic().setTotalFilesCopied(
+					tables.getAsItIs_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
 
-			model_main.tables().getAsItIs_TableStatistic()
-					.setTotalFilesSize(model_main.tables().getAsItIs_TableStatistic().getTotalFilesSize().get()
-							+ folderInfo.getFolderSize());
+			tables.getAsItIs_TableStatistic().setTotalFilesSize(
+					tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
 		}
 
 	}
 
-	private static int getTableTotalFiles(TableView<FolderInfo> sortIt_table) {
-
-		return 0;
-	}
 }

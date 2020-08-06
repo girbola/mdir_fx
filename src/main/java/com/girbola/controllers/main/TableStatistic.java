@@ -1,7 +1,5 @@
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.main.tables.tabletype.TableType;
-
 import common.utils.Conversion;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -12,38 +10,41 @@ import javafx.scene.control.Label;
 
 public class TableStatistic {
 
-	private Model_main model_main;
-	private TableType tableType;
 	private SimpleIntegerProperty totalFilesCopied = new SimpleIntegerProperty(0);
 	private SimpleLongProperty totalFilesSize = new SimpleLongProperty(0);
 	private SimpleIntegerProperty totalFiles = new SimpleIntegerProperty(0);
 
-	private Label allFilesCopied_lbl;
-	private Label allFilesSize_lbl;
-	private Label allFilesTotal_lbl;
+	private Label totalFilesCopied_lbl;
+	private Label totalFilesSize_lbl;
+	private Label totalFilesTotal_lbl;
 
-	public TableStatistic(Label allFilesCopied_lbl, Label allFilesSize_lbl, Label allFilesTotal_lbl) {
-		this.allFilesCopied_lbl = allFilesCopied_lbl;
-		this.allFilesSize_lbl = allFilesSize_lbl;
-		this.allFilesTotal_lbl = allFilesTotal_lbl;
+	/**
+	 * Calculates statistic from tableview
+	 * @param totalFilesCopied_lbl
+	 * @param totalFilesSize_lbl
+	 * @param totalFilesTotal_lbl
+	 */
+	public TableStatistic(Label aTotalFilesCopied_lbl, Label aTotalFilesSize_lbl, Label aTotalFilesTotal_lbl) {
+		this.totalFilesCopied_lbl = aTotalFilesCopied_lbl;
+		this.totalFilesSize_lbl = aTotalFilesSize_lbl;
+		this.totalFilesTotal_lbl = aTotalFilesTotal_lbl;
 
-		this.allFilesCopied_lbl.textProperty().bind(totalFilesCopied.asString());
-//		this.allFilesSize_lbl.textProperty().bind(totalFilesSize.asString());
+		this.totalFilesCopied_lbl.textProperty().bind(totalFilesCopied.asString());
 		totalFilesSize.addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				long value = (long)newValue;
+				long value = (long) newValue;
 				Platform.runLater(() -> {
-					allFilesSize_lbl.setText("" + Conversion.convertToSmallerConversion(value));
+					totalFilesSize_lbl.setText("" + Conversion.convertToSmallerConversion(value));
 				});
 			}
 		});
-		this.allFilesTotal_lbl.textProperty().bind(totalFiles.asString());
+		this.totalFilesTotal_lbl.textProperty().bind(totalFiles.asString());
 
 	}
 
-	public SimpleIntegerProperty getTotalFilesCopied() {
+	public SimpleIntegerProperty totalFilesCopied_property() {
 		return totalFilesCopied;
 	}
 
@@ -51,7 +52,7 @@ public class TableStatistic {
 		this.totalFilesCopied.set(totalFilesCopied);
 	}
 
-	public SimpleLongProperty getTotalFilesSize() {
+	public SimpleLongProperty totalFilesSize_property() {
 		return totalFilesSize;
 	}
 
@@ -59,7 +60,7 @@ public class TableStatistic {
 		this.totalFilesSize.set(totalFilesSize);
 	}
 
-	public SimpleIntegerProperty getTotalFiles() {
+	public SimpleIntegerProperty totalFiles_property() {
 		return totalFiles;
 	}
 

@@ -104,7 +104,7 @@ public class Main extends Application {
 		conf.createProgramPaths();
 		Main.conf.loadConfig();
 		System.out.println("Java version: " + System.getProperty("java.version"));
-
+Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? " + Main.conf.getWorkDir());
 		Task<Void> mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -145,27 +145,27 @@ public class Main extends Application {
 				mainController.initialize(model_main);
 
 				primaryStage.setTitle(conf.getProgramName());
-				primaryStage.xProperty().addListener(new ChangeListener<Number>() {
-					@Override
-					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-							Number newValue) {
-						if (!primaryStage.isFullScreen()) {
-							Main.conf.setWindowStartPosX((double) newValue);
-						}
-					}
-
-				});
-
-				primaryStage.yProperty().addListener(new ChangeListener<Number>() {
-					@Override
-					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-							Number newValue) {
-						if (!primaryStage.isFullScreen()) {
-							Main.conf.setWindowStartPosY((double) newValue);
-						}
-					}
-
-				});
+//				primaryStage.xProperty().addListener(new ChangeListener<Number>() {
+//					@Override
+//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+//							Number newValue) {
+//						if (!primaryStage.isFullScreen()) {
+//							Main.conf.setWindowStartPosX((double) newValue);
+//						}
+//					}
+//
+//				});
+//
+//				primaryStage.yProperty().addListener(new ChangeListener<Number>() {
+//					@Override
+//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
+//							Number newValue) {
+//						if (!primaryStage.isFullScreen()) {
+//							Main.conf.setWindowStartPosY((double) newValue);
+//						}
+//					}
+//
+//				});
 //				stage.setMaxWidth(conf.getScreenBounds().getWidth());
 //				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
 				primaryStage.setMinWidth(800);
@@ -296,7 +296,7 @@ public class Main extends Application {
 									}
 								}
 							});
-							TableUtils.sumUp(model_main);
+							TableUtils.calculateTableViewsStatistic(model_main.tables());
 //							Main.conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							Main.conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}

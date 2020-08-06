@@ -130,7 +130,7 @@ public class Configuration_defaults extends
 		return this.programDate;
 	}
 
-	public StringProperty vlcPath_propProperty() {
+	public StringProperty vlcPath_property() {
 		return this.vlcPath;
 	}
 
