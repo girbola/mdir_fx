@@ -88,6 +88,11 @@ public class WorkDir_Handler {
 			return false;
 		}
 		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
+		try {
+			connection.setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (connection != null) {
 			if (SQL_Utils.isDbConnected(connection)) {
 				List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
@@ -96,7 +101,9 @@ public class WorkDir_Handler {
 					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
 				}
 			}
+			
 			try {
+				connection.commit();
 				connection.close();
 			} catch (Exception e) {
 				e.printStackTrace();

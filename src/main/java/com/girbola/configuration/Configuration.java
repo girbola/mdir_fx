@@ -13,6 +13,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
@@ -84,6 +85,12 @@ public class Configuration extends Configuration_defaults {
 	public boolean createConfiguration_db() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
+		try {
+			connection.setAutoCommit(false);
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		// Create configuration table_cols which keeps tableview's widths
 		Configuration_SQL_Utils.createConfigurationTable_properties(connection);
 		// Create configuration for programs config like themePath, workDir, vlcPath
@@ -95,6 +102,13 @@ public class Configuration extends Configuration_defaults {
 		SQL_Utils.createFoldersStatesDatabase(connection);
 
 		try {
+			connection.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		try {
+
 			connection.close();
 			return true;
 		} catch (Exception e) {

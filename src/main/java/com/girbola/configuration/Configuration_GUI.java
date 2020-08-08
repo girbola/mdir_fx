@@ -30,8 +30,8 @@ class Configuration_GUI {
 	private SimpleDoubleProperty windowStartWidth = new SimpleDoubleProperty(-1);
 	private SimpleDoubleProperty windowStartHeight = new SimpleDoubleProperty(-1);
 
-	private SimpleStringProperty workDir = new SimpleStringProperty("null");
-	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("null");
+	private SimpleStringProperty workDir = new SimpleStringProperty("");
+	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("");
 
 	private String themePath = ThemePath.DARK.getType();
 

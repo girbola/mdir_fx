@@ -48,6 +48,8 @@ public class Configuration_SQL_Utils {
 	public static final String workDirSerialNumber = "workDirSerialNumber";
 
 	public static boolean createConfiguration_Table(Connection connection) {
+		Messages.sprintfError("createConfiguration_Table");
+
 		try {
 			if (!SQL_Utils.isDbConnected(connection)) {
 				Messages.sprintf("createConfiguration connection failed");
@@ -70,10 +72,10 @@ public class Configuration_SQL_Utils {
 					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
-					+ imageViewXPos + " DOUBLE DEFAULT ( -1),"
-					+ imageViewYPos + " DOUBLE DEFAULT ( -1),"
+					+ imageViewXPos + " DOUBLE,"
+					+ imageViewYPos + " DOUBLE,"
 					+ workDirSerialNumber + " STRING, "
-		    	    + workDir + " STRING DEFAULT ( \"\")";
+		    	    + workDir + " STRING)";
 			
 			//@formatter:on
 			Statement stmt = connection.createStatement();
@@ -124,6 +126,7 @@ public class Configuration_SQL_Utils {
 
 				configuration.setWorkDirSerialNumber(rs.getString(workDirSerialNumber));
 				String workDirTemp = rs.getString(workDir);
+				Messages.sprintfError("workDirTemp= " + workDirTemp);
 				if (workDirTemp != null) {
 					configuration.setWorkDir(rs.getString(workDir));
 				}
@@ -251,7 +254,7 @@ public class Configuration_SQL_Utils {
 				+ "'" + vlcPath + "', "
 				+ "'" + vlcSupport + "', "
 				+ "'" + saveDataToHD + "', "
-				 +"'" + windowStartPosX + "', "
+				+ "'" + windowStartPosX + "', "
 				+ "'" + windowStartPosY + "', "
 				+ "'" + windowStartWidth + "', "
 				+ "'" + windowStartHeigth + "', "
@@ -284,7 +287,7 @@ public class Configuration_SQL_Utils {
 					pstmt.setString(19, configuration.getWorkDir());
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
-					connection.commit();
+
 					pstmt.close();
 					return true;
 				} catch (Exception e) {
@@ -441,6 +444,8 @@ public class Configuration_SQL_Utils {
 					tc.setPrefWidth(width);
 				}
 			}
+			pstmt.execute();
+			pstmt.close();
 			return true;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -475,8 +480,14 @@ public class Configuration_SQL_Utils {
 	public static void update_Configuration() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
+		try {
+			connection.setAutoCommit(false);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	insert_Configuration(connection, Main.conf);
 		try {
+			connection.commit();
 			connection.close();
 		} catch (Exception e) {
 			System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());

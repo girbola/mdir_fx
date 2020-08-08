@@ -43,14 +43,16 @@ public class LoadingProcess_Task {
 	private Model_loading model_loading = new Model_loading();
 	private double xOffset;
 	private double yOffset;
-//	private Scene inheritedScene;
 	private Parent parent = null;
 	private Window owner;
 
+	private Scene loadingScene;
+	private Stage loadingStage;
+
 	public LoadingProcess_Task(Window owner) {
-//		this.inheritedScene = inheritedScene;
-		loadGUI();
 		this.owner = owner;
+		loadGUI();
+
 	}
 
 	/*
@@ -86,61 +88,63 @@ public class LoadingProcess_Task {
 	}
 
 	public void loadGUI() {
-		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/loading/LoadingProcess.fxml"), bundle);
-		try {
-			parent = loader.load();
+		Platform.runLater(() -> {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/loading/LoadingProcess.fxml"), bundle);
+			try {
+				parent = loader.load();
 
-		} catch (IOException ex) {
-			Logger.getLogger(LoadingProcess_Task.class.getName()).log(Level.SEVERE, null, ex);
-			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-		LoadingProcessController lpc = (LoadingProcessController) loader.getController();
-		lpc.init(model_loading);
-		Scene loadingScene = new Scene(parent);
-		Stage loadingStage = new Stage();
-		if (owner != null) {
-			loadingStage.initOwner(owner);
-		}
-		loadingStage.initStyle(StageStyle.UNDECORATED);
-		Messages.sprintf("Owner is: " + loadingStage.getOwner());
+			} catch (IOException ex) {
+				Logger.getLogger(LoadingProcess_Task.class.getName()).log(Level.SEVERE, null, ex);
+				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+			}
+			LoadingProcessController lpc = (LoadingProcessController) loader.getController();
+			lpc.init(model_loading);
+			loadingScene = new Scene(parent);
+			loadingStage = new Stage();
+
+			if (owner != null) {
+				loadingStage.initOwner(owner);
+			}
+			loadingStage.initStyle(StageStyle.UNDECORATED);
+			Messages.sprintf("Owner is: " + loadingStage.getOwner());
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
-		loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
-		loadingScene.getStylesheets()
-				.add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
+			loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
+			loadingScene.getStylesheets()
+					.add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
 
-		xOffset = loadingStage.getX();
-		yOffset = loadingStage.getY();
+			xOffset = loadingStage.getX();
+			yOffset = loadingStage.getY();
 
-		loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
+			loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
-			@Override
-			public void handle(MouseEvent event) {
-				xOffset = (loadingStage.getX() - event.getScreenX());
-				yOffset = (loadingStage.getY() - event.getScreenY());
-				sprintf("yOffset: " + yOffset);
-			}
-		});
-
-		loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				loadingStage.setX(event.getScreenX() + xOffset);
-				if (event.getScreenY() <= 0) {
-					loadingStage.setY(0);
-				} else {
-					loadingStage.setY(event.getScreenY() + yOffset);
+				@Override
+				public void handle(MouseEvent event) {
+					xOffset = (loadingStage.getX() - event.getScreenX());
+					yOffset = (loadingStage.getY() - event.getScreenY());
+					sprintf("yOffset: " + yOffset);
 				}
+			});
 
-				sprintf("event.getScreenY(); = " + event.getScreenY());
-			}
-		});
+			loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					loadingStage.setX(event.getScreenX() + xOffset);
+					if (event.getScreenY() <= 0) {
+						loadingStage.setY(0);
+					} else {
+						loadingStage.setY(event.getScreenY() + yOffset);
+					}
+
+					sprintf("event.getScreenY(); = " + event.getScreenY());
+				}
+			});
 
 //		loadingStage.initStyle(StageStyle.UTILITY);
 
-		loadingStage.setScene(loadingScene);
-		loadingStage.setAlwaysOnTop(true);
-		Platform.runLater(() -> {
+			loadingStage.setScene(loadingScene);
+			loadingStage.setAlwaysOnTop(true);
+
 			loadingStage.show();
 			Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
 			Main.scene_Switcher.setScene_loading(loadingScene);

@@ -90,25 +90,29 @@ public class Main extends Application {
 	public static SceneSwitcher scene_Switcher = new SceneSwitcher();
 
 	private Scene primaryScene;
+	private LoadingProcess_Task lpt;
+	private Task<Void> mainTask;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setUserData(model_main);
-		Main.setMain_stage(primaryStage);
-		setChanged(false);
-		sprintf("Program starting");
-		locale = new Locale(lang, country);
-		bundle = ResourceBundle.getBundle("bundle/lang", locale);
 
-		conf.setModel(model_main);
-		conf.createProgramPaths();
-		Main.conf.loadConfig();
-		System.out.println("Java version: " + System.getProperty("java.version"));
-		Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
-				+ Main.conf.getWorkDir());
-		Task<Void> mainTask = new Task<Void>() {
+		mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
+				primaryStage.setUserData(model_main);
+				setMain_stage(primaryStage);
+				setChanged(false);
+				sprintf("Program starting");
+				locale = new Locale(lang, country);
+				bundle = ResourceBundle.getBundle("bundle/lang", locale);
+
+				conf.setModel(model_main);
+				conf.createProgramPaths();
+				conf.loadConfig();
+				System.out.println("Java version: " + System.getProperty("java.version"));
+				Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
+						+ conf.getWorkDir());
+
 				FXMLLoader main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
 				sprintf("main_loader location: " + main_loader.getLocation());
 				Parent parent = null;
@@ -122,22 +126,6 @@ public class Main extends Application {
 
 				primaryScene = new Scene(parent);
 
-//				primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
-//					@Override
-//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-//							Number newValue) {
-//						Messages.sprintf("Scene width changing: " + newValue);
-//					}
-//				});
-//				primaryScene.heightProperty().addListener(new ChangeListener<Number>() {
-//
-//					@Override
-//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-//							Number newValue) {
-//						Messages.sprintf("Scene height changing: " + newValue);
-//					}
-//				});
-
 				primaryScene.getStylesheets()
 						.add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
 
@@ -146,29 +134,7 @@ public class Main extends Application {
 				mainController.initialize(model_main);
 
 				primaryStage.setTitle(conf.getProgramName());
-//				primaryStage.xProperty().addListener(new ChangeListener<Number>() {
-//					@Override
-//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-//							Number newValue) {
-//						if (!primaryStage.isFullScreen()) {
-//							Main.conf.setWindowStartPosX((double) newValue);
-//						}
-//					}
-//
-//				});
-//
-//				primaryStage.yProperty().addListener(new ChangeListener<Number>() {
-//					@Override
-//					public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-//							Number newValue) {
-//						if (!primaryStage.isFullScreen()) {
-//							Main.conf.setWindowStartPosY((double) newValue);
-//						}
-//					}
-//
-//				});
-//				stage.setMaxWidth(conf.getScreenBounds().getWidth());
-//				stage.setMaxHeight(conf.getScreenBounds().getHeight() - 20);
+
 				primaryStage.setMinWidth(800);
 				primaryStage.setMinHeight(600);
 				scene_Switcher.setWindow(primaryStage);
@@ -195,14 +161,18 @@ public class Main extends Application {
 					}
 
 				});
+				lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
+				Platform.runLater(()-> {
+
+					lpt.setTask(mainTask);
+//					lpt.showLoadStage();
+				});
 //				ScenicView.show(parent);
 				return null;
 			}
 		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 
 		mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
 			@Override
 			public void handle(WorkerStateEvent event) {
 				Messages.sprintf("main succeeded");
@@ -218,8 +188,8 @@ public class Main extends Application {
 
 				conf.loadConfig_GUI();
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
-				Connection connection_loadConfigurationFile = SqliteConnection.connector(Main.conf.getAppDataPath(),
-						Main.conf.getConfiguration_db_fileName());
+				Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
+						conf.getConfiguration_db_fileName());
 				if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
 					Messages.sprintf("Loading workdir content");
 					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
@@ -241,8 +211,7 @@ public class Main extends Application {
 							TableUtils.refreshAllTableContent(model_main.tables());
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
 							model_main.getMonitorExternalDriveConnectivity().restart();
-							boolean loaded = model_main.getWorkDir_Handler()
-									.loadAllLists(Paths.get(Main.conf.getWorkDir()));
+							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
 									Messages.sprintf("fileInfo loading: " + finfo.getOrgPath());
@@ -259,8 +228,8 @@ public class Main extends Application {
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
 										Number newValue) {
-									if (Main.conf != null) {
-										Main.conf.setWindowStartPosX((double) newValue);
+									if (conf != null) {
+										conf.setWindowStartPosX((double) newValue);
 										Messages.sprintf("windowstartposX: " + newValue);
 									}
 								}
@@ -270,8 +239,8 @@ public class Main extends Application {
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
 										Number newValue) {
-									if (Main.conf != null) {
-										Main.conf.setWindowStartPosY((double) newValue);
+									if (conf != null) {
+										conf.setWindowStartPosY((double) newValue);
 										Messages.sprintf("windowstartposY: " + newValue);
 									}
 								}
@@ -281,8 +250,8 @@ public class Main extends Application {
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
 										Number newValue) {
-									if (Main.conf != null) {
-										Main.conf.setWindowStartWidth((double) newValue);
+									if (conf != null) {
+										conf.setWindowStartWidth((double) newValue);
 										Messages.sprintf("setWindowStartWidth: " + newValue);
 									}
 								}
@@ -292,15 +261,15 @@ public class Main extends Application {
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
 										Number newValue) {
-									if (Main.conf != null) {
-										Main.conf.setWindowStartHeight((double) newValue);
+									if (conf != null) {
+										conf.setWindowStartHeight((double) newValue);
 										Messages.sprintf("setWindowStartWidth: " + newValue);
 									}
 								}
 							});
 							TableUtils.calculateTableViewsStatistic(model_main.tables());
-//							Main.conf.windowStartPosX_property().bind(primaryScene.xProperty());
-//							Main.conf.windowStartPosY_property().bind(primaryScene.yProperty());
+//							conf.windowStartPosX_property().bind(primaryScene.xProperty());
+//							conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}
 					});
 					load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -336,6 +305,7 @@ public class Main extends Application {
 							lpt.closeStage();
 						}
 					});
+
 					lpt.setTask(load_FileInfosBackToTableViews);
 					Thread load = new Thread(load_FileInfosBackToTableViews, "Main thread");
 					load.start();
@@ -348,8 +318,13 @@ public class Main extends Application {
 
 			@Override
 			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("Main Task failed");
-				lpt.closeStage();
+				Messages.sprintfError("Main Task failed!!!");
+				if (lpt != null) {
+					lpt.closeStage();
+				}
+				primaryStage.setOnCloseRequest(model_main.dontExit);
+				Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(), true);
+				model_main.exitProgram_NOSAVE();
 			}
 		});
 		mainTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -359,9 +334,11 @@ public class Main extends Application {
 				lpt.closeStage();
 			}
 		});
+
+		Thread mainTask_th = new Thread(mainTask, "mainTask_th");
+		mainTask_th.start();
 		// lp.showLoadStage();
-		Thread thread = new Thread(mainTask, "Main Thread");
-		thread.start();
+
 	}
 
 	private void defineScreenBounds(Stage stage) {
@@ -369,17 +346,17 @@ public class Main extends Application {
 		if (stage.isFullScreen()) {
 			return;
 		}
-		if (Main.conf.getWindowStartPosX() == -1 && Main.conf.getWindowStartPosY() == -1
-				&& Main.conf.getWindowStartWidth() == -1 && Main.conf.getWindowStartHeight() == -1) {
+		if (conf.getWindowStartPosX() == -1 && conf.getWindowStartPosY() == -1 && conf.getWindowStartWidth() == -1
+				&& conf.getWindowStartHeight() == -1) {
 			stage.setX(0);
 			stage.setY(0);
 
 		} else {
 			if (screens > 1) {
-				double x = Main.conf.getWindowStartPosX();
-				double y = Main.conf.getWindowStartPosY();
-				double width = Main.conf.getWindowStartWidth();
-				double heigth = Main.conf.getWindowStartHeight();
+				double x = conf.getWindowStartPosX();
+				double y = conf.getWindowStartPosY();
+				double width = conf.getWindowStartWidth();
+				double heigth = conf.getWindowStartHeight();
 				if (x < 0) {
 					x = 0;
 				}
