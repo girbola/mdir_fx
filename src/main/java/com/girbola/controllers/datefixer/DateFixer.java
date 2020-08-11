@@ -27,10 +27,12 @@ import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -102,8 +104,9 @@ public class DateFixer extends Task<Void> {
 								sprintf("fileInfo: " + fileInfo.toString());
 								if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
 										|| FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
-									
-									ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo, Main.scene_Switcher.getScene_dateFixer().getWindow());
+
+									ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
+											Main.scene_Switcher.getScene_dateFixer().getWindow());
 								} else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
 									ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
 								}
@@ -114,8 +117,8 @@ public class DateFixer extends Task<Void> {
 			});
 
 			sprintf("conf.getThemePath(): " + conf.getThemePath());
-			scene_dateFixer.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
+			scene_dateFixer.getStylesheets().add(
+					Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
 
 			Platform.runLater(() -> {
 				Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
@@ -144,7 +147,7 @@ public class DateFixer extends Task<Void> {
 
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 // Check if files are already in destination
-		
+
 		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),
 				model_datefix, loadingProcess_task);
 		dateFixPopulateGridPane_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -158,9 +161,12 @@ public class DateFixer extends Task<Void> {
 			@Override
 			public void handle(WorkerStateEvent event) {
 
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 				loadingProcess_task.closeStage();
+
+				Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_thread");
+				thread.start();
 
 			}
 		});
