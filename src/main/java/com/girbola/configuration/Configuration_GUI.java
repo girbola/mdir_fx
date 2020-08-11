@@ -6,6 +6,8 @@
  */
 package com.girbola.configuration;
 
+import com.girbola.messages.Messages;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -165,7 +167,7 @@ class Configuration_GUI {
 	}
 
 	public String getWorkDir() {
-		System.err.println("getWorkdDir: " + workDir);
+		Messages.sprintf("getWorkdDir: " + workDir);
 		
 		return this.workDir.get();
 	}
