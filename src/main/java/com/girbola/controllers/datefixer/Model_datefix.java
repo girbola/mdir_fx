@@ -11,13 +11,11 @@ import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static com.girbola.misc.Misc.getLineNumber;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -775,7 +773,6 @@ public class Model_datefix {
 						tf.setText("" + source.getFileName());
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -954,15 +951,6 @@ public class Model_datefix {
 		}
 	}
 
-	private boolean hasThumbInfo(List<ThumbInfo> thumbInfo_list, FileInfo fi) {
-		for (ThumbInfo thumbInfo : thumbInfo_list) {
-			if (thumbInfo.getId() == fi.getFileInfo_id() && thumbInfo.getFileName().equals(fi.getOrgPath())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	private int checkIfRedDates(GridPane gridPane) {
 		int counter = 0;
 		for (Node n : gridPane.getChildren()) {
@@ -983,76 +971,6 @@ public class Model_datefix {
 			}
 		}
 		return counter;
-	}
-
-	private void updateList() {
-		sprintf("Updating the list...");
-		int answer = checkIfRedDates(this.gridPane);
-
-		sprintf("checkIfRedDates answer was: " + answer);
-		if (answer != 0) {
-			warningText("There were still bad dates. Fix them before you can continue");
-		} else {
-			boolean changed = false;
-			for (FileInfo fi : getFolderInfo_full().getFileInfoList()) {
-				long date = findDate_TextField(fi.getOrgPath());
-				sprintf("FileInfo file: " + fi.getOrgPath() + " date would be; "
-						+ simpleDates.getSdf_ymd_hms_slashColon().format(date));
-				if (date != 0) {
-					fi.setDate(date);
-					FileInfo_Utils.setGood(fi);
-					changed = true;
-					Main.setChanged(true);
-				}
-			}
-			if (changed) {
-				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-				if (model_Main.tables() == null) {
-					Main.setProcessCancelled(true);
-					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-				}
-				model_Main.tables().refreshAllTables();
-			}
-		}
-	}
-
-	private long findDate_TextField(String path) {
-		for (Node n : this.gridPane.getChildren()) {
-			if (n instanceof VBox) {
-				for (Node vbox : ((VBox) n).getChildren()) {
-					if (vbox instanceof TextField) {
-						if ((getCurrentFolderPath().toString() + File.separator + ((TextField) vbox).getText().trim())
-								.equals(path)) {
-							TextField textField = getTextFieldDate(vbox.getParent());
-							if (textField == null) {
-								errorSmth(ERROR, "", null, getLineNumber(), true);
-								break;
-							} else {
-								String tf = textField.getText();
-								return Conversion.stringDateToLong(tf.trim(),
-										simpleDates.getSdf_ymd_hms_minusDots_default());
-							}
-						}
-					}
-				}
-			}
-		}
-		return 0;
-	}
-
-	private TextField getTextFieldDate(Node parent) {
-		if (parent instanceof VBox) {
-			for (Node vbox : ((VBox) parent).getChildren()) {
-				if (vbox instanceof HBox) {
-					for (Node textField : ((HBox) vbox).getChildren()) {
-						if (textField instanceof TextField) {
-							return (TextField) textField;
-						}
-					}
-				}
-			}
-		}
-		return null;
 	}
 
 	public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
@@ -1098,7 +1016,7 @@ public class Model_datefix {
 		return this.locations.get();
 	}
 
-	public boolean fileInfoisShowing(FileInfo fileInfo) {
+	public boolean fileInfoisShowing_(FileInfo fileInfo) {
 		boolean hide = false;
 		if (!copied.get()) {
 			if (fileInfo.isCopied()) {
@@ -1110,20 +1028,26 @@ public class Model_datefix {
 				hide = false;
 			}
 		}
-		if (!events.get()) {
-			if (fileInfo.getEvent().length() >= 1) {
-				hide = true;
-			}
-		}
-		if (!locations.get()) {
-			if (fileInfo.getLocation().length() >= 1) {
-				hide = true;
-			}
-		}
+//		if (!events.get()) {
+//			if (fileInfo.getEvent().length() >= 1) {
+//				hide = true;
+//			}
+//		}
+//		if (!locations.get()) {
+//			if (fileInfo.getLocation().length() >= 1) {
+//				hide = true;
+//			}
+//		}
 
 		return hide;
 
 	}
+
+	/**
+	 * Collects everything into ObservableList<Node> observable
+	 * @param obs
+	 * @return ObservableList<Node>
+	 */
 
 	public ObservableList<Node> filterAllNodesList(ObservableList<Node> obs) {
 		ObservableList<Node> observable = FXCollections.observableArrayList();
@@ -1131,11 +1055,11 @@ public class Model_datefix {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
 
 			if (copied.get()) {
-				if (fileInfo.isCopied()) {
+				if (!fileInfo.isIgnored()) {
 					observable.add(node);
 				}
 			} else {
-				if (!fileInfo.isCopied()) {
+				if (fileInfo.isCopied()) {
 					observable.remove(node);
 				}
 			}
