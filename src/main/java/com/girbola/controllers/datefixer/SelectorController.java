@@ -161,58 +161,25 @@ public class SelectorController {
 					@Override
 					public void changed(ObservableValue<? extends EXIF_Data_Selector> observable,
 							EXIF_Data_Selector oldValue, EXIF_Data_Selector newValue) {
-						Task<Void> task = new Task<Void>() {
-							@Override
-							protected Void call() throws Exception {
-								Iterator<Node> it = model_datefix.getGridPane().getChildren().iterator();
-								while (it.hasNext()) {
-									Node node = it.next();
-									if (node instanceof VBox && node.getId().equals("imageFrame")) {
-										FileInfo fi = (FileInfo) node.getUserData();
-										if (hasNewValue(Main.simpleDates.getSdf_ymd_minus().format(fi.getDate()),
-												newValue, dates_tableView)) {
-											Platform.runLater(() -> {
-												model_datefix.getSelectionModel().addOnly(node);
-											});
-										} else {
-											Platform.runLater(() -> {
-												model_datefix.getSelectionModel().remove(node);
-											});
-										}
-									}
-								}
-								return null;
-							}
-						};
-						model_datefix.getSelector_exec().scheduleAtFixedRate(task, 0, 100, TimeUnit.MILLISECONDS);
-					}
-
-					private boolean notSelected(EXIF_Data_Selector eds, ObservableList<EXIF_Data_Selector> items) {
-						for (EXIF_Data_Selector item : items) {
-							if ((item.getInfo().equals(eds.getInfo()))) {
-								return true;
-							}
-						}
-						return false;
-					}
-
-					private boolean hasNewValue(String date, EXIF_Data_Selector exif_Data_Selector_obs,
-							TableView<EXIF_Data_Selector> dates_tableView) {
-						Iterator<EXIF_Data_Selector> it = dates_tableView.getSelectionModel().getSelectedItems()
-								.iterator();
-						while (it.hasNext()) {
-							EXIF_Data_Selector eds = it.next();
-							// for (EXIF_Data_Selector eds :
-							// dates_tableView.getSelectionModel().getSelectedItems()) {
-							if (eds.getInfo().equals(date)) {
-								return true;
-							}
-						}
-						return false;
+						Task<Boolean> selectByType = new SelectByTableModel(model_datefix,
+								SelectorModelType.DATE.getType(), dates_tableView);
+						model_datefix.getSelector_exec().scheduleAtFixedRate(selectByType, 0, 100,
+								TimeUnit.MILLISECONDS);
 					}
 				});
 		// model_datefix.getDateFix_Utils().createCamera_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		cameras_tableView.setItems(model_datefix.getDateFix_Utils().getCameras_obs());
+		cameras_tableView.getSelectionModel().selectedItemProperty()
+				.addListener(new ChangeListener<EXIF_Data_Selector>() {
+					@Override
+					public void changed(ObservableValue<? extends EXIF_Data_Selector> observable,
+							EXIF_Data_Selector oldValue, EXIF_Data_Selector newValue) {
+						Task<Boolean> selectByType = new SelectByTableModel(model_datefix,
+								SelectorModelType.CAMERA.getType(), cameras_tableView);
+						model_datefix.getSelector_exec().scheduleAtFixedRate(selectByType, 0, 100,
+								TimeUnit.MILLISECONDS);
+					}
+				});
 		cameras_checkBox_hide_col.setCellFactory(checkbox_CAMERAS_CellFactory);
 		cameras_checkBox_hide_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
