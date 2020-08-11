@@ -101,7 +101,7 @@ public class WorkDir_Handler {
 					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
 				}
 			}
-			
+
 			try {
 				connection.commit();
 				connection.close();
@@ -177,14 +177,17 @@ public class WorkDir_Handler {
 			destionationPath = Paths.get(Main.conf.getWorkDir() + File.separator);
 			if (Files.exists(destionationPath)) {
 				connection = SqliteConnection.connector(destionationPath, Main.conf.getMdir_db_fileName());
+				connection.setAutoCommit(false);
 			}
 			if (connection != null) {
 				if (SQL_Utils.isDbConnected(connection)) {
 					boolean inserting = FileInfo_SQL.insertFileInfoListToDatabase(connection, workDir_List, true);
 					if (inserting) {
 						Messages.sprintf("Insert worked!");
+						connection.commit();
 					} else {
 						Messages.sprintfError("inserting not working!");
+						connection.commit();
 					}
 				}
 			}
@@ -225,8 +228,8 @@ public class WorkDir_Handler {
 		}
 	}
 
-	public List<Path> findPossibleExistsFoldersInWorkdir(FileInfo fileInfoToSearch) {
-		List<Path> list = new ArrayList<>();
+	public List<FileInfo> findPossibleExistsFoldersInWorkdir(FileInfo fileInfoToSearch) {
+		List<FileInfo> list = new ArrayList<>();
 
 		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
 
@@ -234,18 +237,17 @@ public class WorkDir_Handler {
 		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
 		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
 
-		Path workDirToSearch = Paths.get(Main.conf.getWorkDir() + File.separator + year + File.separator + month);
-		try {
-			List<Path> paths = GetRootFiles.getRootFiles(workDirToSearch);
-			for (Path p : paths) {
-				if (p.toString().contains(workDirToSearch.toString() + File.separator + day)) {
-					list.add(p);
+		Messages.sprintf("year: " + year + " month " + month + " day" + day);
+
+//		Path workDirToSearch = Paths.get(Main.conf.getWorkDir() + File.separator + year + File.separator + month);
+		for (FileInfo fileInfo : workDir_List) {
+			if (fileInfo.getDate() == fileInfoToSearch.getDate()) {
+				if (fileInfo.getSize() == fileInfoToSearch.getSize()) {
+					list.add(fileInfo);
+					Messages.sprintfError("DUPLICATE FOUND: " + fileInfo.getOrgPath());
 				}
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-
 		return list;
 	}
 

@@ -149,7 +149,7 @@ public class FileInfo_SQL {
 				addToFileInfoDB(connection, pstmt, fileInfo);
 			}
 			pstmt.executeBatch();
-			pstmt.closeOnCompletion();
+//			pstmt.closeOnCompletion();
 			pstmt.close();
 			connection.commit();
 			Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");

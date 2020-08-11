@@ -86,9 +86,7 @@ public class CopyProcess_Properties extends CopyBasic_Values {
 
 				setCopied(getCopied_tmp());
 				setRenamed(getRenamed_tmp());
-				setDuplicated(getDuplicated_tmp() + 1);
-//				Messages.sprintf("getdup 1SECs: " + getDuplicated_tmp());
-//				Messages.sprintf("getDuplicated_tmp() + 1" + getDuplicated_tmp());
+				setDuplicated(getDuplicated_tmp());
 				setTotalFiles("" + getTotalFiles_tmp());
 				setFileCopyProgress(
 						Math.round((double) getFileCopyProgress_tmp() / (double) getFilesCopyProgress_MAX_tmp()));

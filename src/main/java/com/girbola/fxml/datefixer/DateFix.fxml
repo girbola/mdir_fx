@@ -286,12 +286,9 @@
 									<children>
 										<VBox id="showAndHideContent" alignment="CENTER" spacing="3.0" HBox.hgrow="NEVER">
 											<children>
-                                    <VBox id="showAndHideContent" VBox.vgrow="NEVER">
+                                    <VBox id="showAndHideContent" VBox.vgrow="SOMETIMES">
                                        <children>
       												<Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" VBox.vgrow="NEVER" />
-      												<CheckBox mnemonicParsing="false" text="%selectedOnly" VBox.vgrow="NEVER" />
-      												<CheckBox fx:id="events_chk" mnemonicParsing="false" text="%events" VBox.vgrow="NEVER" />
-      												<CheckBox fx:id="locations_chk" mnemonicParsing="false" text="%location" VBox.vgrow="NEVER" />
       												<CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" VBox.vgrow="NEVER" />
       												<CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" VBox.vgrow="NEVER" />
                                        </children>

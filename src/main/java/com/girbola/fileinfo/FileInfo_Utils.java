@@ -60,8 +60,8 @@ public class FileInfo_Utils {
 		String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
 		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
 		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
-
-		List<Path> list = Main.conf.getModel().getWorkDir_Handler()
+		Messages.sprintf("year: " + year + " month " + month + " day" + day);
+		List<FileInfo> list = Main.conf.getModel().getWorkDir_Handler()
 				.findPossibleExistsFoldersInWorkdir(fileInfoToSearch);
 		if (!list.isEmpty()) {
 			FXMLLoader loader = null;
@@ -475,6 +475,32 @@ public class FileInfo_Utils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Define if dest folder has duplicate files
+	 * 
+	 * @param fileInfo
+	 * @param dest
+	 * @return
+	 */
+	public static boolean defineDuplicateFile(FileInfo fileInfo, Path dest) {
+		Messages.sprintf("DEST: " + dest + " dest is dir? " + dest.toFile().isDirectory());
+		if (dest.toFile().isFile()) {
+			Path tmp = dest.getParent();
+			dest = tmp;
+		}
+		if (Files.exists(dest.getParent())) {
+			File[] fileList = dest.toFile().listFiles();
+			File fileToFind = new File(fileInfo.getOrgPath());
+			for (File file : fileList) {
+				Messages.sprintf("File is: " + file);
+				if (file.length() == fileToFind.length()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

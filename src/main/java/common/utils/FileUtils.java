@@ -69,7 +69,7 @@ public class FileUtils {
 
 	/**
 	 * Rename file to new file name if file exists and it is different size example:
-	 * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg etc
+	 * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg and so on
 	 *
 	 * @param srcFile
 	 * @param destFile
@@ -81,16 +81,18 @@ public class FileUtils {
 		String prefix = "_";
 		String fileName = "";
 		String ext = getExtension(destFile);
-		// sprintf("src= " + srcFile + " size " + Files.size(srcFile) + " dest "
-		// +
-		// destFile + " size " + Files.size(destFile));
+
 		if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
 			sprintf("file name exists but they are different size: ");
 			File[] fileList = destFile.getParent().toFile().listFiles();
 			for (int i = 1; i < fileList.length + 1; i++) {
-				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
+				fileName = destFile.getParent().toString() 
+						+ File.separator 
+						+ (destFile.getFileName().toString()
 						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "." + ext;
+				
 				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
+				
 				if (Files.exists(Paths.get(fileName))) {
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
 						sprintf("File existed!: " + destFile + " filename: " + fileName);

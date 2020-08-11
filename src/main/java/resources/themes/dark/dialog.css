@@ -8,35 +8,44 @@
     -fx-text-background-color_dark: black;
     -fx-text-background-color_light: derive(-fx-base-background-dark, 50.0%);
 
-    -fx-dark-border-color: derive(-fx-base-background-dark, 80%);
+    -fx-dark-border-color: derive(-fx-base-background-dark, 80.0%);
 
     -fx-background-color: -fx-base-background-dark;
 
-	-fx-color: derive(-fx-base-background-light, 20%);
+	-fx-color: derive(-fx-base-background-light, 20.0%);
     -fx-box-border: ladder(
         -fx-base-background-dark,
         black 20.0%,
         derive(-fx-color,-15.0%) 30.0%);
-    -fx-inner-border-horizontal: linear-gradient(to right, derive(grey,55.0%), derive(-fx-box-border, 10%));
+    -fx-inner-border-horizontal: linear-gradient(to right, derive(grey,55.0%), derive(-fx-box-border, 10.0%));
 }
 
 .alertDiag{
-    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 40%));
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
     -fx-border-color: orange;
     -fx-border-width: 1.0px;
     -fx-text-fill: white;
 }
 .alertDiag:header *.header-panel {
-    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 40%));
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
 }
 
 .alertDiag > .button-bar > .container {
-    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 10%), derive(-fx-base-background-dark, 20%), derive(-fx-base-background-dark, 20%), derive(-fx-base-background-dark, 30%));
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 10.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 30.0%));
 }
 .alertDiag > *.label.content{    
     -fx-text-fill: -fx-text-color;
 }
 .alertDiag:header *.header-panel *.label{
-    -fx-font-size: 12px;
-    -fx-fill: #292929;
+    -fx-font-size: 12.0px;
+    -fx-fill: -fx-text-color;
+}
+
+.label {
+	   -fx-font-size: 22.0px;
+    -fx-text-fill: white;
+}
+.text-area{
+	   /*-fx-font-size: 12.0px; */
+    -fx-text-fill: black;
 }

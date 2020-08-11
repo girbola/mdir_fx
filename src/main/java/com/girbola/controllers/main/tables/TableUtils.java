@@ -721,6 +721,17 @@ public class TableUtils {
 	}
 
 	public static void calculateTableViewsStatistic(Tables tables) {
+		tables.getSortit_TableStatistic().setTotalFiles(0);
+		tables.getSorted_TableStatistic().setTotalFiles(0);
+		tables.getAsItIs_TableStatistic().setTotalFiles(0);
+
+		tables.getSortit_TableStatistic().setTotalFilesCopied(0);
+		tables.getSorted_TableStatistic().setTotalFilesCopied(0);
+		tables.getAsItIs_TableStatistic().setTotalFilesCopied(0);
+
+		tables.getSortit_TableStatistic().setTotalFilesSize(0);
+		tables.getSorted_TableStatistic().setTotalFilesSize(0);
+		tables.getAsItIs_TableStatistic().setTotalFilesSize(0);
 
 		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
 			tables.getSortit_TableStatistic().setTotalFiles(

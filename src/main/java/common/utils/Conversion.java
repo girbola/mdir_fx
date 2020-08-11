@@ -191,7 +191,7 @@ public class Conversion {
 		// 1 digits == 2 tulos 02
 		if (digits < value) {
 			Messages.sprintfError("Value were higher than digits. Digit: " + digits + " value: " + value);
-			return "" + value;
+			return Conversion.stringTwoDigits(value);
 		}
 		if (String.valueOf(value).length() < digits) {
 			StringBuilder number = new StringBuilder();
