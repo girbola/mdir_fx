@@ -86,8 +86,7 @@ public class DateFixerController {
 	private Button cameras_hide_Deselected_btn;
 	@FXML
 	private Button cameras_show_all_btn;
-	@FXML
-	private Button setDateAsFileName_btn;
+	
 	@FXML
 	private MenuButton move_menuBtn;
 	@FXML
@@ -141,31 +140,37 @@ public class DateFixerController {
 	@FXML
 	private Button hideInfoTables_btn;
 	@FXML
-	private Button accept_dates_btn;
-	@FXML
 	private Button applyChanges_btn;
 	@FXML
 	private Button addToBatch_btn;
 	@FXML
 	private Button close_btn;
-	@FXML
-	private Button restoresExifDates_btn;
-	@FXML
-	private Button dateFromFileName_btn;
+	
 	@FXML
 	private Button dateFix_btn;
 	@FXML
 	private Button folderize_btn;
+	
+	
+	// MISC TAB==========
+
+	@FXML
+	private Button accept_dates_btn;
+	@FXML
+	private Button dateFromFileName_btn;
 	@FXML
 	private Button lastModified_date_btn;
+
 	@FXML
-	private Button touchFileNameWithDate_btn;
+	private Button renameFileNameWithDate_btn;
 	@FXML
-	private Button retrieveFileInfos_btn;
-	@FXML
-	private Button select_btn;
+	private Button restoresSelectedExifDates_btn;
 	@FXML
 	private Button updateDate_btn;
+	// MISC TAB========== END
+	
+	@FXML
+	private Button select_btn;
 	@FXML
 	private Button copyToMisc_btn;
 	@FXML
@@ -475,23 +480,7 @@ public class DateFixerController {
 
 	@FXML
 	private void updateDate_btn_action(ActionEvent event) {
-		Messages.warningText("retrieveFileInfos_btn_action Not ready yet");
-	}
-
-	@FXML
-	private void retrieveFileInfos_btn_action(ActionEvent event) {
-		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		Messages.warningText("retrieveFileInfos_btn_action Not ready yet");
-		for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				// asC;
-				// aerb;
-			}
-		}
+		Messages.warningText("updateDate_btn_action Not ready yet");
 	}
 
 	@FXML
@@ -523,7 +512,7 @@ public class DateFixerController {
 	 * Gets exifDate for selected files
 	 */
 	@FXML
-	private void restoresExifDates_btn_action(ActionEvent event) {
+	private void restoresSelectedExifDates_btn_action(ActionEvent event) {
 		model_datefix.restoreSelectedExifDateInfos();
 	}
 
@@ -533,13 +522,8 @@ public class DateFixerController {
 	}
 
 	@FXML
-	private void touchFileNameWithDate_btn_action(ActionEvent event) {
-		model_datefix.touchFileNameWithDate();
-	}
-
-	@FXML
-	private void setDateAsFileName_btn_action(ActionEvent event) {
-		model_datefix.dateAsFileName();
+	private void renameFileNameWithDate_btn_action(ActionEvent event) {
+		model_datefix.renameFileNameWithDate();
 	}
 
 	@FXML
@@ -633,7 +617,7 @@ public class DateFixerController {
 		df_gridPane.getColumnConstraints().removeAll();
 		filePath_tf.setText(this.model_datefix.getCurrentFolderPath().toString());
 
-		dateTimeAdjusterController.init(model_main, aModel_datefix, df_gridPane, quickPick_tilePane);
+		dateTimeAdjusterController.init(aModel_main, aModel_datefix, df_gridPane, quickPick_tilePane);
 		selectorController.init(aModel_datefix, df_gridPane);
 		timeShiftController.init(aModel_datefix);
 

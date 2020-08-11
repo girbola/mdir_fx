@@ -77,10 +77,8 @@ public class DateTimeAdjusterController {
 	@FXML
 	private Button findExistsPath_btn;
 
-
-
 	@FXML
-	private void markFilesAccordingTheDateScale_btn_action() {
+	private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
 		LocalDateTime ldt_start = null;
 		LocalDateTime ldt_end = null;
 
@@ -94,7 +92,10 @@ public class DateTimeAdjusterController {
 			Main.setProcessCancelled(true);
 		}
 		List<FileInfo> collectedList = new ArrayList<>();
-
+		if (this.model_main == null) {
+			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
+		}
+	
 		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
 			if (Main.getProcessCancelled()) {
 				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");

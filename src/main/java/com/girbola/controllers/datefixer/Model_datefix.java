@@ -477,6 +477,25 @@ public class Model_datefix {
 		return this.metaDataTableView;
 	}
 
+	public TextField getTextField(Node node) {
+		if (node instanceof VBox) {
+			if (node.getId().equals("imageFrame")) {
+				for (Node node2 : ((VBox) node).getChildren()) {
+					sprintf("Node2 : " + node2);
+					if (node2 instanceof HBox) {
+						for (Node node3 : ((HBox) node2).getChildren()) {
+							sprintf("TextField: " + node3);
+							if (node3 instanceof TextField) {
+								return (TextField) node3;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 	public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
 		this.metaDataTableView = metadataTableView;
 	}
@@ -646,25 +665,6 @@ public class Model_datefix {
 		*/
 	}
 
-	public TextField getTextField(Node node) {
-		if (node instanceof VBox) {
-			if (node.getId().equals("imageFrame")) {
-				for (Node node2 : ((VBox) node).getChildren()) {
-					sprintf("Node2 : " + node2);
-					if (node2 instanceof HBox) {
-						for (Node node3 : ((HBox) node2).getChildren()) {
-							sprintf("TextField: " + node3);
-							if (node3 instanceof TextField) {
-								return (TextField) node3;
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	public void dateFromFileName() {
 		if (getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
@@ -750,7 +750,7 @@ public class Model_datefix {
 		}
 	}
 
-	public void touchFileNameWithDate() {
+	public void renameFileNameWithDate() {
 		sprintf("touchFileNameWithDate pressed");
 		if (getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
@@ -951,28 +951,6 @@ public class Model_datefix {
 		}
 	}
 
-	private int checkIfRedDates(GridPane gridPane) {
-		int counter = 0;
-		for (Node n : gridPane.getChildren()) {
-			if (n instanceof VBox) {
-				if (n.getId().contains("imageFrame")) {
-					for (Node vbox : ((VBox) n).getChildren()) {
-						if (vbox instanceof HBox) {
-							for (Node hbox : ((HBox) vbox).getChildren()) {
-								if (hbox instanceof TextField) {
-									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
-										counter++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return counter;
-	}
-
 	public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
 		ArrayList<FileInfo> arrayList = new ArrayList<>();
 		for (Node node : filterlist) {
@@ -1045,6 +1023,7 @@ public class Model_datefix {
 
 	/**
 	 * Collects everything into ObservableList<Node> observable
+	 * 
 	 * @param obs
 	 * @return ObservableList<Node>
 	 */
@@ -1137,43 +1116,27 @@ public class Model_datefix {
 		return connection;
 	}
 
-	public void dateAsFileName() {
-		sprintf("lastModified_date_btn pressed");
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
+	
+	private int checkIfRedDates(GridPane gridPane) {
+		int counter = 0;
+		for (Node n : gridPane.getChildren()) {
+			if (n instanceof VBox) {
+				if (n.getId().contains("imageFrame")) {
+					for (Node vbox : ((VBox) n).getChildren()) {
+						if (vbox instanceof HBox) {
+							for (Node hbox : ((HBox) vbox).getChildren()) {
+								if (hbox instanceof TextField) {
+									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
+										counter++;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		Messages.warningText("Not ready nor tested");
-//		for (Node node : getSelectionModel().getSelectionList()) {
-//			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-//			FileInfo fileInfo = (FileInfo) node.getUserData();
-//			if (fileInfo != null) {
-//				Path source = Paths.get(fileInfo.getOrgPath());
-//				Path dest = FileInfo_Utils.renameFileToDate(source, fileInfo);
-//				if (!source.equals(dest) && !Files.exists(dest)) {
-//
-//					try {
-//						Files.move(source, dest);
-//						fileInfo.setOrgPath(dest.toString());
-//						if (!SQL_Utils.isDbConnected(getConnection())) {
-//							Messages.sprintf("database is not connected!!!");
-//							return;
-//						}
-//						SQL_Utils.insertFileInfoToDatabase(getConnection(), fileInfo);
-//						TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-//						if (model_Main.tables() == null) {
-//							Main.setProcessCancelled(true);
-//							errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-//						}
-//						model_Main.tables().refreshAllTables();
-//						updateAllInfos(getFolderInfo_full().getFileInfoList());
-//						getFolderInfo_full().setChanged(true);
-//						sprintf("source is: " + source + " renamed name is: " + dest);
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}
-//		}
+		return counter;
 	}
+
 }
