@@ -1102,12 +1102,12 @@ public class Model_datefix {
 		boolean hide = false;
 		if (!copied.get()) {
 			if (fileInfo.isCopied()) {
-				hide = true;
+				hide = false;
 			}
 		}
 		if (!ignored.get()) {
 			if (fileInfo.isIgnored()) {
-				hide = true;
+				hide = false;
 			}
 		}
 		if (!events.get()) {
@@ -1127,34 +1127,14 @@ public class Model_datefix {
 
 	public ObservableList<Node> filterAllNodesList(ObservableList<Node> obs) {
 		ObservableList<Node> observable = FXCollections.observableArrayList();
-
-		boolean hide = false;
 		for (Node node : obs) {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (!copied.get()) {
-				if (fileInfo.isCopied()) {
-					hide = true;
-				}
-			}
-			if (!ignored.get()) {
-				if (fileInfo.isIgnored()) {
-					hide = true;
-				}
-			}
-			if (!events.get()) {
-				if (fileInfo.getEvent().length() >= 1) {
-					hide = true;
-				}
-			}
-			if (!locations.get()) {
-				if (fileInfo.getLocation().length() >= 1) {
-					hide = true;
-				}
-			}
-			if (!hide) {
+			if (copied.get()) {
 				observable.add(node);
+			} else {
+				observable.remove(node);
 			}
-			hide = false;
+
 		}
 		return observable;
 	}
