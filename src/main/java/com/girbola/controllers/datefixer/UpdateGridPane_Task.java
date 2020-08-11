@@ -17,11 +17,23 @@ import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class UpdateGridPane_Task {
+public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 
 	private static final String ERROR = UpdateGridPane_Task.class.getSimpleName();
+	private Model_datefix model_datefix;
+	private ObservableList<Node> obs;
+	private LoadingProcess_Task loadingProcess_task;
 
-	public static void updateGridPaneContent(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task loadingProcess_task) {
+	public UpdateGridPane_Task(Model_datefix model_datefix, ObservableList<Node> obs,
+			LoadingProcess_Task loadingProcess_task) {
+		super();
+		this.model_datefix = model_datefix;
+		this.obs = obs;
+		this.loadingProcess_task = loadingProcess_task;
+	}
+
+	public void updateGridPaneContent_(Model_datefix model_datefix, ObservableList<Node> obs,
+			LoadingProcess_Task loadingProcess_task) {
 
 		CountDownLatch latch = new CountDownLatch(1);
 
@@ -33,70 +45,64 @@ public class UpdateGridPane_Task {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		Task<ObservableList<Node>> obs_list_task = new Task<ObservableList<Node>>() {
-			@Override
-			protected ObservableList<Node> call() throws Exception {
-				ObservableList<Node> filterlist = model_datefix.filterAllNodesList(obs);
-				for (Node node : filterlist) {
-					if (node instanceof VBox) {
-						if (node.getId().equals("imageFrame")) {
-							FileInfo fileInfo = (FileInfo) node.getUserData();
-						}
-					}
-				}
-				return filterlist;
-			}
-		};
-
-		obs_list_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("Cancelled");
-				loadingProcess_task.closeStage();
-			}
-		});
-		obs_list_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("obs_list_task Failed");
-				Messages.errorSmth(ERROR, obs_list_task.getException().toString(), null, Misc.getLineNumber(), true);
-				loadingProcess_task.closeStage();
-			}
-		});
-		obs_list_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						model_datefix.getSelectionModel().clearAll();
-					}
-				});
-				ObservableList<Node> filteredList = null;
-				try {
-					filteredList = obs_list_task.get();
-				} catch (Exception e) {
-					Messages.errorSmth(ERROR, "", e, Misc.getLineNumber(), true);
-				}
-				if (filteredList.isEmpty()) {
-					Messages.sprintf("FilteredList were empty!!");
-					return;
-				} else {
-					addToGridPane(model_datefix, filteredList, loadingProcess_task, Main.scene_Switcher.getWindow());
-					Messages.sprintf("filterList were not empty");
-				}
-				loadingProcess_task.closeStage();
-			}
-		});
-		Messages.sprintf("DEBUGGING LINE");
-		loadingProcess_task.setTask(obs_list_task);
-		Thread obs_list_th = new Thread(obs_list_task, "obs_list_th");
-		obs_list_th.start();
-
 	}
 
-	public static void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task lpt, Stage stage) {
+	@Override
+	protected void succeeded() {
+		super.succeeded();
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				model_datefix.getSelectionModel().clearAll();
+			}
+		});
+		ObservableList<Node> filteredList = null;
+		try {
+			filteredList = get();
+		} catch (Exception e) {
+			Messages.errorSmth(ERROR, "", e, Misc.getLineNumber(), true);
+		}
+		if (filteredList.isEmpty()) {
+			Messages.sprintf("FilteredList were empty!!");
+			return;
+		} else {
+			addToGridPane(model_datefix, filteredList, loadingProcess_task, Main.scene_Switcher.getWindow());
+			Messages.sprintf("filterList were not empty");
+		}
+		loadingProcess_task.closeStage();
+	}
+
+	@Override
+	protected void cancelled() {
+		super.cancelled();
+		Messages.sprintf("Cancelled");
+		loadingProcess_task.closeStage();
+	}
+
+	@Override
+	protected void failed() {
+		super.failed();
+		Messages.sprintf("obs_list_task Failed");
+		Messages.errorSmth(ERROR, getException().toString(), null, Misc.getLineNumber(), true);
+		loadingProcess_task.closeStage();
+	}
+
+	@Override
+	protected ObservableList<Node> call() throws Exception {
+		ObservableList<Node> filterlist = model_datefix.filterAllNodesList(obs);
+//		for (Node node : filterlist) {
+//			if (node instanceof VBox) {
+//				if (node.getId().equals("imageFrame")) {
+//					FileInfo fileInfo = (FileInfo) node.getUserData();
+//				}
+//			}
+//			Messages.sprintfError("This does nothing.");
+//		}
+		return filterlist;
+	}
+
+	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task lpt,
+			Stage stage) {
 
 		Task<Integer> addToGridPane_task = new AddToGridPane2(model_datefix, obs, lpt);
 		lpt.setTask(addToGridPane_task);
