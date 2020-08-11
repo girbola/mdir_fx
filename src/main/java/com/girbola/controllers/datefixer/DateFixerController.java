@@ -43,6 +43,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -95,10 +96,10 @@ public class DateFixerController {
 	private CheckBox ignored_chk;
 	@FXML
 	private CheckBox copied_chk;
-	@FXML
-	private CheckBox events_chk;
-	@FXML
-	private CheckBox locations_chk;
+//	@FXML
+//	private CheckBox events_chk;
+//	@FXML
+//	private CheckBox locations_chk;
 	@FXML
 	private HBox infoTable_container_root;
 	@FXML
@@ -180,11 +181,11 @@ public class DateFixerController {
 	@FXML
 	private ImageView remove;
 	@FXML
-	private Label selection_text;
-	@FXML
 	private Button select_all;
 	@FXML
 	private Button select_none_btn;
+	@FXML
+	private Label selection_text;
 	@FXML
 	private ScrollPane rightInfoPanel_scrollPane;
 	@FXML
@@ -204,6 +205,8 @@ public class DateFixerController {
 
 	@FXML
 	private Button addToUnsorted_btn;
+	@FXML
+	private Button addToAsItIs_btn;
 
 	@FXML
 	private void addToUnsorted_btn_action(ActionEvent event) {
@@ -219,9 +222,6 @@ public class DateFixerController {
 
 		Messages.warningText("Not ready yet!");
 	}
-
-	@FXML
-	private Button addToAsItIs_btn;
 
 	@FXML
 	private void addToAsItIs_btn_action(ActionEvent event) {
@@ -368,19 +368,42 @@ public class DateFixerController {
 			Messages.warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
+		Messages.sprintf("cameras_hide_Deselected_btn_action starting");
+//		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		loadingProcess_task.setTask(null);
+//		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
+//				loadingProcess_task);
+		
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		loadingProcess_task.setTask(null);
-		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
 				loadingProcess_task);
+		
+		loadingProcess_task.setTask(updateGridPane_Task);
+		
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+		
 	}
 
 	@FXML
 	private void cameras_show_all_btn_action(ActionEvent event) {
-
+		Messages.sprintf("cameras_show_all_btn_action starting");
 		model_datefix.getSelectionModel().clearAll();
 		model_datefix.deselectAllExifDataSelectors();
+//		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
+		
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
+		
+		loadingProcess_task.setTask(updateGridPane_Task);
+		
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+		
+		
 		//
 		// AddToGridPane2 apg2 = new AddToGridPane2(model_datefix,
 		// model_datefix.getAllNodes(), lp);
@@ -406,7 +429,6 @@ public class DateFixerController {
 
 				Scene scene = new Scene(parent);
 				Stage stage = new Stage();
-				// stage.initModality(Modality.APPLICATION_MODAL);
 				stage.setScene(scene);
 				stage.show();
 				stage.setOnHiding(new EventHandler<WindowEvent>() {
@@ -425,19 +447,6 @@ public class DateFixerController {
 		}
 
 	}
-
-//	private void addToMiscFolder(FileInfo fileInfo) {
-//		LocalDate ldl = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-//		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-//				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-//		fileInfo.setWorkDir(Main.conf.getWorkDir());
-//		fileInfo.setDestination_Path(File.separator + ldl.getYear() + File.separator
-//				+ Conversion.formatStringTwoDigits(ldl.getMonthValue()) + File.separator + fileName + "."
-//				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-//
-//		ldl = null;
-//
-//	}
 
 	@FXML
 	private void dateFix_btn_action(ActionEvent event) {
@@ -527,6 +536,7 @@ public class DateFixerController {
 	private void touchFileNameWithDate_btn_action(ActionEvent event) {
 		model_datefix.touchFileNameWithDate();
 	}
+
 	@FXML
 	private void setDateAsFileName_btn_action(ActionEvent event) {
 		model_datefix.dateAsFileName();
@@ -564,18 +574,7 @@ public class DateFixerController {
 	public void init(Model_datefix aModel_datefix, Model_main aModel_main, Path currentPath, FolderInfo folderInfo,
 			boolean isImported) {
 		this.model_datefix = aModel_datefix;
-		this.model_main = aModel_main;
-		// WorkDir_Handler workDir_Handler = new
-		// WorkDir_Handler(Paths.get(Main.conf.getWorkDir()), false);
-		// this.model_datefix.setWorkDir_Handler(workDir_Handler);
-		// for (Entry<Path, FolderInfo> entry :
-		// workDir_Handler.getFolderInfo_Map().entrySet()) {
-		// Messages.sprintf("path: " + entry.getKey());
-		// }
-		// workDir_Handler.load_All_WorkDirSub(workDir, start_year, end_year)
 		Main.setProcessCancelled(false);
-//		rightInfo_visible hideInfoTables_btn.visibleProperty()
-//		leftInfoTables_visible.bind(info.visibleProperty()); 
 		this.model_datefix.setCurrentFolderPath(currentPath);
 		this.model_datefix.setFolderInfo_full(folderInfo);
 		this.model_datefix.setGridPane(df_gridPane);
@@ -590,43 +589,41 @@ public class DateFixerController {
 
 		copied_chk.selectedProperty().bindBidirectional(this.model_datefix.copied_property());
 
-		events_chk.selectedProperty().bindBidirectional(this.model_datefix.events_property());
-
-		locations_chk.selectedProperty().bindBidirectional(this.model_datefix.locations_property());
-
-		events_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
 		folderize_btn.disableProperty().bind(Main.conf.drive_connected_property().not());
-		locations_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
 		copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+				if (newValue == true) {
+					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+					
+					loadingProcess_task.setTask(updateGridPane_Task);
+					
+					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+					thread.start();
+
+				} else {
+					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+					
+					loadingProcess_task.setTask(updateGridPane_Task);
+					
+					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+					thread.start();
+
+				}
 			}
 		});
-		ignored_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
+//		ignored_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+//						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+//			}
+//		});
 
 		this.model_datefix.setRightInfoPanel(rightInfoPanel);
 
@@ -935,9 +932,20 @@ public class DateFixerController {
 			}
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
+//				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+//						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+				
 				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+				loadingProcess_task.setTask(updateGridPane_Task);
+				
+				Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+				thread.start();
+
+
+				
 			} else {
 				Messages.sprintf("Nothing to update");
 			}
@@ -976,7 +984,6 @@ public class DateFixerController {
 			leftInfoTables_visible.set(true);
 		}
 	}
-	
 
 	@FXML
 	private void copyToMisc_btn_action(ActionEvent event) {
