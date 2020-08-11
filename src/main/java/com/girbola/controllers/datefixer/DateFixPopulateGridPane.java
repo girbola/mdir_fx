@@ -431,6 +431,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 						}
 						counter.set(counter.get() + 1);
 					}
+
 				}
 			}
 		}

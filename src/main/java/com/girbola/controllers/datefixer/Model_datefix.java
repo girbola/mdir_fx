@@ -1129,10 +1129,15 @@ public class Model_datefix {
 		ObservableList<Node> observable = FXCollections.observableArrayList();
 		for (Node node : obs) {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
+
 			if (copied.get()) {
-				observable.add(node);
+				if (fileInfo.isCopied()) {
+					observable.add(node);
+				}
 			} else {
-				observable.remove(node);
+				if (!fileInfo.isCopied()) {
+					observable.remove(node);
+				}
 			}
 
 		}
