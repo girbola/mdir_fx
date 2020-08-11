@@ -1,6 +1,6 @@
 package com.girbola.controllers.datefixer;
 
-public enum SelectorModelType {
+enum SelectorModelType {
 	CAMERA("CAMERA"), DATE("DATE"), EVENT("EVENT"), LOCATION("LOCATION");
 
 	private String type;
