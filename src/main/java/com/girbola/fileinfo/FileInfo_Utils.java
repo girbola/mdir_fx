@@ -452,6 +452,8 @@ public class FileInfo_Utils {
 		for (FileInfo fileInfo_dest : folderInfoList.getFileInfoList()) {
 			if (fileInfo.getOrgPath() != fileInfo_dest.getOrgPath()) {
 				if (fileInfo.getSize() == fileInfo_dest.getSize()) {
+					Messages.sprintf("fileInfo src: " + fileInfo.getOrgPath() + " size = " + fileInfo.getSize()
+							+ " fileInfoDEST: " + fileInfo_dest.getOrgPath() + " size = " + fileInfo_dest.getSize());
 					return true;
 				}
 			}

@@ -167,8 +167,6 @@ class Configuration_GUI {
 	}
 
 	public String getWorkDir() {
-		Messages.sprintf("getWorkdDir: " + workDir);
-		
 		return this.workDir.get();
 	}
 

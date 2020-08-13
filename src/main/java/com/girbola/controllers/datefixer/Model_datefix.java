@@ -1033,7 +1033,7 @@ public class Model_datefix {
 		for (Node node : obs) {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
 
-			if (copied.get()) {
+			if (!copied.get()) {
 				if (!fileInfo.isIgnored()) {
 					observable.add(node);
 				}

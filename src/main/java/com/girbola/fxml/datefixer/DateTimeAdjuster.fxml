@@ -26,7 +26,7 @@
             <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
             <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
             <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
-            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
             <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
         </columnConstraints>
         <rowConstraints>
@@ -269,7 +269,7 @@
                <font>
                   <Font size="10.0" />
                </font></Label>
-            <Button fx:id="copy_startToEnd" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxWidth="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_action" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            <Button fx:id="copy_startToEnd_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -277,7 +277,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxWidth="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefWidth="25.0" styleClass="switchButton" text="uppp" GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+            <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" text="uppp" GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -289,12 +289,12 @@
                <tooltip>
                   <Tooltip text="%selectRangeTooltip" />
                </tooltip></Button>
-            <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxWidth="107.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="50.0" prefWidth="107.0" text="%applyDateAndTime" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
+            <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxWidth="107.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="50.0" prefWidth="107.0" text="%applyDateAndTime" wrapText="true" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
                <tooltip>
                   <Tooltip text="%applyDateAndTimeTooltip" />
                </tooltip></Button>
             <Button fx:id="markFilesAccordingTheDateScale_btn" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Mark files" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Find exists path" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+            <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>

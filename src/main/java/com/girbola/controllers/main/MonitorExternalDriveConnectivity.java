@@ -78,6 +78,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 //			Messages.sprintf("testSerial is: " + driveSerialNumber);
 			if (Main.conf.getWorkDirSerialNumber().equals(driveSerialNumber)) {
 				driveConnected();
+				Messages.sprintf("Workd dir is connected: " + Main.conf.getWorkDir());
 			} else {
 				disConnectedDrive("checkWorkDirConnected not connected. Drive serial number has been changed since last check");
 			}
