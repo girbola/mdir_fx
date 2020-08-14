@@ -214,7 +214,7 @@ public class Main extends Application {
 							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
-									Messages.sprintf("fileInfo loading: " + finfo.getOrgPath());
+									Messages.sprintf("loadAllLists fileInfo loading: " + finfo.getOrgPath());
 								}
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());

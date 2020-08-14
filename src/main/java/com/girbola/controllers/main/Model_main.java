@@ -73,10 +73,10 @@ public class Model_main {
 	private List<ThumbInfo> thumbInfo = new ArrayList<>();
 	private ScheduledService<Void> monitorExternalDriveConnectivity;
 
-	private TableStatistic sortitTableStatistic; 
-	private TableStatistic sortedTableStatistic ;
+	private TableStatistic sortitTableStatistic;
+	private TableStatistic sortedTableStatistic;
 	private TableStatistic asitisTableStatistic;
-	
+
 	public TableStatistic getSortitTableStatistic() {
 		return sortitTableStatistic;
 	}
@@ -214,53 +214,58 @@ public class Model_main {
 			Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
 			return false;
 		}
-	
+
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
-			Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
-			folderInfo.setTableType(tableType);
-			try {
-				FolderState folderState = new FolderState(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
-				
-				boolean addingToFolderState = SQL_Utils.addToFolderStateDB(connection_Configuration, folderState);
-				if (!addingToFolderState) {
-					Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
-				}
-				/*
-				 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
-				 * Connection status when this was saved Connects to current folder for existing
-				 * or creates new one called fileinfo.db
-				 */
-				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-						Main.conf.getMdir_db_fileName());
-				fileList_connection.setAutoCommit(false);
-				// Inserts all data info fileinfo.db
-				FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
-				FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
-				if (fileList_connection != null) {
-					fileList_connection.commit();
-					fileList_connection.close();
-					Messages.sprintf(
-							"saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
-				} else {
-					Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
-							+ " FAILED! Closing connection");
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				Messages.sprintfError("Something went wrong writing folderinfo to database at line: "
-						+ Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
-				return false;
-			}
+			if (folderInfo.getFolderFiles() >= 1) {
+				Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
+				folderInfo.setTableType(tableType);
+				try {
+					FolderState folderState = new FolderState(folderInfo.getFolderPath(), tableType,
+							folderInfo.getJustFolderName(), folderInfo.isConnected());
 
+					boolean addingToFolderState = SQL_Utils.addToFolderStateDB(connection_Configuration, folderState);
+					if (!addingToFolderState) {
+						Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
+					}
+					/*
+					 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
+					 * Connection status when this was saved Connects to current folder for existing
+					 * or creates new one called fileinfo.db
+					 */
+					fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+							Main.conf.getMdir_db_fileName());
+					fileList_connection.setAutoCommit(false);
+					// Inserts all data info fileinfo.db
+					FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+					FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
+					if (fileList_connection != null) {
+						fileList_connection.commit();
+						fileList_connection.close();
+						Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath()
+								+ " DONE! Closing connection");
+					} else {
+						Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
+								+ " FAILED! Closing connection");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					Messages.sprintfError("Something went wrong writing folderinfo to database at line: "
+							+ Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
+					return false;
+				}
+
+			}
 		}
 		try {
 			Messages.sprintf("foldersStateConnection.commit() " + " foldersStateConnection.close();");
 			connection_Configuration.commit();
+			return true;
 		} catch (Exception e) {
+			Messages.errorSmth(ERROR, "Cannot commit to SQL database", e, Misc.getLineNumber(), true);
 			e.printStackTrace();
+			return false;
 		}
-		return true;
 	}
 
 	public void exitProgram_NOSAVE() {

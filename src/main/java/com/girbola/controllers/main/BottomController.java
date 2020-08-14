@@ -55,6 +55,13 @@ public class BottomController {
 	private final String ERROR = BottomController.class.getSimpleName();
 	private Model_main model_main;
 
+	private AtomicInteger duplicateCounter = new AtomicInteger(0);
+	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
+	private AtomicInteger fileCounter = new AtomicInteger(0);
+	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
+	private AtomicInteger folderCounter = new AtomicInteger(0);
+	private AtomicBoolean folderNeedsToUpdate = new AtomicBoolean(false);
+
 	@FXML
 	private Button addFolders_btn;
 	@FXML
@@ -84,37 +91,31 @@ public class BottomController {
 
 	@FXML
 	private Button removeDuplicates_btn;
-	private AtomicInteger duplicateCounter = new AtomicInteger(0);
-	private AtomicInteger folderCounter = new AtomicInteger(0);
-	private AtomicInteger fileCounter = new AtomicInteger(0);
-	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
-	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
-	private AtomicBoolean folderNeedsToUpdate = new AtomicBoolean(false);
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
 		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table());
 		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table());
+		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSorted_table());
+		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table());
 
+		TableUtils.updateAllFolderInfos(model_main.tables());
+		TableUtils.calculateTableViewsStatistic(model_main.tables());
 	}
 
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch) {
-
-//		model_main.tables().getSorted_table()
 		folderNeedsToUpdate.set(false);
 		for (FolderInfo folderInfo : table.getItems()) {
 			folderCounter.incrementAndGet();
 			for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
-				if (fileInfoToFind.isIgnored() == false) {
-					if (fileInfoToFind.isTableDuplicated() == false) {
+				if (!fileInfoToFind.isIgnored()) {
+					if (!fileInfoToFind.isTableDuplicated()) {
 						Messages.sprintf(
 								"fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
 						findDuplicate(fileInfoToFind, tableToSearch);
 					}
 				}
 			}
-
-//		Messages.sprintf("Updated folderInfo: " + folderInfo);
 		}
 		if (folderNeedsToUpdate.get() == true) {
 			List<FolderInfo> toRemove = new ArrayList<>();

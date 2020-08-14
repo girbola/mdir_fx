@@ -54,6 +54,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
 			cancel();
 			return null;
 		}
+		SQL_Utils.clearTable(connection_Configuration,  SQL_Enums.FOLDERSSTATE.getType());
 		SQL_Utils.createFoldersStatesDatabase(connection_Configuration); // create new foldersStateDatabase
 																			// folderState.db
 //		SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderState.db
