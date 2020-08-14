@@ -106,6 +106,7 @@ public class BottomController {
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch) {
 		folderNeedsToUpdate.set(false);
 		for (FolderInfo folderInfo : table.getItems()) {
+			
 			folderCounter.incrementAndGet();
 			for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
 				if (!fileInfoToFind.isIgnored()) {
