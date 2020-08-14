@@ -48,7 +48,7 @@ public class TableStatistic {
 		return totalFilesCopied;
 	}
 
-	public void setTotalFilesCopied(int totalFilesCopied) {
+	public synchronized void setTotalFilesCopied(int totalFilesCopied) {
 		this.totalFilesCopied.set(totalFilesCopied);
 	}
 
@@ -56,7 +56,7 @@ public class TableStatistic {
 		return totalFilesSize;
 	}
 
-	public void setTotalFilesSize(long totalFilesSize) {
+	public synchronized void setTotalFilesSize(long totalFilesSize) {
 		this.totalFilesSize.set(totalFilesSize);
 	}
 
@@ -64,7 +64,7 @@ public class TableStatistic {
 		return totalFiles;
 	}
 
-	public void setTotalFiles(int totalFiles) {
+	public synchronized void setTotalFiles(int totalFiles) {
 		this.totalFiles.set(totalFiles);
 	}
 }

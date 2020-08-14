@@ -94,16 +94,16 @@ public class BottomController {
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table());
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table());
-		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSorted_table());
-		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table());
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(), "Sorted -> Sorted");
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(), "Sorted -> SortIt");
+//		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSorted_table(), "Sorted -> SortIt");
+		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(), "SortIt -> SortIt");
 
 		TableUtils.updateAllFolderInfos(model_main.tables());
 		TableUtils.calculateTableViewsStatistic(model_main.tables());
 	}
 
-	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch) {
+	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
 		folderNeedsToUpdate.set(false);
 		for (FolderInfo folderInfo : table.getItems()) {
 			
@@ -113,12 +113,12 @@ public class BottomController {
 					if (!fileInfoToFind.isTableDuplicated()) {
 						Messages.sprintf(
 								"fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
-						findDuplicate(fileInfoToFind, tableToSearch);
+						findDuplicate(fileInfoToFind, tableToSearch, folderNeedsToUpdate);
 					}
 				}
 			}
 		}
-		if (folderNeedsToUpdate.get() == true) {
+		if (folderNeedsToUpdate.get()) {
 			List<FolderInfo> toRemove = new ArrayList<>();
 			Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
 			while (foi.hasNext()) {
@@ -145,7 +145,7 @@ public class BottomController {
 		fileEnterCounter.set(0);
 	}
 
-	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
+	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table, AtomicBoolean folderNeedsToUpdate2) {
 		for (FolderInfo folderInfo : table.getItems()) {
 			if (folderInfo.getFolderFiles() > 0) {
 				for (FileInfo fileInfoSearch : folderInfo.getFileInfoList()) {
@@ -156,13 +156,11 @@ public class BottomController {
 									&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
 								fileInfoSearch.setTableDuplicated(true);
 								duplicateCounter.incrementAndGet();
-//								if ((folderInfo.getFolderFiles() - 1) > 0) {
-//									folderInfo.setFolderFiles(folderInfo.getFolderFiles() - 1);
-//								}
-								if (!folderNeedsToUpdate.get()) {
-									folderNeedsToUpdate.set(true);
+							
+								if (!folderNeedsToUpdate2.get()) {
+									folderNeedsToUpdate2.set(true);
 								}
-								Messages.sprintf("sortit FOUND fileInfoToFind: " + fileInfoToFind
+								Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
 										+ "  fileInfoToFind.isTableDuplicated() " + fileInfoToFind.isTableDuplicated()
 										+ " DUPLICATED file: " + fileInfoSearch.getOrgPath()
 										+ " fileInfoSearch.isTableDuplicated() " + fileInfoSearch.isTableDuplicated()

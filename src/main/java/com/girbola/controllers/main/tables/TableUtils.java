@@ -760,7 +760,7 @@ public class TableUtils {
 			tables.getAsItIs_TableStatistic().setTotalFilesSize(
 					tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
 		}
-
+refreshAllTableContent(tables);
 	}
 
 }
