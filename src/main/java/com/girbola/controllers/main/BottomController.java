@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
@@ -59,8 +60,8 @@ public class BottomController {
 	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
 	private AtomicInteger fileCounter = new AtomicInteger(0);
 	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
+	private AtomicLong folderSavedSize = new AtomicLong(0);
 	private AtomicInteger folderCounter = new AtomicInteger(0);
-	private AtomicBoolean folderNeedsToUpdate = new AtomicBoolean(false);
 
 	@FXML
 	private Button addFolders_btn;
@@ -94,31 +95,34 @@ public class BottomController {
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(), "Sorted -> Sorted");
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(), "Sorted -> SortIt");
-//		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSorted_table(), "Sorted -> SortIt");
-		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(), "SortIt -> SortIt");
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
+				"Sorted -> Sorted");
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
+				"Sorted -> SortIt");
+		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
+				"SortIt -> SortIt");
 
 		TableUtils.updateAllFolderInfos(model_main.tables());
 		TableUtils.calculateTableViewsStatistic(model_main.tables());
 	}
 
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
-		folderNeedsToUpdate.set(false);
+
+		boolean folderNeedsToUpdate = false;
 		for (FolderInfo folderInfo : table.getItems()) {
-			
+
 			folderCounter.incrementAndGet();
 			for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
 				if (!fileInfoToFind.isIgnored()) {
 					if (!fileInfoToFind.isTableDuplicated()) {
 						Messages.sprintf(
 								"fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
-						findDuplicate(fileInfoToFind, tableToSearch, folderNeedsToUpdate);
+						folderNeedsToUpdate = findDuplicate(fileInfoToFind, tableToSearch);
 					}
 				}
 			}
 		}
-		if (folderNeedsToUpdate.get()) {
+		if (folderNeedsToUpdate) {
 			List<FolderInfo> toRemove = new ArrayList<>();
 			Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
 			while (foi.hasNext()) {
@@ -135,17 +139,18 @@ public class BottomController {
 				model_main.tables().getSortIt_table().getItems().removeAll(toRemove);
 			}
 		}
-		folderNeedsToUpdate.set(false);
 		Messages.warningText("There were " + duplicateCounter + " duplicateCounter " + " folderCounter " + folderCounter
-				+ " fileEnterCounter " + fileEnterCounter);
+				+ " fileEnterCounter " + fileEnterCounter + " folderSavedSize " + folderSavedSize.get());
 		duplicateCounter.set(0);
 		folderCounter.set(0);
 		fileCounter.set(0);
 		folderEnterCounter.set(0);
 		fileEnterCounter.set(0);
+		folderSavedSize.set(0);
 	}
 
-	private void findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table, AtomicBoolean folderNeedsToUpdate2) {
+	private boolean findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
+		boolean needsUpdate = false;
 		for (FolderInfo folderInfo : table.getItems()) {
 			if (folderInfo.getFolderFiles() > 0) {
 				for (FileInfo fileInfoSearch : folderInfo.getFileInfoList()) {
@@ -156,21 +161,22 @@ public class BottomController {
 									&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
 								fileInfoSearch.setTableDuplicated(true);
 								duplicateCounter.incrementAndGet();
-							
-								if (!folderNeedsToUpdate2.get()) {
-									folderNeedsToUpdate2.set(true);
+								folderSavedSize.addAndGet(fileInfoSearch.getSize());
+								if (!needsUpdate) {
+									needsUpdate = true;
 								}
 								Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
 										+ "  fileInfoToFind.isTableDuplicated() " + fileInfoToFind.isTableDuplicated()
 										+ " DUPLICATED file: " + fileInfoSearch.getOrgPath()
 										+ " fileInfoSearch.isTableDuplicated() " + fileInfoSearch.isTableDuplicated()
-										+ " folderNeedsToUpdate? " + folderNeedsToUpdate);
+										+ " needsUpdate? " + needsUpdate);
 							}
 						}
 					}
 				}
 			}
 		}
+		return needsUpdate;
 	}
 
 	@FXML
