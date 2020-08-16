@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -43,6 +44,10 @@ import com.girbola.filelisting.GetRootFiles;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
 import common.utils.FileUtils;
@@ -760,7 +765,58 @@ public class TableUtils {
 			tables.getAsItIs_TableStatistic().setTotalFilesSize(
 					tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
 		}
-refreshAllTableContent(tables);
+		refreshAllTableContent(tables);
+	}
+
+	public static void saveChangesContentsToTables(Tables tables) {
+		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+			if (folderInfo.getChanged()) {
+				saveFolderInfoToDatabase(folderInfo);
+				folderInfo.setChanged(false);
+			}
+		}
+		for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+			if (folderInfo.getChanged()) {
+				saveFolderInfoToDatabase(folderInfo);
+				folderInfo.setChanged(false);
+			}
+		}
+		for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
+			if (folderInfo.getChanged()) {
+				saveFolderInfoToDatabase(folderInfo);
+				folderInfo.setChanged(false);
+			}
+		}
+		Main.setChanged(false);
+
+	}
+
+	private static void saveFolderInfoToDatabase(FolderInfo folderInfo) {
+		try {
+			/*
+			 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
+			 * Connection status when this was saved Connects to current folder for existing
+			 * or creates new one called fileinfo.db
+			 */
+			Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+					Main.conf.getMdir_db_fileName());
+			fileList_connection.setAutoCommit(false);
+			// Inserts all data info fileinfo.db
+			FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+			FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
+			if (fileList_connection != null) {
+				fileList_connection.commit();
+				fileList_connection.close();
+				Messages.sprintf(
+						"saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
+			} else {
+				Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
+						+ " FAILED! Closing connection");
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+
 	}
 
 }

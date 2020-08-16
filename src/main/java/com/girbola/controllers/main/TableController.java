@@ -214,7 +214,7 @@ public class TableController {
 
 	@FXML
 	private void resetSelectedFileInfos_btn_action(ActionEvent event) {
-		LoadingProcess_Task ldt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		LoadingProcess_Task ldt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		AtomicInteger counter = new AtomicInteger(0);
 
 		Task<Void> task = new Task<Void>() {
@@ -245,32 +245,32 @@ public class TableController {
 			}
 
 		};
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("resetSelectedFileInfos were succeeded");
-
-				ldt.closeStage();
-			}
-		});
-		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("resetSelectedFileInfos were cancelled");
-				ldt.closeStage();
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("resetSelectedFileInfos were failed");
-				ldt.closeStage();
-			}
-		});
-		ldt.setTask(task);
+//		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+//			@Override
+//			public void handle(WorkerStateEvent event) {
+//				Messages.sprintf("resetSelectedFileInfos were succeeded");
+////				ldt.closeStage();
+//			}
+//		});
+//		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+//			@Override
+//			public void handle(WorkerStateEvent event) {
+//				Messages.sprintf("resetSelectedFileInfos were cancelled");
+//				ldt.closeStage();
+//			}
+//		});
+//		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+//			@Override
+//			public void handle(WorkerStateEvent event) {
+//				Messages.sprintf("resetSelectedFileInfos were failed");
+//				ldt.closeStage();
+//			}
+//		});
+//		ldt.setTask(task);
 //		totalProcesses = table.getSelectionModel().getSelectedItems().size();
-		ldt.showLoadStage();
-		new Thread(task, "resettingSelecteFileInfos_thread").start();
+//		ldt.showLoadStage();
+		Thread thread = new Thread(task, "resettingSelecteFileInfos_thread");
+		thread.start();
 
 		Messages.sprintf("Resetting selected fileinfo's done!");
 //		ldt.closeStage();
@@ -570,7 +570,7 @@ public class TableController {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 						fileInfo.setEvent(event.getNewValue());
 					}
-
+					
 					Main.setChanged(true);
 					folderInfo.setChanged(true);
 					TableUtils.updateFolderInfos_FileInfo(folderInfo);
@@ -594,6 +594,7 @@ public class TableController {
 					}
 				}
 				TableUtils.refreshAllTableContent(model_main.tables());
+				TableUtils.saveChangesContentsToTables(model_main.tables());
 
 			}
 		});
