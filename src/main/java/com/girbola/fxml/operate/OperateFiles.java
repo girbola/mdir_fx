@@ -122,8 +122,7 @@ public class OperateFiles extends Task<Boolean> {
 			totalSize += fileInfo.getSize();
 		}
 
-		Messages.sprintf(
-				"totalSize: " + totalSize + 10000000L + " workdir: " + new File(Main.conf.getWorkDir()).getFreeSpace());
+		Messages.sprintf("totalSize: " + totalSize + " workdir: " + new File(Main.conf.getWorkDir()).getFreeSpace());
 		Platform.runLater(() -> {
 
 			model_operate.getStart_btn().setOnAction(new EventHandler<ActionEvent>() {
@@ -253,7 +252,7 @@ public class OperateFiles extends Task<Boolean> {
 						fileInfo.setCopied(true);
 						model_main.getWorkDir_Handler().add(fileInfo);
 					}
-					
+
 					break;
 				case RENAME:
 					if (copyFile(fileInfo, source, dest, STATE, answer)) {
@@ -281,6 +280,11 @@ public class OperateFiles extends Task<Boolean> {
 
 		private boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,
 				SimpleIntegerProperty answer) {
+			if (Files.exists(source2)) {
+				cancel();
+				Main.setProcessCancelled(true);
+				Messages.errorSmth(ERROR, "Can't find source file", null, Misc.getLineNumber(), true);
+			}
 			boolean destinationDirectoriesCreated = createDirectories(dest2);
 			if (!destinationDirectoriesCreated) {
 				Messages.sprintfError("Couldn't not be able to create folder");
@@ -291,6 +295,7 @@ public class OperateFiles extends Task<Boolean> {
 				Path destTmp = Paths.get(dest2.toFile() + ".tmp");
 
 				Files.deleteIfExists(destTmp);
+				Messages.sprintf("Source: " + source2 + " dest: " + dest2);
 
 				InputStream from = new FileInputStream(source2.toFile());
 				OutputStream to = new FileOutputStream(destTmp.toFile());

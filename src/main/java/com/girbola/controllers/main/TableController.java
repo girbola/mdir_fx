@@ -767,7 +767,6 @@ public class TableController {
 			}
 		}
 		List<FileInfo> list = new ArrayList<>();
-		ExecutorService exec = Executors.newSingleThreadExecutor();
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getBadFiles() >= 1) {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
@@ -804,6 +803,7 @@ public class TableController {
 
 		Thread thread = new Thread(operate, "Operate Thread");
 //		thread.start();
+		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.submit(thread);
 
 	}
