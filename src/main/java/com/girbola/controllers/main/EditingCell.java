@@ -1,5 +1,9 @@
 package com.girbola.controllers.main;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.events.GUI_Events;
 import com.girbola.messages.Messages;
@@ -8,6 +12,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -15,9 +20,12 @@ import javafx.scene.input.KeyEvent;
 public class EditingCell extends TableCell<FolderInfo, String> {
 	private TextField textField;
 	private Model_main model_Main;
+	private TableColumn<FolderInfo, String> tableColumn;
+	private FolderInfo folderInfo;
 
-	public EditingCell(Model_main aModel_Main) {
+	public EditingCell(Model_main aModel_Main, TableColumn<FolderInfo, String> aTableColumn) {
 		this.model_Main = aModel_Main;
+		this.tableColumn = aTableColumn;
 	}
 
 	@Override
@@ -49,7 +57,20 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 		} else {
 			if (isEditing()) {
 				if (textField != null) {
-					textField.setText(getString());
+					FolderInfo folderInfo = tableColumn.getTableView().getSelectionModel().getSelectedItem();
+					if (!textField.getText().isBlank()) {
+						if (folderInfo.getFolderPath().equals(textField.getText())) {
+							Path checkFolderPath = Paths.get(folderInfo.getFolderPath());
+							if (Files.exists(checkFolderPath)) {
+								textField.getStyleClass().add("tableTextField_bad");
+							} else {
+								textField.getStyleClass().add("tableTextField");
+							}
+						}
+					} else {
+						textField.getStyleClass().add("tableTextField_bad");
+					}
+//					textField.setText(getString());
 				}
 				setText(null);
 				setGraphic(textField);
@@ -62,6 +83,15 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 
 	private void createTextField() {
 		textField = new TextField(getString());
+		textField.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if(!Text_Utils.isValidFileOrFolderName(newValue)) {
+					textField.setText(oldValue);
+				}
+			}
+		});
 		textField.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent e) {
@@ -79,8 +109,8 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 		textField.setMinWidth(this.getWidth() - this.getGraphicTextGap() * 2);
 		textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
-			public void changed(ObservableValue<? extends Boolean> arg0, Boolean arg1, Boolean arg2) {
-				if (!arg2) {
+			public void changed(ObservableValue<? extends Boolean> value, Boolean old, Boolean newValue) {
+				if (!newValue) {
 					commitEdit(textField.getText());
 				}
 			}
@@ -88,6 +118,11 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 	}
 
 	private String getString() {
+		if (getItem() != null) {
+
+		} else {
+			return "";
+		}
 		return getItem() == null ? "" : getItem().toString();
 	}
 

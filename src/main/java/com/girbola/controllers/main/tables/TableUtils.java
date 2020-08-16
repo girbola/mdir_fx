@@ -646,7 +646,7 @@ public class TableUtils {
 			refreshTableContent(tables.getSorted_table());
 			refreshTableContent(tables.getSortIt_table());
 		});
-		calculateTableViewsStatistic(tables);
+//		calculateTableViewsStatistic(tables);
 	}
 
 	public static void clearTablesContents(Tables tables) {

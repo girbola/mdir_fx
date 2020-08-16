@@ -163,8 +163,8 @@ public class SQL_Utils extends FolderInfo_SQL {
 			return false;
 		}
 		String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERSSTATE.getType()
-		+ " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, "
-		+ "connected BOOLEAN)";
+				+ " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, "
+				+ "tableType STRING NOT NULL, " + "connected BOOLEAN)";
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
@@ -225,24 +225,46 @@ public class SQL_Utils extends FolderInfo_SQL {
 		}
 	}
 
-	public static boolean renameToFolderInfoDB(FolderInfo folderInfo, String previousName) {
+	public static boolean updateFolderInfoDB(FolderInfo folderInfo, String previousName) {
+		String sql = "SELECT path, tabletype, justfoldername, connected FROM " + SQL_Enums.FILEINFO.getType()
+				+ " WHERE folderpath = ?";
+		try {
+			Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(),
+					Main.conf.getMdir_db_fileName());
+			connection.setAutoCommit(false);
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			pstmt.setString(1, folderInfo.getFolderPath());
+			pstmt.setString(2, folderInfo.getTableType());
+			pstmt.setString(3, folderInfo.getJustFolderName());
+			pstmt.setBoolean(4, folderInfo.isConnected());
+			pstmt.executeUpdate();
+			pstmt.close();
+			connection.close();
 
-		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERSSTATE.getType()
-				+ "WHERE folderpath = " + previousName + ";";
+			return true;
+		} catch (Exception e) {
+			Messages.sprintfError("sql is: " + sql);
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public static boolean renameToFolderInfoDB(FolderInfo folderInfo, String previousName) {
+//		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERSSTATE.getType()
+//				+ "WHERE folderpath = " + previousName + ";";
 		try {
 			Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 					Main.conf.getConfiguration_db_fileName());
 			connection.setAutoCommit(false);
-
 			PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
 			pstmt.setString(1, folderInfo.getFolderPath());
 			pstmt.setString(2, folderInfo.getTableType());
 			pstmt.setString(3, folderInfo.getJustFolderName());
 			pstmt.setBoolean(4, folderInfo.isConnected());
-
 			pstmt.executeUpdate();
 			pstmt.close();
 			connection.close();
+
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -167,10 +167,17 @@
 	-fx-border-radius: 3px;
 }
 .tableTextField {
-	-fx-background-color: transparent;
+	-fx-background-color: orange;
 	-fx-background-radius: 2px;
 	-fx-text-fill: black;
 	/* -fx-border-color: white; */
+	-fx-border-radius: 2px;
+}
+.tableTextField_bad {
+	-fx-background-color: pink;
+	-fx-background-radius: 2px;
+	-fx-text-fill: red;
+	-fx-border-color: red;
 	-fx-border-radius: 2px;
 }
 .textfield-info {

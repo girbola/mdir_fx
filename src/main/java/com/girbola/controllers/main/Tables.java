@@ -388,10 +388,17 @@ public class Tables {
 	HBox getTables_Container() {
 		return this.tables_container;
 	}
-
+public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(FolderInfo folderInfo) {
+	Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+			return new EditingCell(model_Main,tableColumn);
+		}
+	};
+	return kala;
+}
 	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> p) {
-			return new EditingCell(model_Main);
+		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+			return new EditingCell(model_Main,tableColumn);
 		}
 	};
 

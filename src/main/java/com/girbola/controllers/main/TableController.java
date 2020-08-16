@@ -11,11 +11,12 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,8 @@ import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -75,6 +77,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
 public class TableController {
@@ -498,7 +501,17 @@ public class TableController {
 		justFolderName_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<FolderInfo, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getJustFolderName()));
-		justFolderName_col.setCellFactory(model_main.tables().textFieldEditingCellFactory);
+//		justFolderName_col.setCellFactory(model_main.tables().textFieldEditingCellFactory);
+		justFolderName_col
+				.setCellFactory(new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+
+					@Override
+					public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> param) {
+//						param.getTableView().getSelectionModel().getSelectedItem();
+						return new EditingCell(model_main, param);
+					}
+
+				});
 
 		allFilesTotal_lbl.textProperty().bindBidirectional(allFilesTotal_obs, new NumberStringConverter());
 //		data_obs.addListener(new ListChangeListener<FolderInfo>() {
@@ -548,39 +561,40 @@ public class TableController {
 			@Override
 			public void handle(CellEditEvent<FolderInfo, String> event) {
 				Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
-				if (event.getRowValue().getJustFolderName() != event.getNewValue()) {
-					event.getRowValue().setJustFolderName(event.getNewValue().trim());
-					Path src = Paths.get(event.getRowValue().getFolderPath());
-					Path dest = Paths
-							.get(src.getParent().toString() + File.separator + event.getRowValue().getJustFolderName());
-					if (Files.exists(dest)) {
-						event.getRowValue().setJustFolderName(event.getOldValue());
-						Messages.sprintf("");
-						return;
+				FolderInfo folderInfo = (FolderInfo) event.getRowValue();
+				if (event.getNewValue().isEmpty()) {
+					folderInfo.setJustFolderName(Paths.get(folderInfo.getFolderPath()).getFileName().toString());
+
+				} else if (folderInfo.getJustFolderName() != event.getNewValue() && !event.getNewValue().isEmpty()) {
+					folderInfo.setJustFolderName(event.getNewValue());
+					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+						fileInfo.setEvent(event.getNewValue());
 					}
+
+					Main.setChanged(true);
+					folderInfo.setChanged(true);
+					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(),
+							Main.conf.getMdir_db_fileName());
 					try {
-						Path renamed = Files.move(src, dest);
-						if (Files.exists(renamed)) {
-							event.getRowValue().setFolderPath(dest.toString());
-							for (FileInfo fileInfo : event.getRowValue().getFileInfoList()) {
-								fileInfo.setOrgPath(dest + File.separator
-										+ Paths.get(fileInfo.getOrgPath()).getFileName().toString());
-								Messages.sprintf("FileInfo orgName changed to: " + dest + File.separator
-										+ Paths.get(fileInfo.getOrgPath()).getFileName().toString());
+						connection.setAutoCommit(false);
+						FileInfo_SQL.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList(), false);
 
-							}
-
-							Messages.sprintf(
-									"Folder were renamed as: " + renamed + " and it exists? " + Files.exists(dest));
-							TableUtils.refreshAllTableContent(model_main.tables());
-							SQL_Utils.renameToFolderInfoDB(event.getRowValue(), src.toString());
-						}
 					} catch (Exception e) {
 						e.printStackTrace();
+					} finally {
+						if (connection != null) {
+							try {
+								connection.commit();
+								connection.close();
+							} catch (SQLException e2) {
+								e2.printStackTrace();
+							}
+						}
 					}
-					Main.setChanged(true);
-					event.getRowValue().setChanged(true);
 				}
+				TableUtils.refreshAllTableContent(model_main.tables());
+
 			}
 		});
 		maxDates_col.setCellValueFactory(
