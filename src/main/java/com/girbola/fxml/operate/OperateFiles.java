@@ -11,6 +11,9 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Date;
@@ -218,7 +221,7 @@ public class OperateFiles extends Task<Boolean> {
 				List<FileInfo> findPossibleExistsFoldersInWorkdir = model_main.getWorkDir_Handler()
 						.findPossibleExistsFoldersInWorkdir(fileInfo);
 				if (!findPossibleExistsFoldersInWorkdir.isEmpty()) {
-
+					Messages.sprintf("Duplicates found: " + source);
 //				boolean defineDuplicate = FileInfo_Utils.defineDuplicateFile(fileInfo, dest);
 //				if (defineDuplicate) {
 					STATE = Copy_State.DUPLICATE.getType();
@@ -240,7 +243,7 @@ public class OperateFiles extends Task<Boolean> {
 					if (copyFile(fileInfo, source, dest, STATE, answer)) {
 						updateSourceAndDestProcessValues(source, dest);
 						updateIncreaseCopyingProcessValues();
-						if (fileInfo.isCopied()) {
+						if (!fileInfo.isCopied()) {
 							fileInfo.setCopied(true);
 							model_main.getWorkDir_Handler().add(fileInfo);
 						}
@@ -278,9 +281,37 @@ public class OperateFiles extends Task<Boolean> {
 			return null;
 		}
 
+		private void compareFiles(Path src, Path dest) {
+			MessageDigest md;
+			try {
+				md = MessageDigest.getInstance("MD5");
+				InputStream is_src =Files.newInputStream(src);
+				DigestInputStream dis_dest_src = new DigestInputStream(is_src, md);
+				
+				InputStream is_dest =Files.newInputStream(dest);
+				DigestInputStream dis_dest = new DigestInputStream(is_dest, md);
+				
+				byte[] digest_Src = md.digest();
+				byte[] digest_dest = md.digest();
+				if(digest_Src == digest_dest) {
+					Messages.sprintf("SAMEEEEEEEEEEEEEEEEEE FILESSSSSSSSSSSSSSSSS!");
+				}
+//			try (InputStream is_src = Files.newInputStream(src);
+//					DigestInputStream dis = new DigestInputStream(is, md)) {
+//				/* Read decorated stream (dis) to EOF as normal... */
+//			}
+			
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 		private boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,
 				SimpleIntegerProperty answer) {
-			if (Files.exists(source2)) {
+			if (!Files.exists(source2)) {
+				Messages.errorSmth(ERROR, "Source file were not able to be found: " + source2, null,
+						Misc.getLineNumber(), true);
 				cancel();
 				Main.setProcessCancelled(true);
 				Messages.errorSmth(ERROR, "Can't find source file", null, Misc.getLineNumber(), true);
