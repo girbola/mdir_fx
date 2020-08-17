@@ -123,6 +123,8 @@ public class TableController {
 	@FXML
 	private Button mergeCopy_btn;
 	@FXML
+	private Button mergeSimilarDates_btn;
+	@FXML
 	private Button resetSelectedFileInfos_btn;
 	@FXML
 	private Label allFilesCopied_lbl;
@@ -149,7 +151,8 @@ public class TableController {
 	private Tooltip tableDescription_tf_tooltip;
 	@FXML
 	private Tooltip mergeCopy_btn_tooltip;
-
+	@FXML
+	private Tooltip mergeSimilarDates_btn__tooltip;
 	@FXML
 	private Tooltip copySelected_btn_tooltip;
 	@FXML
@@ -304,6 +307,12 @@ public class TableController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	@FXML
+	private void mergeSimilarDates_btn_action(ActionEvent event) {
+		var some = 0;
+		some = 3;
 	}
 
 	@FXML
@@ -570,7 +579,7 @@ public class TableController {
 					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 						fileInfo.setEvent(event.getNewValue());
 					}
-					
+
 					Main.setChanged(true);
 					folderInfo.setChanged(true);
 					TableUtils.updateFolderInfos_FileInfo(folderInfo);
