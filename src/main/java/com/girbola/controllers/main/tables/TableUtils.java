@@ -56,6 +56,7 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -788,7 +789,6 @@ public class TableUtils {
 			}
 		}
 		Main.setChanged(false);
-
 	}
 
 	private static void saveFolderInfoToDatabase(FolderInfo folderInfo) {
@@ -819,4 +819,30 @@ public class TableUtils {
 
 	}
 
+	public static void cleanTables(Tables tables) {
+		boolean sorted = cleanTable(tables.getSorted_table());
+		if(sorted) {
+			refreshTableContent(tables.getSorted_table());
+		}
+		boolean sortit = cleanTable(tables.getSortIt_table());
+		if(sortit) {
+			refreshTableContent(tables.getSortIt_table());
+		}
+		boolean asitis = cleanTable(tables.getAsItIs_table());
+		if(asitis) {
+			refreshTableContent(tables.getAsItIs_table());
+		}
+	}
+	private static boolean cleanTable(TableView<FolderInfo> table) {
+
+		ObservableList<FolderInfo> toRemove = FXCollections.observableArrayList();
+		for (FolderInfo folderInfo : table.getItems()) {
+			if (folderInfo.getFileInfoList().size() == 0) {
+				toRemove.add(folderInfo);
+				Messages.sprintf("TOREMOVE: " + folderInfo.getFolderPath() + " FILES: " + folderInfo.getFolderSize());
+			} 
+		}
+		table.getItems().removeAll(toRemove);
+		return true;
+	}
 }

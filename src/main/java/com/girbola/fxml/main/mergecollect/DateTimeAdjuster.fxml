@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
+   <children>
+      <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+          <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
+            <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="%start" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+               <padding>
+                  <Insets bottom="5.0" left="2.0" right="10.0" top="5.0" />
+               </padding>
+               <font>
+                  <Font size="10.0" />
+               </font></Label>
+            <DatePicker fx:id="start_datePicker" promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <HBox alignment="CENTER_LEFT" fillHeight="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="start_hour" editable="false" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#start_hour_action" prefWidth="45.0" promptText="%hour" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox alignment="TOP_CENTER" fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="start_hour_btn_up" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="start_hour_btn_down" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" styleClass="selectionButton" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="start_min" editable="false" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#start_min_action" prefWidth="45.0" promptText="%min" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="start_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="start_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_min_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="start_sec" editable="false" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#start_sec_action" prefWidth="45.0" promptText="%sec" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="start_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="start_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#start_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Label text="%end" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <padding>
+                  <Insets bottom="5.0" left="2.0" right="10.0" top="5.0" />
+               </padding>
+               <font>
+                  <Font size="10.0" />
+               </font></Label>
+            <HBox alignment="CENTER_LEFT" fillHeight="false" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <DatePicker fx:id="end_datePicker" promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" HBox.hgrow="NEVER" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="10.0" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="end_min" editable="false" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#end_min_action" prefWidth="45.0" promptText="%min" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="end_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="end_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_min_btn_down" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" layoutX="62.0" layoutY="10.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="end_sec" editable="false" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#end_sec_action" prefWidth="45.0" promptText="%sec" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="end_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="end_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" HBox.hgrow="NEVER">
+               <children>
+                  <TextField fx:id="end_hour" focusTraversable="false" maxWidth="55.0" minWidth="45.0" onAction="#end_hour_action" prefWidth="45.0" promptText="%hour" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="10.0" />
+                     </font></TextField>
+                  <VBox fillWidth="false" HBox.hgrow="NEVER">
+                     <children>
+                        <Button id="selectTimeButton" fx:id="end_hour_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button id="selectTimeButton" fx:id="end_hour_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#end_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <Label alignment="CENTER" text="%hour" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <font>
+                  <Font size="10.0" />
+               </font></Label>
+            <Label text="%minute" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <font>
+                  <Font size="10.0" />
+               </font></Label>
+            <Label text="%second" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <font>
+                  <Font size="10.0" />
+               </font></Label>
+            <Button fx:id="copy_startToEnd_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <graphic>
+                  <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../resources/img/cloneDown.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" text="uppp" GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+               <graphic>
+                  <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../../../../resources/img/cloneUp.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+            <Button id="actionButtons" fx:id="selectRange_btn" mnemonicParsing="false" onAction="#selectRange_btn_action" text="%selectRange" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <tooltip>
+                  <Tooltip text="%selectRangeTooltip" />
+               </tooltip></Button>
+            <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxWidth="107.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="50.0" prefWidth="107.0" text="%applyDateAndTime" wrapText="true" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
+               <tooltip>
+                  <Tooltip text="%applyDateAndTimeTooltip" />
+               </tooltip></Button>
+            <Button fx:id="markFilesAccordingTheDateScale_btn" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Mark files" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+   </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</AnchorPane>
