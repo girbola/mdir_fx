@@ -6,7 +6,7 @@ MDir_FX helps organize pictures and videos to an external hard drive.
 The project has been written with OpenJDK 14 and OpenJFX 14.
 
 ** Features **
-* Date and time editor to fix dates and times
+* Date and time editor
 * Avoid duplicates to save space
 * Batch copy
 
