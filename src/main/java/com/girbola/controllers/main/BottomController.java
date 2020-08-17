@@ -104,6 +104,7 @@ public class BottomController {
 
 		TableUtils.updateAllFolderInfos(model_main.tables());
 		TableUtils.calculateTableViewsStatistic(model_main.tables());
+		TableUtils.cleanTables(model_main.tables());
 	}
 
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
