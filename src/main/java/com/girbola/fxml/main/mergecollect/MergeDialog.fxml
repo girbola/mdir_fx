@@ -12,9 +12,9 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="500.0" maxWidth="600.0" minHeight="150.0" minWidth="350.0" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.merge.MergeDialogController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.merge.MergeDialogController">
    <children>
-      <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <GridPane>
                <columnConstraints>
@@ -44,6 +44,8 @@
                   </CheckBox>
                </children>
             </HBox>
+            	<fx:include fx:id="datetimeadjuster" source="DateTimeAdjuster.fxml" />
+			
             <HBox alignment="BOTTOM_RIGHT" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <Button fx:id="apply_btn" mnemonicParsing="false" onAction="#apply_btn_action" text="%apply" HBox.hgrow="NEVER" />

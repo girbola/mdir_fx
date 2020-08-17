@@ -311,8 +311,7 @@ public class TableController {
 
 	@FXML
 	private void mergeSimilarDates_btn_action(ActionEvent event) {
-		var some = 0;
-		some = 3;
+		
 	}
 
 	@FXML
