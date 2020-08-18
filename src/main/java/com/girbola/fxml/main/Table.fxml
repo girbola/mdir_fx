@@ -133,7 +133,7 @@
                         <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
                      </tooltip>
       				</Button>
-      				<Button fx:id="select_dateDifference" mnemonicParsing="false" onAction="#select_dateDifference_action" prefHeight="25.0" text="DD">
+      				<Button fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" prefHeight="25.0" text="DD">
                      <tooltip>
                         <Tooltip fx:id="select_dateDifference_tooltip" text="%selectDateDifferencesTableTooltip" />
                      </tooltip>
@@ -158,9 +158,9 @@
                         <Tooltip fx:id="resetSelectedFileInfos_btn_tooltip" text="%resetSelectedFileInfos_btn_tooltip" />
                      </tooltip>
                   </Button>
-                  <Button fx:id="mergeSimilarDates_btn" layoutX="48.0" layoutY="39.0" mnemonicParsing="false" onAction="#mergeSimilarDates_btn_action" prefHeight="25.0" text="SMD">
+                  <Button fx:id="collectSimilarDates_btn" layoutX="48.0" layoutY="39.0" mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" prefHeight="25.0" text="SMD">
                      <tooltip>
-                        <Tooltip fx:id="mergeSimilarDates_btn_tooltip" text="%mergeSimilarDates_tooltip" />
+                        <Tooltip fx:id="collectSimilarDates_btn_tooltip" text="%mergeSimilarDates_tooltip" />
                      </tooltip>
                   </Button>
                </children>

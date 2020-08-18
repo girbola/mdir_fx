@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.merge.MergeDialogController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.collect.Collect_DialogController">
    <children>
       <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -31,7 +31,6 @@
                   <ComboBox fx:id="location_cmb" editable="true" maxWidth="600" promptText="Location" GridPane.columnIndex="1" />
                   <Label fx:id="event_lbl" text="%event" GridPane.rowIndex="1" />
                   <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="2" />
                   <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
@@ -44,7 +43,7 @@
                   </CheckBox>
                </children>
             </HBox>
-            	<fx:include fx:id="datetimeadjuster" source="DateTimeAdjuster.fxml" />
+            	<fx:include fx:id="collect_DateTimeAdjuster" source="Collect_DateTimeAdjuster.fxml" />
 			
             <HBox alignment="BOTTOM_RIGHT" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>

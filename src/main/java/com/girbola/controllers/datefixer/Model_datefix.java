@@ -19,9 +19,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -59,8 +56,6 @@ import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -68,7 +63,6 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
@@ -84,13 +78,12 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import javafx.util.StringConverter;
 
 /**
  *
  * @author Marko Lokka
  */
-public class Model_datefix {
+public class Model_datefix extends DateFixerModel {
 	private final String ERROR = Model_datefix.class.getSimpleName();
 	private Model_main model_Main;
 
@@ -106,9 +99,6 @@ public class Model_datefix {
 
 	private AtomicBoolean content_changed = new AtomicBoolean(false);
 	private ObservableHandler observableHandler = new ObservableHandler();
-
-	private TimeControl s_time = new TimeControl();
-	private TimeControl e_time = new TimeControl();
 
 	private AnchorPane anchorPane;
 	private FolderInfo folderInfo_full;
@@ -144,9 +134,6 @@ public class Model_datefix {
 	private SelectionModel selectionModel = new SelectionModel();
 	private TilePane quickPick_tilePane;
 	private int imagesPerLine;
-
-	private DatePicker start_datePicker;
-	private DatePicker end_datePicker;
 
 	private WorkDir_Handler workDir_Handler;
 
@@ -296,110 +283,6 @@ public class Model_datefix {
 
 	public SelectionModel getSelectionModel() {
 		return this.selectionModel;
-	}
-
-	public TimeControl start_time() {
-		return this.s_time;
-	}
-
-	public TimeControl end_time() {
-		return this.e_time;
-	}
-
-	public void setDateTime(String date, boolean start) {
-		sprintf("SetDateTime: " + date);
-		if (start) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					getStart_datePicker().setValue(DateUtils.parseLocalDateFromString(date));
-					s_time.setTime(date);
-				}
-			});
-		} else {
-			Platform.runLater(new Runnable() {
-
-				@Override
-				public void run() {
-
-					getEnd_datePicker().setValue(DateUtils.parseLocalDateFromString(date));
-					e_time.setTime(date);
-				}
-
-			});
-		}
-	}
-
-	public void setStart_datePicker(DatePicker start_datePicker) {
-		this.start_datePicker = start_datePicker;
-		this.start_datePicker.setConverter(converter);
-		this.start_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("1s_datePicker: " + newValue);
-			}
-		});
-	}
-
-	public void setEnd_datePicker(DatePicker end_datePicker) {
-		this.end_datePicker = end_datePicker;
-		this.end_datePicker.setConverter(converter);
-		this.end_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("e_datePicker: " + newValue);
-			}
-		});
-	}
-
-	public DatePicker getEnd_datePicker() {
-		return end_datePicker;
-	}
-
-	public DatePicker getStart_datePicker() {
-		return start_datePicker;
-	}
-
-	StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-
-		@Override
-		public String toString(LocalDate date) {
-			if (date != null) {
-				return simpleDates.getDtf_ymd_minus().format(date);
-			} else {
-				return "";
-			}
-		}
-
-		@Override
-		public LocalDate fromString(String string) {
-			if (string != null && !string.isEmpty()) {
-				return LocalDate.parse(string, simpleDates.getDtf_ymd_minus());
-			} else {
-				return null;
-			}
-		}
-	};
-
-	/**
-	 * getLocalDateTime read datePicker time and gets time from DateFixer Time
-	 * chooser
-	 *
-	 * If parameter start is true it will read start_datePicker and start time and
-	 * if it is false it will read end_datePicker and end time. Example: Start
-	 * date/time 2018/11/08 12:00:00 End date/time 2018/11/09 12:30:00 It will
-	 * combine there values as a one LocalDateTime
-	 *
-	 * @param start
-	 * @return
-	 */
-	public LocalDateTime getLocalDateTime(boolean start) {
-		if (start) {
-			return LocalDateTime.of(start_datePicker.getValue(),
-					LocalTime.of(start_time().getHour(), start_time().getMin(), start_time().getSec()));
-		}
-		return LocalDateTime.of(end_datePicker.getValue(),
-				LocalTime.of(end_time().getHour(), end_time().getMin(), end_time().getSec()));
 	}
 
 	public FolderInfo getFolderInfo_filtered() {
@@ -1116,7 +999,6 @@ public class Model_datefix {
 		return connection;
 	}
 
-	
 	private int checkIfRedDates(GridPane gridPane) {
 		int counter = 0;
 		for (Node n : gridPane.getChildren()) {

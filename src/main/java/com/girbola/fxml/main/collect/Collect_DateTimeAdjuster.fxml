@@ -6,7 +6,6 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -17,7 +16,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
+<AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.collect.Collect_DateTimeAdjusterController">
    <children>
       <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -33,7 +32,7 @@
             <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
           <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
           <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
             <Label text="%start" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
@@ -286,16 +285,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Button id="actionButtons" fx:id="selectRange_btn" mnemonicParsing="false" onAction="#selectRange_btn_action" text="%selectRange" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-               <tooltip>
-                  <Tooltip text="%selectRangeTooltip" />
-               </tooltip></Button>
-            <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxWidth="107.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="50.0" prefWidth="107.0" text="%applyDateAndTime" wrapText="true" GridPane.columnIndex="3" GridPane.columnSpan="2" GridPane.rowIndex="3">
-               <tooltip>
-                  <Tooltip text="%applyDateAndTimeTooltip" />
-               </tooltip></Button>
-            <Button fx:id="markFilesAccordingTheDateScale_btn" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Mark files" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="3" />
+            <Button fx:id="findDateRelatives_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#findDateRelatives_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="4" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>

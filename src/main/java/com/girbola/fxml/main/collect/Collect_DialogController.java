@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.mergecollect;
+package com.girbola.fxml.main.collect;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -33,14 +33,22 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
-public class MergeDialogController {
+public class Collect_DialogController {
 
-	private final String ERROR = MergeDialogController.class.getSimpleName();
+	private final String ERROR = Collect_DialogController.class.getSimpleName();
 
 	private Model_main model_main;
 	private Tables tables;
 	private TableView<FolderInfo> table;
 	private String tableType;
+
+	/*
+	 * Must include in project!
+	 * 
+	 * @FXML Collect_DateTimeAdjusterController collect_DateTimeAdjusterController;
+	 */
+	@FXML
+	Collect_DateTimeAdjusterController collect_DateTimeAdjusterController;
 
 	@FXML
 	private Label event_lbl;
@@ -285,10 +293,12 @@ public class MergeDialogController {
 		close();
 	}
 
-	public void init(Model_main model_main, Tables tables, TableView<FolderInfo> table, String tableType) {
-		this.model_main = model_main;
-		this.tables = tables;
-		this.table = table;
-		this.tableType = tableType;
+	public void init(Model_main aModel_main, TableView<FolderInfo> aTable, String aTableType) {
+		this.model_main = aModel_main;
+		this.tables = aModel_main.tables();
+		this.table = aTable;
+		this.tableType = aTableType;
+		collect_DateTimeAdjusterController.init(this.model_main);
+
 	}
 }

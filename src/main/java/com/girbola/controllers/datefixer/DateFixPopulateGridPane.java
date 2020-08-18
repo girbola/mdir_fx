@@ -164,7 +164,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 					tf.setText("" + date);
 					tf.setStyle(CssStylesController.getModified_style());
 					sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: "
-							+ model_dateFix.start_time().getTime());
+							+ model_dateFix.getStart_time().getTime());
 				}
 			});
 		} else {

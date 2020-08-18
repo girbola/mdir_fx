@@ -442,9 +442,9 @@ public class DateFixerController {
 						model_datefix.getSelectionModel().clearAll();
 					}
 				});
-				for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
-					Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
-				}
+//				for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
+//					Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
+//				}
 			} catch (Exception ex) {
 				Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);

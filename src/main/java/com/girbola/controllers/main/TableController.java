@@ -34,6 +34,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fxml.main.collect.Collect_DialogController;
 import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
@@ -115,7 +116,7 @@ public class TableController {
 	@FXML
 	private Button select_none_btn;
 	@FXML
-	private Button select_dateDifference;
+	private Button select_dateDifference_btn;
 	@FXML
 	private Button copySelected_btn;
 	@FXML
@@ -123,7 +124,7 @@ public class TableController {
 	@FXML
 	private Button mergeCopy_btn;
 	@FXML
-	private Button mergeSimilarDates_btn;
+	private Button collectSimilarDates_btn;
 	@FXML
 	private Button resetSelectedFileInfos_btn;
 	@FXML
@@ -135,6 +136,8 @@ public class TableController {
 	@FXML
 	private Label allFilesSize_lbl;
 
+	@FXML
+	private Tooltip select_all_btn_tooltip;
 	@FXML
 	private Tooltip updateFolderInfo_btn_tooltip;
 	@FXML
@@ -152,7 +155,7 @@ public class TableController {
 	@FXML
 	private Tooltip mergeCopy_btn_tooltip;
 	@FXML
-	private Tooltip mergeSimilarDates_btn__tooltip;
+	private Tooltip collectSimilarDates_btn_tooltip;
 	@FXML
 	private Tooltip copySelected_btn_tooltip;
 	@FXML
@@ -300,7 +303,7 @@ public class TableController {
 			root = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
-			MergeDialogController mergeDialogController = loader.getController();
+			MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
 			mergeDialogController.init(model_main, model_main.tables(), table, tableType);
 			stage.setScene(scene);
 			stage.showAndWait();
@@ -310,8 +313,23 @@ public class TableController {
 	}
 
 	@FXML
-	private void mergeSimilarDates_btn_action(ActionEvent event) {
-		
+	private void collectSimilarDates_btn_action(ActionEvent event) {
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/collect/Collect_Dialog.fxml"),
+					bundle);
+			parent = loader.load();
+			Stage stage = new Stage();
+			Scene scene = new Scene(parent);
+
+			Collect_DialogController controller = (Collect_DialogController) loader.getController();
+			controller.init(model_main, table, tableType);
+			stage.setScene(scene);
+			stage.showAndWait();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@FXML
@@ -420,7 +438,7 @@ public class TableController {
 	}
 
 	@FXML
-	private void select_dateDifference_action(ActionEvent event) {
+	private void select_dateDifference_btn_action(ActionEvent event) {
 		model_main.buttons().select_dateDifference_Table(table);
 	}
 
@@ -675,11 +693,12 @@ public class TableController {
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				if (newValue == true) {
 					updateFolderInfo_btn.setTooltip(updateFolderInfo_btn_tooltip);
+					select_all_btn.setTooltip(select_all_btn_tooltip);
 					select_bad_btn.setTooltip(select_bad_btn_tooltip);
 					select_good_btn.setTooltip(select_good_btn_tooltip);
 					select_invert_btn.setTooltip(select_invert_btn_tooltip);
 					select_none_btn.setTooltip(select_none_btn_tooltip);
-					select_dateDifference.setTooltip(select_dateDifference_tooltip);
+					select_dateDifference_btn.setTooltip(select_dateDifference_tooltip);
 
 					if (tableType == TableType.ASITIS.getType()) {
 						tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
@@ -697,7 +716,8 @@ public class TableController {
 					hideTooltip(select_good_btn);
 					hideTooltip(select_invert_btn);
 					hideTooltip(select_none_btn);
-					hideTooltip(select_dateDifference);
+					hideTooltip(select_dateDifference_btn);
+					hideTooltip(select_all_btn);
 				}
 			}
 

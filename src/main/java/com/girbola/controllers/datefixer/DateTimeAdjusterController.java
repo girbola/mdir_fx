@@ -84,10 +84,11 @@ public class DateTimeAdjusterController {
 		LocalDateTime ldt_end = null;
 
 		try {
-			model_datefix.start_time().getTime();
-			model_datefix.end_time().getTime();
+//			model_datefix.getStart_time().getTime();
+//			model_datefix.getEnd_time().getTime();
 			ldt_start = model_datefix.getLocalDateTime(true);
 			ldt_end = model_datefix.getLocalDateTime(false);
+			
 		} catch (Exception ex) {
 			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
 			Main.setProcessCancelled(true);
@@ -107,8 +108,29 @@ public class DateTimeAdjusterController {
 				 */
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
+					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+						collectedList.add(fileInfo);
+						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
+								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+					}
+				}
+			}
+		}
+		
+
+		for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
+			if (Main.getProcessCancelled()) {
+				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
+				break;
+			} /*
+				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
+				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
+				 */
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
 				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-					if (FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
 						collectedList.add(fileInfo);
 						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
 								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
@@ -128,8 +150,8 @@ public class DateTimeAdjusterController {
 		LocalDateTime ldt_end = null;
 
 		try {
-			model_datefix.start_time().getTime();
-			model_datefix.end_time().getTime();
+			model_datefix.getStart_time().getTime();
+			model_datefix.getEnd_time().getTime();
 			ldt_start = model_datefix.getLocalDateTime(true);
 			ldt_end = model_datefix.getLocalDateTime(false);
 		} catch (Exception ex) {
@@ -170,9 +192,9 @@ public class DateTimeAdjusterController {
 		sprintf("Date to copy_startToEnd: ");
 		start_datePicker.setValue(end_datePicker.getValue());
 
-		model_datefix.end_time().setHour(model_datefix.start_time().getHour());
-		model_datefix.end_time().setMin(model_datefix.start_time().getMin());
-		model_datefix.end_time().setSec(model_datefix.start_time().getSec());
+		model_datefix.getEnd_time().setHour(model_datefix.getStart_time().getHour());
+		model_datefix.getEnd_time().setMin(model_datefix.getStart_time().getMin());
+		model_datefix.getEnd_time().setSec(model_datefix.getStart_time().getSec());
 
 	}
 
@@ -188,8 +210,8 @@ public class DateTimeAdjusterController {
 		LocalDateTime ldt_end = null;
 
 		try {
-			model_datefix.start_time().getTime();
-			model_datefix.end_time().getTime();
+			model_datefix.getStart_time().getTime();
+			model_datefix.getEnd_time().getTime();
 			ldt_start = model_datefix.getLocalDateTime(true);
 			ldt_end = model_datefix.getLocalDateTime(false);
 		} catch (Exception ex) {
@@ -243,9 +265,9 @@ public class DateTimeAdjusterController {
 	private void copy_endToStart_action(ActionEvent event) {
 		start_datePicker.setValue(end_datePicker.getValue());
 
-		model_datefix.start_time().setHour(model_datefix.end_time().getHour());
-		model_datefix.start_time().setMin(model_datefix.end_time().getMin());
-		model_datefix.start_time().setSec(model_datefix.end_time().getSec());
+		model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
+		model_datefix.getStart_time().setMin(model_datefix.getEnd_time().getMin());
+		model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
 
 	}
 
@@ -292,92 +314,92 @@ public class DateTimeAdjusterController {
 
 	@FXML
 	private void end_hour_action(ActionEvent event) {
-		model_datefix.end_time().setHour(parseTextFieldToInteger(end_hour));
+		model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
 	}
 
 	@FXML
 	private void end_hour_btn_down_action(ActionEvent event) {
-		model_datefix.end_time().decrease_hour();
+		model_datefix.getEnd_time().decrease_hour();
 	}
 
 	@FXML
 	private void end_hour_btn_up_action(ActionEvent event) {
-		model_datefix.end_time().increase_hour();
+		model_datefix.getEnd_time().increase_hour();
 	}
 
 	@FXML
 	private void end_min_action(ActionEvent event) {
-		model_datefix.end_time().setMin(parseTextFieldToInteger(end_min));
+		model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min));
 	}
 
 	@FXML
 	private void end_min_btn_down(ActionEvent event) {
-		model_datefix.end_time().decrease_min();
+		model_datefix.getEnd_time().decrease_min();
 	}
 
 	@FXML
 	private void end_min_btn_up_action(ActionEvent event) {
-		model_datefix.end_time().increase_min();
+		model_datefix.getEnd_time().increase_min();
 	}
 
 	@FXML
 	private void end_sec_action(ActionEvent event) {
-		model_datefix.end_time().setSec(parseTextFieldToInteger(end_sec));
+		model_datefix.getEnd_time().setSec(parseTextFieldToInteger(end_sec));
 	}
 
 	@FXML
 	private void end_sec_btn_down_action(ActionEvent event) {
-		model_datefix.end_time().decrease_sec();
+		model_datefix.getEnd_time().decrease_sec();
 	}
 
 	@FXML
 	private void end_sec_btn_up_action(ActionEvent event) {
-		model_datefix.end_time().increase_sec();
+		model_datefix.getEnd_time().increase_sec();
 	}
 
 	@FXML
 	private void start_hour_action(ActionEvent event) {
-		model_datefix.start_time().setHour(parseTextFieldToInteger(start_hour));
+		model_datefix.getStart_time().setHour(parseTextFieldToInteger(start_hour));
 	}
 
 	@FXML
 	private void start_hour_btn_up_action(ActionEvent event) {
-		model_datefix.start_time().increase_hour();
+		model_datefix.getStart_time().increase_hour();
 	}
 
 	@FXML
 	private void start_hour_btn_down_action(ActionEvent event) {
-		model_datefix.start_time().decrease_hour();
+		model_datefix.getStart_time().decrease_hour();
 	}
 
 	@FXML
 	private void start_min_action(ActionEvent event) {
-		model_datefix.start_time().setMin(parseTextFieldToInteger(start_min));
+		model_datefix.getStart_time().setMin(parseTextFieldToInteger(start_min));
 	}
 
 	@FXML
 	private void start_min_btn_down_action(ActionEvent event) {
-		model_datefix.start_time().decrease_min();
+		model_datefix.getStart_time().decrease_min();
 	}
 
 	@FXML
 	private void start_min_btn_up_action(ActionEvent event) {
-		model_datefix.start_time().increase_min();
+		model_datefix.getStart_time().increase_min();
 	}
 
 	@FXML
 	private void start_sec_action(ActionEvent event) {
-		model_datefix.start_time().setSec(parseTextFieldToInteger(start_sec));
+		model_datefix.getStart_time().setSec(parseTextFieldToInteger(start_sec));
 	}
 
 	@FXML
 	private void start_sec_btn_down_action(ActionEvent event) {
-		model_datefix.start_time().decrease_sec();
+		model_datefix.getStart_time().decrease_sec();
 	}
 
 	@FXML
 	private void start_sec_btn_up_action(ActionEvent event) {
-		model_datefix.start_time().increase_sec();
+		model_datefix.getStart_time().increase_sec();
 	}
 
 	@FXML
@@ -570,7 +592,7 @@ public class DateTimeAdjusterController {
 			@Override
 			public void handle(ActionEvent event) {
 				sprintf("starthour on action");
-				model_datefix.start_time().setHour(Integer.parseInt(tf.getText()));
+				model_datefix.getStart_time().setHour(Integer.parseInt(tf.getText()));
 				tf.setText("" + defineFormat(tf));
 			}
 		});
@@ -607,26 +629,26 @@ public class DateTimeAdjusterController {
 		aModel_datefix.setStart_datePicker(start_datePicker);
 		aModel_datefix.setEnd_datePicker(end_datePicker);
 
-		start_hour.textProperty().bindBidirectional(aModel_datefix.start_time().hour_property(),
+		start_hour.textProperty().bindBidirectional(aModel_datefix.getStart_time().hour_property(),
 				new NumberStringConverter());
 		setTextProperty(start_hour);
 
-		start_min.textProperty().bindBidirectional(aModel_datefix.start_time().min_property(),
+		start_min.textProperty().bindBidirectional(aModel_datefix.getStart_time().min_property(),
 				new NumberStringConverter());
 		setTextProperty(start_min);
 
-		start_sec.textProperty().bindBidirectional(aModel_datefix.start_time().sec_property(),
+		start_sec.textProperty().bindBidirectional(aModel_datefix.getStart_time().sec_property(),
 				new NumberStringConverter());
 		setTextProperty(start_sec);
 
-		end_hour.textProperty().bindBidirectional(aModel_datefix.end_time().hour_property(),
+		end_hour.textProperty().bindBidirectional(aModel_datefix.getEnd_time().hour_property(),
 				new NumberStringConverter());
 		setTextProperty(end_hour);
 
-		end_min.textProperty().bindBidirectional(aModel_datefix.end_time().min_property(), new NumberStringConverter());
+		end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(), new NumberStringConverter());
 		setTextProperty(end_min);
 
-		end_sec.textProperty().bindBidirectional(aModel_datefix.end_time().sec_property(), new NumberStringConverter());
+		end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
 		setTextProperty(end_sec);
 
 		start_hour.setText("00");
