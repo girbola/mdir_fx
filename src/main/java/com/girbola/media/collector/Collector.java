@@ -11,6 +11,7 @@ import java.util.TreeMap;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.Events;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
@@ -32,19 +33,21 @@ public class Collector {
 
 	private TreeMap<LocalDate, List<FileInfo>> map = new TreeMap<>();
 
-	public ObservableList<FileInfo> collect(TableView<FolderInfo> table) {
+	public ObservableList<FileInfo> collect(TableView<FolderInfo> tableView_sorted,
+			TableView<FolderInfo> tableView_sortIt) {
 		ObservableList<FileInfo> obs = FXCollections.observableArrayList();
 
-		for (FolderInfo folderInfo : table.getItems()) {
-			LocalDateTime start = DateUtils.parseLocalDateTimeFromString(folderInfo.getMaxDate()).minusDays(1);
-			LocalDateTime end = DateUtils.parseLocalDateTimeFromString(folderInfo.getMinDate()).plusDays(1);
+		for (FolderInfo folderInfo_sorted : tableView_sorted.getItems()) {
+			LocalDateTime start = DateUtils.parseLocalDateTimeFromString(folderInfo_sorted .getMaxDate()).minusDays(1);
+			LocalDateTime end = DateUtils.parseLocalDateTimeFromString(folderInfo_sorted .getMinDate()).plusDays(1);
 
 			// (date.isAfter(ldt_start) && date.isBefore(ldt_end)) {
-
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				LocalDateTime date_ld = DateUtils.longToLocalDateTime(fileInfo.getDate());
-				if (date_ld.isAfter(start) && date_ld.isBefore(end)) {
-					add(date_ld.toLocalDate(), fileInfo);
+			for (FolderInfo folderInfo_sortIt : tableView_sortIt.getItems()) {
+				for (FileInfo fileInfo : folderInfo_sortIt.getFileInfoList()) {
+					LocalDateTime date_ld = DateUtils.longToLocalDateTime(fileInfo.getDate());
+					if (date_ld.isAfter(start) && date_ld.isBefore(end)) {
+						add(date_ld.toLocalDate(), fileInfo);
+					}
 				}
 			}
 		}
@@ -78,53 +81,65 @@ public class Collector {
 	}
 
 	public void listMap(Tables tables) {
+		ObservableList<Events> events_obs = FXCollections.observableArrayList();
+
 		for (Entry<LocalDate, List<FileInfo>> entry : map.entrySet()) {
 			LocalDate localDateToFind = entry.getKey();
-			List<FolderInfo> listOfPossibleFolders = new ArrayList<>();
+			List<FileInfo> fileInfo_temp = new ArrayList<>();
 			for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-				LocalDate start = DateUtils.parseLocalDateFromString(folderInfo.getMinDate()).plusDays(1);
-				LocalDate end = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate()).minusDays(1);
-				if (localDateToFind.isBefore(end) && localDateToFind.isAfter(start)) {
-					listOfPossibleFolders.add(folderInfo);
-					Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
-				}
+				for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+					if (!fileInfo.isIgnored()) {
+						LocalDate start = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().minusDays(1);
+						LocalDate end = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().plusDays(1);
+						if (localDateToFind.isBefore(end) && localDateToFind.isAfter(start)) {
 
-			}
-			if (!listOfPossibleFolders.isEmpty()) {
-				Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getWindow(),
-						" There were possible foldernames. Choose oneee\n");
-				changesDialog.setWidth(500);
-				changesDialog.setHeight(500);
-				changesDialog.setHeaderText("JEEEEE");
-				ListView<String> list = new ListView<>();
-				changesDialog.getDialogPane().prefWidth(500);
-				changesDialog.getDialogPane().minWidth(500);
-				changesDialog.getDialogPane().maxWidth(500);
-				changesDialog.getDialogPane().prefHeight(500);
-				changesDialog.getDialogPane().minHeight(500);
-				changesDialog.getDialogPane().maxHeight(500);
-				
-				VBox vbox = new VBox(list, new Label("JOOOOO"));
-				vbox.prefHeight(450);
-				vbox.minHeight(450);
-				vbox.maxHeight(450);
-				changesDialog.getDialogPane().getChildren().add(vbox);
-				ObservableList<String> list_obs = FXCollections.observableArrayList();
-				list.setItems(list_obs);
-				for (FolderInfo folderInfo : listOfPossibleFolders) {
-					Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
-					list_obs.add(folderInfo.getFolderPath());
-				}
-				Optional<ButtonType> result = changesDialog.showAndWait();
-				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-					for (FolderInfo folderInfo : listOfPossibleFolders) {
-						Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
+							fileInfo_temp.add(fileInfo);
+//									listOfPossibleFolders.add(folderInfo);
+
+							Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath() + " date: "
+									+ localDateToFind);
+						}
 					}
-					listOfPossibleFolders.clear();
-					break;
 				}
+//				TODO keksi jokin toinen kuin folderinfo jotta saa lajiteltua päiväykset ja lisättyä kansion nimen ehdotus eventin mukaan
+//				folderInfoList.add(new FolderInfo())
 			}
 			Messages.sprintf("Date: " + entry.getKey() + "\n" + "=====================" + entry.getValue().size());
+
+//			}
+//			if (!listOfPossibleFolders.isEmpty()) {
+//				Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getWindow(),
+//						" There were possible foldernames. Choose oneee\n");
+//				changesDialog.setWidth(500);
+//				changesDialog.setHeight(500);
+//				changesDialog.setHeaderText("JEEEEE");
+//				ListView<String> list = new ListView<>();
+//				changesDialog.getDialogPane().prefWidth(500);
+//				changesDialog.getDialogPane().minWidth(500);
+//				changesDialog.getDialogPane().maxWidth(500);
+//				changesDialog.getDialogPane().prefHeight(500);
+//				changesDialog.getDialogPane().minHeight(500);
+//				changesDialog.getDialogPane().maxHeight(500);
+//				
+//				VBox vbox = new VBox(list, new Label("JOOOOO"));
+//				vbox.prefHeight(450);
+//				vbox.minHeight(450);
+//				vbox.maxHeight(450);
+//				changesDialog.getDialogPane().getChildren().add(vbox);
+//				ObservableList<String> list_obs = FXCollections.observableArrayList();
+//				list.setItems(list_obs);
+//				for (FolderInfo folderInfo : listOfPossibleFolders) {
+//					Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
+//					list_obs.add(folderInfo.getFolderPath());
+//				}
+//				Optional<ButtonType> result = changesDialog.showAndWait();
+//				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+//					for (FolderInfo folderInfo : listOfPossibleFolders) {
+//						Messages.sprintf("FolderInfo path found: " + folderInfo.getFolderPath());
+//					}
+//					listOfPossibleFolders.clear();
+//					break;
+//				}
 		}
 
 	}
@@ -134,8 +149,9 @@ public class Collector {
 	}
 
 	public void collectAll(Tables tables) {
-		collect(tables.getSorted_table());
-		collect(tables.getSortIt_table());
+		collect(tables.getSorted_table(), tables.getSortIt_table());
+		collect(tables.getSorted_table(), tables.getSorted_table());
+			
 		// collect(tables.getAsItIs_table());
 
 	}

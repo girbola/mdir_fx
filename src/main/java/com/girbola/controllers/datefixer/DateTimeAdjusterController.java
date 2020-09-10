@@ -35,6 +35,7 @@ import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -137,7 +138,22 @@ public class DateTimeAdjusterController {
 					}
 				}
 			}
+			
 		}
+//		for(FileInfo fileInfo : collectedList) {
+//			Node n = createNode(fileInfo);
+//		}
+//		model_datefix.getFolderInfo_full().getFileInfoList();
+//		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
+		
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+		loadingProcess_task.setTask(updateGridPane_Task);
+		
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
 		Messages.warningText(
 				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
 

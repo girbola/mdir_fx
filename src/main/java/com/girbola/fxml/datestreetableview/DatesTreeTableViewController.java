@@ -87,7 +87,6 @@ public class DatesTreeTableViewController {
 					}
 				});
 
-		
 //		return new ReadOnlyIntegerWrapper(DateUtils.parseLocalDateTimeFromString(param.getValue().getValue().getMinDate()).getYear());
 		makeTable();
 	}
