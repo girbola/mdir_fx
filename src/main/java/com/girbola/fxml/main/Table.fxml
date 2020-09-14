@@ -40,7 +40,7 @@
                   <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
                     <items>
                       <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
-                      <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="check" />
+                      <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="%checkChanges" />
                     </items>
                   </MenuButton>
       				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">

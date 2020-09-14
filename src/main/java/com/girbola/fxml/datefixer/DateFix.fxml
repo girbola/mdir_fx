@@ -402,6 +402,17 @@
 										<Insets />
 									</HBox.margin>
 								</VBox>
+                        <VBox>
+                           <children>
+                              <Label text="Label" />
+                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%sortBy">
+                                 <items>
+                                    <MenuItem fx:id="sortByDate_mi" mnemonicParsing="false" onAction="#sortByDate_mi_action" text="%date" />
+                                    <MenuItem fx:id="fileName_mi" mnemonicParsing="false" onAction="#fileName_mi_action" text="%fileName" />
+                                 </items>
+                              </MenuButton>
+                           </children>
+                        </VBox>
 								<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" HBox.hgrow="NEVER">
 									<children>
                               <GridPane hgap="10.0" vgap="2.0" VBox.vgrow="NEVER">
@@ -599,6 +610,7 @@
                               <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                            </padding>
                   								</HBox>
+                        <Label text="Label" />
 							</children>
 						</HBox>
 					</children>

@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -40,10 +41,10 @@ import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -59,6 +60,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -86,7 +88,7 @@ public class DateFixerController {
 	private Button cameras_hide_Deselected_btn;
 	@FXML
 	private Button cameras_show_all_btn;
-	
+
 	@FXML
 	private MenuButton move_menuBtn;
 	@FXML
@@ -145,13 +147,12 @@ public class DateFixerController {
 	private Button addToBatch_btn;
 	@FXML
 	private Button close_btn;
-	
+
 	@FXML
 	private Button dateFix_btn;
 	@FXML
 	private Button folderize_btn;
-	
-	
+
 	// MISC TAB==========
 
 	@FXML
@@ -168,7 +169,7 @@ public class DateFixerController {
 	@FXML
 	private Button updateDate_btn;
 	// MISC TAB========== END
-	
+
 	@FXML
 	private Button select_btn;
 	@FXML
@@ -212,6 +213,70 @@ public class DateFixerController {
 	private Button addToUnsorted_btn;
 	@FXML
 	private Button addToAsItIs_btn;
+
+	@FXML
+	private MenuItem sortByDate_mi;
+
+	@FXML
+	private MenuItem fileName_mi;
+
+	@FXML
+	private void fileName_mi_action(ActionEvent event) {
+		model_datefix.getAllNodes().sort(new Comparator<Node>() {
+
+			@Override
+			public int compare(Node o1, Node o2) {
+				VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
+				VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
+				FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
+				FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
+
+				return fileInfo1.getOrgPath().compareTo(fileInfo2.getOrgPath());
+			}
+		});
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+	}
+
+	@FXML
+	private void sortByDate_mi_action(ActionEvent event) {
+		model_datefix.getAllNodes().sort(new Comparator<Node>() {
+
+			@Override
+			public int compare(Node o1, Node o2) {
+				VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
+				VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
+				FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
+				FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
+				if (fileInfo1.getDate() > (fileInfo2.getDate())) {
+					return 1;
+				} else if (fileInfo1.getDate() < (fileInfo2.getDate())) {
+					return -1;
+				} else {
+					return 0;
+				}
+
+			}
+		});
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+	}
 
 	@FXML
 	private void addToUnsorted_btn_action(ActionEvent event) {
@@ -378,17 +443,16 @@ public class DateFixerController {
 //		loadingProcess_task.setTask(null);
 //		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
 //				loadingProcess_task);
-		
+
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
-				loadingProcess_task);
-		
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getSelectionModel().getSelectionList(), loadingProcess_task);
+
 		loadingProcess_task.setTask(updateGridPane_Task);
-		
+
 		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
 		thread.start();
 
-		
 	}
 
 	@FXML
@@ -398,17 +462,16 @@ public class DateFixerController {
 		model_datefix.deselectAllExifDataSelectors();
 //		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
-		
+
 		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
-		
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
 		loadingProcess_task.setTask(updateGridPane_Task);
-		
+
 		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
 		thread.start();
 
-		
-		
 		//
 		// AddToGridPane2 apg2 = new AddToGridPane2(model_datefix,
 		// model_datefix.getAllNodes(), lp);
@@ -581,9 +644,9 @@ public class DateFixerController {
 					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-					
+
 					loadingProcess_task.setTask(updateGridPane_Task);
-					
+
 					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
 					thread.start();
 
@@ -591,9 +654,9 @@ public class DateFixerController {
 					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-					
+
 					loadingProcess_task.setTask(updateGridPane_Task);
-					
+
 					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
 					thread.start();
 
@@ -919,17 +982,15 @@ public class DateFixerController {
 //				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-				
+
 				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 				loadingProcess_task.setTask(updateGridPane_Task);
-				
+
 				Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
 				thread.start();
 
-
-				
 			} else {
 				Messages.sprintf("Nothing to update");
 			}

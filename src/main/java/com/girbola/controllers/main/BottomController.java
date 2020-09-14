@@ -154,23 +154,25 @@ public class BottomController {
 		boolean needsUpdate = false;
 		for (FolderInfo folderInfo : table.getItems()) {
 			if (folderInfo.getFolderFiles() > 0) {
-				for (FileInfo fileInfoSearch : folderInfo.getFileInfoList()) {
+				for (FileInfo fileInfoSearching : folderInfo.getFileInfoList()) {
 					fileEnterCounter.incrementAndGet();
-					if (!fileInfoSearch.isTableDuplicated()) {
-						if (fileInfoSearch.getOrgPath() != fileInfoToFind.getOrgPath()) {
-							if (fileInfoSearch.getDate() == fileInfoToFind.getDate()
-									&& fileInfoSearch.getSize() == fileInfoToFind.getSize()) {
-								fileInfoSearch.setTableDuplicated(true);
-								duplicateCounter.incrementAndGet();
-								folderSavedSize.addAndGet(fileInfoSearch.getSize());
-								if (!needsUpdate) {
-									needsUpdate = true;
+					if (!fileInfoSearching.isTableDuplicated()) {
+						if (fileInfoSearching.getOrgPath() != fileInfoToFind.getOrgPath()) {
+							if (fileInfoSearching.getSize() == fileInfoToFind.getSize()) {
+
+								if (fileInfoSearching.getDate() == fileInfoToFind.getDate()) {
+									fileInfoSearching.setTableDuplicated(true);
+									duplicateCounter.incrementAndGet();
+									folderSavedSize.addAndGet(fileInfoSearching.getSize());
+									if (!needsUpdate) {
+										needsUpdate = true;
+									}
+									Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
+											+ "  fileInfoToFind.isTableDuplicated() "
+											+ fileInfoToFind.isTableDuplicated() + " DUPLICATED file: "
+											+ fileInfoSearching.getOrgPath() + " fileInfoSearch.isTableDuplicated() "
+											+ fileInfoSearching.isTableDuplicated() + " needsUpdate? " + needsUpdate);
 								}
-								Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
-										+ "  fileInfoToFind.isTableDuplicated() " + fileInfoToFind.isTableDuplicated()
-										+ " DUPLICATED file: " + fileInfoSearch.getOrgPath()
-										+ " fileInfoSearch.isTableDuplicated() " + fileInfoSearch.isTableDuplicated()
-										+ " needsUpdate? " + needsUpdate);
 							}
 						}
 					}
