@@ -190,7 +190,7 @@ public class Conversion {
 	public static String stringWithDigits(int value, int digits) {
 		// 1 digits == 2 tulos 02
 		if (digits < value) {
-			Messages.sprintfError("Value were higher than digits. Digit: " + digits + " value: " + value);
+			Messages.sprintfError("Value were higher than digits. Digit: " + digits + " value: " + Conversion.stringTwoDigits(value));
 			return Conversion.stringTwoDigits(value);
 		}
 		if (String.valueOf(value).length() < digits) {
