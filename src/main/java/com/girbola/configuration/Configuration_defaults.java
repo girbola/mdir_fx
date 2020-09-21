@@ -152,11 +152,11 @@ public class Configuration_defaults extends
 				Files.createDirectories(appDataPath);
 			} catch (IOException ex) {
 				if (Files.isWritable(appDataPath)) {
-					Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE, null, ex);
+					ex.printStackTrace();
 					Messages.errorSmth(ERROR, bundle.getString("createDataFolderFailed") + "\n" + getAppDataPath(), ex, Misc.getLineNumber(), true);
 					return;
 				} else {
-					Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE, null, ex);
+					ex.printStackTrace();
 					Messages.errorSmth(ERROR,
 							bundle.getString("createDataFolderFailed") + " " + bundle.getString("folderWriteProtected") + "\n" + getAppDataPath(), ex,
 							Misc.getLineNumber(), true);

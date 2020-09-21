@@ -73,7 +73,7 @@ public class DateFixer extends Task<Void> {
 			try {
 				parent = loader.load();
 			} catch (IOException ex) {
-				Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
+				ex.printStackTrace();
 			}
 
 			dateFixerController = (DateFixerController) loader.getController();

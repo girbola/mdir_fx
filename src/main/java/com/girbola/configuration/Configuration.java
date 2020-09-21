@@ -23,6 +23,7 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 
@@ -120,7 +121,11 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public Rectangle2D getScreenBounds() {
-		return Screen.getPrimary().getBounds();
+
+			ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(Main.scene_Switcher.getScene_main().getX(), Main.scene_Switcher.getScene_main().getY(),
+					Main.scene_Switcher.getScene_main().getWidth(), Main.scene_Switcher.getScene_main().getHeight());
+			return screensForRectangle.get(0).getBounds();
+//			return Screen.getPrimary().getBounds();
 	}
 
 	public void loadConfig_GUI() {

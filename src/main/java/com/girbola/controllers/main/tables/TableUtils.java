@@ -84,7 +84,7 @@ public class TableUtils {
 			try {
 				parent = loader.load();
 			} catch (IOException ex) {
-				Logger.getLogger(CopyBatch.class.getName()).log(Level.SEVERE, null, ex);
+				ex.printStackTrace();
 			}
 
 			ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader

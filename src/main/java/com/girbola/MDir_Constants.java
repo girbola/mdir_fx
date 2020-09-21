@@ -6,7 +6,8 @@ public enum MDir_Constants {
 
 	//======== Styling css file names=================
 	MAINSTYLE("mainStyle.css"),
-	DATEFIXER("dateFixer.css");
+	DATEFIXER("dateFixer.css"),
+	DIALOGS("dialogs.css");
 	//======== Styling css file names============ ENDS
 	
 	MDir_Constants(String type) {

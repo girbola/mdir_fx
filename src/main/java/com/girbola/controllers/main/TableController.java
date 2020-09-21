@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.configuration.GUIPrefs;
@@ -43,6 +44,7 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -76,6 +78,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Callback;
@@ -117,16 +120,16 @@ public class TableController {
 	private Button select_none_btn;
 	@FXML
 	private Button select_dateDifference_btn;
-	@FXML
-	private Button copySelected_btn;
-	@FXML
-	private Button addToBatch_btn;
-	@FXML
-	private Button mergeCopy_btn;
-	@FXML
-	private Button collectSimilarDates_btn;
-	@FXML
-	private Button resetSelectedFileInfos_btn;
+//	@FXML
+//	private Button copySelected_btn;
+//	@FXML
+//	private Button addToBatch_btn;
+//	@FXML
+//	private Button mergeCopy_btn;
+//	@FXML
+//	private Button collectSimilarDates_btn;
+//	@FXML
+//	private Button resetSelectedFileInfos_btn;
 	@FXML
 	private Label allFilesCopied_lbl;
 
@@ -165,6 +168,9 @@ public class TableController {
 
 	@FXML
 	private MenuItem checkChanges_mi;
+
+	@FXML
+	private MenuItem mergeCopy_MenuItem;
 
 	public Label getAllFilesCopied_lbl() {
 		return allFilesCopied_lbl;
@@ -303,9 +309,30 @@ public class TableController {
 			root = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
+			double windowStartPosX = Main.conf.getWindowStartPosX();
+			double windowStartPosY = Main.conf.getWindowStartPosY();
+//			laske nämä vielä 
+			stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
+			stage.initModality(Modality.WINDOW_MODAL);
+			stage.setMaxHeight(200);
+			stage.setOnShowing(ev -> {
+				Platform.runLater(()-> {
+					System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: " + stage.getWidth() + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
+					System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: " + stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
+					stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2) - (stage.getWidth() / 2));
+					stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)- stage.getHeight() / 2));
+				});
+			});
+
+//			stage.centerOnScreen();
+			stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
+			stage.setAlwaysOnTop(true);
+			scene.getStylesheets().add(
+					Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGS.getType()).toExternalForm());
 			MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
 			mergeDialogController.init(model_main, model_main.tables(), table, tableType);
 			stage.setScene(scene);
+
 			stage.showAndWait();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -316,8 +343,7 @@ public class TableController {
 	private void collectSimilarDates_btn_action(ActionEvent event) {
 		try {
 			Parent parent = null;
-			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/collect/Collect_Dialog.fxml"),
-					bundle);
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/collect/Collect_Dialog.fxml"), bundle);
 			parent = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(parent);
@@ -672,7 +698,7 @@ public class TableController {
 		 * Disabling buttons
 		 */
 		if (tableType.equals(TableType.ASITIS.getType())) {
-			mergeCopy_btn.setVisible(false);
+			mergeCopy_MenuItem.setVisible(false);
 		}
 		Messages.sprintf("table is editable? " + table.isEditable() + " just fold editable?  "
 				+ justFolderName_col.isEditable());

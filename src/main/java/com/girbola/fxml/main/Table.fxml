@@ -58,6 +58,15 @@
                         <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
                      </tooltip>
       				</Button>
+                  <MenuButton mnemonicParsing="false" text="%action">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected to dest" />
+                      <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%add" />
+                        <MenuItem fx:id="mergeCopy_MenuItem" mnemonicParsing="false" onAction="#mergeCopy_btn_action" text="Merge selection" />
+                        <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
+                        <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
+                    </items>
+                  </MenuButton>
       				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
       					<graphic>
       						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
@@ -136,31 +145,6 @@
       				<Button fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" prefHeight="25.0" text="DD">
                      <tooltip>
                         <Tooltip fx:id="select_dateDifference_tooltip" text="%selectDateDifferencesTableTooltip" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="copySelected_btn" layoutX="329.0" layoutY="11.0" mnemonicParsing="false" onAction="#copySelected_btn_action" prefHeight="25.0" text="CP">
-                     <tooltip>
-                        <Tooltip fx:id="copySelected_btn_tooltip" text="%copySelected_btn_tooltip" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="addToBatch_btn" layoutX="365.0" layoutY="11.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefHeight="25.0" text="%add">
-                     <tooltip>
-                        <Tooltip fx:id="addToBatch_tooltip" text="%addToBatch_tooltip" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="mergeCopy_btn" layoutX="12.0" layoutY="37.0" mnemonicParsing="false" onAction="#mergeCopy_btn_action" prefHeight="25.0" text="MC">
-                     <tooltip>
-                        <Tooltip fx:id="mergeCopy_btn_tooltip" text="%mergeCopy_tooltip" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="resetSelectedFileInfos_btn" layoutX="48.0" layoutY="37.0" mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" prefHeight="25.0" text="RF">
-                     <tooltip>
-                        <Tooltip fx:id="resetSelectedFileInfos_btn_tooltip" text="%resetSelectedFileInfos_btn_tooltip" />
-                     </tooltip>
-                  </Button>
-                  <Button fx:id="collectSimilarDates_btn" layoutX="48.0" layoutY="39.0" mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" prefHeight="25.0" text="SMD">
-                     <tooltip>
-                        <Tooltip fx:id="collectSimilarDates_btn_tooltip" text="%mergeSimilarDates_tooltip" />
                      </tooltip>
                   </Button>
                </children>
