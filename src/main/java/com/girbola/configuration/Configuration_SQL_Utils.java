@@ -482,10 +482,11 @@ public class Configuration_SQL_Utils {
 				Main.conf.getConfiguration_db_fileName());
 		try {
 			connection.setAutoCommit(false);
+			insert_Configuration(connection, Main.conf);
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 		}
-	insert_Configuration(connection, Main.conf);
 		try {
 			connection.commit();
 			connection.close();

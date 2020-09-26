@@ -115,6 +115,7 @@ public class LoadingProcess_Task {
 			xOffset = loadingStage.getX();
 			yOffset = loadingStage.getY();
 
+			Main.centerWindowDialog(loadingStage);
 			loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
 
 				@Override
@@ -144,7 +145,6 @@ public class LoadingProcess_Task {
 
 			loadingStage.setScene(loadingScene);
 			loadingStage.setAlwaysOnTop(true);
-
 			loadingStage.show();
 			Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
 			Main.scene_Switcher.setScene_loading(loadingScene);

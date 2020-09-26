@@ -96,10 +96,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
+				primaryStage.setUserData(model_main);
 		mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				primaryStage.setUserData(model_main);
 				setMain_stage(primaryStage);
 				setChanged(false);
 				sprintf("Program starting");
@@ -137,6 +137,11 @@ public class Main extends Application {
 
 				primaryStage.setMinWidth(800);
 				primaryStage.setMinHeight(600);
+				primaryStage.setX(Main.conf.getWindowStartPosX());
+				primaryStage.setY(Main.conf.getWindowStartPosY());
+				primaryStage.setWidth(Main.conf.getWindowStartWidth());
+				primaryStage.setHeight(Main.conf.getWindowStartHeight());
+				
 				scene_Switcher.setWindow(primaryStage);
 				scene_Switcher.setScene_main(primaryScene);
 
@@ -154,7 +159,7 @@ public class Main extends Application {
 					@Override
 					public void run() {
 						primaryStage.setScene(primaryScene);
-						defineScreenBounds(primaryStage);
+//						defineScreenBounds(primaryStage);
 						primaryStage.show();
 
 						model_main.getBottomController().initBottomWorkdirMonitors();
@@ -219,10 +224,6 @@ public class Main extends Application {
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 							}
-//							Messages.errorSmth(ERROR, "Test1",null, Misc.getLineNumber(), false);
-//							Messages.errorSmth(ERROR, "Test2",null, Misc.getLineNumber(), true);
-//							Messages.errorSmth(ERROR, "Test23",null, Misc.getLineNumber(), false);
-
 							primaryStage.xProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
@@ -485,6 +486,22 @@ public class Main extends Application {
 	public void stop() throws Exception {
 		super.stop();
 		model_main.getMonitorExternalDriveConnectivity().cancel();
+	}
+
+	public static void centerWindowDialog(Stage stage) {
+		stage.setOnShowing(ev -> {
+			Platform.runLater(() -> {
+				System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: "
+						+ stage.getWidth() + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
+				System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: "
+						+ stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
+				stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
+						- (stage.getWidth() / 2));
+				stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)
+						- stage.getHeight() / 2));
+			});
+		});
+		
 	}
 
 }

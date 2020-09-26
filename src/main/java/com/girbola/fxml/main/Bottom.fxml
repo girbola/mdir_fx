@@ -25,6 +25,11 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
+      <Button fx:id="showWorkdir_btn" layoutX="611.0" layoutY="10.0" mnemonicParsing="false" onAction="#showWorkdir_btn_action" text="Work dir">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Button>
       <HBox alignment="TOP_RIGHT" prefHeight="25.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="drive_pane" alignment="CENTER" spacing="7.0">
