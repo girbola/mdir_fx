@@ -309,22 +309,12 @@ public class TableController {
 			root = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
-			double windowStartPosX = Main.conf.getWindowStartPosX();
-			double windowStartPosY = Main.conf.getWindowStartPosY();
-//			laske nämä vielä 
 			stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setMaxHeight(200);
-			stage.setOnShowing(ev -> {
-				Platform.runLater(()-> {
-					System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: " + stage.getWidth() + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
-					System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: " + stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
-					stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2) - (stage.getWidth() / 2));
-					stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)- stage.getHeight() / 2));
-				});
-			});
-
-//			stage.centerOnScreen();
+			Main.centerWindowDialog(stage);
+			
+		
 			stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
 			stage.setAlwaysOnTop(true);
 			scene.getStylesheets().add(
@@ -815,6 +805,9 @@ public class TableController {
 						fileInfo.setDestination_Path(destPath.toString());
 						fileInfo.setCopied(false);
 						Main.setChanged(true);
+						if (!folderInfo.getChanged()) {
+							folderInfo.setChanged(true);
+						}
 					}
 				}
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());

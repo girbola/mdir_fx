@@ -2,11 +2,13 @@
 
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
@@ -15,17 +17,15 @@
    <children>
       <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <center>
-            <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-              <columns>
-                <TableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="View" />
-                <TableColumn prefWidth="75.0" text="Path" />
-                  <TableColumn prefWidth="75.0" text="Date" />
-                  <TableColumn prefWidth="75.0" text="Images" />
-                  <TableColumn prefWidth="75.0" text="Videos" />
-                  <TableColumn prefWidth="75.0" text="Raw" />
-                  <TableColumn prefWidth="75.0" text="Size" />
-              </columns>
-            </TableView>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" VBox.vgrow="ALWAYS">
+                     <content>
+                        <FlowPane />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
          </center>
          <top>
             <VBox BorderPane.alignment="CENTER">
@@ -59,6 +59,24 @@
                </children>
             </VBox>
          </top>
+         <left>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <ScrollPane>
+                     <content>
+                        <TreeTableView fx:id="treeTableView" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TreeTableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                              <TreeTableColumn fx:id="sizeColumn" prefWidth="75.0" text="Size" />
+                              <TreeTableColumn fx:id="lastModifiedColumn" prefWidth="75.0" text="Size" />
+                           </columns>
+                        </TreeTableView>
+                     </content>
+                  </ScrollPane>
+                  <Label fx:id="label" text="Label" />
+               </children>
+            </VBox>
+         </left>
       </BorderPane>
    </children>
 </AnchorPane>

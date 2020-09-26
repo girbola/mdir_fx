@@ -18,7 +18,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -35,6 +34,7 @@ import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -90,6 +90,33 @@ public class BottomController {
 	@FXML
 	private HBox drive_pane;
 
+	@FXML
+	private Button showWorkdir_btn;
+	
+	@FXML
+	private void showWorkdir_btn_action(ActionEvent event) {
+		Platform.runLater(() -> {
+			
+		
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("fxml/workdir/Workdir.fxml"), Main.bundle);
+			parent = loader.load();
+			WorkDirController workdirController = (WorkDirController) loader
+					.getController();
+			workdirController.init(model_main);
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.show();
+			workdirController.createFileBrowserTreeTableView();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		});
+	}
+	
 	@FXML
 	private Button removeDuplicates_btn;
 
