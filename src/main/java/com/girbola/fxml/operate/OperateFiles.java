@@ -205,77 +205,86 @@ public class OperateFiles extends Task<Boolean> {
 
 			// boolean copy = false;
 			for (FileInfo fileInfo : list) {
+
 				Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir()
 						+ fileInfo.getDestination_Path());
 
 				source = Paths.get(fileInfo.getOrgPath());
-				dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-				boolean cancellation = checkCancellation(fileInfo, dest);
-				if (cancellation) {
-					break;
-				}
+				if (Files.exists(source)) {
+
+					dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+					boolean cancellation = checkCancellation(fileInfo, dest);
+					if (cancellation) {
+						break;
+					}
 //			TODO	duplicates ei toimi oikein. Korjaa!!!!
 
-				Messages.sprintf("source is: " + source + " dest: " + dest);
-				updateSourceAndDestProcessValues(source, dest);
-				List<FileInfo> findPossibleExistsFoldersInWorkdir = model_main.getWorkDir_Handler()
-						.findPossibleExistsFoldersInWorkdir(fileInfo);
-				if (!findPossibleExistsFoldersInWorkdir.isEmpty()) {
-					Messages.sprintf("Duplicates found: " + source);
+					Messages.sprintf("source is: " + source + " dest: " + dest);
+					updateSourceAndDestProcessValues(source, dest);
+					List<FileInfo> findPossibleExistsFoldersInWorkdir = model_main.getWorkDir_Handler()
+							.findPossibleExistsFoldersInWorkdir(fileInfo);
+					if (!findPossibleExistsFoldersInWorkdir.isEmpty()) {
+						Messages.sprintf("Duplicates found: " + source);
 //				boolean defineDuplicate = FileInfo_Utils.defineDuplicateFile(fileInfo, dest);
 //				if (defineDuplicate) {
-					STATE = Copy_State.DUPLICATE.getType();
-				} else {
-
-					Path dest_test = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), dest);
-					if (dest_test != null) {
-						dest = dest_test;
-						STATE = Copy_State.RENAME.getType();
+						STATE = Copy_State.DUPLICATE.getType();
 					} else {
-						STATE = Copy_State.COPY.getType();
-					}
-				}
-				SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
 
-				Copy_State copy_State = Copy_State.valueOf(STATE);
-				switch (copy_State) {
-				case COPY:
-					if (copyFile(fileInfo, source, dest, STATE, answer)) {
-						updateSourceAndDestProcessValues(source, dest);
-						updateIncreaseCopyingProcessValues();
+						Path dest_test = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), dest);
+						if (dest_test != null) {
+							dest = dest_test;
+							STATE = Copy_State.RENAME.getType();
+						} else {
+							STATE = Copy_State.COPY.getType();
+						}
+					}
+					SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
+
+					Copy_State copy_State = Copy_State.valueOf(STATE);
+					switch (copy_State) {
+					case COPY:
+						if (Files.exists(source)) {
+							if (copyFile(fileInfo, source, dest, STATE, answer)) {
+								updateSourceAndDestProcessValues(source, dest);
+								updateIncreaseCopyingProcessValues();
+								if (!fileInfo.isCopied()) {
+									fileInfo.setCopied(true);
+									model_main.getWorkDir_Handler().add(fileInfo);
+								}
+							}
+						} else {
+							Messages.sprintfError("Source file did not exists!: " + source);
+						}
+
+						break;
+					case DUPLICATE:
+						updateIncreaseDuplicatesProcessValues();
 						if (!fileInfo.isCopied()) {
 							fileInfo.setCopied(true);
 							model_main.getWorkDir_Handler().add(fileInfo);
 						}
-					}
-					break;
-				case DUPLICATE:
-					updateIncreaseDuplicatesProcessValues();
-					if (!fileInfo.isCopied()) {
-						fileInfo.setCopied(true);
-						model_main.getWorkDir_Handler().add(fileInfo);
-					}
 
-					break;
-				case RENAME:
-					if (copyFile(fileInfo, source, dest, STATE, answer)) {
-						updateIncreaseRenamedProcessValues();
-						if (!fileInfo.isCopied()) {
-							fileInfo.setCopied(true);
-							model_main.getWorkDir_Handler().add(fileInfo);
+						break;
+					case RENAME:
+						if (copyFile(fileInfo, source, dest, STATE, answer)) {
+							updateIncreaseRenamedProcessValues();
+							if (!fileInfo.isCopied()) {
+								fileInfo.setCopied(true);
+								model_main.getWorkDir_Handler().add(fileInfo);
+							}
 						}
+						break;
+					case BROKENFILE:
+						Messages.sprintfError("Broken file were found. Filename: " + fileInfo.getOrgPath());
+						break;
 					}
-					break;
-				case BROKENFILE:
-					Messages.sprintfError("Broken file were found. Filename: " + fileInfo.getOrgPath());
-					break;
-				}
-				Messages.sprintf("Dest: " + dest + " STATE: " + STATE);
+					Messages.sprintf("Dest: " + dest + " STATE: " + STATE);
 
-				updateFilesLeftCounter();
-				source = null;
-				dest = null;
-				STATE = "";
+					updateFilesLeftCounter();
+					source = null;
+					dest = null;
+					STATE = "";
+				}
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
@@ -285,22 +294,22 @@ public class OperateFiles extends Task<Boolean> {
 			MessageDigest md;
 			try {
 				md = MessageDigest.getInstance("MD5");
-				InputStream is_src =Files.newInputStream(src);
+				InputStream is_src = Files.newInputStream(src);
 				DigestInputStream dis_dest_src = new DigestInputStream(is_src, md);
-				
-				InputStream is_dest =Files.newInputStream(dest);
+
+				InputStream is_dest = Files.newInputStream(dest);
 				DigestInputStream dis_dest = new DigestInputStream(is_dest, md);
-				
+
 				byte[] digest_Src = md.digest();
 				byte[] digest_dest = md.digest();
-				if(digest_Src == digest_dest) {
+				if (digest_Src == digest_dest) {
 					Messages.sprintf("SAMEEEEEEEEEEEEEEEEEE FILESSSSSSSSSSSSSSSSS!");
 				}
 //			try (InputStream is_src = Files.newInputStream(src);
 //					DigestInputStream dis = new DigestInputStream(is, md)) {
 //				/* Read decorated stream (dis) to EOF as normal... */
 //			}
-			
+
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -309,12 +318,15 @@ public class OperateFiles extends Task<Boolean> {
 
 		private boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,
 				SimpleIntegerProperty answer) {
+
 			if (!Files.exists(source2)) {
+
 				Messages.errorSmth(ERROR, "Source file were not able to be found: " + source2, null,
-						Misc.getLineNumber(), true);
-				cancel();
-				Main.setProcessCancelled(true);
-				Messages.errorSmth(ERROR, "Can't find source file", null, Misc.getLineNumber(), true);
+						Misc.getLineNumber(), false);
+				return false;
+//				cancel();
+//				Main.setProcessCancelled(true);
+//				Messages.errorSmth(ERROR, "Can't find source file", null, Misc.getLineNumber(), true);
 			}
 			boolean destinationDirectoriesCreated = createDirectories(dest2);
 			if (!destinationDirectoriesCreated) {
