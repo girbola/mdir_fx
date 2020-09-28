@@ -51,7 +51,7 @@ public class AskEventDialogController {
 	private ComboBox<String> location_cmb;
 	@FXML
 	private ComboBox<String> user_cmb;
-	
+
 	@FXML
 	private Button apply_btn;
 	@FXML
@@ -94,9 +94,9 @@ public class AskEventDialogController {
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
 						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld
-						+ location_str + event_str + File.separator + fileName + "."
-						+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+				Path destPath = Paths.get(
+						File.separator + ld.getYear() + File.separator + ld + location_str + event_str + File.separator
+								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
 					fileInfo.setWorkDir(workDir);
 					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
@@ -123,6 +123,7 @@ public class AskEventDialogController {
 		stage.close();
 
 	}
+
 	@FXML
 	private void apply_and_copy_btn_action(ActionEvent event) {
 		Messages.sprintf("apply_and_copy_btn_action started");
@@ -142,7 +143,8 @@ public class AskEventDialogController {
 		askStage.centerOnScreen();
 		askStage.close();
 
-		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main, Scene_NameType.DATEFIXER.getType());
+		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main,
+				Scene_NameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 			Messages.sprintf("operateFiles Succeeded");
 			UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
@@ -181,7 +183,8 @@ public class AskEventDialogController {
 
 	}
 
-	public void init(Model_datefix model_dateFix) {
+	public void init(Model_main aModel_main, Model_datefix model_dateFix) {
+		this.model_main = aModel_main;
 		this.model_dateFix = model_dateFix;
 
 		apply_and_copy_btn.disableProperty().bind(Bindings.isEmpty(event_cmb.getEditor().textProperty())
@@ -205,10 +208,10 @@ public class AskEventDialogController {
 		GUI_Events.textField_file_listener(event_cmb.getEditor());
 		new AutoCompleteComboBoxListener<>(user_cmb);
 		GUI_Events.textField_file_listener(user_cmb.getEditor());
-		
+
 		event_cmb.setItems(model_dateFix.getObservableHandler().getEvent_obs());
 		user_cmb.setItems(model_dateFix.getObservableHandler().getUser_obs());
-		
+
 	}
 
 }

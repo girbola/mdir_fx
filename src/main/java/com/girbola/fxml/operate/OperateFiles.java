@@ -131,6 +131,12 @@ public class OperateFiles extends Task<Boolean> {
 			model_operate.getStart_btn().setOnAction(new EventHandler<ActionEvent>() {
 				@Override
 				public void handle(ActionEvent event) {
+					if(model_main == null) {
+						Messages.sprintfError("model main is null");
+					} 
+					if(model_main.getMonitorExternalDriveConnectivity() == null) {
+						Messages.sprintfError("model main getMonitorExternalDriveConnectivity is null");
+					}
 					model_main.getMonitorExternalDriveConnectivity().cancel();
 					Task<Integer> copy = new Copy();
 

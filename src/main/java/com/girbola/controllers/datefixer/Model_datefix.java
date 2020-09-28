@@ -992,6 +992,9 @@ public class Model_datefix extends DateFixerModel {
 	 * @return the selector_exec
 	 */
 	public final ScheduledExecutorService getSelector_exec() {
+		if(selector_exec.isShutdown() || selector_exec.isTerminated()) {
+			selector_exec = Executors.newScheduledThreadPool(1);
+		}
 		return selector_exec;
 	}
 

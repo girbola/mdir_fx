@@ -41,7 +41,6 @@ import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -492,8 +491,9 @@ public class DateFixerController {
 				FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
 						bundle);
 				parent = loader.load();
+				Messages.warningText("model_main is null? " + (model_main == null ? true : false));
 				AskEventDialogController askEventDialogController = (AskEventDialogController) loader.getController();
-				askEventDialogController.init(model_datefix);
+				askEventDialogController.init(model_main, model_datefix);
 
 				Scene scene = new Scene(parent);
 				Stage stage = new Stage();
@@ -620,8 +620,11 @@ public class DateFixerController {
 
 	public void init(Model_datefix aModel_datefix, Model_main aModel_main, Path currentPath, FolderInfo folderInfo,
 			boolean isImported) {
-		this.model_datefix = aModel_datefix;
 		Main.setProcessCancelled(false);
+
+		this.model_main = aModel_main;
+		this.model_datefix = aModel_datefix;
+
 		this.model_datefix.setCurrentFolderPath(currentPath);
 		this.model_datefix.setFolderInfo_full(folderInfo);
 		this.model_datefix.setGridPane(df_gridPane);
@@ -1037,7 +1040,7 @@ public class DateFixerController {
 			return;
 		}
 		ConcurrencyUtils.stopExecThread();
-	
+
 		List<FileInfo> fileInfo_list = new ArrayList<>();
 
 		for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
