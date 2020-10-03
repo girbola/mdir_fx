@@ -33,6 +33,7 @@ import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -236,46 +237,72 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		frame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
+
 				if (event.getButton().equals(MouseButton.PRIMARY)) {
 					long start = System.currentTimeMillis();
 					if (event.getClickCount() == 1) {
-						Messages.sprintf("Clicked once");
-						File file = new File(fileInfo.getOrgPath());
+
+						Messages.sprintf("Clicked setSelectedImageRoutine PRIMARY mouseclickcount = 1");
+
 						model_dateFix.getRightInfoPanel().getChildren().clear();
 						model_dateFix.getMetaDataTableView_obs().clear();
-						boolean deselected = model_dateFix.getSelectionModel().add(frame);
-						if (model_dateFix.getRightInfo_visible()) {
-							model_dateFix.getMetaDataTableView_obs()
-									.add(new MetaData(Main.bundle.getString("filename"), file.toString()));
-							Metadata metaData = null;
-							try {
-								metaData = ImageMetadataReader.readMetadata(file);
-							} catch (Exception e) {
-								deselected = false;
-							}
-							if (!deselected) {
-								if (metaData != null) {
-									for (Directory dir : metaData.getDirectories()) {
-										if (dir != null) {
-											if (!dir.getTags().isEmpty()) {
-												TitledPane titledPane = createTitledPane();
-												model_dateFix.getRightInfoPanel().getChildren().add(titledPane);
-												titledPane.setText(dir.getName());
-												ObservableList<MetaData> obs = FXCollections.observableArrayList();
-												TableView<MetaData> table = createTableView();
-												table.setItems(obs);
-												titledPane.setContent(table);
-												for (Tag tag : dir.getTags()) {
-													obs.add(new MetaData(tag.getTagName(), tag.getDescription()));
+						if (frame instanceof VBox) {
+							for (Node node : frame.getChildren()) {
+								if (node instanceof StackPane) {
+									StackPane sp = (StackPane) node;
+									for (Node nodeImv : sp.getChildren()) {
+										if (nodeImv instanceof ImageView) {
+											ImageView imv = (ImageView) nodeImv;
+
+											if (imv.getImage() != null) {
+
+												boolean deselected = model_dateFix.getSelectionModel().add(frame);
+												if (model_dateFix.getRightInfo_visible()) {
+													File file = new File(fileInfo.getOrgPath());
+													model_dateFix.getMetaDataTableView_obs().add(new MetaData(
+															Main.bundle.getString("filename"), file.toString()));
+													Metadata metaData = null;
+													try {
+														metaData = ImageMetadataReader.readMetadata(file);
+													} catch (Exception e) {
+														deselected = false;
+													}
+													if (!deselected) {
+														if (metaData != null) {
+															for (Directory dir : metaData.getDirectories()) {
+																if (dir != null) {
+																	if (!dir.getTags().isEmpty()) {
+																		TitledPane titledPane = createTitledPane();
+																		model_dateFix.getRightInfoPanel().getChildren()
+																				.add(titledPane);
+																		titledPane.setText(dir.getName());
+																		ObservableList<MetaData> obs = FXCollections
+																				.observableArrayList();
+																		TableView<MetaData> table = createTableView();
+																		table.setItems(obs);
+																		titledPane.setContent(table);
+																		for (Tag tag : dir.getTags()) {
+																			obs.add(new MetaData(tag.getTagName(),
+																					tag.getDescription()));
+																		}
+																		adjustTableHeight(table, obs);
+																	}
+																}
+															}
+															Messages.sprintf("Metadata reading took: "
+																	+ (System.currentTimeMillis() - start));
+														}
+													}
 												}
-												adjustTableHeight(table, obs);
+											} else {
+												Messages.sprintf("Not able to select because imageview were null");
 											}
 										}
 									}
-									Messages.sprintf("Metadata reading took: " + (System.currentTimeMillis() - start));
 								}
 							}
 						}
+
 					} else if (event.getClickCount() == 2) {
 						Messages.sprintf("Clickcount were 2");
 						List<FileInfo> list = getFileList(gridPane.getChildren());

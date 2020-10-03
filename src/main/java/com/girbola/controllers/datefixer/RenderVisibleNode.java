@@ -102,8 +102,8 @@ public class RenderVisibleNode {
 			}
 		});
 
-		scrollPane.setVvalue(-10);
-		scrollPane.setVvalue(0);
+//		scrollPane.setVvalue(-10);
+//		scrollPane.setVvalue(0);
 
 	}
 

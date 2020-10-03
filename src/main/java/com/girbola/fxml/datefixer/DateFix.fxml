@@ -374,9 +374,9 @@
 																				<Button fx:id="accept_dates_btn" minWidth="117.0" mnemonicParsing="false" onAction="#accept_dates_btn_action" text="Accept selected" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
 																				<Button fx:id="dateFromFileName_btn" minWidth="117.0" mnemonicParsing="false" onAction="#dateFromFileName_btn_action" text="Date from filename" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
 																				<TextField editable="false" minWidth="117.0" text="Select by number" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
-																				<TextField text="3" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-																				<TextField text="40" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-																				<Button mnemonicParsing="false" text="Select" GridPane.columnIndex="4" GridPane.rowIndex="3" />
+																				<TextField fx:id="startFromNumber_tf" styleClass="textFieldNumber" text="3" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+																				<TextField fx:id="endToNumber_tf" styleClass="textFieldNumber" text="40" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+																				<Button fx:id="selectRangeOfNumbers_btn" mnemonicParsing="false" onAction="#selectRangeOfNumbers_btn_action" text="Select" GridPane.columnIndex="4" GridPane.rowIndex="3" />
 																				<Label text="%restore" GridPane.halignment="LEFT" />
 																				<Button layoutX="82.0" layoutY="94.0" minWidth="117.0" mnemonicParsing="false" onAction="#setBadDate_btn_action" text="Set bad date" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
 																				<Button minWidth="117.0" mnemonicParsing="false" onAction="#setModifiedDate_btn_action" text="Set modified date" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />

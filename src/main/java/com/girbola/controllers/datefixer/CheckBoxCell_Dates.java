@@ -116,8 +116,8 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 					updateDates_Task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 						@Override
 						public void handle(WorkerStateEvent event) {
-							model_DateFix.getScrollPane().setVvalue(-1);
-							model_DateFix.getScrollPane().setVvalue(0);
+//							model_DateFix.getScrollPane().setVvalue(-1);
+//							model_DateFix.getScrollPane().setVvalue(0);
 
 							model_DateFix.getCameras_TableView().setDisable(false);
 							model_DateFix.getDates_TableView().setDisable(false);

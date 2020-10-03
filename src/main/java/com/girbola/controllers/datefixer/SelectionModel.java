@@ -15,6 +15,7 @@ import java.util.List;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -30,7 +31,8 @@ import javafx.scene.layout.Pane;
  */
 public class SelectionModel {
 
-	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 <1 1;" + "-fx-border-style: none;" + "-fx-border-width: 2px;";
+	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 <1 1;"
+			+ "-fx-border-style: none;" + "-fx-border-width: 2px;";
 	final private String style_removed = "-fx-border-color: red;" + "-fx-border-width: 2px;";
 	final private String style_selected = "-fx-border-color: red;" + "-fx-border-width: 2px;";
 
@@ -42,7 +44,9 @@ public class SelectionModel {
 		this.selectionList.addListener(new ListChangeListener<Node>() {
 			@Override
 			public void onChanged(ListChangeListener.Change<? extends Node> c) {
-				selectedIndicator_property.set(selectionList.size());
+				Platform.runLater(() -> {
+					selectedIndicator_property.set(selectionList.size());
+				});
 			}
 		});
 	}
@@ -59,31 +63,45 @@ public class SelectionModel {
 		}
 	}
 
+	/**
+	 * Returns true if node is already selected. Otherwise returns false as node is
+	 * deselected
+	 * 
+	 * @param node
+	 * @return
+	 */
 	public synchronized boolean add(Node node) {
-		// sprintf("add: " + node);
-
 		if (!contains(node)) {
-			node.setStyle(style_selected);
-			this.selectionList.add(node);
+			Platform.runLater(() -> {
+				node.setStyle(style_selected);
+				this.selectionList.add(node);
+			});
 			return false;
 			// }
 		} else {
-			sprintf("remove: " + node);
-			remove(node);
+			Platform.runLater(() -> {
+				sprintf("remove: " + node);
+				remove(node);
+			});
 			return true;
 		}
 
 	}
 
+	/**
+	 * 
+	 * @param node
+	 */
 	public synchronized void addOnly(Node node) {
 		if (!contains(node)) {
 			node.setStyle(style_selected);
 			this.selectionList.add(node);
 		}
-
 	}
-	
 
+	/**
+	 * 
+	 */
 	public synchronized void clearAll() {
 		sprintf("clearing all");
 

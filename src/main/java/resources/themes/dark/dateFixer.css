@@ -660,3 +660,9 @@
     /*-fx-background-color: yellow;*/
     -fx-border-color: -fx-light-text-color;
 }
+.textFieldNumber {
+	-fx-background-color: green;
+}
+.notValidNumber {
+	-fx-background-color: red;
+}

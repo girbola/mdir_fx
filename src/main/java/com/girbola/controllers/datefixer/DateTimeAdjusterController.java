@@ -675,7 +675,7 @@ public class DateTimeAdjusterController {
 		end_sec.setText("00");
 	}
 
-	public void centerNodeInScrollPane(ScrollPane scrollPane, Node node) {
+	public void centerNodeInScrollPane_(ScrollPane scrollPane, Node node) {
 		double h = scrollPane.getContent().getBoundsInLocal().getHeight();
 		double y = (node.getBoundsInParent().getMaxY() + node.getBoundsInParent().getMinY()) / 2.0;
 		double v = scrollPane.getViewportBounds().getHeight();

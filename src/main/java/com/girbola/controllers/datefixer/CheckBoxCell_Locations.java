@@ -126,8 +126,8 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 						}
 					};
 					updateLocations_Task.setOnSucceeded((WorkerStateEvent event) -> {
-						model_DateFix.getScrollPane().setVvalue(-1);
-						model_DateFix.getScrollPane().setVvalue(0);
+//						model_DateFix.getScrollPane().setVvalue(-1);
+//						model_DateFix.getScrollPane().setVvalue(0);
 
 						model_DateFix.getCameras_TableView().setDisable(false);
 						model_DateFix.getDates_TableView().setDisable(false);
