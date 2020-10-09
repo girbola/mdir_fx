@@ -14,7 +14,6 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -39,7 +38,6 @@ import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -67,7 +65,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -230,27 +227,31 @@ public class DateFixerController {
 	private TextField endToNumber_tf;
 
 	@FXML
-	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+	private void listFileInfo_btn_action(ActionEvent event) {
 		
+	}
+	@FXML
+	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
 				Messages.sprintf("node name " + node.getId());
 				VBox vbox = (VBox) node;
 				if (vbox.getId().equals("imageFrame")) {
 					for (Node hbox : vbox.getChildren()) {
-						
+
 					}
 				}
 			}
 		}
 
-		for(Node node : model_datefix.getGridPane().getChildren()) {
-				
+		for (Node node : model_datefix.getGridPane().getChildren()) {
+
 		}
 		try {
 			Messages.sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
 			int start = Integer.parseInt(startFromNumber_tf.getText());
-			
+
 			Messages.sprintf("Start will be: " + start);
 			startFromNumber_tf.getStyleClass().remove("notValidNumber");
 		} catch (Exception e) {
