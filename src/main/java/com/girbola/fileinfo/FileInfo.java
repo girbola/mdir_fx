@@ -12,7 +12,12 @@ import java.time.LocalDateTime;
  *
  * @author Marko Lokka
  */
-public class FileInfo extends Metadata {
+public class FileInfo extends Metadata implements Cloneable {
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+
 	private final int fileInfo_version = 2;
 	/**
 	 * FileInfo version 1 ================== fileInfo_version number created

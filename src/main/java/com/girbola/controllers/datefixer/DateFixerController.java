@@ -228,11 +228,12 @@ public class DateFixerController {
 
 	@FXML
 	private void listFileInfo_btn_action(ActionEvent event) {
-		
+
 	}
+
 	@FXML
 	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
-
+		Messages.warningText("selectRangeOfNumbers_btn_action NOT READY YET");
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
 				Messages.sprintf("node name " + node.getId());
