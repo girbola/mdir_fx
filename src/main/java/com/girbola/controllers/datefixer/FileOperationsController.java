@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FolderInfo_SQL;
 
@@ -96,81 +98,54 @@ public class FileOperationsController {
 
 	@FXML
 	private void move_comboBox_action(ActionEvent event) {
-		sprintf("ComboBox is under constructor");
+		sprintf("move_comboBox_action is under constructor");
 //        ComboBox cb = (ComboBox) event.getSource();
-		Folder folder = (Folder) move_comboBox.getValue();
-		Messages.warningText("cbbb: " + folder.getName() + " path: " + folder.getPath());
-//		Platform.exit();
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(bundle.getString("noSelectedFiles"));
 			return;
 		}
 
+		Folder newDestinationFolder = (Folder) move_comboBox.getValue();
+		Messages.warningText("cbbb: " + newDestinationFolder.getName() + " path: " + newDestinationFolder.getPath());
+
 		FolderInfo folderInfo = model_datefix.getFolderInfo_full();
 
-		List<FileInfo> toRemove = new ArrayList<>();
+		List<FileInfo> selectedFileInfoList = new ArrayList<>();
 
 		for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
 			if (node instanceof VBox) {
 				if (node.getId().equals("imageFrame")) {
 					FileInfo fileInfo = (FileInfo) node.getUserData();
-					toRemove.add(fileInfo);
+					selectedFileInfoList.add(fileInfo);
 
-					FileInfo fileInfo_dest = (FileInfo) fileInfo.clone();
-
-					Path newFilePath = Paths.get(folder.getPath().toString() + File.separator
+					Path newFilePath = Paths.get(newDestinationFolder.getPath().toString() + File.separator
 							+ Paths.get(fileInfo.getOrgPath()).getFileName().toString());
-					fileInfo_dest.setOrgPath(newFilePath.toString());
+					fileInfo.setOrgPath(newFilePath.toString());
 
-					String destTableType = folder.getFolderInfo().getTableType();
+					newDestinationFolder.getFolderInfo().getFileInfoList().add(fileInfo);
 
-					if (destTableType.equals(TableType.SORTED)) {
-						folder.getFolderInfo().getFileInfoList().add(fileInfo_dest);
-					} else {
-
-					}
 					// Remove fileInfo from source
-					FolderInfo_Utils.moveFolderInfoTO(sourceFolderInfo, dest_FolderInfo);
-
-					model_datefix.getFolderInfo_full().getFileInfoList().remove(fileInfo);
+//					model_datefix.getFolderInfo_full().getFileInfoList().remove(fileInfo);
 					model_datefix.getFolderInfo_full().setChanged(true);
-					for (Node vbox : ((VBox) node).getChildren()) {
-						if (vbox instanceof TextField) {
-//FIXAA TÄMÄ!!!!
-//                        Path source = Paths.get(model.getCurrentFilePath() + File.separator + ((TextField) vbox).getText());
-//                            Path source = Paths.get(fileInfo.getPath());
-//                            Folder folder = (Folder) cb.getValue();
-//                            Path destination = Paths.get(folder.getPath() + File.separator + ((TextField) vbox).getText());
-//                            FileInfo fi_src = TableUtils.findFileInfo(TableType.SORTED.getType(), Paths.get(fileInfo.getPath()), model_main.getTables());
-//                            if (fi_src == null) {
-//                                sprintf("fi_src were null;");
-//                                return;
-//                            }
-//                            sprintf("fi_src found!: " + fi_src.toString());
-//                            TableValues fi_dest = TableUtils.findTableValues(source, model_main.getTables().get)(TableType.SORTED.getType(), folder.getPath(), model_main.getTables());
-//                            if (fi_dest == null) {
-//                                sprintf("fi_dest were null;");
-//                                return;
-//                            }
-//
-//                            sprintf("fi_src: " + fi_src.toString() + " fi_dest: " + fi_dest.toString());
-//
-//                            sprintf("NOT MOVING YET Moving from: " + source);
-//                            sprintf("->> TO - >: " + destination);
-//                        model.getSelectionModel().remove(node);
-						}
-					}
 				}
 			}
 		}
-		folderInfo.getFileInfoList().removeAll(toRemove);
+
+		// Remove moved fileinfos from original source
+		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
+		// Clean Source FolderInfo from moved FileInfos
 		TableUtils.updateFolderInfos_FileInfo(folderInfo);
 
+		// <Folder names> and <FileInfo list>
 		Map<String, List<FileInfo>> map = new HashMap<>();
 
-		String currentFolderInfoFolder = "";
+//		String currentFolderInfoFolder = "";
+		
+		// Create a map of folderinfo paths for updating current fileinfos to correct
+		// folders
 		boolean found = false;
-		for (FileInfo fileInfo : toRemove) {
+		
+		for (FileInfo fileInfo : selectedFileInfoList) {
 			found = false;
 			Path rootPath = Paths.get(fileInfo.getOrgPath()).getParent();
 			for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
@@ -178,21 +153,40 @@ public class FileOperationsController {
 					entry.getValue().add(fileInfo);
 					found = true;
 				}
-
 			}
-			if (!found) {
+			if (!found || map.isEmpty()) {
 				map.put(rootPath.toString(), new ArrayList<>(Arrays.asList(fileInfo)));
 			}
-
 		}
-
-		for (FileInfo fileInfo : toRemove) {
-			Path rootPath = Paths.get(fileInfo.getOrgPath()).getParent();
-			if (rootPath.toString().length() > 1 && rootPath.toString() != currentFolderInfoFolder) {
-				FolderInfo loadFolderInfo = FolderInfo_SQL.loadFolderInfo(rootPath.toString());
-
+		// Move operation is MISSING
+//		for() {
+//			move
+//		}
+		
+		boolean update = false;
+		for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
+			String folderSQLFileName = entry.getKey() + File.separator + Main.conf.getMdir_db_fileName();
+//			if(folderSQLFileName)
+			FolderInfo loadFolderInfo = FolderInfo_SQL.loadFolderInfo(folderSQLFileName);
+//			if(loadFolderInfo == null) {
+//				createNew
+//			}
+			for (FileInfo fileInfo : entry.getValue()) {
+				if (!FileInfo_Utils.findDuplicates(fileInfo, loadFolderInfo)) {
+					loadFolderInfo.getFileInfoList().add(fileInfo);
+					if (!update) {
+						update = true;
+					}
+				}
+			}
+			if (update) {
+				TableUtils.updateFolderInfos_FileInfo(loadFolderInfo);
+//				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
+
+		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
+		TableUtils.updateFolderInfos_FileInfo(folderInfo);
 
 	}
 }
