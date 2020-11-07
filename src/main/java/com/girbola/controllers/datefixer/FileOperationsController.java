@@ -8,9 +8,10 @@ package com.girbola.controllers.datefixer;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -23,14 +24,13 @@ import java.util.Map.Entry;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FolderInfo_SQL;
 
+import common.utils.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -40,7 +40,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.util.StringConverter;
 
@@ -101,17 +100,22 @@ public class FileOperationsController {
 		sprintf("move_comboBox_action is under constructor");
 //        ComboBox cb = (ComboBox) event.getSource();
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(bundle.getString("noSelectedFiles"));
+			Messages.warningText(bundle.getString("noSelectedFiles"));
 			return;
 		}
 
 		Folder newDestinationFolder = (Folder) move_comboBox.getValue();
-		Messages.warningText("cbbb: " + newDestinationFolder.getName() + " path: " + newDestinationFolder.getPath());
+		if (!Files.exists(newDestinationFolder.getPath())) {
+			Messages.warningText("Destination folder does not exists\n" + newDestinationFolder.getName() + " path: "
+					+ newDestinationFolder.getPath());
+			return;
+		}
 
 		FolderInfo folderInfo = model_datefix.getFolderInfo_full();
 
 		List<FileInfo> selectedFileInfoList = new ArrayList<>();
 
+		// Created selected files list from nodes fileinfos
 		for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
 			if (node instanceof VBox) {
 				if (node.getId().equals("imageFrame")) {
@@ -131,20 +135,15 @@ public class FileOperationsController {
 			}
 		}
 
-		// Remove moved fileinfos from original source
-		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
-		// Clean Source FolderInfo from moved FileInfos
-		TableUtils.updateFolderInfos_FileInfo(folderInfo);
-
 		// <Folder names> and <FileInfo list>
 		Map<String, List<FileInfo>> map = new HashMap<>();
 
 //		String currentFolderInfoFolder = "";
-		
+
 		// Create a map of folderinfo paths for updating current fileinfos to correct
 		// folders
 		boolean found = false;
-		
+
 		for (FileInfo fileInfo : selectedFileInfoList) {
 			found = false;
 			Path rootPath = Paths.get(fileInfo.getOrgPath()).getParent();
@@ -158,11 +157,25 @@ public class FileOperationsController {
 				map.put(rootPath.toString(), new ArrayList<>(Arrays.asList(fileInfo)));
 			}
 		}
-		// Move operation is MISSING
-//		for() {
-//			move
-//		}
-		
+		boolean skip = false;
+		// Move operation
+		for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
+
+			if (Main.getProcessCancelled()) {
+				break;
+			}
+			if (entry.getValue().size() > 0 || !Files.exists(Paths.get(entry.getKey()))) {
+
+				for (FileInfo fileInfo : entry.getValue()) {
+					boolean succeeded = FileInfo_Utils.moveFile(fileInfo);
+					if(!succeeded) {
+						Messages.sprintfError("File has been successfully moved: " + fileInfo.getOrgPath());
+					}
+					skip = false;
+				}
+			}
+		}
+
 		boolean update = false;
 		for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
 			String folderSQLFileName = entry.getKey() + File.separator + Main.conf.getMdir_db_fileName();
@@ -184,6 +197,11 @@ public class FileOperationsController {
 //				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
+
+		// Remove moved fileinfos from original source
+		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
+		// Clean Source FolderInfo from moved FileInfos
+		TableUtils.updateFolderInfos_FileInfo(folderInfo);
 
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
 		TableUtils.updateFolderInfos_FileInfo(folderInfo);

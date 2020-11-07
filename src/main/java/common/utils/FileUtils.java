@@ -10,12 +10,11 @@ import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -84,15 +83,20 @@ public class FileUtils {
 
 		if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
 			sprintf("file name exists but they are different size: ");
-			File[] fileList = destFile.getParent().toFile().listFiles();
-			for (int i = 1; i < fileList.length + 1; i++) {
-				fileName = destFile.getParent().toString() 
-						+ File.separator 
-						+ (destFile.getFileName().toString()
-						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "." + ext;
-				
-				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
-				
+			DirectoryStream<Path> list = null;
+			try {
+				list = Files.newDirectoryStream(destFile.getParent(), filter_directories);
+			} catch (Exception e) {
+				Messages.sprintfError("Can't read directory: " + destFile);
+			}
+			int counter = 1;
+			Iterator<Path> it = list.iterator();
+			while(it.hasNext()) {
+				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
+						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "." + ext;
+
+				sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
+
 				if (Files.exists(Paths.get(fileName))) {
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
 						sprintf("File existed!: " + destFile + " filename: " + fileName);
@@ -102,6 +106,22 @@ public class FileUtils {
 					return Paths.get(fileName);
 				}
 			}
+//			File[] fileList = destFile.getParent().toFile().listFiles();
+//			for (int i = 1; i < fileList.length + 1; i++) {
+//				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
+//						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "." + ext;
+//
+//				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
+//
+//				if (Files.exists(Paths.get(fileName))) {
+//					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
+//						sprintf("File existed!: " + destFile + " filename: " + fileName);
+//						return null;
+//					}
+//				} else {
+//					return Paths.get(fileName);
+//				}
+//			}
 		} else {
 			Messages.sprintf("file did exists at destination folder");
 			return null;
@@ -328,47 +348,10 @@ public class FileUtils {
 		return finalName;
 	}
 
-	public boolean findDuplicateFile(Path src, Path dest) {
-
-		return false;
-	}
-
-	/**
-	 * Compare files if they are same. Checking also if file size are different and
-	 * file paths aren't the same
-	 *
-	 * @param source
-	 * @param destination
-	 * @return
-	 * @throws IOException
-	 */
-	public static boolean compareFiles(final Path source, final Path destination) throws IOException {
-		if (Files.size(source) != Files.size(destination) && !source.equals(destination)) {
-			return false;
-		}
-		final long size = Files.size(source);
-		final int mapSpan = (4 * 1024 * 1024);
-
-		try (FileChannel chana = (FileChannel) Files.newByteChannel(source);
-				FileChannel chanb = (FileChannel) Files.newByteChannel(destination)) {
-
-			for (long position = 0; position < size; position += mapSpan) {
-				MappedByteBuffer mba = mapChannel(chana, position, size, mapSpan);
-				MappedByteBuffer mbb = mapChannel(chanb, position, size, mapSpan);
-				if (mba.compareTo(mbb) != 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-
-	private static MappedByteBuffer mapChannel(FileChannel channel, long position, long size, int mapspan)
-			throws IOException {
-		final long end = Math.min(size, position + mapspan);
-		final long maplen = (int) (end - position);
-		return channel.map(FileChannel.MapMode.READ_ONLY, position, maplen);
-	}
+//	public boolean findDuplicateFile(Path src, Path dest) {
+//
+//		return false;
+//	}
 
 	/**
 	 * Replaces from filepath a workdir to none. For example

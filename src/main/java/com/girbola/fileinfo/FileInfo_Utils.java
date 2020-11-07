@@ -27,6 +27,8 @@ import java.util.List;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.SelectedFolder;
+import com.girbola.controllers.main.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
@@ -413,16 +415,16 @@ public class FileInfo_Utils {
 		return source;
 	}
 
-	//@formatter:off
+	// @formatter:off
 	/**
-	 * Returns 0 if good 
-	 * Returns 1 if conflict with workdir 
-	 * Returns 2 if copying is not possible because fileinfo workDir is null OR drive is not connected
-	 *  Returns 3 
+	 * Returns 0 if good Returns 1 if conflict with workdir Returns 2 if copying is
+	 * not possible because fileinfo workDir is null OR drive is not connected
+	 * Returns 3
+	 * 
 	 * @param fileInfo
 	 * @return
 	 */
-	//@formatter:on
+	// @formatter:on
 	public static int checkWorkDir(FileInfo fileInfo) {
 		if (Main.conf.getDrive_connected()) {
 			if (!fileInfo.getWorkDir().equals("null")) {
@@ -501,6 +503,68 @@ public class FileInfo_Utils {
 					return true;
 				}
 			}
+		}
+		return false;
+	}
+
+	public static boolean moveFile(FileInfo fileInfo) {
+		boolean skip = true;
+		Path source = Paths.get(fileInfo.getOrgPath());
+		Messages.sprintf("DEBUG1: " + source);
+
+		if (!Files.exists(source) && !Files.exists(Paths.get(fileInfo.getWorkDir()))) {
+			Main.setProcessCancelled(true);
+			return false;
+		}
+		if (Main.getProcessCancelled()) {
+			return false;
+		}
+		Path dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+		if (!Files.exists(dest.getParent())) {
+			try {
+				Files.createDirectories(dest.getParent());
+			} catch (Exception e) {
+				e.printStackTrace();
+				Messages.sprintfError("Can't create directories: " + dest.getParent());
+				Messages.errorSmth(ERROR, "Can't create directories", e, Misc.getLineNumber(), true);
+				return false;
+			}
+		}
+		try {
+			if (Files.exists(dest) && Files.size(dest) != Files.size(source)) {
+				try {
+					Path dest_temp = FileUtils.renameFile(source, dest);
+					if (dest_temp != null && !Files.exists(dest_temp)) {
+						dest = dest_temp;
+						skip = false;
+					} else {
+						skip = true;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					Main.setProcessCancelled(true);
+					return false;
+				}
+			} else {
+				skip = false;
+				Messages.sprintf("DST: " + dest + " source: " + source + " size: " + Files.size(source));
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		if (!skip) {
+			if (source != null && dest != null)
+				try {
+					Path target = Files.move(source, dest);
+					Messages.sprintf("Source dest: " + source + " TARGET: " + target);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Main.setProcessCancelled(true);
+					return false;
+				}
+			return true;
 		}
 		return false;
 	}
