@@ -14,10 +14,15 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Iterator;
 
+import com.girbola.Main;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+
+import common.utils.date.DateUtils;
 
 /**
  *
@@ -49,23 +54,6 @@ public class FileUtils {
 		return newPath;
 	}
 
-	// public static void renameExistingFile(Path orgFilePath) {
-	// String filePath = orgFilePath.getParent().toString();
-	// String fileName = orgFilePath.getFileName().toString();
-	//
-	// String extension = getExtension(orgFilePath.getFileName().toString());
-	// File[] list = new File(orgFilePath.getParent().toString()).listFiles();
-	// for (int i = 0; i < list.length; i++) {
-	//// String file = filePath + File.separator + fileName + "." + extension;
-	// sprintf("Listing files: " + list[i]);
-	// if (list[i].equals(orgFilePath.toFile())) {
-	// sprintf("File found!");
-	// }
-	// }
-	// sprintf("filePath is: " + filePath + File.separator + fileName + "." +
-	// extension);
-	// }
-
 	/**
 	 * Rename file to new file name if file exists and it is different size example:
 	 * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg and so on
@@ -91,9 +79,10 @@ public class FileUtils {
 			}
 			int counter = 1;
 			Iterator<Path> it = list.iterator();
-			while(it.hasNext()) {
+			while (it.hasNext()) {
 				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
-						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "." + ext;
+						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "."
+						+ ext;
 
 				sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
 
@@ -106,27 +95,11 @@ public class FileUtils {
 					return Paths.get(fileName);
 				}
 			}
-//			File[] fileList = destFile.getParent().toFile().listFiles();
-//			for (int i = 1; i < fileList.length + 1; i++) {
-//				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
-//						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "." + ext;
-//
-//				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
-//
-//				if (Files.exists(Paths.get(fileName))) {
-//					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
-//						sprintf("File existed!: " + destFile + " filename: " + fileName);
-//						return null;
-//					}
-//				} else {
-//					return Paths.get(fileName);
-//				}
-//			}
 		} else {
 			Messages.sprintf("file did exists at destination folder");
 			return null;
 		}
-		sprintf("REturning destfile: " + destFile);
+		sprintf("Returning destfile: " + destFile);
 		return destFile;
 	}
 
@@ -364,6 +337,54 @@ public class FileUtils {
 		String parsedWorkDir_FileName = dest.replace(workDir, "");
 		Messages.sprintf("parseWorkDir is: " + parsedWorkDir_FileName);
 		return parsedWorkDir_FileName;
+	}
+
+	/**
+	 * 
+	 * @param fileInfo
+	 * @param workDir
+	 * @return
+	 */
+	public static Path getFileNameDate(FileInfo fileInfo, String workDir) {
+		LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		Path path = Paths.get(File.separator + localDate.getYear() + File.separator + fileName + "."
+				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+		fileInfo.setWorkDir(workDir);
+		fileInfo.setDestination_Path(path.toString());
+		
+		return path;
+	}
+
+	public static Path getFileNameDateWithEventAndLocation(FileInfo fileInfo, String location_str, String event_str,
+			String workDir) {
+		LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+
+		if (!location_str.isEmpty()) {
+			fileInfo.setLocation(location_str);
+		}
+		if (!event_str.isEmpty()) {
+			fileInfo.setEvent(event_str);
+		}
+
+		if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
+			location_str = " - " + fileInfo.getLocation();
+		} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
+			event_str = " - " + fileInfo.getEvent();
+		} else {
+			location_str = " - " + fileInfo.getLocation();
+			event_str = " - " + fileInfo.getEvent();
+		}
+
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		Path path = Paths.get(File.separator + localDate.getYear() + File.separator + localDate + location_str
+				+ event_str + File.separator + fileName + "."
+				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+
+		return path;
 	}
 
 }

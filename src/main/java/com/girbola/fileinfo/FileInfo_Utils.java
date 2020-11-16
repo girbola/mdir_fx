@@ -519,7 +519,9 @@ public class FileInfo_Utils {
 		if (Main.getProcessCancelled()) {
 			return false;
 		}
-		Path dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+		Path dest = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
+//				Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+		
 		if (!Files.exists(dest.getParent())) {
 			try {
 				Files.createDirectories(dest.getParent());

@@ -10,7 +10,6 @@ import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -20,27 +19,37 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fxml.move.MoveController;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
 
-import common.utils.FileUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.StringConverter;
 
 public class FileOperationsController {
@@ -55,7 +64,68 @@ public class FileOperationsController {
 	private Button mixDates_btn;
 
 	@FXML
+	private Button fixBadDates_btn;
+
+	@FXML
+	private Button thisFolderIsOk_btn;
+
+	@FXML
+	private Button splitFolder_SortIt_btn;
+
+	@FXML
+	private Button splitFolder_Sorted_btn;
+
+	@FXML
 	private ComboBox<Folder> move_comboBox;
+
+	@FXML
+	private void fixBadDates_btn_action(ActionEvent event) {
+		Messages.warningText("fixBadDates_btn_action NOT READY YET");
+	}
+
+	@FXML
+	private void thisFolderIsOk_btn_action(ActionEvent event) {
+		Messages.warningText("thisFolderIsOk_btn_action NOT READY YET");
+	}
+
+	@FXML
+	private void splitFolder_Sorted_btn_action(ActionEvent event) {
+//		aerg;
+		ConcurrencyUtils.stopExecThread();
+		Parent parent = null;
+		// rgwerg;
+		try {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/move/Move.fxml"), bundle);
+			parent = loader.load();
+			
+			Messages.warningText("model_main is null? " + (model_main == null ? true : false));
+			MoveController moveController = (MoveController) loader.getController();
+			moveController.init(model_main, model_datefix);
+
+			Scene scene = new Scene(parent);
+			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + "dateFixer.css").toExternalForm());
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.show();
+			stage.setOnHiding(new EventHandler<WindowEvent>() {
+				@Override
+				public void handle(WindowEvent event) {
+					model_datefix.getSelectionModel().clearAll();
+				}
+			});
+//			for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
+//				Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
+//			}
+		} catch (Exception ex) {
+			Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
+			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+		}
+	}
+
+	@FXML
+	private void splitFolder_SortIt_btn_action(ActionEvent event) {
+
+	}
 
 	public void init(Model_datefix aModel_datefix, Model_main aModel_main) {
 		this.model_datefix = aModel_datefix;
@@ -168,7 +238,7 @@ public class FileOperationsController {
 
 				for (FileInfo fileInfo : entry.getValue()) {
 					boolean succeeded = FileInfo_Utils.moveFile(fileInfo);
-					if(!succeeded) {
+					if (!succeeded) {
 						Messages.sprintfError("File has been successfully moved: " + fileInfo.getOrgPath());
 					}
 					skip = false;

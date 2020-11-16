@@ -1,11 +1,9 @@
 package com.girbola.controllers.datefixer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -64,9 +61,9 @@ public class AskEventDialogController {
 		if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
 			String location_str = "";
 			String event_str = "";
-			for (Node n : model_dateFix.getSelectionModel().getSelectionList()) {
-				FileInfo fileInfo = (FileInfo) n.getUserData();
-				Messages.sprintf("222Fileinfo: " + fileInfo);
+			for (Node selected_Node : model_dateFix.getSelectionModel().getSelectionList()) {
+				FileInfo fileInfo = (FileInfo) selected_Node.getUserData();
+				Messages.sprintf("selected_Node.getUserData Fileinfo: " + fileInfo);
 
 				if (!event_cmb.getEditor().getText().equals(fileInfo.getEvent())) {
 					fileInfo.setEvent(event_cmb.getEditor().getText());
@@ -86,22 +83,27 @@ public class AskEventDialogController {
 					event_str = " - " + fileInfo.getEvent();
 				}
 
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("location were= '" + location_str + "'");
-				Messages.sprintf("evemt were= '" + event_str + "'");
+				
+//
+//				LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+//				Messages.sprintf("location were= '" + location_str + "'");
+//				Messages.sprintf("evemt were= '" + event_str + "'");
+//				list.add(fileInfo);
+//				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
+//				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
+//				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+//						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+//				Path destPath = Paths.get(
+//						File.separator + localDate.getYear() + File.separator + localDate + location_str + event_str + File.separator
+//								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+				Path destPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, location_str, event_str, workDir);
 				list.add(fileInfo);
-				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(
-						File.separator + ld.getYear() + File.separator + ld + location_str + event_str + File.separator
-								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
 					fileInfo.setWorkDir(workDir);
 					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(destPath.toString());
 					fileInfo.setCopied(false);
+					model_dateFix.getFolderInfo_full().setChanged(true);
 					Main.setChanged(true);
 				}
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());

@@ -768,7 +768,6 @@ public class Model_datefix extends DateFixerModel {
 									if (thumbInfo == null) {
 										thumbInfo = new ThumbInfo(fi.getOrgPath(), fi.getFileInfo_id());
 									}
-									@SuppressWarnings("unchecked")
 									List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
 									Messages.sprintf("buffList size is: " + buffList);
 									if (buffList != null) {
