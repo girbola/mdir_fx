@@ -37,7 +37,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
 		<javafx.version>14</javafx.version>
-		<metadata-extractor.version>2.14.0</metadata-extractor.version>
+		<metadata-extractor.version>2.15.0</metadata-extractor.version>
 		<vlcj.version>4.6.0</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
 		<imageio-jpeg.version>3.5</imageio-jpeg.version>
