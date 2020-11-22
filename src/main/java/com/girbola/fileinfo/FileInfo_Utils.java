@@ -521,7 +521,7 @@ public class FileInfo_Utils {
 		}
 		Path dest = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
 //				Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-		
+
 		if (!Files.exists(dest.getParent())) {
 			try {
 				Files.createDirectories(dest.getParent());
@@ -569,6 +569,14 @@ public class FileInfo_Utils {
 			return true;
 		}
 		return false;
+	}
+
+	public static String getFolderName(FileInfo fileInfo_ToFind) {
+		Path path = Paths.get(fileInfo_ToFind.getOrgPath());
+		if (!Files.isDirectory(path)) {
+			return path.getParent().getFileName().toString();
+		}
+		return null;
 	}
 
 }

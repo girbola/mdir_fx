@@ -36,6 +36,7 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.main.collect.Collect_DialogController;
+import com.girbola.fxml.main.collect.Model_CollectDialog;
 import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
@@ -44,7 +45,6 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -87,7 +87,8 @@ import javafx.util.converter.NumberStringConverter;
 public class TableController {
 
 	private Model_main model_main;
-
+	private Model_CollectDialog model_CollectDialog;
+	
 	private Window owner;
 
 	private final String ERROR = TableController.class.getSimpleName();
@@ -313,8 +314,7 @@ public class TableController {
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setMaxHeight(200);
 			Main.centerWindowDialog(stage);
-			
-		
+
 			stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
 			stage.setAlwaysOnTop(true);
 			scene.getStylesheets().add(
@@ -337,9 +337,10 @@ public class TableController {
 			parent = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(parent);
+			model_CollectDialog = new Model_CollectDialog();
 
 			Collect_DialogController controller = (Collect_DialogController) loader.getController();
-			controller.init(model_main, table, tableType);
+			controller.init(model_main, model_CollectDialog, table, tableType);
 			stage.setScene(scene);
 			stage.showAndWait();
 
@@ -384,7 +385,7 @@ public class TableController {
 		addToBatchSelectedTableRows(model_main.tables(), table, tableType);
 	}
 
-	//@formatter:on
+	// @formatter:on
 	@FXML
 	private void checkChanges_mi_action(ActionEvent event) {
 		LoadingProcess_Task loadingProcess = new LoadingProcess_Task(owner);
