@@ -27,6 +27,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
@@ -111,6 +112,7 @@ public class DateTimeAdjusterController {
 				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
 				if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
 					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+//						model_ FolderInfo_Utils. addToObservableFileInfoList.
 						collectedList.add(fileInfo);
 						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
 								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
@@ -667,10 +669,10 @@ public class DateTimeAdjusterController {
 		end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
 		setTextProperty(end_sec);
 
-		start_hour.setText("00");
+		start_hour.setText("12");
 		start_min.setText("00");
 		start_sec.setText("00");
-		end_hour.setText("00");
+		end_hour.setText("12");
 		end_min.setText("00");
 		end_sec.setText("00");
 	}

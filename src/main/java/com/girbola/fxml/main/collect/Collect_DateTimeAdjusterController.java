@@ -4,6 +4,7 @@ import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,24 +13,26 @@ import java.util.ResourceBundle;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.date.DateUtils;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.util.converter.NumberStringConverter;
 
 public class Collect_DateTimeAdjusterController {
 	private final String ERROR = Collect_DateTimeAdjusterController.class.getName();
+
+	private Model_main model_main;
 
 	private Model_CollectDialog model_CollectDialog;
 
@@ -116,10 +119,14 @@ public class Collect_DateTimeAdjusterController {
 		LocalDateTime ldt_end = null;
 
 		try {
-			model_CollectDialog.getStart_time().getTime();
-			model_CollectDialog.getEnd_time().getTime();
+//			model_CollectDialog.getStart_time().getTime();
+//			model_CollectDialog.getEnd_time().getTime();
 			ldt_start = model_CollectDialog.getLocalDateTime(true);
 			ldt_end = model_CollectDialog.getLocalDateTime(false);
+			if (ldt_start.isAfter(ldt_end)) {
+				Messages.warningText("Start date is after startdate!" + ldt_start + " end : " + ldt_end);
+				return;
+			}
 		} catch (Exception ex) {
 			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
 			Main.setProcessCancelled(true);
@@ -129,7 +136,19 @@ public class Collect_DateTimeAdjusterController {
 			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
 		}
 
-		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+		model_CollectDialog.obs_Events.clear();
+		model_CollectDialog.obs_Location.clear();
+
+		collectFiles(TableType.SORTIT.getType(), model_main.tables().getSortIt_table(), collectedList, ldt_start, ldt_end);
+		collectFiles(TableType.SORTED.getType(), model_main.tables().getSorted_table(), collectedList, ldt_start, ldt_end);
+
+		Messages.warningText(
+				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+	}
+
+	private void collectFiles(String tableType, TableView<FolderInfo> table, List<FileInfo> collectedList,
+			LocalDateTime ldt_start, LocalDateTime ldt_end) {
+		for (FolderInfo folderInfo : table.getItems()) {
 			if (Main.getProcessCancelled()) {
 				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
 				break;
@@ -137,19 +156,22 @@ public class Collect_DateTimeAdjusterController {
 				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
 				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
 				 */
-//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-//				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-//					if (FileInfo_Utils.findDuplicates(fileInfo, model_CollectDialog.getFolderInfo_full())) {
-//						collectedList.add(fileInfo);
-//						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-//								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
+					model_CollectDialog.addToEvent(fileInfo, tableType);
+					model_CollectDialog.addToLocation(fileInfo);
+
+//					if (FileInfo_Utils.findDuplicates(fileInfo, folderInfo)) {
+					collectedList.add(fileInfo);
+					Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt + "  ldt_start: "
+							+ ldt_start + " ldt_end: " + ldt_end);
 //					}
-//				}
-//			}
+
+				}
+			}
 		}
-		Messages.warningText(
-				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+
 	}
 
 	@FXML
@@ -273,33 +295,54 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void initialize() {
-		assert start_datePicker != null : "fx:id=\"start_datePicker\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_hour != null : "fx:id=\"start_hour\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_hour_btn_up != null : "fx:id=\"start_hour_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_hour_btn_down != null : "fx:id=\"start_hour_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_min != null : "fx:id=\"start_min\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_min_btn_up != null : "fx:id=\"start_min_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_min_btn_down != null : "fx:id=\"start_min_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_sec != null : "fx:id=\"start_sec\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_sec_btn_up != null : "fx:id=\"start_sec_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert start_sec_btn_down != null : "fx:id=\"start_sec_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_datePicker != null : "fx:id=\"end_datePicker\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_min != null : "fx:id=\"end_min\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_min_btn_up != null : "fx:id=\"end_min_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_min_btn_down != null : "fx:id=\"end_min_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_sec != null : "fx:id=\"end_sec\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_sec_btn_up != null : "fx:id=\"end_sec_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_sec_btn_down != null : "fx:id=\"end_sec_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_hour != null : "fx:id=\"end_hour\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_hour_btn_up != null : "fx:id=\"end_hour_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert end_hour_btn_down != null : "fx:id=\"end_hour_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert copy_startToEnd_btn != null : "fx:id=\"copy_startToEnd_btn\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert copy_endToStart != null : "fx:id=\"copy_endToStart\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-		assert findDateRelatives_btn != null : "fx:id=\"findDateRelatives_btn\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
-
+		assert start_datePicker != null
+				: "fx:id=\"start_datePicker\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_hour != null
+				: "fx:id=\"start_hour\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_hour_btn_up != null
+				: "fx:id=\"start_hour_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_hour_btn_down != null
+				: "fx:id=\"start_hour_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_min != null
+				: "fx:id=\"start_min\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_min_btn_up != null
+				: "fx:id=\"start_min_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_min_btn_down != null
+				: "fx:id=\"start_min_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_sec != null
+				: "fx:id=\"start_sec\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_sec_btn_up != null
+				: "fx:id=\"start_sec_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert start_sec_btn_down != null
+				: "fx:id=\"start_sec_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_datePicker != null
+				: "fx:id=\"end_datePicker\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_min != null
+				: "fx:id=\"end_min\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_min_btn_up != null
+				: "fx:id=\"end_min_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_min_btn_down != null
+				: "fx:id=\"end_min_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_sec != null
+				: "fx:id=\"end_sec\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_sec_btn_up != null
+				: "fx:id=\"end_sec_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_sec_btn_down != null
+				: "fx:id=\"end_sec_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_hour != null
+				: "fx:id=\"end_hour\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_hour_btn_up != null
+				: "fx:id=\"end_hour_btn_up\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert end_hour_btn_down != null
+				: "fx:id=\"end_hour_btn_down\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert copy_startToEnd_btn != null
+				: "fx:id=\"copy_startToEnd_btn\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert copy_endToStart != null
+				: "fx:id=\"copy_endToStart\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+		assert findDateRelatives_btn != null
+				: "fx:id=\"findDateRelatives_btn\" was not injected: check your FXML file 'Collect_DateTimeAdjuster.fxml'.";
+//		start_datePicker.
 	}
-
-	private Model_main model_main;
 
 	private void setTextProperty(TextField tf) {
 		tf.textProperty().addListener(new ChangeListener<String>() {
@@ -312,12 +355,15 @@ public class Collect_DateTimeAdjusterController {
 		});
 	}
 
-	public void init(Model_main aModel_main) {
+	public void init(Model_main aModel_main, Model_CollectDialog aModel_CollectDialog) {
 		this.model_main = aModel_main;
-		model_CollectDialog = new Model_CollectDialog(model_main);
+		this.model_CollectDialog = aModel_CollectDialog;
 
 		model_CollectDialog.setStart_datePicker(start_datePicker);
 		model_CollectDialog.setEnd_datePicker(end_datePicker);
+
+		model_CollectDialog.getStart_datePicker().setValue(LocalDate.of(2020, 7, 28));
+		model_CollectDialog.getEnd_datePicker().setValue(LocalDate.now());
 
 		start_hour.textProperty().bindBidirectional(model_CollectDialog.getStart_time().hour_property(),
 				new NumberStringConverter());
@@ -343,10 +389,10 @@ public class Collect_DateTimeAdjusterController {
 				new NumberStringConverter());
 		setTextProperty(end_sec);
 
-		start_hour.setText("00");
+		start_hour.setText("12");
 		start_min.setText("00");
 		start_sec.setText("00");
-		end_hour.setText("00");
+		end_hour.setText("12");
 		end_min.setText("00");
 		end_sec.setText("00");
 	}

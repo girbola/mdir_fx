@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
@@ -16,6 +17,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_Event;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 
@@ -32,12 +34,15 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 
 public class Collect_DialogController {
 
 	private final String ERROR = Collect_DialogController.class.getSimpleName();
 
 	private Model_main model_main;
+	private Model_CollectDialog model_CollectDialog;
+
 	private Tables tables;
 	private TableView<FolderInfo> table;
 	private String tableType;
@@ -53,13 +58,13 @@ public class Collect_DialogController {
 	@FXML
 	private Label event_lbl;
 	@FXML
-	private ComboBox<String> event_cmb;
+	private ComboBox<FileInfo_Event> event_cmb;
 	@FXML
 	private Label location_lbl;
 	@FXML
-	private ComboBox<String> location_cmb;
+	private ComboBox<FileInfo> location_cmb;
 	@FXML
-	private ComboBox<String> user_cmb;
+	private ComboBox<FileInfo> user_cmb;
 
 	@FXML
 	private Button apply_btn;
@@ -293,12 +298,18 @@ public class Collect_DialogController {
 		close();
 	}
 
-	public void init(Model_main aModel_main, TableView<FolderInfo> aTable, String aTableType) {
+	public void init(Model_main aModel_main, Model_CollectDialog aModel_CollectDialog, TableView<FolderInfo> aTable,
+			String aTableType) {
 		this.model_main = aModel_main;
+		this.model_CollectDialog = aModel_CollectDialog;
 		this.tables = aModel_main.tables();
 		this.table = aTable;
 		this.tableType = aTableType;
-		collect_DateTimeAdjusterController.init(this.model_main);
+		collect_DateTimeAdjusterController.init(this.model_main, this.model_CollectDialog);
+		event_cmb.setItems(model_CollectDialog.obs_Events);
+	
+		location_cmb.setItems(model_CollectDialog.obs_Location);
+//		event_cmb.set
 
 	}
 }

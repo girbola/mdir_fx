@@ -61,7 +61,6 @@ public class DateFixer extends Task<Void> {
 		this.model_main = aModel_main;
 		this.isImported = isImported;
 		model_datefix = new Model_datefix(model_main, currentPath);
-
 	}
 
 	@Override
