@@ -21,6 +21,7 @@ import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.workdir.WorkDir_Handler;
 
 import common.utils.date.DateUtils;
 
@@ -85,7 +86,7 @@ public class FileUtils {
 						+ ext;
 
 				sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
-
+				counter++;
 				if (Files.exists(Paths.get(fileName))) {
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
 						sprintf("File existed!: " + destFile + " filename: " + fileName);
@@ -354,37 +355,58 @@ public class FileUtils {
 				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
 		fileInfo.setWorkDir(workDir);
 		fileInfo.setDestination_Path(path.toString());
-		
+
 		return path;
 	}
 
-	public static Path getFileNameDateWithEventAndLocation(FileInfo fileInfo, String location_str, String event_str,
-			String workDir) {
+	/**
+	 * Generates an destination folder path IMG.JPG becomes yyyy-MM-dd HH.mm.ss -
+	 * <Location> - <Event>.JPG Also sets fileInfo as not copied
+	 * 
+	 * @param fileInfo
+	 * @param workDir
+	 * @return
+	 */
+	public static Path getFileNameDateWithEventAndLocation(FileInfo fileInfo, String workDir) {
 		LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+		String location_str = "";
+		String event_str = "";
+		fileInfo.setWorkDir(workDir);
+		fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 
-		if (!location_str.isEmpty()) {
-			fileInfo.setLocation(location_str);
-		}
-		if (!event_str.isEmpty()) {
-			fileInfo.setEvent(event_str);
-		}
-
-		if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
+		// Location = "KAINUU" Event = ""
+		if (!fileInfo.getLocation().isEmpty() && fileInfo.getEvent().isEmpty()) {
 			location_str = " - " + fileInfo.getLocation();
+			// Event = "KALASSA" Location = ""
 		} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
 			event_str = " - " + fileInfo.getEvent();
-		} else {
+			// Event = "" Location = ""
+		} else if (!fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
 			location_str = " - " + fileInfo.getLocation();
 			event_str = " - " + fileInfo.getEvent();
 		}
 
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
 				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		Path path = Paths.get(File.separator + localDate.getYear() + File.separator + localDate + location_str
+		Path destPath = Paths.get(File.separator + localDate.getYear() + File.separator + localDate + location_str
 				+ event_str + File.separator + fileName + "."
 				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+		fileInfo.setDestination_Path(destPath.toString());
 
-		return path;
+		if (!fileInfoIsCopiedToDest(fileInfo, Main.conf.getWorkDir())) {
+			fileInfo.setCopied(false);
+		} else {
+			fileInfo.setCopied(true);
+		}
+
+		return destPath;
+	}
+
+	public static boolean fileInfoIsCopiedToDest(FileInfo fileInfo, String workDir) {
+		if (Main.conf.getModel().getWorkDir_Handler().exists(fileInfo) != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

@@ -1,10 +1,12 @@
 package com.girbola.fxml.main.merge;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -18,9 +20,9 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -82,70 +84,75 @@ public class MergeDialogController {
 		String userName = "";
 
 		if (!event_cmb.getEditor().getText().isEmpty()) {
-			eventName = event_cmb.getEditor().getText();
+			eventName = event_cmb.getEditor().getText().trim();
 		}
 		if (!location_cmb.getEditor().getText().isEmpty()) {
-			locationName = location_cmb.getEditor().getText();
+			locationName = location_cmb.getEditor().getText().trim();
 		}
 		if (!user_cmb.getEditor().getText().isEmpty()) {
-			userName = user_cmb.getEditor().getText();
+			userName = user_cmb.getEditor().getText().trim();
 		}
 		Messages.sprintf(
 				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
+		FolderInfo newFolderInfo = new FolderInfo();
+		Path newDestinationPathForMoving = Paths
+				.get(Main.conf.getWorkDir() + File.separator + Main.conf.getUserHome() + File.separator
+						+ Main.conf.getPictures());
+		try {
+			Files.createDirectories(newDestinationPathForMoving);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
+		
+		while(it.hasNext()) {
+			FolderInfo folderInfo = it.next();
+			
+			Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
+			while(fileInfo_list_it.hasNext()) {
+				
+			}
+			
+		}
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getBadFiles() >= 1) {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
 				return;
 			}
+			if (Main.getProcessCancelled()) {
+				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+						Misc.getLineNumber(), true);
+				break;
+			}
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 
+				if (Main.getProcessCancelled()) {
+					Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+							Misc.getLineNumber(), true);
+					break;
+				}
 				fileInfo.setEvent(eventName);
 				fileInfo.setLocation(locationName);
 				fileInfo.setUser(userName);
-				String event_str = "";
-				String location_str = "";
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
-					if (addEverythingInsameDir_chb.isSelected()) {
-						if (folderInfo.getJustFolderName() != eventName) {
-							folderInfo.setJustFolderName(eventName);
-						}
-					}
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
-				}
-
-				if (!user_cmb.getEditor().getText().isEmpty()) {
-					userName = user_cmb.getEditor().getText();
-				}
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("locationName were= '" + locationName + "'");
-				Messages.sprintf("eventName were= '" + eventName + "'");
 				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(
-						File.separator + ld.getYear() + File.separator + ld + location_str + event_str + File.separator
-								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				fileInfo.setWorkDir(Main.conf.getWorkDir());
-				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-				fileInfo.setDestination_Path(destPath.toString());
+				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+				if (!Files.exists(destinationPath)) {
+					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
+							+ destinationPath);
+					Main.setProcessCancelled(true);
+					break;
+				}
 				fileInfo.setCopied(false);
-				fileInfo.setUser(userName);
+				folderInfo.setChanged(true);
 				Main.setChanged(true);
-				location_str = "";
-				event_str = "";
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
 			}
-
 		}
-//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
 		TableUtils.refreshAllTableContent(tables);
 		close();
 	}
@@ -179,61 +186,36 @@ public class MergeDialogController {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
 				return;
 			}
+			if (Main.getProcessCancelled()) {
+				Messages.sprintfError("Merging were cancelled");
+				break;
+			}
 
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				fileInfo.setEvent(eventName);
-				fileInfo.setLocation(locationName);
-				fileInfo.setUser(userName);
-				String event_str = "";
-				String location_str = "";
-
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
+				if (Main.getProcessCancelled()) {
+					Messages.sprintfError("Merging were cancelled");
+					break;
+				}
+				if (!fileInfo.getEvent().isEmpty()) {
 					if (addEverythingInsameDir_chb.isSelected()) {
 						if (folderInfo.getJustFolderName() != eventName) {
 							folderInfo.setJustFolderName(eventName);
 						}
 					}
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
 				}
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
-				}
-
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("location_str were= '" + location_str + "'");
-				Messages.sprintf("event_str were= '" + event_str + "'");
-				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				String destPath = (File.separator + ld.getYear() + File.separator + ld + location_str + event_str
-						+ File.separator + fileName + "."
-						+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-
-				fileInfo.setWorkDir(Main.conf.getWorkDir());
-				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-				fileInfo.setDestination_Path(destPath);
-				fileInfo.setCopied(false);
+				fileInfo.setEvent(eventName);
+				fileInfo.setLocation(locationName);
 				fileInfo.setUser(userName);
-				Main.setChanged(true);
-				Messages.sprintf("apply and copy Destination path would be: " + fileInfo.getDestination_Path()
-						+ " fileInfo.getDestination_Path() " + fileInfo.getDestination_Path());
-				location_str = "";
-				event_str = "";
 
+				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+//				if (!Files.exists(destinationPath)) {
+//					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
+//							+ destinationPath);
+//					Main.setProcessCancelled(true);
+//					break;
+//				}
 			}
-
 		}
 //		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
 
@@ -256,6 +238,8 @@ public class MergeDialogController {
 					TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
+				TableUtils.saveChangesContentsToTables(model_main.tables());
+				Main.setChanged(false);
 				close();
 			}
 		});

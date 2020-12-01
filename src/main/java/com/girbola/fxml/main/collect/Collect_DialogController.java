@@ -1,6 +1,7 @@
 package com.girbola.fxml.main.collect;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -8,18 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
+import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Event;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
@@ -34,7 +37,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 
 public class Collect_DialogController {
 
@@ -111,49 +113,33 @@ public class Collect_DialogController {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
 				return;
 			}
+			if (Main.getProcessCancelled()) {
+				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+						Misc.getLineNumber(), true);
+				break;
+			}
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-
+				if (Main.getProcessCancelled()) {
+					Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+							Misc.getLineNumber(), true);
+					break;
+				}
 				fileInfo.setEvent(eventName);
 				fileInfo.setLocation(locationName);
 				fileInfo.setUser(userName);
-				String event_str = "";
-				String location_str = "";
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
-					if (addEverythingInsameDir_chb.isSelected()) {
-						if (folderInfo.getJustFolderName() != eventName) {
-							folderInfo.setJustFolderName(eventName);
-						}
-					}
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
-				}
-
-				if (!user_cmb.getEditor().getText().isEmpty()) {
-					userName = user_cmb.getEditor().getText();
-				}
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("locationName were= '" + locationName + "'");
-				Messages.sprintf("eventName were= '" + eventName + "'");
 				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(
-						File.separator + ld.getYear() + File.separator + ld + location_str + event_str + File.separator
-								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				fileInfo.setWorkDir(Main.conf.getWorkDir());
-				fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-				fileInfo.setDestination_Path(destPath.toString());
-				fileInfo.setCopied(false);
-				fileInfo.setUser(userName);
+
+				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+				if (!Files.exists(destinationPath)) {
+					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
+							+ destinationPath);
+					Main.setProcessCancelled(true);
+					break;
+				}
 				Main.setChanged(true);
-				location_str = "";
-				event_str = "";
+
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
 			}
 
@@ -307,7 +293,23 @@ public class Collect_DialogController {
 		this.tableType = aTableType;
 		collect_DateTimeAdjusterController.init(this.model_main, this.model_CollectDialog);
 		event_cmb.setItems(model_CollectDialog.obs_Events);
-	
+
+		new AutoCompleteComboBoxListener<>(event_cmb);
+		GUI_Events.textField_file_listener(event_cmb.getEditor());
+
+//		event_cmb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FileInfo>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends FileInfo> observable, FileInfo oldValue, FileInfo newValue) {
+//				// TODO Auto-generated method stub
+//				
+//			}
+//		});
+
+//		.addListener(((options, oldValue, newValue) -> {
+//			FileInfo f = (FileInfo) newValue.getFileInfo();
+//			System.out.println(f.getOrgPath());
+//		}));
 		location_cmb.setItems(model_CollectDialog.obs_Location);
 //		event_cmb.set
 

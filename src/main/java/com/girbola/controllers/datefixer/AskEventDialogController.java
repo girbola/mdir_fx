@@ -59,8 +59,6 @@ public class AskEventDialogController {
 	private List<FileInfo> applyChanges(String workDir) {
 		List<FileInfo> list = new ArrayList<>();
 		if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
-			String location_str = "";
-			String event_str = "";
 			for (Node selected_Node : model_dateFix.getSelectionModel().getSelectionList()) {
 				FileInfo fileInfo = (FileInfo) selected_Node.getUserData();
 				Messages.sprintf("selected_Node.getUserData Fileinfo: " + fileInfo);
@@ -74,29 +72,7 @@ public class AskEventDialogController {
 					Main.setChanged(true);
 				}
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
-				}
-
-				
-//
-//				LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-//				Messages.sprintf("location were= '" + location_str + "'");
-//				Messages.sprintf("evemt were= '" + event_str + "'");
-//				list.add(fileInfo);
-//				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-//				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-//				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-//						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-//				Path destPath = Paths.get(
-//						File.separator + localDate.getYear() + File.separator + localDate + location_str + event_str + File.separator
-//								+ fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				Path destPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, location_str, event_str, workDir);
+				Path destPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, workDir);
 				list.add(fileInfo);
 				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
 					fileInfo.setWorkDir(workDir);
@@ -107,8 +83,6 @@ public class AskEventDialogController {
 					Main.setChanged(true);
 				}
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-				location_str = "";
-				event_str = "";
 			}
 		}
 		return list;

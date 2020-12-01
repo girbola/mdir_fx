@@ -21,6 +21,11 @@ public class Configuration_GetsSets extends Configuration_GUI {
 	private Path appDataPath = Paths.get(System.getenv("APPDATA") + File.separator + programName);
 
 	private final String userHome = System.getProperty("user.home");
+	private final String pictures = "Pictures";
+
+	public String getPictures() {
+		return pictures;
+	}
 
 	private Path saveFolder = Paths.get(appDataPath.toString());
 	private String iniFile = appDataPath + File.separator + programName.toLowerCase() + "." + "dat";
