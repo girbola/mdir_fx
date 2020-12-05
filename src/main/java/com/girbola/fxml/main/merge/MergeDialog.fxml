@@ -48,6 +48,7 @@
                <children>
                   <Button fx:id="apply_btn" mnemonicParsing="false" onAction="#apply_btn_action" text="%apply" HBox.hgrow="NEVER" />
                   <Button fx:id="apply_and_copy_btn" mnemonicParsing="false" onAction="#apply_and_copy_btn_action" text="%applyAndCopy" />
+                  <Button fx:id="apply_and_move_btn" layoutX="162.0" layoutY="38.0" mnemonicParsing="false" onAction="#apply_and_move_btn_action" text="%applyAndMove" />
                   <Button fx:id="cancel_btn" cancelButton="true" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" />
                </children>
                <VBox.margin>

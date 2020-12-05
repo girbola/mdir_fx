@@ -161,6 +161,49 @@ public class FileInfo_SQL {
 		}
 	}
 
+	/**
+	 * 
+	 * @param connection
+	 * @param list
+	 * @return
+	 */
+	// @formatter:on
+	public static boolean deleteFileInfoListToDatabase(Connection connection, List<FileInfo> list) {
+		Messages.sprintf("deleteFileInfoListToDatabase tableCreated Started");
+
+		try {
+			if (!connection.getAutoCommit()) {
+				connection.setAutoCommit(false);
+			}
+			boolean tableCreated = createFileInfoTable(connection);
+			if (tableCreated) {
+				Messages.sprintf("insertFileInfoListToDatabase tableCreated");
+			} else {
+				Messages.sprintfError("insertFileInfoListToDatabase NOT tableCreated");
+			}
+			if (!SQL_Utils.isDbConnected(connection)) {
+				Messages.sprintfError("insertFileInfoListToDatabase were NOT connected");
+				return false;
+			}
+			String sql = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE orgPath = ?";
+			PreparedStatement pstmt = connection.prepareStatement(sql);
+			for (FileInfo fileInfo : list) {
+				pstmt.addBatch(fileInfo.getOrgPath());
+				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
+			}
+			pstmt.executeBatch();
+//			pstmt.closeOnCompletion();
+			pstmt.close();
+			connection.commit();
+			Messages.sprintf("**deleteFileInfoListToDatabase tableCreated DONE");
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			Messages.sprintfError("deleteFileInfoListToDatabase tableCreated FAILED");
+			return false;
+		}
+	}
+
 	public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
 		String orgPath = rs.getString("orgPath");
 		String workDir = rs.getString("workDir");
@@ -214,8 +257,10 @@ public class FileInfo_SQL {
 			return false;
 		}
 	}
+
 	/**
 	 * Loads List<FileInfo> using SQL and adds it into FolderInfo
+	 * 
 	 * @param folderInfo
 	 * @return
 	 */
@@ -278,6 +323,5 @@ public class FileInfo_SQL {
 		}
 		return list;
 	}
-
 
 }
