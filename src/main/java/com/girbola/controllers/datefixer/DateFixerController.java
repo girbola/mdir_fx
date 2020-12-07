@@ -68,6 +68,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -233,14 +234,37 @@ public class DateFixerController {
 
 	@FXML
 	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
-		Messages.warningText("selectRangeOfNumbers_btn_action NOT READY YET");
+		int startFrom = -1;
+		int endTo = -1;
+		try {
+			startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
+			endTo = Integer.parseInt(endToNumber_tf.getText().trim());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
 				Messages.sprintf("node name " + node.getId());
 				VBox vbox = (VBox) node;
 				if (vbox.getId().equals("imageFrame")) {
 					for (Node hbox : vbox.getChildren()) {
+						Messages.sprintf("--------->HBOXII: " + hbox.getId());
+						if (hbox instanceof StackPane) {
+							for (Node stp : ((StackPane) hbox).getChildren()) {
+								Messages.sprintf("--------->SP: " + stp.getId());
+								if (stp instanceof Label) {
+									Label label = (Label) stp;
+									int number = Integer.parseInt(label.getText());
+									// 4 5 10
+									if (startFrom <= number && endTo >= number) {
+										Messages.sprintf("--------->SP: " + label.getText());
+										model_datefix.getSelectionModel().add(hbox);
 
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -1031,13 +1055,16 @@ public class DateFixerController {
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("yes pressed!");
 			boolean update = false;
+			
 			List<Node> toRemove = new ArrayList<>();
+			List<FileInfo> fileInfo_toRemove = new ArrayList<>();
 			for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
 				sprintf("remove_btn_action setIgnored. df_gridPane.getChildren(): " + n);
 				if (n instanceof VBox && n.getId().equals("imageFrame")) {
 					FileInfo fileInfo = (FileInfo) n.getUserData();
 					fileInfo.setIgnored(true);
 					toRemove.add(n);
+					fileInfo_toRemove.add(fileInfo);
 					Main.setChanged(true);
 					sprintf("remove_btn_action setIgnored. df_gridPane.getChildren(): " + n);
 					update = true;
@@ -1045,6 +1072,8 @@ public class DateFixerController {
 			}
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
+				model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
+				
 //				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
