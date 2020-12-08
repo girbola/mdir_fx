@@ -27,8 +27,6 @@ import java.util.List;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
@@ -452,7 +450,8 @@ public class FileInfo_Utils {
 
 	public static boolean findDuplicates(FileInfo fileInfo, FolderInfo folderInfoList) {
 		for (FileInfo fileInfo_dest : folderInfoList.getFileInfoList()) {
-			if (fileInfo.getOrgPath() != fileInfo_dest.getOrgPath()) {
+			if (Paths.get(fileInfo.getOrgPath()).getParent().toString()
+					.equals(Paths.get(fileInfo_dest.getOrgPath()).getParent().toString())) {
 				if (fileInfo.getSize() == fileInfo_dest.getSize()) {
 					Messages.sprintf("fileInfo src: " + fileInfo.getOrgPath() + " size = " + fileInfo.getSize()
 							+ " fileInfoDEST: " + fileInfo_dest.getOrgPath() + " size = " + fileInfo_dest.getSize());
@@ -578,6 +577,5 @@ public class FileInfo_Utils {
 		}
 		return null;
 	}
-
 
 }

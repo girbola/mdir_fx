@@ -27,7 +27,6 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
@@ -158,6 +157,9 @@ public class DateTimeAdjusterController {
 
 		Messages.warningText(
 				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+		for(FileInfo fileInfo : collectedList) {
+			Messages.sprintf("fileInfo collected: " + fileInfo.toString() + " fileInfo date: " + DateUtils.longToLocalDateTime(fileInfo.getDate()));
+		}
 
 	}
 
