@@ -24,6 +24,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -698,6 +699,33 @@
 												<ColumnConstraints maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
 												<ColumnConstraints maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
 											</columnConstraints>
+                                 <children>
+                                    <VBox fx:id="imageFrame" prefHeight="200.0" prefWidth="100.0" styleClass="imageFrame">
+                                       <children>
+                                          <StackPane fx:id="imageFrame" prefHeight="150.0" prefWidth="200.0">
+                                             <children>
+                                                <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                                   <image>
+                                                      <Image url="@../../../../../../test/resources/forest.jpg" />
+                                                   </image>
+                                                </ImageView>
+                                                <Label alignment="TOP_RIGHT" contentDisplay="TOP" text="1" StackPane.alignment="TOP_RIGHT">
+                                                   <StackPane.margin>
+                                                      <Insets right="10.0" top="10.0" />
+                                                   </StackPane.margin>
+                                                </Label>
+                                             </children>
+                                          </StackPane>
+                                          <TextField styleClass="fileDate_tf" text="2020-08-23 11:12:13" />
+                                          <HBox prefHeight="100.0" prefWidth="200.0">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Button" />
+                                                <Label fx:id="imageName_ta" styleClass="fileName_ta" text="Filenamewe" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                 </children>
 										</GridPane>
 									</content>
 								</ScrollPane>

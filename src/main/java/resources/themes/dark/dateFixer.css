@@ -82,8 +82,7 @@
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
 }
 
-.date-picker .text-field,
-.fileDate_tf {
+.date-picker .text-field {
     -fx-font-size: 10px;
     -fx-font-smoothing-type: lcd;
     -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
@@ -97,15 +96,26 @@
 }
 
 .fileName_ta {
-    -fx-background-color: transparent;
-    /*-fx-border-color: transparent;*/
+    -fx-border-color: transparent;
     -fx-font-size: 10px;
     -fx-font-smoothing-type: lcd;
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-dark-text-color;
+}
+.fileDate_tf {
+    
+    -fx-border-color: orange;
+    -fx-border-width: 1px;
+    -fx-border-radius: 3px;
+
+    -fx-font-size: 10px;
+    -fx-font-smoothing-type: lcd;
+    -fx-text-fill: -fx-dark-text-color;
 }
 
-.fileName_ta *.text {
+.fileName_ta .text {
     -fx-text-alignment: left;
+    -fx-background-color:blue; 
+    -fx-fill: white;
 }
 
 .fileName_ta .content {
@@ -123,9 +133,9 @@
 }
 
 .imageFrame {
-    /* -fx-border-color: -fx-mid-border-color;
+    -fx-border-color: -fx-mid-border-color;
     -fx-border-width: 1px;
-    -fx-background-color: -fx-base; */
+    -fx-background-color: -fx-base;
 
 }
 
@@ -568,12 +578,7 @@
     /* overridden as 5 2 0 0 */
 }
 
-.text-field {
-    -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
-    -fx-text-fill: -fx-light-text-color;
-    -fx-border-color: black;
-    -fx-border-radius: 3px;
-}
+
 
 .table-view {
     -fx-background-color: rgb(99, 98, 98);

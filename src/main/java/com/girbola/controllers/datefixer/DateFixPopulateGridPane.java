@@ -37,6 +37,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.rotate.Rotate;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -114,20 +115,19 @@ public class DateFixPopulateGridPane extends Task<Void> {
 	}
 
 	private Color parseColor(String property) {
-        CssParser parser = new CssParser();
-        try {
-            Stylesheet css = parser.parse(getClass().getResource("style.css").toURI().toURL());
-            final Rule rootRule = css.getRules().get(0); // .root
-            return (Color) rootRule.getDeclarations().stream()
-                .filter(d -> d.getProperty().equals(property))
-                .findFirst()
-                .map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null))
-                .get();
-        } catch (URISyntaxException | IOException ex) { }
-        return Color.WHITE;
-    }
+		CssParser parser = new CssParser();
+		try {
+			Stylesheet css = parser.parse(getClass().getResource("style.css").toURI().toURL());
+			final Rule rootRule = css.getRules().get(0); // .root
+			return (Color) rootRule.getDeclarations().stream().filter(d -> d.getProperty().equals(property)).findFirst()
+					.map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null)).get();
+		} catch (URISyntaxException | IOException ex) {
+		}
+		return Color.WHITE;
+	}
+
 	private VBox createFrame(FileInfo fi, int i) {
-		       
+
 		VBox frame_vbox = new VBox();
 		frame_vbox.setAlignment(Pos.TOP_CENTER);
 		frame_vbox.setId("imageFrame");
@@ -202,7 +202,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		iv.maxHeight(GUIPrefs.thumb_y_MAX - 2);
 		iv.setPreserveRatio(true);
 		iv.setMouseTransparent(true);
-		// iv.setRotate(rotate(fi.getOrientation()));
+//		iv.setRotate(Rotate.rotate(fi.getOrientation()));
 		iv.setId("imageView");
 		return iv;
 	}
