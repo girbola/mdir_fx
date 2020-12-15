@@ -123,9 +123,18 @@
 }
 
 .imageFrame {
-    -fx-border-color: -fx-mid-border-color;
+    /* -fx-border-color: -fx-mid-border-color;
     -fx-border-width: 1px;
-    -fx-background-color: -fx-base;
+    -fx-background-color: -fx-base; */
+
+}
+
+.imageFrameDeSelected {
+    -fx-background-color: orange;
+    -fx-border-color: cyan;
+    -fx-border-width: 3px;
+    -fx-border-radius: 5 5 5 3;
+    -fx-text-box-border: blue;
 }
 
 .imageNumber {
@@ -478,7 +487,7 @@
         -fx-shadow-highlight-color,
         linear-gradient(to bottom, derive(-fx-base, -22%) 0%, derive(-fx-base, -15%) 100%),
         linear-gradient(to bottom, derive(-fx-base, -15%) 0%, derive(-fx-base, -10%) 50%, derive(-fx-base, -8%) 98%, derive(-fx-base, -12%) 100%);
-        -fx-background-insets: 0px;
+    -fx-background-insets: 0px;
 }
 
 .switchButton:selected:focused {
@@ -486,7 +495,7 @@
         -fx-focus-color,
         linear-gradient(to bottom, derive(-fx-base, -22%) 0%, derive(-fx-base, -15%) 100%),
         linear-gradient(to bottom, derive(-fx-base, -15%) 0%, derive(-fx-base, -10%) 50%, derive(-fx-base, -8%) 98%, derive(-fx-base, -12%) 100%);
-        -fx-background-insets: 0;
+    -fx-background-insets: 0;
 }
 
 /*******************************************************************************
@@ -660,9 +669,11 @@
     /*-fx-background-color: yellow;*/
     -fx-border-color: -fx-light-text-color;
 }
+
 .textFieldNumber {
-	-fx-background-color: green;
+    -fx-background-color: green;
 }
+
 .notValidNumber {
-	-fx-background-color: red;
+    -fx-background-color: red;
 }

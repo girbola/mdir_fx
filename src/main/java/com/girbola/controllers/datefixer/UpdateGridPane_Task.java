@@ -42,7 +42,6 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 		try {
 			latch.await();
 		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 	}
@@ -90,19 +89,10 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 	@Override
 	protected ObservableList<Node> call() throws Exception {
 		ObservableList<Node> filterlist = model_datefix.filterAllNodesList(obs);
-//		for (Node node : filterlist) {
-//			if (node instanceof VBox) {
-//				if (node.getId().equals("imageFrame")) {
-//					FileInfo fileInfo = (FileInfo) node.getUserData();
-//				}
-//			}
-//			Messages.sprintfError("This does nothing.");
-//		}
 		return filterlist;
 	}
 
-	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task lpt,
-			Stage stage) {
+	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task lpt, Stage stage) {
 
 		Task<Integer> addToGridPane_task = new AddToGridPane2(model_datefix, obs, lpt);
 		lpt.setTask(addToGridPane_task);

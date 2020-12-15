@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.girbola.configuration.GUIPrefs;
+import com.girbola.controllers.datefixer.CssStylesController;
 import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.misc.DateCollectionUtils;
 import com.girbola.fileinfo.FileInfo;
@@ -138,6 +139,7 @@ public class CloserLookController {
 		StackPane stackPane = new StackPane();
 		stackPane.setAlignment(Pos.CENTER);
 		stackPane.setId("imageFrame");
+		stackPane.setStyle(CssStylesController.getStyleDeselected());
 		stackPane.setUserData(fileInfo);
 		stackPane.setMaxSize(Math.floor(width / 3), Math.floor(height / 3));
 		stackPane.setMinSize(Math.floor(width / 3), Math.floor(height / 3));
@@ -154,7 +156,7 @@ public class CloserLookController {
 				Messages.sprintf("Date: " + entry.getKey());
 				TilePane tilePane = new TilePane();
 				tilePane.setId("tilePane");
-				tilePane.setStyle("-fx-background-color: black;" + " -fx-border-color: white;");
+//				tilePane.setStyle("-fx-background-color: black;" + " -fx-border-color: white;");
 				Pane datePane = new Pane(new Label(entry.getKey() + ":00"));
 				tilePane.getChildren().add(datePane);
 				for (FileInfo fi : entry.getValue()) {

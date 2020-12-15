@@ -17,6 +17,7 @@ import static com.girbola.misc.Misc.getLineNumber;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +34,6 @@ import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -46,6 +46,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.css.CssParser;
+import javafx.css.Rule;
+import javafx.css.Stylesheet;
+import javafx.css.converter.ColorConverter;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -66,6 +70,7 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 
 /**
  *
@@ -108,10 +113,25 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		// new RectangleSelection2(scene, pane, this.model.getSelectionModel());
 	}
 
+	private Color parseColor(String property) {
+        CssParser parser = new CssParser();
+        try {
+            Stylesheet css = parser.parse(getClass().getResource("style.css").toURI().toURL());
+            final Rule rootRule = css.getRules().get(0); // .root
+            return (Color) rootRule.getDeclarations().stream()
+                .filter(d -> d.getProperty().equals(property))
+                .findFirst()
+                .map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null))
+                .get();
+        } catch (URISyntaxException | IOException ex) { }
+        return Color.WHITE;
+    }
 	private VBox createFrame(FileInfo fi, int i) {
+		       
 		VBox frame_vbox = new VBox();
 		frame_vbox.setAlignment(Pos.TOP_CENTER);
 		frame_vbox.setId("imageFrame");
+		frame_vbox.setStyle(CssStylesController.getStyleDeselected());
 		frame_vbox.setPrefSize(GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_y);
 		frame_vbox.setMinSize(GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_y);
 		frame_vbox.setMaxSize(GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_y);
@@ -141,7 +161,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		bottom.setAlignment(Pos.CENTER);
 
 		if (!fi.getLocation().isEmpty() || !fi.getEvent().isEmpty()) {
-			frame_vbox.setStyle("-fx-background-color: red;");
+			frame_vbox.setStyle("-fx-background-color: yellow;");
 		}
 
 		stackPane.getChildren().add(iv);
@@ -163,7 +183,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 				public void handle(ActionEvent event) {
 					String date = tf.getText();
 					tf.setText("" + date);
-					tf.setStyle(CssStylesController.getModified_style());
+					tf.setStyle(CssStylesController.getStyleModified());
 					sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: "
 							+ model_dateFix.getStart_time().getTime());
 				}
@@ -219,15 +239,15 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		textField.setMinHeight(25);
 		textField.setPrefHeight(25);
 		if (fileInfo.isBad()) {
-			textField.setStyle(CssStylesController.getBad_style());
+			textField.setStyle(CssStylesController.getStyleBad());
 		} else if (fileInfo.isGood()) {
-			textField.setStyle(CssStylesController.getGood_style());
+			textField.setStyle(CssStylesController.getStyleGood());
 		} else if (fileInfo.isConfirmed()) {
-			textField.setStyle(CssStylesController.getConfirmed_style());
+			textField.setStyle(CssStylesController.getStyleConfirmed());
 		} else if (fileInfo.isVideo()) {
-			textField.setStyle(CssStylesController.getVideo_style());
+			textField.setStyle(CssStylesController.getStyleVideo());
 		} else if (fileInfo.isSuggested()) {
-			textField.setStyle(CssStylesController.getSuggested_style());
+			textField.setStyle(CssStylesController.getStyleSuggested());
 		}
 
 		return textField;
@@ -255,7 +275,6 @@ public class DateFixPopulateGridPane extends Task<Void> {
 											ImageView imv = (ImageView) nodeImv;
 
 											if (imv.getImage() != null) {
-
 												boolean deselected = model_dateFix.getSelectionModel().add(frame);
 												if (model_dateFix.getRightInfo_visible()) {
 													File file = new File(fileInfo.getOrgPath());

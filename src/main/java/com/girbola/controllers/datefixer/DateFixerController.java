@@ -233,7 +233,13 @@ public class DateFixerController {
 	}
 
 	@FXML
+	private void applyAllChanges_btn_action(ActionEvent event) {
+		model_datefix.acceptAllOnlyModified();
+	}
+
+	@FXML
 	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+		Messages.sprintf("selectRangeOfNumbers_btn_action start");
 		int startFrom = -1;
 		int endTo = -1;
 		try {
@@ -478,7 +484,7 @@ public class DateFixerController {
 					FileInfo fileInfo = (FileInfo) node.getUserData();
 					// model_datefix.getSelectionModel().add(node);
 					FileInfo_Utils.setBad(fileInfo);
-					hboxi.setStyle(CssStylesController.getBad_style());
+					hboxi.setStyle(CssStylesController.getStyleBad());
 				}
 			}
 		}
@@ -499,7 +505,7 @@ public class DateFixerController {
 					// model_datefix.getSelectionModel().add(node);
 					TextField tf = (TextField) hboxi;
 					// FileInfo_Utils.setBad(fileInfo);(fileInfo);
-					tf.setStyle(CssStylesController.getModified_style());
+					tf.setStyle(CssStylesController.getStyleModified());
 				}
 			}
 		}
@@ -854,7 +860,7 @@ public class DateFixerController {
 		for (Node root : df_gridPane.getChildren()) {
 			Node hboxi = root.lookup("#fileDate");
 			if (hboxi instanceof TextField) {
-				if (hboxi.getStyle().equals(CssStylesController.getSuggested_style())) {
+				if (hboxi.getStyle().equals(CssStylesController.getStyleSuggested())) {
 					model_datefix.getSelectionModel().add(root);
 				}
 			}
@@ -904,7 +910,7 @@ public class DateFixerController {
 					if (hboxi instanceof TextField) {
 						TextField tf = (TextField) hboxi;
 						if (tf != null) {
-							if (tf.getStyle().equals(CssStylesController.getModified_style())) {
+							if (tf.getStyle().equals(CssStylesController.getStyleModified())) {
 								model_datefix.getSelectionModel().add(root);
 							}
 						}
@@ -924,7 +930,7 @@ public class DateFixerController {
 				if (hboxi instanceof TextField) {
 					TextField tf = (TextField) hboxi;
 					if (tf != null) {
-						if (tf.getStyle().equals(CssStylesController.getModified_style())) {
+						if (tf.getStyle().equals(CssStylesController.getStyleModified())) {
 							model_datefix.getSelectionModel().add(root);
 						}
 					}
@@ -948,7 +954,7 @@ public class DateFixerController {
 								if (tff instanceof TextField) {
 									TextField tf = (TextField) tff;
 									if (tf != null) {
-										if (tf.getStyle().equals(CssStylesController.getBad_style())) {
+										if (tf.getStyle().equals(CssStylesController.getStyleBad())) {
 											model_datefix.getSelectionModel().add(root);
 										}
 									}
@@ -986,7 +992,7 @@ public class DateFixerController {
 		for (Node root : df_gridPane.getChildren()) {
 			Node hboxi = root.lookup("#fileDate");
 			if (hboxi instanceof TextField) {
-				if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
+				if (hboxi.getStyle().equals(CssStylesController.getStyleBad())) {
 					model_datefix.getSelectionModel().add(root);
 				}
 			}
@@ -1003,7 +1009,7 @@ public class DateFixerController {
 						for (Node hbox : ((HBox) vbox).getChildren()) {
 							if (hbox instanceof TextField) {
 								if (hbox.getId().contains("fileDate")) {
-									if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
+									if (hbox.getStyle().equals(CssStylesController.getStyleGood())) {
 										model_datefix.getSelectionModel().add(root);
 									}
 								}
@@ -1055,7 +1061,7 @@ public class DateFixerController {
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("yes pressed!");
 			boolean update = false;
-			
+
 			List<Node> toRemove = new ArrayList<>();
 			List<FileInfo> fileInfo_toRemove = new ArrayList<>();
 			for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
@@ -1073,7 +1079,7 @@ public class DateFixerController {
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
 				model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
-				
+
 //				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);

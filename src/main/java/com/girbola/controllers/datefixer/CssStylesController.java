@@ -8,35 +8,47 @@ package com.girbola.controllers.datefixer;
 
 public class CssStylesController {
 
-	private static final String bad_style = "-fx-background-color: derive(red, 50%)";
-	private static final String confirmed_style = "-fx-background-color: derive(green, 50%)";
-	private static final String good_style = "-fx-background-color: derive(grey, 50%)";
-	private static final String modified_style = "-fx-background-color: derive(blue, 50%)";
-	private static final String suggested_style = "-fx-background-color: derive(pink, 50%); -fx-text-fill: black;";
-	private static final String video_style = "-fx-background-color: orange;  -fx-text-fill: black;";
+	private static final String styleBad = "-fx-background-color: derive(red, 50%);";
+	private static final String styleConfirmed = "-fx-background-color: derive(green, 50%);";
+	private static final String styleGood = "-fx-background-color: derive(grey, 50%);";
+	private static final String styleModified = "-fx-background-color: derive(blue, 50%);";
+	private static final String styleSuggested = "-fx-background-color: derive(pink, 50%); -fx-text-fill: black;";
+	private static final String styleVideo = "-fx-background-color: orange;  -fx-text-fill: black;";
+	private static final String styleDeselected = "-fx-border-color: #807c7ca4;"
+			+ "-fx-border-style: none;" 
+			+ "-fx-border-width: 1px;";
+	private static final String styleSelected = "-fx-border-color: red;" + "-fx-border-width: 2px;";
 
-	public static String getConfirmed_style() {
-		return confirmed_style;
+	public static String getStyleBad() {
+		return styleBad;
 	}
 
-	public static String getBad_style() {
-		return bad_style;
+	public static String getStyleConfirmed() {
+		return styleConfirmed;
 	}
 
-	public static String getSuggested_style() {
-		return suggested_style;
+	public static String getStyleGood() {
+		return styleGood;
 	}
 
-	public static String getModified_style() {
-		return modified_style;
+	public static String getStyleModified() {
+		return styleModified;
 	}
 
-	public static String getGood_style() {
-		return good_style;
+	public static String getStyleSuggested() {
+		return styleSuggested;
 	}
 
-	public static String getVideo_style() {
-		return video_style;
+	public static String getStyleVideo() {
+		return styleVideo;
+	}
+
+	public static String getStyleDeselected() {
+		return styleDeselected;
+	}
+
+	public static String getStyleSelected() {
+		return styleSelected;
 	}
 
 }

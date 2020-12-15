@@ -110,13 +110,6 @@ public class AddToGridPane2 extends Task<Integer> {
 
 	}
 
-	private FileInfo getFileInfo(StackPane sp) {
-		if (sp.getUserData() != null) {
-			return (FileInfo) sp.getUserData();
-		}
-		return null;
-	}
-
 	private void setGridPane_Constraints() {
 		int imagesPerLine = defineImagesPerLine();
 		model_datefix.setImagesPerLine(imagesPerLine);
@@ -160,8 +153,8 @@ public class AddToGridPane2 extends Task<Integer> {
 			public void run() {
 				// TODO BUGI!!!!
 				contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
-//				model_datefix.getScrollPane().setVvalue(-1);
-//				model_datefix.getScrollPane().setVvalue(0);
+				model_datefix.getScrollPane().setVvalue(-1);
+				model_datefix.getScrollPane().setVvalue(0);
 				
 				model_datefix.updateAllInfos(model_datefix.getGridPane());
 				loadingProcess_Task.closeStage();

@@ -31,11 +31,6 @@ import javafx.scene.layout.Pane;
  */
 public class SelectionModel {
 
-	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 <1 1;"
-			+ "-fx-border-style: none;" + "-fx-border-width: 2px;";
-	final private String style_removed = "-fx-border-color: red;" + "-fx-border-width: 2px;";
-	final private String style_selected = "-fx-border-color: red;" + "-fx-border-width: 2px;";
-
 	private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
 
 	private ObservableList<Node> selectionList = FXCollections.observableArrayList();
@@ -51,14 +46,10 @@ public class SelectionModel {
 		});
 	}
 
-	public String getStyle_removed() {
-		return style_removed;
-	}
-
 	public synchronized void addAll(Node node) {
 		// sprintf("addAll: " + node);
 		if (!contains(node)) {
-			node.setStyle(style_selected);
+			node.setStyle(CssStylesController.getStyleSelected());
 			this.selectionList.add(node);
 		}
 	}
@@ -73,7 +64,7 @@ public class SelectionModel {
 	public synchronized boolean add(Node node) {
 		if (!contains(node)) {
 			Platform.runLater(() -> {
-				node.setStyle(style_selected);
+				node.setStyle(CssStylesController.getStyleSelected());
 				this.selectionList.add(node);
 			});
 			return false;
@@ -94,7 +85,7 @@ public class SelectionModel {
 	 */
 	public synchronized void addOnly(Node node) {
 		if (!contains(node)) {
-			node.setStyle(style_selected);
+			node.setStyle(CssStylesController.getStyleSelected());
 			this.selectionList.add(node);
 		}
 	}
@@ -121,11 +112,29 @@ public class SelectionModel {
 
 	public synchronized void remove(Node node) {
 		if (contains(node)) {
-			node.getStyleClass().remove(style_selected);
-			node.setStyle(style_deselected);
+			Messages.sprintf("NODE deselected: " + node.getId());
+//			node.getStyleClass().remove(CssStylesController.getStyleSelected());
+			node.setStyle(CssStylesController.getStyleDeselected());
+//			node.getStyleClass().clear();
+//			node.getStyleClass().add(null);
+//			node.getStyleClass().add("imageFrameDeSelected");
 			this.selectionList.remove(node);
-
+		} else {
+			Messages.sprintf("NODE CAN't be deselected: " + node.getId());
 		}
+	}
+
+	public int getRightColorForBackground(Node node, FileInfo fileInfo) {
+		if (fileInfo.isBad()) { // esim red
+			node.setStyle(CssStylesController.getStyleBad());
+		} else if(fileInfo.isConfirmed()) {
+//			FileInfo
+		} else if(fileInfo.isGood()) {
+			
+		} else if(fileInfo.isConfirmed()) {
+			
+		}
+		return 0;
 	}
 
 	public synchronized void invertSelection(Pane pane) {

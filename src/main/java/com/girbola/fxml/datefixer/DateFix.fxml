@@ -468,6 +468,7 @@
                                 <columnConstraints>
                                   <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                                   <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                    <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
                                 </columnConstraints>
                                 <rowConstraints>
                                   <RowConstraints />
@@ -478,12 +479,12 @@
                                     <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                                 </rowConstraints>
                                  <children>
-            														<Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" styleClass="closeButton" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            														<Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" styleClass="closeButton" text="%close" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
             															<font>
             																<Font size="10.0" />
             															</font>
             														</Button>
-            														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            														<Button id="actionButtons" fx:id="applyAllChanges_btn" alignment="CENTER" maxWidth="75.0" mnemonicParsing="false" onAction="#applyAllChanges_btn_action" prefWidth="75.0" text="%applyAll" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
             															<font>
             																<Font size="10.0" />
             															</font>
@@ -519,6 +520,11 @@
                                        <tooltip>
                                           <Tooltip text="%copyToAsItIsTip" />
                                        </tooltip>
+                                    </Button>
+                                    <Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" layoutX="214.0" layoutY="61.0" maxWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
                                     </Button>
                                  </children>
                                  <padding>

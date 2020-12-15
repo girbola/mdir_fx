@@ -88,6 +88,40 @@ public class AskEventDialogController {
 		return list;
 	}
 
+	private List<FileInfo> applyAllChanges(String workDir) {
+		List<FileInfo> list = new ArrayList<>();
+		if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
+			for (Node selected_Node : model_dateFix.getSelectionModel().getSelectionList()) {
+				if (selected_Node.getStyle().equals(CssStylesController.getStyleConfirmed())) {
+
+					FileInfo fileInfo = (FileInfo) selected_Node.getUserData();
+					Messages.sprintf("selected_Node.getUserData Fileinfo: " + fileInfo);
+
+					if (!event_cmb.getEditor().getText().equals(fileInfo.getEvent())) {
+						fileInfo.setEvent(event_cmb.getEditor().getText());
+						Main.setChanged(true);
+					}
+					if (!location_cmb.getEditor().getText().equals(fileInfo.getLocation())) {
+						fileInfo.setLocation(location_cmb.getEditor().getText());
+						Main.setChanged(true);
+					}
+					Path destPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, workDir);
+					list.add(fileInfo);
+					if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+						fileInfo.setWorkDir(workDir);
+						fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+						fileInfo.setDestination_Path(destPath.toString());
+						fileInfo.setCopied(false);
+						model_dateFix.getFolderInfo_full().setChanged(true);
+						Main.setChanged(true);
+					}
+					Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+				}
+			}
+		}
+		return list;
+	}
+
 	@FXML
 	private void apply_btn_action(ActionEvent event) {
 		Messages.sprintf("apply_btn_action started");
@@ -95,6 +129,18 @@ public class AskEventDialogController {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
 		}
 		applyChanges(Main.conf.getWorkDir());
+		Stage stage = (Stage) apply_btn.getScene().getWindow();
+		stage.close();
+
+	}
+
+	@FXML
+	private void applyAllChanges_btn_action(ActionEvent event) {
+		Messages.sprintf("applyAllChanges_btn_action started");
+		if (apply_and_copy_btn == null) {
+			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
+		}
+		applyAllChanges(Main.conf.getWorkDir());
 		Stage stage = (Stage) apply_btn.getScene().getWindow();
 		stage.close();
 

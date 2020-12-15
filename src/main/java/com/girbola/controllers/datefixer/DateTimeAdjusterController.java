@@ -515,7 +515,7 @@ public class DateTimeAdjusterController {
 					try {
 						TextField tf = (TextField) it.next();
 						tf.setText(it2.next());
-						tf.setStyle(CssStylesController.getModified_style());
+						tf.setStyle(CssStylesController.getStyleModified());
 					} catch (Exception ex) {
 						errorSmth(ERROR, "Cannot make textfield changes", ex, Misc.getLineNumber(), true);
 					}

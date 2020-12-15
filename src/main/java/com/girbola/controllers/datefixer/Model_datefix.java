@@ -369,7 +369,8 @@ public class Model_datefix extends DateFixerModel {
 						for (Node node3 : ((HBox) node2).getChildren()) {
 							sprintf("TextField: " + node3);
 							if (node3 instanceof TextField) {
-								return (TextField) node3;
+								TextField tf = (TextField) node3;
+								return tf;
 							}
 						}
 					}
@@ -499,6 +500,66 @@ public class Model_datefix extends DateFixerModel {
 		dateFix_Utils.createDates_list(fileInfo_list);
 	}
 
+	public void acceptAllOnlyModified() {
+		Messages.sprintf("applyAllChanges_btn_action start!!!!!!!!");
+		boolean changed = false;
+		// CssStylesController css = new CssStylesController();
+		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
+				Main.scene_Switcher.getScene_dateFixer().getWindow(),
+				bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Optional<ButtonType> result = changesDialog.showAndWait();
+		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+			for (Node node : getGridPane().getChildren()) {
+				TextField tf = getTextField(node);
+				if (tf != null) {
+					if (tf.getStyle().equals(CssStylesController.getStyleModified())) {
+						Messages.sprintf("applyAllChanges_btn_action!!!!!!!!");
+						Platform.runLater(() -> {
+//							tf.setStyle("-fx-background-color: orange;");
+							Messages.sprintf("TexfFIIIIIIIIIIIIIIIIILLLLLLLLLD: " + CssStylesController.getStyleGood());
+							tf.setStyle(CssStylesController.getStyleGood());
+
+//							node.setStyle("-fx-background-color: yellow;");
+						});
+						FileInfo fileInfo = (FileInfo) node.getUserData();
+						if (fileInfo != null) {
+							if (!fileInfo.isIgnored()) {
+								fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
+										simpleDates.getSdf_ymd_hms_minusDots_default()));
+								fileInfo.setGood(true);
+								fileInfo.setSuggested(false);
+								fileInfo.setBad(false);
+								fileInfo.setConfirmed(true);
+								tf.setStyle("-fx-background-color: derive(blue, 50%);");
+								node.setStyle("-fx-background-color: derive(blue, 50%);");
+								changed = true;
+							}
+						}
+					}
+				}
+			}
+			if (changed) {
+				// TODO Korjaa apply_btn;
+				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
+				if (model_Main.tables() == null) {
+					Main.setProcessCancelled(true);
+					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+				}
+				model_Main.tables().refreshAllTables();
+				updateAllInfos(getFolderInfo_full().getFileInfoList());
+
+				getFolderInfo_full().setChanged(true);
+				setDateTime(getFolderInfo_full().getMinDate(), true);
+				setDateTime(getFolderInfo_full().getMaxDate(), false);
+			}
+			getSelectionModel().clearAll();
+		}
+		/*
+		
+		*/
+
+	}
+
 	public void acceptEverything() {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
@@ -510,7 +571,7 @@ public class Model_datefix extends DateFixerModel {
 			for (Node node : getGridPane().getChildren()) {
 				TextField tf = getTextField(node);
 				if (tf != null) {
-					if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
+					if (!tf.getStyle().equals(CssStylesController.getStyleBad())) {
 						FileInfo fileInfo = (FileInfo) node.getUserData();
 						if (fileInfo != null) {
 							if (!fileInfo.isIgnored()) {
@@ -520,7 +581,7 @@ public class Model_datefix extends DateFixerModel {
 								fileInfo.setSuggested(false);
 								fileInfo.setBad(false);
 								fileInfo.setConfirmed(true);
-								node.setStyle(CssStylesController.getGood_style());
+								node.setStyle(CssStylesController.getStyleGood());
 								changed = true;
 							}
 						}
@@ -562,10 +623,10 @@ public class Model_datefix extends DateFixerModel {
 					if (tf != null) {
 						tf.setText("" + DateUtils.longToLocalDateTime(date)
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						tf.setStyle(CssStylesController.getGood_style());
+						tf.setStyle(CssStylesController.getStyleGood());
 					}
 				} else {
-					tf.setStyle(CssStylesController.getBad_style());
+					tf.setStyle(CssStylesController.getStyleBad());
 				}
 			}
 		}
@@ -599,12 +660,12 @@ public class Model_datefix extends DateFixerModel {
 					if (tf != null) {
 						tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						tf.setStyle(CssStylesController.getGood_style());
+						tf.setStyle(CssStylesController.getStyleGood());
 					}
 				} else {
 					// tf.setText("" +
 					// DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					tf.setStyle(CssStylesController.getBad_style());
+					tf.setStyle(CssStylesController.getStyleBad());
 				}
 			}
 		}
@@ -627,7 +688,7 @@ public class Model_datefix extends DateFixerModel {
 				if (tf != null) {
 					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
 							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					tf.setStyle(CssStylesController.getModified_style());
+					tf.setStyle(CssStylesController.getStyleModified());
 				}
 			}
 		}
@@ -991,7 +1052,7 @@ public class Model_datefix extends DateFixerModel {
 	 * @return the selector_exec
 	 */
 	public final ScheduledExecutorService getSelector_exec() {
-		if(selector_exec.isShutdown() || selector_exec.isTerminated()) {
+		if (selector_exec.isShutdown() || selector_exec.isTerminated()) {
 			selector_exec = Executors.newScheduledThreadPool(1);
 		}
 		return selector_exec;
@@ -1010,7 +1071,7 @@ public class Model_datefix extends DateFixerModel {
 						if (vbox instanceof HBox) {
 							for (Node hbox : ((HBox) vbox).getChildren()) {
 								if (hbox instanceof TextField) {
-									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
+									if (hbox.getStyle().equals(CssStylesController.getStyleBad())) {
 										counter++;
 									}
 								}
