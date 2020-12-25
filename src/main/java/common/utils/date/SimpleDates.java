@@ -7,11 +7,15 @@
 package common.utils.date;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import com.girbola.messages.Messages;
 
 /**
  *
@@ -30,6 +34,7 @@ public class SimpleDates {
 	private final String YMD_HMS_MINUSCOLON = "yyyy-MM-dd HH:mm:ss";
 	private final String YMD_SLASH = "yyyy/MM/dd";
 	private final String YMD_MINUS = "yyyy-MM-dd";
+	private final String YMD_SPACE = "yyyy MM dd";
 
 	private final static String YMD_H_MINUS = "yyyy-MM-dd HH";
 	private final static String YMD_HM_MINUS = "yyyy-MM-dd HH.mm";
@@ -39,7 +44,8 @@ public class SimpleDates {
 	private final static String HMS_COLON = "HH:mm:ss";
 	private final static String HMS_DOTS = "HH.mm.ss";
 
-	private final DateTimeFormatter dtf_ymd_hms_minusDots_default = DateTimeFormatter.ofPattern(YMD_HMS_MINUSDOTS_DEFAULT);
+	private final DateTimeFormatter dtf_ymd_hms_minusDots_default = DateTimeFormatter
+			.ofPattern(YMD_HMS_MINUSDOTS_DEFAULT);
 	private final DateTimeFormatter dtf_ymd_minus = DateTimeFormatter.ofPattern(YMD_MINUS);
 	private final DateTimeFormatter dtf_hms_dots = DateTimeFormatter.ofPattern(HMS_DOTS);
 	private final DateTimeFormatter dtf_ymd_slash = DateTimeFormatter.ofPattern(YMD_SLASH);
@@ -54,8 +60,17 @@ public class SimpleDates {
 	private SimpleDateFormat sdf_ymd_hms_spaces = new SimpleDateFormat(YMD_HMS_SPACES);
 	private SimpleDateFormat sdf_ymd_minus = new SimpleDateFormat(YMD_MINUS);
 	private SimpleDateFormat sdf_ymd_slash = new SimpleDateFormat(YMD_SLASH);
+	private SimpleDateFormat sdf_ymd_spaces = new SimpleDateFormat(YMD_SPACE);
 
-	private List<SimpleDateFormat> sdf_list = Arrays.asList(sdf_ymd_hms_minusDots_default, sdf_ymd_hms_slashDots);
+	private List<SimpleDateFormat> simpleDateFormat_DateTime_list = Arrays.asList(sdf_ymd_hms_minusDots_default,
+			sdf_ymd_hms_slashDots, sdf_ymd_hms_spaces);
+
+	private List<SimpleDateFormat> simpleDateFormat_Date_list = Arrays.asList(sdf_ymd_spaces);
+
+	private List<DateTimeFormatter> dateTimeFormatter_Date_list = Arrays.asList(dtf_ymd_minus, dtf_ymd_slash);
+
+	private List<DateTimeFormatter> dateTimeFormatter_DateTime_list = Arrays.asList(dtf_ymd_hms_minusDots_default,
+			dtf_ymd_slash);
 
 	private DateTimeFormatter dtf_ymd_h_minus = DateTimeFormatter.ofPattern(YMD_H_MINUS);
 	private DateTimeFormatter dtf_ymd_hm_minus = DateTimeFormatter.ofPattern(YMD_HM_MINUS);
@@ -145,8 +160,64 @@ public class SimpleDates {
 		return sdf_ymd_minus;
 	}
 
+	public DateTimeFormatter checkIfStringHasDateTime(String value) {
+		if (value.length() <= 10) {
+//			String dateParsed = value.replace("-", " ").replace(".", " ").replace("/", " ").replace(":"," ");
+			Messages.sprintf("dateParse: " + value);
+			for (DateTimeFormatter dtf : dateTimeFormatter_Date_list) {
+				try {
+					LocalDate.parse(value, dtf);
+					return dtf;
+				} catch (Exception e) {
+				}
+			}
+		} else if (value.length() >= 11) {
+//			String dateParsed = value.replace("-", " ").replace(".", " ").replace("/", " ").replace(":"," ");
+			Messages.sprintf("dateTimeParse: " + value);
+			for (DateTimeFormatter dtf : dateTimeFormatter_DateTime_list) {
+				try {
+					LocalDateTime.parse(value, dtf);
+					return dtf;
+				} catch (Exception e) {
+				}
+
+			}
+		}
+		return null;
+
+	}
+
+	public SimpleDateFormat checkIfStringHasDate(String value) {
+		if (value.length() <= 10) {
+//			String dateParsed = value.replace("-", " ").replace(".", " ").replace("/", " ").replace(":"," ");
+			Messages.sprintf("dateParse: " + value);
+			for (SimpleDateFormat sdf : simpleDateFormat_Date_list) {
+				try {
+					sdf.parse(value);
+					return sdf;
+				} catch (Exception e) {
+				}
+			}
+		} else if (value.length() >= 11) {
+//			String dateParsed = value.replace("-", " ").replace(".", " ").replace("/", " ").replace(":"," ");
+			Messages.sprintf("dateTimeParse: " + value);
+			for (SimpleDateFormat sdf : simpleDateFormat_DateTime_list) {
+				try {
+					sdf.parse(value);
+					return sdf;
+				} catch (Exception e) {
+				}
+
+			}
+		}
+		return null;
+
+	}
+
 	public SimpleDateFormat getSimpleDateFormatByString(String value) {
-		for (SimpleDateFormat sdf : sdf_list) {
+//		tähän lisää päiväyksiä
+
+		for (SimpleDateFormat sdf : simpleDateFormat_DateTime_list) {
 			Date date = null;
 			try {
 				date = sdf.parse(value);
@@ -167,11 +238,9 @@ public class SimpleDates {
 	 *
 	 * <dl>
 	 * <dt><span class="strong">Heading 1</span></dt>
-	 * <dd>There is a line
-	 * break.</dd>
+	 * <dd>There is a line break.</dd>
 	 * <dt><span class="strong">Heading 2</span></dt>
-	 * <dd>There is a line
-	 * break.</dd>
+	 * <dd>There is a line break.</dd>
 	 * </dl>
 	 *
 	 * @return

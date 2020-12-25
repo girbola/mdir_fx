@@ -287,14 +287,14 @@
 								</VBox>
                         <GridPane hgap="2.0" style="-fx-background-color: darkgrey;" vgap="2.0" HBox.hgrow="NEVER">
                           <columnConstraints>
-                            <ColumnConstraints />
+                            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
                           </columnConstraints>
                           <rowConstraints>
-                            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-                            <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
-                            <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
-                              <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
-                              <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                              <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                              <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                           </rowConstraints>
                            <children>
 																				<TextField fx:id="startFromNumber_tf" maxWidth="80.0" minWidth="80.0" styleClass="textFieldNumber" text="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />

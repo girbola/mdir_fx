@@ -210,6 +210,8 @@ public class DateTimeAdjusterController {
 	@FXML
 	private void copy_startToEnd_btn_action(ActionEvent event) {
 		sprintf("Date to copy_startToEnd: ");
+		Messages.sprintf("Copying start to end: " + start_datePicker.getValue());
+		
 		start_datePicker.setValue(end_datePicker.getValue());
 
 		model_datefix.getEnd_time().setHour(model_datefix.getStart_time().getHour());
@@ -283,6 +285,7 @@ public class DateTimeAdjusterController {
 
 	@FXML
 	private void copy_endToStart_action(ActionEvent event) {
+		Messages.sprintf("Copying end to start: " + end_datePicker.getValue());
 		start_datePicker.setValue(end_datePicker.getValue());
 
 		model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());

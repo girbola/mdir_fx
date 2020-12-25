@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.girbola.messages.Messages;
+
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -196,7 +198,7 @@ public class FileNameParseUtils {
 						date = Conversion.stringDateToLong(sb.toString(), simpleDates.getSdf_ymd_hms_nospaces());
 						return date;
 					} catch (Exception ex) {
-						sprintf("Exception d = hasDate(sb); " + result + " exception is: " + ex.getMessage());
+						Messages.sprintfError("Exception d = hasDate(sb); " + result + " exception is: " + ex.getMessage() + " \nreturning 0");
 						return 0;
 					}
 				}

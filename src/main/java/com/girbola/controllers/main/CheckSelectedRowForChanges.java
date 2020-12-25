@@ -24,7 +24,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 
 public class CheckSelectedRowForChanges extends Task<Boolean> {
@@ -106,11 +105,12 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 				updated = cleanTask.get();
 				if (updated) {
 					TableUtils.refreshTableContent(tableView);
-					Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(), loadingProcess, true);
+					Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main,
+							Main.scene_Switcher.getWindow(), loadingProcess, true);
 					Thread thread = new Thread(saveTablesToDatabases, "Saving data Thread");
 					thread.start();
-	//				model_main.saveTablesToDatabases();
-					//loadingProcess.closeStage();
+					// model_main.saveTablesToDatabases();
+					// loadingProcess.closeStage();
 				} else {
 					Messages.sprintf("No changes");
 					loadingProcess.closeStage();
@@ -122,7 +122,8 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 		});
 		cleanTask.setOnFailed((WorkerStateEvent event) -> {
 			Messages.sprintf("Something went wrong with updating the content");
-			Messages.errorSmth(ERROR, "Something went wrong with updating the content", null, Misc.getLineNumber(), true);
+			Messages.errorSmth(ERROR, "Something went wrong with updating the content", null, Misc.getLineNumber(),
+					true);
 			loadingProcess.closeStage();
 		});
 		cleanTask.setOnCancelled((WorkerStateEvent event) -> {

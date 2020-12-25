@@ -40,8 +40,6 @@ public class DateFixerModel {
 		}
 	};
 
-	
-
 	/**
 	 * getLocalDateTime read datePicker time and gets time from DateFixer Time
 	 * chooser
@@ -86,7 +84,7 @@ public class DateFixerModel {
 			});
 		}
 	}
-	
+
 	public DatePicker getStart_datePicker() {
 		return start_datePicker;
 	}
@@ -94,10 +92,24 @@ public class DateFixerModel {
 	public void setStart_datePicker(DatePicker start_datePicker) {
 		this.start_datePicker = start_datePicker;
 		this.start_datePicker.setConverter(converter);
+			
 		this.start_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("start_datePicker: " + newValue);
+				if (newValue.length() > 10) {
+					sprintf("start_datePicker: " + newValue.length());
+					String testDate = DateTester.dateTester(newValue);
+					LocalDate ld = null;
+					try {
+						ld = DateUtils.parseLocalDateTimeFromString(newValue).toLocalDate();
+						start_datePicker.setValue(ld);
+					} catch (Exception e) {
+						start_datePicker.setValue(LocalDate.of(2010, 9, 3));
+						sprintf("eeeeeeeeeeeeeeee: start_datePicker: " + newValue);
+					}
+				} else {
+					sprintf("NOOOOOOOOOO start_datePicker: " + newValue.length());
+				}
 			}
 		});
 	}
