@@ -11,10 +11,9 @@ import java.sql.SQLException;
 public class SqliteConnection {
 
 	public static Connection connector(Path path, String tableName) {
-		Connection conn = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			conn = DriverManager.getConnection("jdbc:sqlite:" + path.toString() + File.separator + tableName);
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + path.toString() + File.separator + tableName);
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -24,10 +23,9 @@ public class SqliteConnection {
 	}
 
 	public static Connection connector(String path, String tableName) {
-		Connection conn = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
-			conn = DriverManager.getConnection("jdbc:sqlite:" + path + File.separator + tableName);
+			Connection conn = DriverManager.getConnection("jdbc:sqlite:" + path + File.separator + tableName);
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -571,7 +571,7 @@ public class DateFixerController {
 				FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
 						bundle);
 				parent = loader.load();
-				Messages.warningText("model_main is null? " + (model_main == null ? true : false));
+//				Messages.warningText("model_main is null? " + (model_main == null ? true : false));
 				AskEventDialogController askEventDialogController = (AskEventDialogController) loader.getController();
 				askEventDialogController.init(model_main, model_datefix);
 

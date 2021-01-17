@@ -15,6 +15,7 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -711,31 +712,40 @@ public class OperateFiles extends Task<Boolean> {
 			sprintf("OperateFiles succeeded");
 		}
 
-		private void writeToDatabase() {
-			Messages.sprintf("Insert worked!");
-			if (Main.conf.getDrive_connected()) {
-				try {
-
-					Connection connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
-							Main.conf.getMdir_db_fileName());
-					connection.setAutoCommit(false);
-					boolean inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
-					if (!inserted) {
-						connection.close();
-						connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
-								Main.conf.getMdir_db_fileName() + new Date().toString());
-						inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
-						if (!inserted) {
-							Messages.errorSmth(ERROR, "Can't save to destination dir", null, Misc.getLineNumber(),
-									true);
-						}
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-
-		}
+//		private void writeToDatabase() {
+//			Messages.sprintf("Insert worked!");
+//			if (Main.conf.getDrive_connected()) {
+//				Connection connection = null;
+//				try {
+//					connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
+//							Main.conf.getMdir_db_fileName());
+//					connection.setAutoCommit(false);
+//					boolean inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
+//					if (!inserted) {
+//						connection.close();
+//						connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()),
+//								Main.conf.getMdir_db_fileName() + new Date().toString());
+//						inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
+//						if (!inserted) {
+//							Messages.errorSmth(ERROR, "Can't save to destination dir", null, Misc.getLineNumber(),
+//									true);
+//						}
+//					}
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				} finally {
+//					try {
+//						if (!connection.isClosed()) {
+//							connection.close();
+//						}
+//					} catch (SQLException e) {
+//						e.printStackTrace();
+//					}
+//
+//				}
+//			}
+//
+//		}
 
 	}
 

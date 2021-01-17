@@ -84,6 +84,7 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public boolean createConfiguration_db() {
+		Messages.sprintf("creatingConfiguration DB started");
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
@@ -109,7 +110,6 @@ public class Configuration extends Configuration_defaults {
 		}
 
 		try {
-
 			connection.close();
 			return true;
 		} catch (Exception e) {

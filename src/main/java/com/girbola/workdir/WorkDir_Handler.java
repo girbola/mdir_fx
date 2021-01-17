@@ -48,7 +48,19 @@ public class WorkDir_Handler {
 //		addTable(tables.getSorted_table());
 //		addTable(tables.getSortIt_table());
 //	}
-
+	public void updateWorkDirContent() {
+		List<FileInfo> removeFromList = new ArrayList<>();
+		for(FileInfo fileInfo : getWorkDir_List()) {
+			if(!Files.exists(Paths.get(fileInfo.getWorkDir() + File.separator + fileInfo.getDestination_Path()))) {
+				removeFromList.add(fileInfo);
+			}
+		}
+		boolean removeAll = getWorkDir_List().removeAll(removeFromList);
+		if(removeAll ) {
+			removeFromList.forEach(fileInfo -> Messages.sprintfError("Files found to remove from workDir: " + fileInfo.getOrgPath()));
+		}
+		
+	}
 	private void addTable(TableView<FolderInfo> table) {
 		List<Long> dateList = new ArrayList<>();
 
@@ -113,6 +125,7 @@ public class WorkDir_Handler {
 			Messages.sprintfError("Connectino were null at WorkDir_Handler at line: " + Misc.getLineNumber());
 			return false;
 		}
+		updateWorkDirContent();
 		return true;
 	}
 
@@ -126,6 +139,11 @@ public class WorkDir_Handler {
 		}
 	}
 
+	/**
+	 * 
+	 * @param fileInfo_toFind
+	 * @return
+	 */
 	public FileInfo exists(FileInfo fileInfo_toFind) {
 		Iterator<FileInfo> it = workDir_List.iterator();
 		final LocalDate ld_toFind = DateUtils.longToLocalDateTime(fileInfo_toFind.getDate()).toLocalDate();
@@ -251,6 +269,11 @@ public class WorkDir_Handler {
 		return list;
 	}
 
+	/**
+	 * 
+	 * @param connection
+	 * @return
+	 */
 	public boolean cleanDatabase(Connection connection) {
 		Messages.sprintf("Cleaning database...: ");
 		if (!SQL_Utils.isDbConnected(connection)) {

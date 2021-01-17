@@ -46,7 +46,8 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 	protected Boolean call() {
 		for (FolderInfo folderInfo : tableView.getSelectionModel().getSelectedItems()) {
 			List<Path> fileList = null;
-			FutureTask<List<Path>> getList = new FutureTask(new GetFolderList(folderInfo));
+			FutureTask<List<Path>> getList = new FutureTask<List<Path>>(new GetFolderList(folderInfo));
+//			getList.
 			Platform.runLater(getList);
 			try {
 				fileList = getList.get();

@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import com.girbola.Main;
-import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.closerlook.CloserLookController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -49,6 +48,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -246,7 +247,11 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 					close_stage.show();
 				}
 			});
-			HBox hbox = new HBox(checkBox, new Label(" "), closerLook, new Label(entry.getKey() + "     "),
+			ToggleButton tb = new ToggleButton();
+			tb.setText(entry.getKey());
+			ToggleGroup tg = new ToggleGroup();
+			tb.setToggleGroup(tg);
+			HBox hbox = new HBox(checkBox, new Label(" "), tb, closerLook, new Label(entry.getKey() + "     "),
 					location_hBox, new Label(" "), event_hBox, new Label(" max char: "), max, new Label(" folder= "),
 					folderName);
 			hbox.setAlignment(Pos.CENTER);
@@ -272,6 +277,7 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 	protected void succeeded() {
 		super.succeeded();
 		model_importImages.getScrollPane().setVvalue(-1);
+		Messages.sprintf("Update scrollpane DrawImagesToImportImages_Full at line: " + Misc.getLineNumber());
 	}
 
 }

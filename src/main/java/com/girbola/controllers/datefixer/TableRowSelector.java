@@ -42,7 +42,7 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
-							Messages.sprintf("dates_tableView vvalue: " + vvalue);
+							Messages.sprintf("1Setting setVvalue of scrollpane dates_tableView vvalue: " + vvalue);
 							value = "";
 							break;
 						}
@@ -55,6 +55,7 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
+							Messages.sprintf("2Setting setVvalue of scrollpane dates_tableView vvalue: " + vvalue);
 							value = "";
 							break;
 						}
@@ -67,6 +68,7 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
+							Messages.sprintf("3Setting setVvalue of scrollpane dates_tableView vvalue: " + vvalue);
 							value = "";
 							break;
 						}
@@ -79,6 +81,7 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
+							Messages.sprintf("4Setting setVvalue of scrollpane dates_tableView vvalue: " + vvalue);
 							value = "";
 							break;
 						}

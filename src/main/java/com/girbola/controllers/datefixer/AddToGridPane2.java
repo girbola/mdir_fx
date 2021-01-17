@@ -17,6 +17,7 @@ import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
 import common.utils.ui.UI_Tools;
 import javafx.application.Platform;
@@ -155,7 +156,7 @@ public class AddToGridPane2 extends Task<Integer> {
 				contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
 				model_datefix.getScrollPane().setVvalue(-1);
 				model_datefix.getScrollPane().setVvalue(0);
-				
+				Messages.sprintf("Update scrollpane AddToGridPane2 at line: " + Misc.getLineNumber());
 				model_datefix.updateAllInfos(model_datefix.getGridPane());
 				loadingProcess_Task.closeStage();
 			}

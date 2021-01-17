@@ -10,6 +10,7 @@ import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -341,6 +343,7 @@ public class Model_main {
 		return this.workDir_Handler;
 	}
 
+	
 	public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
 		return monitorExternalDriveConnectivity;
 	}

@@ -55,29 +55,17 @@ public class Configuration_SQL_Utils {
 				Messages.sprintf("createConfiguration connection failed");
 				return false;
 			}
-			//@formatter:off
-			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.CONFIGURATION.getType()+ " ("
-					+ id + " INTEGER PRIMARY KEY CHECK (id = 0),"
-					+ betterQualityThumbs + " BOOLEAN, "
-		        	+ confirmOnExit + " BOOLEAN,"
-		    	    + id_counter + " INTEGER UNIQUE,"
-		    	    + showFullPath + " BOOLEAN,"
-		    	    + showHints + " BOOLEAN,"
-		    	    + showTooltips + " BOOLEAN,"
-		    	    + themePath + " STRING,"
-		    	    + vlcPath + " STRING,"
-		    	    + vlcSupport + " BOOLEAN,"
-		    	    + saveDataToHD + " STRING,"
-		    	    + windowStartPosX  + " DOUBLE DEFAULT ( -1),"
-					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
-					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
-					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
-					+ imageViewXPos + " DOUBLE,"
-					+ imageViewYPos + " DOUBLE,"
-					+ workDirSerialNumber + " STRING, "
-		    	    + workDir + " STRING)";
-			
-			//@formatter:on
+			// @formatter:off
+			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.CONFIGURATION.getType() + " (" + id
+					+ " INTEGER PRIMARY KEY CHECK (id = 0)," + betterQualityThumbs + " BOOLEAN, " + confirmOnExit
+					+ " BOOLEAN," + id_counter + " INTEGER UNIQUE," + showFullPath + " BOOLEAN," + showHints
+					+ " BOOLEAN," + showTooltips + " BOOLEAN," + themePath + " STRING," + vlcPath + " STRING,"
+					+ vlcSupport + " BOOLEAN," + saveDataToHD + " STRING," + windowStartPosX + " DOUBLE DEFAULT ( -1),"
+					+ windowStartPosY + " DOUBLE DEFAULT ( -1)," + windowStartWidth + " DOUBLE DEFAULT ( -1),"
+					+ windowStartHeigth + " DOUBLE DEFAULT ( -1)," + imageViewXPos + " DOUBLE," + imageViewYPos
+					+ " DOUBLE," + workDirSerialNumber + " STRING, " + workDir + " STRING)";
+
+			// @formatter:on
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
 
@@ -241,29 +229,18 @@ public class Configuration_SQL_Utils {
 			if (SQL_Utils.isDbConnected(connection)) {
 				Messages.sprintf("insertAllProgram_config connection were connected");
 				try {
-				//@formatter:off
-				String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
-				+ "('" + id + "', " 
-				+ "'" + betterQualityThumbs + "',"
-				+ "'" + confirmOnExit + "', " 
-				+ "'" + id_counter + "', " 
-				+ "'" + showFullPath + "', " 
-				+ "'" + showHints + "', "
-				+ "'" + showTooltips + "', "
-				+ "'" + themePath + "', "
-				+ "'" + vlcPath + "', "
-				+ "'" + vlcSupport + "', "
-				+ "'" + saveDataToHD + "', "
-				+ "'" + windowStartPosX + "', "
-				+ "'" + windowStartPosY + "', "
-				+ "'" + windowStartWidth + "', "
-				+ "'" + windowStartHeigth + "', "
-				+ "'" + imageViewXPos+ "', "
-				+ "'" + imageViewYPos+ "', "
-				+ "'" + workDirSerialNumber + "', "
-				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-				//@formatter:on
+					// @formatter:off
+					String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() + "('" + id + "', " + "'"
+							+ betterQualityThumbs + "'," + "'" + confirmOnExit + "', " + "'" + id_counter + "', " + "'"
+							+ showFullPath + "', " + "'" + showHints + "', " + "'" + showTooltips + "', " + "'"
+							+ themePath + "', " + "'" + vlcPath + "', " + "'" + vlcSupport + "', " + "'" + saveDataToHD
+							+ "', " + "'" + windowStartPosX + "', " + "'" + windowStartPosY + "', " + "'"
+							+ windowStartWidth + "', " + "'" + windowStartHeigth + "', " + "'" + imageViewXPos + "', "
+							+ "'" + imageViewYPos + "', " + "'" + workDirSerialNumber + "', " + "'" + workDir + "')"
+							+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+					// @formatter:on
+					
+					connection.setAutoCommit(false);
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
 					pstmt.setInt(1, configuration_id);
@@ -285,8 +262,9 @@ public class Configuration_SQL_Utils {
 					pstmt.setDouble(17, configuration.getImageViewYPosition());
 					pstmt.setString(18, configuration.getWorkDirSerialNumber());
 					pstmt.setString(19, configuration.getWorkDir());
-					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
-					pstmt.executeUpdate();
+					Messages.sprintf(" configuration.getWorkDiREPLACE INTO() " + configuration.getWorkDir());
+					pstmt.addBatch();
+					pstmt.executeBatch();
 
 					pstmt.close();
 					return true;
@@ -478,11 +456,19 @@ public class Configuration_SQL_Utils {
 	}
 
 	public static void update_Configuration() {
+		Messages.sprintf("update_Configuration DB started");
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
 			connection.setAutoCommit(false);
-			insert_Configuration(connection, Main.conf);
+			Messages.sprintf("connection content is closed: " + connection.isClosed() + " is read onky: " + connection.isReadOnly());
+			boolean insert_Configuration = insert_Configuration(connection, Main.conf);
+			if(insert_Configuration) {
+				Messages.sprintf("update_Configuration INSERT worked");
+			} else {
+				Messages.sprintfError("update_Configuration INSERT DID NOT worked");
+			}
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -503,7 +489,5 @@ public class Configuration_SQL_Utils {
 //				" SET " + columnToUpdate + "=" + attribute + " WHERE " ;
 //		
 //	}
-
-
 
 }

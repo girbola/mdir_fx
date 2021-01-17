@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
@@ -31,10 +32,14 @@ import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfo_List_Utils;
+import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.filelisting.GetRootFiles;
 import com.girbola.fxml.main.collect.Collect_DialogController;
 import com.girbola.fxml.main.collect.Model_CollectDialog;
 import com.girbola.fxml.main.merge.MergeDialogController;
@@ -88,7 +93,7 @@ public class TableController {
 
 	private Model_main model_main;
 	private Model_CollectDialog model_CollectDialog;
-	
+
 	private Window owner;
 
 	private final String ERROR = TableController.class.getSimpleName();
@@ -389,10 +394,56 @@ public class TableController {
 	@FXML
 	private void checkChanges_mi_action(ActionEvent event) {
 		LoadingProcess_Task loadingProcess = new LoadingProcess_Task(owner);
-		Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main, loadingProcess);
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+			Messages.sprintf("Checking folder: " + folderInfo.getFolderPath());
+			try {
+				
+//				List<FileInfo> sourceFileList = folderInfo.getFileInfoList();
 
-		Thread thread = new Thread(checkTask, "Checking changes thread");
-		thread.start();
+				//Get list of folder root media files into arraylist and add new files to addToList
+				List<Path> rootFileList = GetRootFiles.getRootFiles(Paths.get(folderInfo.getFolderPath()));
+				boolean changed = FileInfo_List_Utils.cleanFileInfoList(rootFileList, folderInfo.getFileInfoList());
+				
+				
+//				FileInfo_Utils.addAll(folderInfo, exists_list);
+
+			} catch (IOException e) {
+
+				e.printStackTrace();
+			}
+			Task<Boolean> checkFolderInfoForChanges = new CheckFolderInfoForChanges(folderInfo, table, loadingProcess);
+			exec.submit(checkFolderInfoForChanges);
+
+		}
+		exec.shutdown();
+
+		Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main, loadingProcess);
+		checkTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("checkChanges_mi_action was ended successfully");
+				loadingProcess.closeStage();
+			}
+		});
+		checkTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("checkChanges_mi_action was cancelled");
+				loadingProcess.closeStage();
+			}
+		});
+		checkTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				loadingProcess.closeStage();
+				Messages.warningText("checking changes failed!");
+			}
+		});
+//		loadingProcess.setTask(checkTask);
+//		Thread thread = new Thread(checkTask, "Checking changes thread");
+//		thread.start();
 	}
 
 	@FXML
@@ -622,7 +673,6 @@ public class TableController {
 					try {
 						connection.setAutoCommit(false);
 						FileInfo_SQL.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList(), false);
-
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {

@@ -55,6 +55,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
 import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -96,7 +98,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-				primaryStage.setUserData(model_main);
+		primaryStage.setUserData(model_main);
 		mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -105,7 +107,12 @@ public class Main extends Application {
 				sprintf("Program starting");
 				locale = new Locale(lang, country);
 				bundle = ResourceBundle.getBundle("bundle/lang", locale);
-
+				if (isProgramRunningAlready()) {
+					mainIsAlreadyRunning(primaryStage);
+					Platform.exit();
+					cancel();
+					return null;
+				}
 				conf.setModel(model_main);
 				conf.createProgramPaths();
 				conf.loadConfig();
@@ -141,7 +148,7 @@ public class Main extends Application {
 				primaryStage.setY(Main.conf.getWindowStartPosY());
 				primaryStage.setWidth(Main.conf.getWindowStartWidth());
 				primaryStage.setHeight(Main.conf.getWindowStartHeight());
-				
+
 				scene_Switcher.setWindow(primaryStage);
 				scene_Switcher.setScene_main(primaryScene);
 
@@ -158,6 +165,7 @@ public class Main extends Application {
 				Platform.runLater(new Runnable() {
 					@Override
 					public void run() {
+
 						primaryStage.setScene(primaryScene);
 //						defineScreenBounds(primaryStage);
 						primaryStage.show();
@@ -167,13 +175,25 @@ public class Main extends Application {
 
 				});
 				lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
-				Platform.runLater(()-> {
+				Platform.runLater(() -> {
 
 					lpt.setTask(mainTask);
 //					lpt.showLoadStage();
 				});
 //				ScenicView.show(parent);
 				return null;
+			}
+
+			private void mainIsAlreadyRunning(Stage primaryStage) {
+				VBox vbox = new VBox(new Label("Is already running"));
+				Scene scene = new Scene(vbox, 400, 300);
+				primaryStage.setScene(scene);
+				Platform.runLater(() -> primaryStage.show()	);
+
+			}
+
+			private boolean isProgramRunningAlready() {
+				return false;
 			}
 		};
 
@@ -324,7 +344,8 @@ public class Main extends Application {
 					lpt.closeStage();
 				}
 				primaryStage.setOnCloseRequest(model_main.dontExit);
-				Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(), true);
+				Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
+						true);
 				model_main.exitProgram_NOSAVE();
 			}
 		});
@@ -491,8 +512,8 @@ public class Main extends Application {
 	public static void centerWindowDialog(Stage stage) {
 		stage.setOnShowing(ev -> {
 			Platform.runLater(() -> {
-				System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: "
-						+ stage.getWidth() + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
+				System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: " + stage.getWidth()
+						+ " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
 				System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: "
 						+ stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
 				stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
@@ -501,7 +522,7 @@ public class Main extends Application {
 						- stage.getHeight() / 2));
 			});
 		});
-		
+
 	}
 
 }

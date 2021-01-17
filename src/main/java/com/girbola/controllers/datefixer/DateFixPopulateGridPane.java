@@ -273,7 +273,6 @@ public class DateFixPopulateGridPane extends Task<Void> {
 									for (Node nodeImv : sp.getChildren()) {
 										if (nodeImv instanceof ImageView) {
 											ImageView imv = (ImageView) nodeImv;
-
 											if (imv.getImage() != null) {
 												boolean deselected = model_dateFix.getSelectionModel().add(frame);
 												if (model_dateFix.getRightInfo_visible()) {
