@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -395,52 +396,52 @@ public class TableController {
 	private void checkChanges_mi_action(ActionEvent event) {
 		LoadingProcess_Task loadingProcess = new LoadingProcess_Task(owner);
 		ExecutorService exec = Executors.newSingleThreadExecutor();
+		CountDownLatch cdl = new CountDownLatch(table.getSelectionModel().getSelectedItems().size());
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			Messages.sprintf("Checking folder: " + folderInfo.getFolderPath());
 			try {
-				
+
 //				List<FileInfo> sourceFileList = folderInfo.getFileInfoList();
 
-				//Get list of folder root media files into arraylist and add new files to addToList
+				// Get list of folder root media files into arraylist and add new files to
+				// addToList
 				List<Path> rootFileList = GetRootFiles.getRootFiles(Paths.get(folderInfo.getFolderPath()));
-				boolean changed = FileInfo_List_Utils.cleanFileInfoList(rootFileList, folderInfo.getFileInfoList());
-				
-				
+				cdl.await();
+				List<Path> rootFileList2 = GetRootFiles.getRootFiles(Paths.get(folderInfo.getFolderPath()), cdl);
+
+//				boolean changed = FileInfo_List_Utils.cleanFileInfoList(rootFileList, folderInfo.getFileInfoList());
+
 //				FileInfo_Utils.addAll(folderInfo, exists_list);
+				Task<Boolean> checkFolderInfoForChanges = new CheckFolderInfoForChanges(folderInfo, table,
+						loadingProcess);
+				Messages.sprintf("FolderInfo is about to be added: " + folderInfo.getFolderPath());
+				exec.submit(checkFolderInfoForChanges);
 
-			} catch (IOException e) {
-
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			Task<Boolean> checkFolderInfoForChanges = new CheckFolderInfoForChanges(folderInfo, table, loadingProcess);
-			exec.submit(checkFolderInfoForChanges);
 
 		}
 		exec.shutdown();
-
-		Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main, loadingProcess);
-		checkTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("checkChanges_mi_action was ended successfully");
-				loadingProcess.closeStage();
-			}
-		});
-		checkTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("checkChanges_mi_action was cancelled");
-				loadingProcess.closeStage();
-			}
-		});
-		checkTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				loadingProcess.closeStage();
-				Messages.warningText("checking changes failed!");
-			}
-		});
+		/*
+		 * Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main,
+		 * loadingProcess); checkTask.setOnSucceeded(new
+		 * EventHandler<WorkerStateEvent>() {
+		 * 
+		 * @Override public void handle(WorkerStateEvent event) {
+		 * Messages.sprintf("checkChanges_mi_action was ended successfully");
+		 * loadingProcess.closeStage(); } }); checkTask.setOnCancelled(new
+		 * EventHandler<WorkerStateEvent>() {
+		 * 
+		 * @Override public void handle(WorkerStateEvent event) {
+		 * Messages.sprintf("checkChanges_mi_action was cancelled");
+		 * loadingProcess.closeStage(); } }); checkTask.setOnFailed(new
+		 * EventHandler<WorkerStateEvent>() {
+		 * 
+		 * @Override public void handle(WorkerStateEvent event) {
+		 * loadingProcess.closeStage();
+		 * Messages.warningText("checking changes failed!"); } });
+		 */
 //		loadingProcess.setTask(checkTask);
 //		Thread thread = new Thread(checkTask, "Checking changes thread");
 //		thread.start();
