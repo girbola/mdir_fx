@@ -7,6 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,6 +53,7 @@ class FileInfo_List_UtilsTest {
 	 * } else { System.out.println("Content were NOT changed"); } // //
 	 * FileInfo_List_Utils.cleanFileInfoList(rootFileList, sourceFileList); }
 	 */
+
 	@Test
 	void loadDatabase() {
 
@@ -58,18 +61,55 @@ class FileInfo_List_UtilsTest {
 			Connection connection = SqliteConnection.connector(folder, Main.conf.getMdir_db_fileName());
 			connection.setAutoCommit(false);
 			List<FileInfo> fileInfoList = FileInfo_SQL.loadFileInfoDatabase(connection);
-			for (FileInfo fileInfo : fileInfoList) {
-				System.out.println("------------fileInfo: " + fileInfo);
-			}
 
 			List<Path> rootFileList = GetRootFiles.getRootFiles(folder);
-			boolean changed = FileInfo_List_Utils.cleanFileInfoList(rootFileList, fileInfoList);
-			if (changed) {
-				System.out.println("Content were changed");
-
-			} else {
-				System.out.println("Content were NOT changed");
+			for (Path file : rootFileList) {
+				System.out.println("------------TRUE FILEEEE::: " + file + " size: " + Files.size(file) + " hash: " + file.toFile().hashCode());
 			}
+
+//			rootFileList.remove(0);
+//			rootFileList.remove(1);
+//			rootFileList.remove(2);
+			Collections.sort(rootFileList);
+			Collections.sort(fileInfoList, new Comparator<FileInfo>() {
+				@Override
+				public int compare(FileInfo o1, FileInfo o2) {
+					return o1.getOrgPath().compareTo(o2.getOrgPath());
+				}
+			});
+			for (FileInfo fileInfo : fileInfoList) {
+				if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+					System.out.println("------------fileInfo: " + fileInfo + " size: " + fileInfo.getSize()
+							+ " real size: " + Files.size(Paths.get(fileInfo.getOrgPath())));
+				} else {
+					System.out.println("------------DB fileInfo: " + fileInfo);
+				}
+			}
+			for (Path file : rootFileList) {
+				System.out.println("------------>>>>>>2TRUE FILEE::: " + file + " size: " + Files.size(file));
+			}
+
+			boolean changed = FileInfo_List_Utils.cleanFileInfoList(connection, rootFileList, fileInfoList);
+			if (changed) {
+				System.out.println("Content were changed\n");
+			} else {
+				System.out.println("Content were NOT changed\n");
+			}
+			Collections.sort(fileInfoList, new Comparator<FileInfo>() {
+				@Override
+				public int compare(FileInfo o1, FileInfo o2) {
+					return o1.getOrgPath().compareTo(o2.getOrgPath());
+				}
+			});
+			for (FileInfo fileInfo : fileInfoList) {
+				System.out.println("------------fileInfo. ID: " + fileInfo.getFileInfo_id() + " name: " + fileInfo + " size: " + fileInfo.getSize() + " real size: "
+						+ Files.size(Paths.get(fileInfo.getOrgPath())));
+			}
+			for (Path file : rootFileList) {
+				System.out.println("------------FILEE::: " + file + " size: " + Files.size(file));
+			}
+
+			connection.commit();
 			connection.close();
 
 		} catch (Exception e) {

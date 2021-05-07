@@ -1,17 +1,18 @@
+package com.girbola.filelisting;
 /*
  @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.filelisting;
+
 
 import static com.girbola.messages.Messages.sprintf;
 import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SIBLINGS;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 import static java.nio.file.FileVisitResult.TERMINATE;
-
+import java.util.concurrent.CountDownLatch;
 /**
  *
  * @author Marko Lokka
@@ -53,6 +54,28 @@ public class GetRootFiles {
 			return null;
 		}
 
+		return foundFiles;
+	}
+	
+	public static List<Path> getRootFiles(Path path, CountDownLatch cdl) throws IOException {
+		Main.setProcessCancelled(false);
+		sprintf("getRootFiles started: " + path);
+		RootFiles fv = new RootFiles(path);
+
+		List<Path> foundFiles = fv.foundPaths;
+
+		Files.walkFileTree(path, fv);
+
+		if (Main.getProcessCancelled()) {
+			sprintf("getRootFiles has cancelled and terminated");
+			return null;
+		}
+
+		try {
+//			cdl.count();
+		}catch(Exception e) {
+			
+		}
 		return foundFiles;
 	}
 }

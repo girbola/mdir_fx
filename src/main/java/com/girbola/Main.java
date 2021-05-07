@@ -106,6 +106,7 @@ public class Main extends Application {
 				setChanged(false);
 				sprintf("Program starting");
 				locale = new Locale(lang, country);
+				System.out.println("bundle lang: " + locale.getLanguage() + " country: " + locale.getCountry());
 				bundle = ResourceBundle.getBundle("bundle/lang", locale);
 				if (isProgramRunningAlready()) {
 					mainIsAlreadyRunning(primaryStage);

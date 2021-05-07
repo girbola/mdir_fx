@@ -32,6 +32,7 @@
 			<email>girbola9@gmail.com</email>
 		</developer>
 	</developers>
+
 	<properties>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,7 +48,9 @@
 		<imageio-tiff.version>3.5</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
 		<slf4j.version>1.7.7</slf4j.version>
+		
 	</properties>
+
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 

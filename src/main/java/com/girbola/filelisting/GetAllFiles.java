@@ -1,10 +1,12 @@
+package com.girbola.filelisting;
+
 /*
  @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.filelisting;
+
 
 import static com.girbola.messages.Messages.sprintf;
 import static java.nio.file.FileVisitResult.CONTINUE;
