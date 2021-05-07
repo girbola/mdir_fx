@@ -4,3 +4,4 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 /scenicView.properties
 /shade/
 *.log
+.classpath
