@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.girbola</groupId>
-	<artifactId>mdir_fx_13</artifactId>
+	<artifactId>mdir_fx_2021</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -36,14 +36,14 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
-		<javafx.version>14</javafx.version>
+		<javafx.version>15</javafx.version>
 		<metadata-extractor.version>2.15.0</metadata-extractor.version>
 		<vlcj.version>4.6.0</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
 		<imageio-jpeg.version>3.5</imageio-jpeg.version>
 		<imageio-tiff.version>3.5</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j.version>1.7.7</slf4j.version>
+		<slf4j.version>1.7.32</slf4j.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
