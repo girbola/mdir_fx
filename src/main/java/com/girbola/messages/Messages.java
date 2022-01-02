@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.messages.html.HTMLClass;
 
 import javafx.application.Platform;
@@ -167,6 +168,7 @@ public class Messages {
 		Messages.sprintf("errorSmth triggered. " + " message: " + message + " className= " + className + " at line: " + line);
 		if (exit) {
 			Main.setProcessCancelled(true);
+			ConcurrencyUtils.stopExecThread();
 			// sit näytetään showAndWait muuten jokin toinen dialigi tyyli
 		}
 //TODO TÄMÄ TÄYTYY VAIHTAA Dialogiksi mutta stagea käyttäen

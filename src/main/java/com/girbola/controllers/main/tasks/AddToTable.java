@@ -58,7 +58,7 @@ public class AddToTable extends Task<Integer> {
 		for (Path p : list) {
 			if (Main.getProcessCancelled()) {
 				cancel();
-				ConcurrencyUtils.stopExecThreadNow();
+				ConcurrencyUtils.stopExecThread();
 				break;
 			}
 			// TODO Tämä uusiksi prkl!

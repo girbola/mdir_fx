@@ -18,12 +18,10 @@ import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.filelisting.GetAllMediaFiles;
-import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -243,8 +241,10 @@ public class WorkDir_Handler {
 		for (FileInfo fileInfo : workDir_List) {
 			if (fileInfo.getDate() == fileInfoToSearch.getDate()) {
 				if (fileInfo.getSize() == fileInfoToSearch.getSize()) {
-					list.add(fileInfo);
-					Messages.sprintfError("DUPLICATE FOUND: " + fileInfo.getOrgPath());
+					if(Files.exists(Paths.get(fileInfoToSearch.getWorkDir() + File.separator + fileInfoToSearch.getDestination_Path()))) {
+						list.add(fileInfo);
+						Messages.sprintfError("DUPLICATE FOUND: " + fileInfo.getOrgPath());
+					}
 				}
 			}
 		}

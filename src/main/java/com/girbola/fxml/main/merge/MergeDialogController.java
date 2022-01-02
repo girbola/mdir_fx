@@ -24,10 +24,11 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -116,7 +117,7 @@ public class MergeDialogController {
 				return;
 			}
 			if (Main.getProcessCancelled()) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed) + " + " \nDestination folder: " + folderInfo.getFolderPath()), null,
 						Misc.getLineNumber(), true);
 				break;
 			}
@@ -256,42 +257,62 @@ public class MergeDialogController {
 		}
 		Messages.sprintf(
 				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
-
+		int folder_counter = 0;
+		int file_counter = 0;
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getBadFiles() >= 1) {
 				Messages.warningText(Main.bundle.getString("badDatesFound"));
 				return;
 			}
+			Messages.sprintf("Processing apply_btn action: " + folder_counter + " file_counter: " + file_counter);
 			if (Main.getProcessCancelled()) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+				Main.conf.getModel().getMonitorExternalDriveConnectivity().cancel();
+				Messages.sprintfError("Process is cancelled");
+				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed") + "\nDestination folder: " + folderInfo.getFolderPath(), null,
 						Misc.getLineNumber(), true);
 				break;
 			}
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-
+				Messages.sprintf("Fileinfo destPath is: " + fileInfo.getDestination_Path());
 				if (Main.getProcessCancelled()) {
 					Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
 							Misc.getLineNumber(), true);
 					break;
 				}
-				fileInfo.setEvent(eventName);
-				fileInfo.setLocation(locationName);
-				fileInfo.setUser(userName);
+				if(addEverythingInsameDir_chb.isSelected()) {
+					fileInfo.setEvent(eventName);
+					fileInfo.setLocation(locationName);
+					fileInfo.setUser(userName);
+				} else {
+					fileInfo.setEvent(eventName + File.separator + folderInfo.getJustFolderName());
+					fileInfo.setLocation(locationName);
+					fileInfo.setUser(userName);
+				}
 
 				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
-				if (!Files.exists(destinationPath)) {
-					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-							+ destinationPath);
-					Main.setProcessCancelled(true);
-					break;
+				if (!Files.exists(destinationPath.getParent())) {
+					try {
+						Files.createDirectories(destinationPath.getParent());
+					} catch (IOException e) {
+						e.printStackTrace();
+						Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + "\nFile destination: "
+								+ destinationPath);
+						Main.setProcessCancelled(true);
+						break;
+					}
+						
+					
+					
 				}
 				fileInfo.setCopied(false);
 				folderInfo.setChanged(true);
 				Main.setChanged(true);
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+				file_counter++;
 			}
+			folder_counter++;
 		}
 		TableUtils.refreshAllTableContent(tables);
 		close();
@@ -433,5 +454,17 @@ public class MergeDialogController {
 		this.tables = tables;
 		this.table = table;
 		this.tableType = tableType;
+		populateEvents(table);
+
+	}
+
+	private void populateEvents(TableView<FolderInfo> tableView) {
+		ObservableList<String> events = FXCollections.observableArrayList(); 
+		for (FolderInfo folderInfo : tableView.getSelectionModel().getSelectedItems()) {
+			events.add(folderInfo.getJustFolderName());
+		}
+
+		event_cmb.setItems(events);
+
 	}
 }

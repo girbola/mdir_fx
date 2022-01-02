@@ -210,8 +210,7 @@ public class DateTimeAdjusterController {
 	@FXML
 	private void copy_startToEnd_btn_action(ActionEvent event) {
 		sprintf("Date to copy_startToEnd: ");
-		start_datePicker.setValue(end_datePicker.getValue());
-
+		end_datePicker.setValue(start_datePicker.getValue());
 		model_datefix.getEnd_time().setHour(model_datefix.getStart_time().getHour());
 		model_datefix.getEnd_time().setMin(model_datefix.getStart_time().getMin());
 		model_datefix.getEnd_time().setSec(model_datefix.getStart_time().getSec());

@@ -386,13 +386,26 @@ public class FileUtils {
 			event_str = " - " + fileInfo.getEvent();
 		}
 
-		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		Path destPath = Paths.get(File.separator + localDate.getYear() + File.separator + localDate + location_str
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		
+		Path destPath = Paths.get(File.separator 
+				+ localDate.getYear() 
+				+ File.separator 
+				+ localDate 
+				+ location_str
 				+ event_str + File.separator + fileName + "."
 				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+		
 		fileInfo.setDestination_Path(destPath.toString());
-
+		Messages.sprintf("File destinationPath will be: " + destPath.getParent());
+		if(!Files.exists(destPath.getParent())) {
+			try {
+				Files.createDirectories(destPath.getParent());
+			} catch (IOException e) {
+				e.printStackTrace();
+				Messages.errorSmth("", "Can't created directory/directories", e, Misc.getLineNumber(), true);
+			}
+		}
 		if (!fileInfoIsCopiedToDest(fileInfo, Main.conf.getWorkDir())) {
 			fileInfo.setCopied(false);
 		} else {

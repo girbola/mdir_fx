@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import com.girbola.messages.Messages;
+
 import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -32,10 +34,15 @@ public class DateFixerModel {
 
 		@Override
 		public LocalDate fromString(String string) {
+			LocalDate ld = null;
 			if (string != null && !string.isEmpty()) {
-				return LocalDate.parse(string, simpleDates.getDtf_ymd_minus());
+				try {
+					return LocalDate.parse(string, simpleDates.getDtf_ymd_minus());
+				} catch (Exception e) {
+					return LocalDate.parse("2000-01-01", simpleDates.getDtf_ymd_minus());
+				}
 			} else {
-				return null;
+				return LocalDate.parse("2000-01-01", simpleDates.getDtf_ymd_minus());
 			}
 		}
 	};
@@ -91,15 +98,40 @@ public class DateFixerModel {
 		return start_datePicker;
 	}
 
+	ChangeListener<Boolean> datePickerChangeListener(DatePicker dp) {
+		ChangeListener<Boolean> changeListener = new ChangeListener<Boolean>() {
+
+			@Override
+			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+				if(newValue == false) {
+					LocalDate fromString = dp.getConverter().fromString(dp.getEditor().getText());
+					try {
+						fromString = dp.getConverter().fromString(dp.getEditor().getText());
+					} catch (Exception ex) {
+						fromString = LocalDate.now();
+						Messages.sprintf("Catch Exception and tthe Date is: " + fromString);
+					}
+					Messages.sprintf("Date is: " + fromString);
+					dp.setValue(fromString);
+				}
+			}
+		};
+		
+		
+		return changeListener;
+	}
 	public void setStart_datePicker(DatePicker start_datePicker) {
 		this.start_datePicker = start_datePicker;
+		
 		this.start_datePicker.setConverter(converter);
-		this.start_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("start_datePicker: " + newValue);
-			}
-		});
+		start_datePicker.focusedProperty().addListener(datePickerChangeListener(start_datePicker));
+		
+//		this.start_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
+//			@Override
+//			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//				sprintf("start_datePicker: " + newValue);
+//			}
+//		});
 	}
 
 	public DatePicker getEnd_datePicker() {
@@ -108,7 +140,9 @@ public class DateFixerModel {
 
 	public void setEnd_datePicker(DatePicker end_datePicker) {
 		this.end_datePicker = end_datePicker;
+		
 		this.end_datePicker.setConverter(converter);
+		end_datePicker.focusedProperty().addListener(datePickerChangeListener(end_datePicker));
 		this.end_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {

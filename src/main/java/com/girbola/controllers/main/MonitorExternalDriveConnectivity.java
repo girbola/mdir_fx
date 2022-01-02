@@ -62,6 +62,10 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 	}
 
 	private void checkWorkDirConnected() {
+		if(Main.getProcessCancelled()) {
+			disConnectedDrive("Stopping workdir polling");
+			return;
+		}
 		if (Main.conf.getWorkDir().equals("null")) {
 			disConnectedDrive("checkWorkDirConnected WorkDir is null");
 			return;

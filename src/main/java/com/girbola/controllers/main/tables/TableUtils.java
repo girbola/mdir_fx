@@ -28,12 +28,9 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.controllers.main.CopyBatch;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.UpdateFolderInfoContent;
@@ -46,7 +43,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
@@ -299,7 +295,8 @@ public class TableUtils {
 			if (Main.getProcessCancelled()) {
 				return;
 			}
-			if (fi.isIgnored() || fi.isTableDuplicated()) {
+			if (fi.isIgnored()
+					|| fi.isTableDuplicated() && Files.exists(Paths.get(fi.getWorkDir() + fi.getDestination_Path()))) {
 				Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
 				ignored++;
 			} else {
@@ -821,18 +818,19 @@ public class TableUtils {
 
 	public static void cleanTables(Tables tables) {
 		boolean sorted = cleanTable(tables.getSorted_table());
-		if(sorted) {
+		if (sorted) {
 			refreshTableContent(tables.getSorted_table());
 		}
 		boolean sortit = cleanTable(tables.getSortIt_table());
-		if(sortit) {
+		if (sortit) {
 			refreshTableContent(tables.getSortIt_table());
 		}
 		boolean asitis = cleanTable(tables.getAsItIs_table());
-		if(asitis) {
+		if (asitis) {
 			refreshTableContent(tables.getAsItIs_table());
 		}
 	}
+
 	private static boolean cleanTable(TableView<FolderInfo> table) {
 
 		ObservableList<FolderInfo> toRemove = FXCollections.observableArrayList();
@@ -840,7 +838,7 @@ public class TableUtils {
 			if (folderInfo.getFileInfoList().size() == 0) {
 				toRemove.add(folderInfo);
 				Messages.sprintf("TOREMOVE: " + folderInfo.getFolderPath() + " FILES: " + folderInfo.getFolderSize());
-			} 
+			}
 		}
 		table.getItems().removeAll(toRemove);
 		return true;

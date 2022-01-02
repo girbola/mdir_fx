@@ -751,7 +751,7 @@ public class Model_datefix extends DateFixerModel {
 		}
 		Main.setProcessCancelled(true);
 		getRenderVisibleNode().stopTimeLine();
-		ConcurrencyUtils.stopExecThreadNow();
+		ConcurrencyUtils.stopExecThread();
 		List<ThumbInfo> thumbInfo_list = new ArrayList<>();
 		for (Node n : getGridPane().getChildren()) {
 			if (n instanceof VBox) {

@@ -269,7 +269,7 @@ public class Model_main {
 	}
 
 	public void exitProgram_NOSAVE() {
-		ConcurrencyUtils.stopExecThreadNow();
+		ConcurrencyUtils.stopExecThread();
 		Platform.exit();
 	}
 
@@ -320,13 +320,13 @@ public class Model_main {
 		}
 		if (conf.isConfirmOnExit()) {
 			sprintf("isShowOnExit was true");
-			ConcurrencyUtils.stopExecThreadNow();
+			ConcurrencyUtils.stopExecThread();
 			// save();
 			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();
 		} else {
 			sprintf("isShowOnExit was false");
-			ConcurrencyUtils.stopExecThreadNow();
+			ConcurrencyUtils.stopExecThread();
 			// save();
 			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();

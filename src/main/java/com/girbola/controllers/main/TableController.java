@@ -294,7 +294,7 @@ public class TableController {
 		Main.setProcessCancelled(false);
 		try {
 			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
-				warningText(bundle.getString("cannotFindWorkDir"));
+				warningText(bundle.getString("cannotFindWorkDir") + conf.getWorkDir().toString());
 				return;
 			}
 		} catch (IOException ex) {

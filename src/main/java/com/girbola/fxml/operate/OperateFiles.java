@@ -486,7 +486,7 @@ public class OperateFiles extends Task<Boolean> {
 					return true;
 				}
 			} catch (Exception ex) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories"), ex, Misc.getLineNumber(),
+				Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories") + " \nDestination path is: " + destinationDirectories, ex, Misc.getLineNumber(),
 						true);
 				cancel();
 				Main.setProcessCancelled(true);
