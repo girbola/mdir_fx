@@ -419,7 +419,7 @@ public class Main extends Application {
 		processCancelled.set(aProcessCancelled);
 		sprintf("Process has been set to cancel= " + aProcessCancelled);
 		if (aProcessCancelled) {
-			ConcurrencyUtils.stopExecThreadNow();
+			ConcurrencyUtils.stopExecThread();
 		}
 	}
 
