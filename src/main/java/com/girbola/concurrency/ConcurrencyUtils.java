@@ -30,7 +30,7 @@ public class ConcurrencyUtils {
     }
 
     public static void initExecutionService() {
-        stopExecThreadNow();
+        stopExecThread();
     	execCounter.incrementAndGet();
         sprintf("========NEW initExecutionService initializing execThreads: " + getExecCounter());
 
@@ -45,19 +45,6 @@ public class ConcurrencyUtils {
             return t;
         });
 
-    }
-
-    public static void stopExecThreadNow() {
-        if (exec[getExecCounter()] != null) {
-            if (!exec[getExecCounter()].isTerminated()) {
-                exec[getExecCounter()].shutdownNow();
-                sprintf("execThread stopped: " + getExecCounter());
-            }
-            if (!exec[getExecCounter()].isShutdown()) {
-                exec[getExecCounter()].shutdownNow();
-                sprintf("execThread stopped: " + getExecCounter());
-            }
-        }
     }
 
     public static void stopExecThread() {
