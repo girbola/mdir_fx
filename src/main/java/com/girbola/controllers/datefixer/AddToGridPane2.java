@@ -10,6 +10,7 @@ import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
@@ -29,6 +30,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -176,17 +178,27 @@ public class AddToGridPane2 extends Task<Integer> {
 				if (event.getButton() == MouseButton.SECONDARY) {
 					if (event.getTarget() instanceof VBox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
 						VBox vbox = (VBox) event.getTarget();
-						FileInfo fileInfo = (FileInfo) vbox.getUserData();
+						TextField textField = (TextField) model_datefix.getTextField(vbox);
+						
+//						
+//						FileInfo fileInfo = (FileInfo) vbox.getUserData();
 						pickDateTime_Start.setOnAction(new EventHandler<ActionEvent>() {
 							@Override
 							public void handle(ActionEvent event) {
-								model_datefix.setDateTime(Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true);
+								Messages.sprintf("pickdatetime is:->" + textField.getText() + "<-");
+								String text = textField.getText().trim();
+								LocalDateTime ldt = LocalDateTime.parse(text, Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+								model_datefix.setDateTime(ldt.toString(), true);
 							}
 						});
 						pickDateTime_End.setOnAction(new EventHandler<ActionEvent>() {
 							@Override
 							public void handle(ActionEvent event) {
-								model_datefix.setDateTime(Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false);
+								Messages.sprintf("pickdatetime is: " + textField.getText());
+								//2002-04-26 22.19.02
+								String text = textField.getText().trim();
+								LocalDateTime ldt = LocalDateTime.parse(text, Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+								model_datefix.setDateTime(ldt.toString(), false);
 							}
 						});
 						contextMenu.show(vbox, event.getScreenX(), event.getScreenY());

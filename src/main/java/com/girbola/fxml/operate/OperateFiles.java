@@ -2,6 +2,7 @@ package com.girbola.fxml.operate;
 
 import static com.girbola.messages.Messages.sprintf;
 
+import java.awt.MouseInfo;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -37,6 +38,8 @@ import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -44,6 +47,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -59,6 +63,19 @@ public class OperateFiles extends Task<Boolean> {
 	private String scene_NameType;
 	private List<FileInfo> listCopiedFiles = new ArrayList<>();
 
+	// Save MAIN screen state
+	private double width;
+	private double height;
+	private double xPos;
+	private double yPos;
+
+	/**
+	 * 
+	 * @param list
+	 * @param close
+	 * @param aModel_main
+	 * @param scene_NameType
+	 */
 	public OperateFiles(List<FileInfo> list, boolean close, Model_main aModel_main, String scene_NameType) {
 		Messages.sprintf("OperateFiles starting LIST");
 		this.list = list;
@@ -96,17 +113,60 @@ public class OperateFiles extends Task<Boolean> {
 			Main.scene_Switcher.getWindow().setScene(operate_scene);
 		});
 
+		Messages.sprintf("Screen.getPrimary().getBounds() " + Screen.getPrimary().getBounds());
+		Messages.sprintf("operate_scene.getWindow().getX();: " + operate_scene.getWindow().getX());
+
+		width = Main.scene_Switcher.getWindow().getWidth();
+		height = Main.scene_Switcher.getWindow().getHeight();
+		xPos = Main.scene_Switcher.getWindow().getX();
+		yPos = Main.scene_Switcher.getWindow().getY();
+		Messages.sprintf("width: " + width + " height: " + height + " xPos: " + xPos + " yPos: " + yPos);
 		Main.scene_Switcher.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
 				Model_main model_Main = (Model_main) Main.getMain_stage().getUserData();
+				Platform.runLater(() -> {
+					Main.scene_Switcher.getWindow().setWidth(width);
+					Main.scene_Switcher.getWindow().setHeight(height);
+					Main.scene_Switcher.getWindow().setX(xPos);
+					Main.scene_Switcher.getWindow().setY(yPos);
+
+				});
 				Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
-				Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
-				event.consume();
+				Platform.runLater(() -> {
+
+//					Main.scene_Switcher.getScene_main().getWindow().setWidth(2000);
+//					Main.scene_Switcher.getScene_main().getWindow().setHeight(800);
+//					Main.scene_Switcher.getScene_main().getWindow().setX(10);
+//					Main.scene_Switcher.getScene_main().getWindow().setY(10);
+					Main.getMain_stage().setWidth(2000);
+					Main.getMain_stage().setHeight(800);
+					Main.getMain_stage().setX(10);
+					Main.getMain_stage().setY(10);
+				});
+				Platform.runLater(() -> {
+					Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
+				});
+//				event.consume();
 			}
+		});
+		Platform.runLater(() -> {
+			operate_scene.getWindow().setWidth(Screen.getPrimary().getBounds().getMaxX() / 3);
+			operate_scene.getWindow().setHeight(Screen.getPrimary().getBounds().getMaxY() / 1.3);
+			operate_scene.getWindow().setX(Screen.getPrimary().getBounds().getMaxX() / 4);
+			operate_scene.getWindow().setY(Screen.getPrimary().getBounds().getMaxY() / 20);
+
 		});
 
 		return null;
+	}
+
+	@Override
+	protected void running() {
+
+		if (!isRunning()) {
+
+		}
 	}
 
 	@Override
@@ -486,8 +546,8 @@ public class OperateFiles extends Task<Boolean> {
 					return true;
 				}
 			} catch (Exception ex) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories") + " \nDestination path is: " + destinationDirectories, ex, Misc.getLineNumber(),
-						true);
+				Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateDirectories") + " \nDestination path is: "
+						+ destinationDirectories, ex, Misc.getLineNumber(), true);
 				cancel();
 				Main.setProcessCancelled(true);
 				return false;
