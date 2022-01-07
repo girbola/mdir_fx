@@ -279,8 +279,9 @@ public class OperateFiles extends Task<Boolean> {
 				if (Files.exists(source)) {
 
 					dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-					boolean cancellation = checkCancellation(fileInfo, dest);
+					boolean cancellation = checkIfProcessIsCancelled(fileInfo, dest);
 					if (cancellation) {
+						Main.setProcessCancelled(true);
 						break;
 					}
 //			TODO	duplicates ei toimi oikein. Korjaa!!!!
@@ -290,7 +291,7 @@ public class OperateFiles extends Task<Boolean> {
 					List<FileInfo> findPossibleExistsFoldersInWorkdir = model_main.getWorkDir_Handler()
 							.findPossibleExistsFoldersInWorkdir(fileInfo);
 					if (!findPossibleExistsFoldersInWorkdir.isEmpty()) {
-						Messages.sprintf("Duplicates found: " + source);
+						Messages.sprintf("Duplicates found: " + source + " possible duplicates found amount of= " + findPossibleExistsFoldersInWorkdir.size());
 //						fileInfo.setCopied(true);
 //				boolean defineDuplicate = FileInfo_Utils.defineDuplicateFile(fileInfo, dest);
 //				if (defineDuplicate) {
@@ -490,7 +491,7 @@ public class OperateFiles extends Task<Boolean> {
 		 * @param destination
 		 * @return
 		 */
-		private boolean checkCancellation(FileInfo fileInfo, Path destination) {
+		private boolean checkIfProcessIsCancelled(FileInfo fileInfo, Path destination) {
 			if (isCancelled()) {
 				Main.setProcessCancelled(true);
 				cancel();

@@ -295,8 +295,7 @@ public class TableUtils {
 			if (Main.getProcessCancelled()) {
 				return;
 			}
-			if (fi.isIgnored()
-					|| fi.isTableDuplicated() && Files.exists(Paths.get(fi.getWorkDir() + fi.getDestination_Path()))) {
+			if (fi.isIgnored() || fi.isTableDuplicated() && Files.exists(Paths.get(fi.getWorkDir() + fi.getDestination_Path()))) {
 				Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
 				ignored++;
 			} else {
@@ -349,7 +348,7 @@ public class TableUtils {
 		}
 		Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video) + " ignored: " + ignored);
 		folderInfo.setConfirmed(confirmed);
-		folderInfo.setFolderFiles(image + raw + video);
+		folderInfo.setFolderFiles((image + raw + video)-(ignored));
 
 		folderInfo.setBadFiles(bad);
 

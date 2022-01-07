@@ -12,6 +12,7 @@ import java.util.ResourceBundle;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
@@ -136,14 +137,52 @@ public class Collect_DateTimeAdjusterController {
 			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
 		}
 
+		List<FileInfo> collected_FilesByDateScale_list = getFilesByDateScale(model_main.tables(), ldt_start, ldt_end);
+		
+		
 		model_CollectDialog.obs_Events.clear();
 		model_CollectDialog.obs_Location.clear();
 
-		collectFiles(TableType.SORTIT.getType(), model_main.tables().getSortIt_table(), collectedList, ldt_start, ldt_end);
-		collectFiles(TableType.SORTED.getType(), model_main.tables().getSorted_table(), collectedList, ldt_start, ldt_end);
+		collectFiles(TableType.SORTIT.getType(), model_main.tables().getSortIt_table(), collectedList, ldt_start,
+				ldt_end);
+		collectFiles(TableType.SORTED.getType(), model_main.tables().getSorted_table(), collectedList, ldt_start,
+				ldt_end);
 
 		Messages.warningText(
 				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+		Messages.warningText(
+				" collected_FilesByDateScale_list Similar files found = " + collected_FilesByDateScale_list.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+		
+		
+	}
+
+	private List<FileInfo> getFilesByDateScale(Tables tables, LocalDateTime ldt_start, LocalDateTime ldt_end) {
+
+		List<FileInfo> listOfFiles = new ArrayList<>();
+
+		for (FolderInfo folderInfo_Sorted : tables.getSorted_table().getItems()) {
+			LocalDateTime start = DateUtils.parseLocalDateTimeFromString(folderInfo_Sorted.getMinDate()).minusDays(1);
+			LocalDateTime end = DateUtils.parseLocalDateTimeFromString(folderInfo_Sorted.getMaxDate()).plusDays(1);
+
+			if (folderInfo_Sorted.getBadFiles() != folderInfo_Sorted.getFolderFiles()) {
+				if (isDateValid(start)) {
+					if (ldt_start.isAfter(start) && ldt_end.isBefore(end)) {
+						for (FileInfo fileInfo : folderInfo_Sorted.getFileInfoList()) {
+							LocalDateTime f_start = fileInfo.getLocalDateTime();
+							if (f_start.minusDays(1).isAfter(start) && f_start.plusDays(1).isBefore(end)) {
+								listOfFiles.add(fileInfo);
+							}
+						}
+					}
+				}
+			}
+		}
+		return listOfFiles;
+	}
+
+	private boolean isDateValid(LocalDateTime start) {
+
+		return false;
 	}
 
 	private void collectFiles(String tableType, TableView<FolderInfo> table, List<FileInfo> collectedList,

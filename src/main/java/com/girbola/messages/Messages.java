@@ -338,6 +338,9 @@ public class Messages {
 	public static void warningText(String text) {
 		Alert alert = new Alert(AlertType.WARNING);
 		DialogPane dialogPane = alert.getDialogPane();
+		dialogPane.setMaxWidth(1024);
+		dialogPane.setMaxHeight(500);
+		
 		dialogPane.setContentText(text);
 		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "dialog.css").toExternalForm());
 		dialogPane.setHeaderText("");
