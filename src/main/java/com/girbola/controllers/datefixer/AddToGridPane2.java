@@ -187,8 +187,9 @@ public class AddToGridPane2 extends Task<Integer> {
 							public void handle(ActionEvent event) {
 								Messages.sprintf("pickdatetime is:->" + textField.getText() + "<-");
 								String text = textField.getText().trim();
-								LocalDateTime ldt = LocalDateTime.parse(text, Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-								model_datefix.setDateTime(ldt.toString(), true);
+								if(!text.isEmpty()) {
+									model_datefix.setDateTime(text, true);
+								}
 							}
 						});
 						pickDateTime_End.setOnAction(new EventHandler<ActionEvent>() {
@@ -197,8 +198,9 @@ public class AddToGridPane2 extends Task<Integer> {
 								Messages.sprintf("pickdatetime is: " + textField.getText());
 								//2002-04-26 22.19.02
 								String text = textField.getText().trim();
-								LocalDateTime ldt = LocalDateTime.parse(text, Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-								model_datefix.setDateTime(ldt.toString(), false);
+								if(!text.isEmpty()) {
+									model_datefix.setDateTime(text, false);
+								}
 							}
 						});
 						contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
