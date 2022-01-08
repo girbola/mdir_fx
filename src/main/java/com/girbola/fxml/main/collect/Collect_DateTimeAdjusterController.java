@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixerModel;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -19,6 +20,7 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
+import common.utils.Conversion;
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -225,7 +227,7 @@ public class Collect_DateTimeAdjusterController {
 	@FXML
 	void copy_startToEnd_btn_action(ActionEvent event) {
 		sprintf("Date to copy_startToEnd: ");
-		start_datePicker.setValue(end_datePicker.getValue());
+		end_datePicker.setValue(start_datePicker.getValue());
 
 		model_CollectDialog.getEnd_time().setHour(model_CollectDialog.getStart_time().getHour());
 		model_CollectDialog.getEnd_time().setMin(model_CollectDialog.getStart_time().getMin());
@@ -234,18 +236,9 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void end_hour_action(ActionEvent event) {
-		model_CollectDialog.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
+		model_CollectDialog.getEnd_time().setHour(Conversion.parseStringToInteger(end_hour.getText()));
 	}
 
-	private int parseTextFieldToInteger(TextField tf) {
-		int sec = 0;
-		try {
-			sec = Integer.parseInt(tf.getText());
-		} catch (NumberFormatException e) {
-			sec = 0;
-		}
-		return sec;
-	}
 
 	@FXML
 	void end_hour_btn_down_action(ActionEvent event) {
@@ -259,7 +252,7 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void end_min_action(ActionEvent event) {
-		model_CollectDialog.getEnd_time().setMin(parseTextFieldToInteger(end_min));
+		model_CollectDialog.getEnd_time().setMin(Conversion.parseStringToInteger(end_min.getText()));
 	}
 
 	@FXML
@@ -289,7 +282,7 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void start_hour_action(ActionEvent event) {
-		model_CollectDialog.getStart_time().setHour(parseTextFieldToInteger(start_hour));
+		model_CollectDialog.getStart_time().setHour(Conversion.parseStringToInteger(start_hour.getText()));
 	}
 
 	@FXML
@@ -304,7 +297,7 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void start_min_action(ActionEvent event) {
-		model_CollectDialog.getStart_time().setMin(parseTextFieldToInteger(start_min));
+		model_CollectDialog.getStart_time().setMin(Conversion.parseStringToInteger(start_min.getText()));
 	}
 
 	@FXML
@@ -319,7 +312,7 @@ public class Collect_DateTimeAdjusterController {
 
 	@FXML
 	void start_sec_action(ActionEvent event) {
-		model_CollectDialog.getStart_time().setSec(parseTextFieldToInteger(start_sec));
+		model_CollectDialog.getStart_time().setSec(Conversion.parseStringToInteger(start_sec.getText()));
 	}
 
 	@FXML
@@ -398,6 +391,9 @@ public class Collect_DateTimeAdjusterController {
 		this.model_main = aModel_main;
 		this.model_CollectDialog = aModel_CollectDialog;
 
+		DateFixerModel.datePickerChangeListener(start_datePicker);
+		DateFixerModel.datePickerChangeListener(end_datePicker);
+		
 		model_CollectDialog.setStart_datePicker(start_datePicker);
 		model_CollectDialog.setEnd_datePicker(end_datePicker);
 
