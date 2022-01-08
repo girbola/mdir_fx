@@ -210,4 +210,14 @@ public class Conversion {
 		return "" + value;
 	}
 
+	public static int parseStringToInteger(String text) {
+		int number = 0;
+		try {
+			number = Integer.parseInt(text);
+		} catch (NumberFormatException e) {
+			number = 0;
+		}
+		return number;
+	}
+
 }
