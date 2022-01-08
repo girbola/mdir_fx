@@ -1,0 +1,159 @@
+/*
+* Marko Lokka project. MDir Tool
+* 2013 (c) mDesign
+*/ /* 
+    Created on : Nov 5, 2015, 8:16:01 AM
+    Author     : Marko Lokka
+    
+  Theme: themes/dark/dialogs.css
+*/
+.root {
+	-fx-base: #1d1d1d;
+	-fx-primary: -fx-base;
+	-fx-dark-border-color: darkgrey;
+	-fx-mid-border-color: grey;
+	-fx-light-border-color: white;
+
+	/* Button basic colors */
+	-fx-button-color: #4f4f4f;
+	-fx-button-fade-color: #484848;
+	-fx-button-border: #a36911;
+
+	/* One of these colors will be chosen based upon a ladder calculation
+ * that uses the brightness of a background color.  Instead of using these
+ * colors directly as -fx-text-fill values, the sections in this file should
+ * use a derived color to match the background in use.  See also:
+ *
+ * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+ * -fx-text-background-color for text on top of -fx-background
+ * -fx-text-inner-color for text on top of -fx-control-inner-color
+ * -fx-selection-bar-text for text on top of -fx-selection-bar
+ */
+	-fx-dark-text-color: black;
+	-fx-mid-text-color: #292929;
+	-fx-light-text-color: white;
+	-fx-font-family: 'Gaduci';
+
+	-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 1, 0, 1, 1);
+	-fx-font-weight: 900;
+	-fx-font-smoothing-type: lcd;
+	/*    -fx-background-color: -fx-base; */
+	/*-fx-padding: 0 3 3 3;*/
+	/*  -fx-border-color:  -fx-dark-border-color; */
+}
+.loadingPane {
+	-fx-background-color: -fx-primary;
+	-fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
+	-fx-border-width: 1px;
+}
+.loadingPane_hbox {
+	-fx-background-color: red;
+	-fx-padding: 2;
+}
+
+.borderPane {
+	-fx-padding: 5;
+	-fx-background-color: transparent;
+}
+
+.button {
+	-fx-background-color: grey, transparent, transparent,
+		linear-gradient(-fx-primary 0%, -fx-primary 38%, -fx-primary 61%, -fx-primary 100%);
+	-fx-background-radius: 5px;
+
+	-fx-font-family: 'Segoe UI Light';
+	-fx-font-size: 12px;
+	-fx-text-fill: white;
+	-fx-border-color: -fx-button-border;
+	-fx-border-radius: 5px;
+	/*-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+}
+
+.cancelLoading {
+	-fx-background-color: yellow;
+	-fx-opacity: 1;
+	-fx-padding: 2;
+}
+
+.dialog-pane {
+	-fx-background-color: #555555;
+}
+.dialog-pane .label {
+	-fx-font-family: 'Gaduci';
+	-fx-font-size: 14px;
+	-fx-text-fill: white;
+}
+.dialog-pane:header .header-panel {
+	-fx-background-color: black;
+}
+.dialog-pane:header .header-panel .label {
+	-fx-font-style: italic;
+	-fx-font-size: 2em;
+}
+
+.progress-bar .bar {
+	-fx-background-color: derive(red, 50%);
+}
+.progress-bar .track {
+	-fx-background-color: derive(black, 50%);
+}
+
+.shadowPane {
+	-fx-background-color: darkgrey;
+	-fx-effect: dropshadow(gaussian, grey, 1, 1, 1, 1);
+	-fx-background-insets: 5;
+}
+
+/*
+Custom styleclasses
+*/
+.alertDiag {
+	-fx-background-color: linear-gradient(
+		derive(-fx-base-background-dark, 40%),
+		derive(-fx-base-background-dark, 30%),
+		derive(-fx-base-background-dark, 30%),
+		derive(-fx-base-background-dark, 40%)
+	);
+	-fx-border-color: orange;
+	-fx-border-width: 1px;
+	-fx-text-fill: white;
+}
+.alertDiag:header *.header-panel {
+	-fx-background-color: linear-gradient(
+		derive(-fx-base-background-dark, 40%),
+		derive(-fx-base-background-dark, 30%),
+		derive(-fx-base-background-dark, 30%),
+		derive(-fx-base-background-dark, 40%)
+	);
+}
+
+.alertDiag > .button-bar > .container {
+	-fx-background-color: linear-gradient(
+		derive(-fx-base-background-dark, 10%),
+		derive(-fx-base-background-dark, 20%),
+		derive(-fx-base-background-dark, 20%),
+		derive(-fx-base-background-dark, 30%)
+	);
+}
+.alertDiag > *.label.content {
+	-fx-text-fill: #ffffff;
+}
+.alertDiag:header *.header-panel *.label {
+	-fx-font-size: 12px;
+	-fx-fill: #292929;
+}
+.yesNoCancelDialog {
+	-fx-background-color: -fx-primary;
+}
+.header .content {
+	-fx-background-color: derive(whitesmoke, 10%);
+	-fx-border-color: -fx-button-border;
+}
+.content .content {
+	-fx-background-color: derive(-fx-primary, 90%);
+	-fx-border-color: -fx-button-border;
+}
+
+.buttonBar {
+	-fx-background-color: derive(-fx-primary, 50%);
+}

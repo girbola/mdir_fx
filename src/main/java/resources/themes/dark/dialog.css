@@ -1,0 +1,51 @@
+.root {
+    -fx-base-background-dark: #393939;
+	-fx-base-background-medium: #767676;
+    -fx-base-background-light: #b8b8b8;
+	
+    -fx-base-background-dark-invert: white;
+    -fx-text-color: white;
+    -fx-text-background-color_dark: black;
+    -fx-text-background-color_light: derive(-fx-base-background-dark, 50.0%);
+
+    -fx-dark-border-color: derive(-fx-base-background-dark, 80.0%);
+
+    -fx-background-color: -fx-base-background-dark;
+
+	-fx-color: derive(-fx-base-background-light, 20.0%);
+    -fx-box-border: ladder(
+        -fx-base-background-dark,
+        black 20.0%,
+        derive(-fx-color,-15.0%) 30.0%);
+    -fx-inner-border-horizontal: linear-gradient(to right, derive(grey,55.0%), derive(-fx-box-border, 10.0%));
+}
+
+.alertDiag{
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
+    -fx-border-color: orange;
+    -fx-border-width: 1.0px;
+    -fx-text-fill: white;
+}
+.alertDiag:header *.header-panel {
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 30.0%), derive(-fx-base-background-dark, 40.0%));
+}
+
+.alertDiag > .button-bar > .container {
+    -fx-background-color: linear-gradient(derive(-fx-base-background-dark, 10.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 20.0%), derive(-fx-base-background-dark, 30.0%));
+}
+.alertDiag > *.label.content{    
+    -fx-text-fill: -fx-text-color;
+}
+.alertDiag:header *.header-panel *.label{
+    -fx-font-size: 12.0px;
+    -fx-fill: -fx-text-color;
+}
+
+.label {
+	   -fx-font-size: 12.0px;
+    -fx-text-fill: yellow;
+}
+.text-area{
+	   /*-fx-font-size: 12.0px; */
+    -fx-text-fill: black;
+}

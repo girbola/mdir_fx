@@ -1,0 +1,29 @@
+.root {
+	-fx-primary: #393939;
+}
+.loadingPane {
+	-fx-background-color: -fx-primary;
+	-fx-border-color: transparent;
+	-fx-border-radius: 5px;
+	-fx-border-color: rgb(187, 123, 4);
+	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
+}
+.progress-bar .bar {
+	-fx-background-color: derive(red, 50%);
+	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
+}
+.progress-bar .track {
+	-fx-background-color: derive(black, 50%);
+	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
+}
+
+.shadowPane {
+	-fx-background-color: rgb(133, 131, 131);
+	-fx-background-radius: 5px;
+}
+.button {
+	-fx-background-color: derive(red, 50%);
+	-fx-background-radius: 5px;
+	-fx-border-radius: 5px;
+	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.082), 1, 0, 0, 1);
+}
