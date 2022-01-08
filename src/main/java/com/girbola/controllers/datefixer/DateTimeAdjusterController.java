@@ -64,11 +64,28 @@ public class DateTimeAdjusterController {
 	private Model_datefix model_datefix;
 
 	@FXML
+	private DatePicker start_datePicker;
+	@FXML
 	private DatePicker end_datePicker;
+
+	@FXML
+	private TextField start_sec;
+	@FXML
+	private TextField start_min;
+	@FXML
+	private TextField start_hour;
+
+	@FXML
+	private TextField end_min;
 	@FXML
 	private TextField end_hour;
 	@FXML
+	private TextField end_sec;
+
+	@FXML
 	private Button copy_startToEnd_btn;
+	@FXML
+	private Button copy_endToStart;
 	@FXML
 	private Button selectRange_btn;
 	@FXML
@@ -77,259 +94,33 @@ public class DateTimeAdjusterController {
 	private Button markFilesAccordingTheDateScale_btn;
 	@FXML
 	private Button findExistsPath_btn;
-
 	@FXML
-	private void findExistsPath_btn_action(ActionEvent event) {
-		Messages.sprintf("findExistsPath_btn_action");
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-
-		try {
-//			model_datefix.getStart_time().getTime();
-//			model_datefix.getEnd_time().getTime();
-			ldt_start = model_datefix.getLocalDateTime(true);
-			ldt_end = model_datefix.getLocalDateTime(false);
-			
-		} catch (Exception ex) {
-			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-			Main.setProcessCancelled(true);
-		}
-		List<FileInfo> collectedList = new ArrayList<>();
-		if (this.model_main == null) {
-			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
-		}
-
-		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-			if (Main.getProcessCancelled()) {
-				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-				break;
-			} /*
-				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-				 */
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-				if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
-					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-//						model_ FolderInfo_Utils. addToObservableFileInfoList.
-						collectedList.add(fileInfo);
-						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-					}
-				}
-			}
-		}
-		
-
-		for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-			if (Main.getProcessCancelled()) {
-				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-				break;
-			} /*
-				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-				 */
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-						collectedList.add(fileInfo);
-						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-					}
-				}
-			}
-			
-		}
-//		for(FileInfo fileInfo : collectedList) {
-//			Node n = createNode(fileInfo);
-//		}
-//		model_datefix.getFolderInfo_full().getFileInfoList();
-//		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
-		
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
-		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
-				model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-		loadingProcess_task.setTask(updateGridPane_Task);
-		
-		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
-		thread.start();
-
-		Messages.warningText(
-				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
-		for(FileInfo fileInfo : collectedList) {
-			Messages.sprintf("fileInfo collected: " + fileInfo.toString() + " fileInfo date: " + DateUtils.longToLocalDateTime(fileInfo.getDate()));
-		}
-
-	}
-
+	private Button set_btn;
 	@FXML
-	private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
-		Messages.sprintf("markFilesAccordingTheDateScale_btn_action");
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-
-		try {
-			model_datefix.getStart_time().getTime();
-			model_datefix.getEnd_time().getTime();
-			ldt_start = model_datefix.getLocalDateTime(true);
-			ldt_end = model_datefix.getLocalDateTime(false);
-		} catch (Exception ex) {
-			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-			Main.setProcessCancelled(true);
-		}
-		List<FileInfo> collectedList = new ArrayList<>();
-		if (this.model_main == null) {
-			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
-		}
-
-		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-			if (Main.getProcessCancelled()) {
-				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-				break;
-			} /*
-				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-				 */
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-					if (FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-						collectedList.add(fileInfo);
-						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-					}
-				}
-			}
-		}
-		Messages.warningText(
-				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
-
-	}
-
+	private Button start_hour_btn_down;
 	@FXML
-	private void copy_startToEnd_btn_action(ActionEvent event) {
-		sprintf("Date to copy_startToEnd: ");
-		end_datePicker.setValue(start_datePicker.getValue());
-		model_datefix.getEnd_time().setHour(model_datefix.getStart_time().getHour());
-		model_datefix.getEnd_time().setMin(model_datefix.getStart_time().getMin());
-		model_datefix.getEnd_time().setSec(model_datefix.getStart_time().getSec());
-
-	}
-
+	private Button start_hour_btn_up;
 	@FXML
-	private void setDateTimeRange_btn_action(ActionEvent event) {
-
-		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(bundle.getString("noSelectedFiles"));
-			return;
-		}
-		exec[ConcurrencyUtils.getExecCounter()].shutdownNow();
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-
-		try {
-			model_datefix.getStart_time().getTime();
-			model_datefix.getEnd_time().getTime();
-			ldt_start = model_datefix.getLocalDateTime(true);
-			ldt_end = model_datefix.getLocalDateTime(false);
-		} catch (Exception ex) {
-			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-		}
-
-		sprintf("ldt_start: " + ldt_start);
-		sprintf("ldt_end: " + ldt_end);
-
-		if (model_datefix.getSelectionModel().getSelectionList().size() == 1) {
-			makeChanges(ldt_start, ldt_start, model_datefix.getSelectionModel().getSelectionList().size());
-		} else if (model_datefix.getSelectionModel().getSelectionList().size() >= 2) {
-			if (ldt_start.isEqual(ldt_end)) {
-				Dialog<ButtonType> dialog = Messages.ask("", "", bundle.getString("startAndEndDateSame"),
-						Misc.getLineNumber());
-				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
-				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-				dialog.getDialogPane().getButtonTypes().addAll(yes, cancel);
-				Optional<ButtonType> result = dialog.showAndWait();
-
-				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
-				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-					return;
-				}
-				// warningText(bundle.getString("startAndEndDateSame"));
-				// endDate + end_Time) > (startDate + start_Time
-			} else if (ldt_start.isBefore(ldt_end)) {
-				sprintf("isBefore");
-				if (checkIfInDateRange(ldt_start, ldt_end,
-						model_datefix.getSelectionModel().getSelectionList().size())) {
-					Duration d = Duration.between(ldt_start, ldt_end);
-					warningText(bundle.getString("timeRangeNotValid") + "\nStart date is: "
-							+ ldt_start.toString().replace("T", " ") + "\nEnd date is : "
-							+ ldt_end.toString().replace("T", " ") + "\nDuration in seconds is: " + d.getSeconds()
-							+ "\nDuration should be atleast: "
-							+ model_datefix.getSelectionModel().getSelectionList().size());
-				} else {
-					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
-				}
-			} else if (ldt_start.isAfter(ldt_end)) {
-				warningText(bundle.getString("startDateLower"));
-			}
-		}
-	}
-
+	private Button start_min_btn_down;
 	@FXML
-	private Button copy_endToStart;
-
+	private Button start_min_btn_up;
 	@FXML
-	private void copy_endToStart_action(ActionEvent event) {
-		start_datePicker.setValue(end_datePicker.getValue());
-
-		model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
-		model_datefix.getStart_time().setMin(model_datefix.getEnd_time().getMin());
-		model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
-
-	}
+	private Button start_sec_btn_down;
+	@FXML
+	private Button start_sec_btn_up;
 
 	@FXML
 	private Button end_hour_btn_down;
 	@FXML
 	private Button end_hour_btn_up;
 	@FXML
-	private TextField end_min;
-	@FXML
 	private Button end_min_btn_down;
 	@FXML
 	private Button end_min_btn_up;
 	@FXML
-	private TextField end_sec;
-	@FXML
 	private Button end_sec_btn_down;
 	@FXML
 	private Button end_sec_btn_up;
-
-	@FXML
-	private Button set_btn;
-	@FXML
-	private DatePicker start_datePicker;
-	@FXML
-	private TextField start_hour;
-	@FXML
-	private Button start_hour_btn_down;
-	@FXML
-	private Button start_hour_btn_up;
-
-	@FXML
-	private TextField start_min;
-	@FXML
-	private Button start_min_btn_down;
-	@FXML
-	private Button start_min_btn_up;
-	@FXML
-	private TextField start_sec;
-	@FXML
-	private Button start_sec_btn_down;
-	@FXML
-	private Button start_sec_btn_up;
 
 	@FXML
 	private void end_hour_action(ActionEvent event) {
@@ -458,6 +249,215 @@ public class DateTimeAdjusterController {
 				}
 			}
 		}
+	}
+
+	@FXML
+	private void findExistsPath_btn_action(ActionEvent event) {
+		Messages.sprintf("findExistsPath_btn_action");
+		LocalDateTime ldt_start = null;
+		LocalDateTime ldt_end = null;
+
+		try {
+//			model_datefix.getStart_time().getTime();
+//			model_datefix.getEnd_time().getTime();
+			ldt_start = model_datefix.getLocalDateTime(true);
+			ldt_end = model_datefix.getLocalDateTime(false);
+
+		} catch (Exception ex) {
+			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
+			Main.setProcessCancelled(true);
+		}
+		List<FileInfo> collectedList = new ArrayList<>();
+		if (this.model_main == null) {
+			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
+		}
+
+		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+			if (Main.getProcessCancelled()) {
+				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
+				break;
+			} /*
+				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
+				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
+				 */
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
+					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+//						model_ FolderInfo_Utils. addToObservableFileInfoList.
+						collectedList.add(fileInfo);
+						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
+								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+					}
+				}
+			}
+		}
+
+		for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
+			if (Main.getProcessCancelled()) {
+				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
+				break;
+			} /*
+				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
+				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
+				 */
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
+					if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+						collectedList.add(fileInfo);
+						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
+								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+					}
+				}
+			}
+
+		}
+//		for(FileInfo fileInfo : collectedList) {
+//			Node n = createNode(fileInfo);
+//		}
+//		model_datefix.getFolderInfo_full().getFileInfoList();
+//		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+		Messages.warningText(
+				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+		for (FileInfo fileInfo : collectedList) {
+			Messages.sprintf("fileInfo collected: " + fileInfo.toString() + " fileInfo date: "
+					+ DateUtils.longToLocalDateTime(fileInfo.getDate()));
+		}
+
+	}
+
+	@FXML
+	private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
+		Messages.sprintf("markFilesAccordingTheDateScale_btn_action");
+		LocalDateTime ldt_start = null;
+		LocalDateTime ldt_end = null;
+
+		try {
+			model_datefix.getStart_time().getTime();
+			model_datefix.getEnd_time().getTime();
+			ldt_start = model_datefix.getLocalDateTime(true);
+			ldt_end = model_datefix.getLocalDateTime(false);
+		} catch (Exception ex) {
+			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
+			Main.setProcessCancelled(true);
+		}
+		List<FileInfo> collectedList = new ArrayList<>();
+		if (this.model_main == null) {
+			Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
+		}
+
+		for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+			if (Main.getProcessCancelled()) {
+				Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
+				break;
+			} /*
+				 * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
+				 * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
+				 */
+			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+				LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
+				if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
+					if (FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+						collectedList.add(fileInfo);
+						Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
+								+ "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
+					}
+				}
+			}
+		}
+		Messages.warningText(
+				"Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
+
+	}
+
+	@FXML
+	private void copy_startToEnd_btn_action(ActionEvent event) {
+		sprintf("Date to copy_startToEnd: ");
+		end_datePicker.setValue(start_datePicker.getValue());
+		model_datefix.getEnd_time().setHour(model_datefix.getStart_time().getHour());
+		model_datefix.getEnd_time().setMin(model_datefix.getStart_time().getMin());
+		model_datefix.getEnd_time().setSec(model_datefix.getStart_time().getSec());
+
+	}
+
+	@FXML
+	private void setDateTimeRange_btn_action(ActionEvent event) {
+
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(bundle.getString("noSelectedFiles"));
+			return;
+		}
+		exec[ConcurrencyUtils.getExecCounter()].shutdownNow();
+		LocalDateTime ldt_start = null;
+		LocalDateTime ldt_end = null;
+
+		try {
+			model_datefix.getStart_time().getTime();
+			model_datefix.getEnd_time().getTime();
+			ldt_start = model_datefix.getLocalDateTime(true);
+			ldt_end = model_datefix.getLocalDateTime(false);
+		} catch (Exception ex) {
+			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
+		}
+
+		sprintf("ldt_start: " + ldt_start);
+		sprintf("ldt_end: " + ldt_end);
+
+		if (model_datefix.getSelectionModel().getSelectionList().size() == 1) {
+			makeChanges(ldt_start, ldt_start, model_datefix.getSelectionModel().getSelectionList().size());
+		} else if (model_datefix.getSelectionModel().getSelectionList().size() >= 2) {
+			if (ldt_start.isEqual(ldt_end)) {
+				Dialog<ButtonType> dialog = Messages.ask("", "", bundle.getString("startAndEndDateSame"),
+						Misc.getLineNumber());
+				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
+				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
+				dialog.getDialogPane().getButtonTypes().addAll(yes, cancel);
+				Optional<ButtonType> result = dialog.showAndWait();
+
+				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
+				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+					return;
+				}
+				// warningText(bundle.getString("startAndEndDateSame"));
+				// endDate + end_Time) > (startDate + start_Time
+			} else if (ldt_start.isBefore(ldt_end)) {
+				sprintf("isBefore");
+				if (checkIfInDateRange(ldt_start, ldt_end,
+						model_datefix.getSelectionModel().getSelectionList().size())) {
+					Duration d = Duration.between(ldt_start, ldt_end);
+					warningText(bundle.getString("timeRangeNotValid") + "\nStart date is: "
+							+ ldt_start.toString().replace("T", " ") + "\nEnd date is : "
+							+ ldt_end.toString().replace("T", " ") + "\nDuration in seconds is: " + d.getSeconds()
+							+ "\nDuration should be atleast: "
+							+ model_datefix.getSelectionModel().getSelectionList().size());
+				} else {
+					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
+				}
+			} else if (ldt_start.isAfter(ldt_end)) {
+				warningText(bundle.getString("startDateLower"));
+			}
+		}
+	}
+
+	@FXML
+	private void copy_endToStart_action(ActionEvent event) {
+		start_datePicker.setValue(end_datePicker.getValue());
+
+		model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
+		model_datefix.getStart_time().setMin(model_datefix.getEnd_time().getMin());
+		model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
+
 	}
 
 	private void makeChanges(LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
@@ -664,10 +664,12 @@ public class DateTimeAdjusterController {
 				new NumberStringConverter());
 		setTextProperty(end_hour);
 
-		end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(), new NumberStringConverter());
+		end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(),
+				new NumberStringConverter());
 		setTextProperty(end_min);
 
-		end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
+		end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(),
+				new NumberStringConverter());
 		setTextProperty(end_sec);
 
 		start_hour.setText("12");

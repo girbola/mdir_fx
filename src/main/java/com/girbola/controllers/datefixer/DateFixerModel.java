@@ -98,7 +98,7 @@ public class DateFixerModel {
 		return start_datePicker;
 	}
 
-	ChangeListener<Boolean> datePickerChangeListener(DatePicker dp) {
+	public static ChangeListener<Boolean> datePickerChangeListener(DatePicker dp) {
 		ChangeListener<Boolean> changeListener = new ChangeListener<Boolean>() {
 
 			@Override
