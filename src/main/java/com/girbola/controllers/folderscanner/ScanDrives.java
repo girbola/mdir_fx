@@ -115,7 +115,16 @@ public class ScanDrives {
 											.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Pictures"))) {
 										CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(
 												Main.conf.getUserHome() + File.separator + "Pictures");
-										checkBoxTreeItem2.setSelected(true);
+										boolean driveAlreadyInRegister = drivesListHandler.isDriveAlreadyInRegister(
+												Paths.get(Main.conf.getUserHome() + File.separator + "Pictures")
+														.toString());
+										if (driveAlreadyInRegister) {
+											checkBoxTreeItem2.setSelected(driveInfo.getSelected());
+											Messages.sprintf("driveAlreadyInRegister==== validfolderstream file: " + driveInfo.getSelected());
+										} else {
+											Messages.sprintf("drive WERE NOT InRegister==== validfolderstream file: " + driveInfo.getSelected());
+											checkBoxTreeItem2.setSelected(true);
+										}
 										checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
 									}
 									if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Videos"))) {

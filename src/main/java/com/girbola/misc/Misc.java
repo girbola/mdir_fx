@@ -33,7 +33,7 @@ public class Misc {
 	public static boolean checkOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		Messages.sprintf("OS is: " + os);
-		if (os.contains("win")) {
+		if (os.contains("win") || os.contains("linux")) {
 			// setNative_Library_Search_Path("C:\\Program Files\\");
 			return true;
 		} else {
