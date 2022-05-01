@@ -233,9 +233,12 @@ public class Model_main {
 					 * Connection status when this was saved Connects to current folder for existing
 					 * or creates new one called fileinfo.db
 					 */
-					fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+					fileList_connection = SqliteConnection.connector(
+							Paths.get(folderInfo.getFolderPath()),
 							Main.conf.getMdir_db_fileName());
+					
 					fileList_connection.setAutoCommit(false);
+					
 					// Inserts all data info fileinfo.db
 					FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
 					FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);

@@ -180,8 +180,6 @@ public class AddToGridPane2 extends Task<Integer> {
 						VBox vbox = (VBox) event.getTarget();
 						TextField textField = (TextField) model_datefix.getTextField(vbox);
 						
-//						
-//						FileInfo fileInfo = (FileInfo) vbox.getUserData();
 						pickDateTime_Start.setOnAction(new EventHandler<ActionEvent>() {
 							@Override
 							public void handle(ActionEvent event) {

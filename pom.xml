@@ -39,13 +39,13 @@
 		<javafx.version>17</javafx.version>
 		<maven.compiler.target>17</maven.compiler.target>
 		<maven.compiler.source>17</maven.compiler.source>
-		<metadata-extractor.version>2.15.0</metadata-extractor.version>
-		<vlcj.version>4.6.0</vlcj.version>
+		<metadata-extractor.version>2.16.0</metadata-extractor.version>
+		<vlcj.version>4.7.1</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.5</imageio-jpeg.version>
-		<imageio-tiff.version>3.5</imageio-tiff.version>
-		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j.version>1.7.7</slf4j.version>
+		<imageio-jpeg.version>3.8.1</imageio-jpeg.version>
+		<imageio-tiff.version>3.8.1</imageio-tiff.version>
+		<sqlite-jdbc.version>3.36.0.3</sqlite-jdbc.version>
+		<slf4j.version>1.7.32</slf4j.version>
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
