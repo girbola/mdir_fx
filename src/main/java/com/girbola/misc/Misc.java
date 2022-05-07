@@ -45,7 +45,7 @@ public class Misc {
 	}
 
 	public static boolean isUnix() {
-		if (System.getProperty("os.name").toLowerCase().contains("nix")) {
+		if (System.getProperty("os.name").toLowerCase().contains("nix")|| System.getProperty("os.name").toLowerCase().contains("linux")) {
 			return true;
 		}
 		return false;
@@ -57,7 +57,7 @@ public class Misc {
 		}
 		return false;
 	}
-
+//Tee merge & move tools joka hakee vasemmalta Sortit päivät Sortediin
 	public static boolean isWindows() {
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			return true;
