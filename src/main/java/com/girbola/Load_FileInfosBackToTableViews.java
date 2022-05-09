@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.girbola.controllers.main.Model_main;
@@ -14,6 +15,9 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.FolderState;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -30,68 +34,121 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 
 	@Override
 	protected Boolean call() throws Exception {
-		if (!Files.exists(Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()))) {
-			Messages.sprintf("Can't find " + (Main.conf.getAppDataPath() + File.separator + Main.conf.getFolderInfo_db_fileName()));
+		Messages.sprintf("Load_FileInfosBackToTableViews starts ");
+
+		if (!Files.exists(
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
+			Messages.sprintf("Can't find "
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 			return false;
 		}
 
-		List<FolderInfo> folderInfo_list = SQL_Utils.loadFolderInfoTo_Tables(connection, model_main);
+		List<FolderState> folderState_list = SQL_Utils.loadFoldersStateTo_Tables(connection, model_main);
 		if (connection == null) {
-			return null;
+			Messages.sprintf("Connection were null at " + Load_FileInfosBackToTableViews.class.getName());
+			return false;
 		}
-		if (!folderInfo_list.isEmpty()) {
-			for (FolderInfo folderInfo : folderInfo_list) {
-				if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getSortIt_table())) {
+		if (folderState_list.isEmpty()) {
+			Messages.sprintf("folderInfo_list were empty" + Load_FileInfosBackToTableViews.class.getName());
+			return false;
+		}
+		if (!folderState_list.isEmpty()) {
+			for (FolderState folderState : folderState_list) {
+				FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderState.getPath());
+				boolean loadFileInfoIntoFolderInfo = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
+				if (!loadFileInfoIntoFolderInfo) {
+					Messages.sprintfError("Something went wrong with loading folderstates!");
+					cancel();
+					Main.setProcessCancelled(true);
+				}
+
+				if (folderState.getTableType().equals(TableType.SORTIT.getType())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSortIt_table().getItems().add(folderInfo);
 					}
-
-				} else if (folderInfo.getTableType().equals(TableType.SORTED.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getSorted_table())) {
+				} else if (folderState.getTableType().equals(TableType.SORTED.getType())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getSorted_table().getItems().add(folderInfo);
 					}
-				} else if (folderInfo.getTableType().equals(TableType.ASITIS.getType())) {
-					if (!TableUtils.hasDuplicates(folderInfo, model_main.tables().getAsItIs_table())) {
+				} else if (folderState.getTableType().equals(TableType.ASITIS.getType())) {
+					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
 						model_main.tables().getAsItIs_table().getItems().add(folderInfo);
 					}
 				} else {
 					Messages.sprintf("TableType were unknown!");
 				}
 			}
-		}
-		if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-				populateTable(folderInfo);
-				//				aerg;
+		} else {
+			if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getSortIt_table().getItems());
 			}
-		}
-		if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-				populateTable(folderInfo);
+			if (!model_main.tables().getSorted_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getSorted_table().getItems());
 			}
-		}
-		if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
-			for (FolderInfo folderInfo : model_main.tables().getAsItIs_table().getItems()) {
-				populateTable(folderInfo);
+			if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
+				populateTable(model_main.tables().getAsItIs_table().getItems());
 			}
 		}
 
 		return true;
 	}
 
-	private boolean populateTable(FolderInfo folderInfo) {
-		Messages.sprintf("populateTable: " + folderInfo.getFolderFiles() + " connected? " + folderInfo.isConnected());
+	private boolean populateTable(List<FolderInfo> folderInfo_list) {
 
+		for (FolderInfo folderInfo : folderInfo_list) {
+			if (folderInfo.getFolderPath()
+					.equals("C:\\Users\\marko_000\\Pictures\\2018\\Väinön rippijuhlat\\Väinön kuvat UUDET\\Editoi")) {
+				Messages.sprintf("Väinö found!");
+			}
+			boolean addTable = populateTable(folderInfo);
+			if (!addTable) {
+				Messages.sprintf("Skipping folder scan: " + folderInfo.getFolderPath());
+			}
+		}
+		return true;
+	}
+
+	private boolean populateTable(FolderInfo folderInfo) {
+		Messages.sprintf("populateTable getFolderFiles() is: " + folderInfo.getFolderFiles() + " connected? "
+				+ folderInfo.isConnected());
+		if (folderInfo.getJustFolderName().contains("Juhon vanhojen tanssit")) {
+			Messages.sprintf("HMMMMMMMMM");
+		}
 		if (folderInfo.isConnected()) {
 			Connection connection = null;
 			Path path = Paths.get(folderInfo.getFolderPath());
 
 			if (Files.exists(path)) {
-				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getFileInfo_db_fileName());
-				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+				Messages.sprintf("Populating: " + path);
+				connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+						Main.conf.getMdir_db_fileName());
+				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
+				int counter = 0;
+				List<FileInfo> fileInfoList = new ArrayList<>();
+
 				if (!list.isEmpty()) {
-					folderInfo.getFileInfoList().addAll(list);
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+//					Messages.sprintf("FolderInfo loading: " + folderInfo.getFolderPath() + " files == " + list.size());
+					for (FileInfo fileInfo : list) {
+						if (fileInfo.isTableDuplicated() || fileInfo.isIgnored()) {
+							counter++;
+						} else {
+							fileInfoList.add(fileInfo);
+						}
+					}
+					if (fileInfoList.size() > 0) {
+						folderInfo.getFileInfoList().addAll(fileInfoList);
+						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
+								+ " List were empty. Path" + folderInfo.getFolderPath() + " files == "
+								+ folderInfo.getFolderFiles());
+					} else {
+						return false;
+					}
+
+				} else {
+					Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
+							+ " List were empty. Path" + folderInfo.getFolderPath() + " files == "
+							+ folderInfo.getFolderFiles());
 				}
 			}
 			if (connection != null) {
@@ -110,20 +167,25 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 	@Override
 	protected void cancelled() {
 		super.cancelled();
+		Messages.sprintfError("Load fileinfo back to table cancelled!");
+		Main.setChanged(false);
 	}
 
 	@Override
 	protected void failed() {
 		super.failed();
+		Messages.sprintfError("Load fileinfo back to table FAILED!");
+		Main.setChanged(false);
 	}
 
 	@Override
 	protected void succeeded() {
 		super.succeeded();
+		Messages.sprintf("Load fileinfo back to table SUCCEEDED!");
 		TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 		TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 		TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());
-		Messages.sprintf("222load_FileInfosBackToTableViews succee	kenrbgkdldl");
+		Main.setChanged(false);
 	}
 
 }

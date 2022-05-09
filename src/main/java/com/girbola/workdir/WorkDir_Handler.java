@@ -1,6 +1,7 @@
 package com.girbola.workdir;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -21,11 +22,15 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.filelisting.GetAllMediaFiles;
+import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import common.utils.Conversion;
 import common.utils.date.DateUtils;
 import javafx.scene.control.TableView;
 
@@ -38,10 +43,11 @@ public class WorkDir_Handler {
 	public boolean isWorkDir_connected() {
 		return this.workDir;
 	}
-	public void addAllTables(Tables tables) {
-		addTable(tables.getSorted_table());
-		addTable(tables.getSortIt_table());
-	}
+
+//	public void addAllTables(Tables tables) {
+//		addTable(tables.getSorted_table());
+//		addTable(tables.getSortIt_table());
+//	}
 
 	private void addTable(TableView<FolderInfo> table) {
 		List<Long> dateList = new ArrayList<>();
@@ -76,21 +82,28 @@ public class WorkDir_Handler {
 	 * @return
 	 */
 	public boolean loadAllLists(Path workDirPath) {
-		Messages.sprintf("loadAllLists: " + workDirPath);
+		Messages.sprintf("WorkDir Handler loadAllLists: " + workDirPath);
 		if (!Files.exists(workDirPath)) {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
 		}
-		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getFileInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
+		try {
+			connection.setAutoCommit(false);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		if (connection != null) {
 			if (SQL_Utils.isDbConnected(connection)) {
-				List<FileInfo> fileInfo_list = SQL_Utils.loadFileInfoDatabase(connection);
+				List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				if (!fileInfo_list.isEmpty()) {
 					workDir_List.addAll(fileInfo_list);
-					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list);
+					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
 				}
 			}
+
 			try {
+				connection.commit();
 				connection.close();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -104,9 +117,9 @@ public class WorkDir_Handler {
 	}
 
 	private void loadListFromWorkDir_To_List(String path) {
-		Connection connection = SqliteConnection.connector(Paths.get(path), Main.conf.getFileInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Paths.get(path), Main.conf.getMdir_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
-			List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+			List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 			if (!list.isEmpty()) {
 				workDir_List.addAll(list);
 			}
@@ -116,13 +129,16 @@ public class WorkDir_Handler {
 	public FileInfo exists(FileInfo fileInfo_toFind) {
 		Iterator<FileInfo> it = workDir_List.iterator();
 		final LocalDate ld_toFind = DateUtils.longToLocalDateTime(fileInfo_toFind.getDate()).toLocalDate();
+		final int year = ld_toFind.getYear();
 		final int month = ld_toFind.getMonthValue();
 
 		while (it.hasNext()) {
 			FileInfo fileInfo = it.next();
-			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month) {
+			if (DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == year
+					&& DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate().getMonthValue() == month) {
 				if (new File(fileInfo.getOrgPath()).length() == new File(fileInfo.getOrgPath()).length()) {
-					Messages.sprintf("FileInfo exists at workdir: " + fileInfo.getDestinationPath());
+					Messages.sprintf(
+							"FileInfo exists at workdir: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 					return fileInfo;
 				}
 			}
@@ -135,7 +151,18 @@ public class WorkDir_Handler {
 	}
 
 	public boolean add(FileInfo fileInfo) {
+		for (FileInfo fileInfo_Workdir : workDir_List) {
+			if (fileInfo_Workdir.getDate() == fileInfo.getDate()) {
+				if (fileInfo_Workdir.getSize() == fileInfo.getSize()) {
+					if (fileInfo_Workdir.getOrgPath().equals(fileInfo.getOrgPath())) {
+						return false;
+					}
+				}
+			}
+
+		}
 		return this.workDir_List.add(fileInfo);
+
 	}
 
 	public boolean saveWorkDirListToDatabase() {
@@ -149,15 +176,18 @@ public class WorkDir_Handler {
 		try {
 			destionationPath = Paths.get(Main.conf.getWorkDir() + File.separator);
 			if (Files.exists(destionationPath)) {
-				connection = SqliteConnection.connector(destionationPath, Main.conf.getFileInfo_db_fileName());
+				connection = SqliteConnection.connector(destionationPath, Main.conf.getMdir_db_fileName());
+				connection.setAutoCommit(false);
 			}
 			if (connection != null) {
 				if (SQL_Utils.isDbConnected(connection)) {
-					boolean inserting = SQL_Utils.insertFileInfoListToDatabase(connection, workDir_List);
+					boolean inserting = FileInfo_SQL.insertFileInfoListToDatabase(connection, workDir_List, true);
 					if (inserting) {
 						Messages.sprintf("Insert worked!");
+						connection.commit();
 					} else {
-						Messages.sprintfError("inserting not worked");
+						Messages.sprintfError("inserting not working!");
+						connection.commit();
 					}
 				}
 			}
@@ -181,9 +211,49 @@ public class WorkDir_Handler {
 		return true;
 	}
 
+	public void createWorkDirContentForMissingDatabase() {
+		Main.conf.getWorkDir();
+		List<Path> listOfWorkDirFiles = GetAllMediaFiles.getAllMediaFiles(Paths.get(Main.conf.getWorkDir()));
+		if (!listOfWorkDirFiles.isEmpty()) {
+			for (Path p : listOfWorkDirFiles) {
+				if (Main.getProcessCancelled()) {
+					try {
+						FileInfo fileInfo = FileInfo_Utils.createFileInfo(p);
+						add(fileInfo);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	public List<FileInfo> findPossibleExistsFoldersInWorkdir(FileInfo fileInfoToSearch) {
+		List<FileInfo> list = new ArrayList<>();
+
+		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
+
+		String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
+		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
+		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
+
+		Messages.sprintf("year: " + year + " month " + month + " day" + day);
+
+//		Path workDirToSearch = Paths.get(Main.conf.getWorkDir() + File.separator + year + File.separator + month);
+		for (FileInfo fileInfo : workDir_List) {
+			if (fileInfo.getDate() == fileInfoToSearch.getDate()) {
+				if (fileInfo.getSize() == fileInfoToSearch.getSize()) {
+					list.add(fileInfo);
+					Messages.sprintfError("DUPLICATE FOUND: " + fileInfo.getOrgPath());
+				}
+			}
+		}
+		return list;
+	}
+
 	public boolean cleanDatabase(Connection connection) {
 		Messages.sprintf("Cleaning database...: ");
-		if(!SQL_Utils.isDbConnected(connection)) {
+		if (!SQL_Utils.isDbConnected(connection)) {
 			Messages.sprintfError("cleaning Database failed");
 			return false;
 		}
@@ -203,18 +273,7 @@ public class WorkDir_Handler {
 				}
 
 			}
-			/*
-			 * 
-			 * String sql = "DELETE FROM warehouses WHERE id = ?";
-			 * 
-			 * try (Connection conn = this.connect(); PreparedStatement pstmt =
-			 * conn.prepareStatement(sql)) {
-			 * 
-			 * // set the corresponding param pstmt.setInt(1, id); // execute the delete
-			 * statement pstmt.executeUpdate();
-			 * 
-			 * } catch (SQLException e) { System.out.println(e.getMessage()); }
-			 */
+
 			String delete = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE fileInfo_id = ?";
 			PreparedStatement pstmt = connection.prepareStatement(delete);
 			Messages.sprintf("String list size is: " + rm_list.size());

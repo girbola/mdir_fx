@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -16,15 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.FolderState;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDir_Handler;
@@ -32,6 +38,8 @@ import com.girbola.workdir.WorkDir_Handler;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
@@ -59,12 +67,39 @@ public class Model_main {
 	private VBox main_vbox;
 	private Buttons buttons;
 	private Populate populate;
-	private Menu menu;
 	private Scene scene;
 	private SelectedFolderScanner selectedFolders;
 	private TablePositionHolder tablePositionHolder;
 	private List<ThumbInfo> thumbInfo = new ArrayList<>();
-	private ScheduledService<Void> registerTableActivity;
+	private ScheduledService<Void> monitorExternalDriveConnectivity;
+
+	private TableStatistic sortitTableStatistic;
+	private TableStatistic sortedTableStatistic;
+	private TableStatistic asitisTableStatistic;
+
+	public TableStatistic getSortitTableStatistic() {
+		return sortitTableStatistic;
+	}
+
+	public void setSortitTableStatistic(TableStatistic sortitTableStatistic) {
+		this.sortitTableStatistic = sortitTableStatistic;
+	}
+
+	public TableStatistic getSortedTableStatistic() {
+		return sortedTableStatistic;
+	}
+
+	public void setSortedTableStatistic(TableStatistic sortedTableStatistic) {
+		this.sortedTableStatistic = sortedTableStatistic;
+	}
+
+	public TableStatistic getAsitisTableStatistic() {
+		return asitisTableStatistic;
+	}
+
+	public void setAsitisTableStatistic(TableStatistic asitisTableStatistic) {
+		this.asitisTableStatistic = asitisTableStatistic;
+	}
 
 	public Model_main() {
 		sprintf("Model instantiated...");
@@ -73,16 +108,14 @@ public class Model_main {
 
 		buttons = new Buttons(this);
 
-		menu = new Menu(this);
-
 		selectedFolders = new SelectedFolderScanner();
 
 		populate = new Populate(this);
 
 		tablePositionHolder = new TablePositionHolder(this);
 
-		registerTableActivity = new MonitorConnectivity(this);
-		registerTableActivity.setPeriod(Duration.seconds(15));
+		monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
+		monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
 	}
 
 	public final List<ThumbInfo> getThumbInfo() {
@@ -105,14 +138,6 @@ public class Model_main {
 		return this.buttons;
 	}
 
-	public Menu menu() {
-		return this.menu;
-	}
-	//
-	// public Tables tables() {
-	// return this.tables;
-	// }
-
 	void setMainContainer(AnchorPane main_container) {
 		this.main_container = main_container;
 	}
@@ -129,16 +154,24 @@ public class Model_main {
 		return this.populate;
 	}
 
-	public boolean save() {
+	public boolean saveAllTableContents() {
+		Messages.sprintf("save started");
 		if (tables() == null) {
 			Messages.warningText("model.getTables() were null!");
 		}
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
-		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFO.getType());
-		SQL_Utils.createFolderInfoDatabase(connection);
+				Main.conf.getConfiguration_db_fileName()); // folderInfo.db
+		try {
+			connection.setAutoCommit(false);
+		} catch (Exception e) {
+			Messages.sprintfError("Can't change to autocommit: " + e.getMessage());
+			e.printStackTrace();
+		}
+
+		SQL_Utils.clearTable(connection, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderInfo.db
+		SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
 		if (connection == null) {
-			Messages.errorSmth(ERROR, "Saving folderinfo's failed!", new Exception("Saving folderinfo's failed!"),
+			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
 					Misc.getLineNumber(), true);
 		}
 		long start = System.currentTimeMillis();
@@ -159,11 +192,15 @@ public class Model_main {
 		if (asitis) {
 			Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
 		}
+
 		try {
 			if (connection != null) {
+				connection.commit();
 				connection.close();
+				Main.setChanged(false);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			Main.setChanged(true);
 			return false;
 		}
@@ -171,35 +208,64 @@ public class Model_main {
 		return true;
 	}
 
-	private boolean saveTableContent(Connection connection, ObservableList<FolderInfo> items, String tableType) {
+	public boolean saveTableContent(Connection connection_Configuration, ObservableList<FolderInfo> items,
+			String tableType) {
 		if (items.isEmpty()) {
+			Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
 			return false;
 		}
-		if (connection == null) {
-			Messages.sprintfError("saveTablecontent error!!!");
-			return false;
-		}
+
 		Connection fileList_connection = null;
 		for (FolderInfo folderInfo : items) {
-			folderInfo.setTableType(tableType);
-			try {
-				SQL_Utils.addToFolderInfoDB(connection, folderInfo);
-				fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-						Main.conf.getFileInfo_db_fileName());
-				if (SQL_Utils.isDbConnected(fileList_connection)) {
-					SQL_Utils.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList());
-					if (fileList_connection != null) {
-						fileList_connection.close();
+			if (folderInfo.getFolderFiles() >= 1) {
+				Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
+				folderInfo.setTableType(tableType);
+				try {
+					FolderState folderState = new FolderState(folderInfo.getFolderPath(), tableType,
+							folderInfo.getJustFolderName(), folderInfo.isConnected());
+
+					boolean addingToFolderState = SQL_Utils.addToFolderStateDB(connection_Configuration, folderState);
+					if (!addingToFolderState) {
+						Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
 					}
+					/*
+					 * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
+					 * Connection status when this was saved Connects to current folder for existing
+					 * or creates new one called fileinfo.db
+					 */
+					fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+							Main.conf.getMdir_db_fileName());
+					fileList_connection.setAutoCommit(false);
+					// Inserts all data info fileinfo.db
+					FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+					FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
+					if (fileList_connection != null) {
+						fileList_connection.commit();
+						fileList_connection.close();
+						Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath()
+								+ " DONE! Closing connection");
+					} else {
+						Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
+								+ " FAILED! Closing connection");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					Messages.sprintfError("Something went wrong writing folderinfo to database at line: "
+							+ Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
+					return false;
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
-				Messages.sprintfError(
-						"Something went wrong writing folderinfo to database at line: " + Misc.getLineNumber());
-				return false;
+
 			}
 		}
-		return true;
+		try {
+			Messages.sprintf("foldersStateConnection.commit() " + " foldersStateConnection.close();");
+			connection_Configuration.commit();
+			return true;
+		} catch (Exception e) {
+			Messages.errorSmth(ERROR, "Cannot commit to SQL database", e, Misc.getLineNumber(), true);
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 	public void exitProgram_NOSAVE() {
@@ -233,30 +299,36 @@ public class Model_main {
 		// saveTablePositions();
 		// erg;
 		Messages.sprintf("Exiting program");
+//		Configuration_SQL_Utils.update_Configuration();
 		Configuration_SQL_Utils.update_Configuration();
 
 		if (Main.getChanged()) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(bundle.getString("saveBeforeExit"));
-
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+					bundle.getString("saveBeforeExit"));
+			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				save();
-				getRegisterTableActivity().cancel();
+				saveAllTableContents();
+				getMonitorExternalDriveConnectivity().cancel();
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+				Messages.sprintf("No pressed. This is not finished!");
+//				Messages.warningText("Not ready yet!");
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-
+				Messages.sprintf("Cancel pressed. This is not finished!");
+//				Messages.warningText("Not ready yet!");
 			}
 		}
 		if (conf.isConfirmOnExit()) {
 			sprintf("isShowOnExit was true");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getRegisterTableActivity().cancel();
+			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();
 		} else {
 			sprintf("isShowOnExit was false");
 			ConcurrencyUtils.stopExecThreadNow();
 			// save();
-			getRegisterTableActivity().cancel();
+			getMonitorExternalDriveConnectivity().cancel();
 			Platform.exit();
 		}
 
@@ -269,8 +341,8 @@ public class Model_main {
 		return this.workDir_Handler;
 	}
 
-	public ScheduledService<Void> getRegisterTableActivity() {
-		return registerTableActivity;
+	public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
+		return monitorExternalDriveConnectivity;
 	}
 
 	private BottomController bottomController;
@@ -282,6 +354,65 @@ public class Model_main {
 
 	public BottomController getBottomController() {
 		return this.bottomController;
+	}
+
+	public void load() {
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getConfiguration_db_fileName());
+		if (SQL_Utils.isDbConnected(connection)) {
+			TableUtils.clearTablesContents(tables());
+			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(
+					this, connection);
+
+			Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
+			load_thread.start();
+		} else {
+			Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
+		}
+	}
+
+	public void saveTablesToDatabases_(Stage stage, LoadingProcess_Task loadingProcess_Task,
+			boolean closeLoadingStage) {
+		Task<Void> task = new Task<Void>() {
+			@Override
+			protected Void call() throws Exception {
+				saveAllTableContents();
+				return null;
+			}
+		};
+		if (loadingProcess_Task == null) {
+			loadingProcess_Task = new LoadingProcess_Task(stage);
+		}
+
+		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintf("Database were successfully saved");
+				if (closeLoadingStage) {
+					// loadingProcess_Task.closeStage();
+				}
+			}
+		});
+
+		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintfError("Saving database has been cancelled");
+//				lpt.closeStage();
+			}
+		});
+		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.sprintfError("Saving database has been failed");
+//				lpt.closeStage();
+			}
+		});
+
+//		lpt.setTask(task);
+		Thread thread = new Thread(task, "Saving Thread");
+		thread.start();
+
 	}
 
 }

@@ -1,11 +1,9 @@
 package com.girbola.controllers.datefixer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +12,7 @@ import com.girbola.Scene_NameType;
 import com.girbola.controllers.datefixer.ObservableHandler.ObservabeleListType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
@@ -21,7 +20,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -49,20 +47,21 @@ public class AskEventDialogController {
 	@FXML
 	private ComboBox<String> location_cmb;
 	@FXML
+	private ComboBox<String> user_cmb;
+
+	@FXML
 	private Button apply_btn;
 	@FXML
 	private Button apply_and_copy_btn;
 	@FXML
 	private Button cancel_btn;
 
-	private List<FileInfo> applyChanges() {
+	private List<FileInfo> applyChanges(String workDir) {
 		List<FileInfo> list = new ArrayList<>();
 		if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
-			String location_str = "";
-			String event_str = "";
-			for (Node n : model_dateFix.getSelectionModel().getSelectionList()) {
-				FileInfo fileInfo = (FileInfo) n.getUserData();
-				Messages.sprintf("222Fileinfo: " + fileInfo);
+			for (Node selected_Node : model_dateFix.getSelectionModel().getSelectionList()) {
+				FileInfo fileInfo = (FileInfo) selected_Node.getUserData();
+				Messages.sprintf("selected_Node.getUserData Fileinfo: " + fileInfo);
 
 				if (!event_cmb.getEditor().getText().equals(fileInfo.getEvent())) {
 					fileInfo.setEvent(event_cmb.getEditor().getText());
@@ -73,34 +72,17 @@ public class AskEventDialogController {
 					Main.setChanged(true);
 				}
 
-				if (fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
-					location_str = " - " + fileInfo.getLocation();
-				} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
-					event_str = " - " + fileInfo.getEvent();
-				} else {
-					location_str = " - " + fileInfo.getLocation();
-					event_str = " - " + fileInfo.getEvent();
-				}
-
-				LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-				Messages.sprintf("location were= '" + location_str + "'");
-				Messages.sprintf("evemt were= '" + event_str + "'");
+				Path destPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, workDir);
 				list.add(fileInfo);
-				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-				Path destPath = Paths.get(Main.conf.getWorkDir() + File.separator + ld.getYear() + File.separator + ld
-						+ location_str + event_str + File.separator + fileName + "."
-						+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-				if (!destPath.toString().equals(fileInfo.getDestinationPath())) {
-					fileInfo.setDestinationPath(destPath.toString());
+				if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+					fileInfo.setWorkDir(workDir);
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+					fileInfo.setDestination_Path(destPath.toString());
 					fileInfo.setCopied(false);
+					model_dateFix.getFolderInfo_full().setChanged(true);
 					Main.setChanged(true);
 				}
-				Messages.sprintf("Destination path would be: " + fileInfo.getDestinationPath());
-				location_str = "";
-				event_str = "";
+				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
 			}
 		}
 		return list;
@@ -112,7 +94,7 @@ public class AskEventDialogController {
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
 		}
-		applyChanges();
+		applyChanges(Main.conf.getWorkDir());
 		Stage stage = (Stage) apply_btn.getScene().getWindow();
 		stage.close();
 
@@ -124,7 +106,7 @@ public class AskEventDialogController {
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
 		}
-		List<FileInfo> listOfApplyedChanges = applyChanges();
+		List<FileInfo> listOfApplyedChanges = applyChanges(Main.conf.getWorkDir());
 		if (listOfApplyedChanges.isEmpty()) {
 			Messages.errorSmth(ERROR, "No files were selected", null, Misc.getLineNumber(), true);
 			return;
@@ -137,10 +119,11 @@ public class AskEventDialogController {
 		askStage.centerOnScreen();
 		askStage.close();
 
-		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main, Scene_NameType.DATEFIXER.getType());
+		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main,
+				Scene_NameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
-
 			Messages.sprintf("operateFiles Succeeded");
+			UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
 		});
 		operateFiles.setOnCancelled((workerStateEvent) -> {
 			Messages.sprintf("operateFiles CANCELLED");
@@ -176,7 +159,8 @@ public class AskEventDialogController {
 
 	}
 
-	public void init(Model_datefix model_dateFix) {
+	public void init(Model_main aModel_main, Model_datefix model_dateFix) {
+		this.model_main = aModel_main;
 		this.model_dateFix = model_dateFix;
 
 		apply_and_copy_btn.disableProperty().bind(Bindings.isEmpty(event_cmb.getEditor().textProperty())
@@ -198,8 +182,11 @@ public class AskEventDialogController {
 		GUI_Events.textField_file_listener(location_cmb.getEditor());
 		new AutoCompleteComboBoxListener<>(event_cmb);
 		GUI_Events.textField_file_listener(event_cmb.getEditor());
+		new AutoCompleteComboBoxListener<>(user_cmb);
+		GUI_Events.textField_file_listener(user_cmb.getEditor());
+
 		event_cmb.setItems(model_dateFix.getObservableHandler().getEvent_obs());
-		location_cmb.setItems(model_dateFix.getObservableHandler().getLocation_obs());
+		user_cmb.setItems(model_dateFix.getObservableHandler().getUser_obs());
 
 	}
 

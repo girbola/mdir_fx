@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -15,7 +15,7 @@ import java.util.List;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersController;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.drive.Drive;
+import com.girbola.drive.DrivesListHandler;
 import com.girbola.sql.SqliteConnection;
 
 import javafx.collections.FXCollections;
@@ -32,15 +32,15 @@ public class Model_folderScanner {
 	//	@SuppressWarnings("unused")
 	private Model_main model_main;
 
-	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+//	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFoldersState_db_fileName());
 
 	private ScanDrives scanDrives;
-	private Drive drive = new Drive();
+	private DrivesListHandler drivesListHandler = new DrivesListHandler();
 
 	private ChooseFoldersController chooseFoldersController;
 
 	private List<TreeItem<FolderInfoTable>> analyzeList_selected = new ArrayList<>();
-	private ObservableList<Path> drivesList_selected_obs = FXCollections.observableArrayList();
+	private ObservableList<Path> selectedDrivesFoldersList_obs = FXCollections.observableArrayList();
 	private VBox analyzeList_vbox;
 	private CheckBoxTreeItem<File> drives_rootItem;
 
@@ -48,8 +48,8 @@ public class Model_folderScanner {
 		return scanDrives;
 	}
 
-	public Drive drive() {
-		return this.drive;
+	public DrivesListHandler drive() {
+		return this.drivesListHandler;
 	}
 
 	public List<TreeItem<FolderInfoTable>> getAnalyzeList_selected() {
@@ -68,8 +68,8 @@ public class Model_folderScanner {
 		this.analyzeList_vbox = analyzeList_vbox;
 	}
 
-	public ObservableList<Path> getDrivesList_selected_obs() {
-		return drivesList_selected_obs;
+	public ObservableList<Path> getSelectedDrivesFoldersList_obs() {
+		return selectedDrivesFoldersList_obs;
 	}
 
 	// public void setDrivesList(ObservableList<SelectedFolder> drivesList) {
@@ -109,12 +109,12 @@ public class Model_folderScanner {
 	public void init(Model_main aModel_main, CheckBoxTreeItem<File> aDrives_rootItem) {
 		this.model_main = aModel_main;
 		this.drives_rootItem = aDrives_rootItem;
-		drive.loadList(this);
-		scanDrives = new ScanDrives(drives_rootItem, drivesList_selected_obs, drive, this);
+		drivesListHandler.loadList(this);
+		scanDrives = new ScanDrives(this.model_main, drives_rootItem, selectedDrivesFoldersList_obs, drivesListHandler, this);
 		scanDrives.restart();
 	}
-
-	public Connection getConnection() {
-		return connection;
-	}
+//
+//	public Connection getConnection() {
+//		return connection;
+//	}
 }

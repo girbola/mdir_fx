@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -58,7 +58,6 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					setItem(newValue);
-					// getSelectionModel().select(getTableRow().getIndex());
 					sprintf("checkBox DATES is selected? " + newValue);
 					model_DateFix.getCameras_TableView().setDisable(true);
 					model_DateFix.getDates_TableView().setDisable(true);
@@ -67,7 +66,8 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 
 					EXIF_Data_Selector dates_data = getTableView().getItems().get(getIndex());
 					dates_data.setIsShowing(newValue);
-					sprintf("dates checkboz: " + checkBox + " data isShowing? " + dates_data.isShowing() + " string= " + dates_data.getInfo());
+					sprintf("dates checkboz: " + checkBox + " data isShowing? " + dates_data.isShowing() + " string= "
+							+ dates_data.getInfo());
 					ObservableList<Node> theList = FXCollections.observableArrayList();
 					List<String> listOfDates = new ArrayList<>();
 					Task<ObservableList<Node>> updateDates_Task = new Task<ObservableList<Node>>() {
@@ -76,20 +76,17 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 							if (newValue == true) {
 								for (EXIF_Data_Selector date : model_DateFix.getDates_TableView().getItems()) {
 									if (date.isShowing()) {
-										//										sprintf("showing date " + date.getInfo() + " is showing? " + date.isShowing());
 										listOfDates.add(date.getInfo());
 									}
 								}
 							} else {
 								for (EXIF_Data_Selector date : model_DateFix.getDates_TableView().getItems()) {
 									if (!date.isShowing()) {
-										//										sprintf("showing date " + date.getInfo() + " is showing? " + date.isShowing());
 										listOfDates.add(date.getInfo());
 									}
 								}
 							}
 							if (listOfDates.isEmpty()) {
-								//								sprintf("date list was empty!");
 								return theList;
 							}
 							if (newValue == true) {
@@ -97,8 +94,6 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {
-											//	sprintf("showing date " + fi.getOrgPath() + " is showing? "
-											//	+ simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 											theList.add(node);
 											model_DateFix.getSelectionModel().addOnly(node);
 										}
@@ -109,8 +104,6 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {
-											//		sprintf("showing date " + fi.getOrgPath() + " is showing? "
-											//	+ simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 											theList.remove(node);
 											model_DateFix.getSelectionModel().remove(node);
 										}
@@ -123,8 +116,8 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 					updateDates_Task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 						@Override
 						public void handle(WorkerStateEvent event) {
-							model_DateFix.getScrollPane().setVvalue(-1);
-							model_DateFix.getScrollPane().setVvalue(0);
+//							model_DateFix.getScrollPane().setVvalue(-1);
+//							model_DateFix.getScrollPane().setVvalue(0);
 
 							model_DateFix.getCameras_TableView().setDisable(false);
 							model_DateFix.getDates_TableView().setDisable(false);
@@ -158,7 +151,6 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 				}
 			});
 
-			// checkBox.setSelected(getValue());
 			setText(null);
 			setGraphic(checkBox);
 

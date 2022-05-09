@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -81,7 +81,7 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 		this.list = new TreeMap<>(aList);
 		if (connection == null) {
 			this.connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-					Main.conf.getThumbInfo_db_fileName());
+					Main.conf.getMdir_db_fileName());
 		} else {
 			this.connection = connection;
 		}
@@ -152,8 +152,8 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 			Label location_lbl = new Label(" " + bundle.getString("location"));
 			ComboBox<String> location_cb = new ComboBox<>(model_importImages.getLocation_obs());
 			location_cb.setId("location");
-			model_importImages.getGUIUtils().setListenerComboBox(location_cb, model_importImages.getLocation_obs(), over,
-					maxLength);
+			model_importImages.getGUIUtils().setListenerComboBox(location_cb, model_importImages.getLocation_obs(),
+					over, maxLength);
 			new AutoCompleteComboBoxListener<>(location_cb);
 			HBox location_hBox = new HBox(location_lbl, location_cb);
 			location_hBox.setAlignment(Pos.CENTER);
@@ -165,7 +165,8 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 			}
 			event_cb.getSelectionModel().select(folderInfo.getJustFolderName());
 			event_cb.setId("event");
-			model_importImages.getGUIUtils().setListenerComboBox(event_cb, model_importImages.getEvent_obs(), over, maxLength);
+			model_importImages.getGUIUtils().setListenerComboBox(event_cb, model_importImages.getEvent_obs(), over,
+					maxLength);
 			new AutoCompleteComboBoxListener<>(event_cb);
 
 			HBox event_hBox = new HBox(event_lbl, event_cb);
@@ -191,7 +192,8 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 			});
 
 			Label max = new Label();
-			NumberBinding numberBinding = location_cb.getEditor().lengthProperty().add(event_cb.getEditor().lengthProperty());
+			NumberBinding numberBinding = location_cb.getEditor().lengthProperty()
+					.add(event_cb.getEditor().lengthProperty());
 			maxLength.bind(numberBinding);
 
 			max.textProperty().bind(numberBinding.asString());
@@ -223,7 +225,8 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 				@Override
 				public void handle(ActionEvent event) {
 					model_importImages.getRenderVisibleNode().stopTimeLine();
-					FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/closerlook/CloserLook.fxml"), bundle);
+					FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/closerlook/CloserLook.fxml"),
+							bundle);
 
 					Parent root = null;
 					try {
@@ -243,8 +246,9 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
 					close_stage.show();
 				}
 			});
-			HBox hbox = new HBox(checkBox, new Label(" "), closerLook, new Label(entry.getKey() + "     "), location_hBox,
-					new Label(" "), event_hBox, new Label(" max char: "), max, new Label(" folder= "), folderName);
+			HBox hbox = new HBox(checkBox, new Label(" "), closerLook, new Label(entry.getKey() + "     "),
+					location_hBox, new Label(" "), event_hBox, new Label(" max char: "), max, new Label(" folder= "),
+					folderName);
 			hbox.setAlignment(Pos.CENTER);
 			titledPane.setGraphic(hbox);
 

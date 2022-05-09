@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -11,34 +11,33 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
-import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -48,6 +47,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -55,6 +55,13 @@ public class BottomController {
 
 	private final String ERROR = BottomController.class.getSimpleName();
 	private Model_main model_main;
+
+	private AtomicInteger duplicateCounter = new AtomicInteger(0);
+	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
+	private AtomicInteger fileCounter = new AtomicInteger(0);
+	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
+	private AtomicLong folderSavedSize = new AtomicLong(0);
+	private AtomicInteger folderCounter = new AtomicInteger(0);
 
 	@FXML
 	private Button addFolders_btn;
@@ -80,12 +87,158 @@ public class BottomController {
 	private Label drive_spaceLeft;
 	@FXML
 	private Label drive_connected;
+	@FXML
+	private HBox drive_pane;
+
+	@FXML
+	private Button showWorkdir_btn;
+	
+	@FXML
+	private void showWorkdir_btn_action(ActionEvent event) {
+		Platform.runLater(() -> {
+			
+		
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("fxml/workdir/Workdir.fxml"), Main.bundle);
+			parent = loader.load();
+			WorkDirController workdirController = (WorkDirController) loader
+					.getController();
+			workdirController.init(model_main);
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.show();
+			workdirController.createFileBrowserTreeTableView();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		});
+	}
+	
+	@FXML
+	private Button removeDuplicates_btn;
+
+	@FXML
+	private void removeDuplicates_btn_action(ActionEvent event) {
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
+				"Sorted -> Sorted");
+		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
+				"Sorted -> SortIt");
+		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
+				"SortIt -> SortIt");
+
+		TableUtils.updateAllFolderInfos(model_main.tables());
+		TableUtils.calculateTableViewsStatistic(model_main.tables());
+		TableUtils.cleanTables(model_main.tables());
+	}
+
+	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
+
+		boolean folderNeedsToUpdate = false;
+		for (FolderInfo folderInfo : table.getItems()) {
+
+			folderCounter.incrementAndGet();
+			for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
+				if (!fileInfoToFind.isIgnored()) {
+					if (!fileInfoToFind.isTableDuplicated()) {
+						Messages.sprintf(
+								"fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
+						folderNeedsToUpdate = findDuplicate(fileInfoToFind, tableToSearch);
+					}
+				}
+			}
+		}
+		if (folderNeedsToUpdate) {
+			List<FolderInfo> toRemove = new ArrayList<>();
+			Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
+			while (foi.hasNext()) {
+				FolderInfo folderInfo = foi.next();
+				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				if (folderInfo.getFolderFiles() <= 0) {
+					toRemove.add(folderInfo);
+				}
+				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
+				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
+			}
+			Main.setChanged(true);
+			if (!toRemove.isEmpty()) {
+				model_main.tables().getSortIt_table().getItems().removeAll(toRemove);
+			}
+		}
+		Messages.warningText("There were " + duplicateCounter + " duplicateCounter " + " folderCounter " + folderCounter
+				+ " fileEnterCounter " + fileEnterCounter + " folderSavedSize " + folderSavedSize.get());
+		duplicateCounter.set(0);
+		folderCounter.set(0);
+		fileCounter.set(0);
+		folderEnterCounter.set(0);
+		fileEnterCounter.set(0);
+		folderSavedSize.set(0);
+	}
+
+	private boolean findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
+		boolean needsUpdate = false;
+		for (FolderInfo folderInfo : table.getItems()) {
+			if (folderInfo.getFolderFiles() > 0) {
+				for (FileInfo fileInfoSearching : folderInfo.getFileInfoList()) {
+					fileEnterCounter.incrementAndGet();
+					if (!fileInfoSearching.isTableDuplicated()) {
+						if (fileInfoSearching.getOrgPath() != fileInfoToFind.getOrgPath()) {
+							if (fileInfoSearching.getSize() == fileInfoToFind.getSize()) {
+
+								if (fileInfoSearching.getDate() == fileInfoToFind.getDate()) {
+									fileInfoSearching.setTableDuplicated(true);
+									duplicateCounter.incrementAndGet();
+									folderSavedSize.addAndGet(fileInfoSearching.getSize());
+									if (!needsUpdate) {
+										needsUpdate = true;
+									}
+									Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
+											+ "  fileInfoToFind.isTableDuplicated() "
+											+ fileInfoToFind.isTableDuplicated() + " DUPLICATED file: "
+											+ fileInfoSearching.getOrgPath() + " fileInfoSearch.isTableDuplicated() "
+											+ fileInfoSearching.isTableDuplicated() + " needsUpdate? " + needsUpdate);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return needsUpdate;
+	}
+
+	@FXML
+	private Button dates_ttv_btn;
+
+	@FXML
+	private void dates_ttv_btn_action(ActionEvent event) {
+		try {
+			Parent parent = null;
+			FXMLLoader loader = new FXMLLoader(
+					Main.class.getResource("fxml/datestreetableview/DatesTreeTableView.fxml"), Main.bundle);
+			parent = loader.load();
+			DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader
+					.getController();
+			datesTreeTableViewController.init(model_main);
+			Scene scene = new Scene(parent);
+			Stage stage = new Stage();
+			stage.setScene(scene);
+			stage.show();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	@FXML
 	private void collect_action(ActionEvent event) {
 		Collector collect = new Collector();
 		collect.collectAll(model_main.tables());
-		collect.listMap();
+		collect.listMap(model_main.tables());
+
+//		drive_pane.visibleProperty().model_main
+
 	}
 
 	@FXML
@@ -128,8 +281,8 @@ public class BottomController {
 					Misc.getLineNumber(), true);
 		}
 		Stage fc_stage = new Stage();
-		fc_stage.setWidth(conf.getScreenBounds().getWidth());
-		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
+//		fc_stage.setWidth(conf.getScreenBounds().getWidth());
+//		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
@@ -176,38 +329,23 @@ public class BottomController {
 	 */
 	@FXML
 	private void copySelected_btn_action(ActionEvent event) {
-		Main.setProcessCancelled(false);
-		try {
-			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
-				warningText(bundle.getString("cannotFindWorkDir"));
-				return;
-			}
-		} catch (IOException ex) {
-			warningText(bundle.getString("cannotFindWorkDir"));
-			return;
-		}
-
-		copyTables(model_main.tables(), model_main.tables().getSorted_table(), TableType.SORTED.getType());
-		copyTables(model_main.tables(), model_main.tables().getSortIt_table(), TableType.SORTIT.getType());
-		// copyTables(workDir_Handler, model_main.tables(),
-		// model_main.tables().getAsItIs_table(), TableType.ASITIS.getType());
 
 	}
 
-	private void copyTables(Tables tables, TableView<FolderInfo> table, String tableType) {
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			int badFiles = 0;
-
+	private void findSameDateFileInfosFromSortedAndWorkdir(Tables tables) {
+		// TEsting possible move from sortit to sorted
+		for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				Path src = Paths.get(fileInfo.getOrgPath());
 				FileInfo possibleDuplicate = model_main.getWorkDir_Handler().exists(fileInfo);
-				if (possibleDuplicate == null) {
-					fileInfo.setCopied(false);
+				if (possibleDuplicate != null) {
+					Messages.sprintf(
+							"File were already copied to destination: " + possibleDuplicate.getDestination_Path());
+//					fileInfo.setDestination_Path(possibleDuplicate.getDestination_Path());
 				} else {
-					fileInfo.setCopied(true);
-					sprintf("File existed already: " + fileInfo.getOrgPath());
+					TableUtils.findPossibleNewDestinationByDate(fileInfo, tables);
 				}
 			}
+
 		}
 	}
 
@@ -227,6 +365,9 @@ public class BottomController {
 
 	@FXML
 	private void help_btn_action(ActionEvent event) {
+		Messages.warningTextHelp(
+				"Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy",
+				HTMLClass.help_html + "#sorter");
 	}
 
 	@FXML
@@ -237,130 +378,36 @@ public class BottomController {
 	@FXML
 	private void start_copyBatch_btn_action(ActionEvent event) {
 		Main.setProcessCancelled(false);
+		model_main.getMonitorExternalDriveConnectivity().cancel();
 
-		Task<List<FileInfo>> task = new Task<List<FileInfo>>() {
-
-			@Override
-			protected List<FileInfo> call() throws Exception {
-				List<FileInfo> list = new ArrayList<>();
-				for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							list.add(fileInfo);
-							Messages.sprintf("Sorted Batch file found: " + fileInfo);
-						}
-					}
-				}
-
-				for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-					for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-						if (!fileInfo.getDestinationPath().isEmpty() && !fileInfo.isCopied()) {
-							Messages.sprintf("SortIt Batch file found: " + fileInfo);
-							list.add(fileInfo);
-						}
-					}
-				}
-
-				return list;
-			}
-
-		};
-		task.setOnSucceeded((event2) -> {
-			Messages.sprintf("Making list were made successfully");
-			try {
-
-				Task<Boolean> operateFiles = new OperateFiles(task.get(), false, model_main,
-						Scene_NameType.MAIN.getType());
-				operateFiles.setOnSucceeded((workerStateEvent) -> {
-
-					Messages.sprintf("operateFiles Succeeded");
-				});
-				operateFiles.setOnCancelled((workerStateEvent) -> {
-					Messages.sprintf("operateFiles CANCELLED");
-				});
-				operateFiles.setOnFailed((workerStateEvent) -> {
-					Messages.sprintf("operateFiles FAILED");
-					Main.setProcessCancelled(true);
-				});
-				Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
-				operateFiles_th.setDaemon(true);
-				operateFiles_th.start();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		});
-		task.setOnCancelled((event2) -> {
-			Messages.sprintf("Making list were cancelled");
-		});
-		task.setOnFailed((event2) -> {
-			Messages.sprintf("Making list were made cancelled");
-		});
-		Thread th = new Thread(task, "Start Threads");
-		th.start();
-
-	}
-
-	private void handleSortIt(ObservableList<FolderInfo> sortit, FileInfo fi_src) {
-
-		// Iterator<FolderInfo> it = sortit.iterator();
-		for (FolderInfo foi : sortit) {
-			Messages.sprintf("Finding files: " + foi.getFolderPath());
-			LocalDate min = DateUtils.parseLocalDateTimeFromString(foi.getMinDate()).toLocalDate().minusDays(1);
-			LocalDate max = DateUtils.parseLocalDateTimeFromString(foi.getMinDate()).toLocalDate().plusDays(1);
-			LocalDate run = DateUtils.longToLocalDateTime(fi_src.getDate()).toLocalDate();
-			if (run.isAfter(min) && run.isBefore(max)) {
-				Messages.sprintf("Date were between this date scane");
-				// foi.getFileInfo().parallelStream().filter(fi_src);
-				for (FileInfo fileInfo : foi.getFileInfoList()) {
-					// Messages.sprintf("----ffff: " + fileInfo);
-					if (fileInfo.getDate() == fi_src.getDate() && fileInfo.getSize() == fi_src.getSize()) {
-						Messages.sprintf("Duplicated value found at sortit: " + fileInfo.getOrgPath());
-						foi.getFileInfoList().remove(fileInfo);
-						Platform.runLater(new Runnable() {
-
-							@Override
-							public void run() {
-								if (foi.getChanged() == false) {
-									foi.setChanged(true);
-								}
-							}
-						});
-					}
-
-				}
-			}
-			min = null;
-			max = null;
-			run = null;
-
+		if (Main.conf.getWorkDir().equals("null")) {
+			Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet"));
+			return;
 		}
+		if (!Main.conf.getDrive_connected() || !Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			Messages.warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
+		Messages.sprintf("workDir: " + Main.conf.getWorkDir());
+		/*
+		 * List files and handle actions with lists. For example ok files, conflict
+		 * files(Handle this before ok files), bad files(Handle this before okfiles)
+		 * When everything are good will be operateFiles starts. Notice! Everything are
+		 * in memory already so concurrency can be used to prevent the lagging.
+		 */
+
+		CopyBatch copyBatch = new CopyBatch(model_main);
+		copyBatch.start();
+
+		// check Destinatiin duplicates/existens
+		/*
+		 * Main.conf.work if(!copyBatch.getConflictList().isEmpty()) {
+		 * copyBatch.getConflictList(); }
+		 */
+//TODO Testaan ensin workdir konfliktien varalta ennen kopiointia. Täytyy pystyy korjaavaaman ne ennen kopintia. cantcopyt tulee errori 
+
 	}
 
-	// private boolean workDirExists(FileInfo fi, Path dest) {
-	// Path path = Paths.get(conf.getWorkDir() + File.separator +
-	// simpleDates.getSdf_Year().format(fi.getDate()) + File.separator +
-	// simpleDates.getSdf_Month().format(fi.getDate()) + File.separator);
-	// if (Files.exists(path)) {
-	//
-	// }
-	// String year = "";
-	// String month = "";
-	//
-	// return false;
-	// }
-	// private static String getCurrentTimezoneOffset(long date) {
-	//
-	// TimeZone tz = TimeZone.getDefault();
-	// // Calendar cal = GregorianCalendar.getInstance(tz);
-	// int offsetInMillis = tz.getOffset(date);
-	//
-	// String offset = String.format("%02d:%02d", Math.abs(offsetInMillis /
-	// 3600000), Math.abs((offsetInMillis / 60000) % 60));
-	// offset = (offsetInMillis >= 0 ? "+" : "-") + offset;
-	//
-	// return offset;
-	// }
 	public static boolean hasCheckWorkDirConflict(ObservableList<FolderInfo> obs) {
 		for (FolderInfo fi : obs) {
 			if (Paths.get(fi.getFolderPath()).getParent().toString().equals(conf.getWorkDir())) {
@@ -380,27 +427,33 @@ public class BottomController {
 		assertNotNull(drive_space);
 		assertNotNull(drive_spaceLeft);
 		assertNotNull(drive_connected);
-		
+
 		Messages.sprintf("initBottomWorkdirMonitors started");
 		drive_name.textProperty().bindBidirectional(Main.conf.drive_name_property());
 		drive_space.textProperty().bindBidirectional(Main.conf.drive_space_property());
 		drive_spaceLeft.textProperty().bindBidirectional(Main.conf.drive_spaceLeft_property());
-		Platform.runLater(() -> {
-			drive_name.setText("filli");
-		});
+		drive_pane.visibleProperty().bindBidirectional(Main.conf.drive_connected_property());
 		Main.conf.drive_connected_property().addListener(new ChangeListener<Boolean>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if(newValue == true) {
-					drive_connected.setStyle("-fx-background-color: green;");			
-				} else {
+				if (newValue == true) {
+					drive_connected.setStyle("-fx-background-color: green;");
+					start_copyBatch_btn.setDisable(false);
+
+				} else if (newValue == false) {
+
 					drive_connected.setStyle("-fx-background-color: red;");
+					start_copyBatch_btn.setDisable(true);
 				}
+				Messages.sprintf("drive connected? " + newValue);
 			}
-			
+
 		});
+		Main.conf.setDrive_connected(true);
+		Main.conf.setDrive_connected(false);
 	}
+
 	public void init(Model_main aModel_main) {
 		this.model_main = aModel_main;
 		sprintf("bottom controller...");

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -51,7 +51,7 @@ public class AddToGridPane2 extends Task<Integer> {
 	private LoadingProcess_Task loadingProcess_Task;
 
 	public AddToGridPane2(Model_datefix aModel_dateFix, ObservableList<Node> aList, LoadingProcess_Task loading_Process_Task) {
-		Messages.sprintf("Something is about to happend 1: " + aList.size());
+		Messages.sprintf("AddToGridPane2 started: " + aList.size());
 		this.model_datefix = aModel_dateFix;
 		this.list = aList;
 		this.size = aList.size();
@@ -160,8 +160,8 @@ public class AddToGridPane2 extends Task<Integer> {
 			public void run() {
 				// TODO BUGI!!!!
 				contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
-				model_datefix.getScrollPane().setVvalue(-1);
-				model_datefix.getScrollPane().setVvalue(0);
+//				model_datefix.getScrollPane().setVvalue(-1);
+//				model_datefix.getScrollPane().setVvalue(0);
 				
 				model_datefix.updateAllInfos(model_datefix.getGridPane());
 				loadingProcess_Task.closeStage();

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -12,34 +12,29 @@ import static com.girbola.messages.Messages.sprintf;
 
 import java.awt.Desktop;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 
-import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
-import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -79,10 +74,7 @@ public class MenuBarController {
 
 	@FXML
 	private MenuBar menuBar;
-	@FXML
-	private MenuItem menuItem_tools_options_load;
-	@FXML
-	private MenuItem menuItem_tools_options_save;
+
 	@FXML
 	private MenuItem menuItem_file_addFolders;
 	@FXML
@@ -109,6 +101,7 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_addFolders_action(ActionEvent event) {
 		Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
+		model_main.getMonitorExternalDriveConnectivity().cancel();
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
 				Main.bundle);
 
@@ -124,11 +117,12 @@ public class MenuBarController {
 					Misc.getLineNumber(), true);
 		}
 		Stage fc_stage = new Stage();
-		fc_stage.setWidth(conf.getScreenBounds().getWidth());
-		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
+//		fc_stage.setWidth(conf.getScreenBounds().getWidth());
+//		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
 		fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent event) {
+				model_main.getMonitorExternalDriveConnectivity().restart();
 				fc_stage.close();
 			}
 		});
@@ -147,14 +141,12 @@ public class MenuBarController {
 
 	@FXML
 	private void menuItem_file_clear_action(ActionEvent event) {
-		model_main.tables().getAsItIs_table().getItems().clear();
-		model_main.tables().getSortIt_table().getItems().clear();
-		model_main.tables().getSorted_table().getItems().clear();
+		TableUtils.clearTablesContents(model_main.tables());
+		Main.setChanged(false);
 	}
 
 	@FXML
 	private void menuItem_file_close_action(ActionEvent event) {
-		// model_main.menu().closeStage(menuItem_file_close);
 		model_main.exitProgram();
 	}
 
@@ -207,66 +199,55 @@ public class MenuBarController {
 	@FXML
 	private void menuItem_file_load_action(ActionEvent event) {
 		Messages.sprintf("menuItem_file_load_action");
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getFolderInfo_db_fileName());
-		if (SQL_Utils.isDbConnected(connection)) {
-			Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(
-					model_main, connection);
-
-			Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
-			load_thread.start();
+//		boolean load = true;
+		if (Main.getChanged()) {
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+					bundle.getString("changesMadeDataLost"));
+			dialog.getDialogPane().getButtonTypes().remove(1);
+			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
+			Optional<ButtonType> result = dialog.showAndWait();
+			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+				Main.setChanged(false);
+				loadTablesContents();
+				Main.setChanged(false);
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+				Messages.sprintf("Cancel_Close pressed. Doing nothing than closing the window");
+			}
 		} else {
-			Messages.sprintf("Loading folderinfos back to tables was empty");
+			loadTablesContents();
+		}
+	}
+
+	private void loadTablesContents() {
+		if (Files.exists(
+				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
+			Messages.sprintf("Folderinfo database foudn at appdata path: "
+					+ (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
+			model_main.load();
 		}
 	}
 
 	@FXML
 	private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
-		Task<Void> task = new Task<Void>() {
-			@Override
-			protected Void call() throws Exception {
-				model_main.save();
-				return null;
-			}
-		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
-
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-			}
-		});
-		lpt.setTask(task);
-		Thread thread = new Thread(task, "Saving Thread");
+		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
+				null, true);
+		Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
 		thread.setDaemon(true);
 		thread.start();
+
 	}
 
 	@FXML
 	private void menuItem_help_about_action(ActionEvent event) {
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);
-		Label programName = new Label("Organize and backup image & video files");
+		Label programName = new Label("Organizer tool for backing up image & video files");
 		Label programVersion = new Label(conf.getProgramVersion());
-		Label programCopyRight = new Label("Copyright © 2012-2018");
+		Label programCopyRight = new Label("Copyright © 2012-2020");
 		Label programUserInfo = new Label("Marko Lokka. marko.lokka@gmail.com");
 		Label programMoreInfo = new Label("NOT FOR PUBLIC DISTRIBUTION");
-		Hyperlink programHomePage = new Hyperlink(conf.getProgramHomePage());
+		Hyperlink programHomePage = new Hyperlink(HTMLClass.programHomePage);
 		programHomePage.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
@@ -312,7 +293,7 @@ public class MenuBarController {
 
 	@FXML
 	private void menuItem_tools_options_action(ActionEvent event) {
-		sprintf("menuItem_tools_options_action starting Theme path is: "+ conf.getThemePath());
+		sprintf("menuItem_tools_options_action starting Theme path is: " + conf.getThemePath());
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/options/Options.fxml"), bundle);
 		Parent parent = null;
 		try {
@@ -321,9 +302,10 @@ public class MenuBarController {
 			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 		}
 		OptionsController optionsController = (OptionsController) loader.getController();
-		optionsController.init(model_main);
+		optionsController.init();
 
 		Stage stage_opt = new Stage();
+		stage_opt.setAlwaysOnTop(true);
 		Scene scene_opt = new Scene(parent);
 		scene_opt.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + "option_pane.css").toExternalForm());
@@ -337,27 +319,8 @@ public class MenuBarController {
 			}
 		});
 		stage_opt.show();
-		
 
 	}
-
-	@FXML
-	private void menuItem_tools_options_load_action(ActionEvent event) {
-		try {
-			conf.loadConfig();
-		} catch (IOException ex) {
-			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-	}
-
-	@FXML
-	private void menuItem_tools_options_save_action(ActionEvent event) {
-		Configuration_SQL_Utils.update_Configuration();
-	}
-
-	// private void closeWindow(Stage stage) {
-	// stage.close();
-	// }
 
 	public void init(Model_main aModel_main) {
 		this.model_main = aModel_main;
@@ -375,11 +338,6 @@ public class MenuBarController {
 			sprintf("Cannot find theme:" + conf.getThemePath());
 			Messages.errorSmth(ERROR, "Problem by find theme path", null, Misc.getLineNumber(), false);
 		}
-
-		// Stage stage = (Stage) menuBar.getScene().getWindow();
-		// model_main.setCloseRequest((Stage)
-		// model_main.getScene().getWindow());
-
 	}
 
 	@FXML
@@ -409,7 +367,7 @@ public class MenuBarController {
 		menuItem_tools_themes_light.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
 				.add(getClass().getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
-
+		Configuration_SQL_Utils.update_Configuration();
 	}
 
 	@FXML
@@ -419,6 +377,7 @@ public class MenuBarController {
 		menuItem_tools_themes_dark.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
 				.add(getClass().getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
+		Configuration_SQL_Utils.update_Configuration();
 	}
 
 	private void viewWebPage(String string) {

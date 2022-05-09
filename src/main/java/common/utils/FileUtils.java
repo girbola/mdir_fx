@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -10,15 +10,20 @@ import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.Iterator;
 
+import com.girbola.Main;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.workdir.WorkDir_Handler;
+
+import common.utils.date.DateUtils;
 
 /**
  *
@@ -50,25 +55,9 @@ public class FileUtils {
 		return newPath;
 	}
 
-	//	public static void renameExistingFile(Path orgFilePath) {
-	//		String filePath = orgFilePath.getParent().toString();
-	//		String fileName = orgFilePath.getFileName().toString();
-	//
-	//		String extension = getExtension(orgFilePath.getFileName().toString());
-	//		File[] list = new File(orgFilePath.getParent().toString()).listFiles();
-	//		for (int i = 0; i < list.length; i++) {
-	////			String file = filePath + File.separator + fileName + "." + extension;
-	//			sprintf("Listing files: " + list[i]);
-	//			if (list[i].equals(orgFilePath.toFile())) {
-	//				sprintf("File found!");
-	//			}
-	//		}
-	//		sprintf("filePath is: " + filePath + File.separator + fileName + "." + extension);
-	//	}
-
 	/**
 	 * Rename file to new file name if file exists and it is different size example:
-	 * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg etc
+	 * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg and so on
 	 *
 	 * @param srcFile
 	 * @param destFile
@@ -80,20 +69,25 @@ public class FileUtils {
 		String prefix = "_";
 		String fileName = "";
 		String ext = getExtension(destFile);
-		// sprintf("src= " + srcFile + " size " + Files.size(srcFile) + " dest "
-		// +
-		// destFile + " size " + Files.size(destFile));
+
 		if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
 			sprintf("file name exists but they are different size: ");
-			File[] fileList = destFile.getParent().toFile().listFiles();
-			for (int i = 1;
-					i < fileList.length + 1;
-					i++) {
-				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString().substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + i + "."
+			DirectoryStream<Path> list = null;
+			try {
+				list = Files.newDirectoryStream(destFile.getParent(), filter_directories);
+			} catch (Exception e) {
+				Messages.sprintfError("Can't read directory: " + destFile);
+			}
+			int counter = 1;
+			Iterator<Path> it = list.iterator();
+			while (it.hasNext()) {
+				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
+						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "."
 						+ ext;
-				sprintf("fileName testing starting: " + i + " fileName: " + fileName);
+
+				sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
+				counter++;
 				if (Files.exists(Paths.get(fileName))) {
-					sprintf("--->File name exists: " + fileName + "size is: " + Files.size(Paths.get(fileName)) + "dest : " + destFile + " size: " + Files.size(destFile));
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
 						sprintf("File existed!: " + destFile + " filename: " + fileName);
 						return null;
@@ -106,14 +100,15 @@ public class FileUtils {
 			Messages.sprintf("file did exists at destination folder");
 			return null;
 		}
-		sprintf("REturning destfile: " + destFile);
+		sprintf("Returning destfile: " + destFile);
 		return destFile;
 	}
 
 	public static DirectoryStream.Filter<Path> filter_directories = new DirectoryStream.Filter<Path>() {
 		@Override
 		public boolean accept(Path path) throws IOException {
-			return !Files.isDirectory(path) && supportedMediaFormat(path.toFile()); // Failed to determine if it's a directory.
+			return !Files.isDirectory(path) && supportedMediaFormat(path.toFile()); // Failed to determine if it's a
+																					// directory.
 		}
 	};
 
@@ -251,8 +246,10 @@ public class FileUtils {
 	public static boolean videoFormat(File file) {
 		String result;
 		result = getExtension(file.getName());
-		if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx") || result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
-				|| result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob") || result.equals("wmv") || result.equals("mkv")) {
+		if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx")
+				|| result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
+				|| result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob")
+				|| result.equals("wmv") || result.equals("mkv")) {
 			return true;
 		}
 		return false;
@@ -290,7 +287,8 @@ public class FileUtils {
 	 */
 	public static String getFileExtension(Path path) {
 		// int mid =
-		return path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf(".") + 1, path.getFileName().toString().length());
+		return path.getFileName().toString().substring(path.getFileName().toString().lastIndexOf(".") + 1,
+				path.getFileName().toString().length());
 		// return ext;
 	}
 
@@ -324,42 +322,91 @@ public class FileUtils {
 		return finalName;
 	}
 
+//	public boolean findDuplicateFile(Path src, Path dest) {
+//
+//		return false;
+//	}
+
 	/**
-	 * Compare files if they are same. Checking also if file size are different and
-	 * file paths aren't the same
-	 *
-	 * @param source
-	 * @param destination
-	 * @return
-	 * @throws IOException
+	 * Replaces from filepath a workdir to none. For example
+	 * c:\pictures\2019\09\pictures001.jpg to \2019\09\pictures001.jpg
+	 * 
+	 * @param dest
+	 * @param workDir
 	 */
-	public static final boolean compareFiles(final Path source, final Path destination) throws IOException {
-		if (Files.size(source) != Files.size(destination) && !source.equals(destination)) {
-			return false;
-		}
-		final long size = Files.size(source);
-		final int mapSpan = (4 * 1024 * 1024);
-
-		try (FileChannel chana = (FileChannel) Files.newByteChannel(source);
-				FileChannel chanb = (FileChannel) Files.newByteChannel(destination)) {
-
-			for (long position = 0;
-					position < size;
-					position += mapSpan) {
-				MappedByteBuffer mba = mapChannel(chana, position, size, mapSpan);
-				MappedByteBuffer mbb = mapChannel(chanb, position, size, mapSpan);
-				if (mba.compareTo(mbb) != 0) {
-					return false;
-				}
-			}
-		}
-		return true;
+	public static String parseWorkDir(String dest, String workDir) {
+		String parsedWorkDir_FileName = dest.replace(workDir, "");
+		Messages.sprintf("parseWorkDir is: " + parsedWorkDir_FileName);
+		return parsedWorkDir_FileName;
 	}
 
-	private static MappedByteBuffer mapChannel(FileChannel channel, long position, long size, int mapspan) throws IOException {
-		final long end = Math.min(size, position + mapspan);
-		final long maplen = (int) (end - position);
-		return channel.map(FileChannel.MapMode.READ_ONLY, position, maplen);
+	/**
+	 * 
+	 * @param fileInfo
+	 * @param workDir
+	 * @return
+	 */
+	public static Path getFileNameDate(FileInfo fileInfo, String workDir) {
+		LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		Path path = Paths.get(File.separator + localDate.getYear() + File.separator + fileName + "."
+				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+		fileInfo.setWorkDir(workDir);
+		fileInfo.setDestination_Path(path.toString());
+
+		return path;
+	}
+
+	/**
+	 * Generates an destination folder path IMG.JPG becomes yyyy-MM-dd HH.mm.ss -
+	 * <Location> - <Event>.JPG Also sets fileInfo as not copied
+	 * 
+	 * @param fileInfo
+	 * @param workDir
+	 * @return
+	 */
+	public static Path getFileNameDateWithEventAndLocation(FileInfo fileInfo, String workDir) {
+		LocalDate localDate = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+		String location_str = "";
+		String event_str = "";
+		fileInfo.setWorkDir(workDir);
+		fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+
+		// Location = "KAINUU" Event = ""
+		if (!fileInfo.getLocation().isEmpty() && fileInfo.getEvent().isEmpty()) {
+			location_str = " - " + fileInfo.getLocation();
+			// Event = "KALASSA" Location = ""
+		} else if (!fileInfo.getEvent().isEmpty() && fileInfo.getLocation().isEmpty()) {
+			event_str = " - " + fileInfo.getEvent();
+			// Event = "" Location = ""
+		} else if (!fileInfo.getEvent().isEmpty() && !fileInfo.getLocation().isEmpty()) {
+			location_str = " - " + fileInfo.getLocation();
+			event_str = " - " + fileInfo.getEvent();
+		}
+
+		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
+				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+		Path destPath = Paths.get(File.separator + localDate.getYear() + File.separator + localDate + location_str
+				+ event_str + File.separator + fileName + "."
+				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+		fileInfo.setDestination_Path(destPath.toString());
+
+		if (!fileInfoIsCopiedToDest(fileInfo, Main.conf.getWorkDir())) {
+			fileInfo.setCopied(false);
+		} else {
+			fileInfo.setCopied(true);
+		}
+
+		return destPath;
+	}
+
+	public static boolean fileInfoIsCopiedToDest(FileInfo fileInfo, String workDir) {
+		if (Main.conf.getModel().getWorkDir_Handler().exists(fileInfo) != null) {
+			return true;
+		}
+		return false;
 	}
 
 }

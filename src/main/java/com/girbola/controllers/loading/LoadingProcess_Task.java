@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -34,6 +34,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.util.Duration;
 
 public class LoadingProcess_Task {
@@ -42,12 +43,16 @@ public class LoadingProcess_Task {
 	private Model_loading model_loading = new Model_loading();
 	private double xOffset;
 	private double yOffset;
-//	private Scene inheritedScene;
 	private Parent parent = null;
+	private Window owner;
 
-	public LoadingProcess_Task() {
-//		this.inheritedScene = inheritedScene;
+	private Scene loadingScene;
+	private Stage loadingStage;
+
+	public LoadingProcess_Task(Window owner) {
+		this.owner = owner;
 		loadGUI();
+
 	}
 
 	/*
@@ -62,75 +67,84 @@ public class LoadingProcess_Task {
 			model_loading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 		});
 		if (current_Task == null) {
-			Messages.sprintf("Task were set to null!!");
-			return;
-		}
-		if (!Main.getProcessCancelled()) {
-			if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
-				if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+			Messages.sprintf("LoadingProcess_Task Task were set to null!!");
+//			return;
+		} else {
+			if (!Main.getProcessCancelled()) {
+				if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
+					if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+						model_loading.setTask(current_Task);
+						bind();
+					}
+				} else {
 					model_loading.setTask(current_Task);
 					bind();
+					loadGUI();
 				}
 			} else {
-				model_loading.setTask(current_Task);
-				bind();
-				loadGUI();
+				closeStage();
 			}
-		} else {
-			closeStage();
 		}
 	}
 
 	public void loadGUI() {
-		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/loading/LoadingProcess.fxml"), bundle);
-		try {
-			parent = loader.load();
+		Platform.runLater(() -> {
+			FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/loading/LoadingProcess.fxml"), bundle);
+			try {
+				parent = loader.load();
 
-		} catch (IOException ex) {
-			Logger.getLogger(LoadingProcess_Task.class.getName()).log(Level.SEVERE, null, ex);
-			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-		LoadingProcessController lpc = (LoadingProcessController) loader.getController();
-		lpc.init(model_loading);
-		Scene loadingScene = new Scene(parent);
-		Stage loadingStage = new Stage();
-		loadingStage.initStyle(StageStyle.UNDECORATED);
-		loadingStage.setTitle("loadingprocess_task");
-		loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + "dialogs.css").toExternalForm());
-
-		xOffset = loadingStage.getX();
-		yOffset = loadingStage.getY();
-
-		loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
-
-			@Override
-			public void handle(MouseEvent event) {
-				xOffset = (loadingStage.getX() - event.getScreenX());
-				yOffset = (loadingStage.getY() - event.getScreenY());
-				sprintf("yOffset: " + yOffset);
+			} catch (IOException ex) {
+				Logger.getLogger(LoadingProcess_Task.class.getName()).log(Level.SEVERE, null, ex);
+				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 			}
-		});
+			LoadingProcessController lpc = (LoadingProcessController) loader.getController();
+			lpc.init(model_loading);
+			loadingScene = new Scene(parent);
+			loadingStage = new Stage();
 
-		loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+			if (owner != null) {
+				loadingStage.initOwner(owner);
+			}
+			loadingStage.initStyle(StageStyle.UNDECORATED);
+			Messages.sprintf("Owner is: " + loadingStage.getOwner());
+//		loadingStage.setX(Main.conf.getWindowStartPosX());
+			loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
+			loadingScene.getStylesheets()
+					.add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
 
-			@Override
-			public void handle(MouseEvent event) {
-				loadingStage.setX(event.getScreenX() + xOffset);
-				if (event.getScreenY() <= 0) {
-					loadingStage.setY(0);
-				} else {
-					loadingStage.setY(event.getScreenY() + yOffset);
+			xOffset = loadingStage.getX();
+			yOffset = loadingStage.getY();
+
+			Main.centerWindowDialog(loadingStage);
+			loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					xOffset = (loadingStage.getX() - event.getScreenX());
+					yOffset = (loadingStage.getY() - event.getScreenY());
+					sprintf("yOffset: " + yOffset);
 				}
+			});
 
-				sprintf("event.getScreenY(); = " + event.getScreenY());
-			}
-		});
+			loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+
+				@Override
+				public void handle(MouseEvent event) {
+					loadingStage.setX(event.getScreenX() + xOffset);
+					if (event.getScreenY() <= 0) {
+						loadingStage.setY(0);
+					} else {
+						loadingStage.setY(event.getScreenY() + yOffset);
+					}
+
+					sprintf("event.getScreenY(); = " + event.getScreenY());
+				}
+			});
 
 //		loadingStage.initStyle(StageStyle.UTILITY);
 
-		loadingStage.setScene(loadingScene);
-		loadingStage.setAlwaysOnTop(true);
-		Platform.runLater(() -> {
+			loadingStage.setScene(loadingScene);
+			loadingStage.setAlwaysOnTop(true);
 			loadingStage.show();
 			Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
 			Main.scene_Switcher.setScene_loading(loadingScene);
@@ -172,7 +186,7 @@ public class LoadingProcess_Task {
 		stopTask();
 		unbind();
 		Timeline timeline = new Timeline();
-		KeyFrame key = new KeyFrame(Duration.millis(1000),
+		KeyFrame key = new KeyFrame(Duration.millis(2000),
 				new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {
@@ -212,8 +226,13 @@ public class LoadingProcess_Task {
 		Messages.sprintf("Showing stage!");
 
 		Stage stage = Main.scene_Switcher.getWindow_loadingprogress();
+		/*
+		 * if (owner != null) { stage.initOwner(owner); }
+		 */
 		if (stage != null) {
+
 			stage.show();
+
 		} else {
 			Messages.errorSmth(ERROR, "Loading scene haven't been initialisiz. It was null null!!!", null,
 					Misc.getLineNumber(), true);

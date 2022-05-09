@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -19,10 +19,11 @@ public class DriveInfo {
 	private boolean selected;
 	private String drivePath;
 	private long driveTotalSize;
-	private String indentifier;
+	private String identifier;
 	private boolean isWritable;
 	private List<Path> selectedFolders = new ArrayList<>();
 	private Path drive;
+	private String serial;
 
 	/**
 	 * 
@@ -30,16 +31,17 @@ public class DriveInfo {
 	 * @param aDriveTotalSize
 	 * @param aConnected
 	 * @param aSelected
-	 * @param aIndentifier
+	 * @param aIdentifier
 	 */
 	public DriveInfo(String aDrivePath, long aDriveTotalSize, boolean aConnected, boolean aSelected,
-			String aIndentifier) {
+			String aIdentifier) {
 		this.drivePath = aDrivePath;
 		this.driveTotalSize = aDriveTotalSize;
 		this.connected = aConnected;
 		this.selected = aSelected;
-}
-
+		this.identifier = aIdentifier;
+//		this.serial = aSerial;
+	}
 
 	public boolean getSelected() {
 		return this.selected;
@@ -73,12 +75,12 @@ public class DriveInfo {
 		this.driveTotalSize = driveTotalSize;
 	}
 
-	public String getIndentifier() {
-		return indentifier;
+	public String getIdentifier() {
+		return identifier;
 	}
 
-	public void setIndentifier(String indentifier) {
-		this.indentifier = indentifier;
+	public void setIdentifier(String value) {
+		this.identifier = value;
 	}
 
 	public boolean isWritable() {
@@ -88,6 +90,7 @@ public class DriveInfo {
 	public List<Path> getSelectedFolders() {
 		return selectedFolders;
 	}
+
 	public void setWritable(boolean isWritable) {
 		this.isWritable = isWritable;
 	}

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -117,7 +117,7 @@ public class ChooseFoldersController {
 
 	public void loadTreeView() {
 		sprintf("loadTreeview started: ");
-		for (Path selectedFolder : model_folderScanner.getDrivesList_selected_obs()) {
+		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			sprintf("loadTreeView is: " + selectedFolder);
 			CheckBoxTreeItem<Path> tree = createCheckBoxTreeItem(selectedFolder);
 			createTreeView(selectedFolder, tree);

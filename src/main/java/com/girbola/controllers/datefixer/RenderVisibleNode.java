@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.  
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.  
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -32,11 +32,13 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.imagehandling.ConvertImage_Byte;
 import com.girbola.imagehandling.ConvertVideo_Byte;
+import com.girbola.imagehandling.ImageHandling;
 import com.girbola.imagehandling.VideoThumbMaker;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
 import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
@@ -93,14 +95,15 @@ public class RenderVisibleNode {
 					timeline.stop();
 				}
 				timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
-				sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
+				sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: "
+						+ scrollPane.getVmax());
 				timeline.play();
 				map.clear();
 			}
 		});
 
-		scrollPane.setVvalue(-10);
-		scrollPane.setVvalue(0);
+//		scrollPane.setVvalue(-10);
+//		scrollPane.setVvalue(0);
 
 	}
 
@@ -155,51 +158,62 @@ public class RenderVisibleNode {
 						if (imageView.getImage() == null) {
 							if (FileUtils.supportedMediaFormat(file.toFile())) {
 								ThumbInfo thumbInfo = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
-
+								
 								int value = handle_thumb(fileInfo, thumbInfo, Main.conf.isBetterQualityThumbs());
 								/*
-								 * 0 = thumbinfo found with image(s). Load
-								 * 1 = thumbinfo has no arraylist. Create
+								 * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.
+								 * Create
 								 */
 								switch (value) {
 								case 0:
 									if (FileUtils.supportedImage(file)) {
 										Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX, imageView);
+												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+												imageView);
 										byte_List.add(convertByte_thumb_fast);
 
 									}
 									if (FileUtils.supportedRaw(file)) {
 										Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX, imageView);
+												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+												imageView);
 										byte_List.add(convertByte_thumb_fast);
 
 									} else if (FileUtils.supportedVideo(file)) {
 										Task<List<BufferedImage>> convertByte_thumb_fast = new ConvertVideo_Byte(
-												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX, imageView);
+												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+												imageView);
 										byte_List.add(convertByte_thumb_fast);
 									}
 									break;
 								case 1:
 									if (FileUtils.supportedVideo(file)) {
-										Task<List<BufferedImage>> convertVideo_task = new VideoThumbMaker(fileInfo, imageView,
-												(GUIPrefs.thumb_x_MAX - 2));
+										Task<List<BufferedImage>> convertVideo_task = new VideoThumbMaker(fileInfo,
+												imageView, (GUIPrefs.thumb_x_MAX - 2));
 										needToConvert_Video_list.add(convertVideo_task);
 									} else if (FileUtils.supportedImage(file)) {
 										if (FileUtils.isTiff(file.toFile())) {
-											Messages.sprintf("1 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+											Messages.sprintf(
+													"Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
+//											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
+//													imageView);
+											Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo,
+													GUIPrefs.thumb_x_MAX, imageView);
 											imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
 											needToConvert_Image_list.add(imageThumb);
 										} else {
-											Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+											Messages.sprintf(
+													"2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
+											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
+													imageView);
 											imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
 											needToConvert_Image_list.add(imageThumb);
 										}
 									} else if (FileUtils.supportedRaw(file)) {
-										Messages.sprintf("3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
-										Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+										Messages.sprintf(
+												"3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
+										Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
+												imageView);
 										imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
 										needToConvert_Image_list.add(imageThumb);
 									}
@@ -213,7 +227,9 @@ public class RenderVisibleNode {
 
 			if (byte_List.size() > 1) {
 				for (Task<?> bytes_Task : byte_List) {
-					exec_multi.submit(bytes_Task);
+					if (bytes_Task != null && !Main.getProcessCancelled()) {
+						exec_multi.submit(bytes_Task);
+					}
 				}
 				exec_multi.shutdown();
 				try {
@@ -223,17 +239,25 @@ public class RenderVisibleNode {
 				}
 			}
 			sprintf("needToConvert_Image_list size: " + needToConvert_Image_list.size());
-			sprintf("exec_single isTerminated? " + exec_single.isTerminated() + " isShutDown: " + exec_single.isShutdown());
+			sprintf("exec_single isTerminated? " + exec_single.isTerminated() + " isShutDown: "
+					+ exec_single.isShutdown());
 			for (Task<?> image_Task : needToConvert_Image_list) {
-				exec_single.submit(image_Task);
+				if (image_Task != null && !Main.getProcessCancelled()) {
+					Messages.sprintf("Adding needToConvert_Image_list to exec to create a thumbnail");
+					exec_single.submit(image_Task);
+				}
 			}
 			sprintf("needToConvert_Video_list size: " + needToConvert_Video_list.size());
 			for (Task<?> video_task : needToConvert_Video_list) {
-				exec_single.submit(video_task);
+				if (video_task != null && !Main.getProcessCancelled()) {
+					exec_single.submit(video_task);
+				}
 			}
 			sprintf("needToConvert_SlowRender_list size: " + needToConvert_Video_list.size());
 			for (Task<?> slow_render : needToConvert_SlowRender_list) {
-				exec_single.submit(slow_render);
+				if (slow_render != null && !Main.getProcessCancelled()) {
+					exec_single.submit(slow_render);
+				}
 			}
 
 			exec_single.shutdown();
@@ -242,14 +266,14 @@ public class RenderVisibleNode {
 		}
 	}
 	//
-	//	private int handle_tiff_thumb(FileInfo fileInfo, boolean betterQualityThumbs) {
-	//		return 0;
-	//	}
+	// private int handle_tiff_thumb(FileInfo fileInfo, boolean betterQualityThumbs)
+	// {
+	// return 0;
+	// }
 
 	/**
-	 * 0 = thumbinfo found
-	 * 1 = thumbinfo create thumbs
-	 *	
+	 * 0 = thumbinfo found 1 = thumbinfo create thumbs
+	 * 
 	 * @param fileInfo
 	 * @param thumbInfo
 	 * @param betterQuality
@@ -257,16 +281,19 @@ public class RenderVisibleNode {
 	 */
 	private int handle_thumb(FileInfo fileInfo, ThumbInfo thumbInfo, boolean betterQuality) {
 		if (thumbInfo == null) {
+			Messages.sprintf("thumbsInfo were null! " + fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs() == null) {
+			Messages.sprintf("getThumbswere null"+ fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs().get(0) == null) {
+			Messages.sprintf("getThumbs.get(0) is empty"+ fileInfo.getOrgPath());
 			return 1;
 		}
 		if (thumbInfo.getThumbs().isEmpty()) {
-			Messages.sprintf("getThumbs list is empty");
+			Messages.sprintf("getThumbs list is empty"+ fileInfo.getOrgPath());
 			return 1;
 		} else {
 			Messages.sprintf("getThumbs() were not empty");

@@ -1,46 +1,30 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
 package com.girbola.fileinfo;
 
-import java.util.ArrayList;
-
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+import java.time.LocalDateTime;
 
 /**
  *
  * @author Marko Lokka
  */
-public class FileInfo extends
-		Metadata {
+public class FileInfo extends Metadata implements Cloneable {
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
 
-	private String orgPath;
-	private String destinationPath;
-
+	private final int fileInfo_version = 2;
 	/**
-	 * FileInfo version 1
-	 * ==================
-	 * fileInfo_version number created
+	 * FileInfo version 1 ================== fileInfo_version number created
 	 * fileName changed from thumbfile.xml to fileinfo.dat
 	 * 
+	 * FileInfo version 2 ================== workDirDriveSerialNumber added
 	 */
-	private final int fileInfo_version = 2;
-
-	private String event;
-	private String location;
-	private String tags;
-	//	private ArrayList<byte[]> thumbs = new ArrayList<>();
-
-	//private ThumbInfo thumbInfo;
-
-	private int fileInfo_id;
-
-	private String camera_model;
 	private boolean bad;
 	private boolean confirmed;
 	private boolean copied;
@@ -49,31 +33,63 @@ public class FileInfo extends
 	private boolean image;
 	private boolean raw;
 	private boolean suggested;
+	private boolean tableDuplicated;
 	private boolean video;
-	// private byte[] thumb;
+
+	private int fileInfo_id;
 	private int orientation;
 	private int thumb_length;
-	private long timeShift;
+	private int thumb_offset;
+	private LocalDateTime localDateTime;
 	private long date;
 	private long size;
-	private boolean tableDuplicated;
+	private long timeShift;
+	private String camera_model;
+	private String destination_Path;
+	private String event;
+	private String location;
+	private String orgPath;
+
+	private String tags;
 	private String user;
+	private String workDir;
+	private String workDirDriveSerialNumber;
+
+	public String getWorkDirDriveSerialNumber() {
+		return workDirDriveSerialNumber;
+	}
+
+	public void setWorkDirDriveSerialNumber(String workDirSerial) {
+		this.workDirDriveSerialNumber = workDirSerial;
+	}
+
+	public LocalDateTime getLocalDateTime() {
+		return localDateTime;
+	}
+
+	public void setLocalDateTime(LocalDateTime localDateTime) {
+		this.localDateTime = localDateTime;
+	}
 
 	@Override
 	public String toString() {
 		return this.orgPath;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String showAllValues() {
-		return "FileInfo [orgPath=" + orgPath + ", destinationPath=" + destinationPath + ", fileInfo_version=" + fileInfo_version
-				+ ", event=" + event + ", location=" + location + ", tags=" + tags + ", + fileInfo_id=" + fileInfo_id
-				+ ", camera_model=" + camera_model + ", bad=" + bad + ", confirmed=" + confirmed + ", copied=" + copied
-				+ ", good=" + good + ", ignored=" + ignored + ", image=" + image + ", raw=" + raw + ", suggested=" + suggested
-				+ ", video=" + video + ", orientation=" + orientation + ", thumb_length=" + thumb_length + ", timeShift="
-				+ timeShift + ", date=" + date + ", size=" + size + ", tableDuplicated=" + tableDuplicated + ", thumb_offset="
+		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir
+				+ ", workDirDriveSerialNumber=" + workDirDriveSerialNumber + ", destination_Path=" + destination_Path
+				+ ", fileInfo_version=" + fileInfo_version + ", event=" + event + ", location=" + location + ", tags="
+				+ tags + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad
+				+ ", confirmed=" + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored
+				+ ", image=" + image + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video
+				+ ", orientation=" + orientation + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift
+				+ ", date=" + date + ", size=" + size + ", tableDuplicated=" + tableDuplicated + ", thumb_offset="
 				+ thumb_offset + " user " + user + "]";
 	}
 
@@ -85,7 +101,7 @@ public class FileInfo extends
 	public FileInfo(String aOrgPath, int fileInfo_id) {
 		this.orgPath = aOrgPath;
 		this.fileInfo_id = fileInfo_id;
-		this.destinationPath = "";
+		this.destination_Path = "";
 		this.event = "";
 		this.location = "";
 		this.tags = "";
@@ -106,38 +122,17 @@ public class FileInfo extends
 		this.thumb_offset = 0;
 		this.thumb_length = 0;
 		this.user = "";
-		//this.thumbInfo = new ThumbInfo(orgPath, fileInfo_id);
+		this.workDir = "";
+		this.workDirDriveSerialNumber = "";
+		// this.thumbInfo = new ThumbInfo(orgPath, fileInfo_id);
 	}
 
 	/**
 	 *
 	 */
 	public FileInfo() {
-		this(
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				0,
-				0,
-				0,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
-				false,
-				0,
-				0,
-				0,
-				0);
+		this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false,
+				false, false, false, false, false, 0, 0, 0, 0);
 	}
 
 	/**
@@ -167,32 +162,15 @@ public class FileInfo extends
 	 * @param aThumb_offset
 	 * @param aThumb_length
 	 */
-	public FileInfo(String aOrgPath,
-			String aDestinationPath,
-			String aEvent,
-			String aLocation,
-			String aTags,
-			String aCamera_model,
-			String user,
-			int aOrientation,
-			long aTimeShift,
-			int aFileInfo_id,
-			boolean aBad,
-			boolean aGood,
-			boolean aSuggested,
-			boolean aConfirmed,
-			boolean aImage,
-			boolean aRaw,
-			boolean aVideo,
-			boolean aIgnored,
-			boolean aCopied,
-			boolean aTableDuplicated,
-			long aDate,
-			long aSize,
-			int aThumb_offset,
-			int aThumb_length) {
+	public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber,
+			String aDestinationStructure, String aEvent, String aLocation, String aTags, String aCamera_model,
+			String user, int aOrientation, long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood,
+			boolean aSuggested, boolean aConfirmed, boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored,
+			boolean aCopied, boolean aTableDuplicated, long aDate, long aSize, int aThumb_offset, int aThumb_length) {
 		this.orgPath = aOrgPath;
-		this.destinationPath = aDestinationPath;
+		this.workDir = aWorkDir;
+		this.workDirDriveSerialNumber = aWorkDirDriveSerialNumber;
+		this.destination_Path = aDestinationStructure;
 		this.event = aEvent;
 		this.location = aLocation;
 		this.tags = aTags;
@@ -215,6 +193,14 @@ public class FileInfo extends
 		this.thumb_offset = aThumb_offset;
 		this.thumb_length = aThumb_length;
 		this.user = user;
+	}
+
+	public String getWorkDir() {
+		return workDir;
+	}
+
+	public void setWorkDir(String workDir) {
+		this.workDir = workDir;
 	}
 
 	public int getFileInfo_id() {
@@ -241,12 +227,12 @@ public class FileInfo extends
 		this.event = event;
 	}
 
-	public String getDestinationPath() {
-		return destinationPath;
+	public String getDestination_Path() {
+		return destination_Path;
 	}
 
-	public void setDestinationPath(String destinationPath) {
-		this.destinationPath = destinationPath;
+	public void setDestination_Path(String destinationStructure) {
+		this.destination_Path = destinationStructure;
 	}
 
 	public int getFileInfo_version() {
@@ -268,16 +254,6 @@ public class FileInfo extends
 	public void setCamera_model(String camera_model) {
 		this.camera_model = camera_model;
 	}
-
-	// public byte[] getThumb() {
-	// return this.thumb;
-	// }
-	//
-	// public void setThumb(byte[] thumb) {
-	// this.thumb = thumb;
-	// }
-
-	private int thumb_offset;
 
 	public int getThumb_offset() {
 		return this.thumb_offset;

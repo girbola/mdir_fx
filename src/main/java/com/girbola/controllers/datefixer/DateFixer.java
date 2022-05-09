@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.Model_main;
@@ -26,10 +27,12 @@ import com.girbola.misc.Misc;
 
 import common.utils.FileUtils;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -58,7 +61,6 @@ public class DateFixer extends Task<Void> {
 		this.model_main = aModel_main;
 		this.isImported = isImported;
 		model_datefix = new Model_datefix(model_main, currentPath);
-
 	}
 
 	@Override
@@ -70,7 +72,7 @@ public class DateFixer extends Task<Void> {
 			try {
 				parent = loader.load();
 			} catch (IOException ex) {
-				Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
+				ex.printStackTrace();
 			}
 
 			dateFixerController = (DateFixerController) loader.getController();
@@ -101,7 +103,9 @@ public class DateFixer extends Task<Void> {
 								sprintf("fileInfo: " + fileInfo.toString());
 								if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
 										|| FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
-									ImageUtils.view(Paths.get(fileInfo.getOrgPath()));
+
+									ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
+											Main.scene_Switcher.getScene_dateFixer().getWindow());
 								} else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
 									ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
 								}
@@ -112,8 +116,8 @@ public class DateFixer extends Task<Void> {
 			});
 
 			sprintf("conf.getThemePath(): " + conf.getThemePath());
-			scene_dateFixer.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + "dateFixer.css").toExternalForm());
+			scene_dateFixer.getStylesheets().add(
+					Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
 
 			Platform.runLater(() -> {
 				Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
@@ -140,7 +144,8 @@ public class DateFixer extends Task<Void> {
 	protected void succeeded() {
 		sprintf("dateFixLoader.setOnSucceeded");
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+// Check if files are already in destination
 
 		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),
 				model_datefix, loadingProcess_task);
@@ -155,9 +160,12 @@ public class DateFixer extends Task<Void> {
 			@Override
 			public void handle(WorkerStateEvent event) {
 
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 				loadingProcess_task.closeStage();
+
+				Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_thread");
+				thread.start();
 
 			}
 		});

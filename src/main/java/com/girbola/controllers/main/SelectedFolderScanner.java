@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -35,11 +35,11 @@ public class SelectedFolderScanner {
 	}
 
 	public void save_SelectedFolders_toSQL() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
-		SQL_Utils.createFolderInfoDatabase(connection);
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+		SQL_Utils.createFoldersStatesDatabase(connection);
 		SQL_Utils.createSelectedFoldersTable(connection);
 		if(!SQL_Utils.isDbConnected(connection)) {
-			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getFolderInfo_db_fileName() + " database", null, Misc.getLineNumber(), false);
+			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database", null, Misc.getLineNumber(), false);
 			return;
 		}
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
@@ -53,7 +53,7 @@ public class SelectedFolderScanner {
 	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfo_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 		if (connection == null) {
 			return false;
 		}
@@ -62,7 +62,7 @@ public class SelectedFolderScanner {
 			SQL_Utils.loadFolders_list(connection, model_Main);
 			return true;
 		} else {
-			Messages.sprintf("Nothing to load");
+			Messages.sprintf("Nothing to load from database");
 			return false;
 		}
 	}

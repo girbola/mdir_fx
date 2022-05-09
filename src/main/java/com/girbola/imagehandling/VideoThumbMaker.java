@@ -40,6 +40,9 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		List<BufferedImage> list = null;
 		try {
 			list = VideoThumb.getList(new File(fileInfo.getOrgPath()));
+			if(list == null ) {
+				return null;
+			}
 		} catch (Exception ex) {
 			System.out.println("Exception ex: " + ex);
 			return null;

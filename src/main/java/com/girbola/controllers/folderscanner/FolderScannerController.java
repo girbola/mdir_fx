@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -80,11 +80,13 @@ public class FolderScannerController {
 	@FXML
 	private void addToSelectedFolders_btn_action(ActionEvent event) {
 		sprintf("addToSelectedFolders_btn_action...");
-		for (Path path : model_folderScanner.getDrivesList_selected_obs()) {
+		for (Path path : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			sprintf("Path is: " + path);
 			if (Files.exists(path)) {
-				if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
-					this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, path.toString()));
+				if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),
+						path)) {
+					this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
+							.add(new SelectedFolder(true, path.toString()));
 				}
 			}
 		}
@@ -123,13 +125,6 @@ public class FolderScannerController {
 	public void exit() {
 		model_folderScanner.getScanDrives().stop();
 		model_folderScanner.drive().saveList();
-		try {
-			if (model_folderScanner.getConnection() != null) {
-				model_folderScanner.getConnection().close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		folderScannerController_stage.close();
 	}
 

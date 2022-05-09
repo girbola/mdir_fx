@@ -1,16 +1,21 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
 package com.girbola.controllers.main;
 
+import static com.girbola.concurrency.ConcurrencyUtils.exec;
+import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
+import static com.girbola.messages.Messages.sprintf;
+
 import java.nio.file.Path;
 import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
+import com.girbola.messages.Messages;
 
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -18,16 +23,11 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
-import static com.girbola.messages.Messages.sprintf;
-
 /**
  *
  * @author Marko Lokka
  */
-public class Sorter extends
-		Task<Integer> {
+public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;
 	private Model_main model;
@@ -42,7 +42,7 @@ public class Sorter extends
 	protected Integer call() throws Exception {
 		if (!selectedList.isEmpty()) {
 			for (Path folder : selectedList) {
-				//                sprintf("Adding folder: " + folder);
+				sprintf("Adding folder: " + folder);
 				if (Main.getProcessCancelled()) {
 					exec[getExecCounter()].shutdownNow();
 					break;
@@ -51,7 +51,7 @@ public class Sorter extends
 				addToTable.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent event) {
-						//                        sprintf("Sorter done!");
+						 Messages.sprintf("addToTable Sorter done! " + folder);
 					}
 				});
 				addToTable.setOnFailed(new EventHandler<WorkerStateEvent>() {

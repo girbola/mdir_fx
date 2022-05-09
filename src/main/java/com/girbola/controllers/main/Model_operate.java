@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -93,14 +93,14 @@ public class Model_operate {
 	/**
 	 * @param start_btn the start_btn to set
 	 */
-	public final void setStart_btn(Button start_btn) {
+	public void setStart_btn(Button start_btn) {
 		this.start_btn = start_btn;
 	}
 
 	/**
 	 * @param progress the progress to set
 	 */
-	public final void setProgress(ProgressIndicator progress) {
+	public void setProgress(ProgressIndicator progress) {
 		this.progress = progress;
 	}
 

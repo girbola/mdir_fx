@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -11,9 +11,11 @@ import static com.girbola.Main.conf;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.imageViewer.ImageViewerController;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.vlcj.VLCPlayerController;
@@ -29,6 +31,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 /**
@@ -41,34 +44,64 @@ public class ImageUtils {
 	private static Stage stage;
 	private static final String ERROR = ImageUtils.class.getSimpleName();
 
-	public static void view(Path path) {
+	/*public static void view(Path path) {
 
-		ImageViewerController imv = null;
+		ImageViewerController imageViewerController = null;
 		Parent parent = null;
 
-		//            Parent parent = null;
+		// Parent parent = null;
 		FXMLLoader loader = null;
 		try {
 			loader = new FXMLLoader(Main.class.getResource("fxml/imageView/ImageViewer.fxml"), bundle);
 			parent = loader.load();
-			imv = (ImageViewerController) loader.getController();
+			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
-			scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "imageViewer.css").toExternalForm());
+			scene.getStylesheets()
+					.add(Main.class.getResource(conf.getThemePath() + "imageViewer.css").toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
 			stage.initStyle(StageStyle.TRANSPARENT);
 			stage.setScene(scene);
-			imv.init(path, scene, stage);
+			imageViewerController.init(path, scene, stage);
 
 			stage.show();
 		} catch (IOException e) {
 			System.out.println(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
-			//                Messages.errorSmth(ERROR + " e: " + e.getMessage(), Misc_GUI.getLineNumber(), true);
+			// Messages.errorSmth(ERROR + " e: " + e.getMessage(), Misc_GUI.getLineNumber(),
+			// true);
+		}
+
+	}*/
+	public static void view(List<FileInfo> fileInfoList, FileInfo fileInfo, Window window) {
+
+		ImageViewerController imageViewerController = null;
+		Parent parent = null;
+
+		FXMLLoader loader = null;
+		try {
+			loader = new FXMLLoader(Main.class.getResource("fxml/imageView/ImageViewer.fxml"), bundle);
+			parent = loader.load();
+			imageViewerController = (ImageViewerController) loader.getController();
+			scene = new Scene(parent);
+			scene.getStylesheets()
+					.add(Main.class.getResource(conf.getThemePath() + "imageViewer.css").toExternalForm());
+
+			stage = new Stage();
+			stage.centerOnScreen();
+			stage.initStyle(StageStyle.TRANSPARENT);
+			stage.setScene(scene);
+			stage.initOwner(window);
+			imageViewerController.init(fileInfoList, fileInfo, scene, stage);
+
+			stage.show();
+		} catch (IOException e) {
+			System.out.println(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
+			// Messages.errorSmth(ERROR + " e: " + e.getMessage(), Misc_GUI.getLineNumber(),
+			// true);
 		}
 
 	}
-
 	public static void playVideo(Path path, Node node) {
 		Messages.sprintf("Playing playVideo");
 		if (Main.conf.isVlcSupport()) {
@@ -78,7 +111,8 @@ public class ImageUtils {
 				root = loader.load();
 				VLCPlayerController vlcPlayerController = (VLCPlayerController) loader.getController();
 				Scene scene = new Scene(root);
-				scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "vlcPlayer.css").toExternalForm());
+				scene.getStylesheets()
+						.add(Main.class.getResource(conf.getThemePath() + "vlcPlayer.css").toExternalForm());
 
 				Stage stage = new Stage();
 
@@ -94,7 +128,8 @@ public class ImageUtils {
 				stage.focusedProperty().addListener(new ChangeListener<Boolean>() {
 
 					@Override
-					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
+							Boolean newValue) {
 						System.out.println("focus? " + newValue);
 						if (!newValue) {
 							vlcPlayerController.stop();

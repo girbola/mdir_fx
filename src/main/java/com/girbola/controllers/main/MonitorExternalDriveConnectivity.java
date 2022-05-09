@@ -10,19 +10,21 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
+import common.utils.OSHI_Utils;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 
-public class MonitorConnectivity extends ScheduledService<Void> {
+public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 
 	private Model_main model_Main;
 
-	public MonitorConnectivity(Model_main model_Main) {
+	public MonitorExternalDriveConnectivity(Model_main model_Main) {
 		this.model_Main = model_Main;
 	}
 
@@ -32,8 +34,6 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 
 			@Override
 			protected Void call() throws Exception {
-				Messages.sprintf("registerTableActivity.setPeriod(Duration.seconds= "
-						+ model_Main.getRegisterTableActivity().getPeriod());
 				checkTableConnectivity(model_Main.tables().getSortIt_table());
 				checkTableConnectivity(model_Main.tables().getSorted_table());
 				checkTableConnectivity(model_Main.tables().getAsItIs_table());
@@ -56,31 +56,66 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 			@Override
 			protected void succeeded() {
 				super.succeeded();
-				Messages.sprintf("Succedeed check");
 			}
 
 		};
 	}
 
 	private void checkWorkDirConnected() {
+		if (Main.conf.getWorkDir().equals("null")) {
+			disConnectedDrive("checkWorkDirConnected WorkDir is null");
+			return;
+		}
+		if (Main.conf.getWorkDir().isEmpty()) {
+			disConnectedDrive("checkWorkDirConnected WorkDir is empty");
+			return;
+		}
+
 		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-			Platform.runLater(() -> {
-				Main.conf.setDrive_connected(false);
-			});
+			disConnectedDrive("checkWorkDirConnected destination drive is not connected");
 		} else {
-			Platform.runLater(() -> {
+			String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(Paths.get(Main.conf.getWorkDir()).getRoot().toString());
+//			Messages.sprintf("testSerial is: " + driveSerialNumber);
+			if (Main.conf.getWorkDirSerialNumber().equals(driveSerialNumber)) {
+				driveConnected();
+				Messages.sprintf("Workd dir is connected: " + Main.conf.getWorkDir());
+			} else {
+				disConnectedDrive("checkWorkDirConnected not connected. Drive serial number has been changed since last check");
+			}
+		}
+	}
+
+	private void driveConnected() {
+		/*
+		 * Shows connected workdir drive's state
+		 * 
+		 */
+		Platform.runLater(() -> {
+			try {
+				Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
+						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
+				Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
+						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
 				Main.conf.setDrive_connected(true);
 				Main.conf.setDrive_name(Main.conf.getWorkDir());
-				try {
-					Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
-							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
-					Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
-							Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			});
-		}
+			} catch (Exception e) {
+				Platform.runLater(() -> {
+					Messages.sprintf("driveConnected connected ERROR");
+					Main.conf.setDrive_connected(false);
+				});
+			}
+		});
+
+	}
+
+	private void disConnectedDrive(String debugMessage) {
+		Platform.runLater(() -> {
+			Messages.sprintf(debugMessage);
+			Main.conf.setDrive_connected(false);
+			Main.conf.setDrive_space("");
+			Main.conf.setDrive_spaceLeft("");
+			Main.conf.setDrive_name("");
+		});
 	}
 
 	private void checkTableConnectivity(TableView<FolderInfo> table) {
@@ -89,7 +124,7 @@ public class MonitorConnectivity extends ScheduledService<Void> {
 				if (!folderInfo.isConnected()) {
 					folderInfo.setConnected(true);
 					Messages.sprintf("===Updating folder exists: " + folderInfo.isConnected());
-					boolean loaded = SQL_Utils.loadFileInfoDatabase(folderInfo);
+					boolean loaded = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
 					if (!loaded) {
 						List<FileInfo> list = FileInfo_Utils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);

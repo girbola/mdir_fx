@@ -23,14 +23,28 @@ public class SqliteConnection {
 		}
 	}
 
+	public static Connection connector(String path, String tableName) {
+		Connection conn = null;
+		try {
+			Class.forName("org.sqlite.JDBC");
+			conn = DriverManager.getConnection("jdbc:sqlite:" + path + File.separator + tableName);
+			return conn;
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.err.println("Something went wrong while connecting SQLITE database.\n" + e.getMessage());
+			return null;
+		}
+	}
+
 	/**
 	 * Check if table is not empty
+	 * 
 	 * @param connection
 	 * @param tableName
 	 * @return
 	 */
 	public static boolean tableExists(Connection connection, String tableName) {
-		if(connection == null) {
+		if (connection == null) {
 			return false;
 		}
 		try {
@@ -39,7 +53,7 @@ public class SqliteConnection {
 			rs.last();
 			return rs.getRow() > 0;
 		} catch (SQLException ex) {
-			ex.printStackTrace();
+//			ex.printStackTrace();
 			return false;
 		}
 	}

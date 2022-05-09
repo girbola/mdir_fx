@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -60,7 +60,7 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 					@Override
 					public void handle(ActionEvent event) {
 
-						model_main.getRegisterTableActivity().cancel();
+//						model_main.getRegisterTableActivity().cancel();
 						Task<Void> dateFixer = new DateFixer(path, folderInfo, model_main, false);
 						Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
 						sprintf("dateFixer_th.getName(): " + dateFixer_th.getName());

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -80,8 +80,8 @@ public class LocalTimeDifference {
 
 	public long getTimeInSeconds(LocalTime start_lt, LocalTime end_lt) {
 		// Duration d = Duration.between(start_lt, end_lt);
-		long start_tm = convertTimeInMillies(start_lt);
-		long end_tm = convertTimeInMillies(end_lt);
+		long start_tm = convertTimeToMillis(start_lt);
+		long end_tm = convertTimeToMillis(end_lt);
 		sprintf("getTimeInSeconds start: " + start_tm + " end: " + end_tm);
 		if (start_tm > end_tm) {
 			isOverDay = true;
@@ -106,7 +106,7 @@ public class LocalTimeDifference {
 		return daysTotal;
 	}
 
-	private long convertTimeInMillies(LocalTime startTime) {
+	private long convertTimeToMillis(LocalTime startTime) {
 		long h = (startTime.getHour() * 60 * 60);
 		long m = (startTime.getMinute() * 60);
 		long s = (startTime.getSecond());
@@ -121,7 +121,7 @@ public class LocalTimeDifference {
 			return null;
 		}
 
-		ArrayList<LocalDateTime> ld = new ArrayList<>();
+//		ArrayList<LocalDateTime> ld = new ArrayList<>();
 
 		int days = getDays(start.toLocalDate(), end.toLocalDate());
 		int seconds = Math.round(getTimeInSeconds(start.toLocalTime(), end.toLocalTime()));
@@ -219,12 +219,14 @@ public class LocalTimeDifference {
 					runc = runc.plusDays(1);
 					runc = runc.of(runc.getYear(), runc.getMonth(), runc.getDayOfMonth(), getStart().getHour(),
 							getStart().getMinute(), getStart().getSecond());
+					Messages.sprintf("1Possible flaw with localdatetime: " + runc);
 				}
 
 			} else {
 				runc = runc.plusDays(1);
 				runc = runc.of(runc.getYear(), runc.getMonth(), runc.getDayOfMonth(), getStart().getHour(),
 						getStart().getMinute(), getStart().getSecond());
+				Messages.sprintf("2Possible flaw with localdatetime: " + runc);
 
 			}
 		}
@@ -234,6 +236,13 @@ public class LocalTimeDifference {
 		return ld;
 	}
 
+	/**
+	 * 
+	 * @param files
+	 * @param start
+	 * @param end
+	 * @return
+	 */
 	public ArrayList<LocalDateTime> createDateList_NODAYS(int files, LocalDateTime start, LocalDateTime end) {
 		sprintf("createDateList_NODAYS - files= " + files);
 		ArrayList<LocalDateTime> ld = new ArrayList<>();

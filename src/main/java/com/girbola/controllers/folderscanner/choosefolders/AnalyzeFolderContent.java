@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -56,12 +56,12 @@ public class AnalyzeFolderContent extends Task<Void> {
 	@Override
 	protected Void call() throws Exception {
 		sprintf("analyzeFolderContent started: " + selected.size());
-		for (Path selectedFolder : model_folderScanner.getDrivesList_selected_obs()) {
+		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			sprintf("getDrivesList is: " + selectedFolder);
 		}
 		Map<Path,
 				List<Path>> map = new HashMap<>();
-		for (Path selectedFolder : model_folderScanner.getDrivesList_selected_obs()) {
+		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
 			List<Path> list = new ArrayList<>();
 			list = createList(selectedFolder, selected);
 			Collections.sort(list, (Path o1, Path o2) -> {

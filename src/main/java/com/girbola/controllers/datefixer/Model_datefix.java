@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -11,19 +11,14 @@ import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static com.girbola.misc.Misc.getLineNumber;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -54,7 +49,6 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDir_Handler;
 
-import common.media.DateTaken;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
@@ -62,8 +56,6 @@ import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.embed.swing.SwingFXUtils;
@@ -71,7 +63,6 @@ import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
@@ -85,18 +76,19 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import javafx.util.StringConverter;
 
 /**
  *
  * @author Marko Lokka
  */
-public class Model_datefix {
+public class Model_datefix extends DateFixerModel {
 	private final String ERROR = Model_datefix.class.getSimpleName();
 	private Model_main model_Main;
 
 	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
+//	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
 
 	private VBox infoTables_container;
 	private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
@@ -107,9 +99,6 @@ public class Model_datefix {
 
 	private AtomicBoolean content_changed = new AtomicBoolean(false);
 	private ObservableHandler observableHandler = new ObservableHandler();
-
-	private TimeControl s_time = new TimeControl();
-	private TimeControl e_time = new TimeControl();
 
 	private AnchorPane anchorPane;
 	private FolderInfo folderInfo_full;
@@ -124,6 +113,15 @@ public class Model_datefix {
 
 	private VBox rightInfoPanel;
 	private TableView<MetaData> metaDataTableView;
+	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
+
+	public boolean getRightInfo_visible() {
+		return rightInfo_visible.get();
+	}
+
+	public void setRightInfo_visible(boolean value) {
+		this.rightInfo_visible.set(value);
+	}
 
 	private ObservableList<Node> allNodes = FXCollections.observableArrayList();
 	private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
@@ -137,9 +135,6 @@ public class Model_datefix {
 	private TilePane quickPick_tilePane;
 	private int imagesPerLine;
 
-	private DatePicker start_datePicker;
-	private DatePicker end_datePicker;
-
 	private WorkDir_Handler workDir_Handler;
 
 	private RenderVisibleNode renderVisibleNode = null;
@@ -149,7 +144,7 @@ public class Model_datefix {
 		this.currentFolderPath = aCurrentFolderPath;
 		Messages.sprintf("Model_datefix loading... " + currentFolderPath);
 		this.model_Main = model_Main;
-		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getFileInfo_db_fileName());
+		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
 		// this.thumbInfo_list = SQL_Utils.loadThumbInfo_list(this.connection);
 		// if (this.thumbInfo_list != null) {
 		// Messages.sprintf("thumbInfo_list were loaded!");
@@ -178,10 +173,6 @@ public class Model_datefix {
 
 	public DateFix_Utils getDateFix_Utils() {
 		return dateFix_Utils;
-	}
-
-	public CssStylesController getCssStyles() {
-		return cssStyles;
 	}
 
 	public final ObservableList<Node> getCurrentNodes() {
@@ -294,110 +285,6 @@ public class Model_datefix {
 		return this.selectionModel;
 	}
 
-	public TimeControl start_time() {
-		return this.s_time;
-	}
-
-	public TimeControl end_time() {
-		return this.e_time;
-	}
-
-	public void setDateTime(String date, boolean start) {
-		sprintf("SetDateTime: " + date);
-		if (start) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					getStart_datePicker().setValue(DateUtils.parseLocalDateFromString(date));
-					s_time.setTime(date);
-				}
-			});
-		} else {
-			Platform.runLater(new Runnable() {
-
-				@Override
-				public void run() {
-
-					getEnd_datePicker().setValue(DateUtils.parseLocalDateFromString(date));
-					e_time.setTime(date);
-				}
-
-			});
-		}
-	}
-
-	public void setStart_datePicker(DatePicker start_datePicker) {
-		this.start_datePicker = start_datePicker;
-		this.start_datePicker.setConverter(converter);
-		this.start_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("1s_datePicker: " + newValue);
-			}
-		});
-	}
-
-	public void setEnd_datePicker(DatePicker end_datePicker) {
-		this.end_datePicker = end_datePicker;
-		this.end_datePicker.setConverter(converter);
-		this.end_datePicker.getEditor().textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				sprintf("e_datePicker: " + newValue);
-			}
-		});
-	}
-
-	public DatePicker getEnd_datePicker() {
-		return end_datePicker;
-	}
-
-	public DatePicker getStart_datePicker() {
-		return start_datePicker;
-	}
-
-	StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-
-		@Override
-		public String toString(LocalDate date) {
-			if (date != null) {
-				return simpleDates.getDtf_ymd_minus().format(date);
-			} else {
-				return "";
-			}
-		}
-
-		@Override
-		public LocalDate fromString(String string) {
-			if (string != null && !string.isEmpty()) {
-				return LocalDate.parse(string, simpleDates.getDtf_ymd_minus());
-			} else {
-				return null;
-			}
-		}
-	};
-
-	/**
-	 * getLocalDateTime read datePicker time and gets time from DateFixer Time
-	 * chooser
-	 *
-	 * If parameter start is true it will read start_datePicker and start time and
-	 * if it is false it will read end_datePicker and end time. Example: Start
-	 * date/time 2018/11/08 12:00:00 End date/time 2018/11/09 12:30:00 It will
-	 * combine there values as a one LocalDateTime
-	 *
-	 * @param start
-	 * @return
-	 */
-	public LocalDateTime getLocalDateTime(boolean start) {
-		if (start) {
-			return LocalDateTime.of(start_datePicker.getValue(),
-					LocalTime.of(start_time().getHour(), start_time().getMin(), start_time().getSec()));
-		}
-		return LocalDateTime.of(end_datePicker.getValue(),
-				LocalTime.of(end_time().getHour(), end_time().getMin(), end_time().getSec()));
-	}
-
 	public FolderInfo getFolderInfo_filtered() {
 		return folderInfo_filtered;
 	}
@@ -471,6 +358,25 @@ public class Model_datefix {
 
 	public TableView<MetaData> getMetaDataTableView() {
 		return this.metaDataTableView;
+	}
+
+	public TextField getTextField(Node node) {
+		if (node instanceof VBox) {
+			if (node.getId().equals("imageFrame")) {
+				for (Node node2 : ((VBox) node).getChildren()) {
+					sprintf("Node2 : " + node2);
+					if (node2 instanceof HBox) {
+						for (Node node3 : ((HBox) node2).getChildren()) {
+							sprintf("TextField: " + node3);
+							if (node3 instanceof TextField) {
+								return (TextField) node3;
+							}
+						}
+					}
+				}
+			}
+		}
+		return null;
 	}
 
 	public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
@@ -596,62 +502,50 @@ public class Model_datefix {
 	public void acceptEverything() {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
-
-		for (Node node : getGridPane().getChildren()) {
-			TextField tf = getTextField(node);
-			if (tf != null) {
-				if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
-					FileInfo fileInfo = (FileInfo) node.getUserData();
-					if (fileInfo != null) {
-						if (!fileInfo.isIgnored()) {
-							fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
-									simpleDates.getSdf_ymd_hms_minusDots_default()));
-							fileInfo.setGood(true);
-							fileInfo.setSuggested(false);
-							fileInfo.setBad(false);
-							fileInfo.setConfirmed(true);
-							node.setStyle(CssStylesController.getGood_style());
-							changed = true;
-						}
-					}
-				}
-			}
-		}
-		if (changed) {
-			// TODO Korjaa apply_btn;
-			TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-			if (model_Main.tables() == null) {
-				Main.setProcessCancelled(true);
-				errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-			}
-			model_Main.tables().refreshAllTables();
-			updateAllInfos(getFolderInfo_full().getFileInfoList());
-
-			getFolderInfo_full().setChanged(true);
-			setDateTime(getFolderInfo_full().getMinDate(), true);
-			setDateTime(getFolderInfo_full().getMaxDate(), false);
-		}
-		getSelectionModel().clearAll();
-
-	}
-
-	public TextField getTextField(Node node) {
-		if (node instanceof VBox) {
-			if (node.getId().equals("imageFrame")) {
-				for (Node node2 : ((VBox) node).getChildren()) {
-					sprintf("Node2 : " + node2);
-					if (node2 instanceof HBox) {
-						for (Node node3 : ((HBox) node2).getChildren()) {
-							sprintf("TextField: " + node3);
-							if (node3 instanceof TextField) {
-								return (TextField) node3;
+		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
+				Main.scene_Switcher.getScene_dateFixer().getWindow(),
+				bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+		Optional<ButtonType> result = changesDialog.showAndWait();
+		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+			for (Node node : getGridPane().getChildren()) {
+				TextField tf = getTextField(node);
+				if (tf != null) {
+					if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
+						FileInfo fileInfo = (FileInfo) node.getUserData();
+						if (fileInfo != null) {
+							if (!fileInfo.isIgnored()) {
+								fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
+										simpleDates.getSdf_ymd_hms_minusDots_default()));
+								fileInfo.setGood(true);
+								fileInfo.setSuggested(false);
+								fileInfo.setBad(false);
+								fileInfo.setConfirmed(true);
+								node.setStyle(CssStylesController.getGood_style());
+								changed = true;
 							}
 						}
 					}
 				}
 			}
+			if (changed) {
+				// TODO Korjaa apply_btn;
+				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
+				if (model_Main.tables() == null) {
+					Main.setProcessCancelled(true);
+					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+				}
+				model_Main.tables().refreshAllTables();
+				updateAllInfos(getFolderInfo_full().getFileInfoList());
+
+				getFolderInfo_full().setChanged(true);
+				setDateTime(getFolderInfo_full().getMinDate(), true);
+				setDateTime(getFolderInfo_full().getMaxDate(), false);
+			}
+			getSelectionModel().clearAll();
 		}
-		return null;
+		/*
+		
+		*/
 	}
 
 	public void dateFromFileName() {
@@ -668,11 +562,9 @@ public class Model_datefix {
 					if (tf != null) {
 						tf.setText("" + DateUtils.longToLocalDateTime(date)
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						getCssStyles();
 						tf.setStyle(CssStylesController.getGood_style());
 					}
 				} else {
-					getCssStyles();
 					tf.setStyle(CssStylesController.getBad_style());
 				}
 			}
@@ -690,21 +582,26 @@ public class Model_datefix {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
 			if (fileInfo != null) {
 				File file = new File(fileInfo.getOrgPath());
-				long date = DateTaken.getCreationDate(file.toPath());
+				try {
+					fileInfo = FileInfo_Utils.createFileInfo(file.toPath());
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+//				long date = DateTaken.getCreationDate(file.toPath());
+
 				// sdv;
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
+				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(fileInfo.getDate())
 						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 
 				TextField tf = getTextField(node);
-				if (date != 0) {
+				if (fileInfo.getDate() != 0) {
 					if (tf != null) {
-						tf.setText("" + DateUtils.longToLocalDateTime(date)
+						tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
 								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						getCssStyles();
 						tf.setStyle(CssStylesController.getGood_style());
 					}
 				} else {
-					getCssStyles();
 					// tf.setText("" +
 					// DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 					tf.setStyle(CssStylesController.getBad_style());
@@ -730,28 +627,83 @@ public class Model_datefix {
 				if (tf != null) {
 					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
 							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					getCssStyles();
 					tf.setStyle(CssStylesController.getModified_style());
 				}
 			}
 		}
-		acceptEverything();
-		
 	}
 
-	public void exitDateFixerWindow(GridPane gridPane, WindowEvent event) {
+	public void renameFileNameWithDate() {
+		sprintf("touchFileNameWithDate pressed");
+		if (getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		for (Node node : getSelectionModel().getSelectionList()) {
+			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+			FileInfo fileInfo = (FileInfo) node.getUserData();
+			if (fileInfo != null) {
+				File file = new File(fileInfo.getOrgPath());
+				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
+						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+				TextField tf = getTextField(node);
+				Path target = Paths.get(fileInfo.getOrgPath());
+				Path source = Paths.get(target.getRoot().toString() + tf);
+				try {
+					Path newPath = FileUtils.renameFile(target, source);
+					if (newPath != null) {
+						fileInfo.setOrgPath(source.toString());
+						tf.setText("" + source.getFileName());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+//				if (tf != null) {
+//					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
+//							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+//					tf.setStyle(CssStylesController.getModified_style());
+//				}
+			}
+		}
+	}
+
+	public void exitDateFixerWindow(GridPane gridPane, Window owner, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
-		model_Main.getRegisterTableActivity().cancel();
+		model_Main.getMonitorExternalDriveConnectivity().cancel();
+
+		int badDates = checkIfRedDates(gridPane);
+		if (badDates != 0) {
+			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
+					bundle.getString("badFilesFoundWantToClose"));
+
+			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
+			Optional<ButtonType> result = dialog.showAndWait();
+			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
+				saveThumbs();
+				event.consume();
+//				return;
+			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+				event.consume();
+				return;
+			}
+		}
+		if (Main.conf.isSavingThumb()) {
+			saveThumbs();
+		}
 		if (Main.getChanged()) {
 			Messages.sprintf("changes made");
-			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(bundle.getString("changesMade"));
+			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
+			Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
 			Optional<ButtonType> result = changesDialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				acceptEverything();
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getRegisterTableActivity().restart();
+				model_Main.getMonitorExternalDriveConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -766,7 +718,7 @@ public class Model_datefix {
 				Messages.sprintf("No PRESSED: NO changes saved");
 
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getRegisterTableActivity().restart();
+				model_Main.getMonitorExternalDriveConnectivity().restart();
 				Platform.runLater(() -> {
 					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -782,24 +734,6 @@ public class Model_datefix {
 			Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
 			Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
 			event.consume();
-		}
-		int badDates = checkIfRedDates(gridPane);
-		if (badDates != 0) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(bundle.getString("badFilesFoundWantToClose"));
-			Optional<ButtonType> result = dialog.showAndWait();
-			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-				saveThumbs();
-				event.consume();
-//				return;
-			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-				event.consume();
-				return;
-			}
-		}
-		if (Main.conf.isSavingThumb()) {
-			saveThumbs();
 		}
 		getSelectionModel().clearAll();
 		selector_exec.shutdownNow();
@@ -834,7 +768,6 @@ public class Model_datefix {
 									if (thumbInfo == null) {
 										thumbInfo = new ThumbInfo(fi.getOrgPath(), fi.getFileInfo_id());
 									}
-									@SuppressWarnings("unchecked")
 									List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
 									Messages.sprintf("buffList size is: " + buffList);
 									if (buffList != null) {
@@ -900,108 +833,6 @@ public class Model_datefix {
 		}
 	}
 
-	private boolean hasThumbInfo(List<ThumbInfo> thumbInfo_list, FileInfo fi) {
-		for (ThumbInfo thumbInfo : thumbInfo_list) {
-			if (thumbInfo.getId() == fi.getFileInfo_id() && thumbInfo.getFileName().equals(fi.getOrgPath())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private int checkIfRedDates(GridPane gridPane) {
-		int counter = 0;
-		for (Node n : gridPane.getChildren()) {
-			if (n instanceof VBox) {
-				if (n.getId().contains("imageFrame")) {
-					for (Node vbox : ((VBox) n).getChildren()) {
-						if (vbox instanceof HBox) {
-							for (Node hbox : ((HBox) vbox).getChildren()) {
-								if (hbox instanceof TextField) {
-									getCssStyles();
-									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
-										counter++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return counter;
-	}
-
-	private void updateList() {
-		sprintf("Updating the list...");
-		int answer = checkIfRedDates(this.gridPane);
-
-		sprintf("checkIfRedDates answer was: " + answer);
-		if (answer != 0) {
-			warningText("There were still bad dates. Fix them before you can continue");
-		} else {
-			boolean changed = false;
-			for (FileInfo fi : getFolderInfo_full().getFileInfoList()) {
-				long date = findDate_TextField(fi.getOrgPath());
-				sprintf("FileInfo file: " + fi.getOrgPath() + " date would be; "
-						+ simpleDates.getSdf_ymd_hms_slashColon().format(date));
-				if (date != 0) {
-					fi.setDate(date);
-					FileInfo_Utils.setGood(fi);
-					changed = true;
-					Main.setChanged(true);
-				}
-			}
-			if (changed) {
-				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-				if (model_Main.tables() == null) {
-					Main.setProcessCancelled(true);
-					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-				}
-				model_Main.tables().refreshAllTables();
-			}
-		}
-	}
-
-	private long findDate_TextField(String path) {
-		for (Node n : this.gridPane.getChildren()) {
-			if (n instanceof VBox) {
-				for (Node vbox : ((VBox) n).getChildren()) {
-					if (vbox instanceof TextField) {
-						if ((getCurrentFolderPath().toString() + File.separator + ((TextField) vbox).getText().trim())
-								.equals(path)) {
-							TextField textField = getTextFieldDate(vbox.getParent());
-							if (textField == null) {
-								errorSmth(ERROR, "", null, getLineNumber(), true);
-								break;
-							} else {
-								String tf = textField.getText();
-								return Conversion.stringDateToLong(tf.trim(),
-										simpleDates.getSdf_ymd_hms_minusDots_default());
-							}
-						}
-					}
-				}
-			}
-		}
-		return 0;
-	}
-
-	private TextField getTextFieldDate(Node parent) {
-		if (parent instanceof VBox) {
-			for (Node vbox : ((VBox) parent).getChildren()) {
-				if (vbox instanceof HBox) {
-					for (Node textField : ((HBox) vbox).getChildren()) {
-						if (textField instanceof TextField) {
-							return (TextField) textField;
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
-
 	public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
 		ArrayList<FileInfo> arrayList = new ArrayList<>();
 		for (Node node : filterlist) {
@@ -1045,63 +876,55 @@ public class Model_datefix {
 		return this.locations.get();
 	}
 
-	public boolean fileInfoisShowing(FileInfo fileInfo) {
+	public boolean fileInfoisShowing_(FileInfo fileInfo) {
 		boolean hide = false;
 		if (!copied.get()) {
 			if (fileInfo.isCopied()) {
-				hide = true;
+				hide = false;
 			}
 		}
 		if (!ignored.get()) {
 			if (fileInfo.isIgnored()) {
-				hide = true;
+				hide = false;
 			}
 		}
-		if (!events.get()) {
-			if (fileInfo.getEvent().length() >= 1) {
-				hide = true;
-			}
-		}
-		if (!locations.get()) {
-			if (fileInfo.getLocation().length() >= 1) {
-				hide = true;
-			}
-		}
+//		if (!events.get()) {
+//			if (fileInfo.getEvent().length() >= 1) {
+//				hide = true;
+//			}
+//		}
+//		if (!locations.get()) {
+//			if (fileInfo.getLocation().length() >= 1) {
+//				hide = true;
+//			}
+//		}
 
 		return hide;
 
 	}
 
+	/**
+	 * Collects everything into ObservableList<Node> observable
+	 * 
+	 * @param obs
+	 * @return ObservableList<Node>
+	 */
+
 	public ObservableList<Node> filterAllNodesList(ObservableList<Node> obs) {
 		ObservableList<Node> observable = FXCollections.observableArrayList();
-
-		boolean hide = false;
 		for (Node node : obs) {
 			FileInfo fileInfo = (FileInfo) node.getUserData();
+
 			if (!copied.get()) {
+				if (!fileInfo.isIgnored()) {
+					observable.add(node);
+				}
+			} else {
 				if (fileInfo.isCopied()) {
-					hide = true;
+					observable.remove(node);
 				}
 			}
-			if (!ignored.get()) {
-				if (fileInfo.isIgnored()) {
-					hide = true;
-				}
-			}
-			if (!events.get()) {
-				if (fileInfo.getEvent().length() >= 1) {
-					hide = true;
-				}
-			}
-			if (!locations.get()) {
-				if (fileInfo.getLocation().length() >= 1) {
-					hide = true;
-				}
-			}
-			if (!hide) {
-				observable.add(node);
-			}
-			hide = false;
+
 		}
 		return observable;
 	}
@@ -1168,6 +991,9 @@ public class Model_datefix {
 	 * @return the selector_exec
 	 */
 	public final ScheduledExecutorService getSelector_exec() {
+		if(selector_exec.isShutdown() || selector_exec.isTerminated()) {
+			selector_exec = Executors.newScheduledThreadPool(1);
+		}
 		return selector_exec;
 	}
 
@@ -1175,42 +1001,26 @@ public class Model_datefix {
 		return connection;
 	}
 
-	public void dateAsFileName() {
-		sprintf("lastModified_date_btn pressed");
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				Path source = Paths.get(fileInfo.getOrgPath());
-				Path dest = FileInfo_Utils.renameFileToDate(source, fileInfo);
-				if (!source.equals(dest) && !Files.exists(dest)) {
-
-					try {
-						Files.move(source, dest);
-						fileInfo.setOrgPath(dest.toString());
-						if (!SQL_Utils.isDbConnected(getConnection())) {
-							Messages.sprintf("database is not connected!!!");
-							return;
+	private int checkIfRedDates(GridPane gridPane) {
+		int counter = 0;
+		for (Node n : gridPane.getChildren()) {
+			if (n instanceof VBox) {
+				if (n.getId().contains("imageFrame")) {
+					for (Node vbox : ((VBox) n).getChildren()) {
+						if (vbox instanceof HBox) {
+							for (Node hbox : ((HBox) vbox).getChildren()) {
+								if (hbox instanceof TextField) {
+									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
+										counter++;
+									}
+								}
+							}
 						}
-						SQL_Utils.insertFileInfoToDatabase(getConnection(), fileInfo);
-						TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
-						if (model_Main.tables() == null) {
-							Main.setProcessCancelled(true);
-							errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-						}
-						model_Main.tables().refreshAllTables();
-						updateAllInfos(getFolderInfo_full().getFileInfoList());
-						getFolderInfo_full().setChanged(true);
-						sprintf("source is: " + source + " renamed name is: " + dest);
-					} catch (Exception e) {
-						e.printStackTrace();
 					}
 				}
 			}
 		}
+		return counter;
 	}
+
 }

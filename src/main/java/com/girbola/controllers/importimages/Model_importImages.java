@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -50,8 +50,7 @@ class Model_importImages {
 
 	public Model_importImages(Path currentFolderPath) {
 		this.currentFolderPath = currentFolderPath;
-		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getThumbInfo_db_fileName());
-		
+		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
 	}
 
 	private final String ERROR = Model_importImages.class.getSimpleName();

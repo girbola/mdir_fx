@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -15,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+
+import com.girbola.messages.Messages;
 
 /**
  *
@@ -141,7 +143,7 @@ public class Conversion {
 	 * @param number
 	 * @return
 	 */
-	public static String formatStringTwoDigits(int number) {
+	public static String stringTwoDigits(int number) {
 
 		if (number >= 0 && number <= 9) {
 			return "0" + number;
@@ -150,32 +152,62 @@ public class Conversion {
 		}
 
 	}
+
 	public static String convertToSmallerConversion(long bytes) {
-        long kilobyte = 1024;
-        long megabyte = kilobyte * 1024;
-        long gigabyte = megabyte * 1024;
-        long terabyte = gigabyte * 1024;
-        
-        DecimalFormat df = new DecimalFormat("#.##");
+		float kilobyte = 1024;
+		float megabyte = kilobyte * 1024;
+		float gigabyte = megabyte * 1024;
+		float terabyte = gigabyte * 1024;
 
-        if ((bytes >= 0) && (bytes < kilobyte)) {
-            return df.format(bytes) + " B";
+		DecimalFormat df = new DecimalFormat("#.##");
 
-        } else if ((bytes >= kilobyte) && (bytes < megabyte)) {
-            return df.format(Math.round(bytes / kilobyte)) + " KB";
+		if ((bytes >= 0) && (bytes < kilobyte)) {
+			return df.format(bytes) + " B";
 
-        } else if ((bytes >= megabyte) && (bytes < gigabyte)) {
-            return df.format(Math.round(bytes / megabyte)) + " MB";
+		} else if ((bytes >= kilobyte) && (bytes < megabyte)) {
+			return df.format(bytes / kilobyte) + " KB";
 
-        } else if ((bytes >= gigabyte) && (bytes < terabyte)) {
-            return df.format(Math.round(bytes / gigabyte)) + " GB";
+		} else if ((bytes >= megabyte) && (bytes < gigabyte)) {
+			return df.format(bytes / megabyte) + " MB";
 
-        } else if (bytes >= terabyte) {
-            return df.format(bytes / terabyte) + " TB";
+		} else if ((bytes >= gigabyte) && (bytes < terabyte)) {
+			return df.format(bytes / gigabyte) + " GB";
 
-        } else {
-            return df.format(bytes) + " Bytes";
-        }
-    }
+		} else if (bytes >= terabyte) {
+			return df.format(bytes / terabyte) + " TB";
+
+		} else {
+			return df.format(bytes) + " Bytes";
+		}
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param digits
+	 * @return
+	 */
+	public static String stringWithDigits(int value, int digits) {
+		// 1 digits == 2 tulos 02
+		if (digits < value) {
+			Messages.sprintfError("Value were higher than digits. Digit: " + digits + " value: " + Conversion.stringTwoDigits(value));
+			return Conversion.stringTwoDigits(value);
+		}
+		if (String.valueOf(value).length() < digits) {
+			StringBuilder number = new StringBuilder();
+			number.append(value);
+			for (int i = 1; i < digits; i++) {
+				if (i == digits) {
+					System.out.println("number is: " + number);
+					return number.toString();
+				} else {
+					number.insert(0, "0");
+					System.out.println("inserting number: " + number);
+				}
+			}
+			return number.toString();
+		}
+		return "" + value;
+	}
 
 }

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -7,45 +7,36 @@
 package com.girbola.controllers.main;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.fileinfo.FileInfo_Utils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.cell.TableCell_Connected;
 import com.girbola.controllers.main.tables.cell.TableCell_Copied;
 import com.girbola.controllers.main.tables.cell.TableCell_DateDifference_Status;
 import com.girbola.controllers.main.tables.cell.TableCell_DateFixer;
 import com.girbola.controllers.main.tables.cell.TableCell_ProgressBar;
 import com.girbola.controllers.main.tables.cell.TableCell_Status;
-import com.girbola.fileinfo.FileInfo;
+import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -60,7 +51,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
 
@@ -75,11 +65,16 @@ public class Tables {
 	private Model_main model_Main;
 
 	private HideButtons hideButtons;
+	private TableStatistic tableStatistic;
 	private Sorter sorter;
 
 	private TableView<FolderInfo> sortIt_table;
 	private TableView<FolderInfo> sorted_table;
 	private TableView<FolderInfo> asitis_table;
+
+	private TableStatistic sortit_TableStatistic;
+	private TableStatistic sorted_TableStatistic;
+	private TableStatistic asitis_TableStatistic;
 
 	private HBox tables_container;
 
@@ -233,46 +228,48 @@ public class Tables {
 		table.setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == (KeyCode.DELETE)) {
 				ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
-				Dialog<ButtonType> dialog = new Dialog<>();
+				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+						bundle.getString("removePermanently"));
 				dialog.initStyle(StageStyle.UNDECORATED);
 
-				DialogPane dialogPane = new DialogPane();
-				dialogPane.setPrefHeight(Math.floor(200 / 1.5));
-				dialogPane.setContentText(bundle.getString("removePermanently"));
-				dialog.setDialogPane(dialogPane);
+//				DialogPane dialogPane = new DialogPane();
+//				dialogPane.setPrefHeight(Math.floor(200 / 1.5));
+//				dialogPane.setContentText();
+//				dialog.setDialogPane(dialogPane);
+//
+//				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
+//				ButtonType no = new ButtonType(bundle.getString("no"), ButtonBar.ButtonData.NO);
+//				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
-				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
-				ButtonType no = new ButtonType(bundle.getString("no"), ButtonBar.ButtonData.NO);
-				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-
-				dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
+//				dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
 
 				Optional<ButtonType> result = dialog.showAndWait();
 				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
 					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
 					Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-							Main.conf.getFolderInfo_db_fileName());
+							Main.conf.getConfiguration_db_fileName());
 
 					for (FolderInfo folderInfo : table_row_list) {
 						if (!folderInfo.getFolderPath()
 								.equals(System.getProperty("user.home") + File.separator + "Pictures")) {
-							Main.conf.addToIgnoredList(Paths.get(folderInfo.getFolderPath()));
-							SQL_Utils.addToIgnoredList(connection, Paths.get(folderInfo.getFolderPath()));
-							folderInfo.setIgnored(true);
-							Main.setChanged(true);
 							listToRemove.add(folderInfo);
 						} else {
 							Messages.warningText(bundle.getString("folderIsUserHomeDirectory") + " Folder name is: "
 									+ folderInfo.getFolderPath());
 							listToRemove.add(folderInfo);
 						}
-
 					}
 					for (FolderInfo folderInfo : listToRemove) {
 						table.getItems().remove(folderInfo);
 					}
+					Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
 					listToRemove.clear();
+					try {
+						connection.close();
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
 				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
 
@@ -391,6 +388,19 @@ public class Tables {
 	HBox getTables_Container() {
 		return this.tables_container;
 	}
+public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(FolderInfo folderInfo) {
+	Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+			return new EditingCell(model_Main,tableColumn);
+		}
+	};
+	return kala;
+}
+	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+			return new EditingCell(model_Main,tableColumn);
+		}
+	};
 
 	public Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>> connected_cellFactory = new Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>>() {
 		@Override
@@ -456,63 +466,6 @@ public class Tables {
 		});
 	}
 
-	void updateFolderInfoFileInfo_(TableView<FolderInfo> table) {
-		ConcurrencyUtils.initExecutionService();
-
-//		Stage stage = (Stage) table.getScene().getWindow();
-		AtomicInteger ai = new AtomicInteger(0);
-		Task<Void> task = new Task<Void>() {
-			@SuppressWarnings("deprecation")
-			@Override
-			protected Void call() throws Exception {
-				updateProgress(ai.get(), table.getSelectionModel().getSelectedItems().size());
-				sprintf("Update Progress: " + ai.get() + " max " + table.getSelectionModel().getSelectedItems().size());
-				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					sprintf("Reloading: " + folderInfo.getFolderPath());
-					List<FileInfo> list = createFileInfo_list(folderInfo);
-					if (list != null) {
-						folderInfo.setFileInfoList(list);
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
-						TableUtils.refreshTableContent(table);
-						updateProgress(ai.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());
-						sprintf("Update Progress: " + ai.get() + " max "
-								+ table.getSelectionModel().getSelectedItems().size());
-						Main.setChanged(true);
-					} else {
-						Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-					}
-				}
-				return null;
-			}
-		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf("updateTableValuesFileInfo done successfully");
-				lpt.closeStage();
-			}
-		});
-
-		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.warningText("Creating file info cancelled");
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-			}
-		});
-		lpt.setTask(task);
-		ConcurrencyUtils.exec[ConcurrencyUtils.getExecCounter()].submit(task);
-
-	}
-
 	public void registerTableView_obs_listener() {
 		getSorted_table().getItems().addListener(listener);
 		getSortIt_table().getItems().addListener(listener);
@@ -539,4 +492,31 @@ public class Tables {
 		getAsItIs_table().getItems().removeListener(listener);
 	}
 
+	public TableStatistic getSortit_TableStatistic() {
+		return this.sortit_TableStatistic;
+	}
+
+	public TableStatistic getSorted_TableStatistic() {
+		return this.sorted_TableStatistic;
+	}
+
+	public TableStatistic getAsItIs_TableStatistic() {
+		return this.asitis_TableStatistic;
+	}
+
+	public TableStatistic getAsitis_TableStatistic() {
+		return asitis_TableStatistic;
+	}
+
+	public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
+		this.asitis_TableStatistic = asitis_TableStatistic;
+	}
+
+	public void setSortit_TableStatistic(TableStatistic sortit_TableStatistic) {
+		this.sortit_TableStatistic = sortit_TableStatistic;
+	}
+
+	public void setSorted_TableStatistic(TableStatistic sorted_TableStatistic) {
+		this.sorted_TableStatistic = sorted_TableStatistic;
+	}
 }

@@ -5,6 +5,7 @@ import java.sql.Connection;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -32,13 +33,18 @@ public class SaveTableContents {
 			for (FolderInfo folderInfo : table.getItems()) {
 				if (!folderInfo.getFileInfoList().isEmpty()) {
 					connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-							Main.conf.getFileInfo_db_fileName());
-					boolean created = SQL_Utils.createFileInfoTable(connection);
+							Main.conf.getMdir_db_fileName());
+					boolean created = FileInfo_SQL.createFileInfoTable(connection);
 					if (created) {
-						SQL_Utils.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList());
+						FileInfo_SQL.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList(), false);
 					}
 				}
 
+			}
+			try {
+				connection.close();
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}	
 	}

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -7,22 +7,15 @@
 package com.girbola.controllers.datefixer;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static com.girbola.misc.Misc.getLineNumber;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -43,7 +36,6 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
-import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -52,7 +44,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -68,6 +59,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -76,6 +68,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -85,8 +78,7 @@ public class DateFixerController {
 
 	private static final String ERROR = DateFixerController.class.getSimpleName();
 	// private boolean infoTables_visible = true;
-	private SimpleBooleanProperty infoTables_visible = new SimpleBooleanProperty(true);
-	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty leftInfoTables_visible = new SimpleBooleanProperty(true);
 
 	private QuickPick_Navigator quickPick_Navigator;
 	private Model_datefix model_datefix;
@@ -96,8 +88,7 @@ public class DateFixerController {
 	private Button cameras_hide_Deselected_btn;
 	@FXML
 	private Button cameras_show_all_btn;
-	@FXML
-	private Button setDateAsFileName_btn;
+
 	@FXML
 	private MenuButton move_menuBtn;
 	@FXML
@@ -106,10 +97,10 @@ public class DateFixerController {
 	private CheckBox ignored_chk;
 	@FXML
 	private CheckBox copied_chk;
-	@FXML
-	private CheckBox events_chk;
-	@FXML
-	private CheckBox locations_chk;
+//	@FXML
+//	private CheckBox events_chk;
+//	@FXML
+//	private CheckBox locations_chk;
 	@FXML
 	private HBox infoTable_container_root;
 	@FXML
@@ -151,33 +142,36 @@ public class DateFixerController {
 	@FXML
 	private Button hideInfoTables_btn;
 	@FXML
-	private Button accept_dates_btn;
-	@FXML
 	private Button applyChanges_btn;
 	@FXML
 	private Button addToBatch_btn;
 	@FXML
 	private Button close_btn;
-	@FXML
-	private Button restoresExifDates_btn;
-	@FXML
-	private Button setDateTimeRange_btn;
-	@FXML
-	private Button dateFromFileName_btn;
+
 	@FXML
 	private Button dateFix_btn;
 	@FXML
 	private Button folderize_btn;
+
+	// MISC TAB==========
+
+	@FXML
+	private Button accept_dates_btn;
+	@FXML
+	private Button dateFromFileName_btn;
 	@FXML
 	private Button lastModified_date_btn;
+
 	@FXML
-	private Button retrieveFileInfos_btn;
+	private Button renameFileNameWithDate_btn;
 	@FXML
-	private Button selectRange_btn;
-	@FXML
-	private Button select_btn;
+	private Button restoresSelectedExifDates_btn;
 	@FXML
 	private Button updateDate_btn;
+	// MISC TAB========== END
+
+	@FXML
+	private Button select_btn;
 	@FXML
 	private Button copyToMisc_btn;
 	@FXML
@@ -193,11 +187,11 @@ public class DateFixerController {
 	@FXML
 	private ImageView remove;
 	@FXML
-	private Label selection_text;
-	@FXML
 	private Button select_all;
 	@FXML
 	private Button select_none_btn;
+	@FXML
+	private Label selection_text;
 	@FXML
 	private ScrollPane rightInfoPanel_scrollPane;
 	@FXML
@@ -216,9 +210,226 @@ public class DateFixerController {
 	FileOperationsController fileOperationsController;
 
 	@FXML
+	private Button addToUnsorted_btn;
+	@FXML
+	private Button addToAsItIs_btn;
+
+	@FXML
+	private MenuItem sortByDate_mi;
+
+	@FXML
+	private MenuItem fileName_mi;
+
+	@FXML
+	private Button selectRangeOfNumbers_btn;
+	@FXML
+	private TextField startFromNumber_tf;
+	@FXML
+	private TextField endToNumber_tf;
+
+	@FXML
+	private void listFileInfo_btn_action(ActionEvent event) {
+
+	}
+
+	@FXML
+	private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+		int startFrom = -1;
+		int endTo = -1;
+		try {
+			startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
+			endTo = Integer.parseInt(endToNumber_tf.getText().trim());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		for (Node node : model_datefix.getGridPane().getChildren()) {
+			if (node instanceof VBox) {
+				Messages.sprintf("node name " + node.getId());
+				VBox vbox = (VBox) node;
+				if (vbox.getId().equals("imageFrame")) {
+					for (Node hbox : vbox.getChildren()) {
+						Messages.sprintf("--------->HBOXII: " + hbox.getId());
+						if (hbox instanceof StackPane) {
+							for (Node stp : ((StackPane) hbox).getChildren()) {
+								Messages.sprintf("--------->SP: " + stp.getId());
+								if (stp instanceof Label) {
+									Label label = (Label) stp;
+									int number = Integer.parseInt(label.getText());
+									// 4 5 10
+									if (startFrom <= number && endTo >= number) {
+										Messages.sprintf("--------->SP: " + label.getText());
+										model_datefix.getSelectionModel().add(hbox);
+
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (Node node : model_datefix.getGridPane().getChildren()) {
+
+		}
+		try {
+			Messages.sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
+			int start = Integer.parseInt(startFromNumber_tf.getText());
+
+			Messages.sprintf("Start will be: " + start);
+			startFromNumber_tf.getStyleClass().remove("notValidNumber");
+		} catch (Exception e) {
+			startFromNumber_tf.getStyleClass().add("notValidNumber");
+		}
+
+		try {
+			Messages.sprintf("endToNumber_tf.getText(): " + endToNumber_tf.getText());
+			int end = Integer.parseInt(endToNumber_tf.getText());
+			endToNumber_tf.getStyleClass().remove("notValidNumber");
+			Messages.sprintf("End will be: " + end);
+		} catch (Exception e) {
+			endToNumber_tf.getStyleClass().add("notValidNumber");
+		}
+	}
+
+	@FXML
+	private void fileName_mi_action(ActionEvent event) {
+		model_datefix.getAllNodes().sort(new Comparator<Node>() {
+
+			@Override
+			public int compare(Node o1, Node o2) {
+				VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
+				VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
+				FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
+				FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
+
+				return fileInfo1.getOrgPath().compareTo(fileInfo2.getOrgPath());
+			}
+		});
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+	}
+
+	@FXML
+	private void sortByDate_mi_action(ActionEvent event) {
+		model_datefix.getAllNodes().sort(new Comparator<Node>() {
+
+			@Override
+			public int compare(Node o1, Node o2) {
+				VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
+				VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
+				FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
+				FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
+				if (fileInfo1.getDate() > (fileInfo2.getDate())) {
+					return 1;
+				} else if (fileInfo1.getDate() < (fileInfo2.getDate())) {
+					return -1;
+				} else {
+					return 0;
+				}
+
+			}
+		});
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
+	}
+
+	@FXML
+	private void addToUnsorted_btn_action(ActionEvent event) {
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
+		ConcurrencyUtils.stopExecThread();
+
+		Messages.warningText("Not ready yet!");
+	}
+
+	@FXML
+	private void addToAsItIs_btn_action(ActionEvent event) {
+//		addToAsItIs
+		// Copy files to workdir root as it is. If folder name is empty files will be
+		// under Unsorted
+		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
+			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
+			return;
+		}
+		ConcurrencyUtils.stopExecThread();
+
+//		Messages.warningText("Not ready yet!");
+		List<FileInfo> fileInfo_list = new ArrayList<>();
+
+		for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
+			if (n instanceof VBox && n.getId().equals("imageFrame")) {
+				FileInfo fileInfo = (FileInfo) n.getUserData();
+				Path source = Paths.get(fileInfo.getOrgPath());
+				Path dest = DestinationResolver.getDestinationFileNameAsItIs(source, fileInfo);
+				Messages.sprintf("Dest: " + dest);
+				if (dest != null && Main.conf.getDrive_connected()) {
+					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+					fileInfo.setDestination_Path(dest.toString());
+					fileInfo.setCopied(false);
+					fileInfo_list.add(fileInfo);
+				} else {
+					Messages.sprintf("Dest were null. process is about to be cancelled");
+					break;
+				}
+			}
+		}
+
+		Task<Boolean> operateFiles = new OperateFiles(fileInfo_list, true, model_main,
+				Scene_NameType.DATEFIXER.getType());
+		operateFiles.setOnSucceeded((workerStateEvent) -> {
+//			operateFiles.get
+			Messages.sprintf("operateFiles Succeeded");
+		});
+		operateFiles.setOnCancelled((workerStateEvent) -> {
+			Messages.sprintf("operateFiles CANCELLED");
+		});
+		operateFiles.setOnFailed((workerStateEvent) -> {
+			Messages.sprintf("operateFiles FAILED");
+			Main.setProcessCancelled(true);
+		});
+		Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
+		operateFiles_th.setDaemon(true);
+		operateFiles_th.start();
+	}
+
+	@FXML
 	private void addToBatch_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			return;
+		}
+		if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
+			warningText(Main.bundle.getString("workDirHasNotConnected"));
 			return;
 		}
 		ConcurrencyUtils.stopExecThread();
@@ -232,7 +443,9 @@ public class DateFixerController {
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null) {
 					Messages.sprintf("blaaadestination is: " + dest);
-					fileInfo.setDestinationPath(dest.toString());
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+					fileInfo.setDestination_Path(dest.toString());
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
@@ -246,7 +459,7 @@ public class DateFixerController {
 			if (n instanceof VBox && n.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
 				Messages.sprintf(
-						"destination is: " + fileInfo.getDestinationPath() + " isCopied?: " + fileInfo.isCopied());
+						"destination is: " + fileInfo.getDestination_Path() + " isCopied?: " + fileInfo.isCopied());
 			}
 		}
 		Main.setChanged(true);
@@ -298,19 +511,40 @@ public class DateFixerController {
 			Messages.warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-		loadingProcess_task.setTask(null);
-		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
-				loadingProcess_task);
+		Messages.sprintf("cameras_hide_Deselected_btn_action starting");
+//		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		loadingProcess_task.setTask(null);
+//		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
+//				loadingProcess_task);
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getSelectionModel().getSelectionList(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
 	}
 
 	@FXML
 	private void cameras_show_all_btn_action(ActionEvent event) {
-
+		Messages.sprintf("cameras_show_all_btn_action starting");
 		model_datefix.getSelectionModel().clearAll();
 		model_datefix.deselectAllExifDataSelectors();
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
+//		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
+
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+				model_datefix.getAllNodes(), loadingProcess_task);
+
+		loadingProcess_task.setTask(updateGridPane_Task);
+
+		Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+		thread.start();
+
 		//
 		// AddToGridPane2 apg2 = new AddToGridPane2(model_datefix,
 		// model_datefix.getAllNodes(), lp);
@@ -331,12 +565,12 @@ public class DateFixerController {
 				FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
 						bundle);
 				parent = loader.load();
+				Messages.warningText("model_main is null? " + (model_main == null ? true : false));
 				AskEventDialogController askEventDialogController = (AskEventDialogController) loader.getController();
-				askEventDialogController.init(model_datefix);
+				askEventDialogController.init(model_main, model_datefix);
 
 				Scene scene = new Scene(parent);
 				Stage stage = new Stage();
-				// stage.initModality(Modality.APPLICATION_MODAL);
 				stage.setScene(scene);
 				stage.show();
 				stage.setOnHiding(new EventHandler<WindowEvent>() {
@@ -345,128 +579,15 @@ public class DateFixerController {
 						model_datefix.getSelectionModel().clearAll();
 					}
 				});
-				for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
-					Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
-				}
+//				for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
+//					Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
+//				}
 			} catch (Exception ex) {
 				Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 			}
 		}
 
-	}
-
-	@FXML
-	private void setDateTimeRange_btn_action(ActionEvent event) {
-
-		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(bundle.getString("noSelectedFiles"));
-			return;
-		}
-		exec[ConcurrencyUtils.getExecCounter()].shutdownNow();
-
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-
-		try {
-			model_datefix.start_time().getTime();
-			model_datefix.end_time().getTime();
-			ldt_start = model_datefix.getLocalDateTime(true);
-			ldt_end = model_datefix.getLocalDateTime(false);
-		} catch (Exception ex) {
-			errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-		}
-
-		sprintf("ldt_start: " + ldt_start);
-		sprintf("ldt_end: " + ldt_end);
-
-		if (model_datefix.getSelectionModel().getSelectionList().size() == 1) {
-			makeChanges(ldt_start, ldt_start, model_datefix.getSelectionModel().getSelectionList().size());
-		} else if (model_datefix.getSelectionModel().getSelectionList().size() >= 2) {
-			if (ldt_start.isEqual(ldt_end)) {
-				Dialog<ButtonType> dialog = Messages.ask("", "", bundle.getString("startAndEndDateSame"),
-						Misc.getLineNumber());
-				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
-				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-				dialog.getDialogPane().getButtonTypes().addAll(yes, cancel);
-				Optional<ButtonType> result = dialog.showAndWait();
-
-				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
-				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-					return;
-				}
-				// warningText(bundle.getString("startAndEndDateSame"));
-				// endDate + end_Time) > (startDate + start_Time
-			} else if (ldt_start.isBefore(ldt_end)) {
-				sprintf("isBefore");
-				if (checkIfInDateRange(ldt_start, ldt_end,
-						model_datefix.getSelectionModel().getSelectionList().size())) {
-					Duration d = Duration.between(ldt_start, ldt_end);
-					warningText(bundle.getString("timeRangeNotValid") + "\nStart date is: "
-							+ ldt_start.toString().replace("T", " ") + "\nEnd date is : "
-							+ ldt_end.toString().replace("T", " ") + "\nDuration in seconds is: " + d.getSeconds()
-							+ "\nDuration should be atleast: "
-							+ model_datefix.getSelectionModel().getSelectionList().size());
-				} else {
-					makeChanges(ldt_start, ldt_end, model_datefix.getSelectionModel().getSelectionList().size());
-				}
-			} else if (ldt_start.isAfter(ldt_end)) {
-				warningText(bundle.getString("startDateLower"));
-			}
-		}
-	}
-
-	private void addToMiscFolder(FileInfo fileInfo) {
-		LocalDate ldl = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
-		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-				.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		fileInfo.setDestinationPath(Main.conf.getWorkDir() + File.separator + ldl.getYear() + File.separator
-				+ Conversion.formatStringTwoDigits(ldl.getMonthValue()) + File.separator + fileName + "."
-				+ FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-
-		ldl = null;
-
-	}
-
-	@FXML
-
-	private void selectRange_btn_action(ActionEvent event) {
-		Messages.sprintf("selected pressed");
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-		try {
-
-			ldt_start = model_datefix.getLocalDateTime(true).minusSeconds(1);
-			ldt_end = model_datefix.getLocalDateTime(false).plusSeconds(1);
-		} catch (Exception ex) {
-			errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-		Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
-		for (Node node : model_datefix.getGridPane().getChildren()) {
-			if (node instanceof VBox) {
-				Messages.sprintf("node name " + node.getId());
-				VBox vbox = (VBox) node;
-				if (vbox.getId().equals("imageFrame")) {
-					for (Node hbox : vbox.getChildren()) {
-						if (hbox instanceof HBox) {
-							for (Node tff : ((HBox) hbox).getChildren()) {
-								if (tff instanceof TextField) {
-									TextField tf = (TextField) tff;
-									if (tf != null) {
-										LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(tf.getText());
-										Messages.sprintf("fileDate= " + fileDate);
-										if (fileDate.isAfter(ldt_start) && fileDate.isBefore(ldt_end)) {
-											model_datefix.getSelectionModel().add(vbox);
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
 	}
 
 	@FXML
@@ -496,23 +617,7 @@ public class DateFixerController {
 
 	@FXML
 	private void updateDate_btn_action(ActionEvent event) {
-		Messages.warningText("retrieveFileInfos_btn_action Not ready yet");
-	}
-
-	@FXML
-	private void retrieveFileInfos_btn_action(ActionEvent event) {
-		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		Messages.warningText("retrieveFileInfos_btn_action Not ready yet");
-		for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				// asC;
-				// aerb;
-			}
-		}
+		Messages.warningText("updateDate_btn_action Not ready yet");
 	}
 
 	@FXML
@@ -544,7 +649,7 @@ public class DateFixerController {
 	 * Gets exifDate for selected files
 	 */
 	@FXML
-	private void restoresExifDates_btn_action(ActionEvent event) {
+	private void restoresSelectedExifDates_btn_action(ActionEvent event) {
 		model_datefix.restoreSelectedExifDateInfos();
 	}
 
@@ -554,8 +659,8 @@ public class DateFixerController {
 	}
 
 	@FXML
-	private void setDateAsFileName_btn_action(ActionEvent event) {
-		model_datefix.dateAsFileName();
+	private void renameFileNameWithDate_btn_action(ActionEvent event) {
+		model_datefix.renameFileNameWithDate();
 	}
 
 	@FXML
@@ -587,144 +692,12 @@ public class DateFixerController {
 		return null;
 	}
 
-	private void makeChanges(LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
-
-		LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
-		ArrayList<LocalDateTime> localDateTime_list = localTimeDifference.createDateList_logic(files, ldt_start,
-				ldt_end);
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss");
-
-		if (localDateTime_list.isEmpty()) {
-			errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-		}
-		Main.setChanged(true);
-		Task<Integer> changeDates = new Task<Integer>() {
-			@Override
-			protected Integer call() throws Exception {
-
-				List<String> dateList = new ArrayList<>();
-				for (LocalDateTime localDateTime : localDateTime_list) {
-					String d_temp = dtf.format(localDateTime);
-					dateList.add(d_temp);
-					sprintf("=========ldtime: " + d_temp);
-				}
-				List<Node> list = create_listOfSelectedNodes(df_gridPane);
-
-				if (list.isEmpty()) {
-					errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-				}
-
-				Collections.sort(dateList);
-				Collections.sort(list, (Node o1, Node o2) -> {
-					String value1 = o1.getId().replace("fileDate: ", "");
-					if (value1.length() <= 1) {
-						value1 = "0" + value1;
-						sprintf("Zero added: " + value1);
-					}
-					String value2 = o2.getId().replace("fileDate: ", "");
-					if (value2.length() <= 1) {
-						value2 = "0" + value2;
-						sprintf("Zero added: " + value2);
-					}
-					return value1.compareTo(value2);
-				});
-				for (String dl : dateList) {
-					sprintf("DLLIST: " + dl);
-				}
-				Iterator<Node> it = list.iterator();
-				Iterator<String> it2 = dateList.iterator();
-				if (list.size() != dateList.size()) {
-					sprintf("list size is: " + list.size() + " dateList size is: " + dateList.size());
-					errorSmth(ERROR, "List were different", null, getLineNumber(), true);
-				}
-				while (it.hasNext() && it2.hasNext()) {
-					try {
-						TextField tf = (TextField) it.next();
-						tf.setText(it2.next());
-						tf.setStyle(model_datefix.getCssStyles().getModified_style());
-					} catch (Exception ex) {
-						errorSmth(ERROR, "Cannot make textfield changes", ex, Misc.getLineNumber(), true);
-					}
-				}
-				return null;
-			}
-		};
-		LoadingProcess_Task lpt = new LoadingProcess_Task();
-		changeDates.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				model_datefix.getSelectionModel().clearAll();
-				lpt.closeStage();
-			}
-		});
-		changeDates.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				errorSmth(ERROR, "Task failed", null, getLineNumber(), true);
-				lpt.closeStage();
-			}
-		});
-		changeDates.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				errorSmth(ERROR, "Task cancelled", null, getLineNumber(), true);
-			}
-		});
-		lpt.setTask(changeDates);
-		Thread changeDates_th = new Thread(changeDates, "changeDates_th");
-		sprintf("changeDates_th.getName(): " + changeDates_th.getName());
-		changeDates_th.run();
-	}
-
-	private boolean checkIfInDateRange(LocalDateTime ldt_start, LocalDateTime ldt_end, int size) {
-		Duration duration = Duration.between(ldt_start, ldt_end);
-		sprintf("checkIfInDateRange in sec= " + duration.getSeconds());
-		if (size > 1) {
-			if ((size - 1 - duration.getSeconds()) < 0) {
-				return false;
-			} else {
-				return true;
-			}
-		} else {
-			sprintf("size were below 1= " + size);
-			return false;
-		}
-	}
-
-	private List<Node> create_listOfSelectedNodes(GridPane df_gridpane) {
-		List<Node> list = new ArrayList<>();
-		for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
-			if (node_main instanceof VBox) {
-				for (Node n : ((VBox) node_main).getChildren()) {
-					if (n instanceof HBox) {
-						for (Node hbc : ((HBox) n).getChildren()) {
-							if (hbc instanceof TextField) {
-								list.add(hbc);
-								sprintf("TextField found and it is date: " + ((TextField) hbc).getText()
-										+ " getId() is " + hbc.getId());
-							}
-						}
-					}
-				}
-			}
-		}
-		return list;
-	}
-
 	public void init(Model_datefix aModel_datefix, Model_main aModel_main, Path currentPath, FolderInfo folderInfo,
 			boolean isImported) {
-		this.model_datefix = aModel_datefix;
-		this.model_main = aModel_main;
-		// WorkDir_Handler workDir_Handler = new
-		// WorkDir_Handler(Paths.get(Main.conf.getWorkDir()), false);
-		// this.model_datefix.setWorkDir_Handler(workDir_Handler);
-		// for (Entry<Path, FolderInfo> entry :
-		// workDir_Handler.getFolderInfo_Map().entrySet()) {
-		// Messages.sprintf("path: " + entry.getKey());
-		// }
-		// workDir_Handler.load_All_WorkDirSub(workDir, start_year, end_year)
 		Main.setProcessCancelled(false);
+
+		this.model_main = aModel_main;
+		this.model_datefix = aModel_datefix;
 
 		this.model_datefix.setCurrentFolderPath(currentPath);
 		this.model_datefix.setFolderInfo_full(folderInfo);
@@ -735,48 +708,53 @@ public class DateFixerController {
 		if (isImported) {
 			applyChanges_btn.setDefaultButton(true);
 		}
+//		df_scrollPane.onScrollStartedProperty().addListener((InvalidationListener) new ChangeListener<Number>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//				
+//			}
+//		});
 
 		ignored_chk.selectedProperty().bindBidirectional(this.model_datefix.ignored_property());
 
 		copied_chk.selectedProperty().bindBidirectional(this.model_datefix.copied_property());
 
-		events_chk.selectedProperty().bindBidirectional(this.model_datefix.events_property());
-
-		locations_chk.selectedProperty().bindBidirectional(this.model_datefix.locations_property());
-
-		events_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
 		folderize_btn.disableProperty().bind(Main.conf.drive_connected_property().not());
-		locations_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
 		copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+				if (newValue == true) {
+					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+
+					loadingProcess_task.setTask(updateGridPane_Task);
+
+					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+					thread.start();
+
+				} else {
+					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
+							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+
+					loadingProcess_task.setTask(updateGridPane_Task);
+
+					Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+					thread.start();
+
+				}
 			}
 		});
-		ignored_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
-						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-			}
-		});
+//		ignored_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+//						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+//			}
+//		});
 
 		this.model_datefix.setRightInfoPanel(rightInfoPanel);
 
@@ -784,10 +762,9 @@ public class DateFixerController {
 		df_gridPane.getChildren().clear();
 		df_gridPane.getRowConstraints().removeAll();
 		df_gridPane.getColumnConstraints().removeAll();
-
 		filePath_tf.setText(this.model_datefix.getCurrentFolderPath().toString());
 
-		dateTimeAdjusterController.init(aModel_datefix, df_gridPane, quickPick_tilePane);
+		dateTimeAdjusterController.init(aModel_main, aModel_datefix, df_gridPane, quickPick_tilePane);
 		selectorController.init(aModel_datefix, df_gridPane);
 		timeShiftController.init(aModel_datefix);
 
@@ -816,8 +793,8 @@ public class DateFixerController {
 			public void handle(WindowEvent event) {
 				Messages.sprintf("Close request pressed");
 				model_datefix.getSelector_exec().shutdownNow();
-				model_datefix.exitDateFixerWindow(model_datefix.getGridPane(), event);
-				// KORJAA TÄMÄ EXITDATEFIXERWINDOW!
+				model_datefix.exitDateFixerWindow(model_datefix.getGridPane(), Main.scene_Switcher.getWindow(), event);
+				// TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
 				// event.consume();
 			}
@@ -836,22 +813,34 @@ public class DateFixerController {
 		 * String> cellData) -> new
 		 * SimpleObjectProperty<>(cellData.getValue().getValue()));
 		 */
-	}
+		rightInfoPanel_scrollPane.setMinWidth(0);
+		rightInfoPanel_scrollPane.setPrefWidth(0);
+		rightInfoPanel_scrollPane.setMaxWidth(0);
+		rightInfoPanel.setVisible(false);
+		rightInfoPanel.setMinWidth(-100);
+		rightInfoPanel.setMaxWidth(-100);
+		rightInfoPanel.setPrefWidth(-100);
 
-	@FXML
-	private void select_acceptable_btn_action(ActionEvent event) {
-		Messages.warningText("not ready yet!");
-	}
+		selectorController.getInfoTables_container().setMinWidth(250);
+		selectorController.getInfoTables_container().setMaxWidth(250);
+		selectorController.getInfoTables_container().setPrefWidth(250);
 
-	@FXML
-	private void listFileInfo_btn_action(ActionEvent event) {
-
-		for (Node node : model_datefix.getGridPane().getChildren()) {
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				Messages.sprintf("fileinfo: " + fileInfo.toString());
+		startFromNumber_tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
+				}
 			}
-		}
+		});
+		endToNumber_tf.textProperty().addListener(new ChangeListener<String>() {
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (!newValue.matches("\\d*")) {
+					endToNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
+				}
+			}
+		});
 	}
 
 	// @formatter:off
@@ -860,7 +849,22 @@ public class DateFixerController {
 	 */
 	// @formatter:on
 	@FXML
+	private void select_acceptable_btn_action(ActionEvent event) {
+		sprintf("select_acceptable_btn_action");
+		for (Node root : df_gridPane.getChildren()) {
+			Node hboxi = root.lookup("#fileDate");
+			if (hboxi instanceof TextField) {
+				if (hboxi.getStyle().equals(CssStylesController.getSuggested_style())) {
+					model_datefix.getSelectionModel().add(root);
+				}
+			}
+		}
+
+	}
+
+	@FXML
 	private void select_video_bad_btn_action(ActionEvent event) {
+		Messages.sprintf("select_video_bad_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
 			sprintf("video_good_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -876,8 +880,8 @@ public class DateFixerController {
 
 	@FXML
 	private void select_video_good_btn_action(ActionEvent event) {
+		Messages.sprintf("select_video_good_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("video_good_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) root.getUserData();
 				if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
@@ -891,8 +895,8 @@ public class DateFixerController {
 
 	@FXML
 	private void select_modified_video_btn_action(ActionEvent event) {
+		Messages.sprintf("select_modified_video_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("select_confirmable_video_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) root.getUserData();
 				if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
@@ -900,11 +904,7 @@ public class DateFixerController {
 					if (hboxi instanceof TextField) {
 						TextField tf = (TextField) hboxi;
 						if (tf != null) {
-							Messages.sprintf("Tf found: " + tf.getStyle() + " style to find ======= "
-									+ CssStylesController.getConfirmed_style());
-
 							if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-								Messages.sprintf("selecting found");
 								model_datefix.getSelectionModel().add(root);
 							}
 						}
@@ -916,19 +916,15 @@ public class DateFixerController {
 
 	@FXML
 	private void select_modified_btn_action(ActionEvent event) {
+		Messages.sprintf("select_modified_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("select_confirmable_video_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) root.getUserData();
+//				FileInfo fileInfo = (FileInfo) root.getUserData();
 				Node hboxi = root.lookup("#fileDate");
 				if (hboxi instanceof TextField) {
 					TextField tf = (TextField) hboxi;
 					if (tf != null) {
-						Messages.sprintf("Tf found: " + tf.getStyle() + " style to find ======= "
-								+ CssStylesController.getConfirmed_style());
-
 						if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-							Messages.sprintf("selecting found");
 							model_datefix.getSelectionModel().add(root);
 						}
 					}
@@ -940,7 +936,7 @@ public class DateFixerController {
 
 	@FXML
 	private void select_bad_video_btn_action(ActionEvent event) {
-
+		Messages.sprintf("select_bad_video_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
 			sprintf("video_bad_btn_action: " + root);
 			if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -973,15 +969,14 @@ public class DateFixerController {
 				.forEachOrdered((n) -> {
 					model_datefix.getSelectionModel().addAll(n);
 				});
-		FolderInfo fo = model_datefix.getFolderInfo_full();
-		for (FileInfo fileInfo : fo.getFileInfoList()) {
-			fileInfo.toString();
-		}
+//		FolderInfo fo = model_datefix.getFolderInfo_full();
+//		for (FileInfo fileInfo : fo.getFileInfoList()) {
+//			fileInfo.toString();
+//		}
 		ObservableList<EXIF_Data_Selector> listi = model_datefix.getCameras_TableView().getItems();
 
 		for (EXIF_Data_Selector eds : listi) {
 			eds.setIsShowing(false);
-			Messages.sprintf("EXIF_Data_Selector: " + eds);
 		}
 	}
 
@@ -989,7 +984,6 @@ public class DateFixerController {
 	private void select_bad_btn_action(ActionEvent event) {
 		sprintf("select_bad_btn_action");
 		for (Node root : df_gridPane.getChildren()) {
-			sprintf("Testing bad: " + root);
 			Node hboxi = root.lookup("#fileDate");
 			if (hboxi instanceof TextField) {
 				if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
@@ -997,7 +991,6 @@ public class DateFixerController {
 				}
 			}
 		}
-
 	}
 
 	@FXML
@@ -1008,10 +1001,9 @@ public class DateFixerController {
 				for (Node vbox : ((VBox) root).getChildren()) {
 					if (vbox instanceof HBox) {
 						for (Node hbox : ((HBox) vbox).getChildren()) {
-							sprintf("hbox child: " + hbox);
 							if (hbox instanceof TextField) {
 								if (hbox.getId().contains("fileDate")) {
-									if (hbox.getStyle().equals(model_datefix.getCssStyles().getGood_style())) {
+									if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
 										model_datefix.getSelectionModel().add(root);
 									}
 								}
@@ -1046,6 +1038,7 @@ public class DateFixerController {
 
 	@FXML
 	private void remove_btn_action(ActionEvent event) {
+		Messages.sprintf("remove_btn_action");
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(Main.bundle.getString("youHaventSelectedMedia"));
 			return;
@@ -1062,13 +1055,16 @@ public class DateFixerController {
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("yes pressed!");
 			boolean update = false;
+			
 			List<Node> toRemove = new ArrayList<>();
+			List<FileInfo> fileInfo_toRemove = new ArrayList<>();
 			for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
 				sprintf("remove_btn_action setIgnored. df_gridPane.getChildren(): " + n);
 				if (n instanceof VBox && n.getId().equals("imageFrame")) {
 					FileInfo fileInfo = (FileInfo) n.getUserData();
 					fileInfo.setIgnored(true);
 					toRemove.add(n);
+					fileInfo_toRemove.add(fileInfo);
 					Main.setChanged(true);
 					sprintf("remove_btn_action setIgnored. df_gridPane.getChildren(): " + n);
 					update = true;
@@ -1076,9 +1072,20 @@ public class DateFixerController {
 			}
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
-				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+				model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
+				
+//				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+//				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
+//						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+
+				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
+				loadingProcess_task.setTask(updateGridPane_Task);
+
+				Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
+				thread.start();
+
 			} else {
 				Messages.sprintf("Nothing to update");
 			}
@@ -1099,52 +1106,22 @@ public class DateFixerController {
 	 * ENDS
 	 */
 
-	private void applyChangestoAllNodes(FileInfo fileInfo_toFind) {
-		Messages.sprintf("applyChangestoAllNodes started: " + model_datefix.getAllNodes().size());
-		for (Node node : model_datefix.getAllNodes()) {
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-					if (fileInfo.equals(fileInfo_toFind)) {
-						Messages.sprintf("All ready wroted info writing userData!");
-					}
-					node.setUserData(fileInfo_toFind);
-				}
-			} else {
-				Messages.sprintf("Nodeee: " + node.getId());
-			}
-		}
-
-	}
-
-	private void updateFileInfo(ObservableList<Node> observableList, FileInfo fileInfo_toFind) {
-		Iterator<Node> it = observableList.iterator();
-		while (it.hasNext()) {
-			Node node = it.next();
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-				fileInfo = fileInfo_toFind;
-				return;
-			}
-		}
-	}
-
 	@FXML
 	private void hideInfoTables_btn_action(ActionEvent event) {
-		if (infoTables_visible.get()) {
-			hideInfoTables_btn.setRotate(90);
+		if (leftInfoTables_visible.get()) {
+			hideInfoTables_btn.setRotate(0);
 			selectorController.getInfoTables_container().setVisible(false);
 			selectorController.getInfoTables_container().setMinWidth(-100);
 			selectorController.getInfoTables_container().setMaxWidth(-100);
 			selectorController.getInfoTables_container().setPrefWidth(-100);
-			infoTables_visible.set(false);
+			leftInfoTables_visible.set(false);
 		} else {
-			hideInfoTables_btn.setRotate(0);
+			hideInfoTables_btn.setRotate(180);
 			selectorController.getInfoTables_container().setVisible(true);
 			selectorController.getInfoTables_container().setMinWidth(250);
 			selectorController.getInfoTables_container().setMaxWidth(250);
 			selectorController.getInfoTables_container().setPrefWidth(250);
-			infoTables_visible.set(true);
+			leftInfoTables_visible.set(true);
 		}
 	}
 
@@ -1163,9 +1140,12 @@ public class DateFixerController {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
-				if (dest != null) {
-					Messages.sprintf("blaaadestination is: " + dest);
-					fileInfo.setDestinationPath(dest.toString());
+				if (dest != null && Main.conf.getDrive_connected()) {
+					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
+					fileInfo.setWorkDir(Main.conf.getWorkDir());
+					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+					fileInfo.setDestination_Path(dest.toString());
+					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
 					Messages.sprintf("Dest were null. process is about to be cancelled");
@@ -1195,21 +1175,29 @@ public class DateFixerController {
 
 	@FXML
 	private void hideRightInfo_btn_action(ActionEvent event) {
-		if (rightInfo_visible.get()) {
+		if (model_datefix.getRightInfo_visible()) {
+			hideRightInfo_btn.setRotate(0);
 			rightInfoPanel_scrollPane.setVisible(false);
+
+			rightInfoPanel_scrollPane.setMinWidth(0);
+			rightInfoPanel_scrollPane.setPrefWidth(0);
+			rightInfoPanel_scrollPane.setMaxWidth(0);
 			rightInfoPanel.setVisible(false);
 			rightInfoPanel.setMinWidth(-100);
 			rightInfoPanel.setMaxWidth(-100);
 			rightInfoPanel.setPrefWidth(-100);
-			rightInfo_visible.set(false);
+			model_datefix.setRightInfo_visible(false);
 		} else {
-
+			hideRightInfo_btn.setRotate(180);
 			rightInfoPanel_scrollPane.setVisible(true);
+			rightInfoPanel_scrollPane.setMinWidth(250);
+			rightInfoPanel_scrollPane.setPrefWidth(250);
+			rightInfoPanel_scrollPane.setMaxWidth(250);
 			rightInfoPanel.setVisible(true);
 			rightInfoPanel.setMinWidth(250);
 			rightInfoPanel.setMaxWidth(250);
 			rightInfoPanel.setPrefWidth(250);
-			rightInfo_visible.set(true);
+			model_datefix.setRightInfo_visible(true);
 		}
 	}
 

@@ -12,6 +12,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
@@ -62,12 +63,12 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 
 	private void setBad(FolderInfo folderInfo) {
 		stackPane.getChildren().add(tryToReconnect);
-		stackPane.setStyle("-fx-background-color: red;");
+		stackPane.setStyle("-fx-background-color: derive(red, 50%);");
 		tryToReconnect.setOnAction(event -> {
 			if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
 				setGood();
-				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getFileInfo_db_fileName());
-				List<FileInfo> list = SQL_Utils.loadFileInfoDatabase(connection);
+				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
 				TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
@@ -89,7 +90,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 	}
 
 	private void setGood() {
-		stackPane.setStyle("-fx-background-color: blue;");
+		stackPane.setStyle("-fx-background-color: derive(blue, 20%);");
 		stackPane.getChildren().remove(tryToReconnect);
 
 	}

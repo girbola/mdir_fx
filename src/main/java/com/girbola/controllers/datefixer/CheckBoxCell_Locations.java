@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -126,8 +126,8 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 						}
 					};
 					updateLocations_Task.setOnSucceeded((WorkerStateEvent event) -> {
-						model_DateFix.getScrollPane().setVvalue(-1);
-						model_DateFix.getScrollPane().setVvalue(0);
+//						model_DateFix.getScrollPane().setVvalue(-1);
+//						model_DateFix.getScrollPane().setVvalue(0);
 
 						model_DateFix.getCameras_TableView().setDisable(false);
 						model_DateFix.getDates_TableView().setDisable(false);

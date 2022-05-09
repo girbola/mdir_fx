@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -52,6 +52,7 @@ public class LoadingProcessController {
 	private void cancel_btn_action(ActionEvent event) {
 		sprintf("Cancel pressed!");
 		Main.setProcessCancelled(true);
+		closeWindow();
 	}
 
 	public void closeWindow() {
@@ -71,7 +72,7 @@ public class LoadingProcessController {
 		if (Main.scene_Switcher.getWindow_loadingprogress().getScene() == null) {
 			sprintf("model.getStage().getScene(). WERE nULL");
 		}
-		KeyFrame key = new KeyFrame(Duration.millis(1000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
+		KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {
 

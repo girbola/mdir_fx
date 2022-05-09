@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -43,7 +43,7 @@ public class OperateDialogController {
 	@FXML
 	private Label cp_transferRate_Input;
 	@FXML
-	private Label cp_time_Input;
+	private Label cp_timeElapsed_Input;
 	@FXML
 	private Label cp_timeLeft_Input;
 	@FXML
@@ -73,8 +73,11 @@ public class OperateDialogController {
 		cp_filesLeft_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().filesLeft_property(), new NumberStringConverter());
 		cp_copied_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().copied_property(), new NumberStringConverter());
 		cp_renamedFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().renamed_property(), new NumberStringConverter());
+		
 		cp_timeLeft_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().timeLeft_property());
-		cp_time_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().timeElapsed_property());
+		
+		cp_timeElapsed_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().timeElapsed_property());
+		
 		cp_totalFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().totalFiles_property());
 		cp_transferRate_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().transferRate_property());
 		cp_duplicatedFiles_Input.textProperty().bindBidirectional(model_operate.getCopyProcess_values().duplicated_property(),

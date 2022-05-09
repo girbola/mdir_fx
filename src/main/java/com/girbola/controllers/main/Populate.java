@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -30,6 +30,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+import javafx.stage.Window;
 
 /**
  *
@@ -50,16 +51,17 @@ public class Populate {
 		ConcurrencyUtils.initExecutionService();
 	}
 
-	public void populateTables_FolderScanner_list() {
+	public void populateTables_FolderScanner_list(Window owner) {
 		sprintf("SorterTest action started");
 		Main.setProcessCancelled(false);
 
+		if (model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
+			sprintf("getSelection_FolderScanner list were empty");
+			return;
+		}
 		model_main.tables().getSortIt_table().getItems().clear();
 		model_main.tables().getSorted_table().getItems().clear();
 
-		if (model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
-			sprintf("getSelection_FolderScanner list were empty");
-		}
 		/*
 		 * Load from selectedFolder list Sort to tables Calculate tables content
 		 */
@@ -73,23 +75,21 @@ public class Populate {
 			}
 		}
 		if (list.isEmpty()) {
-			Messages.warningText("List is empty at Populate class");
+			Messages.warningText("No selected folder(s) to scan. Choose \"File/Add folders\" to choose folder to scan");
 			return;
 		}
 		for (Path pt : list) {
 			sprintf("SelectedFolder is: " + pt);
 		}
 		Task<List<Path>> createFileList = new SubList(list);
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task();
+		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(owner);
 		createFileList.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				List<Path> list = null;
 				try {
 					list = createFileList.get();
-				} catch (InterruptedException ex) {
-					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-				} catch (ExecutionException ex) {
+				} catch (Exception ex) {
 					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 				}
 				if (list.isEmpty()) {
@@ -109,6 +109,7 @@ public class Populate {
 						sprintf("sorter.setOnSucceeded total: " + total);
 						loadingProcess_task.setTask(sorter);
 						loadingProcess_task.setMessage("Sorter");
+						//Folder content checkki tähän. TArkistaa että onko tiedostot olemassa. Ja palauttaa varoituksen jos ei löydy tiedostoja.
 						
 						Task<Void> calculateFolderContent = new CalculateFolderContent(model_main, loadingProcess_task, total);
 						loadingProcess_task.setTask(calculateFolderContent);
@@ -117,11 +118,11 @@ public class Populate {
 							public void handle(WorkerStateEvent event) {
 								try {
 									process.set(process.get() - 1);
-									sprintf("(double) process.get() / (double) total.get()); " + (double) process.get() / (double) total.get());
-									sprintf("Saving...");
 									loadingProcess_task.setMessage("Saving...");
 									// XMLFunctions.saveAll(model.getTables());
 									loadingProcess_task.closeStage();
+									model_main.getMonitorExternalDriveConnectivity().restart();
+									
 									sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
 								} catch (InterruptedException | ExecutionException ex) {
 									Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
@@ -138,7 +139,9 @@ public class Populate {
 							@Override
 							public void handle(WorkerStateEvent event) {
 								sprintf("calculateFolderContent setOnFailed");
+								loadingProcess_task.setMessage("FAILED...");
 								Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+								loadingProcess_task.closeStage();
 							}
 						});
 						exec[getExecCounter()].submit(calculateFolderContent);
@@ -148,13 +151,18 @@ public class Populate {
 					@Override
 					public void handle(WorkerStateEvent event) {
 						sprintf("sorter.setOnCancelled");
+						loadingProcess_task.closeStage();
 
 					}
 				});
 				sorter.setOnFailed(new EventHandler<WorkerStateEvent>() {
 					@Override
 					public void handle(WorkerStateEvent event) {
+						loadingProcess_task.setMessage("FAILED...");
+
 						sprintf("sorter.setOnFailed");
+						loadingProcess_task.closeStage();
+
 					}
 				});
 				Thread sorter_th = new Thread(sorter, "sorter_th");

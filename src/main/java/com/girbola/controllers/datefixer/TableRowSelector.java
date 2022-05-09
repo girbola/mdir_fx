@@ -14,6 +14,7 @@ import javafx.util.Callback;
 
 public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>, TableRow<EXIF_Data_Selector>> {
 
+	private final String ERROR = TableRowSelector.class.getName();
 	private TableView<EXIF_Data_Selector> table;
 	private ScrollPane scrollPane;
 
@@ -37,10 +38,11 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 						value = GUI_Methods.getDate(node);
 						if (table.getSelectionModel().getSelectedItem().getInfo().contains(value)) {
 							VBox vbox = (VBox) node;
-							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight() + (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
+							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight()
+									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
-							Messages.sprintf("vvalue: " + vvalue);
+							Messages.sprintf("dates_tableView vvalue: " + vvalue);
 							value = "";
 							break;
 						}
@@ -49,18 +51,20 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 						if (table.getSelectionModel().getSelectedItem().getInfo().equals(value)
 								&& table.getSelectionModel().getSelectedItem().getInfo() != null) {
 							VBox vbox = (VBox) node;
-							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight() + (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
+							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight()
+									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
 							value = "";
 							break;
 						}
-					}  else if (table.getId().equals("events_tableView")) {
+					} else if (table.getId().equals("events_tableView")) {
 						value = GUI_Methods.getEvents(node);
 						if (table.getSelectionModel().getSelectedItem().getInfo().equals(value)
 								&& table.getSelectionModel().getSelectedItem().getInfo() != null) {
 							VBox vbox = (VBox) node;
-							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight() + (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
+							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight()
+									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
 							value = "";
@@ -71,13 +75,17 @@ public class TableRowSelector implements Callback<TableView<EXIF_Data_Selector>,
 						if (table.getSelectionModel().getSelectedItem().getInfo().equals(value)
 								&& table.getSelectionModel().getSelectedItem().getInfo() != null) {
 							VBox vbox = (VBox) node;
-							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight() + (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
+							double vvalue = GridPane.getRowIndex(vbox) * vbox.getHeight()
+									+ (gridPane.getVgap() * (GridPane.getRowIndex(vbox) - 2));
 							Messages.sprintf("RowConstraits size: " + gridPane.getRowConstraints().get(0));
 							scrollPane.setVvalue(vvalue);
 							value = "";
 							break;
 						}
-					} 
+					} else {
+						Messages.sprintfError("This should not come using TableRow<EXIF_Data_Selector>: in class: "
+								+ ERROR + " tableId is: " + table.getId());
+					}
 				}
 			} else if (e.getButton() == MouseButton.PRIMARY && e.getClickCount() == 1 && row.isEmpty()) {
 				Messages.sprintf("Button were instanceof Text");

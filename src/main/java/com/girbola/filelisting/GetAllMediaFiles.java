@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -24,7 +24,11 @@ import java.util.ArrayList;
 
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
+/**
+ * Get all possible media files under given folder
+ * @author marko_000
+ *
+ */
 public class GetAllMediaFiles {
 	private final static String ERROR = GetAllMediaFiles.class.getSimpleName();
 

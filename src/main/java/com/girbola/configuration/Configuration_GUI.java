@@ -1,18 +1,20 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
 package com.girbola.configuration;
 
+import com.girbola.messages.Messages;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 /**
- *
  * @author Marko Lokka
  */
 class Configuration_GUI {
@@ -23,8 +25,77 @@ class Configuration_GUI {
 	private BooleanProperty showFullPath = new SimpleBooleanProperty(true);
 	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
 	private BooleanProperty savingThumb = new SimpleBooleanProperty(true);
-	private SimpleStringProperty workDir = new SimpleStringProperty("null");
+
+	private SimpleDoubleProperty windowStartPosX = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartPosY = new SimpleDoubleProperty(-1);
+
+	private SimpleDoubleProperty windowStartWidth = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartHeight = new SimpleDoubleProperty(-1);
+
+	private SimpleStringProperty workDir = new SimpleStringProperty("");
+	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("");
+
 	private String themePath = ThemePath.DARK.getType();
+
+	public SimpleDoubleProperty windowStartPosX_property() {
+		return this.windowStartPosX;
+	}
+
+	public void setWindowStartPosX(SimpleDoubleProperty windowStartPosX) {
+		this.windowStartPosX = windowStartPosX;
+	}
+
+	public SimpleDoubleProperty windowStartPosY_property() {
+		return this.windowStartPosY;
+	}
+
+	public void setWindowStartPosY(SimpleDoubleProperty windowStartPosY) {
+		this.windowStartPosY = windowStartPosY;
+	}
+
+	public SimpleDoubleProperty windowStartWidth_property() {
+		return this.windowStartWidth;
+	}
+
+	public void setWindowStartWidth(SimpleDoubleProperty windowStartWidth) {
+		this.windowStartWidth = windowStartWidth;
+	}
+
+	public SimpleDoubleProperty windowStartHeight_property() {
+		return this.windowStartHeight;
+	}
+
+	public void setWindowStartPosX(double value) {
+		this.windowStartPosX.set(value);
+	}
+
+	public void setWindowStartPosY(double value) {
+		this.windowStartPosY.set(value);
+	}
+
+	public void setWindowStartWidth(double value) {
+		this.windowStartWidth.set(value);
+	}
+
+	public void setWindowStartHeight(double value) {
+		this.windowStartHeight.set(value);
+	}
+
+	public double getWindowStartPosX() {
+		return this.windowStartPosX.get();
+	}
+
+	public double getWindowStartPosY() {
+		return this.windowStartPosY.get();
+	}
+
+	public double getWindowStartWidth() {
+		return this.windowStartWidth.get();
+	}
+
+	public double getWindowStartHeight() {
+		return this.windowStartHeight.get();
+	}
 
 	public boolean isSavingThumb() {
 		return this.savingThumb.get();
@@ -80,10 +151,19 @@ class Configuration_GUI {
 
 	public void setThemePath(String themePath) {
 		this.themePath = themePath;
+//		Configuration_SQL_Utils.saveConfig(Configuration_SQL_Utils.themePath, this.themePath);
 	}
 
 	public StringProperty workDir_property() {
 		return this.workDir;
+	}
+
+	public void setWorkDirSerialNumber(String value) {
+		this.workDirSerialNumber.set(value);
+	}
+
+	public String getWorkDirSerialNumber() {
+		return this.workDirSerialNumber.get();
 	}
 
 	public String getWorkDir() {
@@ -91,6 +171,7 @@ class Configuration_GUI {
 	}
 
 	public void setWorkDir(String workDir) {
+		System.err.println("setWorkdDir: " + workDir);
 		this.workDir.set(workDir);
 	}
 

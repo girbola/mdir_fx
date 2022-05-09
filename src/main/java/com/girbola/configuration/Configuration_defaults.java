@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -7,23 +7,19 @@
 package com.girbola.configuration;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
 
-import common.utils.ArrayUtils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -38,8 +34,6 @@ public class Configuration_defaults extends
 
 	private final String ERROR = Configuration_defaults.class.getSimpleName();
 
-	private final String programHomePage = "http://girbola.com/index.html";
-
 	private StringProperty drive_name = new SimpleStringProperty("");
 	private StringProperty drive_space = new SimpleStringProperty("");
 	private StringProperty drive_spaceLeft = new SimpleStringProperty("");
@@ -50,7 +44,7 @@ public class Configuration_defaults extends
 
 	public static final String programName = "Mdir";
 
-	private final String programVersion = "0.0.2019";
+	private final String programVersion = "0.0.2020";
 	private final LocalDate programDate = LocalDate.now();
 
 	private AtomicInteger id_counter = new AtomicInteger(0);
@@ -69,10 +63,6 @@ public class Configuration_defaults extends
 			// "--no-inhibit", /* we don't want interfaces */
 			"--no-disable-screensaver", /* we don't want interfaces */
 			"--no-snapshot-preview", /* no blending in dummy vout */ };
-
-	public String getProgramHomePage() {
-		return programHomePage;
-	}
 
 	public StringProperty drive_name_property() {
 		return drive_name;
@@ -140,7 +130,7 @@ public class Configuration_defaults extends
 		return this.programDate;
 	}
 
-	public StringProperty vlcPath_propProperty() {
+	public StringProperty vlcPath_property() {
 		return this.vlcPath;
 	}
 
@@ -162,48 +152,18 @@ public class Configuration_defaults extends
 				Files.createDirectories(appDataPath);
 			} catch (IOException ex) {
 				if (Files.isWritable(appDataPath)) {
-					Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE, null, ex);
+					ex.printStackTrace();
 					Messages.errorSmth(ERROR, bundle.getString("createDataFolderFailed") + "\n" + getAppDataPath(), ex, Misc.getLineNumber(), true);
+					return;
 				} else {
-					Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE, null, ex);
+					ex.printStackTrace();
 					Messages.errorSmth(ERROR,
 							bundle.getString("createDataFolderFailed") + " " + bundle.getString("folderWriteProtected") + "\n" + getAppDataPath(), ex,
 							Misc.getLineNumber(), true);
+					return;
 				}
 			}
 		}
-		boolean created = SQL_Utils.createFolderInfoDatabase();
-		if(created) {
-			Messages.sprintf(getFolderInfo_db_fileName() + " were created successfully");
-		} else {
-			Messages.errorSmth(ERROR, "Can't create " + getFolderInfo_db_fileName() + "\n" + getAppDataPath(), null,
-					Misc.getLineNumber(), true);
-		}
-		// if (!Files.exists(Paths.get(conf.getThumbnail_folder_tmp()))) {
-		// try {
-		// Files.createDirectories(Paths.get(conf.getThumbnail_folder_tmp()));
-		// sprintf("Creating snapShotFolder path: " + conf.getThumbnail_folder_tmp());
-		// } catch (IOException ex) {
-		// Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE,
-		// null, ex);
-		// errorText(bundle.getString("cannotSetWorkDir") + "\n\nError: " + ERROR + "1x
-		// " + getLineNumber(), true);
-		// }
-		// }
-		// try {
-		List<Path> list = ArrayUtils.readFileToArray(conf.getIgnoreListPath());
-		if (list.size() > 1) {
-			for (Path file : list) {
-
-				conf.addToIgnoredList(file);
-				// conf.setIgnoredList(list);
-			}
-		}
-		/*
-		 * } catch (IOException ex) {
-		 * Logger.getLogger(Configuration_defaults.class.getName()).log(Level.SEVERE,
-		 * null, ex); }
-		 */
 	}
 
 	public String getOs() {

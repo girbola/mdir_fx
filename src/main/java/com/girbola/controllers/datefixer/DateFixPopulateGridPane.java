@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -15,11 +15,13 @@ import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -31,6 +33,7 @@ import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -46,6 +49,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -78,14 +82,9 @@ public class DateFixPopulateGridPane extends Task<Void> {
 	private ScrollPane scrollPane;
 	private Scene scene;
 	private DoubleProperty node_height = new SimpleDoubleProperty(0);
-	// private ExecutorService populate_exe = Executors.newSingleThreadExecutor();
-	// private long start = System.currentTimeMillis();
-	// private long end = 0;
+
 	private VBox frame;
 	private SimpleIntegerProperty counter = new SimpleIntegerProperty(0);
-	// private SimpleIntegerProperty x = new SimpleIntegerProperty(0);
-	// private SimpleIntegerProperty y = new SimpleIntegerProperty(0);
-	// private int imagesPerLine;
 	private LoadingProcess_Task loadingProcess_task;
 
 	public DateFixPopulateGridPane(Scene scene, Model_datefix aModel_datefix, LoadingProcess_Task loadingProcess_task) {
@@ -164,9 +163,9 @@ public class DateFixPopulateGridPane extends Task<Void> {
 				public void handle(ActionEvent event) {
 					String date = tf.getText();
 					tf.setText("" + date);
-					tf.setStyle(model_dateFix.getCssStyles().getModified_style());
+					tf.setStyle(CssStylesController.getModified_style());
 					sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: "
-							+ model_dateFix.start_time().getTime());
+							+ model_dateFix.getStart_time().getTime());
 				}
 			});
 		} else {
@@ -220,73 +219,115 @@ public class DateFixPopulateGridPane extends Task<Void> {
 		textField.setMinHeight(25);
 		textField.setPrefHeight(25);
 		if (fileInfo.isBad()) {
-			textField.setStyle(model_dateFix.getCssStyles().getBad_style());
+			textField.setStyle(CssStylesController.getBad_style());
 		} else if (fileInfo.isGood()) {
-			textField.setStyle(model_dateFix.getCssStyles().getGood_style());
+			textField.setStyle(CssStylesController.getGood_style());
 		} else if (fileInfo.isConfirmed()) {
-			textField.setStyle(model_dateFix.getCssStyles().getConfirmed_style());
+			textField.setStyle(CssStylesController.getConfirmed_style());
 		} else if (fileInfo.isVideo()) {
-			textField.setStyle(model_dateFix.getCssStyles().getVideo_style());
+			textField.setStyle(CssStylesController.getVideo_style());
 		} else if (fileInfo.isSuggested()) {
-			textField.setStyle(model_dateFix.getCssStyles().getSuggested_style());
+			textField.setStyle(CssStylesController.getSuggested_style());
 		}
 
 		return textField;
 	}
 
-	private void setSelectedImageRoutine(String path, VBox frame) {
+	private void setSelectedImageRoutine(FileInfo fileInfo, VBox frame) {
 		frame.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				if (event.getButton().equals(MouseButton.PRIMARY)) {
 
+				if (event.getButton().equals(MouseButton.PRIMARY)) {
+					long start = System.currentTimeMillis();
 					if (event.getClickCount() == 1) {
-						Messages.sprintf("Clicked once");
+
+						Messages.sprintf("Clicked setSelectedImageRoutine PRIMARY mouseclickcount = 1");
+
 						model_dateFix.getRightInfoPanel().getChildren().clear();
 						model_dateFix.getMetaDataTableView_obs().clear();
-						model_dateFix.getMetaDataTableView_obs()
-								.add(new MetaData(Main.bundle.getString("filename"), path));
-						Metadata metaData = null;
-						try {
-							metaData = ImageMetadataReader.readMetadata(Paths.get(path).toFile());
-						} catch (Exception e) {
+						if (frame instanceof VBox) {
+							for (Node node : frame.getChildren()) {
+								if (node instanceof StackPane) {
+									StackPane sp = (StackPane) node;
+									for (Node nodeImv : sp.getChildren()) {
+										if (nodeImv instanceof ImageView) {
+											ImageView imv = (ImageView) nodeImv;
 
-						}
-						if (metaData != null) {
-							for (Directory dir : metaData.getDirectories()) {
-								if (dir != null) {
-									if (!dir.getTags().isEmpty()) {
-										TitledPane titledPane = createTitledPane();
-										model_dateFix.getRightInfoPanel().getChildren().add(titledPane);
-										titledPane.setText(dir.getName());
-										ObservableList<MetaData> obs = FXCollections.observableArrayList();
-										TableView<MetaData> table = createTableView();
-										table.setItems(obs);
+											if (imv.getImage() != null) {
 
-										titledPane.setContent(table);
-
-										for (Tag tag : dir.getTags()) {
-											obs.add(new MetaData(tag.getTagName(), tag.getDescription()));
-
+												boolean deselected = model_dateFix.getSelectionModel().add(frame);
+												if (model_dateFix.getRightInfo_visible()) {
+													File file = new File(fileInfo.getOrgPath());
+													model_dateFix.getMetaDataTableView_obs().add(new MetaData(
+															Main.bundle.getString("filename"), file.toString()));
+													Metadata metaData = null;
+													try {
+														metaData = ImageMetadataReader.readMetadata(file);
+													} catch (Exception e) {
+														deselected = false;
+													}
+													if (!deselected) {
+														if (metaData != null) {
+															for (Directory dir : metaData.getDirectories()) {
+																if (dir != null) {
+																	if (!dir.getTags().isEmpty()) {
+																		TitledPane titledPane = createTitledPane();
+																		model_dateFix.getRightInfoPanel().getChildren()
+																				.add(titledPane);
+																		titledPane.setText(dir.getName());
+																		ObservableList<MetaData> obs = FXCollections
+																				.observableArrayList();
+																		TableView<MetaData> table = createTableView();
+																		table.setItems(obs);
+																		titledPane.setContent(table);
+																		for (Tag tag : dir.getTags()) {
+																			obs.add(new MetaData(tag.getTagName(),
+																					tag.getDescription()));
+																		}
+																		adjustTableHeight(table, obs);
+																	}
+																}
+															}
+															Messages.sprintf("Metadata reading took: "
+																	+ (System.currentTimeMillis() - start));
+														}
+													}
+												}
+											} else {
+												Messages.sprintf("Not able to select because imageview were null");
+											}
 										}
-										adjustTableHeight(table, obs);
 									}
 								}
 							}
 						}
-					}
 
-					if (event.getClickCount() == 2) {
-						if (Files.exists(Paths.get(path))) {
-							ImageUtils.view(Paths.get(path));
+					} else if (event.getClickCount() == 2) {
+						Messages.sprintf("Clickcount were 2");
+						List<FileInfo> list = getFileList(gridPane.getChildren());
+						if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+							ImageUtils.view(list, fileInfo, Main.scene_Switcher.getScene_dateFixer().getWindow());
 						} else {
-							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + path, null,
-									getLineNumber(), true);
+							Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + fileInfo.getOrgPath(),
+									null, getLineNumber(), true);
 						}
 					} else {
+						Messages.sprintf("getselectionmodel. adding frame to selectionmodel");
 						model_dateFix.getSelectionModel().add(frame);
 					}
 				}
+			}
+
+			private List<FileInfo> getFileList(ObservableList<Node> children) {
+				List<FileInfo> list = new ArrayList<>();
+				for (Node node : children) {
+					FileInfo fileInfo = (FileInfo) node.getUserData();
+					Messages.sprintf("getFileList: " + node + " fileInfo is: " + fileInfo.getOrgPath());
+					list.add(fileInfo);
+				}
+
+				return list;
 			}
 
 			private void adjustTableHeight(TableView<MetaData> table, ObservableList<MetaData> obs) {
@@ -378,20 +419,19 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
-		Iterator<FileInfo> it = folderInfo.getFileInfoList().iterator();
-		while (it.hasNext()) {
+
+		for (FileInfo fi : folderInfo.getFileInfoList()) {
 			if (Main.getProcessCancelled()) {
 				cancel();
 				sprintf("Process has been cancelled!");
 				return null;
 			}
-			FileInfo fi = it.next();
 			if (Files.exists(Paths.get(fi.getOrgPath()))) {
 				if (fi.isImage() || fi.isVideo() || fi.isRaw()) {
 					frame = null;
 					if (fi.isImage() || fi.isRaw()) {
 						frame = createFrame(fi, counter.get());
-						setSelectedImageRoutine(fi.getOrgPath(), frame);
+						setSelectedImageRoutine(fi, frame);
 					} else if (fi.isVideo()) {
 						frame = createFrame(fi, counter.get());
 						setSelectedVideoRoutine(Paths.get(fi.getOrgPath()), frame);
@@ -418,6 +458,7 @@ public class DateFixPopulateGridPane extends Task<Void> {
 						}
 						counter.set(counter.get() + 1);
 					}
+
 				}
 			}
 		}

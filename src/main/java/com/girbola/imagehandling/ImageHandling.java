@@ -1,12 +1,11 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved.  
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.  
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
 package com.girbola.imagehandling;
 
-import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.awt.image.BufferedImage;
@@ -23,11 +22,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
 import com.drew.metadata.Metadata;
-import com.girbola.configuration.GUIPrefs;
+import com.girbola.Main;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
@@ -35,7 +35,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.media.DateTaken;
-import common.media.VideoDateFinder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
@@ -80,19 +79,97 @@ public class ImageHandling {
 		Task<Image> convert = new Task<Image>() {
 			@Override
 			protected Image call() throws Exception {
-				sprintf("handleBufferedThumb: " + fileInfo.getOrgPath());
-				long start = System.currentTimeMillis();
-				BufferedImage bi = ImageIO.read(new File(fileInfo.getOrgPath()));
-				Messages.sprintf("Creating bufferedimage took: " + (System.currentTimeMillis() - start));
-				Image image = SwingFXUtils.toFXImage(bi, null);
-				if (image != null) {
-					if (imageView != null) {
-						imageView.setImage(image);
-						Messages.sprintf("Setting image to imageview took: " + (System.currentTimeMillis() - start));
-					}
-					return image;
+				if (isCancelled()) {
+					Main.setProcessCancelled(true);
+					return null;
 				}
-				Messages.sprintf("returning null from handleBufferedThumb");
+				if (Main.getProcessCancelled()) {
+					Main.setProcessCancelled(true);
+					cancel();
+					return null;
+				}
+				ImageInputStream input = ImageIO.createImageInputStream(new File(fileInfo.getOrgPath()));
+
+				try {
+					// Get the reader
+					Iterator<ImageReader> readers = ImageIO.getImageReaders(input);
+					Messages.sprintf("Debugging tiff converter: ");
+					if (!readers.hasNext()) {
+						throw new IllegalArgumentException("No reader for: " + fileInfo.getOrgPath());
+					}
+
+					ImageReader reader = readers.next();
+					if (Main.getProcessCancelled()) {
+						Main.setProcessCancelled(true);
+						cancel();
+						reader.dispose();
+						return null;
+					}
+					try {
+						reader.setInput(input);
+						// Optionally, read thumbnails, meta data, etc...
+						int numThumbs = reader.getNumThumbnails(0);
+						Messages.sprintf("Number of thumbs: " + numThumbs);
+						if (numThumbs > 0) {
+							long start = System.currentTimeMillis();
+							ImageReadParam param = reader.getDefaultReadParam();
+							Messages.sprintf("Tiff reader found number of thumbs: " + numThumbs);
+							BufferedImage buff = reader.read(numThumbs, param);
+							Messages.sprintf("TIFF BUFFIMAGE");
+							Image image = SwingFXUtils.toFXImage(buff, null);
+							if (image != null) {
+								if (imageView != null) {
+									imageView.setImage(image);
+									Messages.sprintf(
+											"Setting image to imageview took: " + (System.currentTimeMillis() - start));
+								}
+								return image;
+							}
+						} else {
+							if(Main.getProcessCancelled()) {
+								Main.setProcessCancelled(true);
+								cancel();
+								return null;
+							}
+							ImageReadParam param = reader.getDefaultReadParam();
+							long start = System.currentTimeMillis();
+							// Finally read the image, using settings from param
+							BufferedImage buff = reader.read(0, param);
+							Messages.sprintf("TIFF BUFFIMAGE");
+							Image image = SwingFXUtils.toFXImage(buff, null);
+							if (image != null) {
+								if (imageView != null) {
+									imageView.setImage(image);
+									Messages.sprintf(
+											"Setting image to imageview took: " + (System.currentTimeMillis() - start));
+								}
+								return image;
+							}
+						}
+						// ...
+					} finally {
+						// Dispose reader in finally block to avoid memory leaks
+						reader.dispose();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				} finally {
+					// Close stream in finally block to avoid resource leaks
+					input.close();
+				}
+				sprintf("handleBufferedThumb: " + fileInfo.getOrgPath());
+//				long start = System.currentTimeMillis();
+//				BufferedImage bi = ImageIO.read(new File(fileInfo.getOrgPath()));
+//				Messages.sprintf("Creating bufferedimage took: " + (System.currentTimeMillis() - start));
+//				Image image = SwingFXUtils.toFXImage(bi, null);
+//				if (image != null) {
+//					if (imageView != null) {
+//						imageView.setImage(image);
+//						Messages.sprintf("Setting image to imageview took: " + (System.currentTimeMillis() - start));
+//					}
+//					return image;
+//				}
+//				Messages.sprintf("returning null from handleBufferedThumb");
 				return null;
 			}
 		};
@@ -135,7 +212,7 @@ public class ImageHandling {
 			protected Image call() throws Exception {
 
 				ImageInputStream is = null;
-				;
+
 				try {
 					is = ImageIO.createImageInputStream(path.toFile());
 					if (is == null || is.length() == 0) {

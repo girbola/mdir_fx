@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -19,7 +19,7 @@ import com.girbola.fileinfo.FileInfo;
 import javafx.concurrent.Task;
 
 /**
- *
+ *	Returns a map 2020-08-29
  * @author Marko Lokka
  */
 public class CreateDateList extends Task<Map<String, List<FileInfo>>> {
@@ -36,7 +36,7 @@ public class CreateDateList extends Task<Map<String, List<FileInfo>>> {
 	protected Map<String, List<FileInfo>> call() throws Exception {
 		List<String> dateMap = new ArrayList<>();
 
-		for (FileInfo fi : this.list) {
+		for (FileInfo fi : list) {
 			if (!dateMap.contains(simpleDates.getSdf_ymd_minus().format(fi.getDate()))) {
 				dateMap.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}

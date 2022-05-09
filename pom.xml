@@ -3,8 +3,8 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.girbola</groupId>
-	<artifactId>mdir_fx_13</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>mdir_fx_2021</artifactId>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>MDir Image &amp; Video organizer tool</name>
@@ -36,17 +36,17 @@
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>11</maven.compiler.release>
-		<javafx.version>13</javafx.version>
-		<metadata-extractor.version>2.12.0</metadata-extractor.version>
-		<vlcj.version>4.1.0</vlcj.version>
+		<javafx.version>15</javafx.version>
+		<metadata-extractor.version>2.15.0</metadata-extractor.version>
+		<vlcj.version>4.6.0</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.4.1</imageio-jpeg.version>
-		<imageio-tiff.version>3.4.1</imageio-tiff.version>
+		<imageio-jpeg.version>3.5</imageio-jpeg.version>
+		<imageio-tiff.version>3.5</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j-log4j12.version>1.7.5</slf4j-log4j12.version>
-		<slf4j-api.version>1.7.5</slf4j-api.version>
+		<slf4j.version>1.7.32</slf4j.version>
 	</properties>
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 
 		<!-- JavaFX deps -->
 		<dependency>
@@ -60,24 +60,7 @@
 			<version>${javafx.version}</version>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>org.openjfx</groupId> -->
-		<!-- <artifactId>javafx-graphics</artifactId> -->
-		<!-- <version>13</version> -->
-		<!-- <classifier>win</classifier> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.openjfx</groupId> -->
-		<!-- <artifactId>javafx-graphics</artifactId> -->
-		<!-- <version>13</version> -->
-		<!-- <classifier>linux</classifier> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.openjfx</groupId> -->
-		<!-- <artifactId>javafx-graphics</artifactId> -->
-		<!-- <version>13</version> -->
-		<!-- <classifier>mac</classifier> -->
-		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-base</artifactId>
@@ -89,17 +72,6 @@
 			<artifactId>javafx-swing</artifactId>
 			<version>${javafx.version}</version>
 		</dependency>
-		<!-- JavaFX Deps ENDS -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.bytedeco</groupId> -->
-		<!-- <artifactId>javacv-platform</artifactId> -->
-		<!-- <version>1.5.1</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.bytedeco</groupId> -->
-		<!-- <artifactId>javacv</artifactId> -->
-		<!-- <version>1.5.1</version> -->
-		<!-- </dependency> -->
 		<dependency>
 			<groupId>com.drewnoakes</groupId>
 			<artifactId>metadata-extractor</artifactId>
@@ -117,11 +89,7 @@
 			<version>${jcodec.version}</version>
 		</dependency>
 
-		<!-- <dependency> -->
-		<!-- <groupId>org.jcodec</groupId> -->
-		<!-- <artifactId>jcodec-javase</artifactId> -->
-		<!-- <version>${jcodec.version}</version> -->
-		<!-- </dependency> -->
+		<!-- Twelvemonkeys -->
 		<dependency>
 			<groupId>com.twelvemonkeys.imageio</groupId>
 			<artifactId>imageio-jpeg</artifactId>
@@ -137,17 +105,23 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>[0.4, 0.5)</version>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j-api.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>${slf4j-log4j12.version}</version>
-		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j-api</artifactId> -->
+		<!-- <version>2.13.3</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j-core</artifactId> -->
+		<!-- <version>2.13.3</version> -->
+		<!-- </dependency> -->
 
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.slf4j</groupId> -->
+<!-- 			<artifactId>slf4j-log4j12</artifactId> -->
+<!-- 			<version>1.7.30</version> -->
+<!-- 			<scope>test</scope> -->
+<!-- 		</dependency> -->
 
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -182,12 +156,26 @@
 			<artifactId>junit-jupiter-params</artifactId>
 			<version>5.5.2</version>
 		</dependency>
+		<dependency>
+			<groupId>com.github.oshi</groupId>
+			<artifactId>oshi-core</artifactId>
+			<version>4.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.slf4j</groupId> -->
+		<!-- <artifactId>jcl-over-slf4j</artifactId> -->
+		<!-- <version>1.7.7</version> -->
+		<!-- </dependency> -->
 	</dependencies>
 
 
 	<build>
 		<plugins>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -204,16 +192,16 @@
 			<plugin>
 				<groupId>org.openjfx</groupId>
 				<artifactId>javafx-maven-plugin</artifactId>
-				<version>0.0.3</version>
+				<version>0.0.4</version>
 				<configuration>
-					<arg>javafx.graphics/com.sun.glass.ui=org.openjfx.hellofx</arg>
+					<!-- <arg>javafx.graphics/com.sun.glass.ui=org.openjfx.Main</arg> -->
 					<mainClass>com.girbola.Main</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.0</version>
+				<version>3.2.2</version>
 				<executions>
 					<execution>
 						<phase>package</phase>

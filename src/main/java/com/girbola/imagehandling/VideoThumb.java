@@ -15,6 +15,7 @@ import org.jcodec.common.JCodecUtil;
 import org.jcodec.common.io.NIOUtils;
 import org.jcodec.common.model.Picture;
 
+import com.girbola.Main;
 import com.girbola.imagehandling.jcodec.AWTUtil;
 import com.girbola.messages.Messages;
 
@@ -30,6 +31,9 @@ public class VideoThumb {
 		}
 		List<Double> listOfTimeLine = grabListOfTimeLine(duration);
 		list = grabBufferedImageList(file, listOfTimeLine);
+		if(list == null) {
+			return null;
+		}
 		System.out.println("Total duration: " + duration + " GetList done: " + list.size());
 		return list;
 	}
@@ -48,6 +52,9 @@ public class VideoThumb {
 			grab.seekToSecondSloppy(list.get(0));
 			if (list.size() > 1) {
 				for (int i = 1; i < list.size(); i++) {
+					if (Main.getProcessCancelled()) {
+						return null;
+					}
 					double sec = list.get(i);
 					Messages.sprintf("createFrameGrab sec: " + i);
 					Picture picture = grab.getNativeFrame();
@@ -58,6 +65,7 @@ public class VideoThumb {
 						Messages.sprintf("sec before seek: " + sec);
 						grab.seekToSecondSloppy(sec);
 					}
+
 				}
 			}
 		} catch (Exception e) {

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -18,6 +18,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,14 +29,22 @@ import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.media.DateTaken;
 import common.media.VideoDateFinder;
+import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 /**
  *
@@ -44,6 +53,38 @@ import common.utils.date.DateUtils;
 public class FileInfo_Utils {
 
 	private final static String ERROR = FileInfo_Utils.class.getSimpleName();
+
+	public static String findFileInfoByDate(FileInfo fileInfoToSearch, TableView<FolderInfo> table) {
+		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
+
+		String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
+		String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
+		String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
+		Messages.sprintf("year: " + year + " month " + month + " day" + day);
+		List<FileInfo> list = Main.conf.getModel().getWorkDir_Handler()
+				.findPossibleExistsFoldersInWorkdir(fileInfoToSearch);
+		if (!list.isEmpty()) {
+			FXMLLoader loader = null;
+			Parent parent = null;
+			try {
+				loader = new FXMLLoader(Main.class.getResource("fxml/possibleFolderChooser.FXML"), Main.bundle);
+				parent = loader.load();
+				PossibleFolderChooserController pfcc = (PossibleFolderChooserController) loader.getController();
+				SimpleStringProperty path = new SimpleStringProperty();
+				pfcc.init(path);
+				Stage stage = new Stage();
+				Scene scene = new Scene(parent);
+				stage.setScene(scene);
+				stage.showAndWait();
+				return path.get();
+			} catch (Exception e) {
+				e.printStackTrace();
+				return null;
+			}
+		}
+		return null;
+
+	}
 
 	public static FileInfo createFileInfo(Path fileName) throws IOException {
 		// sprintf("createFileInfo started: " + path);
@@ -354,15 +395,187 @@ public class FileInfo_Utils {
 		return false;
 	}
 
-	//    public static void copyFileInfoToAnotherLocation(FileInfo fileInfo) {
-	//
-	//    }
+	/**
+	 * 
+	 * @param path
+	 * @param fileInfo
+	 * @return
+	 */
 	public static Path renameFileToDate(Path path, FileInfo fileInfo) {
 		// C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 
-		Path source = Paths.get(path.getParent().toString() + File.separator + DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()) + "."
-				+ FileUtils.getExtension(path));
+		Path source = Paths
+				.get(path.getParent().toString() + File.separator
+						+ DateUtils.longToLocalDateTime(fileInfo.getDate())
+								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default())
+						+ "." + FileUtils.getExtension(path));
 		Messages.sprintf("source would be after: " + path + " to: " + source);
 		return source;
 	}
+
+	// @formatter:off
+	/**
+	 * Returns 0 if good Returns 1 if conflict with workdir Returns 2 if copying is
+	 * not possible because fileinfo workDir is null OR drive is not connected
+	 * Returns 3
+	 * 
+	 * @param fileInfo
+	 * @return
+	 */
+	// @formatter:on
+	public static int checkWorkDir(FileInfo fileInfo) {
+		if (Main.conf.getDrive_connected()) {
+			if (!fileInfo.getWorkDir().equals("null")) {
+				if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir())
+						&& Main.conf.getWorkDirSerialNumber().equals(fileInfo.getWorkDirDriveSerialNumber())) {
+					if (Files.exists(Paths.get(fileInfo.getWorkDir()))) {
+						return 0;
+					} else {
+						return 2;
+					}
+				} else {
+					return 1;
+				}
+			} else {
+				return 2;
+			}
+		} else {
+			return 2;
+		}
+	}
+
+	public static void ignoreFileInfoFromList(FileInfo fileInfo, FolderInfo folderInfo) {
+		fileInfo.setIgnored(true);
+	}
+
+	public static boolean findDuplicates(FileInfo fileInfo, FolderInfo folderInfoList) {
+		for (FileInfo fileInfo_dest : folderInfoList.getFileInfoList()) {
+			if (Paths.get(fileInfo.getOrgPath()).getParent().toString()
+					.equals(Paths.get(fileInfo_dest.getOrgPath()).getParent().toString())) {
+				if (fileInfo.getSize() == fileInfo_dest.getSize()) {
+					Messages.sprintf("fileInfo src: " + fileInfo.getOrgPath() + " size = " + fileInfo.getSize()
+							+ " fileInfoDEST: " + fileInfo_dest.getOrgPath() + " size = " + fileInfo_dest.getSize());
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Find possible duplicates from FolderInfo's List<FileInfo>
+	 * 
+	 * @param file
+	 * @param folderInfo
+	 * @return
+	 */
+	public static FileInfo findFileInFolderInfo(Path file, FolderInfo folderInfo) {
+		for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+			if (file.toString().equals(fileInfo.getOrgPath())) {
+				if (file.toFile().length() == fileInfo.getSize()) {
+					return fileInfo;
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Define if dest folder has duplicate files
+	 * 
+	 * @param fileInfo
+	 * @param dest
+	 * @return
+	 */
+	public static boolean defineDuplicateFile(FileInfo fileInfo, Path dest) {
+		Messages.sprintf("DEST: " + dest + " dest is dir? " + dest.toFile().isDirectory());
+		if (dest.toFile().isFile()) {
+			Path tmp = dest.getParent();
+			dest = tmp;
+		}
+		if (Files.exists(dest.getParent())) {
+			File[] fileList = dest.toFile().listFiles();
+			File fileToFind = new File(fileInfo.getOrgPath());
+			for (File file : fileList) {
+				Messages.sprintf("File is: " + file);
+				if (file.length() == fileToFind.length()) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	public static boolean moveFile(FileInfo fileInfo) {
+		boolean skip = true;
+		Path source = Paths.get(fileInfo.getOrgPath());
+		Messages.sprintf("DEBUG1: " + source);
+
+		if (!Files.exists(source) && !Files.exists(Paths.get(fileInfo.getWorkDir()))) {
+			Main.setProcessCancelled(true);
+			return false;
+		}
+		if (Main.getProcessCancelled()) {
+			return false;
+		}
+		Path dest = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
+//				Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+
+		if (!Files.exists(dest.getParent())) {
+			try {
+				Files.createDirectories(dest.getParent());
+			} catch (Exception e) {
+				e.printStackTrace();
+				Messages.sprintfError("Can't create directories: " + dest.getParent());
+				Messages.errorSmth(ERROR, "Can't create directories", e, Misc.getLineNumber(), true);
+				return false;
+			}
+		}
+		try {
+			if (Files.exists(dest) && Files.size(dest) != Files.size(source)) {
+				try {
+					Path dest_temp = FileUtils.renameFile(source, dest);
+					if (dest_temp != null && !Files.exists(dest_temp)) {
+						dest = dest_temp;
+						skip = false;
+					} else {
+						skip = true;
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+					Main.setProcessCancelled(true);
+					return false;
+				}
+			} else {
+				skip = false;
+				Messages.sprintf("DST: " + dest + " source: " + source + " size: " + Files.size(source));
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			return false;
+		}
+
+		if (!skip) {
+			if (source != null && dest != null)
+				try {
+					Path target = Files.move(source, dest);
+					Messages.sprintf("Source dest: " + source + " TARGET: " + target);
+				} catch (IOException e) {
+					e.printStackTrace();
+					Main.setProcessCancelled(true);
+					return false;
+				}
+			return true;
+		}
+		return false;
+	}
+
+	public static String getFolderName(FileInfo fileInfo_ToFind) {
+		Path path = Paths.get(fileInfo_ToFind.getOrgPath());
+		if (!Files.isDirectory(path)) {
+			return path.getParent().getFileName().toString();
+		}
+		return null;
+	}
+
 }

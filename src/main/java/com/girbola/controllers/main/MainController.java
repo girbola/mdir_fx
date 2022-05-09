@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2019 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -21,59 +21,71 @@ import javafx.scene.layout.VBox;
  */
 public class MainController {
 
-    private final static String ERROR = MainController.class.getSimpleName();
+	private final static String ERROR = MainController.class.getSimpleName();
 
-    private Model_main model_main;
+	private Model_main model_main;
 
-    @FXML
-    private AnchorPane main_container;
-    @FXML
-    private VBox main_vbox;
-    @FXML
-    MenuBarController menuBar_topController;
-    //
-    // @FXML
-    // SortIt_TableController sortitController;
-    // @FXML
-    // Sorted_TableController sortedController;
-    // @FXML
-    // AsItIs_TableController asitisController;
+	@FXML
+	private AnchorPane main_container;
+	@FXML
+	private VBox main_vbox;
+	@FXML
+	MenuBarController menuBar_topController;
+	//
+	// @FXML
+	// SortIt_TableController sortitController;
+	// @FXML
+	// Sorted_TableController sortedController;
+	// @FXML
+	// AsItIs_TableController asitisController;
 
-    @FXML
-    TableController sortitController;
-    @FXML
-    TableController sortedController;
-    @FXML
-    TableController asitisController;
+	@FXML
+	TableController sortitController;
+	@FXML
+	TableController sortedController;
+	@FXML
+	TableController asitisController;
 
-    @FXML
-    BottomController bottomController;
+	@FXML
+	BottomController bottomController;
 
-    public void initialize(Model_main aModel) {
-	this.model_main = aModel;
-	sprintf("Maincontroller loading....");
+	public void initialize(Model_main aModel) {
+		this.model_main = aModel;
+		sprintf("Maincontroller loading....");
 
-	menuBar_topController.init(model_main);
-	sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
-	sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
-	asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
+		menuBar_topController.init(model_main);
+		sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
+		sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
+		asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
 
-	this.model_main.tables().setSortIt_table(sortitController.getTable());
-	this.model_main.tables().setSorted_table(sortedController.getTable());
-	this.model_main.tables().setAsItIs_table(asitisController.getTable());
+		TableStatistic sortitTableStatistic = new TableStatistic(sortitController.getAllFilesCopied_lbl(),
+				sortitController.getAllFilesSize_lbl(), sortitController.getAllFilesTotal_lbl());
+		TableStatistic sortedTableStatistic = new TableStatistic(sortedController.getAllFilesCopied_lbl(),
+				sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesTotal_lbl());
+		TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
+				asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesTotal_lbl());
 
-	this.model_main.tables().getHideButtons().setSortItButtons_hbox(sortitController.getButtons_HBOX());
-	this.model_main.tables().getHideButtons().setSortedButtons_hbox(sortedController.getButtons_HBOX());
-	this.model_main.tables().getHideButtons().setAsItIsButtons_hbox(asitisController.getButtons_HBOX());
+		this.model_main.tables().setSortIt_table(sortitController.getTable());
+		this.model_main.tables().setSorted_table(sortedController.getTable());
+		this.model_main.tables().setAsItIs_table(asitisController.getTable());
 
-	this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSorted_table());
-	this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSortIt_table());
-	this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getAsItIs_table());
+		this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
+		this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
+		this.model_main.tables().setAsItIs_TableStatistic(asitisTableStatistic);
 
-	bottomController.init(model_main);
-	model_main.setBottomController(bottomController);
-	model_main.setMainContainer(main_container);
-	model_main.setMainVBox(main_vbox);
-	
-    }
+		this.model_main.tables().getHideButtons().setSortItButtons_hbox(sortitController.getButtons_HBOX());
+		this.model_main.tables().getHideButtons().setSortedButtons_hbox(sortedController.getButtons_HBOX());
+		this.model_main.tables().getHideButtons().setAsItIsButtons_hbox(asitisController.getButtons_HBOX());
+
+		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSorted_table());
+		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSortIt_table());
+		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getAsItIs_table());
+
+		bottomController.init(model_main);
+		model_main.setBottomController(bottomController);
+		model_main.setMainContainer(main_container);
+		model_main.setMainVBox(main_vbox);
+
+	}
+
 }

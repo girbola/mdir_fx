@@ -13,6 +13,9 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -25,7 +28,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="650.0" minWidth="1200.0" prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
+<AnchorPane minHeight="650.0" minWidth="1200.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
 	<children>
 		<BorderPane layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 			<top>
@@ -33,173 +36,223 @@
 					<children>
 						<HBox spacing="3.0" styleClass="selection" VBox.vgrow="NEVER">
 							<children>
-								<VBox spacing="3.0" HBox.hgrow="NEVER">
+								<VBox spacing="3.0" style="-fx-background-color: darkgrey;" HBox.hgrow="NEVER">
 									<children>
-										<GridPane hgap="2.0" vgap="2.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
+										<GridPane hgap="4.0" vgap="2.0" HBox.hgrow="NEVER" VBox.vgrow="ALWAYS">
 											<columnConstraints>
-												<ColumnConstraints hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" />
+                                    <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="10.0" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="30.0" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="30.0" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="30.0" />
+												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" minWidth="30.0" />
 												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
-												<ColumnConstraints hgrow="NEVER" minWidth="70.0" />
 											</columnConstraints>
 											<rowConstraints>
 												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+												<RowConstraints fillHeight="false" minHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+												<RowConstraints fillHeight="false" minHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+												<RowConstraints fillHeight="false" minHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+												<RowConstraints fillHeight="false" minHeight="30.0" valignment="CENTER" vgrow="NEVER" />
 											</rowConstraints>
 											<children>
-												<Button fx:id="select_all" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.rowIndex="2">
+												<Label id="selection_text" fx:id="selection_text" focusTraversable="false" graphicTextGap="0.0" styleClass="selection_text" text="%select" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
+													<font>
+														<Font size="12.0" />
+													</font>
+												</Label>
+												<Button fx:id="select_all" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAll.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button fx:id="select_none_btn" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_none_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.rowIndex="3">
+												<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_none_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectNone.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectNoneTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.rowIndex="4">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectInvert.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectInvertTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.rowIndex="3">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@../../../../resources/img/selectBad.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.rowIndex="2">
-													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectGood.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllGoodFilesTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.rowIndex="4">
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../../../../resources/img/selectBad.png" />
+															</image>
+														</ImageView>
+													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllBadFilesTooltip" />
+                                       </tooltip>
+												</Button>
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+													<graphic>
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAllModified.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllModifiedFilesTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.rowIndex="2">
+												<Button fx:id="select_acceptable_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_acceptable_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@../../../../resources/img/video_good.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-												<Button focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.rowIndex="3">
-													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@../../../../resources/img/video_bad.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-												<Label id="selection_text" fx:id="selection_text" focusTraversable="false" styleClass="selection_text" text="%selection" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER">
-													<font>
-														<Font size="12.0" />
-													</font>
-												</Label>
-												<Button fx:id="listFileInfo_btn" focusTraversable="false" mnemonicParsing="false" onAction="#listFileInfo_btn_action" styleClass="selection_btns" text="FileInfo" GridPane.columnIndex="5" GridPane.rowIndex="2" />
-												<Button fx:id="select_acceptable_btn" focusTraversable="false" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_acceptable_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.rowIndex="2">
-													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/selectAcceptable.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllSuggestedFilesTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.rowIndex="4">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-															<image>
-																<Image url="@../../../../resources/img/video_confirmable.png" />
-															</image>
-														</ImageView>
-													</graphic>
-												</Button>
-												<Button focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.rowIndex="2">
-													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_good.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllGoodImagesTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" layoutX="159.0" layoutY="52.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.rowIndex="3">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="52.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_bad.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllBadImagesTooltip" />
+                                       </tooltip>
 												</Button>
-												<Button focusTraversable="false" layoutX="159.0" layoutY="76.0" maxHeight="23.0" maxWidth="23.0" minHeight="23.0" minWidth="23.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="23.0" prefWidth="23.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.rowIndex="4">
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="76.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 													<graphic>
-														<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
 															<image>
 																<Image url="@../../../../resources/img/image_modified.png" />
 															</image>
 														</ImageView>
 													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllModifiedImagesTooltip" />
+                                       </tooltip>
 												</Button>
+                                    <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <graphic>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../../resources/img/image_suggested.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllSuggestedFilesTooltip" />
+                                       </tooltip>
+                                    </Button>
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_video_good_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+													<graphic>
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../../../../resources/img/video_good.png" />
+															</image>
+														</ImageView>
+													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllGoodVideosTooltip" />
+                                       </tooltip>
+												</Button>
+												<Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_video_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+													<graphic>
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../../../../resources/img/video_bad.png" />
+															</image>
+														</ImageView>
+													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllBadVideosTooltip" />
+                                       </tooltip>
+												</Button>
+												<Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+													<graphic>
+														<ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+															<image>
+																<Image url="@../../../../resources/img/video_confirmable.png" />
+															</image>
+														</ImageView>
+													</graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllModifiedVideosTooltip" />
+                                       </tooltip>
+												</Button>
+                                    <Button contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <graphic>
+                                          <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                             <image>
+                                                <Image url="@../../../../resources/img/video_suggested.png" />
+                                             </image>
+                                          </ImageView>
+                                       </graphic>
+                                       <tooltip>
+                                          <Tooltip text="%selectAllSuggestedVideosTooltip" />
+                                       </tooltip>
+                                    </Button>
+      												<Button fx:id="listFileInfo_btn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" graphicTextGap="0.0" minWidth="35.0" mnemonicParsing="false" onAction="#listFileInfo_btn_action" text="FI" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <tooltip>
+                                          <Tooltip text="Empty Tooltip" />
+                                       </tooltip>
+                                    </Button>
 											</children>
 											<padding>
-												<Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
+												<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
 											</padding>
 										</GridPane>
-										<HBox spacing="2.0" VBox.vgrow="ALWAYS">
-											<children>
-												<VBox>
-													<children>
-														<Label text="%selected">
-															<font>
-																<Font size="12.0" />
-															</font>
-														</Label>
-														<Label fx:id="selected" />
-													</children>
-												</VBox>
-											</children>
-                                 <padding>
-                                    <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
-                                 </padding>
-										</HBox>
-                              <HBox>
+                              <HBox maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER">
                                  <children>
-      										<Button fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action">
+      										<Button id="showAndHideButton" fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action" prefHeight="26.0" prefWidth="26.0">
       											<graphic>
       												<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
       													<image>
@@ -208,6 +261,22 @@
       												</ImageView>
       											</graphic>
       										</Button>
+      										<HBox alignment="CENTER" fillHeight="false" nodeOrientation="LEFT_TO_RIGHT" spacing="4.0" HBox.hgrow="NEVER">
+      											<children>
+      														<Label text="%selected">
+      															<font>
+      																<Font size="12.0" />
+      															</font>
+      														</Label>
+      														<Label fx:id="selected" HBox.hgrow="NEVER" />
+      											</children>
+                                       <padding>
+                                          <Insets bottom="2.0" left="15.0" right="5.0" top="2.0" />
+                                       </padding>
+                                       <opaqueInsets>
+                                          <Insets />
+                                       </opaqueInsets>
+      										</HBox>
                                  </children>
                               </HBox>
 									</children>
@@ -215,11 +284,71 @@
                               <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                            </padding>
 								</VBox>
-								<VBox spacing="1.0" HBox.hgrow="NEVER">
+                        <GridPane hgap="2.0" style="-fx-background-color: darkgrey;" vgap="2.0" HBox.hgrow="NEVER">
+                          <columnConstraints>
+                            <ColumnConstraints />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
+                            <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
+                              <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                              <RowConstraints fillHeight="false" minHeight="-Infinity" valignment="CENTER" vgrow="NEVER" />
+                          </rowConstraints>
+                           <children>
+																				<TextField fx:id="startFromNumber_tf" maxWidth="80.0" minWidth="80.0" styleClass="textFieldNumber" text="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+																				<TextField fx:id="endToNumber_tf" maxWidth="80.0" minWidth="80.0" styleClass="textFieldNumber" text="20" GridPane.rowIndex="2" />
+																				<Button fx:id="selectRangeOfNumbers_btn" maxWidth="60.0" minWidth="60.0" mnemonicParsing="false" onAction="#selectRangeOfNumbers_btn_action" prefWidth="60.0" text="Select" GridPane.rowIndex="4" />
+                              <Label style="-fx-color: white;" text="%selectRange" />
+                              <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="2.0" GridPane.rowIndex="3">
+                                 <children>
+                                    <Label text="%mode" HBox.hgrow="NEVER">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </Label>
+                                    <ToggleButton maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" selected="true" text="Normal" HBox.hgrow="NEVER">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="selectMode" />
+                                       </toggleGroup>
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </ToggleButton>
+                                    <ToggleButton layoutX="35.0" layoutY="10.0" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" text="+" toggleGroup="$selectMode" HBox.hgrow="NEVER">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </ToggleButton>
+                                    <ToggleButton layoutX="115.0" layoutY="10.0" maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" text="-" toggleGroup="$selectMode" HBox.hgrow="NEVER">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding>
+                                    </ToggleButton>
+                                 </children>
+                              </HBox>
+                           </children>
+                           <padding>
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                           </padding>
+                        </GridPane>
+								<HBox id="showAndHideContent" fillHeight="false" spacing="4.0" HBox.hgrow="NEVER">
 									<children>
-										<HBox VBox.vgrow="NEVER">
+										<VBox id="showAndHideContent" alignment="CENTER" spacing="3.0" HBox.hgrow="NEVER">
+                                 <padding>
+                                    <Insets bottom="3.0" top="3.0" />
+                                 </padding>
+										</VBox>
+									</children>
+                           <padding>
+                              <Insets bottom="5.0" left="15.0" right="15.0" top="5.0" />
+                           </padding>
+								</HBox>
+								<VBox maxHeight="-Infinity" maxWidth="-Infinity" spacing="1.0" HBox.hgrow="ALWAYS">
+									<children>
+										<HBox maxHeight="-Infinity" maxWidth="-Infinity" VBox.vgrow="ALWAYS">
 											<children>
-												<TabPane focusTraversable="false" minWidth="450.0" prefHeight="150.0" prefWidth="450.0" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0">
+												<TabPane focusTraversable="false" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0" HBox.hgrow="NEVER">
 													<tabs>
 														<Tab closable="false" text="%dateTime">
 															<content>
@@ -236,39 +365,35 @@
 																<fx:include fx:id="fileOperations" source="FileOperations.fxml" />
 															</content>
 														</Tab>
-														<Tab text="%misc">
+														<Tab closable="false" text="%misc">
 															<content>
-																<AnchorPane minWidth="180.0" prefHeight="180.0">
+																<AnchorPane>
 																	<children>
-																		<GridPane gridLinesVisible="true">
+																		<GridPane gridLinesVisible="true" prefHeight="125.0" prefWidth="428.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 																			<columnConstraints>
+																				<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+																				<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
 																				<ColumnConstraints />
-																				<ColumnConstraints prefWidth="100.0" />
-																				<ColumnConstraints />
-																				<ColumnConstraints prefWidth="100.0" />
-																				<ColumnConstraints prefWidth="100.0" />
+																				<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
+																				<ColumnConstraints halignment="LEFT" hgrow="ALWAYS" />
 																			</columnConstraints>
 																			<rowConstraints>
-																				<RowConstraints vgrow="SOMETIMES" />
-																				<RowConstraints />
-																				<RowConstraints vgrow="SOMETIMES" />
-																				<RowConstraints vgrow="SOMETIMES" />
+																				<RowConstraints prefHeight="15.0" vgrow="NEVER" />
+																				<RowConstraints valignment="CENTER" vgrow="NEVER" />
+																				<RowConstraints valignment="CENTER" vgrow="NEVER" />
+																				<RowConstraints valignment="CENTER" vgrow="NEVER" />
 																			</rowConstraints>
 																			<children>
-																				<Button fx:id="lastModified_date_btn" mnemonicParsing="false" onAction="#lastModified_date_btn_action" text="%lastModified" GridPane.rowIndex="1" />
-																				<Button fx:id="restoresExifDates_btn" mnemonicParsing="false" onAction="#restoresExifDates_btn_action" text="%exifDates" GridPane.rowIndex="2" />
-																				<Button fx:id="updateDate_btn" mnemonicParsing="false" onAction="#updateDate_btn_action" text="updateDate" GridPane.rowIndex="3" />
-																				<Button fx:id="accept_dates_btn" mnemonicParsing="false" onAction="#accept_dates_btn_action" text="Accept selected" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-																				<Button fx:id="retrieveFileInfos_btn" mnemonicParsing="false" onAction="#retrieveFileInfos_btn_action" text="Restore FileInfos" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-																				<Button fx:id="dateFromFileName_btn" mnemonicParsing="false" onAction="#dateFromFileName_btn_action" text="Date from filename" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-																				<TextField text="Select by number" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-																				<TextField text="3" GridPane.columnIndex="4" />
-																				<TextField text="40" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-																				<Button mnemonicParsing="false" text="Select" GridPane.columnIndex="4" GridPane.rowIndex="3" />
-																				<Label text="%restore" />
-																				<Button layoutX="82.0" layoutY="94.0" mnemonicParsing="false" onAction="#setBadDate_btn_action" text="Set bad date" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-																				<Button mnemonicParsing="false" onAction="#setModifiedDate_btn_action" text="Set modified date" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-																				<Button fx:id="setDateAsFileName_btn" mnemonicParsing="false" onAction="#setDateAsFileName_btn_action" text="%setDateTimeRange" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+																				<Button fx:id="lastModified_date_btn" minWidth="117.0" mnemonicParsing="false" onAction="#lastModified_date_btn_action" text="%lastModified" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+																				<Button fx:id="restoresSelectedExifDates_btn" minWidth="117.0" mnemonicParsing="false" onAction="#restoresSelectedExifDates_btn_action" text="%exifDates" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
+																				<Button fx:id="updateDate_btn" minWidth="117.0" mnemonicParsing="false" onAction="#updateDate_btn_action" text="updateDate" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+																				<Button fx:id="accept_dates_btn" minWidth="117.0" mnemonicParsing="false" onAction="#accept_dates_btn_action" text="Accept selected" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+																				<Button fx:id="dateFromFileName_btn" minWidth="117.0" mnemonicParsing="false" onAction="#dateFromFileName_btn_action" text="Date from filename" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+																				<TextField editable="false" minWidth="117.0" text="Select by number" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="1" />
+																				<Label text="%restore" GridPane.halignment="LEFT" />
+																				<Button layoutX="82.0" layoutY="94.0" minWidth="117.0" mnemonicParsing="false" onAction="#setBadDate_btn_action" text="Set bad date" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
+																				<Button minWidth="117.0" mnemonicParsing="false" onAction="#setModifiedDate_btn_action" text="Set modified date" GridPane.columnIndex="3" GridPane.hgrow="NEVER" GridPane.rowIndex="3" />
+                                                            <Button fx:id="renameFileNameWithDate_btn" minWidth="117.0" mnemonicParsing="false" onAction="#renameFileNameWithDate_btn_action" text="Rename file with date" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="2" />
 																			</children>
 																		</GridPane>
 																	</children>
@@ -279,15 +404,10 @@
 													<padding>
 														<Insets left="10.0" right="10.0" />
 													</padding>
+                                       <HBox.margin>
+                                          <Insets bottom="3.0" top="3.0" />
+                                       </HBox.margin>
 												</TabPane>
-												<VBox alignment="BOTTOM_CENTER" minWidth="100.0" spacing="1.0" HBox.hgrow="NEVER">
-													<children>
-														<Button fx:id="setDateTimeRange_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefWidth="80.0" text="%setDateTimeRange" />
-													</children>
-													<padding>
-														<Insets bottom="20.0" left="3.0" right="3.0" top="20.0" />
-													</padding>
-												</VBox>
 											</children>
 										</HBox>
 									</children>
@@ -295,224 +415,251 @@
 										<Insets />
 									</HBox.margin>
 								</VBox>
-								<HBox minWidth="202.0" prefHeight="202.0" prefWidth="202.0" spacing="4.0" HBox.hgrow="SOMETIMES">
-									<children>
-										<VBox minWidth="100.0" prefWidth="100.0">
-											<children>
-												<Label alignment="CENTER" text="Show/Hide" textAlignment="CENTER" />
-												<CheckBox mnemonicParsing="false" text="Selected only" />
-												<CheckBox fx:id="events_chk" mnemonicParsing="false" text="Events" />
-												<CheckBox fx:id="locations_chk" mnemonicParsing="false" text="Location" />
-												<CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="Ignored" />
-												<CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" />
-												<HBox>
-													<children>
-														<Button fx:id="cameras_show_all_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#cameras_show_all_btn_action">
-															<graphic>
-																<ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-																	<image>
-																		<Image url="@../../../../resources/img/show.png" />
-																	</image>
-																</ImageView>
-															</graphic>
-														</Button>
-														<Button fx:id="cameras_hide_Deselected_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#cameras_hide_Deselected_btn_action">
-															<graphic>
-																<ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-																	<image>
-																		<Image url="@../../../../resources/img/hide.png" />
-																	</image>
-																</ImageView>
-															</graphic>
-														</Button>
-													</children>
-												</HBox>
-											</children>
-										</VBox>
-                              <VBox alignment="BOTTOM_LEFT" minWidth="80.0">
+                        <VBox alignment="TOP_CENTER" spacing="2.0" HBox.hgrow="NEVER">
+                           <children>
+                              <VBox>
                                  <children>
-      										<Button fx:id="selectRange_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#selectRange_btn_action" prefWidth="80.0" text="%selectRange" />
+                                    <Label text="%sortBy" />
+                                    <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%sortBy">
+                                       <items>
+                                          <MenuItem fx:id="sortByDate_mi" mnemonicParsing="false" onAction="#sortByDate_mi_action" text="%date" />
+                                          <MenuItem fx:id="fileName_mi" mnemonicParsing="false" onAction="#fileName_mi_action" text="%fileName" />
+                                       </items>
+                                    </MenuButton>
                                  </children>
                               </VBox>
-									</children>
+                              <VBox id="showAndHideContent" VBox.vgrow="NEVER">
+                                 <children>
+												<Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" VBox.vgrow="NEVER" />
+												<CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" VBox.vgrow="NEVER" />
+												<CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" VBox.vgrow="NEVER" />
+                                 </children>
+                              </VBox>
+      												<HBox alignment="CENTER" spacing="5.0" VBox.vgrow="NEVER">
+      													<children>
+      														<Button id="showHideMediaBasedOnSelectionButton" fx:id="cameras_show_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="27.0" minHeight="25.0" minWidth="27.0" mnemonicParsing="false" onAction="#cameras_show_all_btn_action" prefHeight="25.0" prefWidth="27.0" HBox.hgrow="NEVER">
+      															<graphic>
+      																<ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+      																	<image>
+      																		<Image url="@../../../../resources/img/show.png" />
+      																	</image>
+      																</ImageView>
+      															</graphic>
+      														</Button>
+      														<Button id="showHideMediaBasedOnSelectionButton" fx:id="cameras_hide_Deselected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="27.0" minHeight="25.0" minWidth="27.0" mnemonicParsing="false" onAction="#cameras_hide_Deselected_btn_action" prefHeight="25.0" prefWidth="27.0" HBox.hgrow="NEVER">
+      															<graphic>
+      																<ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+      																	<image>
+      																		<Image url="@../../../../resources/img/hide.png" />
+      																	</image>
+      																</ImageView>
+      															</graphic>
+      														</Button>
+      													</children>
+      												</HBox>
+                           </children>
                            <padding>
-                              <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </padding>
-								</HBox>
-								<VBox HBox.hgrow="SOMETIMES">
+                        </VBox>
+								<VBox maxHeight="-Infinity" maxWidth="-Infinity" minWidth="-Infinity" HBox.hgrow="NEVER">
 									<children>
-										<GridPane hgap="3.0" VBox.vgrow="NEVER">
-											<columnConstraints>
-												<ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-											</columnConstraints>
-											<rowConstraints>
-												<RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-												<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-												<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-												<RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-											</rowConstraints>
-											<children>
-												<Button fx:id="folderize_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#folderize_btn_action" prefWidth="80.0" text="%folderize" GridPane.rowIndex="2" />
-												<Label text="%action" />
-												<Button fx:id="copyToMisc_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#copyToMisc_btn_action" prefWidth="80.0" text="%copyToMisc" GridPane.rowIndex="4" />
-												<Button fx:id="remove_btn" focusTraversable="false" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#remove_btn_action" prefWidth="80.0" text="%remove" GridPane.rowIndex="1" />
-                                    <Button fx:id="addToBatch_btn" maxWidth="80.0" minWidth="80.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="80.0" text="%addToBatch" GridPane.rowIndex="3" />
-											</children>
-                                 <VBox.margin>
-                                    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                                 </VBox.margin>
+                              <GridPane hgap="10.0" vgap="2.0" VBox.vgrow="NEVER">
+                                <columnConstraints>
+                                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                  <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints />
+                                  <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                                  <RowConstraints vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+                                </rowConstraints>
+                                 <children>
+            														<Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" styleClass="closeButton" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            															<font>
+            																<Font size="10.0" />
+            															</font>
+            														</Button>
+            														<Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+            															<font>
+            																<Font size="10.0" />
+            															</font>
+            														</Button>
+												<Button id="actionButtons" fx:id="copyToMisc_btn" contentDisplay="TOP" graphicTextGap="0.0" mnemonicParsing="false" onAction="#copyToMisc_btn_action" text="%copyToMisc" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <tooltip>
+                                          <Tooltip text="Empty Tooltip" />
+                                       </tooltip>
+                                    </Button>
+												<Button id="actionButtons" fx:id="remove_btn" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" mnemonicParsing="false" onAction="#remove_btn_action" prefWidth="75.0" text="%remove" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <tooltip>
+                                          <Tooltip text="Empty Tooltip" />
+                                       </tooltip>
+                                    </Button>
+                                    <Label text="%action" />
+												<Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" minWidth="90.0" mnemonicParsing="false" onAction="#folderize_btn_action" prefWidth="71.0" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <tooltip>
+                                          <Tooltip text="Make folder and choose to copy now or later" />
+                                       </tooltip>
+                                    </Button>
+												<Label text="%batch" GridPane.columnIndex="1" />
+                                    <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToBatch_btn_action" prefWidth="71.0" text="%addToMisc" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <tooltip>
+                                          <Tooltip text="%copyToMiscTip" />
+                                       </tooltip>
+                                    </Button>
+                                    <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minHeight="40.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" prefWidth="71.0" text="%addToAsItIs" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                       <tooltip>
+                                          <Tooltip text="%copyToAsItIsTip" />
+                                       </tooltip>
+                                    </Button>
+                                    <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" minHeight="40.0" minWidth="90.0" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" prefWidth="71.0" text="%addToAsUnsorted" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <tooltip>
+                                          <Tooltip text="%copyToAsItIsTip" />
+                                       </tooltip>
+                                    </Button>
+                                 </children>
                                  <padding>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                                  </padding>
-										</GridPane>
+                              </GridPane>
 									</children>
                            <padding>
                               <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                            </padding>
 								</VBox>
-								<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
-									<children>
-										<GridPane hgap="2.0" minWidth="100.0" prefWidth="100.0" vgap="2.0" HBox.hgrow="SOMETIMES">
-											<children>
-												<Label focusTraversable="false" text="%images">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label focusTraversable="false" text="%videos" GridPane.rowIndex="1">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label focusTraversable="false" text="%bad" GridPane.rowIndex="4">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="images_stat" focusTraversable="false" text="0" GridPane.columnIndex="1">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="videos_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="6">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label focusTraversable="false" text="%good" GridPane.rowIndex="3">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="good_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label focusTraversable="false" text="%confirmed" GridPane.rowIndex="5">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label focusTraversable="false" text="%suggested" GridPane.rowIndex="6">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="bad_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="confirmed_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Separator GridPane.columnSpan="2" GridPane.rowIndex="2">
-													<padding>
-														<Insets top="3.0" />
-													</padding>
-												</Separator>
-												<Label focusTraversable="false" text="%ignored" GridPane.rowIndex="7">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-												<Label fx:id="ignored_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="7">
-													<font>
-														<Font size="10.0" />
-													</font>
-												</Label>
-											</children>
-											<columnConstraints>
-												<ColumnConstraints hgrow="ALWAYS" />
-												<ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
-											</columnConstraints>
-											<rowConstraints>
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-												<RowConstraints fillHeight="false" vgrow="NEVER" />
-											</rowConstraints>
+                  								<HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                  									<children>
+                  										<GridPane alignment="TOP_RIGHT" hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" vgap="2.0" HBox.hgrow="ALWAYS">
+                  											<children>
+                  												<Label focusTraversable="false" graphicTextGap="0.0" text="%images">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="images_stat" focusTraversable="false" text="0" GridPane.columnIndex="1">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label focusTraversable="false" text="%videos" GridPane.rowIndex="1">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="videos_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Separator maxWidth="1.7976931348623157E308" minWidth="100.0" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
+                  													<padding>
+                  														<Insets top="3.0" />
+                  													</padding>
+                  												</Separator>
+                  												<Label focusTraversable="false" text="%good" GridPane.rowIndex="3">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="good_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label focusTraversable="false" text="%bad" GridPane.rowIndex="4">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="bad_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label focusTraversable="false" text="%confirmed" GridPane.rowIndex="5">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="confirmed_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label focusTraversable="false" text="%suggested" GridPane.rowIndex="6">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label focusTraversable="false" text="%ignored" GridPane.rowIndex="7">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+                  												<Label fx:id="ignored_stat" focusTraversable="false" text="0" GridPane.columnIndex="1" GridPane.rowIndex="7">
+                  													<font>
+                  														<Font size="10.0" />
+                  													</font>
+                  												</Label>
+            														<Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer" GridPane.columnIndex="2" GridPane.rowIndex="6" GridPane.rowSpan="2">
+            															<font>
+            																<Font size="10.0" />
+            															</font>
+            														</Button>
+                  											</children>
+                  											<columnConstraints>
+                  												<ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
+                  												<ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                    <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                  											</columnConstraints>
+                  											<rowConstraints>
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                  												<RowConstraints fillHeight="false" vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" vgrow="NEVER" />
+                  											</rowConstraints>
                                  <padding>
-                                    <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
+                                    <Insets bottom="2.0" left="5.0" right="5.0" top="15.0" />
                                  </padding>
-										</GridPane>
-										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" minWidth="82.0" spacing="2.0" style="-fx-border-color: orange;" HBox.hgrow="SOMETIMES">
-											<children>
-												<VBox VBox.vgrow="NEVER">
-													<children>
-														<Button fx:id="applyChanges_btn" alignment="CENTER" disable="true" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#applyChanges_btn_action" prefWidth="75.0" text="%apply">
-															<font>
-																<Font size="10.0" />
-															</font>
-														</Button>
-														<Button fx:id="dateFix_btn" alignment="CENTER" disable="true" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#dateFix_btn_action" prefWidth="75.0" text="Folderizer">
-															<font>
-																<Font size="10.0" />
-															</font>
-														</Button>
-														<Button fx:id="close_btn" alignment="CENTER" maxWidth="75.0" minWidth="75.0" mnemonicParsing="false" onAction="#close_btn_action" prefWidth="75.0" text="%close">
-															<font>
-																<Font size="10.0" />
-															</font>
-														</Button>
-													</children>
-												</VBox>
-												<VBox alignment="BOTTOM_RIGHT" VBox.vgrow="ALWAYS">
-													<children>
-														<Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" rotate="-180.0">
-															<graphic>
-																<ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
-																	<image>
-																		<Image url="@../../../../resources/img/hideTable.png" />
-																	</image>
-																</ImageView>
-															</graphic>
-														</Button>
-													</children>
-												</VBox>
-											</children>
-											<padding>
-												<Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
-											</padding>
-										</VBox>
-									</children>
+                                 <HBox.margin>
+                                    <Insets left="10.0" />
+                                 </HBox.margin>
+                  										</GridPane>
+                  										<VBox alignment="BOTTOM_RIGHT" fillWidth="false" maxWidth="-Infinity" spacing="2.0" HBox.hgrow="ALWAYS">
+                  											<children>
+            														<Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" prefHeight="26.0" prefWidth="26.0" VBox.vgrow="NEVER">
+            															<graphic>
+            																<ImageView id="showAndHideButton" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
+            																	<image>
+            																		<Image url="@../../../../resources/img/hideTable.png" />
+            																	</image>
+            																</ImageView>
+            															</graphic>
+            														</Button>
+                  											</children>
+                  											<padding>
+                  												<Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
+                  											</padding>
+                  										</VBox>
+                  									</children>
                            <padding>
                               <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                            </padding>
-								</HBox>
+                  								</HBox>
+                        <Label text="Label" />
 							</children>
 						</HBox>
 					</children>
@@ -530,7 +677,7 @@
 					<children>
 						<AnchorPane HBox.hgrow="ALWAYS">
 							<children>
-								<ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="474.0" prefWidth="664.0" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+								<ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 									<content>
 										<GridPane fx:id="df_gridPane" gridLinesVisible="true" hgap="1.0" styleClass="imagesContainer" vgap="1.0">
 											<rowConstraints>
@@ -578,11 +725,11 @@
 				</HBox>
 			</bottom>
 			<right>
-				<ScrollPane fx:id="rightInfoPanel_scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" visible="false" BorderPane.alignment="CENTER">
+				<ScrollPane fx:id="rightInfoPanel_scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" maxWidth="150.0" pannable="true" prefWidth="0.0" vbarPolicy="ALWAYS" visible="false" BorderPane.alignment="CENTER">
 					<content>
-						<VBox fx:id="rightInfoPanel" maxWidth="250.0" minWidth="250.0" prefWidth="250.0">
+						<VBox fx:id="rightInfoPanel">
 							<children>
-								<TableView prefHeight="200.0" prefWidth="200.0" styleClass="metadataTable">
+								<TableView styleClass="metadataTable">
 									<columns>
 										<TableColumn prefWidth="75.0" text="C1" />
 										<TableColumn prefWidth="75.0" text="C2" />

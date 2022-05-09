@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -8,21 +9,32 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.FileOperationsController">
    <children>
-      <HBox>
+      <HBox spacing="3.0">
          <children>
-            <VBox prefHeight="75.0" prefWidth="109.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
                   <Button fx:id="mixDates_btn" focusTraversable="false" mnemonicParsing="false" onAction="#mixDates_btn_action" text="Mix dates" />
-                  <Button focusTraversable="false" mnemonicParsing="false" text="This folder is ok" />
-                  <Button focusTraversable="false" mnemonicParsing="false" text="Fix bad dates" wrapText="true" />
+                  <Button fx:id="thisFolderIsOk_btn" focusTraversable="false" mnemonicParsing="false" onAction="#thisFolderIsOk_btn_action" text="This folder is ok" />
+                  <Button fx:id="fixBadDates_btn" focusTraversable="false" mnemonicParsing="false" onAction="#fixBadDates_btn_action" text="Fix bad dates" wrapText="true" />
                </children>
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
             </VBox>
             <VBox>
                <children>
                   <ComboBox fx:id="move_comboBox" focusTraversable="false" onAction="#move_comboBox_action" promptText="%moveToDestination" visibleRowCount="15" />
+                  <Button fx:id="splitFolder_Sorted_btn" focusTraversable="false" mnemonicParsing="false" onAction="#splitFolder_Sorted_btn_action" text="Split to SORTED" wrapText="true" />
+                  <Button fx:id="splitFolder_SortIt_btn" focusTraversable="false" mnemonicParsing="false" onAction="#splitFolder_SortIt_btn_action" text="Split to SORTIT" wrapText="true" />
                </children>
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
             </VBox>
          </children>
+         <padding>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </padding>
       </HBox>
    </children>
 </AnchorPane>
