@@ -33,7 +33,7 @@ public class Misc {
 	public static boolean checkOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		Messages.sprintf("OS is: " + os);
-		if (os.contains("win")) {
+		if (os.contains("win") || os.contains("linux")) {
 			// setNative_Library_Search_Path("C:\\Program Files\\");
 			return true;
 		} else {
@@ -45,7 +45,7 @@ public class Misc {
 	}
 
 	public static boolean isUnix() {
-		if (System.getProperty("os.name").toLowerCase().contains("nix")) {
+		if (System.getProperty("os.name").toLowerCase().contains("nix")|| System.getProperty("os.name").toLowerCase().contains("linux")) {
 			return true;
 		}
 		return false;
@@ -57,7 +57,7 @@ public class Misc {
 		}
 		return false;
 	}
-
+//Tee merge & move tools joka hakee vasemmalta Sortit päivät Sortediin
 	public static boolean isWindows() {
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {
 			return true;

@@ -111,6 +111,7 @@ public class Model_folderScanner {
 		this.drives_rootItem = aDrives_rootItem;
 		drivesListHandler.loadList(this);
 		scanDrives = new ScanDrives(this.model_main, drives_rootItem, selectedDrivesFoldersList_obs, drivesListHandler, this);
+		
 		scanDrives.restart();
 	}
 //
