@@ -50,8 +50,6 @@ __Raw__
 - CR2
 - NEF
 
-<<<<<<< HEAD
-=======
 This project is not yet ready for public use.
 Any inconvenience caused by this project is in your responsibility.
->>>>>>> branch 'master' of https://github.com/girbola/mdir_fx.git
+
