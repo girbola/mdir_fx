@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /target/
 /MDir_FXDiag.ucls
 src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
@@ -8,4 +9,16 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 *.settings*
 *.zip
 *.project
+=======
+/target/
+/MDir_FXDiag.ucls
+src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
+/scenicView.properties
+/shade/
+*.classpath
+*.log
+*.settings*
+*.zip
+*.project
+>>>>>>> onedatabase
 /bin/
