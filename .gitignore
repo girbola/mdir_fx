@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /target/
 /MDir_FXDiag.ucls
 src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
@@ -9,16 +8,4 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 *.settings*
 *.zip
 *.project
-=======
-/target/
-/MDir_FXDiag.ucls
-src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
-/scenicView.properties
-/shade/
-*.classpath
-*.log
-*.settings*
-*.zip
-*.project
->>>>>>> 4b19d66d0b97da1ce5d8d5db378aec19279a7751
 /bin/
