@@ -29,7 +29,7 @@
     -fx-background-radius: 5,5,5,5,3;
     -fx-padding: 5 5 5 5;
     -fx-font-family: "Segoe UI Light";
-    -fx-font-size: 10.125em;
+    -fx-font-size: 0.625em;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(100,100,100,0.9) , 1, 0.0 , 0 , 1);
 

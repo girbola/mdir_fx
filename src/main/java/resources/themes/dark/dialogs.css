@@ -62,7 +62,7 @@
 	-fx-background-radius: 5px;
 
 	-fx-font-family: 'Segoe UI Light';
-	-fx-font-size: 10.125em;
+	-fx-font-size: 0.625em;
 	-fx-text-fill: white;
 	-fx-border-color: -fx-button-border;
 	-fx-border-radius: 5px;
@@ -139,7 +139,7 @@ Custom styleclasses
 	-fx-text-fill: #ffffff;
 }
 .alertDiag:header *.header-panel *.label {
-	-fx-font-size: 10.125em;
+	-fx-font-size: 0.625em;
 	-fx-fill: #292929;
 }
 .yesNoCancelDialog {

@@ -61,7 +61,7 @@ Windows 12px -> em units    -> Mac 13px      |
      8px  = 0.666667em
      9px  = 0.75em
     10px  = 0.833333em
-    10.0625em;  = 0.916667em
+    0.625em;  = 0.916667em
     12px  = 1em
 IMPORTANT: Not all sizes are scaled with em units only padding. All borders and
 background insets are still in pixels. Also any padding where it has to match up

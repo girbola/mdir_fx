@@ -72,7 +72,7 @@ Main /theme/light/main.css
     -fx-background-insets: 0, 0, 3, 0;
     -fx-background-color: -fx-primary;
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10.0625em;;
+    -fx-font-size: 0.625em;;
     /*-fx-font-smoothing-type: lcd;*/
 }
 .menu-bar .label {

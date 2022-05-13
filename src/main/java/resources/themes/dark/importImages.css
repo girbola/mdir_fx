@@ -261,7 +261,7 @@
     -fx-alignment: center;
     -fx-background-color: grey, transparent, derive(orange, 60%);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10.125em;
+    -fx-font-size: 0.625em;
     -fx-font-weight: bold;
     -fx-insets: 4;
     -fx-text-fill: derive(grey, 60%);
