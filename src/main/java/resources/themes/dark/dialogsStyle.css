@@ -29,7 +29,7 @@
     -fx-background-radius: 5,5,5,5,3;
     -fx-padding: 5 5 5 5;
     -fx-font-family: "Segoe UI Light";
-    -fx-font-size: 12px;
+    -fx-font-size: 10.125em;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(100,100,100,0.9) , 1, 0.0 , 0 , 1);
 
@@ -38,7 +38,7 @@
 .dialog-pane {
 	-fx-background-color: derive(-fx-primary,10%);
 	-fx-border-color: -fx-mid-border-color;
-	-fx-border-size: 2px;
+	-fx-border-size: 0.125em;
 }
 .dialog-pane > *.button-bar > *.container{
     -fx-background-color: derive(-fx-primary, 80%);

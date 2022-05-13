@@ -15,8 +15,9 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<VBox prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -42,6 +43,9 @@
                       <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
                       <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="%checkChanges" />
                     </items>
+                     <font>
+                        <Font size="11.0" />
+                     </font>
                   </MenuButton>
       				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
       					<graphic>
@@ -66,6 +70,9 @@
                         <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
                         <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
                     </items>
+                     <font>
+                        <Font size="10.0" />
+                     </font>
                   </MenuButton>
       				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
       					<graphic>
@@ -154,11 +161,17 @@
             </FlowPane>
 				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip">
                <tooltip>
-                  <Tooltip fx:id="tableDescription_tf_tooltip" />
+                  <Tooltip fx:id="tableDescription_tf_tooltip">
+                     <font>
+                        <Font size="11.0" />
+                     </font></Tooltip>
                </tooltip>
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
+               <font>
+                  <Font size="11.0" />
+               </font>
             </TextField>
 			</children>
 		</HBox>
@@ -188,12 +201,30 @@
 		</TableView>
       <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" VBox.vgrow="SOMETIMES">
          <children>
-            <Label text="%totalFilesWithColon" />
-            <Label fx:id="allFilesTotal_lbl" />
-            <Label text="%allFilesCopiedWithColon" />
-            <Label fx:id="allFilesCopied_lbl" />
-            <Label text="%allFilesSizeWithColon" />
-            <Label fx:id="allFilesSize_lbl" />
+            <Label text="%totalFilesWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesTotal_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label text="%allFilesCopiedWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesCopied_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label text="%allFilesSizeWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesSize_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
          </children>
       </FlowPane>
 	</children>

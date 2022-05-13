@@ -36,7 +36,7 @@
     -fx-background-radius: 4;
     -fx-padding: 6;
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
@@ -54,7 +54,7 @@
     -fx-background-radius: 4;
     -fx-padding: 6;
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
@@ -87,7 +87,7 @@
 }
 .imageFrame {
     -fx-border-color: white;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-background-color: -fx-primary;
 }
 .imageNumber {
@@ -118,7 +118,7 @@
     -fx-background-color: linear-gradient(to bottom, blue, white);
     -fx-background-radius: 0 0 0 0;
     -fx-border-color: #555555;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
 }
@@ -127,7 +127,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, red, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -136,7 +136,7 @@
     /*-fx-background-color: transparent;*/
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     /*-fx-padding: 0 1 0 1;*/
@@ -144,7 +144,7 @@
 .jump_Button_video {
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 
@@ -152,7 +152,7 @@
 .jump_Button_good {
     -fx-background-color: linear-gradient(to bottom, green, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 
@@ -162,7 +162,7 @@
 }
 .separator {
     -fx-border-style: solid;
-    -fx-border-size: 10px;
+    -fx-border-size: 0.625em;
     -fx-background-color:  derive(grey, 40%);
 }
 .separator:vertical .line {
@@ -212,7 +212,7 @@
     /*-fx-background-color: derive(-fx-primary, 10%);*/
     -fx-background-color: red;
     -fx-border-color: #ffffff;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-background-color: linear-gradient(to bottom, #b5bcc6, #dee3e4);
@@ -220,7 +220,7 @@
 
 }
 .selection_text {
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     /*-fx-background-color: cyan;*/
     -fx-text-fill: white;
     -fx-underline: true;   
@@ -250,7 +250,7 @@
     -fx-alignment: center;
     -fx-background-color: grey, transparent, derive(orange, 60%);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 12px;
+    -fx-font-size: 10.125em;
     -fx-font-weight: bold;
     -fx-insets: 4;
     -fx-text-fill: derive(grey, 60%);
@@ -268,7 +268,7 @@
 .tab .tab-label {
     -fx-alignment: center;
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     /*-fx-font-weight: none;*/
     -fx-insets: 5;
     -fx-text-fill: black;
@@ -283,7 +283,7 @@
     -fx-background-radius: 4;
     /*-fx-padding: 6;*/
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
@@ -301,7 +301,7 @@
     -fx-border-color:  -fx-dark-border-color;
         -fx-table-header-border-color: cyan;
     -fx-border-color: -fx-mid-border-color;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
 }
 .table-view .column-header.table_media .label {
     -fx-background-color: linear-gradient(to bottom, red, orange);
@@ -332,7 +332,7 @@
 
 .table-view:focused {
     -fx-border-color:  -fx-light-border-color;
-    -fx-border-width: 2px;
+    -fx-border-width: 0.125em;
 
 }
 .table-view:focused .table-row-cell:filled:focused:selected {

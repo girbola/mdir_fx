@@ -28,14 +28,14 @@
         linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
   -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
 }
 
 .dialog-pane {
 	-fx-background-color: derive(-fx-primary,10%);
 	-fx-border-color: -fx-mid-border-color;
-	-fx-border-size: 2px;
+	-fx-border-size: 0.125em;
 }
 .dialog-pane > *.button-bar > *.container{
     -fx-background-color: derive(-fx-primary, 80%);

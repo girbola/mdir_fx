@@ -51,7 +51,7 @@ font size. This is done using the CSS measurement unit of a "em" where
 a quick reference here are common px sizes in em units on windows.
 Windows 12px -> em units    -> Mac 13px      |
 ----------------------------------------
-     1px     -> 0.083333em  -> 1.08px ~ 2px
+     0.0625em;     -> 0.083333em  -> 1.08px ~ 2px
      2px     -> 0.166667em  -> 2.16px ~ 3px
      3px  = 0.25em
      4px  = 0.333333em
@@ -61,7 +61,7 @@ Windows 12px -> em units    -> Mac 13px      |
      8px  = 0.666667em
      9px  = 0.75em
     10px  = 0.833333em
-    11px  = 0.916667em
+    10.0625em;  = 0.916667em
     12px  = 1em
 IMPORTANT: Not all sizes are scaled with em units only padding. All borders and
 background insets are still in pixels. Also any padding where it has to match up
@@ -409,7 +409,7 @@ is being used to size a border should also be in pixels.
 .combo-box-base:editable > .arrow-button {
     -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
-    -fx-background-radius: 3px, 3px, 2px, 1px;
+    -fx-background-radius: 3px, 3px, 2px, 0.0625em;;
     -fx-padding: 0.333333em 0.666667em 0.333333em 0.666667em; /* 4 8 4 8 */
     -fx-text-fill: -fx-text-base-color;
     -fx-alignment: CENTER;
@@ -799,7 +799,7 @@ is being used to size a border should also be in pixels.
     -fx-cursor: hand;
     -fx-content-display: LEFT;
     -fx-border-color: transparent;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
 }
 .hyperlink,
 .hyperlink:hover,
@@ -822,7 +822,7 @@ is being used to size a border should also be in pixels.
 .hyperlink:focused {
     -fx-border-color: -fx-focus-color;
     -fx-border-style: segments(0.166667em, 0.166667em);
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
 }
 
 /* Fix for RT-37971 */
@@ -987,7 +987,7 @@ is being used to size a border should also be in pixels.
 .slider .axis {
     -fx-tick-label-fill: derive(-fx-text-background-color, 30%);
     -fx-tick-length: 5px;
-    -fx-minor-tick-length: 3px;
+    -fx-minor-tick-length: 0.1875em;
     -fx-border-color: null;
 }
 
@@ -1204,7 +1204,7 @@ is being used to size a border should also be in pixels.
 }
 .progress-indicator > .determinate-indicator > .progress {
     -fx-background-color: -fx-accent;
-    -fx-padding: 0.083333em; /* 1px */
+    -fx-padding: 0.083333em; /* 0.0625em; */
 }
 .progress-indicator > .determinate-indicator > .tick {
     -fx-background-color: white;
@@ -1318,7 +1318,7 @@ is being used to size a border should also be in pixels.
     -fx-background-radius: 0 0 2 0;
 }
 .text-area .content {
-    /*the is 1px less top and bottom than TextInput because of scrollpane border */
+    /*the is 0.0625em; less top and bottom than TextInput because of scrollpane border */
     -fx-padding: 0.25em 0.583em 0.25em 0.583em; /* 3 7 3 7 */
     -fx-cursor: text;
     -fx-background-color:
@@ -2037,7 +2037,7 @@ is being used to size a border should also be in pixels.
 }
 .custom-color-dialog .controls-pane .current-new-color-grid #current-new-color-border {
     -fx-border-color: derive(-fx-base, -20%);
-    -fx-border-width: 2px;
+    -fx-border-width: 0.125em;
 }
 
 .custom-color-dialog .controls-pane .current-new-color-grid .color-rect {
@@ -2379,7 +2379,7 @@ is being used to size a border should also be in pixels.
 }
 /***** INDIVIDUAL CELLS ********************************************************/
 .table-cell {
-    -fx-padding: 0.166667em; /* 2px, plus border adds 1px */
+    -fx-padding: 0.166667em; /* 2px, plus border adds 0.0625em; */
     -fx-background-color: null;
     -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
     -fx-cell-size: 2.0em; /* 24 */
@@ -2557,7 +2557,7 @@ is being used to size a border should also be in pixels.
 .tree-table-cell {
     /* tree-table-cell needs slightly different padding to make the text sit at
     the right height for the arrow */
-    -fx-padding: 0.25em 0.166667em 0.083em 0.166667em; /* 3 2 1 2 , plus border adds 1px */
+    -fx-padding: 0.25em 0.166667em 0.083em 0.166667em; /* 3 2 1 2 , plus border adds 0.0625em; */
     -fx-background-color: null;
     -fx-border-color: transparent -fx-table-cell-border-color transparent transparent;
     -fx-cell-size: 2.0em; /* 24 */
@@ -2594,7 +2594,7 @@ is being used to size a border should also be in pixels.
     -fx-background-color: -fx-background;
 }
 .chart-content {
-    -fx-padding: 10px;
+    -fx-padding: 0.625em;
 }
 .chart-title {
     -fx-font-size: 1.4em;
@@ -2738,7 +2738,7 @@ is being used to size a border should also be in pixels.
 }
 .chart-series-line {
     -fx-stroke: CHART_COLOR_1;
-    -fx-stroke-width: 3px;
+    -fx-stroke-width: 0.1875em;
 }
 .default-color0.chart-line-symbol { -fx-background-color: CHART_COLOR_1, white; }
 .default-color1.chart-line-symbol { -fx-background-color: CHART_COLOR_2, white; }
@@ -2767,7 +2767,7 @@ is being used to size a border should also be in pixels.
     -fx-background-color: CHART_COLOR_1, white;
     -fx-background-insets: 0, 1;
     -fx-background-radius: 4px; /* makes sure this remains circular */
-    -fx-padding: 3px;
+    -fx-padding: 0.1875em;
 }
 .default-color0.chart-area-symbol { -fx-background-color: CHART_COLOR_1, white; }
 .default-color1.chart-area-symbol { -fx-background-color: CHART_COLOR_2, white; }
@@ -2779,7 +2779,7 @@ is being used to size a border should also be in pixels.
 .default-color7.chart-area-symbol { -fx-background-color: CHART_COLOR_8, white; }
 .chart-series-area-line {
     -fx-stroke: CHART_COLOR_1;
-    -fx-stroke-width: 1px;
+    -fx-stroke-width: 0.0625em;;
 }
 .default-color0.chart-series-area-line { -fx-stroke: CHART_COLOR_1; }
 .default-color1.chart-series-area-line { -fx-stroke: CHART_COLOR_2; }
@@ -2888,7 +2888,7 @@ is being used to size a border should also be in pixels.
     -fx-border-color: -fx-background;
 }
 .chart-pie-label {
-    -fx-padding: 3px;
+    -fx-padding: 0.1875em;
     -fx-fill: -fx-text-base-color;
 }
 .chart-pie-label-line {
@@ -3112,7 +3112,7 @@ is being used to size a border should also be in pixels.
 .date-picker-popup > * > .week-number-cell {
     -fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
     -fx-border-color: -fx-control-inner-background;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-background: -fx-control-inner-background;
     -fx-background-color: -fx-background;
     -fx-text-fill: -fx-accent;
@@ -3120,7 +3120,7 @@ is being used to size a border should also be in pixels.
 .date-picker-popup > * > .day-cell {
     -fx-padding: 0.333333em 0.583333em 0.333333em 0.583333em; /* 4 7 4 7 */
     -fx-border-color: derive(-fx-selection-bar-non-focused, 60%);
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-font-size: 1em;
     -fx-background: -fx-control-inner-background;
     -fx-background-color: -fx-background;

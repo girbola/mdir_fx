@@ -140,7 +140,7 @@
 .hbox_container {
     -fx-background-color: #393939;
     -fx-border-color: white;
-    -fx-border-width: 2px;
+    -fx-border-width: 0.125em;
 }
 .vf_gridpane {
     /*-fx-background-color:  linear-gradient(to bottom right, grey, whitesmoke);*/

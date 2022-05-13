@@ -41,11 +41,11 @@
 		linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
 	-fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
 	-fx-font-family: 'Gaduci';
-	-fx-font-size: 10px;
+	-fx-font-size: 0.625em;
 	-fx-text-fill: -fx-light-text-color;
 	-fx-border-color: -fx-base;
-	-fx-border-radius: 2px;
-	-fx-background-radius: 2px;
+	-fx-border-radius: 0.125em;
+	-fx-background-radius: 0.125em;
 }
 
 .button:hover {
@@ -87,6 +87,24 @@
 .menu:showing {
 	-fx-background-color: red;
 }
+.tab {
+	-fx-background-color: whitesmoke;
+}
+.tab .tab-label {
+/*     -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin"; */
+    -fx-alignment: CENTER;
+    -fx-font-size: 1em; /* all the same except this newly added one */
+    -fx-text-fill: grey;
+}
+
+.tab .tab-label:focus {
+	-fx-background-color: yellow;
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-focus-color: red;
+    -fx-faint-focus-color: transparent;
+    -fx-text-fill: white;
+}
 
 .table_vbox {
 	-fx-border-color: derive(-fx-base, 15%);
@@ -95,8 +113,8 @@
 }
 .table-view {
 	-fx-background-color: #3a3838;
-	-fx-background-radius: 2px;
-	-fx-padding: 1px;
+	-fx-background-radius: 0.125em;
+	-fx-padding: 0.0625em;
 
 	/* -fx-background-margin: 0; */
 	-fx-effect: innershadow(three-pass-box, rgba(77, 76, 76, 0.226), 10, 0, 5, 5);
@@ -104,7 +122,7 @@
 	/* -fx-border-color: -fx-dark-border-color; */
 	/*    -fx-table-header-border-color: cyan;*/
 	/*-fx-border-color: red;*/
-	/*-fx-border-width: 2px;*/
+	/*-fx-border-width: 0.125em;*/
 }
 .table-view .column-header.table_media .label {
 	-fx-background-color: linear-gradient(to bottom, red, orange);
@@ -116,24 +134,24 @@
 	-fx-background-color: transparent;
 }
 .table-view .column-header .label {
-	-fx-font-size: 8pt;
+	-fx-font-size: 0.75em;
 	-fx-font-family: 'Gaduci';
 	-fx-text-fill: -fx-light-text-color;
 	-fx-alignment: center-left;
 	-fx-opacity: 1;
-	-fx-padding: 0 0 0 1px;
+	-fx-padding: 0 0 0 0.0625em;
 }
 .table-view .column-header,
 .table-view .filler {
-	-fx-size: 1em;
+	-fx-size: 0.75em;
 	-fx-border-width: 0 0 1 0;
 	/*-fx-background-color: transparent;*/
 	-fx-border-color: transparent, transparent, transparent, transparent;
 }
 
 .table-view:focused {
-	-fx-border-color: -fx-light-border-color;
-	-fx-border-width: 2px;
+	-fx-padding: 0;
+	-fx-margin: 0;
 }
 .table-view:focused .table-row-cell:filled:focused:selected {
 	-fx-background-color: #3498bf;
@@ -151,34 +169,39 @@
 	-fx-background-radius: 0.2em;
 }
 .text-field-table-cell .text-field {
-	-fx-padding: 1;
+	-fx-padding: 0;
+	-fx-margin: 0;
 	-fx-border-color: red;
 	-fx-background-color: -fx-base;
 	-fx-text-fill: -fx-light-text-color;
 }
 .table-cell:focused {
-	-fx-padding: 0;
+/* 	-fx-padding: -0.4em; */
+/* 	-fx-border-color: red; */
+	-fx-font-size:1em;
 }
-
+.table-view .table-cell{
+    -fx-font-size:0.8em;  
+}
 .text-field {
 	-fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
 	-fx-text-fill: -fx-light-text-color;
 	-fx-border-color: rgb(83, 83, 83);
-	-fx-border-radius: 3px;
+	-fx-border-radius: 0.1875em;
 }
 .tableTextField {
 	-fx-background-color: orange;
-	-fx-background-radius: 2px;
+	-fx-background-radius: 0.125em;
 	-fx-text-fill: black;
 	/* -fx-border-color: white; */
-	-fx-border-radius: 2px;
+	-fx-border-radius: 0.125em;
 }
 .tableTextField_bad {
 	-fx-background-color: pink;
-	-fx-background-radius: 2px;
+	-fx-background-radius: 0.125em;
 	-fx-text-fill: red;
 	-fx-border-color: red;
-	-fx-border-radius: 2px;
+	-fx-border-radius: 0.125em;
 }
 .textfield-info {
 	-fx-background-color: derive(-fx-base, 24%);
@@ -227,6 +250,6 @@
 }
 
 .tooltip {
-	-fx-font-size: 16px;
+	-fx-font-size: 0.8125em;
 	-fx-background-radius: 2 2 2 2;
 }

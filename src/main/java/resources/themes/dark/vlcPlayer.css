@@ -28,7 +28,7 @@
         linear-gradient(derive(-fx-base-background-dark, 40%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 40%));
     -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: -fx-text-color;
 }
 .stackPane {

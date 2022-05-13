@@ -48,7 +48,7 @@
         linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
 }
 
@@ -64,9 +64,9 @@
 .closeButton {
     /* -fx-insets: 12px 0 0 0; */
     -fx-background-color: rgb(212, 22, 22);
-    -fx-background-radius: 10px;
+    -fx-background-radius: 0.625em;
     -fx-border-color: rgb(252, 195, 89);
-    -fx-border-radius: 10px;
+    -fx-border-radius: 0.625em;
     -fx-border-width: 0.2em;
 }
 
@@ -77,14 +77,14 @@
     -fx-background-radius: 4;
     -fx-padding: 6;
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
 }
 
 .date-picker .text-field,
 .fileDate_tf {
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-font-smoothing-type: lcd;
     -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
     /*-fx-border-color: -fx-light-text-color;*/
@@ -99,7 +99,7 @@
 .fileName_ta {
     -fx-background-color: transparent;
     /*-fx-border-color: transparent;*/
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-font-smoothing-type: lcd;
     -fx-text-fill: white;
 }
@@ -124,7 +124,7 @@
 
 .imageFrame {
     -fx-border-color: -fx-mid-border-color;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-background-color: -fx-base;
 }
 
@@ -143,7 +143,7 @@
     -fx-background-color: linear-gradient(to bottom, blue, white);
     -fx-background-radius: 0 0 0 0;
     -fx-border-color: #555555;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
 }
@@ -152,7 +152,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, red, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -162,7 +162,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, cyan, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -172,7 +172,7 @@
     /*-fx-background-color: transparent;*/
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     /*-fx-padding: 0 1 0 1;*/
@@ -181,7 +181,7 @@
 .jump_Button_video {
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 }
@@ -189,7 +189,7 @@
 .jump_Button_good {
     -fx-background-color: linear-gradient(to bottom, green, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 1px;
+    -fx-border-width: 0.0625em;;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 }
@@ -199,7 +199,7 @@
 }
 
 .label {
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
 }
 
 .list-cell {
@@ -234,7 +234,7 @@
     -fx-background-radius: 4;
     /*-fx-padding: 6;*/
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
 }
@@ -301,13 +301,13 @@
 .rootPath {
     -fx-background-color: derive(-fx-base, 50%);
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 12px;
+    -fx-font-size: 10.125em;
     -fx-text-fill: -fx-light-text-color;
 }
 
 .separator {
     -fx-border-style: solid;
-    -fx-border-size: 10px;
+    -fx-border-size: 0.625em;
     -fx-background-color: derive(grey, 40%);
 }
 
@@ -396,15 +396,15 @@
 }
 
 .selector_scrollPane .scroll-bar:vertical {
-    -fx-pref-width: 13px;
+    -fx-pref-width: 0.8125em;
     -fx-padding: 3;
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
 }
 
 .selector_scrollPane .scroll-bar:horizontal {
-    -fx-pref-height: 13px;
+    -fx-pref-height: 0.8125em;
     -fx-padding: 3;
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
 }
 
 .selector_scrollPane .corner {
@@ -465,7 +465,7 @@
 .switchButton:focused {
     -fx-background-radius: 40px;
     -fx-border-radius: 40px;
-    -fx-background-insets: 1px;
+    -fx-background-insets: 0.0625em;;
 
     -fx-background-color: -fx-base, transparent, transparent,
         linear-gradient(orange 0%, white 25%, white 75%, whitesmoke 100%);
@@ -521,7 +521,7 @@
     -fx-alignment: center;
     -fx-background-color: grey, transparent, derive(orange, 60%);
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-font-weight: bold;
     -fx-insets: 0;
     -fx-text-fill: derive(grey, 60%);
@@ -546,7 +546,7 @@
 .tab .tab-label {
     -fx-alignment: center;
     -fx-font-family: 'Gaduci';
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     /*-fx-font-weight: none;*/
     -fx-insets: 5;
     -fx-text-fill: -fx-light-text-color;
@@ -563,12 +563,12 @@
     -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
     -fx-text-fill: -fx-light-text-color;
     -fx-border-color: black;
-    -fx-border-radius: 3px;
+    -fx-border-radius: 0.1875em;
 }
 
 .table-view {
     -fx-background-color: rgb(99, 98, 98);
-    -fx-background-radius: 2px;
+    -fx-background-radius: 0.125em;
     -fx-padding: 0;
     -fx-background-margin: 0;
     -fx-effect: innershadow(three-pass-box, rgba(77, 76, 76, 0.5), 10, 0, 5, 5);

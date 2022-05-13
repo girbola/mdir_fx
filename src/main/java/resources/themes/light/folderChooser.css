@@ -42,7 +42,7 @@
     /*-fx-background-radius: 1;*/
     -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     /*-fx-insets: 0;*/
     /*-fx-padding: 3;*/
     -fx-text-fill: -fx-light-text-color;
@@ -60,7 +60,7 @@
 .splitPane {
     -fx-background-color: grey;
     -fx-border-color: black;
-    -fx-border-width: 2px;
+    -fx-border-width: 0.125em;
 
 }
 .splitPane .label {
@@ -99,7 +99,7 @@
     -fx-border-color:  -fx-dark-border-color;
     /*    -fx-table-header-border-color: cyan;*/
     /*-fx-border-color: red;*/
-    /*-fx-border-width: 2px;*/
+    /*-fx-border-width: 0.125em;*/
 }
 .table-view .column-header.table_media .label {
     -fx-background-color: linear-gradient(to bottom, red, orange);
@@ -130,7 +130,7 @@
 
 .table-view:focused {
     -fx-border-color:  -fx-light-border-color;
-    -fx-border-width: 2px;
+    -fx-border-width: 0.125em;
 
 }
 .table-view:focused .table-row-cell:filled:focused:selected {

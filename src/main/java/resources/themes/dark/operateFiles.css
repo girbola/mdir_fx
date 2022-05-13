@@ -34,7 +34,7 @@
     
     -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 12px;
+    -fx-font-size: 10.125em;
     /*-fx-insets: 0;*/
     /*-fx-padding: 3;*/
     -fx-text-fill: white;

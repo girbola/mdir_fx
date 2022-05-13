@@ -43,7 +43,7 @@
     /*-fx-background-radius: 1;*/
     -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     /*-fx-insets: 0;*/
     /*-fx-padding: 3;*/
     -fx-text-fill: -fx-light-text-color;
@@ -261,7 +261,7 @@
     -fx-alignment: center;
     -fx-background-color: grey, transparent, derive(orange, 60%);
     -fx-font-family: "Gaduci";
-    -fx-font-size: 12px;
+    -fx-font-size: 10.125em;
     -fx-font-weight: bold;
     -fx-insets: 4;
     -fx-text-fill: derive(grey, 60%);
@@ -281,7 +281,7 @@
 .tab .tab-label {
     -fx-alignment: center;
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-font-weight: none;
     -fx-insets: 5;
     -fx-text-fill: black;
@@ -309,7 +309,7 @@
 }
 .titled-pane > .title > *.text {
     -fx-font-family: "Gaduci";
-    -fx-font-size: 10px;
+    -fx-font-size: 0.625em;
     -fx-fill: white;
 }
 .titled-pane > *.content 
