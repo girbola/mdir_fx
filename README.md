@@ -50,3 +50,6 @@ __Raw__
 - CR2
 - NEF
 
+This project is not yet ready for public use.
+Any inconvenience caused by this project is in your responsibility.
+

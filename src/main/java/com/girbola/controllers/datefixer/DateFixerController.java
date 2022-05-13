@@ -21,6 +21,8 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.slf4j.LoggerFactory;
+
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -75,6 +77,8 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 public class DateFixerController {
+
+	private org.slf4j.Logger log = LoggerFactory.getLogger(DateFixerController.class);
 
 	private static final String ERROR = DateFixerController.class.getSimpleName();
 	// private boolean infoTables_visible = true;
@@ -565,6 +569,11 @@ public class DateFixerController {
 				FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
 						bundle);
 				parent = loader.load();
+				if (model_main == null) {
+					log.error(Main.bundle.getString("somethingWentWrong"));
+					Messages.errorSmth(log.getName(), Main.bundle.getString("somethingWentWrong"), null,
+							Misc.getLineNumber(), true);
+				}
 				Messages.warningText("model_main is null? " + (model_main == null ? true : false));
 				AskEventDialogController askEventDialogController = (AskEventDialogController) loader.getController();
 				askEventDialogController.init(model_main, model_datefix);
@@ -583,6 +592,7 @@ public class DateFixerController {
 //					Messages.sprintf("===========WORKDIR::::: FileInfo: " + fileInfo.getOrgPath());
 //				}
 			} catch (Exception ex) {
+				log.error(ERROR, parent, event);
 				Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 			}
@@ -1055,7 +1065,7 @@ public class DateFixerController {
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			Messages.sprintf("yes pressed!");
 			boolean update = false;
-			
+
 			List<Node> toRemove = new ArrayList<>();
 			List<FileInfo> fileInfo_toRemove = new ArrayList<>();
 			for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
@@ -1073,7 +1083,7 @@ public class DateFixerController {
 			if (update) {
 				model_datefix.getGridPane().getChildren().removeAll(toRemove);
 				model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
-				
+
 //				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);

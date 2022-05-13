@@ -3,9 +3,10 @@
 src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 /scenicView.properties
 /shade/
+*Thumbs.db
+*.classpath
 *.log
-*.setting
+*.settings*
 *.zip
 *.project
 /bin/
-*Thumbs.db

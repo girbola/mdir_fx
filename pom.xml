@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.girbola</groupId>
 	<artifactId>mdir_fx_2021</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>MDir Image &amp; Video organizer tool</name>
@@ -21,7 +21,8 @@
 		</license>
 		<license>
 			<name>GPLv2 with Classpath exception</name>
-			<url>http://www.gnu.org/software/classpath/license.html</url>
+			<url>http://www.gnu.org/software/
+			classpath/license.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
@@ -35,17 +36,19 @@
 	<properties>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.release>15</maven.compiler.release>
-		<javafx.version>17</javafx.version>
-		<maven.compiler.target>17</maven.compiler.target>
-		<maven.compiler.source>17</maven.compiler.source>
+
+		<maven.compiler.release>16</maven.compiler.release>
+		<javafx.version>17.0.1</javafx.version>
 		<metadata-extractor.version>2.16.0</metadata-extractor.version>
-		<vlcj.version>4.7.1</vlcj.version>
+		<vlcj.version>4.6.0</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.8.1</imageio-jpeg.version>
-		<imageio-tiff.version>3.8.1</imageio-tiff.version>
-		<sqlite-jdbc.version>3.36.0.3</sqlite-jdbc.version>
+		<imageio-jpeg.version>3.5</imageio-jpeg.version>
+		<imageio-tiff.version>3.5</imageio-tiff.version>
+		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
 		<slf4j.version>1.7.32</slf4j.version>
+		<maven.compiler.source>16</maven.compiler.source>
+		<maven.compiler.target>16</maven.compiler.target>
+
 	</properties>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
@@ -63,11 +66,6 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.openjfx</groupId>
-			<artifactId>javafx-base</artifactId>
-			<version>${javafx.version}</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
@@ -198,6 +196,16 @@
 					<mainClass>com.girbola.Main</mainClass>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-failsafe-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+					<argLine>--illegal-access=permit</argLine>
+				</configuration>
+			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>

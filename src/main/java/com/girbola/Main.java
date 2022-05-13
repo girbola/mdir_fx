@@ -24,6 +24,7 @@ package com.girbola;
 
 import static com.girbola.messages.Messages.sprintf;
 
+import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Locale;
@@ -110,14 +111,22 @@ public class Main extends Application {
 				conf.createProgramPaths();
 				conf.loadConfig();
 				System.out.println("Java version: " + System.getProperty("java.version"));
+				System.out.println("JavaFX version: " + System.getProperty("javafx.version"));
+				
 				Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
 						+ conf.getWorkDir());
 
-				FXMLLoader main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
-				sprintf("main_loader location: " + main_loader.getLocation());
+				FXMLLoader main_loader = null;
+				
 				Parent parent = null;
 				try {
+					ResourceBundle bundle2 = bundle;
+					sprintf("bundle2: " + bundle2);
+					URL resource = getClass().getResource("fxml/main/Main.fxml");
+					sprintf("bundle2: " + bundle2 + " resource " + resource);
+					main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
 					parent = main_loader.load();
+					sprintf("main_loader location: " + main_loader.getLocation());
 				} catch (Exception ex) {
 					ex.printStackTrace();
 					Messages.sprintf("error loading parent= " + ex.getMessage());

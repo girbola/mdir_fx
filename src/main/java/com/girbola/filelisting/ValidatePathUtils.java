@@ -29,7 +29,7 @@ public class ValidatePathUtils {
 	private final static String ERROR = ValidatePathUtils.class.getSimpleName();
 	private static long FILE_MIN_SIZE = (1 * 1024);
 
-	public final static String[] skippedFolderList_UNIX = { "etc", "bin" };
+	public final static String[] skippedFolderList_UNIX = {"bin","dev","lib","libx32","root","snap","swapfile","usr","boot","etc","lib32","lost+found","opt","run","some","sys","var","cdrom","lib64","media","proc","sbin","srv" };
 	public final static String[] skippedFolderList_WIN = { "$SysReset", "$Recycle.Bin", "RECYCLER", ".Trash", "Android", "AppData", "Boot", "Default", "Efi", "Intel", "Java", "NetBeansProjects", "OEM", "PerfLogs", "Program Files (x86)", "Program Files", "ProgramData", "Recycle", "Resource",
 			"System Volume Information", "Windows", "source" };
 
@@ -89,7 +89,9 @@ public class ValidatePathUtils {
 			}
 			return false;
 		} else {
-			errorSmth(ERROR, "", null, getLineNumber(), true);
+			String os = "isWindows: " + Misc.isWindows() + " UNIX: " + Misc.isUnix() + " Mac: " + Misc.isMac() + " UNIII: " + System.getProperty("os.name");
+			Messages.sprintf("OS: " + os);
+			errorSmth(ERROR, os, null, getLineNumber(), true);
 		}
 
 		return false;
