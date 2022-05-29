@@ -8,6 +8,7 @@ package com.girbola.controllers.main;
 
 import static com.girbola.messages.Messages.sprintf;
 
+import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -16,6 +17,7 @@ import com.girbola.misc.Misc;
 
 import common.utils.ui.UI_Tools;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -41,6 +43,8 @@ public class HideButtons {
 
 	private int test = 100;
 
+	private SimpleDoubleProperty maxWidth = new SimpleDoubleProperty(300);
+	
 	private int visible;
 	private HBox sortit_buttons_hbox;
 	private HBox sorted_buttons_hbox;
@@ -64,16 +68,16 @@ public class HideButtons {
 		sprintf("HideButtons instantiated...");
 	}
 
-	public void setSortItButtons_hbox(HBox hbox) {
-		this.sortit_buttons_hbox = hbox;
+	public void setSortItButtons_hbox(HBox hbox_sortIt) {
+		this.sortit_buttons_hbox = hbox_sortIt;
 	}
 
-	public void setAsItIsButtons_hbox(HBox hbox) {
-		this.asitis_buttons_hbox = hbox;
+	public void setAsItIsButtons_hbox(HBox hbox_asItIs) {
+		this.asitis_buttons_hbox = hbox_asItIs;
 	}
 
-	public void setSortedButtons_hbox(HBox hbox) {
-		this.sorted_buttons_hbox = hbox;
+	public void setSortedButtons_hbox(HBox hbox_sorted) {
+		this.sorted_buttons_hbox = hbox_sorted;
 	}
 
 	public HBox getSortedButtons_hbox() {
@@ -102,59 +106,64 @@ public class HideButtons {
 		setButtonsState(button, value);
 	}
 
-	private void setButtonsState(Button button, boolean value) {
+	private void updateTableWidths() {
+		model.tables();
+	}
+	
+	private void setButtonsState(Button button, boolean showButton) {
 		Bounds bound = UI_Tools.getNodeLayoutBounds(button);
 
 		Node node = button.getParent().getParent(); // VBox - Buttons -
 		// TextField - Tables
 		if (node instanceof VBox) {
-			VBox vbox = (VBox) node;
-			for (Node v : vbox.getChildren()) {
-				Messages.sprintf("VBOX Found:" + v);
-				if (v instanceof HBox) {
+			VBox table_VBox = (VBox) node;
+			for (Node table_Node : table_VBox.getChildren()) {
+				Messages.sprintf("table_Node VBOX Found:" + table_Node);
+				if (table_Node instanceof HBox) {
 					// HBox
-					HBox hbox = (HBox) v;
-					setRegionSize(hbox, bound.getWidth(), bound.getHeight());
-					for (Node buttons : hbox.getChildren()) {
-						Messages.sprintf("buttons: " + buttons);
-						// Button
-						if (buttons instanceof FlowPane) {
-							FlowPane fp = (FlowPane) buttons;
-							fp.setVisible(!fp.isVisible());
+					HBox topButtons_HBox = (HBox) table_Node;
+					setRegionSize(topButtons_HBox, bound.getWidth(), bound.getHeight());
+					for (Node buttons_Node : topButtons_HBox.getChildren()) {
+						Messages.sprintf("buttons: " + buttons_Node);
+						// Show/hide Button
+						if (buttons_Node instanceof FlowPane) {
+							FlowPane controlButtons_FlowPane = (FlowPane) buttons_Node;
+							controlButtons_FlowPane.setVisible(!controlButtons_FlowPane.isVisible());
 						}
-						if (buttons instanceof Button) {
-							if (buttons.getId().equals(button.getId())) {
-								if (value) {
-									setRegionSize(vbox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+						if (buttons_Node instanceof Button) {
+							if (buttons_Node.getId().equals(button.getId())) {
+								if (showButton) {
+									setRegionSize(table_VBox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+									Messages.sprintf("showButton setting regionsize: " + bound.getWidth() + " height: " + bound.getHeight());
 								} else {
-									setRegionSize(vbox, bound.getWidth(), bound.getHeight());
+									setRegionSize(table_VBox, bound.getWidth(), bound.getHeight());
+									Messages.sprintf("!showButton setting regionsize: " + bound.getWidth() + " height: " + bound.getHeight());
 								}
 							} else {
-								buttons.setVisible(!buttons.isVisible());
+								buttons_Node.setVisible(!buttons_Node.isVisible());
 							}
 						}
 
-						if (buttons instanceof TextField) {
-							TextField tf = (TextField) buttons;
+						if (buttons_Node instanceof TextField) {
+							TextField tf = (TextField) buttons_Node;
 							tf.setVisible(!tf.isVisible());
 						}
 					}
 				}
-				if (v instanceof FlowPane) {
-					FlowPane fp = (FlowPane) v;
+				if (table_Node instanceof FlowPane) {
+					FlowPane fp = (FlowPane) table_Node;
 					fp.setVisible(!fp.isVisible());
 				}
-				if (v instanceof TableView) {
-					TableView<?> table = (TableView<?>) v;
+				if (table_Node instanceof TableView) {
+					TableView<?> table = (TableView<?>) table_Node;
 					table.setVisible(!table.isVisible());
 				}
-				
 			}
 		}
 	}
 
 	private void setRegionSize(Region node, double width, double height) {
-		sprintf("visible node hbox = " + visible);
+		sprintf("node name is: " + node.getId() + " visible node hbox = " + visible);
 		node.setPrefWidth(width);
 		node.setMinWidth(width);
 		// node.setMaxWidth(width);
@@ -275,7 +284,9 @@ public class HideButtons {
 		if (sortit_show.get() == true) {
 			visible++;
 		}
-		sprintf("Visible table total is: " + visible);
+		maxWidth .set((Main.getMain_stage().getMaxWidth()));
+		maxWidth.set( Math.floor(Main.getMain_stage().getMaxWidth()) / visible);
+		sprintf("Visible table total is: " + visible + " maxWidth " + maxWidth.get());
 
 	}
 }
