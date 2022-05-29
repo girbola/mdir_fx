@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -8,14 +8,15 @@ package com.girbola.controllers.main;
 
 import static com.girbola.messages.Messages.sprintf;
 
-import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
+import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
 import common.utils.ui.UI_Tools;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Bounds;
@@ -28,6 +29,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -44,7 +46,7 @@ public class HideButtons {
 	private int test = 100;
 
 	private SimpleDoubleProperty maxWidth = new SimpleDoubleProperty(300);
-	
+
 	private int visible;
 	private HBox sortit_buttons_hbox;
 	private HBox sorted_buttons_hbox;
@@ -54,16 +56,26 @@ public class HideButtons {
 	private SimpleBooleanProperty sortit_show = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty sorted_show = new SimpleBooleanProperty(true);
 
-	private Model_main model;
+	private Model_main model_Main;
+
+	private AnchorPane tables_rootPane;
+
+	private Bounds tables_rootPaneNodeLayoutBounds;
+
+	private Bounds button_Bounds;
 
 	private Image show_im;
 	private Image hide_im;
 
 	public HideButtons(Model_main model) {
-		this.model = model;
+		this.model_Main = model;
 		visible = 3;
 		show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
 		hide_im = GUI_Methods.loadImage("hideTable.png", GUIPrefs.BUTTON_WIDTH);
+
+//		tables_rootPane = model_Main.tables().getTables_rootPane();
+//
+//		tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
 
 		sprintf("HideButtons instantiated...");
 	}
@@ -107,13 +119,20 @@ public class HideButtons {
 	}
 
 	private void updateTableWidths() {
-		model.tables();
+		model_Main.tables();
 	}
-	
+
 	private void setButtonsState(Button button, boolean showButton) {
-		Bounds bound = UI_Tools.getNodeLayoutBounds(button);
+
+//		Node tables_rootPaneNode = button.getParent().getParent().getParent();
+		Messages.sprintf("tables_rootPaneNode: " + model_Main.tables().getTables_rootPane().getId());
+
+		tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(model_Main.tables().getTables_rootPane());
+
+		button_Bounds = UI_Tools.getNodeLayoutBounds(button);
 
 		Node node = button.getParent().getParent(); // VBox - Buttons -
+
 		// TextField - Tables
 		if (node instanceof VBox) {
 			VBox table_VBox = (VBox) node;
@@ -122,7 +141,7 @@ public class HideButtons {
 				if (table_Node instanceof HBox) {
 					// HBox
 					HBox topButtons_HBox = (HBox) table_Node;
-					setRegionSize(topButtons_HBox, bound.getWidth(), bound.getHeight());
+					setRegionSize(topButtons_HBox, button_Bounds.getWidth(), button_Bounds.getHeight());
 					for (Node buttons_Node : topButtons_HBox.getChildren()) {
 						Messages.sprintf("buttons: " + buttons_Node);
 						// Show/hide Button
@@ -134,10 +153,12 @@ public class HideButtons {
 							if (buttons_Node.getId().equals(button.getId())) {
 								if (showButton) {
 									setRegionSize(table_VBox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-									Messages.sprintf("showButton setting regionsize: " + bound.getWidth() + " height: " + bound.getHeight());
+									Messages.sprintf("showButton setting regionsize: " + button_Bounds.getWidth()
+											+ " height: " + button_Bounds.getHeight());
 								} else {
-									setRegionSize(table_VBox, bound.getWidth(), bound.getHeight());
-									Messages.sprintf("!showButton setting regionsize: " + bound.getWidth() + " height: " + bound.getHeight());
+									setRegionSize(table_VBox, button_Bounds.getWidth(), button_Bounds.getHeight());
+									Messages.sprintf("!showButton setting regionsize: " + button_Bounds.getWidth()
+											+ " height: " + button_Bounds.getHeight());
 								}
 							} else {
 								buttons_Node.setVisible(!buttons_Node.isVisible());
@@ -209,84 +230,112 @@ public class HideButtons {
 		if (tableType.equals(TableType.ASITIS.getType())) {
 			Messages.sprintf("Asitis button pressed");
 			if (asitis_show.get()) {
-				updateTableVisible();
 				if (visible == 1) {
 					return;
 				}
 				asitis_show.set(false);
+				updateTableVisible();
 				sprintf("asitis_show? " + asitis_show.get());
 				setHideTableButton(button, asitis_show.get());
-				model.tables().getAsItIs_table().setVisible(asitis_show.get());
+				model_Main.tables().getAsItIs_table().setVisible(asitis_show.get());
 
 			} else {
 				sprintf("asitis_show? " + asitis_show.get());
 				asitis_show.set(true);
 				setShowTableButton(button, asitis_show.get());
-				model.tables().getAsItIs_table().setVisible(asitis_show.get());
+				model_Main.tables().getAsItIs_table().setVisible(asitis_show.get());
 				updateTableVisible();
-
 			}
 		} else if (tableType.equals(TableType.SORTED.getType())) {
 			Messages.sprintf("SORTED button pressed");
 			if (sorted_show.get()) {
-				updateTableVisible();
 				if (visible == 1) {
 					return;
 				}
 				sorted_show.set(false);
+				updateTableVisible();
 				sprintf("sorted_show? " + sorted_show.get());
 				setHideTableButton(button, sorted_show.get());
-				model.tables().getSorted_table().setVisible(sorted_show.get());
+				model_Main.tables().getSorted_table().setVisible(sorted_show.get());
 			} else {
 				sorted_show.set(true);
 				sprintf("sorted_show? " + sorted_show);
 				setShowTableButton(button, sorted_show.get());
-				model.tables().getSorted_table().setVisible(sorted_show.get());
+				model_Main.tables().getSorted_table().setVisible(sorted_show.get());
 				updateTableVisible();
 			}
 		} else if (tableType.equals(TableType.SORTIT.getType())) {
 			Messages.sprintf("SORTIT button pressed");
 			if (sortit_show.get()) {
 				// Hiding
-				updateTableVisible();
 				if (visible == 1) {
 					return;
 				}
 				sortit_show.set(false);
+				updateTableVisible();
 				setHideTableButton(button, sortit_show.get());
-				model.tables().getSortIt_table().setVisible(sortit_show.get());
+				model_Main.tables().getSortIt_table().setVisible(sortit_show.get());
 			} else {
 				// Showing
 				sortit_show.set(true);
 				setShowTableButton(button, sortit_show.get());
-				model.tables().getSortIt_table().setVisible(sortit_show.get());
+				model_Main.tables().getSortIt_table().setVisible(sortit_show.get());
 				updateTableVisible();
 			}
 		} else {
 			Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
 		}
-
-	}
-
-	public int getTest() {
-		return this.test;
 	}
 
 	private void updateTableVisible() {
 		visible = 0;
+
+		if (asitis_show.get()) {
+			visible++;
+		}
+		if (sorted_show.get()) {
+			visible++;
+		}
+		if (sortit_show.get()) {
+			visible++;
+		}
 		sprintf("Visible is: " + visible);
-		if (asitis_show.get() == true) {
-			visible++;
+		tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(model_Main.tables().getTables_rootPane());
+
+//		Messages.sprintf("tables_rootPaneNodeLayoutBounds WIDTH: " + tables_rootPaneNodeLayoutBounds.getWidth());
+		if (visible >= 1) {
+			if (asitis_show.get() == true) {
+				setTableViewWidth(model_Main.tables().getSorted_table());
+				Messages.sprintf("asitis_show: " + model_Main.tables().getAsItIs_table().getPrefWidth() + " prefWidth: "
+						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
+			}
+			if (sorted_show.get() == true) {
+				setTableViewWidth(model_Main.tables().getSorted_table());
+				Messages.sprintf("sorted_show: " + model_Main.tables().getSorted_table().getPrefWidth() + " prefwidth: "
+						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
+			}
+			if (sortit_show.get() == true) {
+				setTableViewWidth(model_Main.tables().getSortIt_table());
+				Messages.sprintf("sortit_show: " + model_Main.tables().getSortIt_table().getPrefWidth() + " prefWidth: "
+						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
+			}
 		}
-		if (sorted_show.get() == true) {
-			visible++;
-		}
-		if (sortit_show.get() == true) {
-			visible++;
-		}
-		maxWidth .set((Main.getMain_stage().getMaxWidth()));
-		maxWidth.set( Math.floor(Main.getMain_stage().getMaxWidth()) / visible);
+		Messages.sprintf("tables_rootPaneNodeLayoutBounds WIDTH: " + tables_rootPaneNodeLayoutBounds.getWidth());
+//		maxWidth .set((Main.getMain_stage().getMaxWidth()));
+//		maxWidth.set( Math.floor(Main.getMain_stage().getMaxWidth()) / visible);
 		sprintf("Visible table total is: " + visible + " maxWidth " + maxWidth.get());
 
 	}
+
+	private void setTableViewWidth(TableView<FolderInfo> table) {
+		Platform.runLater(() -> {
+			table.setPrefWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+					- (button_Bounds.getWidth() * (visible + 1)));
+			table.setMinWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+					- (button_Bounds.getWidth() * (visible + 1)));
+			table.setMaxWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+					- (button_Bounds.getWidth() * (visible + 1)));
+		});
+	}
+
 }

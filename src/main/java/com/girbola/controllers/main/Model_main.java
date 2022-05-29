@@ -116,6 +116,7 @@ public class Model_main {
 
 		monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
 		monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
+		tables.init();
 	}
 
 	public final List<ThumbInfo> getThumbInfo() {

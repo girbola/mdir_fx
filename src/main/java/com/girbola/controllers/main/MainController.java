@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2020 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -10,6 +10,7 @@ import static com.girbola.messages.Messages.sprintf;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.messages.Messages;
 
 import javafx.fxml.FXML;
 import javafx.scene.layout.AnchorPane;
@@ -40,6 +41,9 @@ public class MainController {
 	// AsItIs_TableController asitisController;
 
 	@FXML
+	private AnchorPane tables_rootPane;
+	
+	@FXML
 	TableController sortitController;
 	@FXML
 	TableController sortedController;
@@ -52,7 +56,11 @@ public class MainController {
 	public void initialize(Model_main aModel) {
 		this.model_main = aModel;
 		sprintf("Maincontroller loading....");
-
+		if(tables_rootPane == null) {
+			Messages.sprintfError("		this.model_main.tables().setTables_rootPane(tables_rootPane);\r\n"+ 		tables_rootPane.getId());
+		}
+		this.model_main.tables().setTables_rootPane(tables_rootPane);
+		
 		menuBar_topController.init(model_main);
 		sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
 		sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
@@ -64,6 +72,7 @@ public class MainController {
 				sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesTotal_lbl());
 		TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
 				asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesTotal_lbl());
+
 
 		this.model_main.tables().setSortIt_table(sortitController.getTable());
 		this.model_main.tables().setSorted_table(sortedController.getTable());

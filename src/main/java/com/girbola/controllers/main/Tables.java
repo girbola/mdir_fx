@@ -47,6 +47,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -72,6 +73,15 @@ public class Tables {
 	private TableView<FolderInfo> sorted_table;
 	private TableView<FolderInfo> asitis_table;
 
+	private AnchorPane tables_rootPane;
+	
+	public AnchorPane getTables_rootPane() {
+		return tables_rootPane;
+	}
+
+	public void setTables_rootPane(AnchorPane tables_rootPane) {
+		this.tables_rootPane = tables_rootPane;
+	}
 	private TableStatistic sortit_TableStatistic;
 	private TableStatistic sorted_TableStatistic;
 	private TableStatistic asitis_TableStatistic;
@@ -82,10 +92,14 @@ public class Tables {
 
 	protected Tables(Model_main aModel) {
 		this.model_Main = aModel;
-		hideButtons = new HideButtons(this.model_Main);
+		
 		sprintf("Tables instantiated...");
 	}
 
+	public void init() {
+		hideButtons = new HideButtons(this.model_Main);
+		sprintf("Tables instantiated...");
+	}
 	private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
 		for (FolderInfo tv : table.getItems()) {
 			if (tv.getFolderPath().equals(f.toString())) {
