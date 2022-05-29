@@ -10,6 +10,8 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
 
@@ -24,6 +26,8 @@ import com.girbola.sql.SqliteConnection;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -34,9 +38,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class SelectedFoldersController {
 	private final String ERROR = SelectedFoldersController.class.getName();
+
+	private ScheduledService<Void> scanner;
 
 	private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
 	private Model_main model_main;
@@ -58,10 +65,10 @@ public class SelectedFoldersController {
 	@FXML
 	private void selectedFolders_ok_action(ActionEvent event) {
 		model_folderScanner.getScanDrives().stop();
-		
+
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
-		
+
 		SQL_Utils.createSelectedFoldersTable(connection);
 
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection,
@@ -162,9 +169,36 @@ public class SelectedFoldersController {
 		selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 		Messages.sprintf(
 				"getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-		for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-			Messages.sprintf("sggg: " + sf.getFolder());
-		}
+		scanner = new ScheduledService<Void>() {
+
+			@Override
+			protected Task createTask() {
+				return new Task<Integer>() {
+					@Override
+					protected Integer call() throws Exception {
+						for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+							sf.setConnected(Files.exists(Paths.get(sf.getFolder())));
+							Messages.sprintf("sggg: " + sf.getFolder() + " isConnected?: " + sf.isConnected());
+						}
+						return null;
+					}
+				};
+			}
+		};
+
+		scanner.setPeriod(Duration.seconds(10));
+	}
+
+	public void start() {
+		this.scanner.start();
+	}
+
+	public void restart() {
+		this.scanner.restart();
+	}
+
+	public void stop() {
+		this.scanner.cancel();
 	}
 
 }

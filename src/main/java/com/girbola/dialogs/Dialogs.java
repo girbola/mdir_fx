@@ -32,9 +32,9 @@ public class Dialogs {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Messages.sprintf("heighttttt: " + newValue);
-
 			}
 		});
+		dialog.setResizable(true);
 //		dialog.setHeight(150);
 //		dialog.setWidth(400);
 //		double main_width = Main.conf.getWindowStartWidth();
@@ -52,7 +52,8 @@ public class Dialogs {
 		dialog.setDialogPane(dialogPane);
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
-
+		dialogPane.setMinHeight(150);
+		
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
 		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
 		ButtonType cancel = new ButtonType(Main.bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);

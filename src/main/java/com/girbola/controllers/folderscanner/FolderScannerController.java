@@ -167,5 +167,6 @@ public class FolderScannerController {
 		model_folderScanner.init(model_main, drives_rootItem);
 		selectedFoldersController.init(model_main, model_folderScanner);
 		folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
+		selectedFoldersController.start();
 	}
 }

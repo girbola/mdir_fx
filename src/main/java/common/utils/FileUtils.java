@@ -21,7 +21,7 @@ import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.workdir.WorkDir_Handler;
+import com.girbola.workdir.WorkDirHandler;
 
 import common.utils.date.DateUtils;
 

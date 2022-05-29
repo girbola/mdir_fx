@@ -47,7 +47,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-import com.girbola.workdir.WorkDir_Handler;
+import com.girbola.workdir.WorkDirHandler;
 
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
@@ -135,7 +135,7 @@ public class Model_datefix extends DateFixerModel {
 	private TilePane quickPick_tilePane;
 	private int imagesPerLine;
 
-	private WorkDir_Handler workDir_Handler;
+	private WorkDirHandler workDirHandler;
 
 	private RenderVisibleNode renderVisibleNode = null;
 	private Connection connection;
@@ -323,12 +323,12 @@ public class Model_datefix extends DateFixerModel {
 		this.locations_TableView = table;
 	}
 
-	public void setWorkDir_Handler(WorkDir_Handler workDir_Handler) {
-		this.workDir_Handler = workDir_Handler;
+	public void setWorkDir_Handler(WorkDirHandler workDirHandler) {
+		this.workDirHandler = workDirHandler;
 	}
 
-	public WorkDir_Handler getWorkDir_Handler() {
-		return workDir_Handler;
+	public WorkDirHandler getWorkDir_Handler() {
+		return workDirHandler;
 	}
 
 	public void setInfoTables_container(VBox infoTables_container) {

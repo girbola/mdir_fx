@@ -34,9 +34,9 @@ import common.utils.Conversion;
 import common.utils.date.DateUtils;
 import javafx.scene.control.TableView;
 
-public class WorkDir_Handler {
+public class WorkDirHandler {
 
-	private final String ERROR = WorkDir_Handler.class.getSimpleName();
+	private final String ERROR = WorkDirHandler.class.getSimpleName();
 	private boolean workDir;
 	private List<FileInfo> workDir_List = new ArrayList<>();
 

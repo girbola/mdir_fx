@@ -33,7 +33,7 @@ import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.FolderState;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-import com.girbola.workdir.WorkDir_Handler;
+import com.girbola.workdir.WorkDirHandler;
 
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -60,7 +60,7 @@ public class Model_main {
 	private final String ERROR = Model_main.class.getSimpleName();
 
 	private Tables tables;
-	private WorkDir_Handler workDir_Handler = new WorkDir_Handler();
+	private WorkDirHandler workDirHandler = new WorkDirHandler();
 	private Stage main_stage;
 
 	private AnchorPane main_container;
@@ -337,8 +337,8 @@ public class Model_main {
 	/**
 	 * @return the workDir_Handler
 	 */
-	public WorkDir_Handler getWorkDir_Handler() {
-		return this.workDir_Handler;
+	public WorkDirHandler getWorkDir_Handler() {
+		return this.workDirHandler;
 	}
 
 	public ScheduledService<Void> getMonitorExternalDriveConnectivity() {

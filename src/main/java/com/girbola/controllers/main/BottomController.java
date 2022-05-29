@@ -134,6 +134,11 @@ public class BottomController {
 		TableUtils.cleanTables(model_main.tables());
 	}
 
+	@FXML
+	private void moveFilesToSortedTable_btn_action(ActionEvent event) {
+//		TableUtils.checkTableDuplicates(null, null)
+	}
+	
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
 
 		boolean folderNeedsToUpdate = false;

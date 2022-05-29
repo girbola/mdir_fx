@@ -197,11 +197,13 @@ public class Main extends Application {
 				if (isValidOS) {
 					Messages.sprintf("Valid OS found");
 				} else {
-					Messages.sprintfError("Valid OS found");
+					Messages.sprintfError("Valid OS NOT found");
 				}
 
 				conf.loadConfig_GUI();
+				
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
+				
 				Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
 						conf.getConfiguration_db_fileName());
 				if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {

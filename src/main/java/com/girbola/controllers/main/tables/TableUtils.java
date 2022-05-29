@@ -19,11 +19,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
@@ -615,6 +617,53 @@ public class TableUtils {
 		return null;
 	}
 
+	public static boolean mergeSameFilesIntoFolderByDateFiles(FolderInfo folderInfoToFind, Tables table) {
+		if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty()
+				|| table.getAsItIs_table().getItems().isEmpty()) {
+			Messages.sprintfError("All tables contents are empty");
+			return false;
+		}
+		ListIterator<FolderInfo> folderInfoSortItListIterator = table.getSortIt_table().getItems().listIterator();
+		while (folderInfoSortItListIterator.hasNext()) {
+			FolderInfo folderInfo = folderInfoSortItListIterator.next();
+			ListIterator<FileInfo> fileInfoList_SortItListIterator = folderInfo.getFileInfoList().listIterator();
+//			while(fileInfoList_SortItListIterator.hasNext()) {
+//				findExistingFolder()
+//			}
+
+		}
+		return false;
+	}
+
+	private static void  compareTablesWithDateSimilarities(TableView<FolderInfo> tableView_src, TableView<FolderInfo> tableView_dest) {
+//		for(FolderInfo folderInfo_src : tableView_src.getItems()) {
+//			LocalDateTime minDate_src = DateUtils.parseLocalDateTimeFromString(folderInfo_src.getMinDate());
+//			LocalDateTime maxDate_src = DateUtils.parseLocalDateTimeFromString(folderInfo_src.getMaxDate());
+//			if(folderInfo_src.getFolderPath() != folderInfo_dest.getFolderPath())
+//			for(FolderInfo folderInfo_dest : tableView_dest) {
+//				LocalDateTime minDate_dest = DateUtils.parseLocalDateTimeFromString(folderInfo_dest.getMinDate());
+//				LocalDateTime maxDate_dest = DateUtils.parseLocalDateTimeFromString(folderInfo_dest.getMaxDate());
+//					
+//			}
+					
+//		}
+	}
+	
+//	private static FileInfo findFileInfoFolderInfo(Tables table) {
+//		for (FolderInfo fileInfo : table.getSorted_table().getItems()) {
+//
+//			if (!fileInfo.isBad()) {
+////				findFileInfoFolderInfo
+//			}
+//
+//			for (FolderInfo folderInfo_sorted : table.getItems()) {
+//				for (FileInfo fileInfo_sorted : folderInfo_sorted.getFileInfoList()) {
+//
+//				}
+//			}
+//		}
+//	}
+
 	public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
 		if (table.getItems().isEmpty()) {
 			return false;
@@ -821,18 +870,19 @@ public class TableUtils {
 
 	public static void cleanTables(Tables tables) {
 		boolean sorted = cleanTable(tables.getSorted_table());
-		if(sorted) {
+		if (sorted) {
 			refreshTableContent(tables.getSorted_table());
 		}
 		boolean sortit = cleanTable(tables.getSortIt_table());
-		if(sortit) {
+		if (sortit) {
 			refreshTableContent(tables.getSortIt_table());
 		}
 		boolean asitis = cleanTable(tables.getAsItIs_table());
-		if(asitis) {
+		if (asitis) {
 			refreshTableContent(tables.getAsItIs_table());
 		}
 	}
+
 	private static boolean cleanTable(TableView<FolderInfo> table) {
 
 		ObservableList<FolderInfo> toRemove = FXCollections.observableArrayList();
@@ -840,7 +890,7 @@ public class TableUtils {
 			if (folderInfo.getFileInfoList().size() == 0) {
 				toRemove.add(folderInfo);
 				Messages.sprintf("TOREMOVE: " + folderInfo.getFolderPath() + " FILES: " + folderInfo.getFolderSize());
-			} 
+			}
 		}
 		table.getItems().removeAll(toRemove);
 		return true;
