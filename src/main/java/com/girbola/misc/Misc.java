@@ -7,6 +7,7 @@
 package com.girbola.misc;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.configuration.Configuration_defaults.programName;
 import static com.girbola.messages.Messages.warningText;
 
 import java.io.File;
@@ -15,6 +16,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +38,15 @@ public class Misc {
 		String os = System.getProperty("os.name").toLowerCase();
 		Messages.sprintf("OS is: " + os);
 		if (os.contains("win") || os.contains("linux")) {
-			// setNative_Library_Search_Path("C:\\Program Files\\");
+			Path configPath = Paths.get(System.getProperty("user.home") + File.separator + ".mdir");
+			try {
+				Files.createDirectories(configPath);
+				Main.conf.setAppDataPath(Paths.get(System.getProperty("user.home") + File.separator + ".mdir"));
+			} catch (IOException e) {
+				Messages.warningText(Main.bundle.getString("cannotCreateConfigFile"));
+				e.printStackTrace();
+			}
+			
 			return true;
 		} else {
 			Main.setProcessCancelled(true);
@@ -45,7 +57,8 @@ public class Misc {
 	}
 
 	public static boolean isUnix() {
-		if (System.getProperty("os.name").toLowerCase().contains("nix")|| System.getProperty("os.name").toLowerCase().contains("linux")) {
+		if (System.getProperty("os.name").toLowerCase().contains("nix")
+				|| System.getProperty("os.name").toLowerCase().contains("linux")) {
 			return true;
 		}
 		return false;
@@ -57,6 +70,7 @@ public class Misc {
 		}
 		return false;
 	}
+
 //Tee merge & move tools joka hakee vasemmalta Sortit päivät Sortediin
 	public static boolean isWindows() {
 		if (System.getProperty("os.name").toLowerCase().contains("win")) {

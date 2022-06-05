@@ -35,7 +35,7 @@ public class Configuration extends Configuration_defaults {
 
 	private static final String ERROR = Configuration.class.getSimpleName();
 
-	private Model_main model;
+	private Model_main model_Main;
 
 	private final String programName = "MDir - Image and Video Organizer";
 
@@ -133,7 +133,7 @@ public class Configuration extends Configuration_defaults {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 
-		Configuration_SQL_Utils.loadTables(connection, model.tables());
+		Configuration_SQL_Utils.loadTables(connection, model_Main.tables());
 		try {
 			connection.close();
 		} catch (Exception e) {
@@ -163,10 +163,10 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public void setModel(Model_main model) {
-		this.model = model;
+		this.model_Main = model;
 	}
 
 	public Model_main getModel() {
-		return this.model;
+		return this.model_Main;
 	}
 }

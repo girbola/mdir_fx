@@ -45,6 +45,7 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -74,10 +75,12 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -88,7 +91,7 @@ public class TableController {
 
 	private Model_main model_main;
 	private Model_CollectDialog model_CollectDialog;
-	
+
 	private Window owner;
 
 	private final String ERROR = TableController.class.getSimpleName();
@@ -119,8 +122,7 @@ public class TableController {
 	private Button select_invert_btn;
 	@FXML
 	private Button select_none_btn;
-	@FXML
-	private Button select_dateDifference_btn;
+
 //	@FXML
 //	private Button copySelected_btn;
 //	@FXML
@@ -187,11 +189,14 @@ public class TableController {
 
 	@FXML
 	private MenuItem reload_all_mi;
-
+	@FXML
+	private MenuItem select_dateDifference_btn;
 	@FXML
 	private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
 	@FXML
 	private TableColumn<FolderInfo, Boolean> connected_col;
+	@FXML
+	private VBox table_Vbox;
 	@FXML
 	private TableView<FolderInfo> table;
 	@FXML
@@ -513,6 +518,17 @@ public class TableController {
 		table.setEditable(true);
 		table.setPlaceholder(new Label(bundle.getString("tableContentEmpty")));
 		hide_btn_iv.setImage(GUI_Methods.loadImage("showtable.png", GUIPrefs.BUTTON_WIDTH));
+		table_Vbox.setId("table_vbox_" + tableType);
+		table_Vbox.setFillWidth(true);
+
+//		table_Vbox.widthProperty().addListener(new ChangeListener<Number>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+//				table.setPrefWidth(Math.floor((double) newValue));
+//			}
+//		
+//		});
 		table.setId(tableType);
 		table.setItems(data_obs);
 		model_main.tables().setDrag(table);
@@ -715,16 +731,15 @@ public class TableController {
 					select_good_btn.setTooltip(select_good_btn_tooltip);
 					select_invert_btn.setTooltip(select_invert_btn_tooltip);
 					select_none_btn.setTooltip(select_none_btn_tooltip);
-					select_dateDifference_btn.setTooltip(select_dateDifference_tooltip);
 
 					if (tableType == TableType.ASITIS.getType()) {
-						tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
 						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
 					} else if (tableType == TableType.SORTIT.getType()) {
-						tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
 						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
 					} else if (tableType == TableType.SORTED.getType()) {
-						tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
+						tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
 						tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
 					}
 				} else {
@@ -733,12 +748,16 @@ public class TableController {
 					hideTooltip(select_good_btn);
 					hideTooltip(select_invert_btn);
 					hideTooltip(select_none_btn);
-					hideTooltip(select_dateDifference_btn);
 					hideTooltip(select_all_btn);
 				}
 			}
-
 		});
+//		
+//		if(conf.tableIsHidden(tableType)) {
+//			ImageView iv = (ImageView) hide_btn.getGraphic();
+//			iv.setImage(model_main.tables().getHideButtons().getShow_im());
+//			hide_btn.setGraphic(iv);
+//		}
 	}
 
 	private void hideTooltip(Control control) {

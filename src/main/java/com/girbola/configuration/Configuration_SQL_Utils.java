@@ -45,6 +45,11 @@ public class Configuration_SQL_Utils {
 	public static final String imageViewYPos = "imageViewYPos";
 
 	public static final String workDir = "workDir";
+
+	public static final String tableShow_sortIt = "tableShow_sortIt";
+	public static final String tableShow_sorted = "tableShow_sorted";
+	public static final String tableShow_asItIs = "tableShow_asItIs";
+
 	public static final String workDirSerialNumber = "workDirSerialNumber";
 
 	public static boolean createConfiguration_Table(Connection connection) {
@@ -75,7 +80,10 @@ public class Configuration_SQL_Utils {
 					+ imageViewXPos + " DOUBLE,"
 					+ imageViewYPos + " DOUBLE,"
 					+ workDirSerialNumber + " STRING, "
-		    	    + workDir + " STRING)";
+		    	    + workDir + " STRING, "
+		    	    + tableShow_sortIt + " BOOLEAN,"
+		    	    + tableShow_sorted + " BOOLEAN,"
+		    	    + tableShow_asItIs + " BOOLEAN)";
 			
 			//@formatter:on
 			Statement stmt = connection.createStatement();
@@ -134,6 +142,11 @@ public class Configuration_SQL_Utils {
 				Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
 						+ rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips()
 						+ " configuration.: " + configuration.getWorkDir());
+
+				configuration.setTableShow_sortIt(Boolean.parseBoolean(rs.getString(tableShow_sortIt)));
+				configuration.setTableShow_sorted(Boolean.parseBoolean(rs.getString(tableShow_sorted)));
+				configuration.setTableShow_asItIs(Boolean.parseBoolean(rs.getString(tableShow_asItIs)));
+
 				return true;
 			}
 			connection.commit();
@@ -242,7 +255,7 @@ public class Configuration_SQL_Utils {
 				Messages.sprintf("insertAllProgram_config connection were connected");
 				try {
 				//@formatter:off
-				String sql = "REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
+				String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIGURATION.getType() 
 				+ "('" + id + "', " 
 				+ "'" + betterQualityThumbs + "',"
 				+ "'" + confirmOnExit + "', " 
@@ -261,8 +274,11 @@ public class Configuration_SQL_Utils {
 				+ "'" + imageViewXPos+ "', "
 				+ "'" + imageViewYPos+ "', "
 				+ "'" + workDirSerialNumber + "', "
-				+ "'" + workDir + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "'" + workDir + "'," 
+				+ "'" + tableShow_sortIt + "',"
+				+ "'" +tableShow_sorted + "',"
+				+ "'" +tableShow_asItIs + "')" 
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -285,6 +301,10 @@ public class Configuration_SQL_Utils {
 					pstmt.setDouble(17, configuration.getImageViewYPosition());
 					pstmt.setString(18, configuration.getWorkDirSerialNumber());
 					pstmt.setString(19, configuration.getWorkDir());
+					pstmt.setBoolean(20, configuration.getTableShow_sortIt());
+					pstmt.setBoolean(21, configuration.getTableShow_sorted());
+					pstmt.setBoolean(22, configuration.getTableShow_asItIs());
+
 					Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
 					pstmt.executeUpdate();
 

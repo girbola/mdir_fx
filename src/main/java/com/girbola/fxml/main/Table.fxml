@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
 		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
 			<children>
@@ -69,6 +69,7 @@
                         <MenuItem fx:id="mergeCopy_MenuItem" mnemonicParsing="false" onAction="#mergeCopy_btn_action" text="Merge selection" />
                         <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
                         <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
+                        <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" text="DD" />
                     </items>
                      <font>
                         <Font size="10.0" />
@@ -149,11 +150,6 @@
                         <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
                      </tooltip>
       				</Button>
-      				<Button fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" prefHeight="25.0" text="DD">
-                     <tooltip>
-                        <Tooltip fx:id="select_dateDifference_tooltip" text="%selectDateDifferencesTableTooltip" />
-                     </tooltip>
-                  </Button>
                </children>
                <padding>
                   <Insets bottom="1.0" left="2.0" top="1.0" />

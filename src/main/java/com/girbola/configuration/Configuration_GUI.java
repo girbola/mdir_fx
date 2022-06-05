@@ -26,6 +26,34 @@ class Configuration_GUI {
 	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
 	private BooleanProperty savingThumb = new SimpleBooleanProperty(true);
 
+	private BooleanProperty tableShow_sortIt = new SimpleBooleanProperty(true);
+	private BooleanProperty tableShow_sorted = new SimpleBooleanProperty(true);
+	private BooleanProperty tableShow_asItIs = new SimpleBooleanProperty(true);
+
+	public boolean getTableShow_sortIt() {
+		return this.tableShow_sortIt.get();
+	}
+
+	public void setTableShow_sortIt(boolean tableShow_sortIt) {
+		this.tableShow_sortIt.set(tableShow_sortIt);
+	}
+
+	public boolean getTableShow_sorted() {
+		return this.tableShow_sorted.get();
+	}
+
+	public void setTableShow_sorted(boolean tableShow_sorted) {
+		this.tableShow_sorted.set(tableShow_sorted);
+	}
+
+	public boolean getTableShow_asItIs() {
+		return this.tableShow_asItIs.get();
+	}
+
+	public void setTableShow_asItIs(boolean tableShow_asItIs) {
+		this.tableShow_asItIs.set(tableShow_asItIs);
+	}
+
 	private SimpleDoubleProperty windowStartPosX = new SimpleDoubleProperty(-1);
 	private SimpleDoubleProperty windowStartPosY = new SimpleDoubleProperty(-1);
 

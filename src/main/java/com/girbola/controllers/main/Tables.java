@@ -74,7 +74,7 @@ public class Tables {
 	private TableView<FolderInfo> asitis_table;
 
 	private AnchorPane tables_rootPane;
-	
+
 	public AnchorPane getTables_rootPane() {
 		return tables_rootPane;
 	}
@@ -82,17 +82,18 @@ public class Tables {
 	public void setTables_rootPane(AnchorPane tables_rootPane) {
 		this.tables_rootPane = tables_rootPane;
 	}
+
 	private TableStatistic sortit_TableStatistic;
 	private TableStatistic sorted_TableStatistic;
 	private TableStatistic asitis_TableStatistic;
 
-	private HBox tables_container;
+//	private HBox tables_container;
 
 	boolean isSameTable = false;
 
 	protected Tables(Model_main aModel) {
 		this.model_Main = aModel;
-		
+
 		sprintf("Tables instantiated...");
 	}
 
@@ -100,6 +101,7 @@ public class Tables {
 		hideButtons = new HideButtons(this.model_Main);
 		sprintf("Tables instantiated...");
 	}
+
 	private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
 		for (FolderInfo tv : table.getItems()) {
 			if (tv.getFolderPath().equals(f.toString())) {
@@ -246,17 +248,6 @@ public class Tables {
 						bundle.getString("removePermanently"));
 				dialog.initStyle(StageStyle.UNDECORATED);
 
-//				DialogPane dialogPane = new DialogPane();
-//				dialogPane.setPrefHeight(Math.floor(200 / 1.5));
-//				dialogPane.setContentText();
-//				dialog.setDialogPane(dialogPane);
-//
-//				ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonBar.ButtonData.YES);
-//				ButtonType no = new ButtonType(bundle.getString("no"), ButtonBar.ButtonData.NO);
-//				ButtonType cancel = new ButtonType(bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
-
-//				dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
-
 				Optional<ButtonType> result = dialog.showAndWait();
 				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
@@ -351,7 +342,6 @@ public class Tables {
 		}
 		this.sortIt_table = sortIt_table;
 		Messages.sprintf("table was: " + sortIt_table);
-
 	}
 
 	public void setSorted_table(TableView<FolderInfo> sorted_table) {
@@ -368,51 +358,54 @@ public class Tables {
 		this.asitis_table = asitis_table;
 	}
 
-	void setTables_Container(HBox tables_container) {
-		this.tables_container = tables_container;
-		for (Node n : tables_container.getChildren()) {
-			if (n instanceof VBox) {
+//	void setTables_Container(HBox tables_container) {
+//		this.tables_container = tables_container;
+//		for (Node n : tables_container.getChildren()) {
+//			if (n instanceof VBox) {
+//
+//				for (Node vbox : ((VBox) n).getChildren()) {
+//					if (vbox instanceof TableView) {
+//						sprintf("TableView found!: " + vbox);
+//						HBox.setHgrow(vbox, Priority.ALWAYS);
+//						HBox.setHgrow(vbox, Priority.ALWAYS);
+//						HBox.setHgrow(vbox, Priority.ALWAYS);
+//
+//						VBox.setVgrow(vbox, Priority.ALWAYS);
+//						VBox.setVgrow(vbox, Priority.ALWAYS);
+//						VBox.setVgrow(vbox, Priority.ALWAYS);
+//
+//						HBox.setHgrow(n, Priority.ALWAYS);
+//						HBox.setHgrow(n, Priority.ALWAYS);
+//						HBox.setHgrow(n, Priority.ALWAYS);
+//
+//						VBox.setVgrow(n, Priority.ALWAYS);
+//						VBox.setVgrow(n, Priority.ALWAYS);
+//						VBox.setVgrow(n, Priority.ALWAYS);
+//
+//					}
+//				}
+//
+//			}
+//		}
+//	}
 
-				for (Node vbox : ((VBox) n).getChildren()) {
-					if (vbox instanceof TableView) {
-						sprintf("TableView found!: " + vbox);
-						HBox.setHgrow(vbox, Priority.ALWAYS);
-						HBox.setHgrow(vbox, Priority.ALWAYS);
-						HBox.setHgrow(vbox, Priority.ALWAYS);
+//	HBox getTables_Container() {
+//		return this.tables_container;
+//	}
 
-						VBox.setVgrow(vbox, Priority.ALWAYS);
-						VBox.setVgrow(vbox, Priority.ALWAYS);
-						VBox.setVgrow(vbox, Priority.ALWAYS);
-
-						HBox.setHgrow(n, Priority.ALWAYS);
-						HBox.setHgrow(n, Priority.ALWAYS);
-						HBox.setHgrow(n, Priority.ALWAYS);
-
-						VBox.setVgrow(n, Priority.ALWAYS);
-						VBox.setVgrow(n, Priority.ALWAYS);
-						VBox.setVgrow(n, Priority.ALWAYS);
-
-					}
-				}
-
+	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(
+			FolderInfo folderInfo) {
+		Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+			public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+				return new EditingCell(model_Main, tableColumn);
 			}
-		}
+		};
+		return kala;
 	}
 
-	HBox getTables_Container() {
-		return this.tables_container;
-	}
-public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(FolderInfo folderInfo) {
-	Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
-			return new EditingCell(model_Main,tableColumn);
-		}
-	};
-	return kala;
-}
 	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
 		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
-			return new EditingCell(model_Main,tableColumn);
+			return new EditingCell(model_Main, tableColumn);
 		}
 	};
 

@@ -65,6 +65,7 @@ public class HideButtons {
 	private Bounds button_Bounds;
 
 	private Image show_im;
+
 	private Image hide_im;
 
 	public HideButtons(Model_main model) {
@@ -104,18 +105,26 @@ public class HideButtons {
 		return this.asitis_buttons_hbox;
 	}
 
-	private void setShowTableButton(Button button, boolean value) {
+	public void setShowTableButton(Button button, boolean value) {
 		ImageView iv = (ImageView) button.getGraphic();
 		iv.setImage(show_im);
 		button.setGraphic(iv);
 		setButtonsState(button, value);
 	}
 
-	private void setHideTableButton(Button button, boolean value) {
+	public void setHideTableButton(Button button, boolean value) {
 		ImageView iv = (ImageView) button.getGraphic();
 		iv.setImage(hide_im);
 		button.setGraphic(iv);
 		setButtonsState(button, value);
+	}
+
+	public Image getShow_im() {
+		return show_im;
+	}
+
+	public Image getHide_im() {
+		return hide_im;
 	}
 
 	private void updateTableWidths() {
@@ -153,10 +162,12 @@ public class HideButtons {
 							if (buttons_Node.getId().equals(button.getId())) {
 								if (showButton) {
 									setRegionSize(table_VBox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+//									setRegionSize(table_Node, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 									Messages.sprintf("showButton setting regionsize: " + button_Bounds.getWidth()
 											+ " height: " + button_Bounds.getHeight());
 								} else {
 									setRegionSize(table_VBox, button_Bounds.getWidth(), button_Bounds.getHeight());
+//									setRegionSize(table_Node, button_Bounds.getWidth(), button_Bounds.getHeight());
 									Messages.sprintf("!showButton setting regionsize: " + button_Bounds.getWidth()
 											+ " height: " + button_Bounds.getHeight());
 								}
@@ -227,12 +238,12 @@ public class HideButtons {
 //	}
 
 	void hide_show_table(Button button, String tableType) {
+		if (visible == 1) {
+			return;
+		}
 		if (tableType.equals(TableType.ASITIS.getType())) {
 			Messages.sprintf("Asitis button pressed");
 			if (asitis_show.get()) {
-				if (visible == 1) {
-					return;
-				}
 				asitis_show.set(false);
 				updateTableVisible();
 				sprintf("asitis_show? " + asitis_show.get());
@@ -249,9 +260,6 @@ public class HideButtons {
 		} else if (tableType.equals(TableType.SORTED.getType())) {
 			Messages.sprintf("SORTED button pressed");
 			if (sorted_show.get()) {
-				if (visible == 1) {
-					return;
-				}
 				sorted_show.set(false);
 				updateTableVisible();
 				sprintf("sorted_show? " + sorted_show.get());
@@ -268,9 +276,6 @@ public class HideButtons {
 			Messages.sprintf("SORTIT button pressed");
 			if (sortit_show.get()) {
 				// Hiding
-				if (visible == 1) {
-					return;
-				}
 				sortit_show.set(false);
 				updateTableVisible();
 				setHideTableButton(button, sortit_show.get());
@@ -321,20 +326,19 @@ public class HideButtons {
 			}
 		}
 		Messages.sprintf("tables_rootPaneNodeLayoutBounds WIDTH: " + tables_rootPaneNodeLayoutBounds.getWidth());
-//		maxWidth .set((Main.getMain_stage().getMaxWidth()));
-//		maxWidth.set( Math.floor(Main.getMain_stage().getMaxWidth()) / visible);
 		sprintf("Visible table total is: " + visible + " maxWidth " + maxWidth.get());
 
 	}
 
 	private void setTableViewWidth(TableView<FolderInfo> table) {
+		int hidden = 3 - visible;
 		Platform.runLater(() -> {
 			table.setPrefWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (visible + 1)));
+					- (button_Bounds.getWidth() * (hidden)));
 			table.setMinWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (visible + 1)));
+					- (button_Bounds.getWidth() * (hidden)));
 			table.setMaxWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (visible + 1)));
+					- (button_Bounds.getWidth() * (hidden)));
 		});
 	}
 
