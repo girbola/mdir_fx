@@ -33,7 +33,6 @@ import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -48,9 +47,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
@@ -65,7 +61,7 @@ public class Tables {
 
 	private Model_main model_Main;
 
-	private HideButtons hideButtons;
+	private HideButtons2 hideButtons;
 	private TableStatistic tableStatistic;
 	private Sorter sorter;
 
@@ -98,8 +94,9 @@ public class Tables {
 	}
 
 	public void init() {
-		hideButtons = new HideButtons(this.model_Main);
+		hideButtons = new HideButtons2(this.model_Main);
 		sprintf("Tables instantiated...");
+	
 	}
 
 	private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
@@ -349,6 +346,7 @@ public class Tables {
 			Messages.sprintf("table was null!");
 		}
 		this.sorted_table = sorted_table;
+		sprintf("Table sorted_table name is: " + sorted_table.getParent().getParent().getParent());
 	}
 
 	public void setAsItIs_table(TableView<FolderInfo> asitis_table) {
@@ -489,7 +487,7 @@ public class Tables {
 
 	};
 
-	public HideButtons getHideButtons() {
+	public HideButtons2 getHideButtons() {
 		return this.hideButtons;
 	}
 

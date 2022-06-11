@@ -97,7 +97,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-				primaryStage.setUserData(model_main);
+		primaryStage.setUserData(model_main);
 		mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
@@ -112,12 +112,12 @@ public class Main extends Application {
 				conf.loadConfig();
 				System.out.println("Java version: " + System.getProperty("java.version"));
 				System.out.println("JavaFX version: " + System.getProperty("javafx.version"));
-				
+
 				Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
 						+ conf.getWorkDir());
 
 				FXMLLoader main_loader = null;
-				
+
 				Parent parent = null;
 				try {
 					ResourceBundle bundle2 = bundle;
@@ -150,7 +150,7 @@ public class Main extends Application {
 				primaryStage.setY(Main.conf.getWindowStartPosY());
 				primaryStage.setWidth(Main.conf.getWindowStartWidth());
 				primaryStage.setHeight(Main.conf.getWindowStartHeight());
-				
+
 				scene_Switcher.setWindow(primaryStage);
 				scene_Switcher.setScene_main(primaryScene);
 
@@ -176,7 +176,7 @@ public class Main extends Application {
 
 				});
 				lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
-				Platform.runLater(()-> {
+				Platform.runLater(() -> {
 
 					lpt.setTask(mainTask);
 //					lpt.showLoadStage();
@@ -201,9 +201,9 @@ public class Main extends Application {
 				}
 
 				conf.loadConfig_GUI();
-				
+
 				model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
-				
+
 				Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
 						conf.getConfiguration_db_fileName());
 				if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
@@ -280,6 +280,16 @@ public class Main extends Application {
 								}
 							});
 							TableUtils.calculateTableViewsStatistic(model_main.tables());
+							getMain_stage().maximizedProperty().addListener(new ChangeListener<Boolean>() {
+
+							    @Override
+							    public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+							    	model_main.tables().getHideButtons().updateTableVisible();
+							        System.out.println("model_main.tables().getHideButtons().updateTableVisible();: " + t1.booleanValue());
+							    }
+							});
+							
+							
 //							conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}
@@ -335,7 +345,8 @@ public class Main extends Application {
 					lpt.closeStage();
 				}
 				primaryStage.setOnCloseRequest(model_main.dontExit);
-				Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(), true);
+				Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
+						true);
 				model_main.exitProgram_NOSAVE();
 			}
 		});
@@ -502,8 +513,8 @@ public class Main extends Application {
 	public static void centerWindowDialog(Stage stage) {
 		stage.setOnShowing(ev -> {
 			Platform.runLater(() -> {
-				System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: "
-						+ stage.getWidth() + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
+				System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: " + stage.getWidth()
+						+ " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
 				System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: "
 						+ stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
 				stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
@@ -512,7 +523,7 @@ public class Main extends Application {
 						- stage.getHeight() / 2));
 			});
 		});
-		
+
 	}
 
 }

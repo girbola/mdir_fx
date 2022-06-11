@@ -52,9 +52,9 @@ public class HideButtons {
 	private HBox sorted_buttons_hbox;
 	private HBox asitis_buttons_hbox;
 
-	private SimpleBooleanProperty asitis_show = new SimpleBooleanProperty(true);
-	private SimpleBooleanProperty sortit_show = new SimpleBooleanProperty(true);
-	private SimpleBooleanProperty sorted_show = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty asitis_show_property = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty sortit_show_property = new SimpleBooleanProperty(true);
+	private SimpleBooleanProperty sorted_show_property = new SimpleBooleanProperty(true);
 
 	private Model_main model_Main;
 
@@ -243,48 +243,47 @@ public class HideButtons {
 		}
 		if (tableType.equals(TableType.ASITIS.getType())) {
 			Messages.sprintf("Asitis button pressed");
-			if (asitis_show.get()) {
-				asitis_show.set(false);
+			if (asitis_show_property.get()) {
+				asitis_show_property.set(false);
+				sprintf("asitis_show? " + asitis_show_property.get());
+				setHideTableButton(button, asitis_show_property.get());
+				model_Main.tables().getAsItIs_table().setVisible(asitis_show_property.get());
 				updateTableVisible();
-				sprintf("asitis_show? " + asitis_show.get());
-				setHideTableButton(button, asitis_show.get());
-				model_Main.tables().getAsItIs_table().setVisible(asitis_show.get());
-
 			} else {
-				sprintf("asitis_show? " + asitis_show.get());
-				asitis_show.set(true);
-				setShowTableButton(button, asitis_show.get());
-				model_Main.tables().getAsItIs_table().setVisible(asitis_show.get());
+				asitis_show_property.set(true);
+				sprintf("asitis_show? " + asitis_show_property.get());
+				setShowTableButton(button, asitis_show_property.get());
+				model_Main.tables().getAsItIs_table().setVisible(asitis_show_property.get());
 				updateTableVisible();
 			}
 		} else if (tableType.equals(TableType.SORTED.getType())) {
 			Messages.sprintf("SORTED button pressed");
-			if (sorted_show.get()) {
-				sorted_show.set(false);
+			if (sorted_show_property.get()) {
+				sorted_show_property.set(false);
 				updateTableVisible();
-				sprintf("sorted_show? " + sorted_show.get());
-				setHideTableButton(button, sorted_show.get());
-				model_Main.tables().getSorted_table().setVisible(sorted_show.get());
+				sprintf("sorted_show? " + sorted_show_property.get());
+				setHideTableButton(button, sorted_show_property.get());
+				model_Main.tables().getSorted_table().setVisible(sorted_show_property.get());
 			} else {
-				sorted_show.set(true);
-				sprintf("sorted_show? " + sorted_show);
-				setShowTableButton(button, sorted_show.get());
-				model_Main.tables().getSorted_table().setVisible(sorted_show.get());
+				sorted_show_property.set(true);
+				sprintf("sorted_show? " + sorted_show_property);
+				setShowTableButton(button, sorted_show_property.get());
+				model_Main.tables().getSorted_table().setVisible(sorted_show_property.get());
 				updateTableVisible();
 			}
 		} else if (tableType.equals(TableType.SORTIT.getType())) {
 			Messages.sprintf("SORTIT button pressed");
-			if (sortit_show.get()) {
+			if (sortit_show_property.get()) {
 				// Hiding
-				sortit_show.set(false);
+				sortit_show_property.set(false);
 				updateTableVisible();
-				setHideTableButton(button, sortit_show.get());
-				model_Main.tables().getSortIt_table().setVisible(sortit_show.get());
+				setHideTableButton(button, sortit_show_property.get());
+				model_Main.tables().getSortIt_table().setVisible(sortit_show_property.get());
 			} else {
 				// Showing
-				sortit_show.set(true);
-				setShowTableButton(button, sortit_show.get());
-				model_Main.tables().getSortIt_table().setVisible(sortit_show.get());
+				sortit_show_property.set(true);
+				setShowTableButton(button, sortit_show_property.get());
+				model_Main.tables().getSortIt_table().setVisible(sortit_show_property.get());
 				updateTableVisible();
 			}
 		} else {
@@ -292,16 +291,16 @@ public class HideButtons {
 		}
 	}
 
-	private void updateTableVisible() {
+	public void updateTableVisible() {
 		visible = 0;
 
-		if (asitis_show.get()) {
+		if (asitis_show_property.get()) {
 			visible++;
 		}
-		if (sorted_show.get()) {
+		if (sorted_show_property.get()) {
 			visible++;
 		}
-		if (sortit_show.get()) {
+		if (sortit_show_property.get()) {
 			visible++;
 		}
 		sprintf("Visible is: " + visible);
@@ -309,18 +308,18 @@ public class HideButtons {
 
 //		Messages.sprintf("tables_rootPaneNodeLayoutBounds WIDTH: " + tables_rootPaneNodeLayoutBounds.getWidth());
 		if (visible >= 1) {
-			if (asitis_show.get() == true) {
-				setTableViewWidth(model_Main.tables().getSorted_table());
+			if (asitis_show_property.get() == true) {
+				setTableViewWidth(model_Main.tables().getAsItIs_table(), true);
 				Messages.sprintf("asitis_show: " + model_Main.tables().getAsItIs_table().getPrefWidth() + " prefWidth: "
 						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
 			}
-			if (sorted_show.get() == true) {
-				setTableViewWidth(model_Main.tables().getSorted_table());
+			if (sorted_show_property.get() == true) {
+				setTableViewWidth(model_Main.tables().getSorted_table(), true);
 				Messages.sprintf("sorted_show: " + model_Main.tables().getSorted_table().getPrefWidth() + " prefwidth: "
 						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
 			}
-			if (sortit_show.get() == true) {
-				setTableViewWidth(model_Main.tables().getSortIt_table());
+			if (sortit_show_property.get() == true) {
+				setTableViewWidth(model_Main.tables().getSortIt_table(), true);
 				Messages.sprintf("sortit_show: " + model_Main.tables().getSortIt_table().getPrefWidth() + " prefWidth: "
 						+ Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible));
 			}
@@ -330,16 +329,29 @@ public class HideButtons {
 
 	}
 
-	private void setTableViewWidth(TableView<FolderInfo> table) {
+	private void setTableViewWidth(TableView<FolderInfo> table, boolean show) {
 		int hidden = 3 - visible;
-		Platform.runLater(() -> {
-			table.setPrefWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (hidden)));
-			table.setMinWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (hidden)));
-			table.setMaxWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
-					- (button_Bounds.getWidth() * (hidden)));
-		});
-	}
+		if (!show) {
+			Platform.runLater(() -> {
+//			table.setPrefWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+//					- (button_Bounds.getWidth() * (hidden)));
+				table.setPrefWidth(0);
+				table.setMinWidth(0);
+				table.setMaxWidth(0);
+//				table.setMaxWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+//						- (button_Bounds.getWidth() * (hidden)));
+			});
+		} else {
+			Platform.runLater(() -> {
+//			table.setPrefWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+//					- (button_Bounds.getWidth() * (hidden)));
+				table.setPrefWidth(Region.USE_PREF_SIZE);
+				table.setMinWidth(Region.USE_PREF_SIZE);
+//				table.setMaxWidth(Region.USE_COMPUTED_SIZE);
+				table.setMaxWidth(Math.floor(tables_rootPaneNodeLayoutBounds.getWidth() / visible)
+						- (button_Bounds.getWidth() * (hidden)));
+			});
+		}
 
+	}
 }

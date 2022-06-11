@@ -10,7 +10,9 @@ import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -67,7 +69,6 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public void loadConfig() {
-
 		if (!Files.exists(Paths.get(getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
 			boolean sqlDatabaseCreated = conf.createConfiguration_db();
 			if (!sqlDatabaseCreated) {
@@ -79,7 +80,12 @@ public class Configuration extends Configuration_defaults {
 			}
 		} else {
 			Messages.sprintf("LOADING CONFIGURATION DATABASE");
-			conf.loadConfig_SQL();
+			try {
+				conf.loadConfig_SQL();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -122,30 +128,54 @@ public class Configuration extends Configuration_defaults {
 
 	public Rectangle2D getScreenBounds() {
 
-			ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(Main.scene_Switcher.getScene_main().getX(), Main.scene_Switcher.getScene_main().getY(),
-					Main.scene_Switcher.getScene_main().getWidth(), Main.scene_Switcher.getScene_main().getHeight());
-			return screensForRectangle.get(0).getBounds();
+		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(
+				Main.scene_Switcher.getScene_main().getX(), Main.scene_Switcher.getScene_main().getY(),
+				Main.scene_Switcher.getScene_main().getWidth(), Main.scene_Switcher.getScene_main().getHeight());
+		return screensForRectangle.get(0).getBounds();
 //			return Screen.getPrimary().getBounds();
 	}
 
 	public void loadConfig_GUI() {
-		Messages.sprintf("loadConfig_GUI Started");
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getConfiguration_db_fileName());
+		Messages.sprintf("loadConfig_GUI Started: " + Main.conf.getAppDataPath());
+		Connection connection = null;
+		boolean createDatabase = false;
+		Path configFile = Paths
+				.get(Main.conf.getAppDataPath() + File.separator);
+		if (!Files.exists(configFile) && Files.isWritable(configFile)) {
+			try {
+				Path createDirectories = Files.createDirectories(configFile);
+				if (!Files.exists(createDirectories)) {
+					Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateConfigFile"), null,
+							Misc.getLineNumber(), true);
+				} else {
+					createDatabase = true;
+				}
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+					Main.conf.getConfiguration_db_fileName());
 
-		Configuration_SQL_Utils.loadTables(connection, model_Main.tables());
-		try {
-			connection.close();
-		} catch (Exception e) {
-			Messages.sprintfError("loadConfig_GUI error with closing SQL database");
+			if (createDatabase) {
+				Configuration_SQL_Utils.createConfiguration_Table(connection);
+			} else {
+				Configuration_SQL_Utils.loadTables(connection, model_Main.tables());
+			}
+//			try {
+//				connection.close();
+//			} catch (Exception e) {
+//				Messages.sprintfError("loadConfig_GUI error with closing SQL database");
+//			}
 		}
 	}
 
-	public boolean loadConfig_SQL() {
+	public boolean loadConfig_SQL() throws SQLException {
 		Messages.sprintf("Loading SQL config: " + Main.conf.getWorkDir());
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		if (SQL_Utils.isDbConnected(connection)) {
+			connection.setAutoCommit(false);
 			Configuration_SQL_Utils.loadConfiguration(connection, Main.conf);
 			Messages.sprintf("Loading stopped. SQL config: " + Main.conf.getWorkDir());
 			try {

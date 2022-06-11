@@ -401,6 +401,7 @@ public class Configuration_SQL_Utils {
 			saveTableWidths(connection, pstmt, table.getSortIt_table().getColumns(), table.getSortIt_table().getId());
 			saveTableWidths(connection, pstmt, table.getSorted_table().getColumns(), table.getSorted_table().getId());
 			saveTableWidths(connection, pstmt, table.getAsItIs_table().getColumns(), table.getAsItIs_table().getId());
+			
 
 			pstmt.executeBatch();
 			pstmt.close();
@@ -445,7 +446,7 @@ public class Configuration_SQL_Utils {
 	}
 
 	public static boolean loadTableColumnsWidths(Connection connection, TableView<FolderInfo> table) {
-		Messages.sprintf("loadTableColumnsWidths started");
+		Messages.sprintf("loadTableColumnsWidths started: " + table.getId());
 //		final String tableId = table.getId();
 
 		String sql = "SELECT tableColumn, width FROM " + SQL_Enums.TABLES_COLS.getType() + " WHERE tableColumn = ?";

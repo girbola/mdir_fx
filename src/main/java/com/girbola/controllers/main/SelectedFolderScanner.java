@@ -6,13 +6,13 @@
  */
 package com.girbola.controllers.main;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
-
-import org.sqlite.SQLiteConnection;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.misc.Misc_GUI;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -35,11 +35,13 @@ public class SelectedFolderScanner {
 	}
 
 	public void save_SelectedFolders_toSQL() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getConfiguration_db_fileName());
 		SQL_Utils.createFoldersStatesDatabase(connection);
 		SQL_Utils.createSelectedFoldersTable(connection);
-		if(!SQL_Utils.isDbConnected(connection)) {
-			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database", null, Misc.getLineNumber(), false);
+		if (!SQL_Utils.isDbConnected(connection)) {
+			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database",
+					null, Misc.getLineNumber(), false);
 			return;
 		}
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
@@ -53,10 +55,21 @@ public class SelectedFolderScanner {
 	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+		Connection connection = null;
+		Path configFile = Paths
+				.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
+
+		try {
+			connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+					Main.conf.getConfiguration_db_fileName());
+		} catch (Exception e) {
+			Messages.sprintfError("Error connecting to database: " + configFile);
+		}
+		
 		if (connection == null) {
 			return false;
 		}
+		
 		if (SQL_Utils.isDbConnected(connection)) {
 			Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
 			SQL_Utils.loadFolders_list(connection, model_Main);
@@ -66,5 +79,4 @@ public class SelectedFolderScanner {
 			return false;
 		}
 	}
-
 }
