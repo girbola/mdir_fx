@@ -1,4 +1,5 @@
 /*
+
  @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
@@ -45,7 +46,7 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.Conversion;
-import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -75,11 +76,11 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -99,6 +100,11 @@ public class TableController {
 	private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
 
 	private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
+
+	private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
+
+	@FXML
+	private HBox showHideButton_hbox;
 
 	@FXML
 	private TextField tableDescription_tf;
@@ -168,6 +174,9 @@ public class TableController {
 	private Tooltip addToBatch_tooltip;
 	@FXML
 	private Tooltip resetSelectedFileInfos_btn_tooltip;
+
+	@FXML
+	private FlowPane tableInformation_flowpane;
 
 	@FXML
 	private MenuItem checkChanges_mi;
@@ -445,7 +454,26 @@ public class TableController {
 
 	@FXML
 	private void hide_btn_action(ActionEvent event) {
-		model_main.tables().getHideButtons().hide_show_table(hide_btn, tableType);
+		showHideButton_hbox.setVisible(true);
+		showTable.set(!showTable.get());
+
+		buttons_hbox.setVisible(!buttons_hbox.isVisible());
+		if (!showTable.get()) {
+			table_Vbox.setPrefWidth(35);
+			table_Vbox.setMinWidth(35);
+			table_Vbox.setMaxWidth(35);
+			table_Vbox.setFillWidth(false);
+		} else {
+			table_Vbox.setPrefWidth(Region.USE_COMPUTED_SIZE);
+			table_Vbox.setMinWidth(Region.USE_COMPUTED_SIZE);
+			table_Vbox.setMaxWidth(Region.USE_COMPUTED_SIZE);
+			table_Vbox.setFillWidth(true);
+		}
+
+		tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
+
+//		topMenuButtonFlowPane.setVisible(false);
+//		model_main.tables().getHideButtons().hide_show_table(hide_btn, tableType);
 	}
 
 	@FXML
@@ -518,7 +546,7 @@ public class TableController {
 		table.setEditable(true);
 		table.setPlaceholder(new Label(bundle.getString("tableContentEmpty")));
 		hide_btn_iv.setImage(GUI_Methods.loadImage("showtable.png", GUIPrefs.BUTTON_WIDTH));
-		table_Vbox.setId("table_vbox_" + tableType);
+		table_Vbox.setId("table_vbox");
 		table_Vbox.setFillWidth(true);
 
 //		table_Vbox.widthProperty().addListener(new ChangeListener<Number>() {

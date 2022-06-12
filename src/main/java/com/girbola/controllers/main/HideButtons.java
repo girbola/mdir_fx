@@ -32,6 +32,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
@@ -141,57 +142,110 @@ public class HideButtons {
 		button_Bounds = UI_Tools.getNodeLayoutBounds(button);
 
 		Node node = button.getParent().getParent(); // VBox - Buttons -
+		Messages.sprintf("Main for Table is : " + node.getId());
 
 		// TextField - Tables
+//		if (node instanceof VBox) {
+//			VBox table_VBox = (VBox) node;
+		int counter = 0;
 		if (node instanceof VBox) {
-			VBox table_VBox = (VBox) node;
-			for (Node table_Node : table_VBox.getChildren()) {
-				Messages.sprintf("table_Node VBOX Found:" + table_Node);
-				if (table_Node instanceof HBox) {
-					// HBox
-					HBox topButtons_HBox = (HBox) table_Node;
-					setRegionSize(topButtons_HBox, button_Bounds.getWidth(), button_Bounds.getHeight());
-					for (Node buttons_Node : topButtons_HBox.getChildren()) {
-						Messages.sprintf("buttons: " + buttons_Node);
-						// Show/hide Button
-						if (buttons_Node instanceof FlowPane) {
-							FlowPane controlButtons_FlowPane = (FlowPane) buttons_Node;
-							controlButtons_FlowPane.setVisible(!controlButtons_FlowPane.isVisible());
-						}
-						if (buttons_Node instanceof Button) {
-							if (buttons_Node.getId().equals(button.getId())) {
-								if (showButton) {
-									setRegionSize(table_VBox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-//									setRegionSize(table_Node, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-									Messages.sprintf("showButton setting regionsize: " + button_Bounds.getWidth()
-											+ " height: " + button_Bounds.getHeight());
-								} else {
-									setRegionSize(table_VBox, button_Bounds.getWidth(), button_Bounds.getHeight());
-//									setRegionSize(table_Node, button_Bounds.getWidth(), button_Bounds.getHeight());
-									Messages.sprintf("!showButton setting regionsize: " + button_Bounds.getWidth()
-											+ " height: " + button_Bounds.getHeight());
-								}
-							} else {
-								buttons_Node.setVisible(!buttons_Node.isVisible());
-							}
-						}
-
-						if (buttons_Node instanceof TextField) {
-							TextField tf = (TextField) buttons_Node;
-							tf.setVisible(!tf.isVisible());
-						}
-					}
+			Messages.sprintf("NOD??????????: " + node);
+			for (Node main_tableVBox_node : ((VBox) node).getChildren()) {
+				Messages.sprintf("COUNTER: " + counter + " show? " + showButton + " main_tableVBox_node:=========== "
+						+ main_tableVBox_node);
+				if (main_tableVBox_node instanceof HBox && main_tableVBox_node.getId().equals("buttons_hbox")) {
+					HBox hbox = (HBox) main_tableVBox_node;
+					handleShowHide(hbox, showButton);
+				} else if (main_tableVBox_node instanceof TableView<?>) {
+					Messages.sprintf("table" + main_tableVBox_node.getId());
+					TableView<?> tableView = (TableView<?>) main_tableVBox_node;
+					handleShowHide(tableView, showButton);
+				} else if (main_tableVBox_node instanceof FlowPane
+						&& main_tableVBox_node.getId().equals("tableInformation_flowpane")) {
+					FlowPane main_tableVBox_node_flowPane = (FlowPane) main_tableVBox_node;
+					handleShowHide(main_tableVBox_node_flowPane, showButton);
+				} else {
+					Messages.sprintfError("NODE NOT FOUND: " + main_tableVBox_node);
 				}
-				if (table_Node instanceof FlowPane) {
-					FlowPane fp = (FlowPane) table_Node;
-					fp.setVisible(!fp.isVisible());
-				}
-				if (table_Node instanceof TableView) {
-					TableView<?> table = (TableView<?>) table_Node;
-					table.setVisible(!table.isVisible());
-				}
+				counter++;
 			}
 		}
+//			for (Node table_Node : table_VBox.getChildren()) {
+//				Messages.sprintf("table_Node VBOX Found:" + table_Node);
+//				if (table_Node instanceof HBox) {
+//					// HBox
+//					HBox topButtons_HBox = (HBox) table_Node;
+//					if (showButton) {
+//						topButtons_HBox.setVisible(false);
+//					} else {
+//						topButtons_HBox.setVisible(true);
+//					}
+////					setRegionSize(topButtons_HBox, button_Bounds.getWidth(), button_Bounds.getHeight());
+//					for (Node buttons_Node : topButtons_HBox.getChildren()) {
+//						Messages.sprintf("buttons: " + buttons_Node);
+//						// Show/hide Button
+//						if (buttons_Node instanceof FlowPane) {
+//							FlowPane controlButtons_FlowPane = (FlowPane) buttons_Node;
+//							if (controlButtons_FlowPane.isVisible()) {
+//								controlButtons_FlowPane.setVisible(false);
+//							} else {
+//								controlButtons_FlowPane.setVisible(true);
+//							}
+//						}
+//						if (buttons_Node instanceof Button) {
+//							if (buttons_Node.getId().equals(button.getId())) {
+//								if (showButton) {
+//									setRegionSize(table_VBox, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+////									setRegionSize(table_Node, Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+////									Messages.sprintf("showButton setting regionsize: " + button_Bounds.getWidth()
+////											+ " height: " + button_Bounds.getHeight());
+//									buttons_Node.setVisible(false);
+//								} else {
+//									setRegionSize(table_VBox, button_Bounds.getWidth(), button_Bounds.getHeight());
+////									setRegionSize(table_Node, button_Bounds.getWidth(), button_Bounds.getHeight());
+//									Messages.sprintf("!showButton setting regionsize: " + button_Bounds.getWidth()
+//											+ " height: " + button_Bounds.getHeight());
+//									buttons_Node.setVisible(true);
+//								}
+//							}
+//						}
+//
+//						if (buttons_Node instanceof TextField) {
+//							TextField tf = (TextField) buttons_Node;
+//							if (tf.isVisible()) {
+//								tf.setVisible(false);
+//							} else {
+//								tf.setVisible(true);
+//							}
+//						}
+//
+//						if (table_Node instanceof FlowPane) {
+//							FlowPane fp = (FlowPane) table_Node;
+//							fp.setVisible(!fp.isVisible());
+//						}
+//						if (table_Node instanceof TableView) {
+//							TableView<?> table = (TableView<?>) table_Node;
+//							table.setVisible(!table.isVisible());
+//						}
+//					}
+//				}
+//			}
+//		}
+	}
+
+	private void handleShowHide(Pane pane, boolean showButton) {
+		if (showButton) {
+			pane.setVisible(false);
+		} else {
+			pane.setVisible(true);
+		}
+
+		Messages.sprintf("1Pane setVisible: " + pane.getId() + " isVisible? " + !showButton);
+	}
+
+	private void handleShowHide(TableView<?> tableView, boolean showButton) {
+		tableView.setVisible(!showButton);
+		Messages.sprintf("tableView setVisible: " + !showButton);
 	}
 
 	private void setRegionSize(Region node, double width, double height) {

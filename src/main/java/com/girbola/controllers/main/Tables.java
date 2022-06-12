@@ -61,7 +61,7 @@ public class Tables {
 
 	private Model_main model_Main;
 
-	private HideButtons2 hideButtons;
+	private HideButtons hideButtons;
 	private TableStatistic tableStatistic;
 	private Sorter sorter;
 
@@ -94,7 +94,7 @@ public class Tables {
 	}
 
 	public void init() {
-		hideButtons = new HideButtons2(this.model_Main);
+		hideButtons = new HideButtons(this.model_Main);
 		sprintf("Tables instantiated...");
 	
 	}
@@ -487,7 +487,7 @@ public class Tables {
 
 	};
 
-	public HideButtons2 getHideButtons() {
+	public HideButtons getHideButtons() {
 		return this.hideButtons;
 	}
 
