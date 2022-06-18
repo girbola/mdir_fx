@@ -106,7 +106,7 @@ public class Main extends Application {
 				sprintf("Program starting");
 				locale = new Locale(lang, country);
 				bundle = ResourceBundle.getBundle("bundle/lang", locale);
-
+ 
 				conf.setModel(model_main);
 				conf.createProgramPaths();
 				conf.loadConfig();
