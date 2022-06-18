@@ -13,6 +13,8 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 
@@ -45,8 +47,10 @@ public class MainController {
 	
 	@FXML
 	TableController sortitController;
+	
 	@FXML
 	TableController sortedController;
+
 	@FXML
 	TableController asitisController;
 
@@ -73,7 +77,6 @@ public class MainController {
 		TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
 				asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesTotal_lbl());
 
-
 		this.model_main.tables().setSortIt_table(sortitController.getTable());
 		this.model_main.tables().setSorted_table(sortedController.getTable());
 		this.model_main.tables().setAsItIs_table(asitisController.getTable());
@@ -95,6 +98,8 @@ public class MainController {
 		model_main.setMainContainer(main_container);
 		model_main.setMainVBox(main_vbox);
 
+//		table_SplitPane.setDividerPosition(0, 0);
+		
 	}
 
 }

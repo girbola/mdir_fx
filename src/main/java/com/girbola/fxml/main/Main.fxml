@@ -27,9 +27,21 @@
 									<children>
 										<HBox spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
 											<children>
-												<fx:include fx:id="sortit" source="Table.fxml" />
-												<fx:include fx:id="sorted" source="Table.fxml" />
-												<fx:include fx:id="asitis" source="Table.fxml" />
+                                  <AnchorPane>
+                                       <children>
+      												<fx:include fx:id="sortit" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                       </children>
+                                    </AnchorPane>
+                                  <AnchorPane>
+                                       <children>
+      												<fx:include fx:id="sorted" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                       </children>
+                                    </AnchorPane>
+                                    <AnchorPane>
+                                       <children>
+      												<fx:include fx:id="asitis" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                       </children>
+                                    </AnchorPane>
 											</children>
 										</HBox>
 									</children>

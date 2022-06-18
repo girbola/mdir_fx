@@ -207,7 +207,8 @@ public class Main extends Application {
 				Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
 						conf.getConfiguration_db_fileName());
 				if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
-					Messages.sprintf("Loading workdir content");
+					Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "
+							+ conf.getConfiguration_db_fileName());
 					load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
 							connection_loadConfigurationFile);
 					load_FileInfosBackToTableViews.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -220,12 +221,11 @@ public class Main extends Application {
 								if (!load_FileInfosBackToTableViews.get()) {
 									Messages.warningText("Can't load previous session!");
 								}
-
 							} catch (Exception e) {
 								e.printStackTrace();
 							}
 							TableUtils.refreshAllTableContent(model_main.tables());
-							Messages.sprintf("load_FileInfosBackToTableViews succeeded");
+							Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
 							model_main.getMonitorExternalDriveConnectivity().restart();
 							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
@@ -282,14 +282,14 @@ public class Main extends Application {
 							TableUtils.calculateTableViewsStatistic(model_main.tables());
 							getMain_stage().maximizedProperty().addListener(new ChangeListener<Boolean>() {
 
-							    @Override
-							    public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
-							    	model_main.tables().getHideButtons().updateTableVisible();
-							        System.out.println("model_main.tables().getHideButtons().updateTableVisible();: " + t1.booleanValue());
-							    }
+								@Override
+								public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+									model_main.tables().getHideButtons().updateTableVisible();
+									System.out.println("model_main.tables().getHideButtons().updateTableVisible();: "
+											+ t1.booleanValue());
+								}
 							});
-							
-							
+
 //							conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
 						}

@@ -18,9 +18,10 @@ import javafx.collections.ObservableList;
 
 public class Configuration_GetsSets extends Configuration_GUI {
 
-	private Path appDataPath = Paths.get(System.getenv("APPDATA") + File.separator + programName);
-
 	private final String userHome = System.getProperty("user.home");
+
+	private Path appDataPath = Paths.get(userHome + File.separator + ".mdir");
+
 	private final String pictures = "Pictures";
 
 	public String getPictures() {

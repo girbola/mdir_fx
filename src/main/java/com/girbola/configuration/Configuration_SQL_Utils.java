@@ -53,7 +53,7 @@ public class Configuration_SQL_Utils {
 	public static final String workDirSerialNumber = "workDirSerialNumber";
 
 	public static boolean createConfiguration_Table(Connection connection) {
-		Messages.sprintfError("createConfiguration_Table");
+		Messages.sprintfError("createConfiguration_Table: " + connection);
 
 		try {
 			if (!SQL_Utils.isDbConnected(connection)) {
@@ -88,7 +88,6 @@ public class Configuration_SQL_Utils {
 			//@formatter:on
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
-
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -276,9 +275,9 @@ public class Configuration_SQL_Utils {
 				+ "'" + workDirSerialNumber + "', "
 				+ "'" + workDir + "'," 
 				+ "'" + tableShow_sortIt + "',"
-				+ "'" +tableShow_sorted + "',"
-				+ "'" +tableShow_asItIs + "')" 
-				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+				+ "'" + tableShow_sorted + "',"
+				+ "'" + tableShow_asItIs + "')" 
+				+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 				//@formatter:on
 					Messages.sprintf("insert_Configuration: " + sql);
 					PreparedStatement pstmt = connection.prepareStatement(sql);

@@ -34,7 +34,8 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 
 	@Override
 	protected Boolean call() throws Exception {
-		Messages.sprintf("Load_FileInfosBackToTableViews starts ");
+		Messages.sprintf("Load_FileInfosBackToTableViews starts "
+				+ Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 
 		if (!Files.exists(
 				Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
@@ -44,6 +45,9 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 		}
 
 		List<FolderState> folderState_list = SQL_Utils.loadFoldersStateTo_Tables(connection, model_main);
+		if(folderState_list == null) {
+			return false;
+		}
 		if (connection == null) {
 			Messages.sprintf("Connection were null at " + Load_FileInfosBackToTableViews.class.getName());
 			return false;

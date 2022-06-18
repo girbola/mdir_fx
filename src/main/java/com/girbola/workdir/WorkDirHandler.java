@@ -82,16 +82,22 @@ public class WorkDirHandler {
 	 * @return
 	 */
 	public boolean loadAllLists(Path workDirPath) {
-		Messages.sprintf("WorkDir Handler loadAllLists: " + workDirPath);
-		if (!Files.exists(workDirPath)) {
+		Messages.sprintf("2WorkDir Handler loadAllLists:'" + workDirPath.toString().length() +"'");
+		if(workDirPath.toString().length() == 0) {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
 		}
+		if (!Files.exists(workDirPath) && !workDirPath.toString().isBlank()) {
+			
+			return false;
+		}
+		
 		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
 		try {
 			connection.setAutoCommit(false);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 		if (connection != null) {
 			if (SQL_Utils.isDbConnected(connection)) {
@@ -101,7 +107,6 @@ public class WorkDirHandler {
 					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
 				}
 			}
-
 			try {
 				connection.commit();
 				connection.close();

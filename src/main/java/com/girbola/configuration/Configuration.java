@@ -83,13 +83,13 @@ public class Configuration extends Configuration_defaults {
 			try {
 				conf.loadConfig_SQL();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
 	public boolean createConfiguration_db() {
+		Messages.sprintf("creatingConfiguration_DB at: " + Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
@@ -103,6 +103,12 @@ public class Configuration extends Configuration_defaults {
 		// Create configuration for programs config like themePath, workDir, vlcPath
 		// etc.
 		Configuration_SQL_Utils.createConfiguration_Table(connection);
+		try {
+			connection.commit();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);
@@ -141,9 +147,15 @@ public class Configuration extends Configuration_defaults {
 		boolean createDatabase = false;
 		Path configFile = Paths
 				.get(Main.conf.getAppDataPath() + File.separator);
+		configFile.toFile().setWritable(true);
+		configFile.toFile().setReadable(true);
+		
 		if (!Files.exists(configFile) && Files.isWritable(configFile)) {
 			try {
 				Path createDirectories = Files.createDirectories(configFile);
+				Path createFile = Files.createFile(Paths.get(configFile.toString() + Main.conf.getConfiguration_db_fileName()));
+				createFile.toFile().setWritable(true);
+				createFile.toFile().setReadable(true);
 				if (!Files.exists(createDirectories)) {
 					Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateConfigFile"), null,
 							Misc.getLineNumber(), true);
