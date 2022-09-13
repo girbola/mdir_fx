@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -35,6 +35,7 @@ import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -64,6 +65,8 @@ public class BottomController {
 	private AtomicInteger folderCounter = new AtomicInteger(0);
 
 	@FXML
+	private Label debug_pref_width;
+	@FXML
 	private Button addFolders_btn;
 	@FXML
 	private Button copy_ok_date_btn;
@@ -92,31 +95,28 @@ public class BottomController {
 
 	@FXML
 	private Button showWorkdir_btn;
-	
+
 	@FXML
 	private void showWorkdir_btn_action(ActionEvent event) {
 		Platform.runLater(() -> {
-			
-		
-		try {
-			Parent parent = null;
-			FXMLLoader loader = new FXMLLoader(
-					Main.class.getResource("fxml/workdir/Workdir.fxml"), Main.bundle);
-			parent = loader.load();
-			WorkDirController workdirController = (WorkDirController) loader
-					.getController();
-			workdirController.init(model_main);
-			Scene scene = new Scene(parent);
-			Stage stage = new Stage();
-			stage.setScene(scene);
-			stage.show();
-			workdirController.createFileBrowserTreeTableView();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
+			try {
+				Parent parent = null;
+				FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/workdir/Workdir.fxml"), Main.bundle);
+				parent = loader.load();
+				WorkDirController workdirController = (WorkDirController) loader.getController();
+				workdirController.init(model_main);
+				Scene scene = new Scene(parent);
+				Stage stage = new Stage();
+				stage.setScene(scene);
+				stage.show();
+				workdirController.createFileBrowserTreeTableView();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		});
 	}
-	
+
 	@FXML
 	private Button removeDuplicates_btn;
 
@@ -138,7 +138,7 @@ public class BottomController {
 	private void moveFilesToSortedTable_btn_action(ActionEvent event) {
 //		TableUtils.checkTableDuplicates(null, null)
 	}
-	
+
 	private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
 
 		boolean folderNeedsToUpdate = false;
@@ -334,7 +334,7 @@ public class BottomController {
 	 */
 	@FXML
 	private void copySelected_btn_action(ActionEvent event) {
-
+		Messages.warningText("Under construction");
 	}
 
 	private void findSameDateFileInfosFromSortedAndWorkdir(Tables tables) {
@@ -462,6 +462,10 @@ public class BottomController {
 	public void init(Model_main aModel_main) {
 		this.model_main = aModel_main;
 		sprintf("bottom controller...");
+		debug_pref_width.textProperty().bind(model_main.getTable_root_hbox_width());
+		
+		
+		
 //		Main.conf.drive_property
 //		
 //		drive_connected.textProperty().bindBidirectional(Main.conf.drive_connected_property());

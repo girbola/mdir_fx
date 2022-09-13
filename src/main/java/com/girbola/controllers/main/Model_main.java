@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -36,6 +36,9 @@ import com.girbola.sql.SqliteConnection;
 import com.girbola.workdir.WorkDirHandler;
 
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -61,6 +64,17 @@ public class Model_main {
 
 	private Tables tables;
 	private WorkDirHandler workDirHandler = new WorkDirHandler();
+	
+	private StringProperty table_root_hbox_width = new SimpleStringProperty();
+	
+	public StringProperty getTable_root_hbox_width() {
+		return table_root_hbox_width;
+	}
+
+	public void setTable_root_hbox_width(String table_root_hbox_width) {
+		this.table_root_hbox_width.set(table_root_hbox_width);
+	}
+
 	private Stage main_stage;
 
 	private AnchorPane main_container;
@@ -76,6 +90,10 @@ public class Model_main {
 	private TableStatistic sortitTableStatistic;
 	private TableStatistic sortedTableStatistic;
 	private TableStatistic asitisTableStatistic;
+
+	private SimpleDoubleProperty sortitTableWidth_prop;
+	private SimpleDoubleProperty sortedTableWidth_prop;
+	private SimpleDoubleProperty asitisTableWidth_prop;
 
 	public TableStatistic getSortitTableStatistic() {
 		return sortitTableStatistic;
@@ -117,6 +135,12 @@ public class Model_main {
 		monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
 		monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
 		tables.init();
+
+		sortitTableWidth_prop = new SimpleDoubleProperty(0);
+		sortedTableWidth_prop = new SimpleDoubleProperty(0);
+		asitisTableWidth_prop = new SimpleDoubleProperty(0);
+
+//		tables.getSorted_table().widthProperty();
 	}
 
 	public final List<ThumbInfo> getThumbInfo() {

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2020 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -61,7 +61,8 @@ public class Tables {
 
 	private Model_main model_Main;
 
-	private HideButtons hideButtons;
+//	private HideButtons hideButtons;
+	public ShowAndHideTables showAndHideTables; 
 	private TableStatistic tableStatistic;
 	private Sorter sorter;
 
@@ -71,6 +72,12 @@ public class Tables {
 
 	private AnchorPane tables_rootPane;
 
+	private TableStatistic sortit_TableStatistic;
+	private TableStatistic sorted_TableStatistic;
+	private TableStatistic asitis_TableStatistic;
+	
+	boolean isSameTable = false;
+
 	public AnchorPane getTables_rootPane() {
 		return tables_rootPane;
 	}
@@ -79,14 +86,10 @@ public class Tables {
 		this.tables_rootPane = tables_rootPane;
 	}
 
-	private TableStatistic sortit_TableStatistic;
-	private TableStatistic sorted_TableStatistic;
-	private TableStatistic asitis_TableStatistic;
 
 //	private HBox tables_container;
 
-	boolean isSameTable = false;
-
+	
 	protected Tables(Model_main aModel) {
 		this.model_Main = aModel;
 
@@ -94,9 +97,10 @@ public class Tables {
 	}
 
 	public void init() {
-		hideButtons = new HideButtons(this.model_Main);
-		sprintf("Tables instantiated...");
-	
+		
+		sprintf("Tables hideButtons instantiating...");
+		showAndHideTables = new ShowAndHideTables(this.model_Main);
+		sprintf("Tables hideButtons instantiated...");
 	}
 
 	private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
@@ -486,10 +490,10 @@ public class Tables {
 		}
 
 	};
-
-	public HideButtons getHideButtons() {
-		return this.hideButtons;
-	}
+//
+//	public HideButtons getHideButtons() {
+//		return this.hideButtons;
+//	}
 
 	public void unRegister_obs_listener() {
 		getSorted_table().getItems().removeListener(listener);

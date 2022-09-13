@@ -25,19 +25,19 @@
 							<content>
 								<AnchorPane fx:id="tables_rootPane">
 									<children>
-										<HBox spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" VBox.vgrow="ALWAYS">
+										<HBox fx:id="tables_hbox" style="-fx-background-color: cyan;" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" VBox.vgrow="ALWAYS">
 											<children>
-                                  <AnchorPane>
+                                  <AnchorPane fx:id="sortit_table_parent">
                                        <children>
       												<fx:include fx:id="sortit" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
                                        </children>
                                     </AnchorPane>
-                                  <AnchorPane>
+                                  <AnchorPane fx:id="sorted_table_parent">
                                        <children>
       												<fx:include fx:id="sorted" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
                                        </children>
                                     </AnchorPane>
-                                    <AnchorPane>
+                                    <AnchorPane fx:id="asitis_table_parent">
                                        <children>
       												<fx:include fx:id="asitis" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
                                        </children>
