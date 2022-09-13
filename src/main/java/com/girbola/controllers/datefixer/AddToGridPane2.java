@@ -18,6 +18,7 @@ import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 
+import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -132,7 +133,7 @@ public class AddToGridPane2 extends Task<Integer> {
 
 	private int defineImagesPerLine() {
 		int imagesPerLine = (int) Math
-				.floor((double) (Screen.getPrimary().getVisualBounds().getWidth() - UI_Tools.getScrollBarWidth(model_datefix.getScrollPane()))
+				.floor((double) (ScreenUtils.screenBouds().getWidth() - UI_Tools.getScrollBarWidth(model_datefix.getScrollPane()))
 						/ GUIPrefs.imageFrame_x);
 		return imagesPerLine;
 	}

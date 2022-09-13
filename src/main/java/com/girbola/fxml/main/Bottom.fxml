@@ -11,7 +11,8 @@
       <Button fx:id="options_btn" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true">
          <font>
             <Font size="9.0" />
-         </font></Button>
+         </font>
+      </Button>
       <Button fx:id="start_copyBatch_btn" mnemonicParsing="false" onAction="#start_copyBatch_btn_action" text="%startBatchCopy" wrapText="true">
          <font>
             <Font size="9.0" />
@@ -51,6 +52,8 @@
             <Font size="9.0" />
          </font>
       </Button>
+      <Label text="Label" />
+      <Label fx:id="debug_pref_width" text="Label" />
       <HBox alignment="TOP_RIGHT" prefHeight="25.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="drive_pane" alignment="CENTER" spacing="7.0">

@@ -3,10 +3,13 @@ package com.girbola.controllers.datefixer;
 import java.net.URL;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -30,7 +33,8 @@ public class GUI_Methods {
 				return image;
 			}
 		} catch (Exception e) {
-			Messages.sprintfError("file name: " + file + "\nException with loading image from resource: " + e.getMessage());
+			Messages.sprintfError(
+					"file name: " + file + "\nException with loading image from resource: " + e.getMessage());
 			com.girbola.controllers.misc.Misc_GUI.fastExit();
 		}
 		return null;
@@ -103,6 +107,23 @@ public class GUI_Methods {
 		if (children instanceof VBox && children.getId().equals("imageFrame")) {
 			FileInfo fi = (FileInfo) children.getUserData();
 			return fi.getLocation();
+		}
+		return null;
+	}
+
+	public static Button getShowHideButtonFromTableView(TableView<FolderInfo> table) {
+		Node parent = table.getParent();
+		if (parent instanceof HBox) {
+
+			if (parent.getId().equals("showHideButton_hbox")) {
+				HBox hbox_tools = (HBox) parent;
+
+				for (Node hbox_tools_parent : hbox_tools.getChildren()) {
+					if (hbox_tools_parent instanceof Button) {
+						return (Button) hbox_tools_parent;
+					}
+				}
+			}
 		}
 		return null;
 	}
