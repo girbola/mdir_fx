@@ -225,8 +225,11 @@ public class Main extends Application {
 								e.printStackTrace();
 							}
 							TableUtils.refreshAllTableContent(model_main.tables());
+							
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
+							
 							model_main.getMonitorExternalDriveConnectivity().restart();
+							
 							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
