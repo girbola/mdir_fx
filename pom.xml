@@ -38,13 +38,13 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>16</maven.compiler.release>
 		<javafx.version>17.0.1</javafx.version>
-		<metadata-extractor.version>2.16.0</metadata-extractor.version>
-		<vlcj.version>4.6.0</vlcj.version>
+		<metadata-extractor.version>2.18.0</metadata-extractor.version>
+		<vlcj.version>4.8.2</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.5</imageio-jpeg.version>
-		<imageio-tiff.version>3.5</imageio-tiff.version>
+		<imageio-jpeg.version>3.8.3</imageio-jpeg.version>
+		<imageio-tiff.version>3.8.3</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j.version>1.7.32</slf4j.version>
+		<slf4j.version>2.0.3</slf4j.version>
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 
