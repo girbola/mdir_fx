@@ -569,12 +569,10 @@ public class TableController {
 
 	private Pane getPaneFromParent(Parent parent, String id) {
 		Pane pane = (Pane) parent;
-		Messages.sprintf("Pane: " + pane + " pane.id: " + pane.getId() + " class name: " + pane.getClass().getName());
 		if (pane instanceof VBox) {
 			if (pane.getId().contains("table_vbox")) {
 				VBox main = (VBox) pane;
 				for (Node node : main.getChildren()) {
-					Messages.sprintf("node is: " + node.getClass().getName());
 					if (node instanceof HBox) {
 						if (node.getId().equals(id) && node.getId().equals("showHideButton_hbox")) {
 							HBox showHideButton_hbox = (HBox) node;
@@ -584,20 +582,9 @@ public class TableController {
 							HBox buttons_hbox = (HBox) node;
 							return buttons_hbox;
 						}
-
-					} else {
-						Messages.sprintf("node is: " + node.getId());
 					}
-//				if (node instanceof VBox) {
-//					if (node.getId().equals(id)) {
-//						VBox group = (VBox) node;
-//						return group;
-//					}
-//				}
 				}
 			}
-		} else {
-			Messages.sprintf(pane.getClass().getName() + " get id is then? " + pane.getId());
 		}
 		return null;
 	}
