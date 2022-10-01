@@ -492,48 +492,51 @@ public class TableController {
 		Messages.sprintf("Show table?: " + table.isVisible() + " visibles: " + visibles + " hidden: " + hidden
 				+ " buttonWidth " + buttonWidth + " tableWidth: " + tableWidth);
 
-		HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table(),
+		HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(),
 				"showHideButton_hbox");
-		VBox group_sortit = (VBox) getPaneFromParent(model_main.tables().getSortIt_table(), "group");
-		assertNotNull(group_sortit);
+		HBox buttons_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(),
+				"buttons_hbox");
+		assertNotNull(buttons_hbox_sortit);
 
-		HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table(),
+		HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(),
 				"showHideButton_hbox");
-		VBox group_sorted = (VBox) getPaneFromParent(model_main.tables().getSorted_table(), "group");
-		assertNotNull(group_sorted);
+		HBox buttons_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(),
+				"buttons_hbox");
+		assertNotNull(buttons_hbox_sorted);
 
-		HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table(),
+		HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(),
 				"showHideButton_hbox");
-		VBox group_asitis = (VBox) getPaneFromParent(model_main.tables().getAsItIs_table(), "group");
-		assertNotNull(group_asitis);
+		HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(),
+				"buttons_hbox");
+		assertNotNull(buttons_hbox_asitis);
 
 		if (model_main.tables().getSortIt_table().isVisible()) {
 			setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
-			group_sortit.setVisible(true);
+			buttons_hbox_sortit.setVisible(true);
 			model_main.tables().showAndHideTables.setSortit_show_property(true);
 		} else {
 			setWidth(showHideButton_hbox_sortit, buttonWidth);
-			group_sortit.setVisible(false);
+			buttons_hbox_sortit.setVisible(false);
 			model_main.tables().showAndHideTables.setSortit_show_property(false);
 		}
 
 		if (model_main.tables().getSorted_table().isVisible()) {
 			setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
-			group_sorted.setVisible(true);
+			buttons_hbox_sorted.setVisible(true);
 			model_main.tables().showAndHideTables.setSorted_show_property(true);
 		} else {
 			setWidth(showHideButton_hbox_sorted, buttonWidth);
-			group_sorted.setVisible(false);
+			buttons_hbox_sorted.setVisible(false);
 			model_main.tables().showAndHideTables.setSorted_show_property(false);
 		}
 
 		if (model_main.tables().getAsItIs_table().isVisible()) {
 			setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
-			group_asitis.setVisible(true);
+			buttons_hbox_asitis.setVisible(true);
 			model_main.tables().showAndHideTables.setAsitis_show_property(true);
 		} else {
 			setWidth(showHideButton_hbox_asitis, buttonWidth);
-			group_asitis.setVisible(false);
+			buttons_hbox_asitis.setVisible(false);
 			model_main.tables().showAndHideTables.setAsitis_show_property(false);
 		}
 	}
@@ -565,25 +568,36 @@ public class TableController {
 	}
 
 	private Pane getPaneFromParent(Parent parent, String id) {
-		VBox vbox = (VBox) parent.getParent().getParent().getParent();
-		if (vbox.getId().equals("table_vbox")) {
-			for (Node node : vbox.getChildren()) {
-				if (node instanceof HBox) {
-					if (node.getId().equals(id)) {
-						HBox showHideButton_hbox = (HBox) node;
-						return showHideButton_hbox;
-					}
-				}
-				if (node instanceof VBox) {
-					if (node.getId().equals(id)) {
-						VBox group = (VBox) node;
-						return group;
-					}
-				}
+		Pane pane = (Pane) parent;
+		Messages.sprintf("Pane: " + pane + " pane.id: " + pane.getId() + " class name: " + pane.getClass().getName());
+		if (pane instanceof VBox) {
+			if (pane.getId().contains("table_vbox")) {
+				VBox main = (VBox) pane;
+				for (Node node : main.getChildren()) {
+					Messages.sprintf("node is: " + node.getClass().getName());
+					if (node instanceof HBox) {
+						if (node.getId().equals(id) && node.getId().equals("showHideButton_hbox")) {
+							HBox showHideButton_hbox = (HBox) node;
+							return showHideButton_hbox;
+						}
+						if (node.getId().equals(id) && node.getId().equals("buttons_hbox")) {
+							HBox buttons_hbox = (HBox) node;
+							return buttons_hbox;
+						}
 
+					} else {
+						Messages.sprintf("node is: " + node.getId());
+					}
+//				if (node instanceof VBox) {
+//					if (node.getId().equals(id)) {
+//						VBox group = (VBox) node;
+//						return group;
+//					}
+//				}
+				}
 			}
 		} else {
-			Messages.sprintf("vbox get id is then? " + vbox.getId());
+			Messages.sprintf(pane.getClass().getName() + " get id is then? " + pane.getId());
 		}
 		return null;
 	}
