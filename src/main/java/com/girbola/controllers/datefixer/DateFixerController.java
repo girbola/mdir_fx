@@ -1076,6 +1076,7 @@ public class DateFixerController {
 					toRemove.add(n);
 					fileInfo_toRemove.add(fileInfo);
 					Main.setChanged(true);
+					model_datefix.setChanges_made(true);
 					sprintf("remove_btn_action setIgnored. df_gridPane.getChildren(): " + n);
 					update = true;
 				}
@@ -1103,11 +1104,7 @@ public class DateFixerController {
 		} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 			Messages.sprintf("no pressed!");
 			dialog.close();
-		} else {
-			Messages.errorSmth(ERROR, "Ei saatana!", null, Misc.getLineNumber(), true);
 		}
-		Messages.sprintf("EI TOIMIIII pressed!");
-		// model_datefix.
 	}
 
 	// @formatter:off

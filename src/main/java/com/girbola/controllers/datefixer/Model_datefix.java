@@ -88,10 +88,19 @@ public class Model_datefix extends DateFixerModel {
 	private Model_main model_Main;
 
 	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
-//	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
 
 	private VBox infoTables_container;
 	private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
+	private BooleanProperty changes_made = new SimpleBooleanProperty(false);
+	
+	public BooleanProperty getChanges_made() {
+		return changes_made;
+	}
+
+	public void setChanges_made(boolean changes_made) {
+		this.changes_made.set(changes_made);
+	}
+
 	private BooleanProperty ignored = new SimpleBooleanProperty(false);
 	private BooleanProperty copied = new SimpleBooleanProperty(false);
 	private BooleanProperty events = new SimpleBooleanProperty(true);
@@ -102,7 +111,6 @@ public class Model_datefix extends DateFixerModel {
 
 	private AnchorPane anchorPane;
 	private FolderInfo folderInfo_full;
-	// private FolderInfo folderInfo_full;
 	private FolderInfo folderInfo_filtered;
 
 	private GridPane gridPane;
@@ -114,14 +122,6 @@ public class Model_datefix extends DateFixerModel {
 	private VBox rightInfoPanel;
 	private TableView<MetaData> metaDataTableView;
 	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
-
-	public boolean getRightInfo_visible() {
-		return rightInfo_visible.get();
-	}
-
-	public void setRightInfo_visible(boolean value) {
-		this.rightInfo_visible.set(value);
-	}
 
 	private ObservableList<Node> allNodes = FXCollections.observableArrayList();
 	private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
@@ -152,6 +152,14 @@ public class Model_datefix extends DateFixerModel {
 		// Messages.sprintf("thumbInfo_list were not loaded");
 		// }
 
+	}
+
+	public boolean getRightInfo_visible() {
+		return rightInfo_visible.get();
+	}
+
+	public void setRightInfo_visible(boolean value) {
+		this.rightInfo_visible.set(value);
 	}
 
 	public AtomicBoolean getContent_changed() {
@@ -684,16 +692,18 @@ public class Model_datefix extends DateFixerModel {
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 				saveThumbs();
 				event.consume();
-//				return;
+
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 				event.consume();
 				return;
 			}
 		}
+
 		if (Main.conf.isSavingThumb()) {
 			saveThumbs();
 		}
-		if (Main.getChanged()) {
+
+		if (changes_made.get()) {
 			Messages.sprintf("changes made");
 			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
 			Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
@@ -991,7 +1001,7 @@ public class Model_datefix extends DateFixerModel {
 	 * @return the selector_exec
 	 */
 	public final ScheduledExecutorService getSelector_exec() {
-		if(selector_exec.isShutdown() || selector_exec.isTerminated()) {
+		if (selector_exec.isShutdown() || selector_exec.isTerminated()) {
 			selector_exec = Executors.newScheduledThreadPool(1);
 		}
 		return selector_exec;

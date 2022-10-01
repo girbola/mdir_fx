@@ -12,13 +12,12 @@
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" prefWidth="768.0" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT" fillHeight="false" VBox.vgrow="NEVER">
          <children>
@@ -38,134 +37,137 @@
                </tooltip>
 				</Button>
          </children>
-         <VBox.margin>
-            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-         </VBox.margin>
       </HBox>
-      <VBox fx:id="group" VBox.vgrow="ALWAYS">
-         <children>
-      		<HBox fx:id="buttons_hbox" fillHeight="false" spacing="1.0" styleClass="topButtons" VBox.vgrow="SOMETIMES">
-      			<children>
-                  <FlowPane fx:id="topMenuButtonFlowPane" hgap="1.0" vgap="1.0">
-                     <children>
-                        <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
-                          <items>
-                            <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
-                            <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="%checkChanges" />
-                          </items>
-                           <font>
-                              <Font size="11.0" />
-                           </font>
-                        </MenuButton>
-            				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/reload.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
-                           </tooltip>
-            				</Button>
-                        <MenuButton mnemonicParsing="false" text="%action">
-                          <items>
-                            <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected to dest" />
-                            <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%add" />
-                              <MenuItem fx:id="mergeCopy_MenuItem" mnemonicParsing="false" onAction="#mergeCopy_btn_action" text="Merge selection" />
-                              <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
-                              <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
-                              <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" text="DD" />
-                          </items>
-                           <font>
-                              <Font size="10.0" />
-                           </font>
-                        </MenuButton>
-            				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/selectAll.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="select_all_btn_tooltip" text="%selectAllTableTooltip" />
-                           </tooltip>
-            				</Button>
-            				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/selectInvert.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="select_invert_btn_tooltip" text="%selectInvertTableTooltip" />
-                           </tooltip>
-            				</Button>
-            				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/selectNone.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="select_none_btn_tooltip" text="%selectNoneTableTooltip" />
-                           </tooltip>
-            				</Button>
-            				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/selectBad.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="select_bad_btn_tooltip" text="%selectBadTableTooltip" />
-                           </tooltip>
-            				</Button>
-            				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
-            					<graphic>
-            						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-            							<image>
-            								<Image url="@../../../../resources/img/selectGood.png" />
-            							</image>
-            						</ImageView>
-            					</graphic>
-            					<padding>
-            						<Insets bottom="1.0" top="1.0" />
-            					</padding>
-                           <tooltip>
-                              <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
-                           </tooltip>
-            				</Button>
-                     </children>
-                     <padding>
-                        <Insets bottom="1.0" left="2.0" top="1.0" />
-                     </padding>
-                  </FlowPane>
-      				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip">
+		<HBox fx:id="buttons_hbox" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
+			<children>
+            <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="1.0" vgap="1.0">
+               <children>
+                  <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
+                    <items>
+                      <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
+                      <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="%checkChanges" />
+                    </items>
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </MenuButton>
+      				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/reload.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
+                     </tooltip>
+      				</Button>
+                  <MenuButton mnemonicParsing="false" text="%action">
+                    <items>
+                      <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected to dest" />
+                      <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%add" />
+                        <MenuItem fx:id="mergeCopy_MenuItem" mnemonicParsing="false" onAction="#mergeCopy_btn_action" text="Merge selection" />
+                        <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
+                        <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
+                        <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" text="DD" />
+                    </items>
+                     <font>
+                        <Font size="10.0" />
+                     </font>
+                  </MenuButton>
+      				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectAll.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_all_btn_tooltip" text="%selectAllTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectInvert.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_invert_btn_tooltip" text="%selectInvertTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectNone.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_none_btn_tooltip" text="%selectNoneTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectBad.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_bad_btn_tooltip" text="%selectBadTableTooltip" />
+                     </tooltip>
+      				</Button>
+      				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
+      					<graphic>
+      						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+      							<image>
+      								<Image url="@../../../../resources/img/selectGood.png" />
+      							</image>
+      						</ImageView>
+      					</graphic>
+      					<padding>
+      						<Insets bottom="1.0" top="1.0" />
+      					</padding>
+                     <tooltip>
+                        <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
+                     </tooltip>
+      				</Button>
+               </children>
+               <padding>
+                  <Insets bottom="1.0" left="2.0" top="1.0" />
+               </padding>
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+            </FlowPane>
+            <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+               <HBox.margin>
+                  <Insets bottom="1.0" top="1.0" />
+               </HBox.margin>
+               <children>
+      				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip" HBox.hgrow="ALWAYS">
                      <tooltip>
                         <Tooltip fx:id="tableDescription_tf_tooltip">
                            <font>
@@ -180,71 +182,64 @@
                         <Font size="11.0" />
                      </font>
                   </TextField>
-      			</children>
-      		</HBox>
-            <AnchorPane fx:id="table_RootPane" VBox.vgrow="ALWAYS">
-               <children>
-            		<TableView fx:id="table" onMouseClicked="#handleMouseClicked" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
-            			<columns>
-            				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
-            				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
-            				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
-            				<TableColumn fx:id="copied_col" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="%copied" />
-            				<TableColumn fx:id="dateFix_col" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" />
-            				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%justFolderName" />
-            				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
-            				<TableColumn fx:id="badFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%badFiles" />
-            				<TableColumn fx:id="minDate_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%mindate" />
-            				<TableColumn fx:id="maxDates_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%maxdate" />
-            				<TableColumn fx:id="size_col" editable="false" minWidth="50.0" prefWidth="100.0" text="%size" />
-            				<TableColumn fx:id="media_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%media">
-            					<columns>
-            						<TableColumn fx:id="image_col" prefWidth="50.0" text="%image" />
-            						<TableColumn fx:id="raw_col" prefWidth="50.0" text="%raw" />
-            						<TableColumn fx:id="video_col" prefWidth="50.0" text="%video" />
-            					</columns>
-            				</TableColumn>
-            				<TableColumn fx:id="suggested_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%suggested" />
-            				<TableColumn fx:id="fullPath_col" editable="false" minWidth="50.0" prefWidth="250.0" text="%fullPath" />
-            			</columns>
-            		</TableView>
-               </children>
-            </AnchorPane>
-            <HBox fx:id="tableInformation_hbox" alignment="CENTER_RIGHT" fillHeight="false" maxHeight="28.0" minHeight="28.0" prefHeight="28.0" VBox.vgrow="NEVER">
-               <children>
-                  <Label contentDisplay="TEXT_ONLY" text="%allFilesSizeWithColon" HBox.hgrow="ALWAYS">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="allFilesSize_lbl" contentDisplay="TEXT_ONLY" HBox.hgrow="ALWAYS">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
-                  <Label text="%allFilesCopiedWithColon">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="allFilesCopied_lbl">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
-                  <Label text="%totalFilesWithColon">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="allFilesTotal_lbl">
-                     <font>
-                        <Font size="11.0" />
-                     </font>
-                  </Label>
                </children>
             </HBox>
+			</children>
+         <VBox.margin>
+            <Insets bottom="1.0" left="1.0" />
+         </VBox.margin>
+		</HBox>
+		<TableView fx:id="table" onMouseClicked="#handleMouseClicked" VBox.vgrow="ALWAYS">
+			<columns>
+				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
+				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
+				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
+				<TableColumn fx:id="copied_col" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" text="%copied" />
+				<TableColumn fx:id="dateFix_col" editable="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" resizable="false" sortable="false" />
+				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%justFolderName" />
+				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
+				<TableColumn fx:id="badFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%badFiles" />
+				<TableColumn fx:id="minDate_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%mindate" />
+				<TableColumn fx:id="maxDates_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%maxdate" />
+				<TableColumn fx:id="size_col" editable="false" minWidth="50.0" prefWidth="100.0" text="%size" />
+				<TableColumn fx:id="media_col" editable="false" minWidth="50.0" prefWidth="150.0" text="%media">
+					<columns>
+						<TableColumn fx:id="image_col" prefWidth="50.0" text="%image" />
+						<TableColumn fx:id="raw_col" prefWidth="50.0" text="%raw" />
+						<TableColumn fx:id="video_col" prefWidth="50.0" text="%video" />
+					</columns>
+				</TableColumn>
+				<TableColumn fx:id="suggested_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%suggested" />
+				<TableColumn fx:id="fullPath_col" editable="false" minWidth="50.0" prefWidth="250.0" text="%fullPath" />
+			</columns>
+		</TableView>
+      <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" VBox.vgrow="SOMETIMES">
+         <children>
+            <Label text="%totalFilesWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesTotal_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label text="%allFilesCopiedWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesCopied_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label text="%allFilesSizeWithColon">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
+            <Label fx:id="allFilesSize_lbl">
+               <font>
+                  <Font size="11.0" />
+               </font></Label>
          </children>
-      </VBox>
+      </FlowPane>
 	</children>
 </VBox>
