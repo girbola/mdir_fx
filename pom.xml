@@ -38,19 +38,18 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.release>16</maven.compiler.release>
 		<javafx.version>17.0.1</javafx.version>
-		<metadata-extractor.version>2.16.0</metadata-extractor.version>
-		<vlcj.version>4.6.0</vlcj.version>
+		<metadata-extractor.version>2.18.0</metadata-extractor.version>
+		<vlcj.version>4.8.2</vlcj.version>
 		<jcodec.version>0.2.5</jcodec.version>
-		<imageio-jpeg.version>3.5</imageio-jpeg.version>
-		<imageio-tiff.version>3.5</imageio-tiff.version>
+		<imageio-jpeg.version>3.8.3</imageio-jpeg.version>
+		<imageio-tiff.version>3.8.3</imageio-tiff.version>
 		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
-		<slf4j.version>1.7.32</slf4j.version>
+		<slf4j.version>2.0.3</slf4j.version>
 		<maven.compiler.source>16</maven.compiler.source>
 		<maven.compiler.target>16</maven.compiler.target>
 
 	</properties>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.apache.logging.log4j/log4j-core -->
 
 		<!-- JavaFX deps -->
 		<dependency>
@@ -64,8 +63,6 @@
 			<version>${javafx.version}</version>
 		</dependency>
 
-
-		<!-- https://mvnrepository.com/artifact/org.openjfx/javafx-swing -->
 		<dependency>
 			<groupId>org.openjfx</groupId>
 			<artifactId>javafx-swing</artifactId>
@@ -104,23 +101,6 @@
 			<artifactId>thumbnailator</artifactId>
 			<version>[0.4, 0.5)</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.logging.log4j</groupId> -->
-		<!-- <artifactId>log4j-api</artifactId> -->
-		<!-- <version>2.13.3</version> -->
-		<!-- </dependency> -->
-		<!-- <dependency> -->
-		<!-- <groupId>org.apache.logging.log4j</groupId> -->
-		<!-- <artifactId>log4j-core</artifactId> -->
-		<!-- <version>2.13.3</version> -->
-		<!-- </dependency> -->
-
-		<!-- <dependency> -->
-		<!-- <groupId>org.slf4j</groupId> -->
-		<!-- <artifactId>slf4j-log4j12</artifactId> -->
-		<!-- <version>1.7.30</version> -->
-		<!-- <scope>test</scope> -->
-		<!-- </dependency> -->
 
 		<dependency>
 			<groupId>org.xerial</groupId>
@@ -165,11 +145,6 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>org.slf4j</groupId> -->
-		<!-- <artifactId>jcl-over-slf4j</artifactId> -->
-		<!-- <version>1.7.7</version> -->
-		<!-- </dependency> -->
 	</dependencies>
 
 

@@ -64,9 +64,9 @@ public class Model_main {
 
 	private Tables tables;
 	private WorkDirHandler workDirHandler = new WorkDirHandler();
-	
+
 	private StringProperty table_root_hbox_width = new SimpleStringProperty();
-	
+
 	public StringProperty getTable_root_hbox_width() {
 		return table_root_hbox_width;
 	}
@@ -318,13 +318,12 @@ public class Model_main {
 
 	public void exitProgram() {
 		sprintf("exitProgram()");
-		// TODO laita savetus daemon p��lle jottei tallennukset keskeytyisi
+		// TODO laita savetus daemon päälle jottei tallennukset keskeytyisi
 		// Platform.setImplicitExit(false)
 		// Misc_GUI.saveObject(TablePositionHolder, folder);
 		// saveTablePositions();
 		// erg;
 		Messages.sprintf("Exiting program");
-//		Configuration_SQL_Utils.update_Configuration();
 		Configuration_SQL_Utils.update_Configuration();
 
 		if (Main.getChanged()) {
@@ -336,11 +335,10 @@ public class Model_main {
 				saveAllTableContents();
 				getMonitorExternalDriveConnectivity().cancel();
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-				Messages.sprintf("No pressed. This is not finished!");
-//				Messages.warningText("Not ready yet!");
+				Messages.sprintf("No answered. This is not finished!");
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
 				Messages.sprintf("Cancel pressed. This is not finished!");
-//				Messages.warningText("Not ready yet!");
+				return;
 			}
 		}
 		if (conf.isConfirmOnExit()) {

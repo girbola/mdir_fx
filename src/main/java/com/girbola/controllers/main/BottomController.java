@@ -34,15 +34,19 @@ import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 
+import common.utils.Conversion;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -58,9 +62,7 @@ public class BottomController {
 	private Model_main model_main;
 
 	private AtomicInteger duplicateCounter = new AtomicInteger(0);
-	private AtomicInteger fileEnterCounter = new AtomicInteger(0);
 	private AtomicInteger fileCounter = new AtomicInteger(0);
-	private AtomicInteger folderEnterCounter = new AtomicInteger(0);
 	private AtomicLong folderSavedSize = new AtomicLong(0);
 	private AtomicInteger folderCounter = new AtomicInteger(0);
 
@@ -122,16 +124,68 @@ public class BottomController {
 
 	@FXML
 	private void removeDuplicates_btn_action(ActionEvent event) {
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
-				"Sorted -> Sorted");
-		removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
-				"Sorted -> SortIt");
-		removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
-				"SortIt -> SortIt");
 
-		TableUtils.updateAllFolderInfos(model_main.tables());
-		TableUtils.calculateTableViewsStatistic(model_main.tables());
-		TableUtils.cleanTables(model_main.tables());
+		Task<Void> removeTableDuplicates_task = new Task<>() {
+
+			@Override
+			protected Void call() throws Exception {
+
+				Platform.runLater(() -> {
+					removeDuplicates_btn.setDisable(true);
+				});
+				removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
+						"Sorted -> Sorted");
+				removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
+						"Sorted -> SortIt");
+				removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
+						"SortIt -> SortIt");
+
+				return null;
+			}
+
+		};
+
+		removeTableDuplicates_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				TableUtils.updateAllFolderInfos(model_main.tables());
+				TableUtils.calculateTableViewsStatistic(model_main.tables());
+				TableUtils.cleanTables(model_main.tables());
+
+				Messages.warningText("" + "Duplicated files: " + duplicateCounter + "\nFolders: " + folderCounter
+						+ "\nSaved space: " + Conversion.convertToSmallerConversion(folderSavedSize.get()));
+
+				duplicateCounter.set(0);
+				folderCounter.set(0);
+				fileCounter.set(0);
+				folderSavedSize.set(0);
+
+				Platform.runLater(() -> {
+					removeDuplicates_btn.setDisable(false);
+				});
+
+			}
+		});
+		removeTableDuplicates_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Messages.warningText("Unable to remove duplicates from tables");
+				Platform.runLater(() -> {
+					removeDuplicates_btn.setDisable(false);
+				});
+			}
+		});
+
+		removeTableDuplicates_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+			@Override
+			public void handle(WorkerStateEvent event) {
+				Platform.runLater(() -> {
+					removeDuplicates_btn.setDisable(false);
+				});
+			}
+		});
+		Thread removeTableDuplicates_th = new Thread(removeTableDuplicates_task, "Removing table duplicates  thread");
+		removeTableDuplicates_th.run();
 	}
 
 	@FXML
@@ -172,14 +226,6 @@ public class BottomController {
 				model_main.tables().getSortIt_table().getItems().removeAll(toRemove);
 			}
 		}
-		Messages.warningText("There were " + duplicateCounter + " duplicateCounter " + " folderCounter " + folderCounter
-				+ " fileEnterCounter " + fileEnterCounter + " folderSavedSize " + folderSavedSize.get());
-		duplicateCounter.set(0);
-		folderCounter.set(0);
-		fileCounter.set(0);
-		folderEnterCounter.set(0);
-		fileEnterCounter.set(0);
-		folderSavedSize.set(0);
 	}
 
 	private boolean findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
@@ -187,7 +233,7 @@ public class BottomController {
 		for (FolderInfo folderInfo : table.getItems()) {
 			if (folderInfo.getFolderFiles() > 0) {
 				for (FileInfo fileInfoSearching : folderInfo.getFileInfoList()) {
-					fileEnterCounter.incrementAndGet();
+//					fileEnterCounter.incrementAndGet();
 					if (!fileInfoSearching.isTableDuplicated()) {
 						if (fileInfoSearching.getOrgPath() != fileInfoToFind.getOrgPath()) {
 							if (fileInfoSearching.getSize() == fileInfoToFind.getSize()) {
@@ -463,9 +509,7 @@ public class BottomController {
 		this.model_main = aModel_main;
 		sprintf("bottom controller...");
 		debug_pref_width.textProperty().bind(model_main.getTable_root_hbox_width());
-		
-		
-		
+
 //		Main.conf.drive_property
 //		
 //		drive_connected.textProperty().bindBidirectional(Main.conf.drive_connected_property());

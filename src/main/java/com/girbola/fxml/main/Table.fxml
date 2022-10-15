@@ -71,6 +71,7 @@
                       <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected to dest" />
                       <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%add" />
                         <MenuItem fx:id="mergeCopy_MenuItem" mnemonicParsing="false" onAction="#mergeCopy_btn_action" text="Merge selection" />
+                        <MenuItem fx:id="mergeMove_MenuItem" mnemonicParsing="false" onAction="#mergeMove_btn_action" text="Merge Folder" />
                         <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
                         <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
                         <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" text="DD" />

@@ -203,6 +203,7 @@ public class ImageViewerController {
 				}
 			});
 		} else if (fileInfo.isVideo()) {
+			Messages.warningText("Video viewing is not ready yet");
 //			SQL_Utils.loadth
 		}
 //		image.widthProperty().addListener(new ChangeListener<Number>() {

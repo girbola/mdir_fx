@@ -7,7 +7,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 
 import javafx.scene.control.Alert.AlertType;
-import uk.co.caprica.vlcj.binding.RuntimeUtil;
+import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.factory.discovery.strategy.NativeDiscoveryStrategy;
 import uk.co.caprica.vlcj.support.Info;

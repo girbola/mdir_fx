@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.merge;
+package com.girbola.fxml.main.merge.copy;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,9 +40,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
-public class MergeDialogController {
+public class MergeCopyDialogController {
 
-	private final String ERROR = MergeDialogController.class.getSimpleName();
+	private final String ERROR = MergeCopyDialogController.class.getSimpleName();
 
 	private Model_main model_main;
 	private Tables tables;
