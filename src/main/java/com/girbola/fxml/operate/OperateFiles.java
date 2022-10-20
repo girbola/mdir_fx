@@ -67,6 +67,14 @@ public class OperateFiles extends Task<Boolean> {
 		this.scene_NameType = scene_NameType;
 	}
 
+	/*
+	 * MOVE
+	 * dest exists
+	 * files does not exists
+	 * rename if files not exists with same name
+	 * 
+	 */
+	
 	@Override
 	protected Boolean call() throws Exception {
 		Main.setProcessCancelled(false);

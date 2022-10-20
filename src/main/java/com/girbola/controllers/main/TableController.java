@@ -40,6 +40,7 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.main.collect.Collect_DialogController;
 import com.girbola.fxml.main.collect.Model_CollectDialog;
 import com.girbola.fxml.main.merge.copy.MergeCopyDialogController;
+import com.girbola.fxml.main.merge.move.MergeMoveDialogController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -326,7 +327,7 @@ public class TableController {
 		Parent root = null;
 
 		try {
-			loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/copy/MergeCopyDialog.fxml"), Main.bundle);
+			loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/move/MergeMoveDialog.fxml"), Main.bundle);
 			root = loader.load();
 			Stage stage = new Stage();
 			Scene scene = new Scene(root);
@@ -339,8 +340,8 @@ public class TableController {
 			stage.setAlwaysOnTop(true);
 			scene.getStylesheets().add(
 					Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGS.getType()).toExternalForm());
-			MergeCopyDialogController mergeCopyDialogController = (MergeCopyDialogController) loader.getController();
-			mergeCopyDialogController.init(model_main, model_main.tables(), table, tableType);
+			MergeMoveDialogController mergeMoveDialogController = (MergeMoveDialogController) loader.getController();
+			mergeMoveDialogController.init(model_main, model_main.tables(), table, tableType);
 			stage.setScene(scene);
 
 			stage.showAndWait();
