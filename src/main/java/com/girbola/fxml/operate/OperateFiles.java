@@ -351,13 +351,13 @@ public class OperateFiles extends Task<Boolean> {
 				return false;
 			}
 			try {
-				Path destTmp = Paths.get(dest2.toFile() + ".tmp");
+				Path destTmpFile = Paths.get(dest2.toFile() + ".tmp");
 
-				Files.deleteIfExists(destTmp);
+				Files.deleteIfExists(destTmpFile);
 				Messages.sprintf("Source: " + source2 + " dest: " + dest2);
 
 				InputStream from = new FileInputStream(source2.toFile());
-				OutputStream to = new FileOutputStream(destTmp.toFile());
+				OutputStream to = new FileOutputStream(destTmpFile.toFile());
 				resetAndupdateSourceAndDestProcessValues(source2, dest2);
 
 				long nread = 0L;
@@ -370,7 +370,7 @@ public class OperateFiles extends Task<Boolean> {
 						if (cancelledSucceeded) {
 							Messages.sprintf("Cleanup is done ");
 						} else {
-							Messages.sprintf("Cleanup has FAILED. There will be tmp file will remain: " + destTmp);
+							Messages.sprintf("Cleanup has FAILED. There will be tmp file will remain: " + destTmpFile);
 						}
 
 						break;
@@ -408,11 +408,11 @@ public class OperateFiles extends Task<Boolean> {
 					}
 
 					if (answer.get() == 0) {
-						renameTmpFileToCorruptedFileExtensions(fileInfo, destTmp, dest2);
-						Messages.sprintf("renameTmpFileToCorruptedFile: " + destTmp);
+						renameTmpFileToCorruptedFileExtensions(fileInfo, destTmpFile, dest2);
+						Messages.sprintf("renameTmpFileToCorruptedFile: " + destTmpFile);
 					} else if (answer.get() == 1) {
-						Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmp);
-						Files.deleteIfExists(destTmp);
+						Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmpFile);
+						Files.deleteIfExists(destTmpFile);
 					} else if (answer.get() == 2) {
 						Messages.sprintf("Cancel pressed. This is not finished!");
 						cancel();
@@ -421,8 +421,8 @@ public class OperateFiles extends Task<Boolean> {
 
 					}
 				} else {
-					renameTmpFileBackToOriginalExtentension(fileInfo, destTmp, dest2);
-					Messages.sprintf("renameTmpFileBackToOriginalExtentension: " + destTmp + " dest: " + dest2);
+					renameTmpFileBackToOriginalExtentension(fileInfo, destTmpFile, dest2);
+					Messages.sprintf("renameTmpFileBackToOriginalExtentension: " + destTmpFile + " dest: " + dest2);
 				}
 
 			} catch (Exception e) {

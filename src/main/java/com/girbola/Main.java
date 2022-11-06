@@ -106,7 +106,7 @@ public class Main extends Application {
 				sprintf("Program starting");
 				locale = new Locale(lang, country);
 				bundle = ResourceBundle.getBundle("bundle/lang", locale);
- 
+
 				conf.setModel(model_main);
 				conf.createProgramPaths();
 				conf.loadConfig();
@@ -164,16 +164,11 @@ public class Main extends Application {
 				// stage.setMaximized(true);
 				primaryStage.setOnCloseRequest(model_main.dontExit);
 
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						primaryStage.setScene(primaryScene);
+				Platform.runLater(() -> {
+					primaryStage.setScene(primaryScene);
 //						defineScreenBounds(primaryStage);
-						primaryStage.show();
-
-						model_main.getBottomController().initBottomWorkdirMonitors();
-					}
-
+					primaryStage.show();
+					model_main.getBottomController().initBottomWorkdirMonitors();
 				});
 				lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
 				Platform.runLater(() -> {
@@ -225,11 +220,11 @@ public class Main extends Application {
 								e.printStackTrace();
 							}
 							TableUtils.refreshAllTableContent(model_main.tables());
-							
+
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
-							
+
 							model_main.getMonitorExternalDriveConnectivity().restart();
-							
+
 							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
@@ -238,6 +233,7 @@ public class Main extends Application {
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 							}
+							
 							primaryStage.xProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
@@ -249,6 +245,7 @@ public class Main extends Application {
 									}
 								}
 							});
+							
 							primaryStage.yProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
@@ -260,6 +257,7 @@ public class Main extends Application {
 									}
 								}
 							});
+							
 							primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
@@ -271,6 +269,7 @@ public class Main extends Application {
 									}
 								}
 							});
+							
 							primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
 
 								@Override

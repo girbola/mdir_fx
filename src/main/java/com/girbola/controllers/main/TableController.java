@@ -317,16 +317,17 @@ public class TableController {
 			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
 				warningText(bundle.getString("cannotFindWorkDir"));
 				return;
+				
 			}
 		} catch (IOException ex) {
 			warningText(bundle.getString("cannotFindWorkDir"));
 			return;
 		}
+		
 		FXMLLoader loader = null;
-
 		Parent root = null;
 
-		try {
+			try {
 			loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/move/MergeMoveDialog.fxml"), Main.bundle);
 			root = loader.load();
 			Stage stage = new Stage();
@@ -334,6 +335,7 @@ public class TableController {
 			stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
 			stage.initModality(Modality.WINDOW_MODAL);
 			stage.setMaxHeight(200);
+
 			Main.centerWindowDialog(stage);
 
 			stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());

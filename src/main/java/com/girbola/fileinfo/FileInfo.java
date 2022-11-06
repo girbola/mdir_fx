@@ -82,15 +82,14 @@ public class FileInfo extends Metadata implements Cloneable {
 	 * @see java.lang.Object#toString()
 	 */
 	public String showAllValues() {
-		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir
-				+ ", workDirDriveSerialNumber=" + workDirDriveSerialNumber + ", destination_Path=" + destination_Path
-				+ ", fileInfo_version=" + fileInfo_version + ", event=" + event + ", location=" + location + ", tags="
-				+ tags + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad
-				+ ", confirmed=" + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored
-				+ ", image=" + image + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video
-				+ ", orientation=" + orientation + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift
-				+ ", date=" + date + ", size=" + size + ", tableDuplicated=" + tableDuplicated + ", thumb_offset="
-				+ thumb_offset + " user " + user + "]";
+		return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", workDirDriveSerialNumber="
+				+ workDirDriveSerialNumber + ", destination_Path=" + destination_Path + ", fileInfo_version="
+				+ fileInfo_version + ", event=" + event + ", location=" + location + ", tags=" + tags
+				+ ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad + ", confirmed="
+				+ confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored + ", image=" + image
+				+ ", raw=" + raw + ", suggested=" + suggested + ", video=" + video + ", orientation=" + orientation
+				+ ", thumb_length=" + thumb_length + ", timeShift=" + timeShift + ", date=" + date + ", size=" + size
+				+ ", tableDuplicated=" + tableDuplicated + ", thumb_offset=" + thumb_offset + " user " + user + "]";
 	}
 
 	/**
@@ -124,15 +123,14 @@ public class FileInfo extends Metadata implements Cloneable {
 		this.user = "";
 		this.workDir = "";
 		this.workDirDriveSerialNumber = "";
-		// this.thumbInfo = new ThumbInfo(orgPath, fileInfo_id);
 	}
 
 	/**
 	 *
 	 */
 	public FileInfo() {
-		this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false,
-				false, false, false, false, false, 0, 0, 0, 0);
+		this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
+				false, false, false, false, 0, 0, 0, 0);
 	}
 
 	/**
@@ -162,11 +160,11 @@ public class FileInfo extends Metadata implements Cloneable {
 	 * @param aThumb_offset
 	 * @param aThumb_length
 	 */
-	public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber,
-			String aDestinationStructure, String aEvent, String aLocation, String aTags, String aCamera_model,
-			String user, int aOrientation, long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood,
-			boolean aSuggested, boolean aConfirmed, boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored,
-			boolean aCopied, boolean aTableDuplicated, long aDate, long aSize, int aThumb_offset, int aThumb_length) {
+	public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
+			String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
+			long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
+			boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
+			long aDate, long aSize, int aThumb_offset, int aThumb_length) {
 		this.orgPath = aOrgPath;
 		this.workDir = aWorkDir;
 		this.workDirDriveSerialNumber = aWorkDirDriveSerialNumber;
