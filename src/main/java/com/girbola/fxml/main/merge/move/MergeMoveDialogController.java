@@ -15,6 +15,7 @@ import java.util.Map;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -36,13 +37,6 @@ import javafx.stage.Stage;
 public class MergeMoveDialogController {
 
 	final private org.slf4j.Logger ERROR = org.slf4j.LoggerFactory.getLogger(getClass());
-	
-//	private final String ERROR = MergeMoveDialogController.class.getSimpleName();
-
-	private Model_main model_Main;
-
-	@FXML
-	private ListView<FolderInfo> move_accepted_listView;
 
 	@FXML
 	private Button cancel_btn;
@@ -50,15 +44,20 @@ public class MergeMoveDialogController {
 	@FXML
 	private Button move_accepted_btn;
 
-	private Tables tables;
+	@FXML
+	private ListView<FolderInfo> move_accepted_listView;
+
+	private Model_main model_Main;
+
+	private FolderInfo selectedFolder;
+
+	private String selectedTableType;
 
 	private TableView<FolderInfo> table;
 
+	private Tables tables;
+
 	private String tableType;
-
-	private String selectedFolder;
-
-	private String selectedTableType;
 
 	@FXML
 	private void cancel_btn_action(ActionEvent event) {
@@ -68,10 +67,10 @@ public class MergeMoveDialogController {
 
 	@FXML
 	private void move_accepted_btn_action(ActionEvent event) throws IOException {
-		Path dest = Paths.get(selectedFolder);
+
 		List<FileInfo> fileInfo_list = new ArrayList<>();
 
-		Messages.sprintf("DEST Folder exists: " + dest);
+		Path dest = Paths.get(selectedFolder.getFolderPath());
 
 		Path realPath = dest.toRealPath();
 		if (Files.exists(realPath)) {
@@ -103,40 +102,56 @@ public class MergeMoveDialogController {
 			// Remove folder which were not selected.
 
 			// Save changes
+		    Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
+		    // do what you have to do
+		    stage.close();
 		}
 	}
 
 	private void move(FolderInfo srcFolderInfo, FolderInfo destFolderInfo) throws IOException {
 		Iterator<FileInfo> srcFolderInfo_it = srcFolderInfo.getFileInfoList().iterator();
-		
-		Map<String, String> exists_map = checkIfFilesExistsAtDestination(srcFolderInfo);
-		
+
 		// Check if files exists already on destination
-		
+		List<FileInfo> exists_map = checkIfFilesExistsAtDestination(srcFolderInfo);
+
+		StringBuilder stb = new StringBuilder();
+		for (FileInfo fileInfo : exists_map) {
+			stb.append(fileInfo.getOrgPath());
+			stb.append("\n");
+		}
+
+		if (!stb.isEmpty()) {
+			Messages.warningText("file exists at dest: \n" + stb);
+		}
+
+		// Merge files
 		srcFolderInfo_it = srcFolderInfo.getFileInfoList().iterator();
-		
+
 		while (srcFolderInfo_it.hasNext()) {
 			FileInfo fileInfo = srcFolderInfo_it.next();
 
-			Path srcFile = Paths.get(fileInfo.getOrgPath());
-			Path destFolder = Paths.get(destFolderInfo.getFolderPath() + File.separator + srcFile.getFileName());
+			Path sourcePath = Paths.get(fileInfo.getOrgPath());
+			Path destFolder = Paths.get(destFolderInfo.getFolderPath() + File.separator + sourcePath.getFileName());
 
-			Path renameFileToDate = FileUtils.renameFile(srcFile, destFolder);
-			if (renameFileToDate != null) {
-				Messages.sprintf("srcFile is: " + srcFile + " renameFile: " + renameFileToDate);
+			Path destinationPath = FileUtils.renameFile(sourcePath, destFolder);
+			Messages.sprintf("sRENAMED: rcFile is: " + sourcePath + " destinationPath: " + destinationPath);
 
-				Files.move(srcFile, renameFileToDate, StandardCopyOption.REPLACE_EXISTING);
+			if (destinationPath != null) {
+				Messages.sprintf("srcFile is: " + sourcePath + " destinationPath: " + destinationPath);
+
+//				Files.move(srcFile, renameFileToDate, StandardCopyOption.REPLACE_EXISTING);
+				Messages.sprintf("DEMOOO - Moving file FROM: " + sourcePath + " to TARGET: " + destinationPath);
 
 				final String fileInfoOrgSrc = fileInfo.getOrgPath();
 
 				destFolderInfo.getFileInfoList().add(fileInfo);
 
-				fileInfo.setOrgPath(renameFileToDate.toString());
+				fileInfo.setOrgPath(destinationPath.toString());
 
 				Messages.sprintf("fileInfo.toString();: " + fileInfo.toString());
 
 				destFolderInfo.getFileInfoList().add(fileInfo);
-				Files.move(Paths.get(fileInfo.getOrgPath()), destFolder);
+//				Files.move(Paths.get(fileInfo.getOrgPath()), destFolder);
 
 				srcFolderInfo_it.remove();
 			}
@@ -145,21 +160,31 @@ public class MergeMoveDialogController {
 		srcFolderInfo.setChanged(true);
 		destFolderInfo.setChanged(true);
 
-		TableUtils.saveChangesContentsToTables(model_Main.tables());
+//		TableUtils.saveChangesContentsToTables(model_Main.tables());
 
 	}
 
-	private Map<String, String> checkIfFilesExistsAtDestination(FolderInfo srcFolderInfo, Path destFolder) {
-		Map<String, String> duplicate_List = new HashMap<>();
-		
+	private List<FileInfo> checkIfFilesExistsAtDestination(FolderInfo srcFolderInfo) {
+		List<FileInfo> duplicate_List = new ArrayList<>();
+
 		Iterator<FileInfo> srcFolderInfo_it = srcFolderInfo.getFileInfoList().iterator();
-		
+
 		while (srcFolderInfo_it.hasNext()) {
 			FileInfo fileInfo = srcFolderInfo_it.next();
-			Path destFile= Paths.get(fileInfo.getOrgPath());
+
+			for (FileInfo fileInfoList : selectedFolder.getFileInfoList()) {
+
+				if (fileInfo.getSize() == fileInfoList.getSize()) {
+					duplicate_List.add(fileInfo);
+
+				}
+			}
+
+//			Iterator<FileInfo> destFolder = selectedFolder.getFileInfoList().iterator();
+
+//			Path destFile= Paths.get(fileInfo.getOrgPath());
 		}
-		return null;
-		
+		return duplicate_List;
 
 	}
 
@@ -192,7 +217,7 @@ public class MergeMoveDialogController {
 			@Override
 			public void changed(ObservableValue<? extends FolderInfo> observable, FolderInfo oldValue,
 					FolderInfo newValue) {
-				selectedFolder = newValue.getFolderPath();
+				selectedFolder = newValue;
 				selectedTableType = newValue.getTableType();
 				Messages.sprintf("folderInfoooo: " + newValue.getFolderPath());
 			}

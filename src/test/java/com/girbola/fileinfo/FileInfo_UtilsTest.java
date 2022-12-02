@@ -3,6 +3,8 @@ package com.girbola.fileinfo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,14 @@ class FileInfo_UtilsTest {
 		 * 
 		 * }
 		 */
+	}
+
+	@Test
+	void testMoveFileInfoToAnotherLocation() {
+		Path file = Paths.get("/home/gerbiloi/Pictures/Riston kuvat/Risto1/Ristiäiset");
+		System.out.println(
+				"File " + file + " exists? " + Files.exists(file) + " fullPath: " + file.toFile().getAbsolutePath());
+
 	}
 
 	@Test

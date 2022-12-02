@@ -317,17 +317,34 @@ public class TableController {
 			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
 				warningText(bundle.getString("cannotFindWorkDir"));
 				return;
-				
+
 			}
 		} catch (IOException ex) {
 			warningText(bundle.getString("cannotFindWorkDir"));
 			return;
 		}
-		
+
+		if (tableType.equals(TableType.SORTIT.getType())) {
+			if (model_main.tables().getSortIt_table().getSelectionModel().getSelectedItems().size() <= 1) {
+				warningText(bundle.getString("noSelectedFoldersToMerge"));
+				return;
+			}
+		} else if (tableType.equals(TableType.SORTED.getType())) {
+			if (model_main.tables().getSorted_table().getSelectionModel().getSelectedItems().size() <= 1) {
+				warningText(bundle.getString("noSelectedFoldersToMerge"));
+				return;
+			}
+		} else if (tableType.equals(TableType.ASITIS.getType())) {
+			if (model_main.tables().getAsItIs_table().getSelectionModel().getSelectedItems().size() <= 1) {
+				warningText(bundle.getString("noSelectedFoldersToMerge"));
+				return;
+			} 
+		}
+
 		FXMLLoader loader = null;
 		Parent root = null;
 
-			try {
+		try {
 			loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/move/MergeMoveDialog.fxml"), Main.bundle);
 			root = loader.load();
 			Stage stage = new Stage();
