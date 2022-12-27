@@ -25,7 +25,10 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListCell;
@@ -68,44 +71,80 @@ public class MergeMoveDialogController {
 	@FXML
 	private void move_accepted_btn_action(ActionEvent event) throws IOException {
 
-		List<FileInfo> fileInfo_list = new ArrayList<>();
+		Task<Void> move_task = new Task<>() {
 
-		Path dest = Paths.get(selectedFolder.getFolderPath());
+			@Override
+			protected Void call() throws Exception {
+				// TODO Auto-generated method stub
 
-		Path realPath = dest.toRealPath();
-		if (Files.exists(realPath)) {
-			Messages.sprintf("DEST Folder exists: " + realPath);
+				List<FileInfo> fileInfo_list = new ArrayList<>();
 
-			FolderInfo destFolderInfo = null;
+				Path dest = Paths.get(selectedFolder.getFolderPath());
 
-			for (FolderInfo folderInfo : folderInfo_List) {
-				if (folderInfo.getFolderPath().equals(dest.toString())) {
-					destFolderInfo = folderInfo;
-				}
-			}
+				Path realPath = dest.toRealPath();
+				if (Files.exists(realPath)) {
+					Messages.sprintf("DEST Folder exists: " + realPath);
 
-			for (FolderInfo folderInfo : folderInfo_List) {
-				if (!folderInfo.getFolderPath().equals(dest.toString())) {
-					move(folderInfo, destFolderInfo);
-				}
-			}
+					FolderInfo destFolderInfo = null;
 
-			for (FileInfo fileInfo : fileInfo_list) {
+					for (FolderInfo folderInfo : folderInfo_List) {
+						if (folderInfo.getFolderPath().equals(dest.toString())) {
+							destFolderInfo = folderInfo;
+						}
+					}
+
+					for (FolderInfo folderInfo : folderInfo_List) {
+						if (!folderInfo.getFolderPath().equals(dest.toString())) {
+							move(folderInfo, destFolderInfo);
+						} else {
+							Messages.sprintf("folderInfo.getFolderPath " + folderInfo.getFolderPath()
+									+ " dest.toString: " + dest.toString());
+						}
+					}
+
+					for (FileInfo fileInfo : fileInfo_list) {
 //				Messages.sprintf("File to be copied: " + fileInfo.getOrgPath());
-				Path fileName = Paths.get(fileInfo.getOrgPath()).getFileName();
-				Path root = Paths.get(fileInfo.getOrgPath()).getParent();
-				Messages.sprintf("SRC: " + fileInfo.getOrgPath() + " newDestination: " + dest);
+						Path fileName = Paths.get(fileInfo.getOrgPath()).getFileName();
+						Path root = Paths.get(fileInfo.getOrgPath()).getParent();
+						Messages.sprintf("SRC: " + fileInfo.getOrgPath() + " newDestination: " + dest);
+					}
+
+					// Update fileinfo
+
+					// Remove folder which were not selected.
+
+				}
+				return null;
+
 			}
 
-			// Update fileinfo
+		};
 
-			// Remove folder which were not selected.
+		move_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 
-			// Save changes
-		    Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
-		    // do what you have to do
-		    stage.close();
-		}
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// Save changes
+				Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
+				// do what you have to do
+				stage.close();
+			}
+		});
+
+		move_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+			@Override
+			public void handle(WorkerStateEvent event) {
+				// Save changes
+				Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
+				// do what you have to do
+				stage.close();
+			}
+		});
+
+		Thread move_th = new Thread(move_task, "move_task");
+		move_th.start();
+
 	}
 
 	private void move(FolderInfo srcFolderInfo, FolderInfo destFolderInfo) throws IOException {
@@ -139,8 +178,8 @@ public class MergeMoveDialogController {
 			if (destinationPath != null) {
 				Messages.sprintf("srcFile is: " + sourcePath + " destinationPath: " + destinationPath);
 
-//				Files.move(srcFile, renameFileToDate, StandardCopyOption.REPLACE_EXISTING);
-				Messages.sprintf("DEMOOO - Moving file FROM: " + sourcePath + " to TARGET: " + destinationPath);
+//				Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+				Messages.sprintf("Moving file FROM: " + sourcePath + " to TARGET: " + destinationPath);
 
 				final String fileInfoOrgSrc = fileInfo.getOrgPath();
 
@@ -151,7 +190,7 @@ public class MergeMoveDialogController {
 				Messages.sprintf("fileInfo.toString();: " + fileInfo.toString());
 
 				destFolderInfo.getFileInfoList().add(fileInfo);
-//				Files.move(Paths.get(fileInfo.getOrgPath()), destFolder);
+				Files.move(Paths.get(fileInfo.getOrgPath()), destinationPath);
 
 				srcFolderInfo_it.remove();
 			}
