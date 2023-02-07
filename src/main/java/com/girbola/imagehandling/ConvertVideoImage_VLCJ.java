@@ -87,7 +87,7 @@ public class ConvertVideoImage_VLCJ extends Task<Image> {
 		}
 
 		String mrl = "file:///" + FileUtils.fileSeparator_mrl(fileName);
-
+		Messages.sprintf("MRL for video path: " + mrl);
 		MediaPlayerFactory factory = new MediaPlayerFactory(VLC_ARGS);
 		MediaPlayer mediaPlayer = factory.mediaPlayers().newMediaPlayer();
 

@@ -489,13 +489,13 @@ public class Configuration_SQL_Utils {
 		return false;
 	}
 
-	private void loadTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns, String tableName) {
-		for (TableColumn tc : columns) {
-//			if (prop.containsKey(tc.getId())) {
-//				tc.setPrefWidth(Double.parseDouble(prop.getProperty(tc.getId())));
-//			}
-		}
-	}
+//	private void loadTableWidths(ObservableList<TableColumn<FolderInfo, ?>> columns, String tableName) {
+//		for (TableColumn tc : columns) {
+////			if (prop.containsKey(tc.getId())) {
+////				tc.setPrefWidth(Double.parseDouble(prop.getProperty(tc.getId())));
+////			}
+//		}
+//	}
 
 	public static void update_Configuration() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),

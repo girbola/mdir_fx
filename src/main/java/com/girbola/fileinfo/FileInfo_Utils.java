@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import com.drew.metadata.Metadata;
@@ -460,7 +461,7 @@ public class FileInfo_Utils {
 			}
 		}
 		return false;
-	}
+	} 	
 
 	/**
 	 * Find possible duplicates from FolderInfo's List<FileInfo>
@@ -577,5 +578,4 @@ public class FileInfo_Utils {
 		}
 		return null;
 	}
-
 }

@@ -57,29 +57,15 @@ public class FolderInfo_Utils {
 		return list;
 	}
 
-	public static void addToObservableFileInfoList(ObservableList<FileInfo> list, String string, FileInfo fileInfo_ToFind) {
-		
+	public static void addToObservableFileInfoList(ObservableList<FileInfo> list, String string,
+			FileInfo fileInfo_ToFind) {
+
 		for (FileInfo fileInfo : list) {
-			if(fileInfo != fileInfo_ToFind) {
-				if(fileInfo_ToFind.getEvent().equals(fileInfo.getEvent())) {
+			if (fileInfo != fileInfo_ToFind) {
+				if (fileInfo_ToFind.getEvent().equals(fileInfo.getEvent())) {
 					list.add(fileInfo);
 				}
 			}
 		}
 	}
-
-	public static List<FolderInfo> getLocation(List<FolderInfo> folderInfo_list) {
-
-		return null;
-	}
-
-//	public static void moveToAnotherTable_(Tables tables, TableView<FolderInfo> table, String tableType) {
-//
-//		if(tableType.equals(TableType.SORTIT.getType())) {
-//			tables.getSorted_table().getItems().addAll(table.getSelectionModel().getSelectedItems());
-//			tables.getSortIt_table().getItems().removeAll(table.getSelectionModel().getSelectedItems());
-//		}
-//		
-//	}
-
 }

@@ -194,17 +194,6 @@ public class TableUtils {
 		return fi;
 	}
 
-	// public static TableValues findTableValues(String type, Path path, Tables
-	// tables) {
-	// TableValues tbv = null;
-	// for (TableValues tableValues : tables.getSorted_table().getItems()) {
-	// if (tableValues.getFolderPath().equals(path.toString())) {
-	// return tableValues;
-	// }
-	// }
-	//
-	// return tbv;
-	// }
 	public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
 		// TableValues tbv = null;
 		for (FolderInfo tv : tableValues) {
@@ -825,18 +814,21 @@ public class TableUtils {
 				folderInfo.setChanged(false);
 			}
 		}
+		
 		for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
 			if (folderInfo.getChanged()) {
 				saveFolderInfoToDatabase(folderInfo);
 				folderInfo.setChanged(false);
 			}
 		}
+		
 		for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
 			if (folderInfo.getChanged()) {
 				saveFolderInfoToDatabase(folderInfo);
 				folderInfo.setChanged(false);
 			}
 		}
+		
 		Main.setChanged(false);
 	}
 

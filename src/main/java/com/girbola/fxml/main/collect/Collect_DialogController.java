@@ -131,13 +131,13 @@ public class Collect_DialogController {
 				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
 				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 
-				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
-				if (!Files.exists(destinationPath)) {
-					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-							+ destinationPath);
-					Main.setProcessCancelled(true);
-					break;
-				}
+//				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+//				if (!Files.exists(destinationPath)) {
+//					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
+//							+ destinationPath);
+//					Main.setProcessCancelled(true);
+//					break;
+//				}
 				Main.setChanged(true);
 
 				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());

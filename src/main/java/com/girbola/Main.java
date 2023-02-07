@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
+import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
@@ -44,6 +45,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import com.girbola.vlcj.VLCPlayerController;
 import common.utils.date.SimpleDates;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -106,7 +108,7 @@ public class Main extends Application {
 				sprintf("Program starting");
 				locale = new Locale(lang, country);
 				bundle = ResourceBundle.getBundle("bundle/lang", locale);
- 
+
 				conf.setModel(model_main);
 				conf.createProgramPaths();
 				conf.loadConfig();
@@ -164,16 +166,11 @@ public class Main extends Application {
 				// stage.setMaximized(true);
 				primaryStage.setOnCloseRequest(model_main.dontExit);
 
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						primaryStage.setScene(primaryScene);
+				Platform.runLater(() -> {
+					primaryStage.setScene(primaryScene);
 //						defineScreenBounds(primaryStage);
-						primaryStage.show();
-
-						model_main.getBottomController().initBottomWorkdirMonitors();
-					}
-
+					primaryStage.show();
+					model_main.getBottomController().initBottomWorkdirMonitors();
 				});
 				lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
 				Platform.runLater(() -> {
@@ -225,11 +222,11 @@ public class Main extends Application {
 								e.printStackTrace();
 							}
 							TableUtils.refreshAllTableContent(model_main.tables());
-							
+
 							Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
-							
+
 							model_main.getMonitorExternalDriveConnectivity().restart();
-							
+
 							boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
 							if (loaded) {
 								for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
@@ -237,6 +234,7 @@ public class Main extends Application {
 								}
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
+								VLCJDiscovery.initVlc();
 							}
 							primaryStage.xProperty().addListener(new ChangeListener<Number>() {
 

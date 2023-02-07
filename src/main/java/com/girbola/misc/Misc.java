@@ -142,7 +142,10 @@ public class Misc {
 			obj = ois.readObject();
 		} catch (ClassNotFoundException ex) {
 			Logger.getLogger(Misc.class.getName()).log(Level.SEVERE, null, ex);
+		} finally {
+			ois.close();
 		}
+		
 		return obj;
 	}
 }

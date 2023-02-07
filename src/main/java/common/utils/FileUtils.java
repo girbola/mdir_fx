@@ -71,31 +71,41 @@ public class FileUtils {
 		String ext = getExtension(destFile);
 
 		if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
-			sprintf("file name exists but they are different size: ");
+			sprintf("Files have same name but they differ with sizes");
+
 			DirectoryStream<Path> list = null;
+
 			try {
 				list = Files.newDirectoryStream(destFile.getParent(), filter_directories);
 			} catch (Exception e) {
 				Messages.sprintfError("Can't read directory: " + destFile);
 			}
+
 			int counter = 1;
+
 			Iterator<Path> it = list.iterator();
+
 			while (it.hasNext()) {
+
 				fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
 						.substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "."
 						+ ext;
 
 				sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
+
 				counter++;
+
 				if (Files.exists(Paths.get(fileName))) {
 					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
-						sprintf("File existed!: " + destFile + " filename: " + fileName);
+						sprintf("DUPLICATED. File existed: " + destFile + " filename: " + fileName);
 						return null;
 					}
 				} else {
 					return Paths.get(fileName);
 				}
+
 			}
+
 		} else {
 			Messages.sprintf("file did exists at destination folder");
 			return null;
