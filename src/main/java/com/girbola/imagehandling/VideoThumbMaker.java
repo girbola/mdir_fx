@@ -45,7 +45,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		List<BufferedImage> list = null;
 		try {
 			list = JCodecVideoThumb.getList(new File(fileInfo.getOrgPath()));
-			if(list == null ) {
+			if (list == null) {
 				return null;
 			}
 		} catch (Exception ex) {
@@ -71,27 +71,27 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		VBox rootPane = (VBox) pane.getParent();
 		try {
 			org.bytedeco.javacv.FrameGrabber fr = FrameGrabber.createDefault(fileInfo.getOrgPath());
-			log.info("FrameGrabberFrameGrabberFrameGrabber: " + fr.toString());
+			Messages.sprintf("FrameGrabberFrameGrabberFrameGrabber: " + fr.toString());
 
 		} catch (FFmpegFrameGrabber.Exception e) {
 			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
-			log.info("1GARBBERRRERBAERB: " + grabber.getFormat());
-			log.info("2AERAERAGERA: " + grabber.toString());
+			Messages.sprintf("1GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("2AERAERAGERA: " + grabber.toString());
 			throw new RuntimeException(e);
 		} catch (FrameGrabber.Exception e) {
 			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
-			log.info("3GARBBERRRERBAERB: " + grabber.getFormat());
-			log.info("4AERAERAGERA: " + grabber.toString());
+			Messages.sprintf("3GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("4AERAERAGERA: " + grabber.toString());
 			throw new RuntimeException(e);
 		}
 		if (list == null) {
 			System.err.println("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
-				FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
-				log.info("GARBBERRRERBAERB: " + grabber.getFormat());
-				log.info("AERAERAGERA: " + grabber.toString());
+			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			Messages.sprintf("GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("AERAERAGERA: " + grabber.toString());
 //				FrameGrabber frameG = FrameGrabber.createDefault(fileInfo.getOrgPath());
 ////				int lengthInFrames = ffMpegVideo.getLengthInFrames();
-//				log.info("===lengthInFrames: " + frameG.toString());
+//				Messages.sprintf("===lengthInFrames: " + frameG.toString());
 
 			pane.getChildren().add(new Label("Video. NP"));
 			return;
@@ -140,11 +140,11 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 
 	private FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
 		FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
-if(frameGrabber != null) {
+		if (frameGrabber != null) {
 
 //	int lengthInFrames = frameGrabber.getLengthInFrames();
-	log.info("=======lengthInFrames" + frameGrabber.toString());
-}
+			Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
+		}
 		return null;
 	}
 

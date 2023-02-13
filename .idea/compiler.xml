@@ -13,7 +13,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="mdir_fx_2021" options="-Xlint:deprecation" />
+      <module name="mdir_fx_2021" options="" />
     </option>
   </component>
 </project>

@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.Demuxer;
@@ -21,9 +20,10 @@ import com.girbola.Main;
 import com.girbola.imagehandling.jcodec.AWTUtil;
 import com.girbola.messages.Messages;
 
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 
-@Slf4j
+@Slf4j	
 public class JCodecVideoThumb {
 
 	public static List<BufferedImage> getList(File file) throws FFmpegFrameGrabber.Exception {
@@ -68,7 +68,7 @@ public class JCodecVideoThumb {
 
 			FFmpegFrameGrabber ffMpegVideo = createVideoThumb(file.toString());
 			int lengthInFrames = ffMpegVideo.getLengthInFrames();
-			log.info("===lengthInFrames: " + lengthInFrames);
+			Messages.sprintf("===lengthInFrames: " + lengthInFrames);
 
 			e.printStackTrace();
 		}
@@ -78,7 +78,7 @@ public class JCodecVideoThumb {
 		FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
 
 		int lengthInFrames = frameGrabber.getLengthInFrames();
-		log.info("=======lengthInFrames" + lengthInFrames);
+		Messages.sprintf("=======lengthInFrames" + lengthInFrames);
 		return null;
 	}
 	private static List<Double> grabListOfTimeLine(double duration) {
