@@ -103,15 +103,11 @@ public class VLCPlayerController {
         mediaPlayer.events().addMediaPlayerEventListener(new MPE(slider));
         mediaPlayer.videoSurface().set(new JavaFxVideoSurface());
 
-        volume_slider.valueProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                System.out.println("volumeee: " + newValue);
-                Platform.runLater(() -> {
-                    mediaPlayer.audio().setVolume(newValue.intValue());
-                });
-            }
+        volume_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
+            System.out.println("volumeee: " + newValue);
+            Platform.runLater(() -> {
+                mediaPlayer.audio().setVolume(newValue.intValue());
+            });
         });
         mediaPlayer.media().prepare(file.toString());
         timer = new AnimationTimer() {
@@ -127,15 +123,12 @@ public class VLCPlayerController {
         // ft.setFromValue(1);
         // ft.setToValue(0);
 
-        pane.setOnMouseMoved(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                FadeTransition ft = new FadeTransition(Duration.millis(2200), bottomBar);
-                ft.setFromValue(1.0);
-                ft.setToValue(0.0);
-                ft.setAutoReverse(true);
-                ft.play();
-            }
+        pane.setOnMouseMoved(event -> {
+            FadeTransition ft = new FadeTransition(Duration.millis(2200), bottomBar);
+            ft.setFromValue(1.0);
+            ft.setToValue(0.0);
+            ft.setAutoReverse(true);
+            ft.play();
         });
         vlc_canvas.widthProperty().bind(pane.widthProperty().subtract(10));
         vlc_canvas.heightProperty().bind(pane.heightProperty().subtract(10));
