@@ -437,7 +437,7 @@ public class DateTimeAdjusterController {
 		Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
-				Messages.sprintf("node name " + node.getId());
+				Messages.sprintf("123 node name " + node.getId());
 				VBox vbox = (VBox) node;
 				if (vbox.getId().equals("imageFrame")) {
 					for (Node hbox : vbox.getChildren()) {
@@ -559,7 +559,7 @@ public class DateTimeAdjusterController {
 					if (n instanceof HBox) {
 						for (Node hbc : ((HBox) n).getChildren()) {
 							if (hbc instanceof TextField) {
-								list.add(hbc);
+								list.add(n);
 								sprintf("TextField found and it is date: " + ((TextField) hbc).getText()
 										+ " getId() is " + hbc.getId());
 							}

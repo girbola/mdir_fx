@@ -94,38 +94,13 @@ public class SelectorController {
 		return df_gridPane;
 	}
 
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = new Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>>() {
-		@Override
-		public TableCell<EXIF_Data_Selector, Boolean> call(TableColumn<EXIF_Data_Selector, Boolean> p) {
-			return new CheckBoxCell_Dates(model_datefix);
-		}
-	};
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = new Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>>() {
-		@Override
-		public TableCell<EXIF_Data_Selector, Boolean> call(TableColumn<EXIF_Data_Selector, Boolean> p) {
-			return new CheckBoxCell_Cameras(model_datefix);
-		}
-	};
-
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_EVENTS_CellFactory = new Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>>() {
-		@Override
-		public TableCell<EXIF_Data_Selector, Boolean> call(TableColumn<EXIF_Data_Selector, Boolean> p) {
-			return new CheckBoxCell_Events(model_datefix);
-		}
-	};
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_LOCATIONS_CellFactory = new Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>>() {
-		@Override
-		public TableCell<EXIF_Data_Selector, Boolean> call(TableColumn<EXIF_Data_Selector, Boolean> p) {
-			return new CheckBoxCell_Locations(model_datefix);
-		}
-	};
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = p -> new CheckBoxCell_Dates(model_datefix);
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_EVENTS_CellFactory = p -> new CheckBoxCell_Events(model_datefix);
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_LOCATIONS_CellFactory = p -> new CheckBoxCell_Locations(model_datefix);
+	
 	@Deprecated
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> dates_INFO_Select_CellFactory = new Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>>() {
-		@Override
-		public TableCell<EXIF_Data_Selector, Boolean> call(TableColumn<EXIF_Data_Selector, Boolean> p) {
-			return new Dates_INFO_Select_CellFactory(model_datefix);
-		}
-	};
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> dates_INFO_Select_CellFactory = p -> new Dates_INFO_Select_CellFactory(model_datefix);
 
 	public void init(Model_datefix aModel_datefix, GridPane aDf_gridPane) {
 		this.model_datefix = aModel_datefix;
