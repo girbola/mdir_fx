@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.girbola.messages.Messages;
+
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -27,25 +29,28 @@ public class FileNameParseUtils {
 
 	// private final static String DATE_WITH_DELIM =
 	// "\\d{4}\\W\\d{2}\\W\\d{2}\\s\\d{2}\\W\\d{2}\\W\\d{2}";
-	//2004
+	// 2004
 	/*
-	 * .	Any character (may or may not match line terminators)
-	* \d	A digit: [0-9]
-	* \D	A non-digit: [^0-9]
-	* \s	A whitespace character: [ \t\n\x0B\f\r]
-	* \S	A non-whitespace character: [^\s]
-	* \w	A word character: [a-zA-Z_0-9]
-	* \W	A non-word character: [^\w]
+	 * . Any character (may or may not match line terminators) \d A digit: [0-9] \D
+	 * A non-digit: [^0-9] \s A whitespace character: [ \t\n\x0B\f\r] \S A
+	 * non-whitespace character: [^\s] \w A word character: [a-zA-Z_0-9] \W A
+	 * non-word character: [^\w]
 	 */
 	// 2004
 //	erG;
-	private final static String DATE_WITH_SEPARATOR = "\\d{4}\\W\\d{2}\\W\\d{2}[\\w|\\s]{1}\\d{2}\\W\\d{2}\\W\\d{2}"; // 2000-12-13 12.13.14 & 2000-12-13_12.13.14
+	private final static String DATE_WITH_SEPARATOR = "\\d{4}\\W\\d{2}\\W\\d{2}[\\w|\\s]{1}\\d{2}\\W\\d{2}\\W\\d{2}"; // 2000-12-13
+																														// 12.13.14
+																														// &
+																														// 2000-12-13_12.13.14
 	private final static String DATE_WITH_YMDHMS = "\\d{4}\\d{2}\\d{2}\\d{2}\\d{2}\\d{2}"; // 20001213121314
 	// private final static String DATE_WITH_YMD_HMS =
 	// "\\d{4}\\d{2}\\d{2}\\d{2}\\d{2}\\d{2}"; //20001213121314
 
-	private final static String DATE_WITH_YMD_HMS = "\\d{4}\\d{2}\\d{2}[\\w|\\s]{1}\\d{2}\\d{2}\\d{2}"; // 20001213 121314
-	private static final List<String> regex_list = Arrays.asList(DATE_WITH_SEPARATOR, DATE_WITH_YMDHMS, DATE_WITH_YMD_HMS);
+	private final static String DATE_WITH_YMD_HMS = "\\d{4}\\d{2}\\d{2}[\\w|\\s]{1}\\d{2}\\d{2}\\d{2}"; // 20001213
+																										// 121314
+	private final static String DATE_WITH_YMD = "\\d{4}\\d{2}\\d{2}[\\w|\\s]"; // 20001213 121314
+	private static final List<String> regex_list = Arrays.asList(DATE_WITH_SEPARATOR, DATE_WITH_YMDHMS,
+			DATE_WITH_YMD_HMS);
 
 	/* Filename parse utils START */
 	/**
@@ -141,7 +146,7 @@ public class FileNameParseUtils {
 	}
 
 	public static long hasFileNameDate(Path path) {
-		//dfb;
+		// dfb;
 
 		long ymd_hms_separator = tryFileNameDate(path, DATE_WITH_SEPARATOR);
 		if (ymd_hms_separator >= 1) {
@@ -159,6 +164,12 @@ public class FileNameParseUtils {
 		if (ymd_hms >= 1) {
 			return ymd_hms;
 		}
+
+		long ymd = tryFileNameDate(path, DATE_WITH_YMD);
+		if (ymd >= 1) {
+			return ymd;
+		}
+
 		return 0;
 	}
 
@@ -171,7 +182,7 @@ public class FileNameParseUtils {
 
 			if (m.find()) {
 				result = m.group();
-				//                sprintf("match found; " + result);
+				// sprintf("match found; " + result);
 				SimpleDateFormat simpleDateFormat = simpleDates.getSimpleDateFormatByString(result);
 				if (simpleDateFormat != null) {
 					sprintf("simpleDateFormat: " + simpleDateFormat.toPattern());
@@ -226,13 +237,13 @@ public class FileNameParseUtils {
 					sb.append(" ");
 				}
 			}
-			//            sprintf("SB RESULT: " + sb);
+			 sprintf("SB RESULT: " + sb);
 			// String d = hasDate(sb);
 			if (!sb.toString().isEmpty()) {
 				long date = 0;
 				try {
 					date = Conversion.stringDateToLong(sb.toString(), simpleDates.getSdf_ymd_hms_spaces());
-					//                    sprintf("stringDateToLong is: " + date);
+					// sprintf("stringDateToLong is: " + date);
 					return date;
 				} catch (Exception ex) {
 					sprintf("Exception d = hasDate(sb); " + result + " exception is: " + ex.getMessage());
@@ -244,12 +255,14 @@ public class FileNameParseUtils {
 	}
 
 	protected static long tryFileNameDate(Path path, String dateDelim) {
+		Messages.sprintf("tryFileNameDate: " + path);
 		String result = "";
 		Pattern p = Pattern.compile(dateDelim);
 		Matcher m = p.matcher(parseFileExtentension(path));
 
 		if (m.find()) {
 			result = m.group();
+			Messages.sprintf("Result of trying find filename from date: " + result);
 		}
 
 		if (!result.isEmpty()) {
@@ -259,19 +272,12 @@ public class FileNameParseUtils {
 				if (s >= '0' && s <= '9') {
 					sb.append(s);
 				}
-				// else {
-				// sb.append(" ");
-				// }
 			}
-			//            sprintf("SB RESULT: " + sb);
-			//            System.out.println("SB RESULT date is: " + (sb.toString()));
 			if (isValidDate(sb.toString())) {
 				if (!sb.toString().isEmpty()) {
 					long date = 0;
-					// date = stringDateToLong(sb.toString());
 					try {
 						date = Conversion.stringDateToLong(sb.toString(), simpleDates.getSdf_ymd_hms_nospaces());
-						//                        sprintf("stringDateToLong is: " + date);
 						return date;
 					} catch (Exception ex) {
 						sprintf("Exception d = hasDate(sb); " + result + " exception is: " + ex.getMessage());
