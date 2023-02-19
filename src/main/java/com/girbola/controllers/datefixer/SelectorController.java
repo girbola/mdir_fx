@@ -41,55 +41,30 @@ public class SelectorController {
 	private Model_datefix model_datefix;
 	private GridPane df_gridPane;
 	private FolderInfo folderInfo;
-	@FXML
-	private ScrollPane infoTables_container;
-	@FXML
-	private VBox selector_root;
-	@FXML
-	private TitledPane dates_titledPane;
-	@FXML
-	private TitledPane cameras_titledPane;
-	@FXML
-	private TitledPane events_titledPane;
-	@FXML
-	private TitledPane locations_titledPane;
-
-	@FXML
-	private TableView<EXIF_Data_Selector> cameras_tableView;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Boolean> cameras_checkBox_hide_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, String> cameras_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Integer> cameras_counter_col;
-
-	@FXML
-	private TableView<EXIF_Data_Selector> dates_tableView;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Boolean> dates_checkBox_hide_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, String> dates_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Integer> dates_counter_col;
-
-	@FXML
-	private TableView<EXIF_Data_Selector> locations_tableView;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, String> locations_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Integer> locations_counter_col;
-
-	@FXML
-	private TableView<EXIF_Data_Selector> events_tableView;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Boolean> events_checkBox_hide_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, String> events_col;
-	@FXML
-	private TableColumn<EXIF_Data_Selector, Integer> events_counter_col;
-
+	//@formatter:off
+	@FXML private ScrollPane infoTables_container;
+	@FXML private VBox selector_root;
+	@FXML private TitledPane dates_titledPane;
+	@FXML private TitledPane cameras_titledPane;
+	@FXML private TitledPane events_titledPane;
+	@FXML private TitledPane locations_titledPane;
+	@FXML private TableView<EXIF_Data_Selector> cameras_tableView;
+	@FXML private TableColumn<EXIF_Data_Selector, Boolean> cameras_checkBox_hide_col;
+	@FXML private TableColumn<EXIF_Data_Selector, String> cameras_col;
+	@FXML private TableColumn<EXIF_Data_Selector, Integer> cameras_counter_col;
+	@FXML private TableView<EXIF_Data_Selector> dates_tableView;
+	@FXML private TableColumn<EXIF_Data_Selector, Boolean> dates_checkBox_hide_col;
+	@FXML private TableColumn<EXIF_Data_Selector, String> dates_col;
+	@FXML private TableColumn<EXIF_Data_Selector, Integer> dates_counter_col;
+	@FXML private TableView<EXIF_Data_Selector> locations_tableView;
+	@FXML private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
+	@FXML private TableColumn<EXIF_Data_Selector, String> locations_col;
+	@FXML private TableColumn<EXIF_Data_Selector, Integer> locations_counter_col;
+	@FXML private TableView<EXIF_Data_Selector> events_tableView;
+	@FXML private TableColumn<EXIF_Data_Selector, Boolean> events_checkBox_hide_col;
+	@FXML private TableColumn<EXIF_Data_Selector, String> events_col;
+	@FXML private TableColumn<EXIF_Data_Selector, Integer> events_counter_col;
+	
 	public GridPane getDf_gridPane() {
 		return df_gridPane;
 	}
@@ -98,9 +73,11 @@ public class SelectorController {
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_EVENTS_CellFactory = p -> new CheckBoxCell_Events(model_datefix);
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_LOCATIONS_CellFactory = p -> new CheckBoxCell_Locations(model_datefix);
-	
+	//@formatter:on
+
 	@Deprecated
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> dates_INFO_Select_CellFactory = p -> new Dates_INFO_Select_CellFactory(model_datefix);
+	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> dates_INFO_Select_CellFactory = p -> new Dates_INFO_Select_CellFactory(
+			model_datefix);
 
 	public void init(Model_datefix aModel_datefix, GridPane aDf_gridPane) {
 		this.model_datefix = aModel_datefix;
@@ -203,13 +180,8 @@ public class SelectorController {
 				Messages.sprintf("selector_root height has changed to: " + newValue);
 			}
 		});
-		cameras_titledPane.heightProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-				Messages.sprintf("cameras_titledPane height has changed to: " + newValue + " root height is : "
-						+ selector_root.getHeight());
-			}
-		});
+		cameras_titledPane.heightProperty().addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> Messages.sprintf("cameras_titledPane height has changed to: " + newValue + " root height is : "
+				+ selector_root.getHeight()));
 //		cameras_tableView.heightProperty().addListener(listener);
 //
 
@@ -225,23 +197,20 @@ public class SelectorController {
 	}
 
 	private void hideTableViewHeader(TableView<EXIF_Data_Selector> table) {
-		// TODO Auto-generated method stub
-		table.widthProperty().addListener(new ChangeListener<Number>() {
-			@Override
-			public void changed(ObservableValue<? extends Number> ov, Number t, Number t1) {
-				// Get the table header
-				Pane header = (Pane) table.lookup("TableHeaderRow");
-				if (header != null && header.isVisible()) {
-					header.setMaxHeight(0);
-					header.setMinHeight(0);
-					header.setPrefHeight(0);
-					header.setVisible(false);
-					header.setManaged(false);
-				}
+		table.widthProperty().addListener((ChangeListener<Number>) (ov, t, t1) -> {
+			// Get the table header
+			Pane header = (Pane) table.lookup("TableHeaderRow");
+			if (header != null && header.isVisible()) {
+				header.setMaxHeight(0);
+				header.setMinHeight(0);
+				header.setPrefHeight(0);
+				header.setVisible(false);
+				header.setManaged(false);
 			}
 		});
 	}
 
+	@Deprecated
 	private void refreshTable_(TableView<?> table) {
 		if (table == null) {
 			return;
