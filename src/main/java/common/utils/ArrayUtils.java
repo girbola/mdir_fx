@@ -52,37 +52,13 @@ public class ArrayUtils {
 
 		if (!Files.exists(path)) {
 			sprintf("Cannot read file: " + path);
-			// Files.createFile(path);
 			return new ArrayList<>();
-			// return null;
 		}
 		List<Path> arrayList = new ArrayList<>();
 
 		try {
 			if (Files.exists(path) && Files.size(path) != 0) {
-				BufferedReader br = null;
-
-				try {
-					String sCurrentLine;
-					br = new BufferedReader(new FileReader(path.toFile()));
-
-					while ((sCurrentLine = br.readLine()) != null) {
-						// sprintf("scurrrline: " + sCurrentLine);
-						arrayList.add(Paths.get(sCurrentLine));
-					}
-				} catch (IOException ex) {
-					Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
-					errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-				} finally {
-					try {
-						if (br != null) {
-							br.close();
-						}
-					} catch (IOException ex) {
-						Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
-						errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-					}
-				}
+				readFile(path, arrayList);
 			}
 		} catch (IOException ex) {
 			Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,19 +67,48 @@ public class ArrayUtils {
 		return arrayList;
 	}
 
+	private static void readFile(Path file, List<Path> arrayList) {
+		BufferedReader br = null;
+
+		try {
+			String sCurrentLine;
+			br = new BufferedReader(new FileReader(file.toFile()));
+
+			while ((sCurrentLine = br.readLine()) != null) {
+				arrayList.add(Paths.get(sCurrentLine));
+			}
+		} catch (IOException ex) {
+			Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
+			errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+		} finally {
+			try {
+				if (br != null) {
+					br.close();
+				}
+			} catch (IOException ex) {
+				Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
+				errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+			}
+		}
+	}
+
 	public static void saveList(List<Path> list, Path path) {
 		PrintWriter pw = null;
 		try {
 			pw = new PrintWriter(new FileOutputStream(path.toFile()));
 		} catch (FileNotFoundException ex) {
 			Logger.getLogger(ArrayUtils.class.getName()).log(Level.SEVERE, null, ex);
-		}
-		for (Path str : list) {
-			if (str != null) {
-				pw.println(str.toString());
+		} finally {
+			for (Path str : list) {
+				if (str != null) {
+					pw.println(str.toString());
+				}
 			}
+			if (pw != null) {
+				pw.close();
+			}
+
 		}
-		pw.close();
 	}
 
 }

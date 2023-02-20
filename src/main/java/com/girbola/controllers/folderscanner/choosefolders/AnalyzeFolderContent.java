@@ -35,7 +35,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 
 /**
  *
@@ -136,6 +135,7 @@ public class AnalyzeFolderContent extends Task<Void> {
 		return found;
 	}
 
+	@SuppressWarnings("unchecked")
 	private TreeTableView<FolderInfoTable> createTreeTableView(Path path) {
 
 		TreeTableView<FolderInfoTable> treeTableView = new TreeTableView<>();
@@ -156,44 +156,11 @@ public class AnalyzeFolderContent extends Task<Void> {
 		setColumnMaxWidth(folders_col, 8);
 		setColumnMaxWidth(media_col, 8);
 
-		path_col.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FolderInfoTable,
-				String>,
-				ObservableValue<String>>() {
-			@Override
-			public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<FolderInfoTable,
-					String> param) {
-				return new ReadOnlyStringWrapper(param.getValue().getValue().getPath());
-			}
-		});
+		path_col.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().getValue().getPath()));
+		folders_col.setCellValueFactory(param -> new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getFolders()));
+		files_col.setCellValueFactory(param -> new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getFiles()));
+		media_col.setCellValueFactory(param -> new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getMedia()));
 
-		folders_col.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FolderInfoTable,
-				Integer>,
-				ObservableValue<Integer>>() {
-			@Override
-			public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<FolderInfoTable,
-					Integer> param) {
-				return new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getFolders());
-			}
-		});
-
-		files_col.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FolderInfoTable,
-				Integer>,
-				ObservableValue<Integer>>() {
-			@Override
-			public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<FolderInfoTable,
-					Integer> param) {
-				return new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getFiles());
-			}
-		});
-		media_col.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<FolderInfoTable,
-				Integer>,
-				ObservableValue<Integer>>() {
-			@Override
-			public ObservableValue<Integer> call(TreeTableColumn.CellDataFeatures<FolderInfoTable,
-					Integer> param) {
-				return new ReadOnlyObjectWrapper<Integer>(param.getValue().getValue().getMedia());
-			}
-		});
 		return treeTableView;
 	}
 

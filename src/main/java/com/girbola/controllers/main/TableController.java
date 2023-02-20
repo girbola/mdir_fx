@@ -487,27 +487,18 @@ public class TableController {
 		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table,
 				Main.scene_Switcher.getWindow());
-		updateTableValuesUsingFileInfo_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf("updateTableValuesFileInfo done successfully");
-				lpt.closeStage();
-			}
+		updateTableValuesUsingFileInfo_task.setOnSucceeded(event1 -> {
+			sprintf("updateTableValuesFileInfo done successfully");
+			lpt.closeStage();
 		});
 
-		updateTableValuesUsingFileInfo_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.warningText("Creating file info cancelled");
-			}
+		updateTableValuesUsingFileInfo_task.setOnCancelled(event12 -> {
+			lpt.closeStage();
+			Messages.warningText("Creating file info cancelled");
 		});
-		updateTableValuesUsingFileInfo_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				lpt.closeStage();
-				Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-			}
+		updateTableValuesUsingFileInfo_task.setOnFailed(event13 -> {
+			lpt.closeStage();
+			Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
 		});
 		lpt.setTask(updateTableValuesUsingFileInfo_task);
 		Thread thread = new Thread(updateTableValuesUsingFileInfo_task, "Reloading Thread");

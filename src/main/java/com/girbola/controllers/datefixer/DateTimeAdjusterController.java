@@ -34,7 +34,6 @@ import com.girbola.misc.Misc;
 
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
@@ -437,7 +436,7 @@ public class DateTimeAdjusterController {
 		Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
-				Messages.sprintf("node name " + node.getId());
+				Messages.sprintf("123 node name " + node.getId());
 				VBox vbox = (VBox) node;
 				if (vbox.getId().equals("imageFrame")) {
 					for (Node hbox : vbox.getChildren()) {
@@ -559,7 +558,7 @@ public class DateTimeAdjusterController {
 					if (n instanceof HBox) {
 						for (Node hbc : ((HBox) n).getChildren()) {
 							if (hbc instanceof TextField) {
-								list.add(hbc);
+								list.add(n);
 								sprintf("TextField found and it is date: " + ((TextField) hbc).getText()
 										+ " getId() is " + hbc.getId());
 							}
@@ -588,23 +587,17 @@ public class DateTimeAdjusterController {
 
 	private void setNumberTextField(TextField tf) {
 
-		tf.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if (newValue.matches("[0-9]*") && newValue.length() < 3 && newValue.length() >= 0) {
-					sprintf("is Text: " + newValue);
+		tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+			if (newValue.matches("[0-9]*") && newValue.length() < 3 && newValue.length() >= 0) {
+				sprintf("is Text: " + newValue);
 
-				} else {
-					tf.setText(oldValue);
-				}
+			} else {
+				tf.setText(oldValue);
 			}
 		});
-		tf.focusedProperty().addListener(new ChangeListener<Boolean>() {
-			@Override
-			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-				if (!newValue) {
-					tf.setText(defineFormat(tf));
-				}
+		tf.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
+			if (!newValue) {
+				tf.setText(defineFormat(tf));
 			}
 		});
 		tf.setOnAction(new EventHandler<ActionEvent>() {
@@ -619,13 +612,10 @@ public class DateTimeAdjusterController {
 	}
 
 	private void setTextProperty(TextField tf) {
-		tf.textProperty().addListener(new ChangeListener<String>() {
-			@Override
-			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				// sprintf("changing: " + newValue);
-				if (newValue.length() <= 1) {
-					tf.setText("0" + newValue);
-				}
+		tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+			// sprintf("changing: " + newValue);
+			if (newValue.length() <= 1) {
+				tf.setText("0" + newValue);
 			}
 		});
 	}

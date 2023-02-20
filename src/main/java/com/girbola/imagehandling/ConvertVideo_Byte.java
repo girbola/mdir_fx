@@ -91,7 +91,7 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
 		StackPane pane = (StackPane) imageView.getParent();
 		VBox rootPane = (VBox) pane.getParent();
 		if (list == null) {
-			System.err.println("video thumblist were null. returning: " + fileName);
+			System.err.println("ConvertVideo_Byte video thumblist were null. returning: " + fileName);
 			pane.getChildren().add(new Label("Video. NP"));
 			return;
 		}

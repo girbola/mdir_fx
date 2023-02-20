@@ -34,7 +34,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
 
 public class AddToGridPane2 extends Task<Integer> {
 
@@ -51,17 +50,20 @@ public class AddToGridPane2 extends Task<Integer> {
 	private int size;
 	private LoadingProcess_Task loadingProcess_Task;
 
-	public AddToGridPane2(Model_datefix aModel_dateFix, ObservableList<Node> aList, LoadingProcess_Task loading_Process_Task) {
+	public AddToGridPane2(Model_datefix aModel_dateFix, ObservableList<Node> aList,
+			LoadingProcess_Task loading_Process_Task) {
 		Messages.sprintf("AddToGridPane2 started: " + aList.size());
 		this.model_datefix = aModel_dateFix;
 		this.list = aList;
 		this.size = aList.size();
 		this.loadingProcess_Task = loading_Process_Task;
 		model_datefix.getGridPane().getChildren().clear();
-		sprintf("total nodes: " + model_datefix.getAllNodes().size() + " aGridPane list size is after clearing: " + list.size());
+		sprintf("total nodes: " + model_datefix.getAllNodes().size() + " aGridPane list size is after clearing: "
+				+ list.size());
 
 		model_datefix.getGridPane().getRowConstraints().removeAll(model_datefix.getGridPane().getRowConstraints());
-		model_datefix.getGridPane().getColumnConstraints().removeAll(model_datefix.getGridPane().getColumnConstraints());
+		model_datefix.getGridPane().getColumnConstraints()
+				.removeAll(model_datefix.getGridPane().getColumnConstraints());
 		setGridPane_Constraints();
 		loading_Process_Task.setMessage("Adding images");
 	}
@@ -82,7 +84,7 @@ public class AddToGridPane2 extends Task<Integer> {
 			if (node instanceof VBox && node.getId().equals("imageFrame")) {
 
 				createNode(node);
-				//				loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
+				// loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
 
 			}
 		}
@@ -132,10 +134,8 @@ public class AddToGridPane2 extends Task<Integer> {
 	}
 
 	private int defineImagesPerLine() {
-		int imagesPerLine = (int) Math
-				.floor((double) (ScreenUtils.screenBouds().getWidth() - UI_Tools.getScrollBarWidth(model_datefix.getScrollPane()))
-						/ GUIPrefs.imageFrame_x);
-		return imagesPerLine;
+		return (int) Math.floor((double) (ScreenUtils.screenBouds().getWidth()
+				- UI_Tools.getScrollBarWidth(model_datefix.getScrollPane())) / GUIPrefs.imageFrame_x);
 	}
 
 	@Override
@@ -155,46 +155,35 @@ public class AddToGridPane2 extends Task<Integer> {
 		MenuItem pickDateTime_Start = new MenuItem("Pick date&time start");
 		MenuItem pickDateTime_End = new MenuItem("Pick date&time end");
 
-		Platform.runLater(new Runnable() {
-
-			@Override
-			public void run() {
-				// TODO BUGI!!!!
-				contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
+		Platform.runLater(() -> {
+			// TODO BUGI!!!!
+			contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
 //				model_datefix.getScrollPane().setVvalue(-1);
 //				model_datefix.getScrollPane().setVvalue(0);
-				
-				model_datefix.updateAllInfos(model_datefix.getGridPane());
-				loadingProcess_Task.closeStage();
-			}
+
+			model_datefix.updateAllInfos(model_datefix.getGridPane());
+			loadingProcess_Task.closeStage();
 		});
 		loadingProcess_Task.closeStage();
 		sprintf("gridPane height: " + model_datefix.getGridPane().getHeight() + " list size: " + list.size());
 		// model_datefix.updateAllInfos();
-		model_datefix.getGridPane().addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getButton() == MouseButton.SECONDARY) {
-					if (event.getTarget() instanceof VBox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
-						VBox vbox = (VBox) event.getTarget();
-						FileInfo fileInfo = (FileInfo) vbox.getUserData();
-						pickDateTime_Start.setOnAction(new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								model_datefix.setDateTime(Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true);
-							}
-						});
-						pickDateTime_End.setOnAction(new EventHandler<ActionEvent>() {
-							@Override
-							public void handle(ActionEvent event) {
-								model_datefix.setDateTime(Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false);
-							}
-						});
-						contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
-					}
-				} else {
-					event.consume();
+		model_datefix.getGridPane().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+			if (event.getButton() == MouseButton.SECONDARY) {
+				if (event.getTarget() instanceof VBox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
+					VBox vbox = (VBox) event.getTarget();
+					FileInfo fileInfo = (FileInfo) vbox.getUserData();
+					pickDateTime_Start.setOnAction(event2 -> {
+						model_datefix.setDateTime(
+								Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true);
+					});
+					pickDateTime_End.setOnAction(event2 -> {
+						model_datefix.setDateTime(
+								Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false);
+					});
+					contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
 				}
+			} else {
+				event.consume();
 			}
 		});
 	}

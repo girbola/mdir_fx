@@ -34,6 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
+import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
@@ -44,6 +45,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import com.girbola.vlcj.VLCPlayerController;
 import common.utils.date.SimpleDates;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -232,6 +234,7 @@ public class Main extends Application {
 								}
 								Messages.sprintf("==============Loading workdir size is: "
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
+								VLCJDiscovery.initVlc();
 							}
 							
 							primaryStage.xProperty().addListener(new ChangeListener<Number>() {

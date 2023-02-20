@@ -158,18 +158,6 @@ public class ImageHandling {
 					input.close();
 				}
 				sprintf("handleBufferedThumb: " + fileInfo.getOrgPath());
-//				long start = System.currentTimeMillis();
-//				BufferedImage bi = ImageIO.read(new File(fileInfo.getOrgPath()));
-//				Messages.sprintf("Creating bufferedimage took: " + (System.currentTimeMillis() - start));
-//				Image image = SwingFXUtils.toFXImage(bi, null);
-//				if (image != null) {
-//					if (imageView != null) {
-//						imageView.setImage(image);
-//						Messages.sprintf("Setting image to imageview took: " + (System.currentTimeMillis() - start));
-//					}
-//					return image;
-//				}
-//				Messages.sprintf("returning null from handleBufferedThumb");
 				return null;
 			}
 		};

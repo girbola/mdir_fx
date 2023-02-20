@@ -1,35 +1,15 @@
 package com.girbola.controllers.main;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.girbola.MDir_Constants;
-import com.girbola.Main;
 import com.girbola.Scene_NameType;
-import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
-import com.girbola.fxml.conflicttableview.ConflictFile;
-import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.stage.Stage;
 
 public class CopyBatch {
 

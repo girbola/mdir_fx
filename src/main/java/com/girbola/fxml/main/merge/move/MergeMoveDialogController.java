@@ -36,7 +36,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
+import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class MergeMoveDialogController {
 
 	final private org.slf4j.Logger ERROR = org.slf4j.LoggerFactory.getLogger(getClass());
@@ -94,8 +97,12 @@ public class MergeMoveDialogController {
 					}
 
 					for (FolderInfo folderInfo : folderInfo_List) {
+						Messages.sprintf("====folderInfo IS: " + folderInfo.getFolderPath() + " destiiii: "
+								+ dest.toString() + " dest info: " + destFolderInfo.getFolderPath());
 						if (!folderInfo.getFolderPath().equals(dest.toString())) {
 							move(folderInfo, destFolderInfo);
+							Messages.sprintf(
+									"Moving content: " + folderInfo + " text: " + destFolderInfo.getFolderPath());
 						} else {
 							Messages.sprintf("folderInfo.getFolderPath " + folderInfo.getFolderPath()
 									+ " dest.toString: " + dest.toString());
@@ -158,6 +165,7 @@ public class MergeMoveDialogController {
 			stb.append(fileInfo.getOrgPath());
 			stb.append("\n");
 		}
+		Messages.sprintf("exists STB: " + stb);
 
 		if (!stb.isEmpty()) {
 			Messages.warningText("file exists at dest: \n" + stb);
@@ -169,17 +177,18 @@ public class MergeMoveDialogController {
 		while (srcFolderInfo_it.hasNext()) {
 			FileInfo fileInfo = srcFolderInfo_it.next();
 
-			Path sourcePath = Paths.get(fileInfo.getOrgPath());
-			Path destFolder = Paths.get(destFolderInfo.getFolderPath() + File.separator + sourcePath.getFileName());
+			Path sourceFilePath = Paths.get(fileInfo.getOrgPath());
+			Path destFolder = Paths.get(destFolderInfo.getFolderPath() + File.separator + sourceFilePath.getFileName());
 
-			Path destinationPath = FileUtils.renameFile(sourcePath, destFolder);
-			Messages.sprintf("sRENAMED: rcFile is: " + sourcePath + " destinationPath: " + destinationPath);
+			Path destinationPath = FileUtils.renameFile(sourceFilePath, destFolder);
+			Messages.sprintf("====RENAMED: rcFile Current file  is: " + sourceFilePath + " maybe renamed destinationPath: " + destinationPath);
+			Messages.sprintf("Current file: " + fileInfo.getOrgPath() + " destinationPath: " + destinationPath);
 
 			if (destinationPath != null) {
-				Messages.sprintf("srcFile is: " + sourcePath + " destinationPath: " + destinationPath);
+				Messages.sprintf("srcFile is: " + sourceFilePath + " destinationPath: " + destinationPath);
 
 //				Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-				Messages.sprintf("Moving file FROM: " + sourcePath + " to TARGET: " + destinationPath);
+				Messages.sprintf("Moving file FROM: " + sourceFilePath + " to TARGET: " + destinationPath);
 
 				final String fileInfoOrgSrc = fileInfo.getOrgPath();
 
@@ -190,8 +199,8 @@ public class MergeMoveDialogController {
 				Messages.sprintf("fileInfo.toString();: " + fileInfo.toString());
 
 				destFolderInfo.getFileInfoList().add(fileInfo);
-				Files.move(Paths.get(fileInfo.getOrgPath()), destinationPath);
-
+				Path move = Files.move(Paths.get(fileInfo.getOrgPath()), destinationPath);
+				Messages.sprintf("MOVEEEEEEEEEEEE::::::::::::::: " + move);
 				srcFolderInfo_it.remove();
 			}
 		}
@@ -215,7 +224,6 @@ public class MergeMoveDialogController {
 
 				if (fileInfo.getSize() == fileInfoList.getSize()) {
 					duplicate_List.add(fileInfo);
-
 				}
 			}
 

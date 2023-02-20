@@ -249,7 +249,7 @@ public class DateFixerController {
 
 		for (Node node : model_datefix.getGridPane().getChildren()) {
 			if (node instanceof VBox) {
-				Messages.sprintf("node name " + node.getId());
+				Messages.sprintf("2node name: " + node.getId());
 				VBox vbox = (VBox) node;
 				if (vbox.getId().equals("imageFrame")) {
 					for (Node hbox : vbox.getChildren()) {
@@ -263,7 +263,7 @@ public class DateFixerController {
 									// 4 5 10
 									if (startFrom <= number && endTo >= number) {
 										Messages.sprintf("--------->SP: " + label.getText());
-										model_datefix.getSelectionModel().add(hbox);
+										model_datefix.getSelectionModel().add(vbox);
 
 									}
 								}

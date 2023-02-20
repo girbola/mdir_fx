@@ -12,16 +12,19 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.FrameGrabber;
+import org.bytedeco.javacv.OpenCVFrameGrabber;
 
+@Slf4j
 public class VideoThumbMaker extends Task<List<BufferedImage>> {
 
 	private FileInfo fileInfo;
@@ -39,8 +42,8 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 	protected List<BufferedImage> call() throws Exception {
 		List<BufferedImage> list = null;
 		try {
-			list = VideoThumb.getList(new File(fileInfo.getOrgPath()));
-			if(list == null ) {
+			list = JCodecVideoThumb.getList(new File(fileInfo.getOrgPath()));
+			if (list == null) {
 				return null;
 			}
 		} catch (Exception ex) {
@@ -64,8 +67,30 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 
 		StackPane pane = (StackPane) imageView.getParent();
 		VBox rootPane = (VBox) pane.getParent();
+		try {
+			org.bytedeco.javacv.FrameGrabber fr = FrameGrabber.createDefault(fileInfo.getOrgPath());
+			Messages.sprintf("FrameGrabberFrameGrabberFrameGrabber: " + fr.toString());
+
+		} catch (FFmpegFrameGrabber.Exception e) {
+			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			Messages.sprintf("1GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("2AERAERAGERA: " + grabber.toString());
+			throw new RuntimeException(e);
+		} catch (FrameGrabber.Exception e) {
+			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			Messages.sprintf("3GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("4AERAERAGERA: " + grabber.toString());
+			throw new RuntimeException(e);
+		}
 		if (list == null) {
-			System.err.println("video thumblist were null. returning: " + fileInfo.getOrgPath());
+			System.err.println("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
+			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			Messages.sprintf("GARBBERRRERBAERB: " + grabber.getFormat());
+			Messages.sprintf("AERAERAGERA: " + grabber.toString());
+//				FrameGrabber frameG = FrameGrabber.createDefault(fileInfo.getOrgPath());
+////				int lengthInFrames = ffMpegVideo.getLengthInFrames();
+//				Messages.sprintf("===lengthInFrames: " + frameG.toString());
+
 			pane.getChildren().add(new Label("Video. NP"));
 			return;
 		}
@@ -83,32 +108,31 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		VideoPreview videoPreview = new VideoPreview(list, imageView);
 		imageView.setImage(videoPreview.getImage(0));
 		imageView.setUserData(list);
-		rootPane.setOnMouseEntered(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				System.out.println("m e");
-				timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-					Image image = SwingFXUtils.toFXImage(videoPreview.showNextImage(), null);
-					Platform.runLater(new Runnable() {
-						@Override
-						public void run() {
-							imageView.setImage(image);
-						}
-					});
-				}));
-				timeLine.setCycleCount(6);
-				timeLine.play();
-			}
+		rootPane.setOnMouseEntered(event -> {
+			System.out.println("m e");
+			timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+				Image image = SwingFXUtils.toFXImage(videoPreview.showNextImage(), null);
+				Platform.runLater(() -> imageView.setImage(image));
+			}));
+			timeLine.setCycleCount(6);
+			timeLine.play();
 		});
-		rootPane.setOnMouseExited(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (timeLine != null) {
-					timeLine.stop();
-				}
-				imageView.setImage(videoPreview.getImage(0));
+		rootPane.setOnMouseExited(event -> {
+			if (timeLine != null) {
+				timeLine.stop();
 			}
+			imageView.setImage(videoPreview.getImage(0));
 		});
+	}
+
+	private FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
+		FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
+		if (frameGrabber != null) {
+
+//	int lengthInFrames = frameGrabber.getLengthInFrames();
+			Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
+		}
+		return null;
 	}
 
 	@Override

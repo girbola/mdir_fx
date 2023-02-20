@@ -61,15 +61,14 @@ public class AddToTable extends Task<Integer> {
 				ConcurrencyUtils.stopExecThreadNow();
 				break;
 			}
-			// TODO Tämä uusiksi prkl!
+			// TODO Tämä uusiksi!
 
 			if (folderHasFiles(p)) {
 				TableType tableType = resolvePath(p);
 				switch (tableType) {
 				case SORTED: {
 					FolderInfo folderInfo = new FolderInfo(p);
-					if (!hasDuplicates(model.tables().getSorted_table(), folderInfo)
-							|| !hasDuplicates(model.tables().getSortIt_table(), folderInfo)) {
+					if (!hasDuplicates(model.tables().getSorted_table(), folderInfo) || !hasDuplicates(model.tables().getSortIt_table(), folderInfo)) {
 						folderInfo.setTableType(TableType.SORTED.getType());
 						model.tables().getSorted_table().getItems().add(folderInfo);
 						TableUtils.refreshTableContent(model.tables().getSorted_table());
@@ -80,8 +79,7 @@ public class AddToTable extends Task<Integer> {
 				}
 				case SORTIT: {
 					FolderInfo folderInfo = new FolderInfo(p);
-					if (hasDuplicates(model.tables().getSortIt_table(), folderInfo)
-							|| !hasDuplicates(model.tables().getSorted_table(), folderInfo)) {
+					if (hasDuplicates(model.tables().getSortIt_table(), folderInfo) || !hasDuplicates(model.tables().getSorted_table(), folderInfo)) {
 						folderInfo.setTableType(TableType.SORTIT.getType());
 						model.tables().getSortIt_table().getItems().add(folderInfo);
 						counter.set(counter.get() + 1);
