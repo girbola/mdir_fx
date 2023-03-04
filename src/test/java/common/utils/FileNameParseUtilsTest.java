@@ -30,13 +30,12 @@ class FileNameParseUtilsTest {
 		long actual = FileNameParseUtils.hasFileNameDate(theFile);
 		String longToLocalDateTime = null;
 		try {
-			longToLocalDateTime = DateUtils.longToLocalDateTime(actual).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+			longToLocalDateTime = DateUtils.longToLocalDateTime(actual)
+					.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
+
 		System.out
 				.println("Testing if file name contain date and/or time took: " + (System.currentTimeMillis() - start));
 		System.out.println("hasFileNameDate: " + file + " And it is date? " + longToLocalDateTime);
