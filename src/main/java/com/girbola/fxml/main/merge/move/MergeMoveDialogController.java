@@ -22,7 +22,6 @@ import com.girbola.messages.Messages;
 
 import common.utils.FileUtils;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -44,14 +43,11 @@ public class MergeMoveDialogController {
 
 	final private org.slf4j.Logger ERROR = org.slf4j.LoggerFactory.getLogger(getClass());
 
-	@FXML
-	private Button cancel_btn;
-
-	@FXML
-	private Button move_accepted_btn;
-
-	@FXML
-	private ListView<FolderInfo> move_accepted_listView;
+	//@formatter:off
+	@FXML private Button cancel_btn;
+	@FXML private Button move_accepted_btn;
+	@FXML private ListView<FolderInfo> move_accepted_listView;
+	//@formatter:on
 
 	private Model_main model_Main;
 
@@ -74,6 +70,8 @@ public class MergeMoveDialogController {
 	@FXML
 	private void move_accepted_btn_action(ActionEvent event) throws IOException {
 
+		model_Main.getMonitorExternalDriveConnectivity().cancel();
+
 		Task<Void> move_task = new Task<>() {
 
 			@Override
@@ -90,27 +88,29 @@ public class MergeMoveDialogController {
 
 					FolderInfo destFolderInfo = null;
 
-					for (FolderInfo folderInfo : folderInfo_List) {
+					for (FolderInfo folderInfo : selectedFolderInfo_List) {
 						if (folderInfo.getFolderPath().equals(dest.toString())) {
 							destFolderInfo = folderInfo;
 						}
 					}
+					if (destFolderInfo == null) {
+						Messages.warningText("Can't find destination!!");
+						this.cancel();
+						return null;
+					}
 
-					for (FolderInfo folderInfo : folderInfo_List) {
-						Messages.sprintf("====folderInfo IS: " + folderInfo.getFolderPath() + " destiiii: "
-								+ dest.toString() + " dest info: " + destFolderInfo.getFolderPath());
+					for (FolderInfo folderInfo : selectedFolderInfo_List) {
+						Messages.sprintf("Selected folderInfo: " + folderInfo.getFolderPath());
 						if (!folderInfo.getFolderPath().equals(dest.toString())) {
 							move(folderInfo, destFolderInfo);
-							Messages.sprintf(
-									"Moving content: " + folderInfo + " text: " + destFolderInfo.getFolderPath());
 						} else {
-							Messages.sprintf("folderInfo.getFolderPath " + folderInfo.getFolderPath()
+							Messages.sprintf("File already exists at destination" + folderInfo.getFolderPath()
 									+ " dest.toString: " + dest.toString());
+							this.cancel();
 						}
 					}
 
 					for (FileInfo fileInfo : fileInfo_list) {
-//				Messages.sprintf("File to be copied: " + fileInfo.getOrgPath());
 						Path fileName = Paths.get(fileInfo.getOrgPath()).getFileName();
 						Path root = Paths.get(fileInfo.getOrgPath()).getParent();
 						Messages.sprintf("SRC: " + fileInfo.getOrgPath() + " newDestination: " + dest);
@@ -135,6 +135,7 @@ public class MergeMoveDialogController {
 				Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
 				// do what you have to do
 				stage.close();
+				model_Main.getMonitorExternalDriveConnectivity().start();
 			}
 		});
 
@@ -146,6 +147,7 @@ public class MergeMoveDialogController {
 				Stage stage = (Stage) move_accepted_btn.getScene().getWindow();
 				// do what you have to do
 				stage.close();
+				model_Main.getMonitorExternalDriveConnectivity().start();
 			}
 		});
 
@@ -181,7 +183,8 @@ public class MergeMoveDialogController {
 			Path destFolder = Paths.get(destFolderInfo.getFolderPath() + File.separator + sourceFilePath.getFileName());
 
 			Path destinationPath = FileUtils.renameFile(sourceFilePath, destFolder);
-			Messages.sprintf("====RENAMED: rcFile Current file  is: " + sourceFilePath + " maybe renamed destinationPath: " + destinationPath);
+			Messages.sprintf("====RENAMED: rcFile Current file  is: " + sourceFilePath
+					+ " renamed destinationPath: " + destinationPath);
 			Messages.sprintf("Current file: " + fileInfo.getOrgPath() + " destinationPath: " + destinationPath);
 
 			if (destinationPath != null) {
@@ -235,19 +238,31 @@ public class MergeMoveDialogController {
 
 	}
 
-	private ObservableList<FolderInfo> folderInfo_List;
+	private ObservableList<FolderInfo> selectedFolderInfo_List;
 
 	public void init(Model_main model_Main, Tables tables, TableView<FolderInfo> table, String tableType) {
 		this.model_Main = model_Main;
 		this.tables = tables;
 		this.table = table;
 		this.tableType = tableType;
-		this.folderInfo_List = FXCollections.observableArrayList();
-		folderInfo_List.addAll(tables.getSorted_table().getSelectionModel().getSelectedItems());
+		this.selectedFolderInfo_List = FXCollections.observableArrayList();
+		selectedFolderInfo_List.addAll(tables.getSorted_table().getSelectionModel().getSelectedItems());
 
-		move_accepted_listView.setItems(folderInfo_List);
+		move_accepted_listView.setItems(selectedFolderInfo_List);
 		move_accepted_listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-		move_accepted_listView.setCellFactory(param -> new ListCell<FolderInfo>() {
+		move_accepted_listView.setCellFactory(param -> extracted());
+
+		move_accepted_listView.getSelectionModel().selectedItemProperty()
+				.addListener((ChangeListener<FolderInfo>) (observable, oldValue, newValue) -> {
+					selectedFolder = newValue;
+					selectedTableType = newValue.getTableType();
+					Messages.sprintf("folderInfoooo: " + newValue.getFolderPath());
+				});
+		populateList();
+	}
+
+	private ListCell<FolderInfo> extracted() {
+		return new ListCell<FolderInfo>() {
 			@Override
 			protected void updateItem(FolderInfo item, boolean empty) {
 				super.updateItem(item, empty);
@@ -257,23 +272,11 @@ public class MergeMoveDialogController {
 					setText(item.getJustFolderName());
 				}
 			}
-		});
-
-		move_accepted_listView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<FolderInfo>() {
-
-			@Override
-			public void changed(ObservableValue<? extends FolderInfo> observable, FolderInfo oldValue,
-					FolderInfo newValue) {
-				selectedFolder = newValue;
-				selectedTableType = newValue.getTableType();
-				Messages.sprintf("folderInfoooo: " + newValue.getFolderPath());
-			}
-		});
-		populateList();
+		};
 	}
 
 	private void populateList() {
-		folderInfo_List = tables.getSorted_table().getSelectionModel().getSelectedItems();
+		selectedFolderInfo_List = tables.getSorted_table().getSelectionModel().getSelectedItems();
 	}
 
 }

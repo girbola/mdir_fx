@@ -107,7 +107,7 @@ public class FileUtils {
 			}
 
 		} else {
-			Messages.sprintf("file did exists at destination folder");
+			Messages.sprintf("file did exists at destination folder: " + srcFile + " dest; " + destFile);
 			return null;
 		}
 		sprintf("Returning destfile: " + destFile);
