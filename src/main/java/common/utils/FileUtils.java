@@ -332,11 +332,6 @@ public class FileUtils {
 		return finalName;
 	}
 
-//	public boolean findDuplicateFile(Path src, Path dest) {
-//
-//		return false;
-//	}
-
 	/**
 	 * Replaces from filepath a workdir to none. For example
 	 * c:\pictures\2019\09\pictures001.jpg to \2019\09\pictures001.jpg
