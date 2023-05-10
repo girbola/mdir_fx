@@ -212,18 +212,18 @@ public class TableUtils {
     public static ChangeListener<Number> progressBarPropertyListener(ProgressBar pbar, Text text) {
         String[] barColorStyleClasses = {"pbar20", "pbar40", "pbar60", "pbar80", "pbar100"};
 
-        ChangeListener<Number> pbarProp = new ChangeListener<Number>() {
+        return new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 pbar.getStyleClass().removeAll(barColorStyleClasses);
-                pbar.getStyleClass().add("pbar20");
+                pbar.getStyleClass().add(barColorStyleClasses[0]);
                 if ((Double) newValue >= 0.0 && (Double) newValue <= 0.99) {
                     pbar.getStyleClass().removeAll(barColorStyleClasses);
-                    pbar.getStyleClass().add("pbar20");
+                    pbar.getStyleClass().add(barColorStyleClasses[0]);
                     updateText(text, newValue);
                 } else if ((Double) newValue == 1.0) {
                     pbar.getStyleClass().removeAll(barColorStyleClasses);
-                    pbar.getStyleClass().add("pbar100");
+                    pbar.getStyleClass().add(barColorStyleClasses[4]);
                     text.setText(bundle.getString("done"));
                 }
                 sprintf("TableCell_ProgressBar_SortIt: " + newValue);
@@ -237,7 +237,6 @@ public class TableUtils {
             }
 
         };
-        return pbarProp;
 
     }
 
