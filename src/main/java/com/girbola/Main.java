@@ -24,6 +24,7 @@ package com.girbola;
 
 import static com.girbola.messages.Messages.sprintf;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -100,15 +101,17 @@ public class Main extends Application {
 	public void start(Stage primaryStage) throws Exception {
 
 		primaryStage.setUserData(model_main);
+
+		sprintf("Program starting: " + lang + " country: " + country);
+		locale = new Locale(lang, country);
+		System.out.println("Dir is: " + new File("bundle/lang").getAbsolutePath());
+		bundle = ResourceBundle.getBundle("bundle/lang", locale);
+
 		mainTask = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
 				setMain_stage(primaryStage);
 				setChanged(false);
-				sprintf("Program starting");
-				locale = new Locale(lang, country);
-				bundle = ResourceBundle.getBundle("bundle/lang", locale);
-
 				conf.setModel(model_main);
 				conf.createProgramPaths();
 				conf.loadConfig();
@@ -159,7 +162,7 @@ public class Main extends Application {
 				primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-							Boolean newValue) {
+										Boolean newValue) {
 						Messages.sprintf("stage fullScreen changed: " + newValue);
 					}
 				});
@@ -236,48 +239,48 @@ public class Main extends Application {
 										+ model_main.getWorkDir_Handler().getWorkDir_List().size());
 								VLCJDiscovery.initVlc();
 							}
-							
+
 							primaryStage.xProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-										Number newValue) {
+													Number newValue) {
 									if (conf != null) {
 										conf.setWindowStartPosX((double) newValue);
 										Messages.sprintf("windowstartposX: " + newValue);
 									}
 								}
 							});
-							
+
 							primaryStage.yProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-										Number newValue) {
+													Number newValue) {
 									if (conf != null) {
 										conf.setWindowStartPosY((double) newValue);
 										Messages.sprintf("windowstartposY: " + newValue);
 									}
 								}
 							});
-							
+
 							primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-										Number newValue) {
+													Number newValue) {
 									if (conf != null) {
 										conf.setWindowStartWidth((double) newValue);
 										Messages.sprintf("setWindowStartWidth: " + newValue);
 									}
 								}
 							});
-							
+
 							primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
 
 								@Override
 								public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-										Number newValue) {
+													Number newValue) {
 									if (conf != null) {
 										conf.setWindowStartHeight((double) newValue);
 										Messages.sprintf("setWindowStartWidth: " + newValue);

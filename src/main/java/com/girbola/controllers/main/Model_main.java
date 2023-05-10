@@ -13,6 +13,7 @@ import static com.girbola.messages.Messages.sprintf;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -330,6 +331,11 @@ public class Model_main {
 			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
 					bundle.getString("saveBeforeExit"));
 			Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
+			Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
+			while(iterator.hasNext()) {
+				ButtonType btn = iterator.next();
+				Messages.sprintf("BTNNTTNNT: " + btn.getText());
+			}
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				saveAllTableContents();

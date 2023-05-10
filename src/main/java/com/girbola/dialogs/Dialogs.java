@@ -2,6 +2,8 @@ package com.girbola.dialogs;
 
 import static com.girbola.Main.conf;
 
+import java.util.Iterator;
+
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 
@@ -19,12 +21,14 @@ public class Dialogs {
 	 */
 	public static Dialog<ButtonType> createDialog_YesNoCancel(Window owner, final String contentText) {
 		Dialog<ButtonType> dialog = new Dialog<>();
+		DialogPane dialogPane = new DialogPane();
+		dialog.setDialogPane(dialogPane);
+		
 		dialog.widthProperty().addListener(new ChangeListener<Number>() {
 
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				Messages.sprintf("Widthhhh: " + newValue);
-
 			}
 		});
 		dialog.heightProperty().addListener(new ChangeListener<Number>() {
@@ -46,16 +50,15 @@ public class Dialogs {
 		}
 		Messages.sprintf("createDialog_YesNoCancel width: " + dialog.getWidth());
 
-		DialogPane dialogPane = new DialogPane();
+
 		dialogPane.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + "dialogsStyle.css").toExternalForm());
-		dialog.setDialogPane(dialogPane);
+		
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
 		dialogPane.setMinHeight(150);
-		
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
-		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
+		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.CANCEL_CLOSE);
 		ButtonType cancel = new ButtonType(Main.bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);
 		dialog.getDialogPane().getButtonTypes().addAll(yes, no, cancel);
 
@@ -73,7 +76,8 @@ public class Dialogs {
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
 		dialog.initOwner(owner);
-
+		dialogPane.setMinHeight(150);
+		
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
 		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.NO);
 		dialog.getDialogPane().getButtonTypes().addAll(yes, no);

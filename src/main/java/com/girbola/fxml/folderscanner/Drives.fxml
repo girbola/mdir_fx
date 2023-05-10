@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="drives_treeView_vbox" alignment="TOP_CENTER" minWidth="100.0" spacing="1.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.DrivesController">
+<VBox fx:id="drives_treeView_vbox" alignment="TOP_CENTER" minWidth="100.0" spacing="1.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.DrivesController">
    <children>
       <Label text="%drives" VBox.vgrow="NEVER" />
       <ScrollPane VBox.vgrow="ALWAYS">

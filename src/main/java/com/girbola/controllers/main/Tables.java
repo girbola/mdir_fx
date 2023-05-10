@@ -12,6 +12,7 @@ import static com.girbola.messages.Messages.sprintf;
 import java.io.File;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -248,7 +249,11 @@ public class Tables {
 				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
 						bundle.getString("removePermanently"));
 				dialog.initStyle(StageStyle.UNDECORATED);
-
+				Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
+				while(iterator.hasNext()) {
+					ButtonType btn = iterator.next();
+					Messages.sprintf("BTNNTTNNT: " + btn.getText());
+				}
 				Optional<ButtonType> result = dialog.showAndWait();
 				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
@@ -306,6 +311,7 @@ public class Tables {
 			if (folder.getFolderPath().equals(f)) {
 				// System.out.println("folder listing: " + folder);
 				return true;
+				
 			}
 		}
 		return false;

@@ -513,6 +513,7 @@ public class Model_datefix extends DateFixerModel {
 		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
 				Main.scene_Switcher.getScene_dateFixer().getWindow(),
 				bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+
 		Optional<ButtonType> result = changesDialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 			for (Node node : getGridPane().getChildren()) {
@@ -686,6 +687,8 @@ public class Model_datefix extends DateFixerModel {
 					bundle.getString("badFilesFoundWantToClose"));
 
 			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
+			Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
+			
 			Optional<ButtonType> result = dialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
@@ -706,7 +709,14 @@ public class Model_datefix extends DateFixerModel {
 		if (changes_made.get()) {
 			Messages.sprintf("changes made");
 			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
+			
 			Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
+			
+			Iterator<ButtonType> iterator = changesDialog.getDialogPane().getButtonTypes().iterator();
+			while(iterator.hasNext()) {
+				ButtonType next = iterator.next();
+				Messages.sprintf("NEEEXT; " + next.getText());
+			}
 			Optional<ButtonType> result = changesDialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				acceptEverything();

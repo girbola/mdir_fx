@@ -6,24 +6,13 @@
  */
 package com.girbola.controllers.main;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import javafx.concurrent.Task;
 
-import static com.girbola.Main.simpleDates;
-import static com.girbola.controllers.main.tables.TableUtils.calculateDateDifferenceRatio;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

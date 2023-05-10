@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="200.0" minWidth="400.0" styleClass="yesNoCancelDialog" stylesheets="@../../../resources/themes/dark/dialogs.css" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.dialogs.YesNoCancelDialogController">
+<AnchorPane minHeight="200.0" minWidth="400.0" styleClass="yesNoCancelDialog" stylesheets="@../../../resources/themes/dark/dialogs.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.dialogs.YesNoCancelDialogController">
    <children>
       <VBox prefHeight="200.0" prefWidth="400.0" styleClass="yesNoCancelDialog" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

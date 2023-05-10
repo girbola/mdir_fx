@@ -317,7 +317,6 @@ public class TableController {
 			if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
 				warningText(bundle.getString("cannotFindWorkDir"));
 				return;
-
 			}
 		} catch (IOException ex) {
 			warningText(bundle.getString("cannotFindWorkDir"));

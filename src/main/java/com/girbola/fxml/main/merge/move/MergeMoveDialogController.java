@@ -76,13 +76,15 @@ public class MergeMoveDialogController {
 
 			@Override
 			protected Void call() throws Exception {
-				// TODO Auto-generated method stub
 
 				List<FileInfo> fileInfo_list = new ArrayList<>();
 
 				Path dest = Paths.get(selectedFolder.getFolderPath());
 
 				Path realPath = dest.toRealPath();
+				
+				Messages.sprintf("DEST WILL BE: " + dest + " real: " + realPath);
+
 				if (Files.exists(realPath)) {
 					Messages.sprintf("DEST Folder exists: " + realPath);
 
@@ -100,7 +102,8 @@ public class MergeMoveDialogController {
 					}
 
 					for (FolderInfo folderInfo : selectedFolderInfo_List) {
-						Messages.sprintf("Selected folderInfo: " + folderInfo.getFolderPath());
+						Messages.sprintf("Selected folderInfo: " + folderInfo.getFolderPath() + " DEST IS NOW: " +  dest);
+						Messages.sprintf("destFolderInfo: " + destFolderInfo.getFolderPath());
 						if (!folderInfo.getFolderPath().equals(dest.toString())) {
 							move(folderInfo, destFolderInfo);
 						} else {
