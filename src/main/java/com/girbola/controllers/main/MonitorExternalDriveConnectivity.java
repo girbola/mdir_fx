@@ -11,7 +11,6 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
 
 import common.utils.Conversion;
 import common.utils.OSHI_Utils;
@@ -128,7 +127,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					if (!loaded) {
 						List<FileInfo> list = FileInfo_Utils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.updateFolderInfo(folderInfo);
 						Main.setChanged(true);
 						folderInfo.setChanged(true);
 						folderInfo.setState("*");
@@ -141,7 +140,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					folderInfo.setConnected(false);
 					Messages.sprintf("===Updating folder doesn't exists: " + folderInfo.isConnected());
 					folderInfo.getFileInfoList().clear();
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 					TableUtils.refreshAllTableContent(model_Main.tables());
 				}
 			}

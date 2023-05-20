@@ -295,7 +295,7 @@ public class TableController {
 						fileInfo.setTags("");
 						Main.setChanged(true);
 					}
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 					TableUtils.refreshAllTableContent(model_main.tables());
 					// ldt.setMessage("counter; " + counter.get());
 					counter.getAndIncrement();
@@ -901,7 +901,7 @@ public class TableController {
 
 					Main.setChanged(true);
 					folderInfo.setChanged(true);
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 					Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(),
 							Main.conf.getMdir_db_fileName());
 					try {
@@ -1118,7 +1118,7 @@ public class TableController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 			}

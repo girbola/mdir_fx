@@ -74,20 +74,18 @@ public class TableUtils {
     public static void showConflictTable(Model_main model_Main, ObservableList<FileInfo> obs) {
         try {
             Parent parent = null;
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"),
-                    bundle);
+            FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"), bundle);
             try {
                 parent = loader.load();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
-            ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader
-                    .getController();
+            ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader.getController();
             conflictTableViewController.init(model_Main, obs);
+
             Scene scene_conflictTableView = new Scene(parent);
-            scene_conflictTableView.getStylesheets().add(
-                    Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+            scene_conflictTableView.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
 
             Stage window = new Stage();
             window.setScene(scene_conflictTableView);
@@ -131,12 +129,7 @@ public class TableUtils {
                     Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
                 }
             });
-            up.setOnFailed(new EventHandler<WorkerStateEvent>() {
-                @Override
-                public void handle(WorkerStateEvent event) {
-                    Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath());
-                }
-            });
+            up.setOnFailed(event -> Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath()));
             exec.submit(up);
         }
     }
@@ -167,7 +160,7 @@ public class TableUtils {
         if (list.isEmpty()) {
             return 0;
         } else {
-            return Collections.max(list);
+            return sum;
         }
     }
 
@@ -202,7 +195,7 @@ public class TableUtils {
             if (tv.getFolderPath().equals(folderInfo.getFolderPath())) {
                 sprintf("hasTabe found! " + tv.getFolderPath());
                 tv.setFileInfoList(folderInfo.getFileInfoList());
-                TableUtils.updateFolderInfos_FileInfo(tv);
+                TableUtils.updateFolderInfo(tv);
                 return true;
             }
         }
@@ -256,7 +249,7 @@ public class TableUtils {
     }
 
     @Deprecated
-    public static void updateFolderInfos_FileInfo(FolderInfo folderInfo) {
+    public static void updateFolderInfo(FolderInfo folderInfo) {
         Messages.sprintf("tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
 
         int bad = 0;
@@ -322,9 +315,7 @@ public class TableUtils {
 
                 LocalDate localDate = null;
                 try {
-                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())),
-                            Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())),
-                            Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
+                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
 
                 } catch (Exception ex) {
                     Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
@@ -401,8 +392,7 @@ public class TableUtils {
     public static void updateStatus(IntegerProperty status, int folderFiles, int badFiles, int suggested) {
         double status_value = 0;
         try {
-            status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles)
-                    * 100;
+            status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles) * 100;
             status.set((int) Math.floor(status_value));
             status_value = 0;
         } catch (Exception ex) {
@@ -412,15 +402,13 @@ public class TableUtils {
         }
     }
 
-    public static ChangeListener<Number> updateStatus_listener(IntegerProperty status, int folderFiles, int badFiles,
-                                                               int suggested) {
+    public static ChangeListener<Number> updateStatus_listener(IntegerProperty status, int folderFiles, int badFiles, int suggested) {
         ChangeListener<Number> cl = new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 double status_value = 0;
                 try {
-                    status_value = (((double) folderFiles - ((double) badFiles + (double) suggested))
-                            / (double) folderFiles) * 100;
+                    status_value = (((double) folderFiles - ((double) badFiles + (double) suggested)) / (double) folderFiles) * 100;
                     status.set((int) Math.floor(status_value));
                     status_value = 0;
                 } catch (Exception ex) {
@@ -479,7 +467,7 @@ public class TableUtils {
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
                 folderInfo.setState("Updated");
-                TableUtils.updateFolderInfos_FileInfo(folderInfo);
+                TableUtils.updateFolderInfo(folderInfo);
                 TableUtils.refreshTableContent(model_main.tables().getSorted_table());
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(false);
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(true);
@@ -503,7 +491,7 @@ public class TableUtils {
             List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
-                TableUtils.updateFolderInfos_FileInfo(folderInfo);
+                TableUtils.updateFolderInfo(folderInfo);
 
                 folderInfo.setState("Updated");
                 model_main.tables().getSortIt_table().getColumns().get(0).setVisible(false);
@@ -599,8 +587,7 @@ public class TableUtils {
     }
 
     public static boolean mergeSameFilesIntoFolderByDateFiles(FolderInfo folderInfoToFind, Tables table) {
-        if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty()
-                || table.getAsItIs_table().getItems().isEmpty()) {
+        if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty() || table.getAsItIs_table().getItems().isEmpty()) {
             Messages.sprintfError("All tables contents are empty");
             return false;
         }
@@ -615,35 +602,6 @@ public class TableUtils {
         }
         return false;
     }
-
-    private static void compareTablesWithDateSimilarities(TableView<FolderInfo> tableView_src, TableView<FolderInfo> tableView_dest) {
-//		for(FolderInfo folderInfo_src : tableView_src.getItems()) {
-//			LocalDateTime minDate_src = DateUtils.parseLocalDateTimeFromString(folderInfo_src.getMinDate());
-//			LocalDateTime maxDate_src = DateUtils.parseLocalDateTimeFromString(folderInfo_src.getMaxDate());
-//			if(folderInfo_src.getFolderPath() != folderInfo_dest.getFolderPath())
-//			for(FolderInfo folderInfo_dest : tableView_dest) {
-//				LocalDateTime minDate_dest = DateUtils.parseLocalDateTimeFromString(folderInfo_dest.getMinDate());
-//				LocalDateTime maxDate_dest = DateUtils.parseLocalDateTimeFromString(folderInfo_dest.getMaxDate());
-//					
-//			}
-
-//		}
-    }
-
-//	private static FileInfo findFileInfoFolderInfo(Tables table) {
-//		for (FolderInfo fileInfo : table.getSorted_table().getItems()) {
-//
-//			if (!fileInfo.isBad()) {
-////				findFileInfoFolderInfo
-//			}
-//
-//			for (FolderInfo folderInfo_sorted : table.getItems()) {
-//				for (FileInfo fileInfo_sorted : folderInfo_sorted.getFileInfoList()) {
-//
-//				}
-//			}
-//		}
-//	}
 
     public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
         if (table.getItems().isEmpty()) {
@@ -717,46 +675,19 @@ public class TableUtils {
 
     }
 
-    public static void findPossibleNewDestinationByDate(FileInfo fileInfoToFind, Tables tables) {
-        for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-            LocalDate start = DateUtils.parseLocalDateFromString(folderInfo.getMinDate());
-            LocalDate end = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate());
-            LocalDate toFind = DateUtils.longToLocalDateTime(fileInfoToFind.getDate()).toLocalDate();
-            break;
-//			if(folderInfo.getMinDate())
-//			for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//				FileInfo possibleDuplicate = model_main.getWorkDir_Handler().exists(fileInfo);
-//				if(possibleDuplicate!=null) {
-//					Messages.sprintf("File were already copied to destination: " + possibleDuplicate.getDestination_Path());
-////					fileInfo.setDestination_Path(possibleDuplicate.getDestination_Path());
-//				} else {
-//					TableUtils.findPossibleNewDestinationByDate(path, tableValues)
-//				}
-//			}
-
-        }
-        Messages.warningText("findPossibleNewDestinationByDate is NOT available yet. ");
-
-    }
-
     public static Path resolveFileDestinationPath(String justFolderName, FileInfo fileInfo, String tableType) {
 
-        String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate())
-                .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
+        String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
         LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
 
         if (tableType.equals(TableType.SORTED.getType())) {
-            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld + " - " + justFolderName
-                    + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld + " - " + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
             return destPath;
         } else if (tableType.equals(TableType.SORTIT.getType())) {
-            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator
-                    + Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "."
-                    + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
             return destPath;
         } else if (tableType.equals(TableType.ASITIS.getType())) {
-            Path destPath = Paths.get(File.separator + justFolderName + File.separator + fileName + "."
-                    + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
+            Path destPath = Paths.get(File.separator + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
             return destPath;
         }
         return null;
@@ -764,13 +695,13 @@ public class TableUtils {
 
     public static void updateAllFolderInfos(Tables tables) {
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
-            updateFolderInfos_FileInfo(folderInfo);
+            updateFolderInfo(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-            updateFolderInfos_FileInfo(folderInfo);
+            updateFolderInfo(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
-            updateFolderInfos_FileInfo(folderInfo);
+            updateFolderInfo(folderInfo);
         }
     }
 
@@ -827,28 +758,6 @@ public class TableUtils {
         }
     }
 
-    private static void calculateTableViewsStatistics(TableType type, TableStatistic tableStatistic, ObservableList<FolderInfo> obs, Tables tables) {
-
-        Iterator<FolderInfo> it = obs.iterator();
-
-        while (it.hasNext()) {
-            FolderInfo folderInfo = it.next();
-            if (folderInfo.getFileInfoList().size() == 0) {
-                it.remove();
-            }
-        }
-
-        for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
-            tables.getSortit_TableStatistic().setTotalFiles(
-                    tables.getSortit_TableStatistic()
-                            .totalFiles_property().get() + folderInfo.getFolderFiles());
-            tables.getSortit_TableStatistic().setTotalFilesCopied(
-                    tables.getSortit_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-            tables.getSortit_TableStatistic().setTotalFilesSize(
-                    tables.getSortit_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
-        }
-    }
-
     public static void saveChangesContentsToTables(Tables tables) {
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
             if (folderInfo.getChanged()) {
@@ -881,8 +790,7 @@ public class TableUtils {
              * Connection status when this was saved Connects to current folder for existing
              * or creates new one called fileinfo.db
              */
-            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-                    Main.conf.getMdir_db_fileName());
+            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
             fileList_connection.setAutoCommit(false);
             // Inserts all data info fileinfo.db
             FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
@@ -890,11 +798,9 @@ public class TableUtils {
             if (fileList_connection != null) {
                 fileList_connection.commit();
                 fileList_connection.close();
-                Messages.sprintf(
-                        "saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
+                Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
             } else {
-                Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath()
-                        + " FAILED! Closing connection");
+                Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath() + " FAILED! Closing connection");
             }
         } catch (Exception e) {
             // TODO: handle exception

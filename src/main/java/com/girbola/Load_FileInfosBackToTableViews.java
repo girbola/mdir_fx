@@ -141,7 +141,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 					}
 					if (fileInfoList.size() > 0) {
 						folderInfo.getFileInfoList().addAll(fileInfoList);
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.updateFolderInfo(folderInfo);
 						Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
 								+ " List were empty. Path" + folderInfo.getFolderPath() + " files == "
 								+ folderInfo.getFolderFiles());

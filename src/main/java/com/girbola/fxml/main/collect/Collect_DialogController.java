@@ -1,8 +1,6 @@
 package com.girbola.fxml.main.collect;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -252,7 +250,7 @@ public class Collect_DialogController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 				close();

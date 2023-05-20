@@ -13,7 +13,6 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import javafx.scene.control.Button;
@@ -70,7 +69,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
 				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
-				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				TableUtils.updateFolderInfo(folderInfo);
 				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 				TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());

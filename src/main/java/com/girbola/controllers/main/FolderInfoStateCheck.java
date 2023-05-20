@@ -27,7 +27,7 @@ public class FolderInfoStateCheck extends Task<Boolean> {
 	protected Boolean call() throws Exception {
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getState().equals(FolderInfoStateType.CHANGED.getType())) {
-				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				TableUtils.updateFolderInfo(folderInfo);
 				folderInfo.setState(FolderInfoStateType.OK.getType());
 				if(!updated.get()) {
 					updated.set(true);

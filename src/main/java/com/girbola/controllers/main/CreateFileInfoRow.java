@@ -67,7 +67,7 @@ public class CreateFileInfoRow extends Task<Void> {
 							+ " list size: " + list.size());
 					if (list != null) {
 						folderInfo.setFileInfoList(list);
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.updateFolderInfo(folderInfo);
 						TableUtils.refreshTableContent(table);
 
 						updateProgress(counter.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());

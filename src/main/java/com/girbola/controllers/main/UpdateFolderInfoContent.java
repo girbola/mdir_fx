@@ -30,7 +30,7 @@ public class UpdateFolderInfoContent extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
     	Messages.sprintf("Running now updatefolerinfocontent");
-    	TableUtils.updateFolderInfos_FileInfo(folderInfo);
+    	TableUtils.updateFolderInfo(folderInfo);
         return null;
     }
 

@@ -24,7 +24,6 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 
 import common.utils.FileUtils;
@@ -394,7 +393,7 @@ public class MergeCopyDialogController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfos_FileInfo(folderInfo);
+					TableUtils.updateFolderInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 				TableUtils.saveChangesContentsToTables(model_main.tables());

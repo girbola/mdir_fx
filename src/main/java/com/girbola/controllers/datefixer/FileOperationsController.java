@@ -263,7 +263,7 @@ public class FileOperationsController {
 				}
 			}
 			if (update) {
-				TableUtils.updateFolderInfos_FileInfo(loadFolderInfo);
+				TableUtils.updateFolderInfo(loadFolderInfo);
 //				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
@@ -271,10 +271,10 @@ public class FileOperationsController {
 		// Remove moved fileinfos from original source
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
 		// Clean Source FolderInfo from moved FileInfos
-		TableUtils.updateFolderInfos_FileInfo(folderInfo);
+		TableUtils.updateFolderInfo(folderInfo);
 
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
-		TableUtils.updateFolderInfos_FileInfo(folderInfo);
+		TableUtils.updateFolderInfo(folderInfo);
 
 	}
 }

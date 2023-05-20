@@ -538,7 +538,7 @@ public class Model_datefix extends DateFixerModel {
 			}
 			if (changed) {
 				// TODO Korjaa apply_btn;
-				TableUtils.updateFolderInfos_FileInfo(getFolderInfo_full());
+				TableUtils.updateFolderInfo(getFolderInfo_full());
 				if (model_Main.tables() == null) {
 					Main.setProcessCancelled(true);
 					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);

@@ -166,7 +166,7 @@ public class MenuBarController {
 
 			if (list != null) {
 				folderInfo.setFileInfoList(list);
-				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				TableUtils.updateFolderInfo(folderInfo);
 			}
 
 			if (folderInfo.getFileInfoList().isEmpty()) {

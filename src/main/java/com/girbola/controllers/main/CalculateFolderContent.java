@@ -24,7 +24,6 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 
 import javafx.beans.property.IntegerProperty;
@@ -123,7 +122,7 @@ public class CalculateFolderContent extends Task<Void> {
 					loaded_FolderInfo = new FolderInfo(mdirDatabaseFilePath.getParent());
 					folderInfo.setFileInfoList(listOfFileInfos);
 					if (!folderInfo.getFileInfoList().isEmpty()) {
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.updateFolderInfo(folderInfo);
 						counter.set(counter.get() - 1);
 						updateProgress(counter.get(), total.get());
 						updateMessage(folderInfo.getFolderPath());
@@ -136,7 +135,7 @@ public class CalculateFolderContent extends Task<Void> {
 					List<FileInfo> li = createFileInfo_list(folderInfo);
 					folderInfo.setFileInfoList(li);
 					if (!folderInfo.getFileInfoList().isEmpty()) {
-						TableUtils.updateFolderInfos_FileInfo(folderInfo);
+						TableUtils.updateFolderInfo(folderInfo);
 						counter.set(counter.get() - 1);
 						updateProgress(counter.get(), total.get());
 						updateMessage(folderInfo.getFolderPath());
@@ -149,7 +148,7 @@ public class CalculateFolderContent extends Task<Void> {
 			}
 			if (loaded_FolderInfo != null) {
 				folderInfo.setFileInfoList(loaded_FolderInfo.getFileInfoList());
-				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				TableUtils.updateFolderInfo(folderInfo);
 				Messages.sprintf("folderInfo were not zero: " + folderInfo.getFolderPath());
 			} else {
 				Messages.sprintf("folderInfo were were zero: " + mdirDatabaseFilePath);
@@ -163,7 +162,7 @@ public class CalculateFolderContent extends Task<Void> {
 			List<FileInfo> li = createFileInfo_list(folderInfo);
 			folderInfo.setFileInfoList(li);
 			if (!folderInfo.getFileInfoList().isEmpty()) {
-				TableUtils.updateFolderInfos_FileInfo(folderInfo);
+				TableUtils.updateFolderInfo(folderInfo);
 				counter.set(counter.get() - 1);
 				updateProgress(counter.get(), total.get());
 				updateMessage(folderInfo.getFolderPath());
