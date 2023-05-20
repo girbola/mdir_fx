@@ -177,7 +177,7 @@ public class TableUtils {
                 }
             }
         }
-        return fi;
+        return null;
     }
 
     public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
