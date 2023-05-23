@@ -39,7 +39,7 @@
 		<jcodec.version>0.2.5</jcodec.version>
 		<imageio-jpeg.version>3.8.3</imageio-jpeg.version>
 		<imageio-tiff.version>3.8.3</imageio-tiff.version>
-		<sqlite-jdbc.version>3.28.0</sqlite-jdbc.version>
+		<sqlite-jdbc.version>3.41.2.2</sqlite-jdbc.version>
 		<slf4j.version>2.0.3</slf4j.version>
 		<maven.compiler.source>19</maven.compiler.source>
 		<maven.compiler.target>19</maven.compiler.target>
