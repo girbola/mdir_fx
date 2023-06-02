@@ -192,5 +192,19 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.fxml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<includes>
+					<include>**/*.css</include>
+				</includes>
+			</resource>
+		</resources>
 	</build>
 </project>
