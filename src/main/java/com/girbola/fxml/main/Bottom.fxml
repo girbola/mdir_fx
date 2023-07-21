@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
+<HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
    <children>
       <Button fx:id="options_btn" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true">
          <font>
