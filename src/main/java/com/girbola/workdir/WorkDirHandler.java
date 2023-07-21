@@ -18,12 +18,10 @@ import java.util.List;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.filelisting.GetAllMediaFiles;
-import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -173,7 +171,7 @@ public class WorkDirHandler {
 	public boolean saveWorkDirListToDatabase() {
 		Messages.sprintf("Before sorting the list the size is: " + workDir_List.size());
 
-		FileInfo_Utils.sortByDate_Ascending(workDir_List);
+		FileInfoUtils.sortByDate_Ascending(workDir_List);
 
 		Messages.sprintf("AFter soring the list the size is: " + workDir_List.size());
 		Path destionationPath = null;
@@ -223,7 +221,7 @@ public class WorkDirHandler {
 			for (Path p : listOfWorkDirFiles) {
 				if (Main.getProcessCancelled()) {
 					try {
-						FileInfo fileInfo = FileInfo_Utils.createFileInfo(p);
+						FileInfo fileInfo = FileInfoUtils.createFileInfo(p);
 						add(fileInfo);
 					} catch (IOException e) {
 						e.printStackTrace();

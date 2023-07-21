@@ -69,19 +69,11 @@ public class DateUtils {
 
 	public static LocalDateTime longToLocalDateTime(long millis) {
 
-		LocalDateTime triggerTime = null;
 		try {
-			// triggerTime =
-			// Instant.ofEpochMilli(millis).atZone(ZoneId.systemDefault()).toLocalDateTime();
-			// triggerTime =
-			// LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), TimeZone
-			// .getDefault().toZoneId());
-			triggerTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
-
+			return LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC);
 		} catch (Exception ex) {
 			return null;
 		}
-		return triggerTime;
 
 	}
 
@@ -93,8 +85,7 @@ public class DateUtils {
 	 */
 	public static LocalDateTime stringDateToLocalDateTime(String dateTime) {
 		try {
-			LocalDateTime ld = LocalDateTime.parse(dateTime, simpleDates.getDtf_ymd_hms_minusDots_default());
-			return ld;
+			return LocalDateTime.parse(dateTime, simpleDates.getDtf_ymd_hms_minusDots_default());
 		} catch (Exception ex) {
 			return null;
 		}

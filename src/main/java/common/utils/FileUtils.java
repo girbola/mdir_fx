@@ -95,13 +95,14 @@ public class FileUtils {
 
 				counter++;
 
-				if (Files.exists(Paths.get(fileName))) {
-					if (Files.size(srcFile) == Files.size(Paths.get(fileName))) {
+				Path path = Paths.get(fileName);
+				if (Files.exists(path)) {
+					if (Files.size(srcFile) == Files.size(path)) {
 						sprintf("DUPLICATED. File existed: " + destFile + " filename: " + fileName);
 						return null;
 					}
 				} else {
-					return Paths.get(fileName);
+					return path;
 				}
 
 			}

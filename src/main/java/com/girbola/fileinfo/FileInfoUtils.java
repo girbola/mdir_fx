@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import com.drew.metadata.Metadata;
@@ -51,9 +50,9 @@ import javafx.stage.Stage;
  *
  * @author Marko Lokka
  */
-public class FileInfo_Utils {
+public class FileInfoUtils {
 
-	private final static String ERROR = FileInfo_Utils.class.getSimpleName();
+	private final static String ERROR = FileInfoUtils.class.getSimpleName();
 
 	public static String findFileInfoByDate(FileInfo fileInfoToSearch, TableView<FolderInfo> table) {
 		LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
@@ -88,7 +87,6 @@ public class FileInfo_Utils {
 	}
 
 	public static FileInfo createFileInfo(Path fileName) throws IOException {
-		// sprintf("createFileInfo started: " + path);
 
 		FileInfo fileInfo = null;
 		if (FileUtils.supportedImage(fileName)) {
@@ -142,12 +140,12 @@ public class FileInfo_Utils {
 
 				date = getMetaDataCreationDate(metaData, path);
 				if (date >= 1) {
-					FileInfo_Utils.setGood(fileInfo);
+					FileInfoUtils.setGood(fileInfo);
 					fileInfo.setDate(date);
 					getImageThumb_Offset_Length(metaData, fileInfo);
 					return true;
 				} else {
-					FileInfo_Utils.setBad(fileInfo);
+					FileInfoUtils.setBad(fileInfo);
 					fileInfo.setDate(0);
 				}
 				// getImageThumb_Offset_Length(metaData, fileInfo);
@@ -235,11 +233,11 @@ public class FileInfo_Utils {
 	private static boolean tryFileNameDate(Path path, FileInfo fileInfo) {
 		long fileNameDate = FileNameParseUtils.hasFileNameDate(path);
 		if (fileNameDate != 0) {
-			FileInfo_Utils.setSuggested(fileInfo);
+			FileInfoUtils.setSuggested(fileInfo);
 			fileInfo.setDate(fileNameDate);
 			return true;
 		} else {
-			FileInfo_Utils.setBad(fileInfo);
+			FileInfoUtils.setBad(fileInfo);
 			fileInfo.setDate(0);
 			fileNameDate = 0;
 			return false;
@@ -358,10 +356,10 @@ public class FileInfo_Utils {
 		if (metaData != null) {
 			creationDate = getMetaDataCreationDate(metaData, path);
 			if (creationDate != 0) {
-				FileInfo_Utils.setGood(fileInfo);
+				FileInfoUtils.setGood(fileInfo);
 				fileInfo.setDate(creationDate);
 			} else {
-				FileInfo_Utils.setBad(fileInfo);
+				FileInfoUtils.setBad(fileInfo);
 				fileInfo.setDate(0);
 			}
 			orientation = DateTaken.getMetaDataOrientation(metaData);
@@ -507,7 +505,12 @@ public class FileInfo_Utils {
 		return false;
 	}
 
-	public static boolean moveFile(FileInfo fileInfo) {
+	/**
+	 * Moves file according the FileInfo workdir path.
+	 * @param fileInfo
+	 * @return
+	 */
+	public static boolean moveFileToWorkDir(FileInfo fileInfo) {
 		boolean skip = true;
 		Path source = Paths.get(fileInfo.getOrgPath());
 		Messages.sprintf("DEBUG1: " + source);
@@ -519,8 +522,12 @@ public class FileInfo_Utils {
 		if (Main.getProcessCancelled()) {
 			return false;
 		}
+		if(fileInfo.getDestination_Path().isBlank() || fileInfo.getDestination_Path().isEmpty()) {
+			Messages.warningText("Destination path is not definied");
+			return false;
+		}
+
 		Path dest = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
-//				Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
 
 		if (!Files.exists(dest.getParent())) {
 			try {

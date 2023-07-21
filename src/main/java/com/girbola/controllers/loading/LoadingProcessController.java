@@ -42,9 +42,6 @@ public class LoadingProcessController {
 
 	private Model_loading model_loading;
 
-	// public void setModel(Model_loading model) {
-	// this.model = model;
-	// }
 	@FXML
 	private ProgressBar progressBar;
 
@@ -75,7 +72,6 @@ public class LoadingProcessController {
 		KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {
-
 			@Override
 			public void handle(ActionEvent event) {
 				Main.scene_Switcher.getWindow_loadingprogress().close();

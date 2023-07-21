@@ -28,7 +28,7 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fxml.move.MoveController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -237,8 +237,8 @@ public class FileOperationsController {
 			if (entry.getValue().size() > 0 || !Files.exists(Paths.get(entry.getKey()))) {
 
 				for (FileInfo fileInfo : entry.getValue()) {
-					boolean succeeded = FileInfo_Utils.moveFile(fileInfo);
-					if (!succeeded) {
+					boolean succeeded = FileInfoUtils.moveFileToWorkDir(fileInfo);
+					if (succeeded) {
 						Messages.sprintfError("File has been successfully moved: " + fileInfo.getOrgPath());
 					}
 					skip = false;
@@ -255,7 +255,7 @@ public class FileOperationsController {
 //				createNew
 //			}
 			for (FileInfo fileInfo : entry.getValue()) {
-				if (!FileInfo_Utils.findDuplicates(fileInfo, loadFolderInfo)) {
+				if (!FileInfoUtils.findDuplicates(fileInfo, loadFolderInfo)) {
 					loadFolderInfo.getFileInfoList().add(fileInfo);
 					if (!update) {
 						update = true;

@@ -162,7 +162,7 @@ public class Collect_DateTimeAdjusterController {
 					model_CollectDialog.addToEvent(fileInfo, tableType);
 					model_CollectDialog.addToLocation(fileInfo);
 
-//					if (FileInfo_Utils.findDuplicates(fileInfo, folderInfo)) {
+//					if (FileInfoUtils.findDuplicates(fileInfo, folderInfo)) {
 					collectedList.add(fileInfo);
 					Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt + "  ldt_start: "
 							+ ldt_start + " ldt_end: " + ldt_end);

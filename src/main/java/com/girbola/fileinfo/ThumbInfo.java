@@ -1,5 +1,8 @@
 package com.girbola.fileinfo;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -7,6 +10,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+@Getter
+@Setter
 @XmlRootElement(name = "ThumbInfo")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ThumbInfo {
@@ -59,113 +64,6 @@ public class ThumbInfo {
 		this.orientation = orientation;
 		this.thumbs = thumbs;
 	}
-
-	public String getFileName() {
-		return this.fileName;
-	}
-
-	public int getId() {
-		return this.id;
-	}
-
-	/**
-	 * @return the thumbs
-	 */
-	public ArrayList<byte[]> getThumbs() {
-		return thumbs;
-	}
-
-	/**
-	 * @return the width
-	 */
-	public double getThumb_width() {
-		return this.thumb_width;
-	}
-
-	/**
-	 * @return the height
-	 */
-	public double getThumb_height() {
-		return this.thumb_height;
-	}
-
-	/**
-	 * @param value the width to set
-	 */
-	public void setThumb_width(double value) {
-		this.thumb_width = value;
-	}
-
-	/**
-	 * @param value the height to set
-	 */
-	public void setThumb_height(double value) {
-		this.thumb_height = value;
-	}
-
-	/**
-	 * @param value the thumbs to set
-	 */
-	public void setThumbs(ArrayList<byte[]> value) {
-		this.thumbs = value;
-	}
-
-	/**
-	 * @return the thumb_fast
-	 */
-	public final byte[] getThumb_fast() {
-		return thumb_fast;
-	}
-
-	/**
-	 * @param thumb_fast the thumb_fast to set
-	 */
-	public final void setThumb_fast(byte[] thumb_fast) {
-		this.thumb_fast = thumb_fast;
-	}
-
-	/**
-	 * @return the thumb_fast_width
-	 */
-	public final double getThumb_fast_width() {
-		return thumb_fast_width;
-	}
-
-	/**
-	 * @return the thumb_fast_height
-	 */
-	public final double getThumb_fast_height() {
-		return thumb_fast_height;
-	}
-
-	/**
-	 * @param thumb_fast_width the thumb_fast_width to set
-	 */
-	public final void setThumb_fast_width(double thumb_fast_width) {
-		this.thumb_fast_width = thumb_fast_width;
-	}
-
-	/**
-	 * @param thumb_fast_height the thumb_fast_height to set
-	 */
-	public final void setThumb_fast_height(double thumb_fast_height) {
-		this.thumb_fast_height = thumb_fast_height;
-	}
-
-	/**
-	 * @return the orientation
-	 */
-	public final double getOrientation() {
-		return orientation;
-	}
-
-	/**
-	 * @param orientation the orientation to set
-	 */
-	public final void setOrientation(double orientation) {
-		this.orientation = orientation;
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */

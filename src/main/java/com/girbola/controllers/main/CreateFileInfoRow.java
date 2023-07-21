@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.fileinfo.FileInfo_Utils.createFileInfo_list;
+import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 import java.nio.file.Files;

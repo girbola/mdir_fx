@@ -240,7 +240,7 @@ public class OperateFiles extends Task<Boolean> {
 					if (!findPossibleExistsFoldersInWorkdir.isEmpty()) {
 						Messages.sprintf("Duplicates found: " + source);
 //						fileInfo.setCopied(true);
-//				boolean defineDuplicate = FileInfo_Utils.defineDuplicateFile(fileInfo, dest);
+//				boolean defineDuplicate = FileInfoUtils.defineDuplicateFile(fileInfo, dest);
 //				if (defineDuplicate) {
 						STATE = Copy_State.DUPLICATE.getType();
 					} else {

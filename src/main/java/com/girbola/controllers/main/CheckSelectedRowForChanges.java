@@ -15,7 +15,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -24,7 +24,6 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.TableView;
 
 public class CheckSelectedRowForChanges extends Task<Boolean> {
@@ -66,12 +65,12 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 
 			List<FileInfo> listToRemove = new ArrayList<>(folderInfo.getFileInfoList());
 			for (Path file : fileList) {
-				FileInfo fileInfoToCompare = FileInfo_Utils.findFileInFolderInfo(file, folderInfo);
+				FileInfo fileInfoToCompare = FileInfoUtils.findFileInFolderInfo(file, folderInfo);
 				if (fileInfoToCompare == null) {
 					Messages.sprintf("New file appeared!");
 					FileInfo fileInfo = null;
 					try {
-						fileInfo = FileInfo_Utils.createFileInfo(file);
+						fileInfo = FileInfoUtils.createFileInfo(file);
 						folderInfo.getFileInfoList().add(fileInfo);
 						changed.set(true);
 					} catch (IOException e) {

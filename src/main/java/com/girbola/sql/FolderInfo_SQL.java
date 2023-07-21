@@ -15,7 +15,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 
 public class FolderInfo_SQL {
@@ -191,7 +191,7 @@ public class FolderInfo_SQL {
 				folderInfo = new FolderInfo();
 				if (fileInfo_list.isEmpty()) {
 					Messages.sprintf("FileInfo were empty!");
-					fileInfo_list = FileInfo_Utils.createFileInfo_list(folderInfo);
+					fileInfo_list = FileInfoUtils.createFileInfo_list(folderInfo);
 					if (fileInfo_list.isEmpty()) {
 						Messages.sprintf("FileInfo creationg did not work this time or folder were empty.");
 					}

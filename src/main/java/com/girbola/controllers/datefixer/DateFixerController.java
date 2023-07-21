@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.girbola.fileinfo.FileInfoUtils;
 import org.slf4j.LoggerFactory;
 
 import com.girbola.Main;
@@ -33,7 +34,6 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.DestinationResolver;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -481,7 +481,7 @@ public class DateFixerController {
 				if (hboxi instanceof TextField) {
 					FileInfo fileInfo = (FileInfo) node.getUserData();
 					// model_datefix.getSelectionModel().add(node);
-					FileInfo_Utils.setBad(fileInfo);
+					FileInfoUtils.setBad(fileInfo);
 					hboxi.setStyle(CssStylesController.getBad_style());
 				}
 			}
@@ -502,7 +502,7 @@ public class DateFixerController {
 					FileInfo fileInfo = (FileInfo) node.getUserData();
 					// model_datefix.getSelectionModel().add(node);
 					TextField tf = (TextField) hboxi;
-					// FileInfo_Utils.setBad(fileInfo);(fileInfo);
+					// FileInfoUtils.setBad(fileInfo);(fileInfo);
 					tf.setStyle(CssStylesController.getModified_style());
 				}
 			}

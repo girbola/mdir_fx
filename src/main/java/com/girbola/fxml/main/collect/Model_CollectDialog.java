@@ -5,7 +5,7 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfo_Event;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -30,7 +30,7 @@ public class Model_CollectDialog extends DateFixerModel {
 	public void addToEvent(FileInfo fileInfo_ToFind, String tabletype) {
 		if (tabletype.equals(TableType.SORTED.getType())) {
 			if (fileInfo_ToFind.getEvent().isBlank()) {
-				fileInfo_ToFind.setEvent(FileInfo_Utils.getFolderName(fileInfo_ToFind));
+				fileInfo_ToFind.setEvent(FileInfoUtils.getFolderName(fileInfo_ToFind));
 			}
 		}
 		for (FileInfo_Event fileInfo : obs_Events) {

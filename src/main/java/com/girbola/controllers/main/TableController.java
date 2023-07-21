@@ -865,13 +865,11 @@ public class TableController {
 //		justFolderName_col.setCellFactory(model_main.tables().textFieldEditingCellFactory);
 		justFolderName_col
 				.setCellFactory(new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-
 					@Override
 					public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> param) {
 //						param.getTableView().getSelectionModel().getSelectedItem();
 						return new EditingCell(model_main, param);
 					}
-
 				});
 
 		allFilesTotal_lbl.textProperty().bindBidirectional(allFilesTotal_obs, new NumberStringConverter());

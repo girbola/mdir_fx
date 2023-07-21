@@ -30,7 +30,7 @@ import com.drew.metadata.Metadata;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
@@ -180,7 +180,7 @@ public class ImageHandling {
 		} else {
 			Metadata metaData = DateTaken.readMetaData(Paths.get(fileInfo.getOrgPath()));
 			if (metaData != null) {
-				FileInfo_Utils.getImageThumb_Offset_Length(metaData, fileInfo);
+				FileInfoUtils.getImageThumb_Offset_Length(metaData, fileInfo);
 				if (fileInfo.getThumb_offset() != 0 && fileInfo.getThumb_length() != 0) {
 					Task<Image> convertImage_offset_task = convertImage_offset(Paths.get(fileInfo.getOrgPath()),
 							fileInfo.getThumb_offset(), fileInfo.getThumb_length(), width, imageView);

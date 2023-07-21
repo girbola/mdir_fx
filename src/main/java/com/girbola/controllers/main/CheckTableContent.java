@@ -7,7 +7,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 
 import javafx.collections.FXCollections;
@@ -43,7 +43,7 @@ public class CheckTableContent {
 					 * 0 = is good, 1 = is conflict with workdir. Workdir (destination path) is not
 					 * connected, 2 if copying is not possible
 					 */
-					int status = FileInfo_Utils.checkWorkDir(fileInfo);
+					int status = FileInfoUtils.checkWorkDir(fileInfo);
 					if (status == 0) {
 						fileInfoList.add(fileInfo);
 						Messages.sprintf(

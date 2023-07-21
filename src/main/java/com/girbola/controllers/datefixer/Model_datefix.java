@@ -40,7 +40,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.fileinfo.ThumbInfo_Utils;
 import com.girbola.messages.Messages;
@@ -592,7 +592,7 @@ public class Model_datefix extends DateFixerModel {
 			if (fileInfo != null) {
 				File file = new File(fileInfo.getOrgPath());
 				try {
-					fileInfo = FileInfo_Utils.createFileInfo(file.toPath());
+					fileInfo = FileInfoUtils.createFileInfo(file.toPath());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

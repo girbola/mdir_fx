@@ -28,7 +28,7 @@ import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 
@@ -36,7 +36,6 @@ import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -109,7 +108,7 @@ public class DateTimeAdjusterController {
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
                 LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
                 if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
-                    if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+                    if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
 //						model_ FolderInfo_Utils. addToObservableFileInfoList.
                         collectedList.add(fileInfo);
                         Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
@@ -131,7 +130,7 @@ public class DateTimeAdjusterController {
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
                 LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
                 if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-                    if (!FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+                    if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
                         collectedList.add(fileInfo);
                         Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
                                 + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
@@ -193,7 +192,7 @@ public class DateTimeAdjusterController {
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
                 LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
                 if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-                    if (FileInfo_Utils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
+                    if (FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
                         collectedList.add(fileInfo);
                         Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
                                 + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);

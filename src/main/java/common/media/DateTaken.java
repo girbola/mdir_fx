@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Date;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -20,17 +19,13 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
-import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.mov.QuickTimeDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
 
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 import java.io.File;
 
-import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
 /**

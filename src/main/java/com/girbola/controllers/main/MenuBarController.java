@@ -29,7 +29,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
@@ -162,7 +162,7 @@ public class MenuBarController {
 			return;
 		} else {
 			FolderInfo folderInfo = new FolderInfo(file.toPath());
-			List<FileInfo> list = FileInfo_Utils.createFileInfo_list(folderInfo);
+			List<FileInfo> list = FileInfoUtils.createFileInfo_list(folderInfo);
 
 			if (list != null) {
 				folderInfo.setFileInfoList(list);

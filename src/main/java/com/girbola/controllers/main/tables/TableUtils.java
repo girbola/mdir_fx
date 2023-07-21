@@ -35,7 +35,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Utils;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.messages.Messages;
@@ -63,10 +63,12 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import lombok.extern.java.Log;
 
 /**
  * @author Marko Lokka
  */
+@Log
 public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
@@ -562,7 +564,7 @@ public class TableUtils {
             FileInfo fileInfo = hasFileInfo_In_List(file, fileInfo_list);
             if (fileInfo == null) {
                 try {
-                    fileInfo = FileInfo_Utils.createFileInfo(file);
+                    fileInfo = FileInfoUtils.createFileInfo(file);
                     Messages.sprintf("fileInfo created: " + fileInfo.toString());
                 } catch (IOException ex) {
                     Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
@@ -741,11 +743,36 @@ public class TableUtils {
     }
 
     public static void removeTableViewEmptyFolderInfos(Tables tables) {
-        Platform.runLater(() -> {
-            removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
-            removeTableViewsEmptyFolderInfo(tables.getSorted_table());
-            removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
+        Task<Void> removeEmptyFoldersFromTableViews = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
+                removeTableViewsEmptyFolderInfo(tables.getSorted_table());
+                removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
+                return null;
+            }
+        };
+        removeEmptyFoldersFromTableViews.setOnSucceeded(e -> {
+            log.info("Removing empty folders from tables is done");
         });
+
+        removeEmptyFoldersFromTableViews.setOnCancelled(e -> {
+            log.info("Removing empty folders from tables is cancelled");
+        });
+
+        removeEmptyFoldersFromTableViews.setOnFailed(e -> {
+            log.info("Removing empty folders from tables is done");
+        });
+
+        Thread thread = new Thread(removeEmptyFoldersFromTableViews, "removeEmptyFoldersFromTableViewsThread");
+        thread.start();
+
+
+//        Platform.runLater(() -> {
+//            removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
+//            removeTableViewsEmptyFolderInfo(tables.getSorted_table());
+//            removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
+//        });
     }
 
     private static void removeTableViewsEmptyFolderInfo(TableView<FolderInfo> items) {
