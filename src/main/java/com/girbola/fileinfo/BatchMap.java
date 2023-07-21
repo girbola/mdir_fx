@@ -6,12 +6,12 @@
  */
 package com.girbola.fileinfo;
 
-import static com.girbola.messages.Messages.sprintf;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

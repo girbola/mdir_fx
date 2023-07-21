@@ -1,14 +1,13 @@
 package com.girbola.fxml.possiblefolderchooser;
 
-import java.nio.file.Path;
-
 import com.girbola.messages.Messages;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+
+import java.nio.file.Path;
 
 public class PossibleFolderChooserController {
 	private SimpleStringProperty path = new SimpleStringProperty();

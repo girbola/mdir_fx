@@ -6,20 +6,15 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.simpleDates;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.*;
+
+import static com.girbola.Main.simpleDates;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

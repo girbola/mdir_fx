@@ -1,13 +1,12 @@
 package com.girbola.fxml.datestreetableview;
 
+import com.girbola.fileinfo.FileInfo;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
-import com.girbola.fileinfo.FileInfo;
-
-import javafx.beans.property.SimpleStringProperty;
 
 public class TreeFolderInfo {
 	public List<FileInfo> getFileInfoList() {

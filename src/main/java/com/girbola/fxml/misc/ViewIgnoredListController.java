@@ -6,15 +6,8 @@
  */
 package com.girbola.fxml.misc;
 
-import java.net.URL;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.sql.SQL_Utils;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,6 +17,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
+
+import java.net.URL;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class ViewIgnoredListController implements Initializable {
 

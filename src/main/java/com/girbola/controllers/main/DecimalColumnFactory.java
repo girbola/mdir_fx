@@ -6,13 +6,12 @@
  */
 package com.girbola.controllers.main;
 
-import java.text.DecimalFormat;
-
 import com.girbola.messages.Messages;
-
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
+
+import java.text.DecimalFormat;
 
 /**
  *

@@ -6,19 +6,18 @@
  */
 package com.girbola.filelisting;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
+import com.girbola.Main;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.concurrent.Task;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
-import com.girbola.Main;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import javafx.concurrent.Task;
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
 
 public class GetSubFolders extends Task<List<Path>> {
 	private Path path;

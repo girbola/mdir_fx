@@ -6,8 +6,26 @@
  */
 package com.girbola.imagehandling;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.drew.metadata.Metadata;
+import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixerController;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import common.media.DateTaken;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -21,27 +39,7 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-
-import com.drew.metadata.Metadata;
-import com.girbola.Main;
-import com.girbola.controllers.datefixer.DateFixerController;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import common.media.DateTaken;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

@@ -6,8 +6,24 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.cell.*;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import com.girbola.sql.SqliteConnection;
+import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
+import javafx.scene.control.*;
+import javafx.scene.input.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Rectangle;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.sql.Connection;
@@ -16,41 +32,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
-import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.cell.TableCell_Connected;
-import com.girbola.controllers.main.tables.cell.TableCell_Copied;
-import com.girbola.controllers.main.tables.cell.TableCell_DateDifference_Status;
-import com.girbola.controllers.main.tables.cell.TableCell_DateFixer;
-import com.girbola.controllers.main.tables.cell.TableCell_ProgressBar;
-import com.girbola.controllers.main.tables.cell.TableCell_Status;
-import com.girbola.dialogs.Dialogs;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import com.girbola.sql.SqliteConnection;
-
-import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Rectangle;
-import javafx.stage.StageStyle;
-import javafx.util.Callback;
+import static com.girbola.Main.bundle;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

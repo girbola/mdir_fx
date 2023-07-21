@@ -6,7 +6,12 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -15,13 +20,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.girbola.Main;
-import com.girbola.filelisting.ValidatePathUtils;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

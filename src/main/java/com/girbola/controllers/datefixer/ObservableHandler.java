@@ -1,9 +1,9 @@
 package com.girbola.controllers.datefixer;
 
-import java.util.Iterator;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.util.Iterator;
 
 public class ObservableHandler {
 	private ObservableList<String> event_obs = FXCollections.observableArrayList();

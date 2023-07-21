@@ -1,13 +1,9 @@
 package com.girbola.events;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -17,6 +13,9 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class GUI_Events {
 

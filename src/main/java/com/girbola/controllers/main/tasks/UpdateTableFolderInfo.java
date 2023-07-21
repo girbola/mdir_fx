@@ -1,6 +1,11 @@
 package com.girbola.controllers.main.tasks;
 
-import static com.girbola.Main.simpleDates;
+import com.girbola.Main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.concurrent.Task;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -10,13 +15,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import com.girbola.Main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import javafx.concurrent.Task;
+import static com.girbola.Main.simpleDates;
 
 public class UpdateTableFolderInfo extends Task<Integer> {
 	private final String ERROR = UpdateTableFolderInfo.class.getName();

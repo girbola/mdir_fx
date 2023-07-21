@@ -6,34 +6,28 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import static com.girbola.concurrency.ConcurrencyUtils.initExecutionService;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.girbola.concurrency.ConcurrencyUtils.initExecutionService;
+import static com.girbola.messages.Messages.sprintf;
 
 public class FolderScannerController {
 

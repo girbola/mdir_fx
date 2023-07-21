@@ -1,11 +1,11 @@
 package com.girbola.controllers.main.tables;
 
+import com.girbola.fileinfo.FileInfo;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import com.girbola.fileinfo.FileInfo;
 
 public class Events {
 	

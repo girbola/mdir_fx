@@ -1,7 +1,6 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.messages.Messages;
-
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableRow;

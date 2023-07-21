@@ -6,15 +6,6 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.ArrayList;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.SQL_Enums;
@@ -22,7 +13,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -39,6 +29,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.ArrayList;
+
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {
 	private final String ERROR = SelectedFoldersController.class.getName();

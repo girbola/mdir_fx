@@ -1,17 +1,15 @@
 package com.girbola.configuration;
 
-import java.nio.file.Path;
-
 import com.girbola.Main;
-import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
-
 import javafx.scene.control.Alert.AlertType;
 import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.factory.discovery.strategy.NativeDiscoveryStrategy;
 import uk.co.caprica.vlcj.support.Info;
 import uk.co.caprica.vlcj.support.version.LibVlcVersion;
+
+import java.nio.file.Path;
 
 public class VLCJDiscovery {
 

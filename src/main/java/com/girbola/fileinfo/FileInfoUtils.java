@@ -6,11 +6,26 @@
  */
 package com.girbola.fileinfo;
 
-import static com.girbola.messages.Messages.sprintf;
-import static common.media.DateTaken.getMetaDataCreationDate;
-import static common.media.DateTaken.readMetaData;
-import static common.utils.FileUtils.filter_directories;
-import static common.utils.FileUtils.supportedVideo;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifThumbnailDirectory;
+import com.girbola.Main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import common.media.DateTaken;
+import common.media.VideoDateFinder;
+import common.utils.Conversion;
+import common.utils.FileNameParseUtils;
+import common.utils.FileUtils;
+import common.utils.date.DateUtils;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,27 +39,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import com.drew.metadata.Metadata;
-import com.drew.metadata.exif.ExifThumbnailDirectory;
-import com.girbola.Main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.filelisting.ValidatePathUtils;
-import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import common.media.DateTaken;
-import common.media.VideoDateFinder;
-import common.utils.Conversion;
-import common.utils.FileNameParseUtils;
-import common.utils.FileUtils;
-import common.utils.date.DateUtils;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.stage.Stage;
+import static com.girbola.messages.Messages.sprintf;
+import static common.media.DateTaken.getMetaDataCreationDate;
+import static common.media.DateTaken.readMetaData;
+import static common.utils.FileUtils.filter_directories;
+import static common.utils.FileUtils.supportedVideo;
 
 /**
  *
@@ -515,11 +514,9 @@ public class FileInfoUtils {
 		Path source = Paths.get(fileInfo.getOrgPath());
 		Messages.sprintf("DEBUG1: " + source);
 
-		if (!Files.exists(source) && !Files.exists(Paths.get(fileInfo.getWorkDir()))) {
+		if (!Files.exists(source) && !Files.exists(Paths.get(fileInfo.getWorkDir()))
+		|| Main.getProcessCancelled()) {
 			Main.setProcessCancelled(true);
-			return false;
-		}
-		if (Main.getProcessCancelled()) {
 			return false;
 		}
 		if(fileInfo.getDestination_Path().isBlank() || fileInfo.getDestination_Path().isEmpty()) {

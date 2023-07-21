@@ -6,16 +6,6 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.Main.conf;
-import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -25,11 +15,20 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+
+import static com.girbola.Main.conf;
+import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

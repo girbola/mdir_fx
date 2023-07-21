@@ -6,20 +6,11 @@
  */
 package com.girbola.controllers.closerlook;
 
-import static com.girbola.rotate.Rotate.rotate;
-
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.misc.DateCollectionUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -31,6 +22,14 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static com.girbola.rotate.Rotate.rotate;
 
 /**
  * FXML Controller class

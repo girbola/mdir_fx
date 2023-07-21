@@ -1,15 +1,13 @@
 package com.girbola.controllers.main;
 
-import java.nio.file.Paths;
-import java.sql.Connection;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
 import javafx.scene.control.TableView;
+
+import java.nio.file.Paths;
+import java.sql.Connection;
 
 public class SaveTableContents {
 	private Tables tables;

@@ -6,14 +6,14 @@
  */
 package com.girbola.controllers.main;
 
+import com.girbola.controllers.main.tables.tabletype.TableType;
+
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import com.girbola.controllers.main.tables.tabletype.TableType;
 
 class TablePositionHolder implements Serializable {
 

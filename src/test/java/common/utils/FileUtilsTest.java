@@ -1,15 +1,14 @@
 package common.utils;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoUtils;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.girbola.fileinfo.FileInfoUtils;
-import org.junit.jupiter.api.Test;
-
-import com.girbola.fileinfo.FileInfo;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileUtilsTest {
 

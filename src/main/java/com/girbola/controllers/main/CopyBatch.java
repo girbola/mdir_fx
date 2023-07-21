@@ -1,15 +1,15 @@
 package com.girbola.controllers.main;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.girbola.Scene_NameType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
-
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CopyBatch {
 

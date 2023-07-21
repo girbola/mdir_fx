@@ -6,16 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
-
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.girbola.Main;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.EventHandler;
 import javafx.geometry.Point2D;
@@ -31,6 +22,14 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.stage.Stage;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.messages.Messages.warningText;
 
 /**
  *

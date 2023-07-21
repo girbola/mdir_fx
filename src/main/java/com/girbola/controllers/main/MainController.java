@@ -6,25 +6,19 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.messages.Messages.sprintf;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
-
 import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.SplitPane.Divider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

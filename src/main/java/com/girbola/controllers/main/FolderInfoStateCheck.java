@@ -6,7 +6,6 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;

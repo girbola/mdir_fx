@@ -1,18 +1,12 @@
 package com.girbola.controllers.main.tables;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.girbola.fileinfo.FileInfo;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class FolderInfo_Utils {
 

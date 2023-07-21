@@ -6,15 +6,15 @@
  */
 package com.girbola.configuration;
 
-import static com.girbola.configuration.Configuration_defaults.programName;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collections;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import static com.girbola.configuration.Configuration_defaults.programName;
 
 public class Configuration_GetsSets extends Configuration_GUI {
 

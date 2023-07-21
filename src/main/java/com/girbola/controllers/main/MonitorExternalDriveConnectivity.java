@@ -1,9 +1,5 @@
 package com.girbola.controllers.main;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -11,13 +7,16 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
-
 import common.utils.Conversion;
 import common.utils.OSHI_Utils;
 import javafx.application.Platform;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 

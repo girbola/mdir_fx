@@ -6,15 +6,9 @@
  */
 package common.utils;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.misc.Misc;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,7 +17,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.girbola.misc.Misc;
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

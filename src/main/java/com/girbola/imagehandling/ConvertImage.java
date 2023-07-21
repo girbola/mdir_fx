@@ -6,17 +6,16 @@
  */
 package com.girbola.imagehandling;
 
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
-
-import java.nio.file.Path;
-
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.concurrent.Task;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.nio.file.Path;
+
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
 
 /**
  *

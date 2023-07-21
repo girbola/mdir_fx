@@ -6,18 +6,10 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.drive.DrivesListHandler;
-import com.girbola.sql.SqliteConnection;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;
@@ -26,6 +18,11 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Model_folderScanner {
 

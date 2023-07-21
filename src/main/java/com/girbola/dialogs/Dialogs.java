@@ -1,12 +1,7 @@
 package com.girbola.dialogs;
 
-import static com.girbola.Main.conf;
-
-import java.util.Iterator;
-
 import com.girbola.Main;
 import com.girbola.messages.Messages;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.ButtonBar;
@@ -14,6 +9,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.stage.Window;
+
+import static com.girbola.Main.conf;
 
 public class Dialogs {
 	/*

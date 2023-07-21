@@ -6,8 +6,16 @@
  */
 package com.girbola.configuration;
 
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.collections.ObservableList;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,17 +25,8 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
-
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.ObservableList;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

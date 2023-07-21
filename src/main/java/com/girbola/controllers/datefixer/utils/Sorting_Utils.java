@@ -6,15 +6,13 @@
  */
 package com.girbola.controllers.datefixer.utils;
 
-import java.util.Collections;
-import java.util.Comparator;
-
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  *

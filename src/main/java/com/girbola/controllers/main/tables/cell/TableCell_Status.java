@@ -3,7 +3,6 @@ package com.girbola.controllers.main.tables.cell;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
-
 import javafx.scene.control.TableCell;
 
 public class TableCell_Status extends TableCell<FolderInfo, Integer> {

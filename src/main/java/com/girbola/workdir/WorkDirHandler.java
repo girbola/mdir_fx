@@ -1,5 +1,20 @@
 package com.girbola.workdir;
 
+import com.girbola.Main;
+import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.filelisting.GetAllMediaFiles;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
+import common.utils.Conversion;
+import common.utils.date.DateUtils;
+import javafx.scene.control.TableView;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,22 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
-import com.girbola.filelisting.GetAllMediaFiles;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
-
-import common.utils.Conversion;
-import common.utils.date.DateUtils;
-import javafx.scene.control.TableView;
 
 public class WorkDirHandler {
 

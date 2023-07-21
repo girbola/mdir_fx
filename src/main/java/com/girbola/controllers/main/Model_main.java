@@ -6,17 +6,6 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -29,13 +18,8 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.FolderInfo_SQL;
-import com.girbola.sql.FolderState;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
+import com.girbola.sql.*;
 import com.girbola.workdir.WorkDirHandler;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -54,6 +38,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

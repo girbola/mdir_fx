@@ -6,25 +6,6 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.Main.simpleDates;
-import static com.girbola.controllers.datefixer.ImageUtils.playVideo;
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
-
-import java.awt.Desktop;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
@@ -33,11 +14,9 @@ import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -53,19 +32,29 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.girbola.Main.*;
+import static com.girbola.controllers.datefixer.ImageUtils.playVideo;
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
 
 /**
  *

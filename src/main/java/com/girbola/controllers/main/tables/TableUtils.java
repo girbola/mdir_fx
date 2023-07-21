@@ -6,33 +6,11 @@
  */
 package com.girbola.controllers.main.tables;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.Main.simpleDates;
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.time.LocalDate;
-import java.time.Period;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.controllers.main.*;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
@@ -43,7 +21,6 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SqliteConnection;
-
 import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
@@ -64,6 +41,23 @@ import javafx.scene.control.TableView;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.java.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.time.LocalDate;
+import java.time.Period;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import static com.girbola.Main.*;
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  * @author Marko Lokka

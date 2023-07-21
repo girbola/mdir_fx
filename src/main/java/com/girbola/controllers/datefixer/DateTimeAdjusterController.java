@@ -6,22 +6,6 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
-import static com.girbola.misc.Misc.getLineNumber;
-
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -31,7 +15,6 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -40,18 +23,22 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.concurrency.ConcurrencyUtils.exec;
+import static com.girbola.messages.Messages.*;
+import static com.girbola.misc.Misc.getLineNumber;
 
 public class DateTimeAdjusterController {
 

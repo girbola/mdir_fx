@@ -6,9 +6,19 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.folderscanner.SelectedFolder;
+import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
+import javafx.stage.Window;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -17,20 +27,9 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.loading.LoadingProcess_Task;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
-import javafx.stage.Window;
+import static com.girbola.concurrency.ConcurrencyUtils.exec;
+import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

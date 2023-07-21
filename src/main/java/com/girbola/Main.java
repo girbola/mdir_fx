@@ -22,17 +22,6 @@ limitations under the License.
 */
 package com.girbola;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.VLCJDiscovery;
@@ -45,8 +34,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
-import com.girbola.vlcj.VLCPlayerController;
 import common.utils.date.SimpleDates;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -63,6 +50,17 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.girbola.messages.Messages.sprintf;
 
 public class Main extends Application {
 

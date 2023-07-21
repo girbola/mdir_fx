@@ -1,7 +1,5 @@
 package com.girbola.controllers.main;
 
-import java.sql.Connection;
-
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -9,9 +7,10 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
+
+import java.sql.Connection;
 
 public class SaveTablesToDatabases extends Task<Integer> {
 

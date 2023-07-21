@@ -1,7 +1,6 @@
 package com.girbola;
 
 import com.girbola.messages.Messages;
-
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 

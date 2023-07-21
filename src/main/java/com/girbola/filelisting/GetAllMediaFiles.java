@@ -6,14 +6,9 @@
  */
 package com.girbola.filelisting;
 
-import static com.girbola.messages.Messages.sprintf;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
-/**
- *
- * @author Marko
- */
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -22,8 +17,9 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
+import static com.girbola.messages.Messages.sprintf;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 /**
  * Get all possible media files under given folder
  * @author marko_000

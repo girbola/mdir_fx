@@ -6,20 +6,19 @@
  */
 package com.girbola.controllers.main;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
 
 public class SelectedFolderScanner {
 

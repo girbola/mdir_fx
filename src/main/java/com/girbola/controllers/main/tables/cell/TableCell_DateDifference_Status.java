@@ -8,7 +8,6 @@ package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
 

@@ -6,29 +6,12 @@
  */
 package com.girbola.controllers.importimages;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.datefixer.TimeControl;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SqliteConnection;
-
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -41,6 +24,18 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.ScrollPane;
 import javafx.util.Callback;
 import javafx.util.StringConverter;
+
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

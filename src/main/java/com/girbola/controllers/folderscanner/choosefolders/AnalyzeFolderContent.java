@@ -6,35 +6,23 @@
  */
 package com.girbola.controllers.folderscanner.choosefolders;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import com.girbola.controllers.folderscanner.FolderInfoTable;
 import com.girbola.controllers.folderscanner.FolderScanner_Methods;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
-import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.filelisting.ValidatePathUtils;
-import com.girbola.sql.SQL_Utils;
-
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

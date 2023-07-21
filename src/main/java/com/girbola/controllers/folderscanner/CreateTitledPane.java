@@ -6,10 +6,6 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import static com.girbola.controllers.folderscanner.FolderScanner_Methods.titledPaneExists;
-
-import java.nio.file.Path;
-import java.util.List;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -21,6 +17,11 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.girbola.controllers.folderscanner.FolderScanner_Methods.titledPaneExists;
 
 /**
  *

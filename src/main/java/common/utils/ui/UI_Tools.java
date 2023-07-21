@@ -6,13 +6,7 @@
  */
 package common.utils.ui;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.misc.Misc.getLineNumber;
-
-import java.util.Set;
-
 import com.girbola.configuration.GUIPrefs;
-
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -23,6 +17,11 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.RowConstraints;
+
+import java.util.Set;
+
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.misc.Misc.getLineNumber;
 
 /**
  *

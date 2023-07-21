@@ -6,7 +6,6 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;

@@ -6,25 +6,16 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.ContextMenu;
@@ -34,6 +25,12 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
 
 public class AddToGridPane2 extends Task<Integer> {
 

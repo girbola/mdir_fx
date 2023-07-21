@@ -6,10 +6,10 @@
  */
 package com.girbola.configuration.xml;
 
+import com.girbola.controllers.main.tables.FolderInfo;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.girbola.controllers.main.tables.FolderInfo;
 
 /**
  *

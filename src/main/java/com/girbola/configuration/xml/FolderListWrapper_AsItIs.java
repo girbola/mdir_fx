@@ -4,12 +4,12 @@
  */
 package com.girbola.configuration.xml;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.girbola.controllers.main.tables.FolderInfo;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.girbola.controllers.main.tables.FolderInfo;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

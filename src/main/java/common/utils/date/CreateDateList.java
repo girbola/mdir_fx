@@ -1,13 +1,13 @@
 package common.utils.date;
 
-import static com.girbola.Main.simpleDates;
+import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.fileinfo.FileInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.fileinfo.FileInfo;
+import static com.girbola.Main.simpleDates;
 
 public class CreateDateList {
 

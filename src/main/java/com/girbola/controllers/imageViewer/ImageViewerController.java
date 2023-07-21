@@ -6,19 +6,10 @@
  */
 package com.girbola.controllers.imageViewer;
 
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.rotate.Rotate;
-
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -39,6 +30,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 public class ImageViewerController {
 

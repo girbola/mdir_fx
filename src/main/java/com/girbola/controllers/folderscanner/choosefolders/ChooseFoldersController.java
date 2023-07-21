@@ -6,24 +6,9 @@
  */
 package com.girbola.controllers.folderscanner.choosefolders;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.attribute.DosFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.girbola.controllers.folderscanner.Model_folderScanner;
-import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.SelectedFolderScanner;
 import com.girbola.filelisting.ValidatePathUtils;
-
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -39,6 +24,19 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.DosFileAttributes;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  * FXML Controller class

@@ -7,7 +7,7 @@
 package common.media;
 
 import common.utils.FileNameParseUtils;
-import static common.utils.FileUtils.supportedVideo;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetadataDateTaken;
+import static common.utils.FileUtils.supportedVideo;
 
 /**
  *

@@ -1,14 +1,13 @@
 package com.girbola.controllers.importimages;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import common.utils.ui.UI_Tools;
 import javafx.scene.control.ScrollPane;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RowMaxCounter {
 

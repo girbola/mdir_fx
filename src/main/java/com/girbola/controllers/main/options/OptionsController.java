@@ -6,20 +6,10 @@
  */
 package com.girbola.controllers.main.options;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
-
-import java.io.File;
-import java.nio.file.Files;
-
 import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.configuration.VLCJDiscovery;
-import com.girbola.controllers.main.Model_main;
 import com.girbola.messages.Messages;
-
 import common.utils.OSHI_Utils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +18,14 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+
+import java.io.File;
+import java.nio.file.Files;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.messages.Messages.warningText;
 
 public class OptionsController {
 

@@ -6,15 +6,15 @@
  */
 package common.media;
 
-import static com.girbola.messages.Messages.sprintf;
-import static common.utils.FileUtils.supportedVideo;
+import common.utils.FileNameParseUtils;
+import common.utils.FileUtils;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import common.utils.FileNameParseUtils;
-import common.utils.FileUtils;
+import static com.girbola.messages.Messages.sprintf;
+import static common.utils.FileUtils.supportedVideo;
 
 public class VideoDateFinder {
 

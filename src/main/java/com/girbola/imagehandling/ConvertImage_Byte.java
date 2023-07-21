@@ -6,19 +6,17 @@
  */
 package com.girbola.imagehandling;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.fileinfo.ThumbInfo;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.concurrent.Task;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.io.ByteArrayInputStream;
 import java.nio.file.Path;
 
-import com.girbola.fileinfo.ThumbInfo;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import common.utils.FileUtils;
-import javafx.concurrent.Task;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

@@ -7,7 +7,9 @@
 
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.girbola.Main;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

@@ -6,22 +6,21 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.concurrency.ConcurrencyUtils.exec;
-import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.nio.file.Path;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
-
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
+
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.girbola.concurrency.ConcurrencyUtils.exec;
+import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

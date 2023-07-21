@@ -6,7 +6,7 @@
  */
 package common.utils;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.messages.Messages;
 
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -16,7 +16,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-import com.girbola.messages.Messages;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

@@ -1,7 +1,6 @@
 package com.girbola.fxml.conflicttableview;
 
 import com.girbola.fileinfo.FileInfo;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 

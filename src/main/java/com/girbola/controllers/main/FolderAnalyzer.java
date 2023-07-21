@@ -6,7 +6,9 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import javafx.collections.ObservableList;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,10 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.fileinfo.FileInfo;
-
-import javafx.collections.ObservableList;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

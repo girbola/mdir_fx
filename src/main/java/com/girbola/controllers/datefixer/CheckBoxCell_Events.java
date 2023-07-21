@@ -6,15 +6,9 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -25,6 +19,11 @@ import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.layout.VBox;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

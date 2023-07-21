@@ -1,13 +1,8 @@
 package com.girbola.controllers.main;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.events.GUI_Events;
 import com.girbola.messages.Messages;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -16,6 +11,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class EditingCell extends TableCell<FolderInfo, String> {
 	private TextField textField;

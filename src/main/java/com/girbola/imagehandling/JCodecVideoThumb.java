@@ -1,27 +1,21 @@
 package com.girbola.imagehandling;
 
+import com.girbola.Main;
+import com.girbola.imagehandling.jcodec.AWTUtil;
+import com.girbola.messages.Messages;
+import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.jcodec.api.FrameGrab;
+import org.jcodec.common.*;
+import org.jcodec.common.io.NIOUtils;
+import org.jcodec.common.model.Picture;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.jcodec.api.FrameGrab;
-import org.jcodec.common.Demuxer;
-import org.jcodec.common.DemuxerTrack;
-import org.jcodec.common.DemuxerTrackMeta;
-import org.jcodec.common.Format;
-import org.jcodec.common.JCodecUtil;
-import org.jcodec.common.io.NIOUtils;
-import org.jcodec.common.model.Picture;
-
-import com.girbola.Main;
-import com.girbola.imagehandling.jcodec.AWTUtil;
-import com.girbola.messages.Messages;
-
-import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 
 @Slf4j	
 public class JCodecVideoThumb {

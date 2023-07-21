@@ -7,8 +7,6 @@
 package com.girbola.controllers.importimages;
 
 import com.girbola.messages.Messages;
-
-//import com.sun.javafx.scene.control.skin.ComboBoxListViewSkin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;

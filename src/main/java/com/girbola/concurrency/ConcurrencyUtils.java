@@ -6,11 +6,11 @@
  */
 package com.girbola.concurrency;
 
-import static com.girbola.messages.Messages.sprintf;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

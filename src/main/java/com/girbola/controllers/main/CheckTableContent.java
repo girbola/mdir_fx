@@ -1,18 +1,17 @@
 package com.girbola.controllers.main;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CheckTableContent {
 	private TableView<FolderInfo> table;

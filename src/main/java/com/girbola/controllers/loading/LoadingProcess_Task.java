@@ -6,18 +6,9 @@
  */
 package com.girbola.controllers.loading;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -36,6 +27,14 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.util.Duration;
+
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 public class LoadingProcess_Task {
 

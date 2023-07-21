@@ -1,14 +1,13 @@
 package com.girbola.fxml.operate;
 
+import com.girbola.messages.Messages;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+
 import java.time.LocalTime;
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import com.girbola.messages.Messages;
-
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
 
 public class CopyBasic_Values {
 

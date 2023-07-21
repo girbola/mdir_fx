@@ -6,16 +6,10 @@ package com.girbola.filelisting;
 @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
 */
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.misc.Misc.getLineNumber;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.TERMINATE;
+import com.girbola.Main;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
-/**
-*
-* @author Marko
-*/
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -25,9 +19,11 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.girbola.Main;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
+import static java.nio.file.FileVisitResult.CONTINUE;
+import static java.nio.file.FileVisitResult.TERMINATE;
 
 public class SubFolders {
 

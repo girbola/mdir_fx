@@ -6,9 +6,34 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.imagehandling.ImageHandling.handleImageThumb;
-import static com.girbola.imagehandling.ImageHandling.handleRawImageThumb;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.configuration.GUIPrefs;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.ThumbInfo;
+import com.girbola.imagehandling.ConvertImage_Byte;
+import com.girbola.imagehandling.ConvertVideo_Byte;
+import com.girbola.imagehandling.ImageHandling;
+import com.girbola.imagehandling.VideoThumbMaker;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import com.girbola.rotate.Rotate;
+import com.girbola.sql.SQL_Utils;
+import common.utils.FileUtils;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.geometry.Bounds;
+import javafx.scene.Node;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TitledPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 
 import java.awt.image.BufferedImage;
 import java.nio.file.Files;
@@ -26,36 +51,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.girbola.Main;
-import com.girbola.configuration.GUIPrefs;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.ThumbInfo;
-import com.girbola.imagehandling.ConvertImage_Byte;
-import com.girbola.imagehandling.ConvertVideo_Byte;
-import com.girbola.imagehandling.ImageHandling;
-import com.girbola.imagehandling.VideoThumbMaker;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import com.girbola.rotate.Rotate;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
-
-import common.utils.FileUtils;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
+import static com.girbola.imagehandling.ImageHandling.handleImageThumb;
+import static com.girbola.imagehandling.ImageHandling.handleRawImageThumb;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

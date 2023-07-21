@@ -6,16 +6,15 @@
  */
 package com.girbola.controllers.main;
 
+import com.girbola.filelisting.ValidatePathUtils;
+import javafx.concurrent.Task;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.girbola.filelisting.ValidatePathUtils;
-
-import javafx.concurrent.Task;
 
 /**
  *

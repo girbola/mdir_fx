@@ -1,17 +1,5 @@
 package com.girbola.sql;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
@@ -22,6 +10,14 @@ import com.girbola.drive.DriveInfo;
 import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SQL_Utils extends FolderInfo_SQL {
 	final private static String ERROR = SQL_Utils.class.getSimpleName();

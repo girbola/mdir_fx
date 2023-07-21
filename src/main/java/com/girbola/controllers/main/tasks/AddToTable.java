@@ -6,17 +6,6 @@
  */
 package com.girbola.controllers.main.tasks;
 
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.Model_main;
@@ -26,10 +15,20 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
+
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

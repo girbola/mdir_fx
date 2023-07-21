@@ -1,7 +1,5 @@
 package com.girbola.sql;
 
-import java.nio.file.Path;
-
 public class FolderState {
 	private String path;
 	private String tableType;

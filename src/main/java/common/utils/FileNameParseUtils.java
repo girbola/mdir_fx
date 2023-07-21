@@ -6,6 +6,8 @@
  */
 package common.utils;
 
+import com.girbola.messages.Messages;
+
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,8 +15,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import com.girbola.messages.Messages;
 
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;

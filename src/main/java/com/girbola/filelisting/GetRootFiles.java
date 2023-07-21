@@ -6,16 +6,10 @@
  */
 package com.girbola.filelisting;
 
-import static com.girbola.messages.Messages.sprintf;
-import static java.nio.file.FileVisitResult.CONTINUE;
-import static java.nio.file.FileVisitResult.SKIP_SIBLINGS;
-import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
-import static java.nio.file.FileVisitResult.TERMINATE;
+import com.girbola.Main;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
-/**
- *
- * @author Marko Lokka
- */
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -27,9 +21,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.girbola.Main;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
+import static com.girbola.messages.Messages.sprintf;
+import static java.nio.file.FileVisitResult.*;
 
 /**
  * List only media files in root folder. Subfolder scan will be ignored 

@@ -1,15 +1,14 @@
 package com.girbola.fileinfo;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-
+import com.girbola.messages.Messages;
 import common.utils.FileInfoTestUtil;
 import lombok.extern.java.Log;
 import org.junit.jupiter.api.Test;
 
-import com.girbola.messages.Messages;
+import java.io.IOException;
+import java.nio.file.Paths;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Log
 class FileInfo_UtilsTest {

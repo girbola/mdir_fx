@@ -1,5 +1,14 @@
 package com.girbola;
 
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
+import com.girbola.sql.*;
+import javafx.concurrent.Task;
+
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,20 +17,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.FolderInfo_SQL;
-import com.girbola.sql.FolderState;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
-
-import javafx.concurrent.Task;
 
 public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 	private Model_main model_main;

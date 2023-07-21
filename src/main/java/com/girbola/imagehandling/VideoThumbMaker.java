@@ -1,12 +1,7 @@
 package com.girbola.imagehandling;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.List;
-
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -23,6 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.OpenCVFrameGrabber;
+
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.List;
 
 @Slf4j
 public class VideoThumbMaker extends Task<List<BufferedImage>> {

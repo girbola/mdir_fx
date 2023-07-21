@@ -1,13 +1,5 @@
 package com.girbola.fxml.main.collect;
 
-import java.io.File;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
@@ -21,7 +13,6 @@ import com.girbola.fileinfo.FileInfo_Event;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
 import javafx.concurrent.Task;
@@ -29,12 +20,16 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Collect_DialogController {
 

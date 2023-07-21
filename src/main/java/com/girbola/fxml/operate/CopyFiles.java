@@ -6,26 +6,21 @@
  */
 package com.girbola.fxml.operate;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_operate;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

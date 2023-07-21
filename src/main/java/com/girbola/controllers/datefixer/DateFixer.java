@@ -6,16 +6,6 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -24,7 +14,6 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -41,6 +30,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
 
 public class DateFixer extends Task<Void> {
 

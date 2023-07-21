@@ -1,16 +1,15 @@
 package com.girbola.controllers.datefixer;
 
-import java.util.Iterator;
-
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
+
+import java.util.Iterator;
 
 public class SelectByTableModel extends Task<Boolean> {
 

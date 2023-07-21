@@ -1,10 +1,5 @@
 package com.girbola.controllers.main.tables.cell;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.Model_main;
@@ -14,11 +9,15 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.List;
 
 public class TableCell_Connected extends TableCell<FolderInfo,
 		Boolean> {

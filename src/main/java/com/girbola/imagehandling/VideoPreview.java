@@ -1,12 +1,12 @@
 package com.girbola.imagehandling;
 
-import java.awt.image.BufferedImage;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.awt.image.BufferedImage;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class VideoPreview {
 	private List<BufferedImage> buff_list;

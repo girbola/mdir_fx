@@ -1,14 +1,9 @@
 package com.girbola.fxml.move;
 
-import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +11,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class MoveController {
 

@@ -6,16 +6,9 @@
  */
 package com.girbola.imagehandling;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.awt.image.BufferedImage;
-import java.nio.file.Path;
-import java.util.concurrent.CountDownLatch;
-
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
@@ -24,6 +17,12 @@ import javafx.scene.image.ImageView;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
+
+import java.awt.image.BufferedImage;
+import java.nio.file.Path;
+import java.util.concurrent.CountDownLatch;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  * Converts video thumbnail using JCodec library

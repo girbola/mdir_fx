@@ -6,23 +6,17 @@
  */
 package com.girbola.drive;
 
-import java.io.File;
-import java.sql.Connection;
-
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.Model_folderScanner;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-
 import common.utils.OSHI_Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import oshi.SystemInfo;
-import oshi.hardware.HWDiskStore;
-import oshi.hardware.HWPartition;
-import oshi.hardware.HardwareAbstractionLayer;
+
+import java.io.File;
+import java.sql.Connection;
 
 public class DrivesListHandler {
 

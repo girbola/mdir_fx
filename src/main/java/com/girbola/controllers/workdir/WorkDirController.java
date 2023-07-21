@@ -6,28 +6,22 @@
  */
 package com.girbola.controllers.workdir;
 
-import java.io.File;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
-
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableCell;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
+
+import java.io.File;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class WorkDirController {
 

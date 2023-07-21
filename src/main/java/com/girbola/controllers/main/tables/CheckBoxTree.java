@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.main.tables;
 
+import com.girbola.fileinfo.BatchMap;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
@@ -13,8 +14,6 @@ import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.TableCell;
 
 import static com.girbola.messages.Messages.sprintf;
-
-import com.girbola.fileinfo.BatchMap;
 
 /**
  *

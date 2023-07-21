@@ -6,12 +6,43 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.simpleDates;
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
+import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.datefixer.DateFix_Utils.Field;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.fileinfo.ThumbInfo;
+import com.girbola.fileinfo.ThumbInfo_Utils;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
+import com.girbola.workdir.WorkDirHandler;
+import common.utils.Conversion;
+import common.utils.FileNameParseUtils;
+import common.utils.FileUtils;
+import common.utils.date.DateUtils;
+import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+import javafx.stage.Window;
+import javafx.stage.WindowEvent;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,54 +61,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.imageio.ImageIO;
-
-import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.datefixer.DateFix_Utils.Field;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
-import com.girbola.fileinfo.ThumbInfo;
-import com.girbola.fileinfo.ThumbInfo_Utils;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
-import com.girbola.workdir.WorkDirHandler;
-
-import common.utils.Conversion;
-import common.utils.FileNameParseUtils;
-import common.utils.FileUtils;
-import common.utils.date.DateUtils;
-import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.stage.WindowEvent;
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.simpleDates;
+import static com.girbola.messages.Messages.*;
 
 /**
  *

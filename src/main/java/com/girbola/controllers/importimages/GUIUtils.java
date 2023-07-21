@@ -1,13 +1,7 @@
 package com.girbola.controllers.importimages;
 
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.rotate.Rotate.rotate;
-
-import java.util.Collections;
-
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.fileinfo.FileInfo;
-
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -22,9 +16,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
+
+import java.util.Collections;
+
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.rotate.Rotate.rotate;
 
 public class GUIUtils {
 	private Model_importImages model_importImages;

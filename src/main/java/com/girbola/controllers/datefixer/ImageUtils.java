@@ -6,20 +6,12 @@
  */
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.imageViewer.ImageViewerController;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.vlcj.VLCPlayerController;
-
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -33,6 +25,13 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
+
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
 
 /**
  *

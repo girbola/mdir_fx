@@ -6,22 +6,21 @@
  */
 package com.girbola.controllers.main.tables.cell;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

@@ -6,7 +6,21 @@
  */
 package com.girbola.controllers.importimages;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import javafx.animation.Timeline;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -15,26 +29,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import javafx.animation.Timeline;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TitledPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import static com.girbola.messages.Messages.sprintf;
 
 public class ImportImagesController {
 

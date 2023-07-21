@@ -1,18 +1,18 @@
 package com.girbola.controllers.datefixer;
 
-import static com.girbola.Main.simpleDates;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-
 import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.DatePicker;
 import javafx.util.StringConverter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import static com.girbola.Main.simpleDates;
+import static com.girbola.messages.Messages.sprintf;
 
 public class DateFixerModel {
 	private TimeControl start_time = new TimeControl();

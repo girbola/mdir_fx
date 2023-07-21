@@ -10,7 +10,6 @@ import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.fxml.operate.CopyProcess_Properties;
 import com.girbola.messages.Messages;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;

@@ -6,41 +6,29 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.messages.Messages.sprintf;
-
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
-import com.girbola.controllers.importimages.GUIUtils;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.events.GUI_Events;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.ui.UI_Tools;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.stage.Screen;
+import javafx.scene.layout.*;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

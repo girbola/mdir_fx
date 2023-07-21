@@ -6,18 +6,13 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import static com.girbola.messages.Messages.sprintf;
-
-import java.io.File;
-import java.nio.file.Path;
-import java.util.List;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.TitledPane;
-import javafx.scene.control.TreeItem;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import java.nio.file.Path;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

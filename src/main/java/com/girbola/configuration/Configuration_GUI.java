@@ -6,13 +6,7 @@
  */
 package com.girbola.configuration;
 
-import com.girbola.messages.Messages;
-
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 
 /**
  * @author Marko Lokka

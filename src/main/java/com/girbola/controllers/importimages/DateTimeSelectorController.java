@@ -6,17 +6,8 @@
  */
 package com.girbola.controllers.importimages;
 
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.messages.Messages.sprintf;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-
-import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.misc.Misc;
-import com.girbola.workdir.WorkDirHandler;
-
 import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -25,18 +16,18 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+
+import static com.girbola.messages.Messages.errorSmth;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  * FXML Controller class

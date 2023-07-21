@@ -6,7 +6,8 @@
  */
 package com.girbola.controllers.importimages;
 
-import static com.girbola.Main.simpleDates;
+import com.girbola.fileinfo.FileInfo;
+import javafx.concurrent.Task;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -14,9 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.girbola.fileinfo.FileInfo;
-
-import javafx.concurrent.Task;
+import static com.girbola.Main.simpleDates;
 
 /**
  *	Returns a map 2020-08-29

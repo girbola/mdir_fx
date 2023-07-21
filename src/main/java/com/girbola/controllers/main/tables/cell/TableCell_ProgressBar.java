@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.main.tables.cell;
 
+import com.girbola.controllers.main.tables.FolderInfo;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
@@ -13,8 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.TextAlignment;
 
 import static com.girbola.messages.Messages.sprintf;
-
-import com.girbola.controllers.main.tables.FolderInfo;
 
 /**
  *

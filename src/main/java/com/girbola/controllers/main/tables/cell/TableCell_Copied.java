@@ -1,10 +1,8 @@
 package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
 import com.girbola.messages.Messages;
-
 import javafx.scene.control.TableCell;
 
 public class TableCell_Copied extends TableCell<FolderInfo, Integer> {

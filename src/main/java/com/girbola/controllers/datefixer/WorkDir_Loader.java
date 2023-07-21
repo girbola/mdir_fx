@@ -1,19 +1,18 @@
 package com.girbola.controllers.datefixer;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WorkDir_Loader {
 	private Path folder;

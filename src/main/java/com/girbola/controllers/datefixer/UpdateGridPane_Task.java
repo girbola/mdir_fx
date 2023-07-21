@@ -1,21 +1,16 @@
 package com.girbola.controllers.datefixer;
 
-import java.util.concurrent.CountDownLatch;
-
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcess_Task;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import java.util.concurrent.CountDownLatch;
 
 public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 

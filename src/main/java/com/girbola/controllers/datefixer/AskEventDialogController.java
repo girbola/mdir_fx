@@ -1,12 +1,5 @@
 package com.girbola.controllers.datefixer;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.girbola.Main;
 import com.girbola.Scene_NameType;
 import com.girbola.controllers.datefixer.ObservableHandler.ObservabeleListType;
@@ -18,7 +11,6 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-
 import common.utils.FileUtils;
 import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
@@ -30,6 +22,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AskEventDialogController {
 

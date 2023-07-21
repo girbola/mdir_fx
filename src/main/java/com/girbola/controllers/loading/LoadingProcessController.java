@@ -6,6 +6,8 @@
  */
 package com.girbola.controllers.loading;
 
+import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
@@ -22,9 +24,6 @@ import javafx.util.Duration;
 
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.messages.Messages.sprintf;
-
-import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
 
 /**
  * FXML Controller class

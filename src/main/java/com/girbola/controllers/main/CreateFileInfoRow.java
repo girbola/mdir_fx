@@ -6,8 +6,19 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
+import javafx.concurrent.Task;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TableView;
+import javafx.stage.Window;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,20 +26,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import com.girbola.Main;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-
-import javafx.concurrent.Task;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TableView;
-import javafx.stage.Window;
-import javafx.scene.control.ButtonBar.ButtonData;
+import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

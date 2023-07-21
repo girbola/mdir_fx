@@ -1,33 +1,22 @@
 package com.girbola.media.collector;
 
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.Events;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
+import common.utils.date.DateUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.TreeMap;
-
-import com.girbola.Main;
-import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.tables.Events;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-
-import common.utils.date.DateUtils;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 
 public class Collector {
 

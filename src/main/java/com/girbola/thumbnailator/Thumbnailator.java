@@ -1,10 +1,10 @@
 package com.girbola.thumbnailator;
 
+import net.coobird.thumbnailator.Thumbnails;
+
 import java.awt.image.BufferedImage;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import net.coobird.thumbnailator.Thumbnails;
 
 /**
  * Thumbnailator class is using thumbnailator (https://github.com/coobird/thumbnailator)  library to make thumbnails

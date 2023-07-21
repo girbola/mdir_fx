@@ -6,13 +6,12 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.messages.Messages.sprintf;
-
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.messages.Messages;
-
 import javafx.application.Platform;
 import javafx.scene.control.TableView;
+
+import static com.girbola.messages.Messages.sprintf;
 
 /**
  *

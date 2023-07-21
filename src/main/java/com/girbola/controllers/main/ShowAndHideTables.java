@@ -1,14 +1,7 @@
 package com.girbola.controllers.main;
 
-import com.girbola.configuration.GUIPrefs;
-import com.girbola.controllers.datefixer.GUI_Methods;
-import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.messages.Messages;
-
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
 
 public class ShowAndHideTables {
 

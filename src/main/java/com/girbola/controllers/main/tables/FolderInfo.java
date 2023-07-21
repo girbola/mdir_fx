@@ -6,24 +6,14 @@
  */
 package com.girbola.controllers.main.tables;
 
-import static com.girbola.Main.simpleDates;
+import com.girbola.fileinfo.FileInfo;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.*;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import com.girbola.fileinfo.FileInfo;
-
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
+import static com.girbola.Main.simpleDates;
 
 /**
  *

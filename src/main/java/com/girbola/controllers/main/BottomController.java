@@ -6,11 +6,31 @@
  */
 package com.girbola.controllers.main;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.messages.Messages.warningText;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import com.girbola.Main;
+import com.girbola.controllers.folderscanner.FolderScannerController;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.workdir.WorkDirController;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
+import com.girbola.media.collector.Collector;
+import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
+import com.girbola.misc.Misc;
+import common.utils.Conversion;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,38 +41,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.girbola.Main;
-import com.girbola.controllers.folderscanner.FolderScannerController;
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
-import com.girbola.media.collector.Collector;
-import com.girbola.messages.Messages;
-import com.girbola.messages.html.HTMLClass;
-import com.girbola.misc.Misc;
-
-import common.utils.Conversion;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.layout.HBox;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.messages.Messages.warningText;
 
 public class BottomController {
 

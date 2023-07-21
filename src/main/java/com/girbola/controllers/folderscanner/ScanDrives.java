@@ -1,6 +1,21 @@
 package com.girbola.controllers.folderscanner;
 
-import static com.girbola.messages.Messages.sprintf;
+import com.girbola.Main;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.drive.DriveInfo;
+import com.girbola.drive.DrivesListHandler;
+import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
+import common.utils.OSHI_Utils;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
+import javafx.scene.control.CheckBoxTreeItem;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,23 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DrivesListHandler;
-import com.girbola.filelisting.ValidatePathUtils;
-import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-
-import common.utils.OSHI_Utils;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
-import javafx.scene.control.CheckBoxTreeItem;
-import javafx.util.Duration;
+import static com.girbola.messages.Messages.sprintf;
 
 public class ScanDrives {
 

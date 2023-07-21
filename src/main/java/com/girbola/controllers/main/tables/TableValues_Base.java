@@ -6,17 +6,11 @@
  */
 package com.girbola.controllers.main.tables;
 
+import com.girbola.fileinfo.FileInfo;
+import javafx.beans.property.*;
+
 import java.util.List;
 import java.util.Map;
-
-import com.girbola.fileinfo.FileInfo;
-
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleLongProperty;
-import javafx.beans.property.SimpleStringProperty;
 
 /**
  *

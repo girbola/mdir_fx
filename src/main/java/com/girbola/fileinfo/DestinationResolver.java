@@ -1,16 +1,15 @@
 package com.girbola.fileinfo;
 
+import com.girbola.Main;
+import com.girbola.messages.Messages;
+import common.utils.Conversion;
+import common.utils.FileUtils;
+import common.utils.date.DateUtils;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-
-import com.girbola.Main;
-import com.girbola.messages.Messages;
-
-import common.utils.Conversion;
-import common.utils.FileUtils;
-import common.utils.date.DateUtils;
 
 public class DestinationResolver {
 	/**

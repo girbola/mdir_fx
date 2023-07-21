@@ -2,7 +2,6 @@ package com.girbola.controllers.main.tables;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
