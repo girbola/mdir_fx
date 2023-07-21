@@ -8,6 +8,8 @@ package com.girbola.controllers.main.tables;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.main.CleanTableView;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.UpdateFolderInfoContent;
@@ -56,6 +58,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static com.girbola.Main.*;
+import static com.girbola.concurrency.ConcurrencyUtils.exec;
+import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -732,34 +736,25 @@ public class TableUtils {
             tables.getAsItIs_TableStatistic().setTotalFilesSize(tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
         }
 
-        removeTableViewEmptyFolderInfos(tables);
+//        removeTableViewEmptyFolderInfos(tables);
         refreshAllTableContent(tables);
     }
 
     public static void removeTableViewEmptyFolderInfos(Tables tables) {
-        Task<Void> removeEmptyFoldersFromTableViews = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
-                removeTableViewsEmptyFolderInfo(tables.getSorted_table());
-                removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
-                return null;
-            }
-        };
-        removeEmptyFoldersFromTableViews.setOnSucceeded(e -> {
-            log.info("Removing empty folders from tables is done");
-        });
+//        removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
+//        removeTableViewsEmptyFolderInfo(tables.getSorted_table());
+//        removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
+        ConcurrencyUtils.initSingleExecutionService();
 
-        removeEmptyFoldersFromTableViews.setOnCancelled(e -> {
-            log.info("Removing empty folders from tables is cancelled");
-        });
+        Task<Void> removeSortItEmptyFoldersFromTableViews = new CleanTableView(tables.getSortIt_table());
+        exec[getExecCounter()].submit(removeSortItEmptyFoldersFromTableViews);
 
-        removeEmptyFoldersFromTableViews.setOnFailed(e -> {
-            log.info("Removing empty folders from tables is done");
-        });
+        Task<Void> removeSortedEmptyFoldersFromTableViews = new CleanTableView(tables.getSorted_table());
+        exec[getExecCounter()].submit(removeSortedEmptyFoldersFromTableViews);
 
-        Thread thread = new Thread(removeEmptyFoldersFromTableViews, "removeEmptyFoldersFromTableViewsThread");
-        thread.start();
+        Task<Void> removeAsItIsEmptyFoldersFromTableViews = new CleanTableView(tables.getAsItIs_table());
+        exec[getExecCounter()].submit(removeAsItIsEmptyFoldersFromTableViews);
+
 
 
 //        Platform.runLater(() -> {

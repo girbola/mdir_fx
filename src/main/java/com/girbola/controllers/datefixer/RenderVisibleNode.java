@@ -135,7 +135,6 @@ public class RenderVisibleNode {
 				t.setName("single thread");
 				t.setDaemon(true);
 				return t;
-
 			});
 			List<Task<?>> byte_List = new ArrayList<>();
 			List<Task<?>> needToConvert_Image_list = new ArrayList<>();

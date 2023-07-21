@@ -37,7 +37,6 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 	private final String ERROR = CheckBoxCell_Dates.class.getSimpleName();
 	private CheckBox checkBox;
 	private Model_datefix model_DateFix;
-
 	public CheckBoxCell_Dates(Model_datefix model_DateFix) {
 		this.model_DateFix = model_DateFix;
 	}

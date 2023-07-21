@@ -47,7 +47,7 @@ public class Populate {
 
 	public Populate(Model_main model) {
 		this.model_main = model;
-		ConcurrencyUtils.initExecutionService();
+		ConcurrencyUtils.initSingleExecutionService();
 	}
 
 	public void populateTables_FolderScanner_list(Window owner) {

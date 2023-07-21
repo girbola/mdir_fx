@@ -29,7 +29,7 @@ public class ConcurrencyUtils {
     	return exec[execCounter.get()];
     }
 
-    public static void initExecutionService() {
+    public static void initSingleExecutionService() {
         stopExecThreadNow();
     	execCounter.incrementAndGet();
         sprintf("========NEW initExecutionService initializing execThreads: " + getExecCounter());

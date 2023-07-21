@@ -26,7 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.girbola.concurrency.ConcurrencyUtils.initExecutionService;
+import static com.girbola.concurrency.ConcurrencyUtils.initSingleExecutionService;
 import static com.girbola.messages.Messages.sprintf;
 
 public class FolderScannerController {
@@ -150,7 +150,7 @@ public class FolderScannerController {
 		Main.setProcessCancelled(false);
 
 		this.model_main = aModel_main;
-		initExecutionService();
+		initSingleExecutionService();
 
 		drives_rootItem = new CheckBoxTreeItem<>();
 		drives_rootItem.setExpanded(true);
