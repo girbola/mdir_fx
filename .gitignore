@@ -7,7 +7,7 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 *.log
 *.settings*
 *.zip
-*.idea
+*.idea*
 *.project
 /bin/
 *null*
