@@ -1,7 +1,7 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.controllers.datefixer.ObservableHandler.ObservabeleListType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
@@ -119,7 +119,7 @@ public class AskEventDialogController {
 		askStage.close();
 
 		Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main,
-				Scene_NameType.DATEFIXER.getType());
+				SceneNameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 			Messages.sprintf("operateFiles Succeeded");
 			UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());

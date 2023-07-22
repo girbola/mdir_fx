@@ -9,7 +9,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcess_Task;
@@ -1092,7 +1092,7 @@ public class TableController {
 
 		}
 
-		Task<Boolean> operate = new OperateFiles(list, true, model_main, Scene_NameType.MAIN.getType());
+		Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
 
 		operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override

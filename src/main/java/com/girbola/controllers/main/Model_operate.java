@@ -7,7 +7,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.fxml.operate.CopyProcess_Properties;
 import com.girbola.messages.Messages;
 import javafx.animation.KeyFrame;
@@ -117,7 +117,7 @@ public class Model_operate {
 
 	public void doneButton(String scene_NameType, boolean close) {
 
-		if (scene_NameType.equals(Scene_NameType.DATEFIXER.getType())) {
+		if (scene_NameType.equals(SceneNameType.DATEFIXER.getType())) {
 			Messages.sprintf("done byn datefix");
 			Platform.runLater(new Runnable() {
 				@Override
@@ -129,7 +129,7 @@ public class Model_operate {
 
 				}
 			});
-		} else if (scene_NameType.equals(Scene_NameType.MAIN.getType())) {
+		} else if (scene_NameType.equals(SceneNameType.MAIN.getType())) {
 			Messages.sprintf("done byn MAIN");
 			Platform.runLater(new Runnable() {
 				@Override

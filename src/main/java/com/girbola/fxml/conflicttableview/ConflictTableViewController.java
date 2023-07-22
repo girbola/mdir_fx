@@ -1,7 +1,7 @@
 package com.girbola.fxml.conflicttableview;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
@@ -57,7 +57,7 @@ public class ConflictTableViewController {
 	@FXML
 	private void copy_btn_action(ActionEvent event) {
 
-		Task<Boolean> task = new OperateFiles(list, true, model_Main, Scene_NameType.MAIN.getType());
+		Task<Boolean> task = new OperateFiles(list, true, model_Main, SceneNameType.MAIN.getType());
 		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 
 			@Override

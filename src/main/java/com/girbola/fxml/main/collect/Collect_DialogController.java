@@ -1,7 +1,7 @@
 package com.girbola.fxml.main.collect;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
@@ -239,7 +239,7 @@ public class Collect_DialogController {
 			list.addAll(folderInfo.getFileInfoList());
 		}
 
-		Task<Boolean> operate = new OperateFiles(list, true, model_main, Scene_NameType.MAIN.getType());
+		Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
 
 		operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override

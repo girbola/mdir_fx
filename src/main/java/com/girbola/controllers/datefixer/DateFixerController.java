@@ -7,7 +7,7 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.loading.LoadingProcess_Task;
 import com.girbola.controllers.main.ImportImages;
@@ -391,7 +391,7 @@ public class DateFixerController {
 		}
 
 		Task<Boolean> operateFiles = new OperateFiles(fileInfo_list, true, model_main,
-				Scene_NameType.DATEFIXER.getType());
+				SceneNameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 //			operateFiles.get
 			Messages.sprintf("operateFiles Succeeded");
@@ -1144,7 +1144,7 @@ public class DateFixerController {
 		}
 
 		Task<Boolean> operateFiles = new OperateFiles(fileInfo_list, true, model_main,
-				Scene_NameType.DATEFIXER.getType());
+				SceneNameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 //			operateFiles.get
 			Messages.sprintf("operateFiles Succeeded");
