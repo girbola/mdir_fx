@@ -636,30 +636,25 @@ public class TableUtils {
     }
 
     public static void refreshAllTableContent(Tables tables) {
+        ConcurrencyUtils.initSingleExecutionService();
 
-        Task<Void> refreshTables = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                refreshTableContent(tables.getAsItIs_table());
-                refreshTableContent(tables.getSorted_table());
-                refreshTableContent(tables.getSortIt_table());
-                return null;
-            }
-        };
-        Thread refresh_th = new Thread(refreshTables, "RefreshTables thread");
+        Task<Void> refreshSortItTableTask = new RefreshTableContent(tables.getSortIt_table());
+        Thread refreshSortItThread = new Thread(refreshSortItTableTask, "refreshSortItThread");
+        exec[ConcurrencyUtils.getExecCounter()].submit(refreshSortItThread);
 
-        refreshTables.setOnSucceeded(event -> {
-            Platform.runLater(() -> {
-                calculateTableViewsStatistic(tables);
-            });
-        });
-        refreshTables.setOnCancelled(event -> {
-            Messages.sprintf("Refreshing tables cancelled");
-        });
-        refreshTables.setOnFailed(event -> {
-            Messages.sprintf("Refreshing tables cancelled: " + event.getSource().getMessage());
-        });
-        refresh_th.run();
+        Task<Void> refreshSortedTableTask = new RefreshTableContent(tables.getSorted_table());
+        Thread refreshSortedThread = new Thread(refreshSortedTableTask, "refreshSortedThread");
+        exec[ConcurrencyUtils.getExecCounter()].submit(refreshSortedThread);
+
+        Task<Void> refreshAsItIsTableTask = new RefreshTableContent(tables.getAsItIs_table());
+        Thread refreshAsItIsThread = new Thread(refreshAsItIsTableTask, "refreshAsItIsThread");
+        exec[ConcurrencyUtils.getExecCounter()].submit(refreshAsItIsThread);
+
+        Task<Void> calculateTableViewsStatisticTask = new CalculateTableViewsStatistic(tables);
+        Thread calculateTableViewsStatisticThread = new Thread(calculateTableViewsStatisticTask, "calculateTableViewsStatisticTask");
+        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticThread);
+
+
     }
 
     public static void clearTablesContents(Tables tables) {
@@ -706,17 +701,7 @@ public class TableUtils {
     }
 
     public static void calculateTableViewsStatistic(Tables tables) {
-        tables.getSortit_TableStatistic().setTotalFiles(0);
-        tables.getSorted_TableStatistic().setTotalFiles(0);
-        tables.getAsItIs_TableStatistic().setTotalFiles(0);
-
-        tables.getSortit_TableStatistic().setTotalFilesCopied(0);
-        tables.getSorted_TableStatistic().setTotalFilesCopied(0);
-        tables.getAsItIs_TableStatistic().setTotalFilesCopied(0);
-
-        tables.getSortit_TableStatistic().setTotalFilesSize(0);
-        tables.getSorted_TableStatistic().setTotalFilesSize(0);
-        tables.getAsItIs_TableStatistic().setTotalFilesSize(0);
+        CalculateTableViewsStatistic.resetStatistics(tables);
 
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
             tables.getSortit_TableStatistic().setTotalFiles(tables.getSortit_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());

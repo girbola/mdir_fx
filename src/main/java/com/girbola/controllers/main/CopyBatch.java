@@ -1,6 +1,6 @@
 package com.girbola.controllers.main;
 
-import com.girbola.Scene_NameType;
+import com.girbola.SceneNameType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
@@ -37,7 +37,7 @@ public class CopyBatch {
 		filesReadyToCopy.addAll(sortIt_TableContent.getFileInfoList());
 
 		if (!filesReadyToCopy.isEmpty()) {
-			Task<Boolean> task = new OperateFiles(filesReadyToCopy, true, model_Main, Scene_NameType.MAIN.getType());
+			Task<Boolean> task = new OperateFiles(filesReadyToCopy, true, model_Main, SceneNameType.MAIN.getType());
 			task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 
 				@Override

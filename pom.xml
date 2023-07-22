@@ -216,6 +216,7 @@
                     <include>**/*.png</include>
                 </includes>
             </resource>
+
         </resources>
     </build>
 </project>

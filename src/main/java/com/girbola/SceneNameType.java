@@ -1,10 +1,10 @@
 package com.girbola;
 
-public enum Scene_NameType {
+public enum SceneNameType {
     MAIN("main"), DATEFIXER("datefixer"), LOADING("loading");
     private String type;
 
-    Scene_NameType(String type) {
+    SceneNameType(String type) {
         this.type = type;
     }
 
