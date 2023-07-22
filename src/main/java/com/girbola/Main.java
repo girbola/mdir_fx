@@ -94,19 +94,18 @@ public class Main extends Application {
     private Scene primaryScene;
     private LoadingProcess_Task lpt;
     private Task<Void> mainTask;
-
+    private StageControl stageControl ;
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        primaryStage.setUserData(model_main);
-        try {
-            sprintf("Program starting: " + lang + " country: " + country);
-            locale = new Locale(lang, country);
-            System.out.println("Dir is: " + new File("bundle/lang").getAbsolutePath());
+        stageControl = new StageControl(model_main, primaryStage);
 
+        try {
+            locale = new Locale(lang, country);
             bundle = ResourceBundle.getBundle("bundle/lang", locale);
         } catch (Exception e) {
             e.printStackTrace();
+            Messages.sprintfError("Something went wrong: " + e.getMessage());
         }
         mainTask = new Task<Void>() {
             @Override
@@ -148,27 +147,9 @@ public class Main extends Application {
                 MainController mainController = (MainController) main_loader.getController();
                 mainController.initialize(model_main);
 
-                primaryStage.setTitle(conf.getProgramName());
-
-                primaryStage.setMinWidth(800);
-                primaryStage.setMinHeight(600);
-                primaryStage.setX(Main.conf.getWindowStartPosX());
-                primaryStage.setY(Main.conf.getWindowStartPosY());
-                primaryStage.setWidth(Main.conf.getWindowStartWidth());
-                primaryStage.setHeight(Main.conf.getWindowStartHeight());
-
                 scene_Switcher.setWindow(primaryStage);
                 scene_Switcher.setScene_main(primaryScene);
 
-                primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                                        Boolean newValue) {
-                        Messages.sprintf("stage fullScreen changed: " + newValue);
-                    }
-                });
-                // stage.setMaximized(true);
-                primaryStage.setOnCloseRequest(model_main.dontExit);
 
                 Platform.runLater(() -> {
                     primaryStage.setScene(primaryScene);
@@ -244,53 +225,6 @@ public class Main extends Application {
                                 VLCJDiscovery.initVlc();
                             }
 
-                            primaryStage.xProperty().addListener(new ChangeListener<Number>() {
-
-                                @Override
-                                public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                                    Number newValue) {
-                                    if (conf != null) {
-                                        conf.setWindowStartPosX((double) newValue);
-                                        Messages.sprintf("windowstartposX: " + newValue);
-                                    }
-                                }
-                            });
-
-                            primaryStage.yProperty().addListener(new ChangeListener<Number>() {
-
-                                @Override
-                                public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                                    Number newValue) {
-                                    if (conf != null) {
-                                        conf.setWindowStartPosY((double) newValue);
-                                        Messages.sprintf("windowstartposY: " + newValue);
-                                    }
-                                }
-                            });
-
-                            primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
-
-                                @Override
-                                public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                                    Number newValue) {
-                                    if (conf != null) {
-                                        conf.setWindowStartWidth((double) newValue);
-                                        Messages.sprintf("setWindowStartWidth: " + newValue);
-                                    }
-                                }
-                            });
-
-                            primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
-
-                                @Override
-                                public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                                    Number newValue) {
-                                    if (conf != null) {
-                                        conf.setWindowStartHeight((double) newValue);
-                                        Messages.sprintf("setWindowStartWidth: " + newValue);
-                                    }
-                                }
-                            });
                             TableUtils.calculateTableViewsStatistic(model_main.tables());
                             getMain_stage().maximizedProperty().addListener(new ChangeListener<Boolean>() {
 

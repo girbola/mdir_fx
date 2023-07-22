@@ -206,17 +206,11 @@
                 <includes>
                     <include>**/*.fxml</include>
                     <include>**/*.css</include>
-                    <include>**/*.jpg</include>
-                    <include>**/*.png</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/java/resource/img</directory>
-                <includes>
                     <include>**/*.jp*g</include>
                     <include>**/*.png</include>
                 </includes>
             </resource>
+
         </resources>
     </build>
 </project>

@@ -20,9 +20,9 @@ public class TableStatistic {
 
 	/**
 	 * Calculates statistic from tableview
-	 * @param totalFilesCopied_lbl
-	 * @param totalFilesSize_lbl
-	 * @param totalFilesTotal_lbl
+	 * @param aTotalFilesCopied_lbl
+	 * @param aTotalFilesSize_lbl
+	 * @param aTotalFilesTotal_lbl
 	 */
 	public TableStatistic(Label aTotalFilesCopied_lbl, Label aTotalFilesSize_lbl, Label aTotalFilesTotal_lbl) {
 		this.totalFilesCopied_lbl = aTotalFilesCopied_lbl;
