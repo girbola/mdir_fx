@@ -29,6 +29,8 @@ public class HandleVideoFile extends Task<List<BufferedImage>>{
         if (convertVideo_task != null) {
             return convertVideo_task;
         }
+
+        System.out.println("HandleVideoFile were null");
         return null;
     }
 }

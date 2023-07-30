@@ -30,15 +30,25 @@ public class JCodecVideoThumb {
     public static List<BufferedImage> findThumbnails(Path file) {
         boolean found = false;
         try {
-            return frameGrabberThumber(file.toFile());
-        } catch (Exception e) {
-            found = false;
+            List<BufferedImage> bufferedImageList = frameGrabberThumber(file.toFile());
+            if (bufferedImageList != null) {
+                return bufferedImageList;
+            }
+        } catch (Exception ignored) {
+
+
         }
         if (!found) {
             try {
-                return ffMpegFrameGrabberThumber(file);
-            } catch (FFmpegFrameGrabber.Exception e) {
-                found = false;
+                List<BufferedImage> bufferedImageList = ffMpegFrameGrabberThumber(file);
+                if (bufferedImageList == null) {
+                    System.out.println("bufferedImageList were null");
+                    return null;
+                }
+                System.out.println("Returning bufferedImageList!");
+                return bufferedImageList;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return null;
@@ -52,18 +62,28 @@ public class JCodecVideoThumb {
         }
         List<Double> thumbnailSnapShotList = defineSnapShotsOfThumbnails(duration);
         bufferedImageList = tryGetVideoThumbsUsingFrameGrab(file, thumbnailSnapShotList);
-        if (thumbnailSnapShotList.isEmpty()) {
+        if (bufferedImageList == null || thumbnailSnapShotList.isEmpty()) {
+            Messages.sprintf("Video thumbnail arrary were empty");
             return null;
         }
+        if (bufferedImageList != null && !bufferedImageList.isEmpty()) {
+            System.out.println(" bufferedImageList: " + bufferedImageList.size());
+        } else {
+            System.out.println("bufferedImageList null? " + (bufferedImageList == null ? true : false));
+        }
+
         System.out.println("Total duration: " + duration + " GetList done: " + thumbnailSnapShotList.size());
         return bufferedImageList;
     }
 
     private static List<BufferedImage> tryGetVideoThumbsUsingFrameGrab(File file, List<Double> list) throws FFmpegFrameGrabber.Exception {
         List<BufferedImage> buff_list = new ArrayList<>();
-        FrameGrab grab = null;
+
         try {
-            grab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(file));
+            FrameGrab grab = FrameGrab.createFrameGrab(NIOUtils.readableChannel(file));
+            if (grab == null) {
+                return null;
+            }
             grab.seekToSecondSloppy(list.get(0));
             if (list.size() > 1) {
                 for (int i = 1; i < list.size(); i++) {
@@ -83,6 +103,8 @@ public class JCodecVideoThumb {
                 }
             }
         } catch (IOException | JCodecException e) {
+            System.out.println("Exception is thrown when creating frame grab");
+            e.printStackTrace();
             return null;
         }
         return buff_list;
@@ -90,21 +112,26 @@ public class JCodecVideoThumb {
 
     private static List<BufferedImage> ffMpegFrameGrabberThumber(Path fileName) throws FFmpegFrameGrabber.Exception {
         List<BufferedImage> bufferedImageList = new ArrayList<>();
-        FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName.toFile());
 
-        long length = frameGrabber.getLengthInTime();
-        List<Double> lengthSnaps = defineSnapShotsOfThumbnails(length);
-
-        frameGrabber.start();
-
-        Java2DFrameConverter java2DFrameConverter = new Java2DFrameConverter();
         try {
-            for (Double number : lengthSnaps) {
-                frameGrabber.setFrameNumber(lengthSnaps.get(number.intValue()).intValue());
-                Frame frame = frameGrabber.grab();
-                BufferedImage bi = java2DFrameConverter.convert(frame);
-                bufferedImageList.add(bi);
+
+            FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(fileName.toFile());
+            frameGrabber.start();
+
+            long videoLength = frameGrabber.getLengthInTime();
+            double interval = videoLength / 5;
+
+
+            Java2DFrameConverter frameConverter = new Java2DFrameConverter();
+
+            long length = frameGrabber.getLengthInTime();
+
+            for (int i = 0; i < 5; i++) {
+                double timeInSeconds = interval * i;
+                frameGrabber.setTimestamp((long) timeInSeconds);
+                bufferedImageList.add(frameConverter.convert(frameGrabber.grabImage()));
             }
+
             frameGrabber.stop();
             Messages.sprintf("=======bufferedImageList" + bufferedImageList.size());
             return bufferedImageList;

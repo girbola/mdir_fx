@@ -137,9 +137,9 @@ public class RenderVisibleNode {
 				return t;
 			});
 			List<Task<?>> byte_List = new ArrayList<>();
-			List<Task<?>> needToConvert_Image_list = new ArrayList<>();
-			List<Task<?>> needToConvert_Video_list = new ArrayList<>();
-			List<Task<?>> needToConvert_SlowRender_list = new ArrayList<>();
+			List<Task<?>> needToConvert_Image_TaskList = new ArrayList<>();
+			List<Task<?>> needToConvert_Video_TaskList = new ArrayList<>();
+			List<Task<?>> needToConvert_SlowRender_TaskList = new ArrayList<>();
 
 			for (Entry<ImageView, FileInfo> entry : map.entrySet()) {
 				ImageView imageView = entry.getKey();
@@ -178,16 +178,17 @@ public class RenderVisibleNode {
 										byte_List.add(convertByte_thumb_fast);
 
 									} else if (FileUtils.supportedVideo(file)) {
-										Task<List<BufferedImage>> convertByte_thumb_fast = new ConvertVideo_Byte(
-												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
-												imageView);
+//										Task<List<BufferedImage>> convertByte_thumb_fast = new HandleVideoFile(
+//												Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+//												imageView);
+										Task<List<BufferedImage>> convertByte_thumb_fast = new HandleVideoFile(file, fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
 										byte_List.add(convertByte_thumb_fast);
 									}
 									break;
 								case 1:
 									if (FileUtils.supportedVideo(file)) {
 										Task<List<BufferedImage>> handleVideoFile = new HandleVideoFile(file, fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
-										needToConvert_Video_list.add(handleVideoFile);
+										needToConvert_Video_TaskList.add(handleVideoFile);
 
 									} else if (FileUtils.supportedImage(file)) {
 										if (FileUtils.isTiff(file.toFile())) {
@@ -198,14 +199,14 @@ public class RenderVisibleNode {
 											Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo,
 													GUIPrefs.thumb_x_MAX, imageView);
 											imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
-											needToConvert_Image_list.add(imageThumb);
+											needToConvert_Image_TaskList.add(imageThumb);
 										} else {
 											Messages.sprintf(
 													"2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
 											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
 													imageView);
 											imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
-											needToConvert_Image_list.add(imageThumb);
+											needToConvert_Image_TaskList.add(imageThumb);
 										}
 									} else if (FileUtils.supportedRaw(file)) {
 										Messages.sprintf(
@@ -213,7 +214,7 @@ public class RenderVisibleNode {
 										Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
 												imageView);
 										imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
-										needToConvert_Image_list.add(imageThumb);
+										needToConvert_Image_TaskList.add(imageThumb);
 									}
 									break;
 								}
@@ -236,23 +237,23 @@ public class RenderVisibleNode {
 					Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-			sprintf("needToConvert_Image_list size: " + needToConvert_Image_list.size());
+			sprintf("needToConvert_Image_TaskList size: " + needToConvert_Image_TaskList.size());
 			sprintf("exec_single isTerminated? " + exec_single.isTerminated() + " isShutDown: "
 					+ exec_single.isShutdown());
-			for (Task<?> image_Task : needToConvert_Image_list) {
+			for (Task<?> image_Task : needToConvert_Image_TaskList) {
 				if (image_Task != null && !Main.getProcessCancelled()) {
-					Messages.sprintf("Adding needToConvert_Image_list to exec to create a thumbnail");
+					Messages.sprintf("Adding needToConvert_Image_TaskList to exec to create a thumbnail");
 					exec_single.submit(image_Task);
 				}
 			}
-			sprintf("needToConvert_Video_list size: " + needToConvert_Video_list.size());
-			for (Task<?> video_task : needToConvert_Video_list) {
+			sprintf("needToConvert_Video_TaskList size: " + needToConvert_Video_TaskList.size());
+			for (Task<?> video_task : needToConvert_Video_TaskList) {
 				if (video_task != null && !Main.getProcessCancelled()) {
 					exec_single.submit(video_task);
 				}
 			}
-			sprintf("needToConvert_SlowRender_list size: " + needToConvert_Video_list.size());
-			for (Task<?> slow_render : needToConvert_SlowRender_list) {
+			sprintf("needToConvert_SlowRender_TaskList size: " + needToConvert_Video_TaskList.size());
+			for (Task<?> slow_render : needToConvert_SlowRender_TaskList) {
 				if (slow_render != null && !Main.getProcessCancelled()) {
 					exec_single.submit(slow_render);
 				}

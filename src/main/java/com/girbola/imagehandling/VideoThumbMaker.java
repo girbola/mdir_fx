@@ -26,9 +26,9 @@ import java.util.List;
 @Slf4j
 public class VideoThumbMaker extends Task<List<BufferedImage>> {
 
-	private FileInfo fileInfo;
-	private ImageView imageView;
-	private double image_width;
+	private final FileInfo fileInfo;
+	private final ImageView imageView;
+	private final double image_width;
 	private Timeline timeLine;
 
 	public VideoThumbMaker(FileInfo fileInfo, ImageView imageView, double image_width) {
@@ -42,6 +42,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		List<BufferedImage> list = null;
 		try {
 			list = JCodecVideoThumb.frameGrabberThumber(new File(fileInfo.getOrgPath()));
+			Messages.sprintf("JCodecVideoThumb array size: %d", list.size());
 			if (list == null) {
 				return null;
 			}
@@ -73,19 +74,19 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		} catch (FFmpegFrameGrabber.Exception e) {
 			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("1GARBBERRRERBAERB: " + grabber.getFormat());
-			Messages.sprintf("2AERAERAGERA: " + grabber.toString());
+			Messages.sprintf("2AERAERAGERA: " + grabber);
 			throw new RuntimeException(e);
 		} catch (FrameGrabber.Exception e) {
 			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("3GARBBERRRERBAERB: " + grabber.getFormat());
-			Messages.sprintf("4AERAERAGERA: " + grabber.toString());
+			Messages.sprintf("4AERAERAGERA: " + grabber);
 			throw new RuntimeException(e);
 		}
 		if (list == null) {
 			System.err.println("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
 			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("GARBBERRRERBAERB: " + grabber.getFormat());
-			Messages.sprintf("AERAERAGERA: " + grabber.toString());
+			Messages.sprintf("AERAERAGERA: " + grabber);
 //				FrameGrabber frameG = FrameGrabber.createDefault(fileInfo.getOrgPath());
 ////				int lengthInFrames = ffMpegVideo.getLengthInFrames();
 //				Messages.sprintf("===lengthInFrames: " + frameG.toString());
@@ -129,7 +130,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 		if (frameGrabber != null) {
 
 //	int lengthInFrames = frameGrabber.getLengthInFrames();
-			Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
+			Messages.sprintf("=======lengthInFrames" + frameGrabber);
 		}
 		return null;
 	}
