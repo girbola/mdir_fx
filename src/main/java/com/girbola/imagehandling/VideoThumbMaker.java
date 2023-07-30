@@ -41,7 +41,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 	protected List<BufferedImage> call() throws Exception {
 		List<BufferedImage> list = null;
 		try {
-			list = JCodecVideoThumb.getList(new File(fileInfo.getOrgPath()));
+			list = JCodecVideoThumb.frameGrabberThumber(new File(fileInfo.getOrgPath()));
 			if (list == null) {
 				return null;
 			}
@@ -71,19 +71,19 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 			Messages.sprintf("FrameGrabberFrameGrabberFrameGrabber: " + fr.toString());
 
 		} catch (FFmpegFrameGrabber.Exception e) {
-			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("1GARBBERRRERBAERB: " + grabber.getFormat());
 			Messages.sprintf("2AERAERAGERA: " + grabber.toString());
 			throw new RuntimeException(e);
 		} catch (FrameGrabber.Exception e) {
-			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("3GARBBERRRERBAERB: " + grabber.getFormat());
 			Messages.sprintf("4AERAERAGERA: " + grabber.toString());
 			throw new RuntimeException(e);
 		}
 		if (list == null) {
 			System.err.println("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
-			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
+			OpenCVFrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
 			Messages.sprintf("GARBBERRRERBAERB: " + grabber.getFormat());
 			Messages.sprintf("AERAERAGERA: " + grabber.toString());
 //				FrameGrabber frameG = FrameGrabber.createDefault(fileInfo.getOrgPath());

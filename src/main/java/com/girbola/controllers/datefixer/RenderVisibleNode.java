@@ -157,6 +157,7 @@ public class RenderVisibleNode {
 								ThumbInfo thumbInfo = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
 								
 								int value = handle_thumb(fileInfo, thumbInfo, Main.conf.isBetterQualityThumbs());
+								Messages.sprintf("AND THE VALUEEEEEEEEEEE IIIIIIIIIIIIS: " + value);
 								/*
 								 * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.
 								 * Create
@@ -185,9 +186,9 @@ public class RenderVisibleNode {
 									break;
 								case 1:
 									if (FileUtils.supportedVideo(file)) {
-										Task<List<BufferedImage>> convertVideo_task = new VideoThumbMaker(fileInfo,
-												imageView, (GUIPrefs.thumb_x_MAX - 2));
-										needToConvert_Video_list.add(convertVideo_task);
+										Task<List<BufferedImage>> handleVideoFile = new HandleVideoFile(file, fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
+										needToConvert_Video_list.add(handleVideoFile);
+
 									} else if (FileUtils.supportedImage(file)) {
 										if (FileUtils.isTiff(file.toFile())) {
 											Messages.sprintf(
