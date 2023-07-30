@@ -52,6 +52,7 @@
         <vlcj-javafx.version>1.2.0</vlcj-javafx.version>
         <vlcj.version>4.8.2</vlcj.version>
     </properties>
+
     <dependencies>
         <!-- JavaFX deps -->
         <dependency>
