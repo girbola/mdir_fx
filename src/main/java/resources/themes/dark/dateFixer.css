@@ -666,3 +666,7 @@
 .notValidNumber {
 	-fx-background-color: red;
 }
+
+#selectTimeButton {
+    -fx-background-color: transparent;
+}

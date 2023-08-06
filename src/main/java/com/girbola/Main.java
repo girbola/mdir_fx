@@ -47,6 +47,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.robot.Robot;
+import javafx.scene.text.Font;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -94,7 +95,8 @@ public class Main extends Application {
     private Scene primaryScene;
     private LoadingProcess_Task lpt;
     private Task<Void> mainTask;
-    private StageControl stageControl ;
+    private StageControl stageControl;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
