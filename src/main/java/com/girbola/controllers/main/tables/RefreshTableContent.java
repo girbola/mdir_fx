@@ -7,6 +7,8 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 
+import java.util.Iterator;
+
 public class RefreshTableContent extends Task<Void> {
     private TableView<FolderInfo> table;
 
@@ -21,6 +23,15 @@ public class RefreshTableContent extends Task<Void> {
             return null;
         }
         if (table.getColumns().get(0) != null) {
+            Iterator<FolderInfo> tableIT = table.getItems().iterator();
+            while(tableIT.hasNext()) {
+                FolderInfo folderInfo = tableIT.next();
+                Messages.sprintf(folderInfo.getFolderPath() + " tableIT folderInfo.getFileInfoList().size(): " + folderInfo.getFileInfoList().size());
+                if(tableIT.next().getFileInfoList().isEmpty()) {
+                    Messages.sprintf("tableIT had empty folder. Removing...");
+                    tableIT.remove();
+                }
+            }
             Platform.runLater(()-> {
                 table.getColumns().get(0).setVisible(false);
                 table.getColumns().get(0).setVisible(true);

@@ -47,13 +47,11 @@ public class JCodecVideoThumb {
 						return null;
 					}
 					double sec = list.get(i);
-					Messages.sprintf("createFrameGrab sec: " + i);
 					Picture picture = grab.getNativeFrame();
 					BufferedImage buff = AWTUtil.toBufferedImage(picture);
 					buff = Thumbnails.of(buff).height(150).keepAspectRatio(true).asBufferedImage();
 					if (buff != null) {
 						buff_list.add(buff);
-						Messages.sprintf("sec before seek: " + sec);
 						grab.seekToSecondSloppy(sec);
 					}
 				}

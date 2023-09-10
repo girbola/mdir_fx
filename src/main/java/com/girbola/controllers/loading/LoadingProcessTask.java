@@ -36,10 +36,10 @@ import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
-public class LoadingProcess_Task {
+public class LoadingProcessTask {
 
-	private final String ERROR = LoadingProcess_Task.class.getSimpleName();
-	private Model_loading model_loading = new Model_loading();
+	private final String ERROR = LoadingProcessTask.class.getSimpleName();
+	private ModelLoading modelLoading = new ModelLoading();
 	private double xOffset;
 	private double yOffset;
 	private Parent parent = null;
@@ -48,7 +48,7 @@ public class LoadingProcess_Task {
 	private Scene loadingScene;
 	private Stage loadingStage;
 
-	public LoadingProcess_Task(Window owner) {
+	public LoadingProcessTask(Window owner) {
 		this.owner = owner;
 		loadGUI();
 
@@ -58,12 +58,12 @@ public class LoadingProcess_Task {
 	 * private Stage loadingStage; private Scene loadingScene;
 	 */
 	public void setProgressBar(double progress) {
-		model_loading.getProgressBar().setProgress(progress);
+		modelLoading.getProgressBar().setProgress(progress);
 	}
 
 	public void setTask(Task<?> current_Task) {
 		Platform.runLater(() -> {
-			model_loading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+			modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 		});
 		if (current_Task == null) {
 			Messages.sprintf("LoadingProcess_Task Task were set to null!!");
@@ -72,11 +72,11 @@ public class LoadingProcess_Task {
 			if (!Main.getProcessCancelled()) {
 				if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
 					if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
-						model_loading.setTask(current_Task);
+						modelLoading.setTask(current_Task);
 						bind();
 					}
 				} else {
-					model_loading.setTask(current_Task);
+					modelLoading.setTask(current_Task);
 					bind();
 					loadGUI();
 				}
@@ -93,11 +93,11 @@ public class LoadingProcess_Task {
 				parent = loader.load();
 
 			} catch (IOException ex) {
-				Logger.getLogger(LoadingProcess_Task.class.getName()).log(Level.SEVERE, null, ex);
+				Logger.getLogger(LoadingProcessTask.class.getName()).log(Level.SEVERE, null, ex);
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 			}
 			LoadingProcessController lpc = (LoadingProcessController) loader.getController();
-			lpc.init(model_loading);
+			lpc.init(modelLoading);
 			loadingScene = new Scene(parent);
 			loadingStage = new Stage();
 
@@ -152,25 +152,25 @@ public class LoadingProcess_Task {
 	}
 
 	private void unbind() {
-		if (model_loading.getTask() != null) {
-			model_loading.getProgressBar().progressProperty().unbind();
-			model_loading.getMessages_lbl().textProperty().unbind();
+		if (modelLoading.getTask() != null) {
+			modelLoading.getProgressBar().progressProperty().unbind();
+			modelLoading.getMessages_lbl().textProperty().unbind();
 		}
 	}
 
 	private void bind() {
-		if (model_loading.getTask() != null) {
+		if (modelLoading.getTask() != null) {
 			sprintf("progressBar or task arent null");
-			model_loading.getTask().progressProperty().addListener(new ChangeListener<Number>() {
+			modelLoading.getTask().progressProperty().addListener(new ChangeListener<Number>() {
 				@Override
 				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-					model_loading.getProgressBar().setProgress((double) newValue);
+					modelLoading.getProgressBar().setProgress((double) newValue);
 				}
 			});
-			model_loading.getTask().messageProperty().addListener(new ChangeListener<String>() {
+			modelLoading.getTask().messageProperty().addListener(new ChangeListener<String>() {
 				@Override
 				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					model_loading.getMessages_lbl().setText(newValue);
+					modelLoading.getMessages_lbl().setText(newValue);
 				}
 			});
 
@@ -203,9 +203,9 @@ public class LoadingProcess_Task {
 	}
 
 	private void stopTask() {
-		if (model_loading.getTask() != null) {
-			if (model_loading.getTask().isRunning()) {
-				model_loading.getTask().cancel();
+		if (modelLoading.getTask() != null) {
+			if (modelLoading.getTask().isRunning()) {
+				modelLoading.getTask().cancel();
 			}
 		}
 	}
@@ -215,10 +215,10 @@ public class LoadingProcess_Task {
 			Messages.sprintf("Window is already showing!!");
 			return;
 		}
-		if (model_loading.getTask() == null) {
+		if (modelLoading.getTask() == null) {
 			Messages.sprintf("Task were null!");
 			Platform.runLater(() -> {
-				model_loading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
+				modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 			});
 		}
 
@@ -244,7 +244,7 @@ public class LoadingProcess_Task {
 		if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
 			if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
 				Platform.runLater(() -> {
-					model_loading.getMessages_lbl().setText(message);
+					modelLoading.getMessages_lbl().setText(message);
 				});
 			}
 		}

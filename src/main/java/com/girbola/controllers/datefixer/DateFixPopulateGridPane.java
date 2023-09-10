@@ -12,7 +12,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -74,9 +74,9 @@ public class DateFixPopulateGridPane extends Task<Void> {
 
 	private VBox frame;
 	private SimpleIntegerProperty counter = new SimpleIntegerProperty(0);
-	private LoadingProcess_Task loadingProcess_task;
+	private LoadingProcessTask loadingProcess_task;
 
-	public DateFixPopulateGridPane(Scene scene, Model_datefix aModel_datefix, LoadingProcess_Task loadingProcess_task) {
+	public DateFixPopulateGridPane(Scene scene, Model_datefix aModel_datefix, LoadingProcessTask loadingProcess_task) {
 
 		this.scene = scene;
 		this.model_dateFix = aModel_datefix;

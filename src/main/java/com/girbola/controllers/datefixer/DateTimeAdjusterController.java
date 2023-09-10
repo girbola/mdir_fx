@@ -8,7 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -132,7 +132,7 @@ public class DateTimeAdjusterController {
 //		model_datefix.getFolderInfo_full().getFileInfoList();
 //		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
 
-        LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
                 model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
         loadingProcess_task.setTask(updateGridPane_Task);
@@ -508,7 +508,7 @@ public class DateTimeAdjusterController {
                 return null;
             }
         };
-        LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+        LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
             model_datefix.getSelectionModel().clearAll();
             lpt.closeStage();

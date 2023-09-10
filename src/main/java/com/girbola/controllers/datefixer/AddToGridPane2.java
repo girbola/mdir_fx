@@ -8,7 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.ui.ScreenUtils;
@@ -45,10 +45,10 @@ public class AddToGridPane2 extends Task<Integer> {
 	private Model_datefix model_datefix;
 
 	private int size;
-	private LoadingProcess_Task loadingProcess_Task;
+	private LoadingProcessTask loadingProcess_Task;
 
 	public AddToGridPane2(Model_datefix aModel_dateFix, ObservableList<Node> aList,
-			LoadingProcess_Task loading_Process_Task) {
+			LoadingProcessTask loading_Process_Task) {
 		Messages.sprintf("AddToGridPane2 started: " + aList.size());
 		this.model_datefix = aModel_dateFix;
 		this.list = aList;

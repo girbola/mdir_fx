@@ -703,22 +703,40 @@ public class TableUtils {
     public static void calculateTableViewsStatistic(Tables tables) {
         CalculateTableViewsStatistic.resetStatistics(tables);
 
-        for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
-            tables.getSortit_TableStatistic().setTotalFiles(tables.getSortit_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-            tables.getSortit_TableStatistic().setTotalFilesCopied(tables.getSortit_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-            tables.getSortit_TableStatistic().setTotalFilesSize(tables.getSortit_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
+        Iterator<FolderInfo> sortIT = tables.getSortIt_table().getItems().iterator();
+        while (sortIT.hasNext()) {
+            FolderInfo folderInfo = sortIT.next();
+            if (folderInfo.getFolderFiles() > 0) {
+                tables.getSortit_TableStatistic().setTotalFiles(tables.getSortit_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+                tables.getSortit_TableStatistic().setTotalFilesCopied(tables.getSortit_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
+                tables.getSortit_TableStatistic().setTotalFilesSize(tables.getSortit_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
+            } else {
+                sortIT.remove();
+            }
+        }
+        Iterator<FolderInfo> sortedIT = tables.getSorted_table().getItems().iterator();
+        while (sortedIT.hasNext()) {
+            FolderInfo folderInfo = sortedIT.next();
+            if (folderInfo.getFolderFiles() > 0) {
+                tables.getSorted_TableStatistic().setTotalFiles(tables.getSorted_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+                tables.getSorted_TableStatistic().setTotalFilesCopied(tables.getSorted_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
+                tables.getSorted_TableStatistic().setTotalFilesSize(tables.getSorted_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
+            } else {
+                sortedIT.remove();
+            }
         }
 
-        for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-            tables.getSorted_TableStatistic().setTotalFiles(tables.getSorted_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-            tables.getSorted_TableStatistic().setTotalFilesCopied(tables.getSorted_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-            tables.getSorted_TableStatistic().setTotalFilesSize(tables.getSorted_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
-        }
+        Iterator<FolderInfo> asitisIT = tables.getAsItIs_table().getItems().iterator();
+        while (asitisIT.hasNext()) {
+            FolderInfo folderInfo = asitisIT.next();
+            if (folderInfo.getFolderFiles() > 0) {
+                tables.getAsItIs_TableStatistic().setTotalFiles(tables.getAsItIs_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
+                tables.getAsItIs_TableStatistic().setTotalFilesCopied(tables.getAsItIs_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
+                tables.getAsItIs_TableStatistic().setTotalFilesSize(tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
+            } else {
+                asitisIT.remove();
+            }
 
-        for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
-            tables.getAsItIs_TableStatistic().setTotalFiles(tables.getAsItIs_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-            tables.getAsItIs_TableStatistic().setTotalFilesCopied(tables.getAsItIs_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-            tables.getAsItIs_TableStatistic().setTotalFilesSize(tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
         }
 
 //        removeTableViewEmptyFolderInfos(tables);
@@ -739,7 +757,6 @@ public class TableUtils {
 
         Task<Void> removeAsItIsEmptyFoldersFromTableViews = new CleanTableView(tables.getAsItIs_table());
         exec[getExecCounter()].submit(removeAsItIsEmptyFoldersFromTableViews);
-
 
 
 //        Platform.runLater(() -> {
@@ -828,7 +845,7 @@ public class TableUtils {
 
         ObservableList<FolderInfo> toRemove = FXCollections.observableArrayList();
         for (FolderInfo folderInfo : table.getItems()) {
-            if (folderInfo.getFileInfoList().size() == 0) {
+            if (folderInfo.getFileInfoList().isEmpty()) {
                 toRemove.add(folderInfo);
                 Messages.sprintf("TOREMOVE: " + folderInfo.getFolderPath() + " FILES: " + folderInfo.getFolderSize());
             }

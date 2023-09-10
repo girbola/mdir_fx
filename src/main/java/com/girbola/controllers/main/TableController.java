@@ -12,7 +12,7 @@ import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -450,7 +450,7 @@ public class TableController {
 	// @formatter:on
 	@FXML
 	private void checkChanges_mi_action(ActionEvent event) {
-		LoadingProcess_Task loadingProcess = new LoadingProcess_Task(owner);
+		LoadingProcessTask loadingProcess = new LoadingProcessTask(owner);
 		Task<Boolean> checkTask = new CheckSelectedRowForChanges(table, model_main, loadingProcess);
 
 		Thread thread = new Thread(checkTask, "Checking changes thread");
@@ -465,7 +465,7 @@ public class TableController {
 	@FXML
 	private void reload_all_mi_action(ActionEvent event) {
 		sprintf("Reload All");
-		LoadingProcess_Task lpt = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 		Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table,
 				Main.scene_Switcher.getWindow());
 		updateTableValuesUsingFileInfo_task.setOnSucceeded(event1 -> {

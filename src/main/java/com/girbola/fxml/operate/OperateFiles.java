@@ -295,32 +295,6 @@ public class OperateFiles extends Task<Boolean> {
 			return null;
 		}
 
-		private void compareFiles(Path src, Path dest) {
-			MessageDigest md;
-			try {
-				md = MessageDigest.getInstance("MD5");
-				InputStream is_src = Files.newInputStream(src);
-				DigestInputStream dis_dest_src = new DigestInputStream(is_src, md);
-
-				InputStream is_dest = Files.newInputStream(dest);
-				DigestInputStream dis_dest = new DigestInputStream(is_dest, md);
-
-				byte[] digest_Src = md.digest();
-				byte[] digest_dest = md.digest();
-				if (digest_Src == digest_dest) {
-					Messages.sprintf("SAMEEEEEEEEEEEEEEEEEE FILESSSSSSSSSSSSSSSSS!");
-				}
-//			try (InputStream is_src = Files.newInputStream(src);
-//					DigestInputStream dis = new DigestInputStream(is, md)) {
-//				/* Read decorated stream (dis) to EOF as normal... */
-//			}
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
 		private boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,
 				SimpleIntegerProperty answer) {
 

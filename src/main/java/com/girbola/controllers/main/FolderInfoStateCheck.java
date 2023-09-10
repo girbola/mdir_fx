@@ -1,6 +1,6 @@
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
@@ -14,10 +14,10 @@ public class FolderInfoStateCheck extends Task<Boolean> {
 
 	private final String ERROR = FolderInfoStateCheck.class.getName();
 	private TableView<FolderInfo> table;
-	private LoadingProcess_Task loadingProcess;
+	private LoadingProcessTask loadingProcess;
 	private SimpleBooleanProperty updated = new SimpleBooleanProperty(false);
 
-	public FolderInfoStateCheck(TableView<FolderInfo> table, LoadingProcess_Task loadingProcess) {
+	public FolderInfoStateCheck(TableView<FolderInfo> table, LoadingProcessTask loadingProcess) {
 		this.table = table;
 		this.loadingProcess = loadingProcess;
 	}

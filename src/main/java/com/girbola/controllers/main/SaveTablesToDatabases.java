@@ -1,7 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -17,17 +17,17 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	private final String ERROR = SaveTablesToDatabases.class.getName();
 
 	private Stage stage;
-	private LoadingProcess_Task loadingProcess_Task;
+	private LoadingProcessTask loadingProcess_Task;
 	private boolean closeLoadingStage;
 	private Model_main model_main;
 
-	public SaveTablesToDatabases(Model_main model_main, Stage stage, LoadingProcess_Task loadingProcess_Task,
+	public SaveTablesToDatabases(Model_main model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
 			boolean closeLoadingStage) {
 		super();
 		this.model_main = model_main;
 		this.stage = stage;
 		if (loadingProcess_Task == null) {
-			loadingProcess_Task = new LoadingProcess_Task(stage);
+			loadingProcess_Task = new LoadingProcessTask(stage);
 			loadingProcess_Task.setTask(this);
 		}
 		this.loadingProcess_Task = loadingProcess_Task;

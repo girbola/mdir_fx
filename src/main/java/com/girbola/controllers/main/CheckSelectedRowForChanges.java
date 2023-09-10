@@ -1,7 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
@@ -31,10 +31,10 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 	private SimpleBooleanProperty changed = new SimpleBooleanProperty();
 	private final String ERROR = CheckSelectedRowForChanges.class.getName();
 	private Model_main model_main;
-	private LoadingProcess_Task loadingProcess;
+	private LoadingProcessTask loadingProcess;
 
 	public CheckSelectedRowForChanges(TableView<FolderInfo> tableView, Model_main aModel_main,
-			LoadingProcess_Task loadingProcess) {
+			LoadingProcessTask loadingProcess) {
 		super();
 		this.tableView = tableView;
 		this.model_main = aModel_main;
