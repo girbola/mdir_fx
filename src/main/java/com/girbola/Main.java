@@ -25,7 +25,7 @@ package com.girbola;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.VLCJDiscovery;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -51,8 +51,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
-import java.io.File;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Locale;
@@ -92,9 +90,10 @@ public class Main extends Application {
     public static SceneSwitcher scene_Switcher = new SceneSwitcher();
 
     private Scene primaryScene;
-    private LoadingProcess_Task lpt;
+    public static LoadingProcessTask lpt;
     private Task<Void> mainTask;
-    private StageControl stageControl ;
+    private StageControl stageControl;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -107,6 +106,7 @@ public class Main extends Application {
             e.printStackTrace();
             Messages.sprintfError("Something went wrong: " + e.getMessage());
         }
+
         mainTask = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
@@ -126,12 +126,8 @@ public class Main extends Application {
                 Parent parent = null;
                 try {
                     ResourceBundle bundle2 = bundle;
-                    sprintf("bundle2: " + bundle2);
-                    URL resource = getClass().getResource("fxml/main/Main.fxml");
-                    sprintf("bundle2: " + bundle2 + " resource " + resource);
                     main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
                     parent = main_loader.load();
-                    sprintf("main_loader location: " + main_loader.getLocation());
                 } catch (Exception ex) {
                     ex.printStackTrace();
                     Messages.sprintf("error loading parent= " + ex.getMessage());
@@ -150,16 +146,14 @@ public class Main extends Application {
                 scene_Switcher.setWindow(primaryStage);
                 scene_Switcher.setScene_main(primaryScene);
 
-
                 Platform.runLater(() -> {
                     primaryStage.setScene(primaryScene);
 //						defineScreenBounds(primaryStage);
                     primaryStage.show();
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
-                lpt = new LoadingProcess_Task(scene_Switcher.getWindow());
+                lpt = new LoadingProcessTask(scene_Switcher.getWindow());
                 Platform.runLater(() -> {
-
                     lpt.setTask(mainTask);
 //					lpt.showLoadStage();
                 });

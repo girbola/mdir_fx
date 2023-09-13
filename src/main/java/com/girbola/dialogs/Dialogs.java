@@ -53,7 +53,7 @@ public class Dialogs {
 		
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
-		dialogPane.setMinHeight(150);
+		dialogPane.setMinHeight(250);
 		ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonBar.ButtonData.YES);
 		ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonBar.ButtonData.CANCEL_CLOSE);
 		ButtonType cancel = new ButtonType(Main.bundle.getString("cancel"), ButtonBar.ButtonData.CANCEL_CLOSE);

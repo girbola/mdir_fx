@@ -1,7 +1,7 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
@@ -17,10 +17,10 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 	private static final String ERROR = UpdateGridPane_Task.class.getSimpleName();
 	private Model_datefix model_datefix;
 	private ObservableList<Node> obs;
-	private LoadingProcess_Task loadingProcess_task;
+	private LoadingProcessTask loadingProcess_task;
 
 	public UpdateGridPane_Task(Model_datefix model_datefix, ObservableList<Node> obs,
-			LoadingProcess_Task loadingProcess_task) {
+			LoadingProcessTask loadingProcess_task) {
 		super();
 		this.model_datefix = model_datefix;
 		this.obs = obs;
@@ -28,7 +28,7 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 	}
 
 	public void updateGridPaneContent_(Model_datefix model_datefix, ObservableList<Node> obs,
-			LoadingProcess_Task loadingProcess_task) {
+			LoadingProcessTask loadingProcess_task) {
 
 		CountDownLatch latch = new CountDownLatch(1);
 
@@ -96,7 +96,7 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 		return filterlist;
 	}
 
-	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcess_Task lpt,
+	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcessTask lpt,
 			Stage stage) {
 
 		Task<Integer> addToGridPane_task = new AddToGridPane2(model_datefix, obs, lpt);

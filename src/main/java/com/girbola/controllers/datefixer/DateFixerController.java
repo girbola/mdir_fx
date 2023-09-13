@@ -9,7 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -294,7 +294,7 @@ public class DateFixerController {
 			}
 		});
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 				model_datefix.getAllNodes(), loadingProcess_task);
 
@@ -326,7 +326,7 @@ public class DateFixerController {
 			}
 		});
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 				model_datefix.getAllNodes(), loadingProcess_task);
 
@@ -503,7 +503,7 @@ public class DateFixerController {
 //		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
 //				loadingProcess_task);
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 				model_datefix.getSelectionModel().getSelectionList(), loadingProcess_task);
 
@@ -522,7 +522,7 @@ public class DateFixerController {
 //		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getAllNodes(), loadingProcess_task);
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 		Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 				model_datefix.getAllNodes(), loadingProcess_task);
 
@@ -660,6 +660,7 @@ public class DateFixerController {
 		Messages.sprintf("Close button pressed");
 		Main.scene_Switcher.getWindow().getOnCloseRequest()
 				.handle(new WindowEvent(Main.scene_Switcher.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+		model_main.getMonitorExternalDriveConnectivity().start();
 	}
 
 	private Button getAcceptButton(Node node) {
@@ -717,7 +718,7 @@ public class DateFixerController {
 			@Override
 			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 				if (newValue == true) {
-					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 
@@ -727,7 +728,7 @@ public class DateFixerController {
 					thread.start();
 
 				} else {
-					LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+					LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 					Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 							model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 
@@ -1071,7 +1072,7 @@ public class DateFixerController {
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 
-				LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+				LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 				Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
 						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 				loadingProcess_task.setTask(updateGridPane_Task);

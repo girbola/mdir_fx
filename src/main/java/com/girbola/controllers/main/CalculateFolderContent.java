@@ -7,7 +7,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -42,7 +42,7 @@ public class CalculateFolderContent extends Task<Void> {
 	private IntegerProperty total;
 	private IntegerProperty counter = new SimpleIntegerProperty();
 
-	public CalculateFolderContent(Model_main aModel, LoadingProcess_Task aLoadingProcess_Task, IntegerProperty total) {
+	public CalculateFolderContent(Model_main aModel, LoadingProcessTask aLoadingProcess_Task, IntegerProperty total) {
 		this.model = aModel;
 		this.total = total;
 		this.counter = this.total;

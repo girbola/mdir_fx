@@ -10,7 +10,7 @@ import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -395,7 +395,7 @@ public class Model_main {
 		}
 	}
 
-	public void saveTablesToDatabases_(Stage stage, LoadingProcess_Task loadingProcess_Task,
+	public void saveTablesToDatabases_(Stage stage, LoadingProcessTask loadingProcess_Task,
 			boolean closeLoadingStage) {
 		Task<Void> task = new Task<Void>() {
 			@Override
@@ -405,7 +405,7 @@ public class Model_main {
 			}
 		};
 		if (loadingProcess_Task == null) {
-			loadingProcess_Task = new LoadingProcess_Task(stage);
+			loadingProcess_Task = new LoadingProcessTask(stage);
 		}
 
 		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {

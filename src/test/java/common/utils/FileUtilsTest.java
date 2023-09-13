@@ -4,39 +4,57 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class FileUtilsTest {
 
-	@Test
-	public void testFileRename() throws IOException {
-		Path srcTest = Paths.get("src/main/resources/input/IMG.jpg");
-		Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
+    @Test
+    public void testFileRename() throws IOException {
+        Path srcTest = Paths.get("src/main/resources/input/IMG.jpg");
+        Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
 
-		System.out.println(
-				"srcTest: " + srcTest.toFile().getAbsolutePath() + " dest: " + destTest.toFile().getAbsolutePath());
+        System.out.println(
+                "srcTest: " + srcTest.toFile().getAbsolutePath() + " dest: " + destTest.toFile().getAbsolutePath());
 
-		Path renamedFile = FileUtils.renameFile(srcTest, destTest);
+        Path renamedFile = FileUtils.renameFile(srcTest, destTest);
 
-		assertEquals("src/main/resources/output/IMG_1.jpg", renamedFile.toString());
+        assertEquals("src/main/resources/output/IMG_1.jpg", renamedFile.toString());
 
-	}
+    }
 
-	@Test
-	public void renameFileToDate() throws IOException {
-		Path srcTest = Paths.get("src/main/resources/input/IMG.jpg");
-		Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
+    @Test
+    public void testHash() {
+        Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
 
-		System.out.println(
-				"srcTest: " + srcTest.toFile().getAbsolutePath() + " dest: " + destTest.toFile().getAbsolutePath());
-		FileInfo fileInfo = FileInfoUtils.createFileInfo(srcTest);
-		Path renamedFile = FileInfoUtils.renameFileToDate(srcTest, fileInfo);
-		
-		assertEquals("src/main/resources/input/1970-01-01 00.00.00.jpg", renamedFile.toString());
-	}
+        String checkSumFromFile = FileUtils.getCheckSumFromFile(destTest);
 
+        assertTrue(checkSumFromFile.equals("ef7237ce469ab8040761a5be5d5478f8"));
+    }
+
+    @Test
+    public void renameFileToDate() throws IOException {
+        Path srcTest = Paths.get("src/main/resources/input/IMG.jpg");
+
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(srcTest);
+        Path renamedFile = FileInfoUtils.renameFileToDate(srcTest, fileInfo);
+
+        assertEquals("src/main/resources/input/1970-01-01 00.00.00.jpg", renamedFile.toString());
+    }
+
+    @Test
+    public void testGetHashTiming() {
+        Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
+
+        String expected = "ef7237ce469ab8040761a5be5d5478f8";
+        String actual = FileUtils.getCheckSumFromFile(destTest);
+
+        assertEquals(expected, actual);
+    }
 }
