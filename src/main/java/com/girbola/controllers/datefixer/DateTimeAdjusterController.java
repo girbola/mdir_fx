@@ -497,13 +497,25 @@ public class DateTimeAdjusterController {
                     errorSmth(ERROR, "List were different", null, getLineNumber(), true);
                 }
                 while (it.hasNext() && it2.hasNext()) {
-                    try {
-                        TextField tf = (TextField) it.next();
-                        tf.setText(it2.next());
-                        tf.setStyle(CssStylesController.getModified_style());
-                    } catch (Exception ex) {
-                        errorSmth(ERROR, "Cannot make textfield changes", ex, Misc.getLineNumber(), true);
+                    Node node = it.next();
+                    if(node instanceof HBox) {
+                        for (Node nodeHBox : ((HBox) node).getChildren()) {
+                            if (nodeHBox instanceof TextField) {
+                                try {
+                                    TextField tf = (TextField) nodeHBox;
+                                    tf.setText(it2.next());
+                                    tf.setStyle(CssStylesController.getModified_style());
+                                } catch (Exception ex) {
+                                    errorSmth(ERROR, "Cannot make textfield changes. " + (it == null ? true : false), ex, Misc.getLineNumber(), true);
+                                }
+                            } else {
+                                Messages.sprintfError("is not instanceof TextField: " + node.toString());
+                            }
+                        }
                     }
+
+
+
                 }
                 return null;
             }
