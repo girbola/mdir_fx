@@ -98,6 +98,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         stageControl = new StageControl(model_main, primaryStage);
+        model_main.setStageControl(stageControl);
 
         try {
             locale = new Locale(lang, country);
@@ -150,6 +151,7 @@ public class Main extends Application {
                     primaryStage.setScene(primaryScene);
 //						defineScreenBounds(primaryStage);
                     primaryStage.show();
+
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
                 lpt = new LoadingProcessTask(scene_Switcher.getWindow());
@@ -176,7 +178,11 @@ public class Main extends Application {
                     Messages.sprintfError("Valid OS NOT found");
                 }
 
-                conf.loadConfig_GUI();
+                boolean successfullyLoaded = conf.loadConfig_GUI();
+                if(!successfullyLoaded) {
+                    // Load default configuration
+                    Messages.sprintf("Configuration did not exists");
+                }
 
                 model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
 

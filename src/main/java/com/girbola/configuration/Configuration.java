@@ -120,7 +120,6 @@ public class Configuration extends Configuration_defaults {
 		}
 
 		try {
-
 			connection.close();
 			return true;
 		} catch (Exception e) {
@@ -140,7 +139,7 @@ public class Configuration extends Configuration_defaults {
 //			return Screen.getPrimary().getBounds();
 	}
 
-	public void loadConfig_GUI() {
+	public boolean loadConfig_GUI() {
 		Messages.sprintf("loadConfig_GUI Started: " + Main.conf.getAppDataPath());
 		Connection connection = null;
 		boolean createDatabase = false;
@@ -173,12 +172,15 @@ public class Configuration extends Configuration_defaults {
 			} else {
 				Configuration_SQL_Utils.loadTables(connection, model_Main.tables());
 			}
-//			try {
-//				connection.close();
-//			} catch (Exception e) {
-//				Messages.sprintfError("loadConfig_GUI error with closing SQL database");
-//			}
+			try {
+				connection.close();
+				return true;
+			} catch (Exception e) {
+				Messages.sprintfError("loadConfig_GUI error with closing SQL database");
+				return false;
+			}
 		}
+		return false;
 	}
 
 	public boolean loadConfig_SQL() throws SQLException {

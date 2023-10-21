@@ -52,14 +52,14 @@ public class RefreshTableContent extends Task<Void> {
     protected void cancelled() {
         super.cancelled();
         Messages.sprintf("RefreshTableContent succeeded");
-        Main.setProcessCancelled(true);
+//        Main.setProcessCancelled(true);
     }
 
     @Override
     protected void failed() {
         super.failed();
         Messages.sprintf("RefreshTableContent failed");
-        Main.setProcessCancelled(true);
+//        Main.setProcessCancelled(true);
     }
 
 }

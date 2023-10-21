@@ -15,6 +15,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -136,16 +137,18 @@ public class OperateFiles extends Task<Boolean> {
 					}
 					model_main.getMonitorExternalDriveConnectivity().cancel();
 					Task<Integer> copy = new Copy();
-
-					/*
-					 * copy.setOnSucceeded((WorkerStateEvent eventWorker) -> {
-					 * Messages.sprintf("copy succeeded"); }); copy.setOnFailed((WorkerStateEvent
-					 * eventWorker) -> { Messages.sprintf("copy failed"); });
-					 * copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
-					 * model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
-					 * model_operate.doneButton(scene_NameType, close);
-					 * Messages.sprintf("copy cancelled"); });
-					 */
+//
+//					copy.setOnSucceeded((WorkerStateEvent eventWorker) -> {
+//						Messages.sprintf("copy succeeded");
+//					});
+//					copy.setOnFailed((WorkerStateEvent eventWorker) -> {
+//						Messages.sprintf("copy failed");
+//					});
+//					copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
+//						model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
+//						model_operate.doneButton(scene_NameType, close);
+//						Messages.sprintf("copy cancelled");
+//					});
 					Thread copy_thread = new Thread(copy, "Copy Thread");
 					copy_thread.start();
 				}

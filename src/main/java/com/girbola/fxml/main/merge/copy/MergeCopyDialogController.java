@@ -119,6 +119,7 @@ public class MergeCopyDialogController {
 			try {
 				connection.setAutoCommit(false);
 			} catch (Exception e) {
+				e.printStackTrace();
 				// TODO: handle exception
 			}
 			Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
@@ -165,11 +166,18 @@ public class MergeCopyDialogController {
 //				folderInfo.getFileInfoList().add(fileInfo);
 //				Messages.sprintf(" fileInfo: " + fileInfo.toString());
 				}
-				boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
-				if (deleteFileInfoListToDatabase) {
+
+				if (!fileList.isEmpty()) {
+					boolean deleteFileInfoListToDatabase = false;
+					try {
+						deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
+					} catch (SQLException e) {
+						e.printStackTrace();
+						return;
+					}
 					Messages.sprintf("Deleting fileInfo_list from database were success");
 				} else {
-					Messages.sprintfError("Bug sniffer when deleting files form database");
+					Messages.sprintf("Nothing to be remove");
 				}
 
 				try {

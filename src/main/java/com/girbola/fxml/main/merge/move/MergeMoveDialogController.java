@@ -162,7 +162,7 @@ public class MergeMoveDialogController {
 		Messages.sprintf("exists STB: " + stb);
 
 		if (!stb.isEmpty()) {
-			Messages.warningText("file exists at dest: \n" + stb);
+			Messages.sprintf("file exists at dest: \n" + stb);
 		}
 
 		// Merge files
