@@ -536,19 +536,16 @@ public class TableController {
                 "showHideButton_hbox");
         HBox buttons_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(),
                 "buttons_hbox");
-        assertNotNull(buttons_hbox_sortit);
 
         HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(),
                 "showHideButton_hbox");
         HBox buttons_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(),
                 "buttons_hbox");
-        assertNotNull(buttons_hbox_sorted);
 
         HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(),
                 "showHideButton_hbox");
         HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(),
                 "buttons_hbox");
-        assertNotNull(buttons_hbox_asitis);
 
         showHideButton_hbox_sortit.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -572,88 +569,41 @@ public class TableController {
         });
 
         VBox vboxSortIt = (VBox) buttons_hbox_sortit.getParent();
-        VBox vboxSorted= (VBox) buttons_hbox_sorted.getParent();
+        VBox vboxSorted = (VBox) buttons_hbox_sorted.getParent();
         VBox vboxAsItIs = (VBox) buttons_hbox_asitis.getParent();
 
-        Messages.sprintf("1111vboxSortIt:  " + vboxSortIt.getWidth() + " vboxSorted " + vboxSorted.getWidth() + " asitis: " +  vboxAsItIs.getWidth());
+        Messages.sprintf("1111vboxSortIt:  " + vboxSortIt.getWidth() + " vboxSorted " + vboxSorted.getWidth() + " asitis: " + vboxAsItIs.getWidth());
 
 
         if (model_main.tables().getSortIt_table().isVisible()) {
-//            setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
-            setWidth(showHideButton_hbox_sortit, -1);
-            showHideButton_hbox_sortit.setPrefWidth(tableWidth - (buttonWidth * hidden));
+            setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
             buttons_hbox_sortit.setVisible(true);
-            model_main.tables().showAndHideTables.setSortit_show_property(true);
             vboxSortIt.setPrefWidth(-1);
-        } else {
+        } else if (!model_main.tables().getSortIt_table().isVisible()) {
             setWidth(showHideButton_hbox_sortit, buttonWidth);
             buttons_hbox_sortit.setVisible(false);
-            model_main.tables().showAndHideTables.setSortit_show_property(false);
             vboxSortIt.setPrefWidth(tableWidth - (buttonWidth * hidden));
         }
 
         if (model_main.tables().getSorted_table().isVisible()) {
             setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
             buttons_hbox_sorted.setVisible(true);
-            model_main.tables().showAndHideTables.setSorted_show_property(true);
             vboxSorted.setPrefWidth(-1);
-        } else {
+        } else if (!model_main.tables().getSorted_table().isVisible()) {
             setWidth(showHideButton_hbox_sorted, buttonWidth);
             buttons_hbox_sorted.setVisible(false);
-            model_main.tables().showAndHideTables.setSorted_show_property(false);
             vboxSorted.setPrefWidth(tableWidth - (buttonWidth * hidden));
         }
 
         if (model_main.tables().getAsItIs_table().isVisible()) {
             setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
             buttons_hbox_asitis.setVisible(true);
-            model_main.tables().showAndHideTables.setAsitis_show_property(true);
             vboxAsItIs.setPrefWidth(-1);
-            vboxAsItIs.setMinWidth(-1);
-            vboxAsItIs.setMaxWidth(-1);
-        } else {
+        } else if (!model_main.tables().getAsItIs_table().isVisible()) {
             setWidth(showHideButton_hbox_asitis, buttonWidth);
             buttons_hbox_asitis.setVisible(false);
-            model_main.tables().showAndHideTables.setAsitis_show_property(false);
             vboxAsItIs.setPrefWidth(tableWidth - (buttonWidth * hidden));
-            vboxAsItIs.setMinWidth(tableWidth - (buttonWidth * hidden));
-            vboxAsItIs.setMaxWidth(tableWidth - (buttonWidth * hidden));
         }
-
-        Messages.sprintf("2222vboxSortIt:  " + vboxSortIt.getWidth() + " vboxSorted " + vboxSorted.getWidth() + " asitis: " +  vboxAsItIs.getWidth());
-
-        Messages.sprintf(
-                "table_Vbox_sortit w: " + showHideButton_hbox_sortit.getWidth() +
-                        " h :" + showHideButton_hbox_sortit.getHeight() +
-                        " minW: " + showHideButton_hbox_sortit.getMinWidth() +
-                        " minH: " + showHideButton_hbox_sortit.getMinHeight() +
-                        " maxW: " + showHideButton_hbox_sortit.getMaxWidth() +
-                        " maxH: " + showHideButton_hbox_sortit.getMaxHeight() +
-                        " prefW " + showHideButton_hbox_sortit.getPrefWidth() +
-                        " prefH " + showHideButton_hbox_sortit.getPrefHeight()
-        );
-        Messages.sprintf(
-                "showHideButton_hbox_sorted w: " + showHideButton_hbox_sorted.getWidth() +
-                        " h :" + showHideButton_hbox_sorted.getHeight() +
-                        " minW: " + showHideButton_hbox_sorted.getMinWidth() +
-                        " minH: " + showHideButton_hbox_sorted.getMinHeight() +
-                        " maxW: " + showHideButton_hbox_sorted.getMaxWidth() +
-                        " maxH: " + showHideButton_hbox_sorted.getMaxHeight() +
-                        " prefW " + showHideButton_hbox_sorted.getPrefWidth() +
-                        " prefH " + showHideButton_hbox_sorted.getPrefHeight()
-        );
-//        Messages.sprintf(" showHideButton_hbox_sorted w: " + showHideButton_hbox_sorted.getWidth());
-//        Messages.sprintf("showHideButton_hbox_asitis w: " + showHideButton_hbox_asitis.getWidth());
-        Messages.sprintf(
-                "showHideButton_hbox_asitis w: " + showHideButton_hbox_asitis.getWidth() +
-                        " h :" + showHideButton_hbox_asitis.getHeight() +
-                        " minW: " + showHideButton_hbox_asitis.getMinWidth() +
-                        " minH: " + showHideButton_hbox_asitis.getMinHeight() +
-                        " maxW: " + showHideButton_hbox_asitis.getMaxWidth() +
-                        " maxH: " + showHideButton_hbox_asitis.getMaxHeight() +
-                        " prefW " + showHideButton_hbox_asitis.getPrefWidth() +
-                        " prefH " + showHideButton_hbox_asitis.getPrefHeight()
-        );
 
     }
 
