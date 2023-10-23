@@ -96,6 +96,8 @@ public class TableController {
 	@FXML
 	private AnchorPane tables_rootPane;
 
+	@FXML private FlowPane tableInformation_flowpane;
+
 	@FXML
 	private HBox showHideButton_hbox;
 
@@ -585,6 +587,8 @@ public class TableController {
 			return;
 		}
 		table.setVisible(!table.isVisible());
+		tableInformation_flowpane.setVisible(!table.isVisible());
+		tableInformation_flowpane.getStyleClass().add("notOk");
 		handleTableStates();
 	}
 
@@ -646,6 +650,7 @@ public class TableController {
 			buttons_hbox.setVisible(!show);
 			table_RootPane.setVisible(!show);
 			tableInformation_hbox.setVisible(!show);
+			tableInformation_flowpane.setVisible(!show);
 			showTable.set(!show);
 
 			table_Vbox.setPrefWidth(35);
@@ -668,7 +673,7 @@ public class TableController {
 			buttons_hbox.setVisible(!show);
 
 			tableInformation_hbox.setVisible(!show);
-
+			tableInformation_flowpane.setVisible(!show);
 			showTable.set(!show);
 
 			table_RootPane.setVisible(!show);
@@ -717,6 +722,7 @@ public class TableController {
 
 		table.setVisible(show);
 		tableInformation_hbox.setVisible(show);
+		tableInformation_flowpane.setVisible(show);
 		double maxWidthOnScreen = common.utils.ui.ScreenUtils.screenBouds().getWidth();
 	}
 

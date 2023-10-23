@@ -177,12 +177,17 @@ public class OperateFiles extends Task<Boolean> {
 		@Override
 		protected Integer call() throws Exception {
 
-			if (!Files.exists(Paths.get(Main.conf.getWorkDir()).toRealPath())) {
+			Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
+
+            if (!Files.exists(workDir)) {
+				Messages.sprintfError("Cannot find workdir!");
 				Messages.warningText(Main.bundle.getString("cannotFindWorkDir"));
 				cancel();
 				model_operate.stopTimeLine();
 				Main.setProcessCancelled(true);
 				return null;
+			} else {
+				Messages.sprintf("Workdir exists at " + workDir);
 			}
 			if (isCancelled()) {
 				Messages.sprintf("Copy process is cancelled");
@@ -197,6 +202,7 @@ public class OperateFiles extends Task<Boolean> {
 				return null;
 			}
 			if (!list.isEmpty()) {
+				Messages.warningText("List were NOOOOOOOOOT empty!!!!!!!");
 //				model_operate.getStart_btn().setDisable(false);
 				model_operate.getTimeline().play();
 			} else {
