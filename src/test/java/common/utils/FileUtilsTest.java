@@ -4,25 +4,38 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FileUtilsTest {
 
+
+	Logger log = Logger.getLogger(FileUtilsTest.class.getName());
+
 	@Test
 	public void testFileRename() throws IOException {
-		Path srcTest = Paths.get("src/main/resources/input/IMG.jpg");
-		Path destTest = Paths.get("src/main/resources/output/IMG.jpg");
+		Path copyFileForSourceTest = Paths.get("src","main", "resources","input", "IMG.jpg");
+		Path copyFileForDestTest = Paths.get("src","main", "resources","input", "IMG_123.jpg");
+
+		Path srcTest = Files.copy(copyFileForSourceTest,copyFileForDestTest);
+		Path destTest = Paths.get("src/main/resources/output/IMG_123.jpg");
 
 		System.out.println(
 				"srcTest: " + srcTest.toFile().getAbsolutePath() + " dest: " + destTest.toFile().getAbsolutePath());
 
 		Path renamedFile = FileUtils.renameFile(srcTest, destTest);
+		Path expectedFile = Paths.get("src/main/resources/output/IMG_1.jpg");
 
-		assertEquals("src/main/resources/output/IMG_1.jpg", renamedFile.toString());
+		log.info("copyFileForSourceTest: " + copyFileForSourceTest + " copied to " + copyFileForDestTest + " srcTest is now: " + srcTest.toString() + " destTest is now: " + destTest.toString() + " renamed file is now: " + renamedFile.toString());
+
+		assert renamedFile != null;
+		assertEquals(expectedFile.toString(), renamedFile.toString());
 
 	}
 
@@ -35,8 +48,8 @@ public class FileUtilsTest {
 				"srcTest: " + srcTest.toFile().getAbsolutePath() + " dest: " + destTest.toFile().getAbsolutePath());
 		FileInfo fileInfo = FileInfoUtils.createFileInfo(srcTest);
 		Path renamedFile = FileInfoUtils.renameFileToDate(srcTest, fileInfo);
-		
-		assertEquals("src/main/resources/input/1970-01-01 00.00.00.jpg", renamedFile.toString());
+		Path expectedFile = Paths.get("src/main/resources/input/1970-01-01 00.00.00.jpg");
+		assertEquals(expectedFile.toString(), renamedFile.toString());
 	}
 
 }

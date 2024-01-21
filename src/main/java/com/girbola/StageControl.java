@@ -45,7 +45,7 @@ public class StageControl extends Stage {
                                 Number newValue) {
                 if (Main.conf != null) {
                     Main.conf.setWindowStartPosX((double) newValue);
-                    Messages.sprintf("windowstartposX: " + newValue);
+                    //Messages.sprintf("windowstartposX: " + newValue);
                 }
             }
         });
@@ -57,7 +57,7 @@ public class StageControl extends Stage {
                                 Number newValue) {
                 if (Main.conf != null) {
                     Main.conf.setWindowStartPosY((double) newValue);
-                    Messages.sprintf("windowstartposY: " + newValue);
+                   // Messages.sprintf("windowstartposY: " + newValue);
                 }
             }
         });

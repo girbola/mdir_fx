@@ -39,9 +39,6 @@ public class FolderScannerController {
 	private Model_main model_main;
 	private Model_folderScanner model_folderScanner = new Model_folderScanner();
 
-	// private ScheduledService<Void> scanDrives;
-	// private Drive drive = new Drive();
-
 	private Scene folderScannerController_scene;
 	private Stage folderScannerController_stage;
 

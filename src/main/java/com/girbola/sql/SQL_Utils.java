@@ -349,7 +349,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 			stmt.execute(selectedFolderTable);
 			return true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			Messages.sprintf("createSelectedFoldersTable were not able to connect to");
 			return false;
 		}
 	}

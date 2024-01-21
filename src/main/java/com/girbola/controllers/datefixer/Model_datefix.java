@@ -47,6 +47,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -638,17 +639,22 @@ public class Model_datefix extends DateFixerModel {
 			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
 			FileInfo fileInfo = (FileInfo) node.getUserData();
 			if (fileInfo != null) {
-				File file = new File(fileInfo.getOrgPath());
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 				TextField tf = getTextField(node);
-				Path target = Paths.get(fileInfo.getOrgPath());
-				Path source = Paths.get(target.getRoot().toString() + tf);
+				Path sourceFile = Paths.get(fileInfo.getOrgPath());
+				Path textFieldMergedFileName = Paths.get(sourceFile.getRoot().toString() + tf);
+
+				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(sourceFile.toFile().lastModified())
+						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+
 				try {
-					Path newPath = FileUtils.renameFile(target, source);
+					Path newPath = FileUtils.renameFile(sourceFile, textFieldMergedFileName);
 					if (newPath != null) {
-						fileInfo.setOrgPath(source.toString());
-						tf.setText("" + source.getFileName());
+						FileUtils.moveFile(fileInfo, sourceFile, newPath);
+
+						fileInfo.setOrgPath(textFieldMergedFileName.toString());
+						tf.setText("" + textFieldMergedFileName.getFileName());
+					} else {
+						sprintfError("Cannot rename file: " + textFieldMergedFileName + " target: " + sourceFile );
 					}
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -659,6 +665,8 @@ public class Model_datefix extends DateFixerModel {
 //							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 //					tf.setStyle(CssStylesController.getModified_style());
 //				}
+			} else {
+				sprintf("FileInfo were getUserData were null");
 			}
 		}
 	}
