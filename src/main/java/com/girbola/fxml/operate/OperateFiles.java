@@ -177,12 +177,17 @@ public class OperateFiles extends Task<Boolean> {
 		@Override
 		protected Integer call() throws Exception {
 
-			if (!Files.exists(Paths.get(Main.conf.getWorkDir()).toRealPath())) {
+			Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
+
+            if (!Files.exists(workDir)) {
+				Messages.sprintfError("Cannot find workdir!");
 				Messages.warningText(Main.bundle.getString("cannotFindWorkDir"));
 				cancel();
 				model_operate.stopTimeLine();
 				Main.setProcessCancelled(true);
 				return null;
+			} else {
+				Messages.sprintf("Workdir exists at " + workDir);
 			}
 			if (isCancelled()) {
 				Messages.sprintf("Copy process is cancelled");
@@ -197,6 +202,7 @@ public class OperateFiles extends Task<Boolean> {
 				return null;
 			}
 			if (!list.isEmpty()) {
+				Messages.warningText("List were NOOOOOOOOOT empty!!!!!!!");
 //				model_operate.getStart_btn().setDisable(false);
 				model_operate.getTimeline().play();
 			} else {
@@ -293,32 +299,6 @@ public class OperateFiles extends Task<Boolean> {
 			}
 			model_operate.getCopyProcess_values().update();
 			return null;
-		}
-
-		private void compareFiles(Path src, Path dest) {
-			MessageDigest md;
-			try {
-				md = MessageDigest.getInstance("MD5");
-				InputStream is_src = Files.newInputStream(src);
-				DigestInputStream dis_dest_src = new DigestInputStream(is_src, md);
-
-				InputStream is_dest = Files.newInputStream(dest);
-				DigestInputStream dis_dest = new DigestInputStream(is_dest, md);
-
-				byte[] digest_Src = md.digest();
-				byte[] digest_dest = md.digest();
-				if (digest_Src == digest_dest) {
-					Messages.sprintf("SAMEEEEEEEEEEEEEEEEEE FILESSSSSSSSSSSSSSSSS!");
-				}
-//			try (InputStream is_src = Files.newInputStream(src);
-//					DigestInputStream dis = new DigestInputStream(is, md)) {
-//				/* Read decorated stream (dis) to EOF as normal... */
-//			}
-
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 		}
 
 		private boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,

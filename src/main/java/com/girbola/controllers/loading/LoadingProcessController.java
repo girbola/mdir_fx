@@ -39,7 +39,7 @@ public class LoadingProcessController {
 	@FXML
 	private Label messages_lbl;
 
-	private Model_loading model_loading;
+	private ModelLoading model_loading;
 
 	@FXML
 	private ProgressBar progressBar;
@@ -91,7 +91,7 @@ public class LoadingProcessController {
 		this.cancel_btn = cancel_btn;
 	}
 
-	public void init(Model_loading model_loading) {
+	public void init(ModelLoading model_loading) {
 		this.model_loading = model_loading;
 		this.model_loading.setMessages_lbl(messages_lbl);
 		this.model_loading.setProgressBar(progressBar);

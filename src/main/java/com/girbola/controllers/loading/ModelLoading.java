@@ -15,7 +15,7 @@ import javafx.stage.Stage;
  *
  * @author Marko Lokka
  */
-class Model_loading {
+class ModelLoading {
 
 	private Task<?> task;
 	private Label messages_lbl;

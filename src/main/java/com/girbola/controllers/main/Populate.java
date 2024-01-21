@@ -9,7 +9,7 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.beans.property.IntegerProperty;
@@ -81,7 +81,7 @@ public class Populate {
 			sprintf("SelectedFolder is: " + pt);
 		}
 		Task<List<Path>> createFileList = new SubList(list);
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(owner);
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(owner);
 		createFileList.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {

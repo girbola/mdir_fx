@@ -8,7 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.controllers.loading.LoadingProcess_Task;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -141,7 +141,7 @@ public class DateFixer extends Task<Void> {
 	protected void succeeded() {
 		sprintf("dateFixLoader.setOnSucceeded");
 
-		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
+		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 // Check if files are already in destination
 
 		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),

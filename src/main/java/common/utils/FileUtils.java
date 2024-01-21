@@ -14,10 +14,13 @@ import common.utils.date.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.Iterator;
 
@@ -125,7 +128,32 @@ public class FileUtils {
         }
     };
 
-    /* FILE FORMATS START */
+    public static boolean compareFiles(Path src, Path dest) {
+        try {
+            String checkSumSrc = getCheckSumFromFile(src);
+            String checkSumDest = getCheckSumFromFile(dest);
+
+            if (checkSumSrc.equals(checkSumDest)) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    public static String getCheckSumFromFile(Path file) {
+        try {
+            byte[] data = Files.readAllBytes(file);
+            byte[] hash = MessageDigest.getInstance("MD5").digest(data);
+
+            return new BigInteger(1, hash).toString(16);
+        } catch (IOException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }/* FILE FORMATS START */
 
     /**
      * Checks if file supports image, raw or video formats
