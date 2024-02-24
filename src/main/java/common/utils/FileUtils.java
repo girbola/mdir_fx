@@ -128,7 +128,7 @@ public class FileUtils {
         }
     };
 
-    public static boolean compareFiles(Path src, Path dest) {
+    public static boolean compareFilesChecksums(Path src, Path dest) {
         try {
             String checkSumSrc = getCheckSumFromFile(src);
             String checkSumDest = getCheckSumFromFile(dest);

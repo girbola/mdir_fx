@@ -18,6 +18,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
 import com.girbola.sql.SQL_Utils;
+import com.girbola.videothumbnailing.VideoThumnbnailator;
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -185,6 +186,7 @@ public class RenderVisibleNode {
 									break;
 								case 1:
 									if (FileUtils.supportedVideo(file)) {
+//										Task<List<BufferedImage>> convertVideo_task = VideoThumnbnailator.getVideoThumbnails(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
 										Task<List<BufferedImage>> convertVideo_task = new VideoThumbMaker(fileInfo,
 												imageView, (GUIPrefs.thumb_x_MAX - 2));
 										needToConvert_Video_list.add(convertVideo_task);
