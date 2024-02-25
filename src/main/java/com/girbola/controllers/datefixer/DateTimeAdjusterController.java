@@ -43,28 +43,22 @@ import static com.girbola.misc.Misc.getLineNumber;
 public class DateTimeAdjusterController {
 
     private final String ERROR = DateTimeAdjusterController.class.getSimpleName();
-    private GridPane df_gridPane;
+    private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
     private Model_main model_main;
     private Model_datefix model_datefix;
 
-    @FXML
-    private DatePicker end_datePicker;
-    @FXML
-    private TextField end_hour;
-    @FXML
-    private Button copy_startToEnd_btn;
-    @FXML
-    private Button selectRange_btn;
-    @FXML
-    private Button setDateTimeRange_btn;
-    @FXML
-    private Button markFilesAccordingTheDateScale_btn;
-    @FXML
-    private Button findExistsPath_btn;
-
-    @FXML
-    private void findExistsPath_btn_action(ActionEvent event) {
+    //@formatter:off
+    @FXML private DatePicker end_datePicker;
+    @FXML private TextField end_hour;
+    @FXML private Button copy_startToEnd_btn;
+    @FXML private Button selectRange_btn;
+    @FXML private Button setDateTimeRange_btn;
+    @FXML private Button markFilesAccordingTheDateScale_btn;
+    @FXML private Button findExistsPath_btn;
+    //@formatter:on
+    
+    @FXML private void findExistsPath_btn_action(ActionEvent event) {
         Messages.sprintf("findExistsPath_btn_action");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -126,11 +120,6 @@ public class DateTimeAdjusterController {
             }
 
         }
-//		for(FileInfo fileInfo : collectedList) {
-//			Node n = createNode(fileInfo);
-//		}
-//		model_datefix.getFolderInfo_full().getFileInfoList();
-//		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
@@ -148,8 +137,7 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML
-    private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
+    @FXML private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
         Messages.sprintf("markFilesAccordingTheDateScale_btn_action");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -192,8 +180,7 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML
-    private void copy_startToEnd_btn_action(ActionEvent event) {
+    @FXML private void copy_startToEnd_btn_action(ActionEvent event) {
         sprintf("Date to copy_startToEnd: ");
         start_datePicker.setValue(end_datePicker.getValue());
 
@@ -203,8 +190,7 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML
-    private void setDateTimeRange_btn_action(ActionEvent event) {
+    @FXML private void setDateTimeRange_btn_action(ActionEvent event) {
 
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("noSelectedFiles"));
@@ -263,11 +249,9 @@ public class DateTimeAdjusterController {
         }
     }
 
-    @FXML
-    private Button copy_endToStart;
+    @FXML private Button copy_endToStart;
 
-    @FXML
-    private void copy_endToStart_action(ActionEvent event) {
+    @FXML private void copy_endToStart_action(ActionEvent event) {
         start_datePicker.setValue(end_datePicker.getValue());
 
         model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
@@ -275,140 +259,101 @@ public class DateTimeAdjusterController {
         model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
 
     }
+//@formatter:off
+    @FXML private Button end_hour_btn_down;
+    @FXML private Button end_hour_btn_up;
+    @FXML private TextField end_min;
+    @FXML private Button end_min_btn_down;
+    @FXML private Button end_min_btn_up;
+    @FXML private TextField end_sec;
+    @FXML private Button end_sec_btn_down;
+    @FXML private Button end_sec_btn_up;
+    @FXML private Button set_btn;
+    @FXML private DatePicker start_datePicker;
+    @FXML private TextField start_hour;
+    @FXML private Button start_hour_btn_down;
+    @FXML private Button start_hour_btn_up;
 
-    @FXML
-    private Button end_hour_btn_down;
-    @FXML
-    private Button end_hour_btn_up;
-    @FXML
-    private TextField end_min;
-    @FXML
-    private Button end_min_btn_down;
-    @FXML
-    private Button end_min_btn_up;
-    @FXML
-    private TextField end_sec;
-    @FXML
-    private Button end_sec_btn_down;
-    @FXML
-    private Button end_sec_btn_up;
-
-    @FXML
-    private Button set_btn;
-    @FXML
-    private DatePicker start_datePicker;
-    @FXML
-    private TextField start_hour;
-    @FXML
-    private Button start_hour_btn_down;
-    @FXML
-    private Button start_hour_btn_up;
-
-    @FXML
-    private TextField start_min;
-    @FXML
-    private Button start_min_btn_down;
-    @FXML
-    private Button start_min_btn_up;
-    @FXML
-    private TextField start_sec;
-    @FXML
-    private Button start_sec_btn_down;
-    @FXML
-    private Button start_sec_btn_up;
-
-    @FXML
-    private void end_hour_action(ActionEvent event) {
+    @FXML private TextField start_min;
+    @FXML private Button start_min_btn_down;
+    @FXML private Button start_min_btn_up;
+    @FXML private TextField start_sec;
+    @FXML private Button start_sec_btn_down;
+    @FXML private Button start_sec_btn_up;
+//@formatter:on
+    @FXML private void end_hour_action(ActionEvent event) {
         model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
     }
 
-    @FXML
-    private void end_hour_btn_down_action(ActionEvent event) {
+    @FXML private void end_hour_btn_down_action(ActionEvent event) {
         model_datefix.getEnd_time().decrease_hour();
     }
 
-    @FXML
-    private void end_hour_btn_up_action(ActionEvent event) {
+    @FXML private void end_hour_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_hour();
     }
 
-    @FXML
-    private void end_min_action(ActionEvent event) {
+    @FXML private void end_min_action(ActionEvent event) {
         model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min));
     }
 
-    @FXML
-    private void end_min_btn_down(ActionEvent event) {
+    @FXML private void end_min_btn_down(ActionEvent event) {
         model_datefix.getEnd_time().decrease_min();
     }
 
-    @FXML
-    private void end_min_btn_up_action(ActionEvent event) {
+    @FXML private void end_min_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_min();
     }
 
-    @FXML
-    private void end_sec_action(ActionEvent event) {
+    @FXML private void end_sec_action(ActionEvent event) {
         model_datefix.getEnd_time().setSec(parseTextFieldToInteger(end_sec));
     }
 
-    @FXML
-    private void end_sec_btn_down_action(ActionEvent event) {
+    @FXML private void end_sec_btn_down_action(ActionEvent event) {
         model_datefix.getEnd_time().decrease_sec();
     }
 
-    @FXML
-    private void end_sec_btn_up_action(ActionEvent event) {
+    @FXML private void end_sec_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_sec();
     }
 
-    @FXML
-    private void start_hour_action(ActionEvent event) {
+    @FXML private void start_hour_action(ActionEvent event) {
         model_datefix.getStart_time().setHour(parseTextFieldToInteger(start_hour));
     }
 
-    @FXML
-    private void start_hour_btn_up_action(ActionEvent event) {
+    @FXML private void start_hour_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_hour();
     }
 
-    @FXML
-    private void start_hour_btn_down_action(ActionEvent event) {
+    @FXML private void start_hour_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_hour();
     }
 
-    @FXML
-    private void start_min_action(ActionEvent event) {
+    @FXML private void start_min_action(ActionEvent event) {
         model_datefix.getStart_time().setMin(parseTextFieldToInteger(start_min));
     }
 
-    @FXML
-    private void start_min_btn_down_action(ActionEvent event) {
+    @FXML private void start_min_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_min();
     }
 
-    @FXML
-    private void start_min_btn_up_action(ActionEvent event) {
+    @FXML private void start_min_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_min();
     }
 
-    @FXML
-    private void start_sec_action(ActionEvent event) {
+    @FXML private void start_sec_action(ActionEvent event) {
         model_datefix.getStart_time().setSec(parseTextFieldToInteger(start_sec));
     }
 
-    @FXML
-    private void start_sec_btn_down_action(ActionEvent event) {
+    @FXML private void start_sec_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_sec();
     }
 
-    @FXML
-    private void start_sec_btn_up_action(ActionEvent event) {
+    @FXML private void start_sec_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_sec();
     }
 
-    @FXML
-    private void selectRange_btn_action(ActionEvent event) {
+    @FXML private void selectRange_btn_action(ActionEvent event) {
         Messages.sprintf("selected pressed");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -620,11 +565,11 @@ public class DateTimeAdjusterController {
         return sec;
     }
 
-    public void init(Model_main aModel_main, Model_datefix aModel_datefix, GridPane aDf_gridPane,
+    public void init(Model_main aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
                      TilePane aQuickPick_tilePane) {
         this.model_main = aModel_main;
         this.model_datefix = aModel_datefix;
-        this.df_gridPane = aDf_gridPane;
+        this.df_tilePane = aTilePane;
         this.quickPick_tilePane = aQuickPick_tilePane;
         aModel_datefix.setStart_datePicker(start_datePicker);
         aModel_datefix.setEnd_datePicker(end_datePicker);

@@ -88,7 +88,26 @@ public class AddToGridPane2 extends Task<Integer> {
 		return null;
 	}
 
+
 	private void createNode(Node node) {
+		StackPane sp = (StackPane) node.lookup("#stackPane");
+		Label old_text = (Label) sp.lookup("#imageNumber");
+		if (old_text == null) {
+			Label imageNumber = createText(counter.get());
+			sp.getChildren().add(imageNumber);
+			StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
+		} else {
+			old_text.setText("" + counter.get());
+		}
+
+		model_datefix.getTilePane().getChildren().add(node);
+
+		counter.incrementAndGet();
+
+	}
+
+
+	private void createNodeGridPane(Node node) {
 		StackPane sp = (StackPane) node.lookup("#stackPane");
 		Label old_text = (Label) sp.lookup("#imageNumber");
 		if (old_text == null) {

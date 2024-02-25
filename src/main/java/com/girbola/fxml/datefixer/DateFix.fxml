@@ -656,20 +656,7 @@
 							<children>
 								<ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 									<content>
-										<GridPane fx:id="df_gridPane" gridLinesVisible="true" hgap="1.0" styleClass="imagesContainer" vgap="1.0">
-											<rowConstraints>
-												<RowConstraints fillHeight="false" maxHeight="195.0" minHeight="195.0" prefHeight="195.0" valignment="CENTER" />
-											</rowConstraints>
-											<padding>
-												<Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-											</padding>
-											<columnConstraints>
-												<ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
-												<ColumnConstraints halignment="CENTER" hgrow="NEVER" maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
-												<ColumnConstraints maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
-												<ColumnConstraints maxWidth="195.0" minWidth="195.0" prefWidth="195.0" />
-											</columnConstraints>
-										</GridPane>
+										<TilePane fx:id="df_tilePane"></TilePane>
 									</content>
 								</ScrollPane>
 							</children>

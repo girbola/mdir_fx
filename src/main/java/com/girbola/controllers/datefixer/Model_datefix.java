@@ -100,6 +100,16 @@ public class Model_datefix extends DateFixerModel {
 	private FolderInfo folderInfo_full;
 	private FolderInfo folderInfo_filtered;
 
+	private TilePane tilePane;
+
+	public TilePane getTilePane() {
+		return tilePane;
+	}
+
+	public void setTilePane(TilePane tilePane) {
+		this.tilePane = tilePane;
+	}
+
 	private GridPane gridPane;
 	private TableView<EXIF_Data_Selector> cameras_TableView;
 	private TableView<EXIF_Data_Selector> dates_TableView;
