@@ -43,7 +43,9 @@ import static com.girbola.misc.Misc.getLineNumber;
 public class DateTimeAdjusterController {
 
     private final String ERROR = DateTimeAdjusterController.class.getSimpleName();
-    private GridPane df_tilePane;
+    private TilePane df_tilePane;
+
+    //private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
     private Model_main model_main;
     private Model_datefix model_datefix;
@@ -365,7 +367,7 @@ public class DateTimeAdjusterController {
             errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
         }
         Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
-        for (Node node : model_datefix.getGridPane().getChildren()) {
+        for (Node node : model_datefix.getTilePane().getChildren()) {
             if (node instanceof VBox) {
                 Messages.sprintf("123 node name " + node.getId());
                 VBox vbox = (VBox) node;
@@ -412,7 +414,7 @@ public class DateTimeAdjusterController {
                     dateList.add(d_temp);
                     sprintf("=========ldtime: " + d_temp);
                 }
-                List<Node> list = create_listOfSelectedNodes(df_gridPane);
+                List<Node> list = create_listOfSelectedNodes();
 
                 if (list.isEmpty()) {
                     errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
@@ -485,7 +487,7 @@ public class DateTimeAdjusterController {
         changeDates_th.run();
     }
 
-    private List<Node> create_listOfSelectedNodes(GridPane df_gridpane) {
+    private List<Node> create_listOfSelectedNodes() {
         List<Node> list = new ArrayList<>();
         for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
             if (node_main instanceof VBox) {

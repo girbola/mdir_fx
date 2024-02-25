@@ -96,7 +96,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 							// data.getInfo());
 							int counter = 0;
 							if (newValue == true) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (!fi.getLocation().isEmpty()) {
@@ -110,7 +110,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 								}
 
 							} else if (newValue == false) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (has_locations(fi.getLocation(), listOfLocations)) {

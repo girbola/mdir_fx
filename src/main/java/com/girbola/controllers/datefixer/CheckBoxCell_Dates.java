@@ -88,7 +88,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 								return theList;
 							}
 							if (newValue == true) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {
@@ -98,7 +98,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 									}
 								}
 							} else if (newValue == false) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {

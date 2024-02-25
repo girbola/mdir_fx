@@ -144,8 +144,8 @@ public class DateFixer extends Task<Void> {
 		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 // Check if files are already in destination
 
-		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateGridPane(Main.scene_Switcher.getScene_dateFixer(),
-				model_datefix, loadingProcess_task);
+		Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
+				model_datefix,  model_datefix.getTilePane(), loadingProcess_task);
 		dateFixPopulateGridPane_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
 			@Override
 			public void handle(WorkerStateEvent event) {
@@ -187,13 +187,13 @@ public class DateFixer extends Task<Void> {
 	 */
 	public String getStatus(FileInfo fileInfo) {
 		if (fileInfo.isBad()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_BAD.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
 		} else if (fileInfo.isGood()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_GOOD.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
 		} else if (fileInfo.isSuggested()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_SUGGESTED.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
 		} else if (fileInfo.isVideo()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_VIDEO.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
 		}
 		return null;
 	}

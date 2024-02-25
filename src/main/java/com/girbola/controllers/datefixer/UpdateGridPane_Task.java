@@ -99,7 +99,7 @@ public class UpdateGridPane_Task extends Task<ObservableList<Node>> {
 	void addToGridPane(Model_datefix model_datefix, ObservableList<Node> obs, LoadingProcessTask lpt,
 			Stage stage) {
 
-		Task<Integer> addToGridPane_task = new AddToGridPane2(model_datefix, obs, lpt);
+		Task<Integer> addToGridPane_task = new AddToGridPane2(model_datefix, obs, lpt, model_datefix.getTilePane());
 		lpt.setTask(addToGridPane_task);
 		Thread addToGridPane_th = new Thread(addToGridPane_task, "addToGridPane_th");
 		addToGridPane_th.run();

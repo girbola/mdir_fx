@@ -34,14 +34,15 @@ public class QuickPick_Navigator {
 
 	private final static String ERROR = QuickPick_Navigator.class.getSimpleName();
 	private ScrollPane scrollPane;
-	private GridPane gridPane;
+	//private GridPane gridPane;
+	private TilePane tilePane;
 	private TilePane quickPick_tilePane;
 	private Model_datefix model_dateFix;
 
-	QuickPick_Navigator(Model_datefix aModel_dateFix, ScrollPane aScrollPane, GridPane aGridPane, TilePane aQuickPick_TilePane) {
+	QuickPick_Navigator(Model_datefix aModel_dateFix, ScrollPane aScrollPane, TilePane aTilePane, TilePane aQuickPick_TilePane) {
 		this.model_dateFix = aModel_dateFix;
 		this.scrollPane = aScrollPane;
-		this.gridPane = aGridPane;
+		this.tilePane = aTilePane;
 		this.quickPick_tilePane = aQuickPick_TilePane;
 
 		//        update();
@@ -69,7 +70,7 @@ public class QuickPick_Navigator {
 		int y = 0;
 		List<Node> list = new ArrayList<>();
 
-		for (Node n : gridPane.getChildren()) {
+		for (Node n : tilePane.getChildren()) {
 			sprintf("checkIfRedDates node: " + n);
 			if (n instanceof VBox) {
 				if (n.getId().contains("imageFrame")) {
@@ -148,19 +149,19 @@ public class QuickPick_Navigator {
 		//        sprintf("getJumpButtonState started");
 		for (String s : list) {
 			sprintf("List of jumpButtonState: " + s);
-			if (s.equals(DateFixPopulateGridPane.DATE_STATUS.DATE_BAD.getType())) {
-				return DateFixPopulateGridPane.DATE_STATUS.DATE_BAD.getType();
+			if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType())) {
+				return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
 			} else {
-				if (s.equals(DateFixPopulateGridPane.DATE_STATUS.DATE_SUGGESTED.getType())) {
-					return DateFixPopulateGridPane.DATE_STATUS.DATE_SUGGESTED.getType();
+				if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType())) {
+					return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
 				} else {
-					if (s.equals(DateFixPopulateGridPane.DATE_STATUS.DATE_VIDEO.getType())) {
-						return DateFixPopulateGridPane.DATE_STATUS.DATE_VIDEO.getType();
+					if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType())) {
+						return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
 					}
 				}
 			}
 		}
-		return DateFixPopulateGridPane.DATE_STATUS.DATE_GOOD.getType();
+		return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
 	}
 
 	/**
@@ -170,13 +171,13 @@ public class QuickPick_Navigator {
 	 */
 	public String getStatus(FileInfo fileInfo) {
 		if (fileInfo.isBad()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_BAD.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
 		} else if (fileInfo.isGood()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_GOOD.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
 		} else if (fileInfo.isSuggested()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_SUGGESTED.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
 		} else if (fileInfo.isVideo()) {
-			return DateFixPopulateGridPane.DATE_STATUS.DATE_VIDEO.getType();
+			return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
 		}
 		return null;
 	}

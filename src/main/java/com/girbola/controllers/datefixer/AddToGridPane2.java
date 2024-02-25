@@ -24,6 +24,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -47,21 +48,24 @@ public class AddToGridPane2 extends Task<Integer> {
 	private int size;
 	private LoadingProcessTask loadingProcess_Task;
 
+	private TilePane tilePane;
+
 	public AddToGridPane2(Model_datefix aModel_dateFix, ObservableList<Node> aList,
-			LoadingProcessTask loading_Process_Task) {
+			LoadingProcessTask loading_Process_Task, TilePane aTilePane) {
 		Messages.sprintf("AddToGridPane2 started: " + aList.size());
 		this.model_datefix = aModel_dateFix;
+		this.tilePane = aTilePane;
 		this.list = aList;
 		this.size = aList.size();
 		this.loadingProcess_Task = loading_Process_Task;
-		model_datefix.getGridPane().getChildren().clear();
-		sprintf("total nodes: " + model_datefix.getAllNodes().size() + " aGridPane list size is after clearing: "
-				+ list.size());
-
-		model_datefix.getGridPane().getRowConstraints().removeAll(model_datefix.getGridPane().getRowConstraints());
-		model_datefix.getGridPane().getColumnConstraints()
-				.removeAll(model_datefix.getGridPane().getColumnConstraints());
-		setGridPane_Constraints();
+//		//model_datefix.getGridPane().getChildren().clear();
+//		sprintf("total nodes: " + model_datefix.getAllNodes().size() + " aGridPane list size is after clearing: "
+//				+ list.size());
+//
+//		model_datefix.getGridPane().getRowConstraints().removeAll(model_datefix.getGridPane().getRowConstraints());
+//		model_datefix.getGridPane().getColumnConstraints()
+//				.removeAll(model_datefix.getGridPane().getColumnConstraints());
+//		setGridPane_Constraints();
 		loading_Process_Task.setMessage("Adding images");
 	}
 
@@ -107,27 +111,27 @@ public class AddToGridPane2 extends Task<Integer> {
 	}
 
 
-	private void createNodeGridPane(Node node) {
-		StackPane sp = (StackPane) node.lookup("#stackPane");
-		Label old_text = (Label) sp.lookup("#imageNumber");
-		if (old_text == null) {
-			Label imageNumber = createText(counter.get());
-			sp.getChildren().add(imageNumber);
-			StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
-		} else {
-			old_text.setText("" + counter.get());
-		}
-
-		model_datefix.getGridPane().add(node, x.get(), y.get());
-		if (x.get() >= model_datefix.getImagesPerLine() - 1) {
-			x.set(0);
-			y.incrementAndGet();
-		} else {
-			x.incrementAndGet();
-		}
-		counter.incrementAndGet();
-
-	}
+//	private void createNodeGridPane(Node node) {
+//		StackPane sp = (StackPane) node.lookup("#stackPane");
+//		Label old_text = (Label) sp.lookup("#imageNumber");
+//		if (old_text == null) {
+//			Label imageNumber = createText(counter.get());
+//			sp.getChildren().add(imageNumber);
+//			StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
+//		} else {
+//			old_text.setText("" + counter.get());
+//		}
+//
+//		model_datefix.getGridPane().add(node, x.get(), y.get());
+//		if (x.get() >= model_datefix.getImagesPerLine() - 1) {
+//			x.set(0);
+//			y.incrementAndGet();
+//		} else {
+//			x.incrementAndGet();
+//		}
+//		counter.incrementAndGet();
+//
+//	}
 
 	private FileInfo getFileInfo(StackPane sp) {
 		if (sp.getUserData() != null) {
@@ -136,18 +140,18 @@ public class AddToGridPane2 extends Task<Integer> {
 		return null;
 	}
 
-	private void setGridPane_Constraints() {
-		int imagesPerLine = defineImagesPerLine();
-		model_datefix.setImagesPerLine(imagesPerLine);
-		int rows_MAX = (int) Math.ceil((double) size / (double) (imagesPerLine));
-		if (rows_MAX == 0) {
-			rows_MAX = 1;
-		} else if (rows_MAX < 0) {
-			errorSmth(ERROR, "", null, getLineNumber(), true);
-		}
-		UI_Tools.setGridColumnConstraints(model_datefix.getGridPane(), imagesPerLine);
-		UI_Tools.setGridRowConstraints(model_datefix.getGridPane(), rows_MAX);
-	}
+//	private void setGridPane_Constraints() {
+//		int imagesPerLine = defineImagesPerLine();
+//		model_datefix.setImagesPerLine(imagesPerLine);
+//		int rows_MAX = (int) Math.ceil((double) size / (double) (imagesPerLine));
+//		if (rows_MAX == 0) {
+//			rows_MAX = 1;
+//		} else if (rows_MAX < 0) {
+//			errorSmth(ERROR, "", null, getLineNumber(), true);
+//		}
+////		UI_Tools.setGridColumnConstraints(model_datefix.getGridPane(), imagesPerLine);
+////		UI_Tools.setGridRowConstraints(model_datefix.getGridPane(), rows_MAX);
+//	}
 
 	private int defineImagesPerLine() {
 		return (int) Math.floor((double) (ScreenUtils.screenBouds().getWidth()
@@ -177,13 +181,13 @@ public class AddToGridPane2 extends Task<Integer> {
 //				model_datefix.getScrollPane().setVvalue(-1);
 //				model_datefix.getScrollPane().setVvalue(0);
 
-			model_datefix.updateAllInfos(model_datefix.getGridPane());
+			model_datefix.updateAllInfos(model_datefix.getTilePane());
 			loadingProcess_Task.closeStage();
 		});
 		loadingProcess_Task.closeStage();
-		sprintf("gridPane height: " + model_datefix.getGridPane().getHeight() + " list size: " + list.size());
+		sprintf("tilePane height: " + tilePane.getHeight() + " list size: " + list.size());
 		// model_datefix.updateAllInfos();
-		model_datefix.getGridPane().addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.SECONDARY) {
 				if (event.getTarget() instanceof VBox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
 					VBox vbox = (VBox) event.getTarget();

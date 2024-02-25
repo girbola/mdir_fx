@@ -71,10 +71,15 @@
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
-            <artifactId>ikonli-bootstrapicons-pack</artifactId>
+            <artifactId>ikonli-core</artifactId>
             <version>12.3.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-bootstrapicons-pack</artifactId>
+            <version>12.3.1</version>
+        </dependency>
 
         <!-- JavaFX deps -->
         <dependency>
@@ -113,11 +118,6 @@
             <artifactId>metadata-extractor</artifactId>
             <version>${metadata-extractor.version}</version>
         </dependency>
-        <!--		<dependency>-->
-        <!--			<groupId>uk.co.caprica</groupId>-->
-        <!--			<artifactId>vlcj</artifactId>-->
-        <!--			<version>${vlcj.version}</version>-->
-        <!--		</dependency>-->
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj-javafx</artifactId>
@@ -133,6 +133,7 @@
             <artifactId>javacv-platform</artifactId>
             <version>${javacv-platform.version}</version>
         </dependency>
+
         <!-- Twelvemonkeys -->
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
