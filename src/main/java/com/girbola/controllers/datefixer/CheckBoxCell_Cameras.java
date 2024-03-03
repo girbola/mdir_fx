@@ -57,9 +57,9 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     // setItem(newValue);
-                    Task<ObservableList<Node>> updateCamera_Task = new Task<ObservableList<Node>>() {
+                    Task<ObservableList<Node>> updateCamera_Task = new Task<>() {
                         @Override
-                        protected ObservableList<Node> call() throws Exception {
+                        protected ObservableList<Node> call() {
                             model_DateFix.getCameras_TableView().setDisable(true);
                             model_DateFix.getDates_TableView().setDisable(true);
                             model_DateFix.getEvents_TableView().setDisable(true);

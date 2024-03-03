@@ -32,6 +32,7 @@
         </developer>
     </developers>
     <properties>
+        <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
         <imageio-jpeg.version>3.8.3</imageio-jpeg.version>
         <imageio-tiff.version>3.8.3</imageio-tiff.version>
         <javacv-platform.version>1.5.8</javacv-platform.version>
@@ -49,9 +50,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.3</slf4j.version>
         <sqlite-jdbc.version>3.41.2.2</sqlite-jdbc.version>
+        <thumbnailator.version>[0.4, 0.5]</thumbnailator.version>
         <vlcj-javafx.version>1.2.0</vlcj-javafx.version>
         <vlcj.version>5.0.0</vlcj.version>
-        <thumbnailator.version>[0.4, 0.5]</thumbnailator.version>
     </properties>
 
     <dependencies>
@@ -66,19 +67,19 @@
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli-javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-core</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli-javafx.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-bootstrapicons-pack</artifactId>
-            <version>12.3.1</version>
+            <version>${ikonli-javafx.version}</version>
         </dependency>
 
         <!-- JavaFX deps -->
