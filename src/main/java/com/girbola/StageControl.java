@@ -20,12 +20,15 @@ public class StageControl extends Stage {
 
         primaryStage.setTitle(Main.conf.getProgramName());
 
-        primaryStage.setMinWidth(800);
-        primaryStage.setMinHeight(600);
-        primaryStage.setX(Main.conf.getWindowStartPosX());
-        primaryStage.setY(Main.conf.getWindowStartPosY());
-        primaryStage.setWidth(Main.conf.getWindowStartWidth());
-        primaryStage.setHeight(Main.conf.getWindowStartHeight());
+//        primaryStage.setMinWidth(800);
+//        primaryStage.setMinHeight(600);
+//
+//        primaryStage.setX(Main.conf.getWindowStartPosX());
+//        primaryStage.setY(Main.conf.getWindowStartPosY());
+//        primaryStage.setWidth(Main.conf.getWindowStartWidth());
+//        primaryStage.setHeight(Main.conf.getWindowStartHeight());
+
+        Messages.sprintf("Configucatiooneonroganerog: " + Main.conf.toString());
 
         primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
             @Override
@@ -45,7 +48,7 @@ public class StageControl extends Stage {
                                 Number newValue) {
                 if (Main.conf != null) {
                     Main.conf.setWindowStartPosX((double) newValue);
-                    //Messages.sprintf("windowstartposX: " + newValue);
+                    Messages.sprintf("windowstartposX: " + newValue);
                 }
             }
         });
@@ -57,7 +60,7 @@ public class StageControl extends Stage {
                                 Number newValue) {
                 if (Main.conf != null) {
                     Main.conf.setWindowStartPosY((double) newValue);
-                   // Messages.sprintf("windowstartposY: " + newValue);
+                   Messages.sprintf("windowstartposY: " + newValue);
                 }
             }
         });
@@ -87,4 +90,18 @@ public class StageControl extends Stage {
         });
     }
 
+    public void setStageBoundarys() {
+        primaryStage.setX(Main.conf.getWindowStartPosX());
+        primaryStage.setY(Main.conf.getWindowStartPosY());
+        primaryStage.setWidth(Main.conf.getWindowStartWidth());
+        primaryStage.setHeight(Main.conf.getWindowStartHeight());
+        Messages.sprintf("AEORGAEOTJHAETh:" + Main.conf.toString());
+    }
+
+    public void setStageManually() {
+        primaryStage.setX(30);
+        primaryStage.setY(30);
+        primaryStage.setWidth(1024);
+        primaryStage.setHeight(700);
+    }
 }

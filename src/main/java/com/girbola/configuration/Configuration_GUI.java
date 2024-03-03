@@ -12,6 +12,27 @@ import javafx.beans.property.*;
  * @author Marko Lokka
  */
 class Configuration_GUI {
+	@Override
+	public String toString() {
+		return "Configuration_GUI{" +
+				"betterQualityThumbs=" + betterQualityThumbs +
+				", confirmOnExit=" + confirmOnExit +
+				", showHints=" + showHints +
+				", showFullPath=" + showFullPath +
+				", showTooltips=" + showTooltips +
+				", savingThumb=" + savingThumb +
+				", tableShow_sortIt=" + tableShow_sortIt +
+				", tableShow_sorted=" + tableShow_sorted +
+				", tableShow_asItIs=" + tableShow_asItIs +
+				", windowStartPosX=" + windowStartPosX +
+				", windowStartPosY=" + windowStartPosY +
+				", windowStartWidth=" + windowStartWidth +
+				", windowStartHeight=" + windowStartHeight +
+				", workDir=" + workDir +
+				", workDirSerialNumber=" + workDirSerialNumber +
+				", themePath='" + themePath + '\'' +
+				'}';
+	}
 
 	private BooleanProperty betterQualityThumbs = new SimpleBooleanProperty(false);
 	private BooleanProperty confirmOnExit = new SimpleBooleanProperty(true);

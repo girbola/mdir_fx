@@ -124,6 +124,7 @@ public class MainController {
 		tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
 		tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
 
+
 //		tables_hbox.widthProperty().addListener(new ChangeListener<Number>() {
 //
 //			@Override

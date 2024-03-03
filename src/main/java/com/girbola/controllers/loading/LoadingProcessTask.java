@@ -115,32 +115,22 @@ public class LoadingProcessTask {
 			yOffset = loadingStage.getY();
 
 			Main.centerWindowDialog(loadingStage);
-			loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					xOffset = (loadingStage.getX() - event.getScreenX());
-					yOffset = (loadingStage.getY() - event.getScreenY());
-					sprintf("yOffset: " + yOffset);
-				}
+			loadingScene.setOnMousePressed(event -> {
+				xOffset = (loadingStage.getX() - event.getScreenX());
+				yOffset = (loadingStage.getY() - event.getScreenY());
+				sprintf("yOffset: " + yOffset);
 			});
 
-			loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					loadingStage.setX(event.getScreenX() + xOffset);
-					if (event.getScreenY() <= 0) {
-						loadingStage.setY(0);
-					} else {
-						loadingStage.setY(event.getScreenY() + yOffset);
-					}
-
-					sprintf("event.getScreenY(); = " + event.getScreenY());
+			loadingScene.setOnMouseDragged(event -> {
+				loadingStage.setX(event.getScreenX() + xOffset);
+				if (event.getScreenY() <= 0) {
+					loadingStage.setY(0);
+				} else {
+					loadingStage.setY(event.getScreenY() + yOffset);
 				}
-			});
 
-//		loadingStage.initStyle(StageStyle.UTILITY);
+				sprintf("event.getScreenY(); = " + event.getScreenY());
+			});
 
 			loadingStage.setScene(loadingScene);
 			loadingStage.setAlwaysOnTop(true);
