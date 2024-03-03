@@ -30,62 +30,36 @@ public class StageControl extends Stage {
 
         Messages.sprintf("Configucatiooneonroganerog: " + Main.conf.toString());
 
-        primaryStage.fullScreenProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
-                                Boolean newValue) {
-                Messages.sprintf("stage fullScreen changed: " + newValue);
-            }
-        });
+        primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> Messages.sprintf("stage fullScreen changed: " + newValue));
 
         primaryStage.setOnCloseRequest(modelMain.dontExit);
 
 
-        primaryStage.xProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                Number newValue) {
-                if (Main.conf != null) {
-                    Main.conf.setWindowStartPosX((double) newValue);
-                    Messages.sprintf("windowstartposX: " + newValue);
-                }
+        primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
+            if (Main.conf != null) {
+                Main.conf.setWindowStartPosX((double) newValue);
+                Messages.sprintf("windowstartposX: " + newValue);
             }
         });
 
-        primaryStage.yProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                Number newValue) {
-                if (Main.conf != null) {
-                    Main.conf.setWindowStartPosY((double) newValue);
-                   Messages.sprintf("windowstartposY: " + newValue);
-                }
+        primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
+            if (Main.conf != null) {
+                Main.conf.setWindowStartPosY((double) newValue);
+               Messages.sprintf("windowstartposY: " + newValue);
             }
         });
 
-        primaryStage.widthProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                Number newValue) {
-                if (Main.conf != null) {
-                    Main.conf.setWindowStartWidth((double) newValue);
-                    Messages.sprintf("setWindowStartWidth: " + newValue);
-                }
+        primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
+            if (Main.conf != null) {
+                Main.conf.setWindowStartWidth((double) newValue);
+                Messages.sprintf("setWindowStartWidth: " + newValue);
             }
         });
 
-        primaryStage.heightProperty().addListener(new ChangeListener<Number>() {
-
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue,
-                                Number newValue) {
-                if (Main.conf != null) {
-                    Main.conf.setWindowStartHeight((double) newValue);
-                    Messages.sprintf("setWindowStartHeight: " + newValue);
-                }
+        primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
+            if (Main.conf != null) {
+                Main.conf.setWindowStartHeight((double) newValue);
+                Messages.sprintf("setWindowStartHeight: " + newValue);
             }
         });
     }

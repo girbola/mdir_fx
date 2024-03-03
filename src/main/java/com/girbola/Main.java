@@ -35,13 +35,9 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
-import common.utils.ui.ScreenUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -321,22 +317,14 @@ Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
         }
         changed.set(value);
         if (changed.get() == true) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    getMain_stage().setTitle("");
-                    getMain_stage().setTitle("* " + conf.getProgramName());
-                }
+            Platform.runLater(() -> {
+                getMain_stage().setTitle("");
+                getMain_stage().setTitle("* " + conf.getProgramName());
             });
         } else {
-            Platform.runLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    getMain_stage().setTitle("");
-                    getMain_stage().setTitle(conf.getProgramName());
-                }
-
+            Platform.runLater(() -> {
+                getMain_stage().setTitle("");
+                getMain_stage().setTitle(conf.getProgramName());
             });
         }
     }

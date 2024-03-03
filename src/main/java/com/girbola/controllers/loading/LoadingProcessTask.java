@@ -151,18 +151,8 @@ public class LoadingProcessTask {
 	private void bind() {
 		if (modelLoading.getTask() != null) {
 			sprintf("progressBar or task arent null");
-			modelLoading.getTask().progressProperty().addListener(new ChangeListener<Number>() {
-				@Override
-				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-					modelLoading.getProgressBar().setProgress((double) newValue);
-				}
-			});
-			modelLoading.getTask().messageProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					modelLoading.getMessages_lbl().setText(newValue);
-				}
-			});
+			modelLoading.getTask().progressProperty().addListener((observable, oldValue, newValue) -> modelLoading.getProgressBar().setProgress((double) newValue));
+			modelLoading.getTask().messageProperty().addListener((observable, oldValue, newValue) -> modelLoading.getMessages_lbl().setText(newValue));
 
 		} else {
 			sprintf("task were null BIND()");
@@ -178,13 +168,7 @@ public class LoadingProcessTask {
 		KeyFrame key = new KeyFrame(Duration.millis(2000),
 				new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
-		timeline.setOnFinished(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Main.scene_Switcher.getWindow_loadingprogress().close();
-			}
-		});
+		timeline.setOnFinished(event -> Main.scene_Switcher.getWindow_loadingprogress().close());
 		timeline.play();
 
 		Platform.runLater(() -> {
