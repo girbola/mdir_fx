@@ -81,7 +81,7 @@ public class StageControl extends Stage {
                                 Number newValue) {
                 if (Main.conf != null) {
                     Main.conf.setWindowStartHeight((double) newValue);
-                    Messages.sprintf("setWindowStartWidth: " + newValue);
+                    Messages.sprintf("setWindowStartHeight: " + newValue);
                 }
             }
         });
