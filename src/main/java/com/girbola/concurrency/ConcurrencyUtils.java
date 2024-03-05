@@ -6,6 +6,7 @@
  */
 package com.girbola.concurrency;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -29,18 +30,23 @@ public class ConcurrencyUtils {
     	return exec[execCounter.get()];
     }
 
+    public static synchronized int incrementAndGetExecCounter() {
+        int newVal = execCounter.incrementAndGet();
+        if(newVal >= exec.length) {
+            // Increase the size of the array if necessary
+            exec = Arrays.copyOf(exec, newVal + 1);
+        }
+        return newVal;
+    }
+
     public static void initSingleExecutionService() {
         stopExecThreadNow();
-    	execCounter.incrementAndGet();
-        sprintf("========NEW initExecutionService initializing execThreads: " + getExecCounter());
+        int currentCounter = incrementAndGetExecCounter();
+        sprintf("========NEW initExecutionService initializing execThreads: " + currentCounter);
 
-        if (getExecCounter() >= 1) {
-            exec = new ExecutorService[getExecCounter() + 1];
-            sprintf("initExecutionService execThreads is: " + getExecCounter());
-        }
         exec[getExecCounter()] = Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r);
-            t.setName("Markon ExecutionService thread: " + getExecCounter());
+            t.setName("MDir_FX ExecutionService thread: " + getExecCounter());
             t.setDaemon(true); // allows app to exit if tasks are running
             return t;
         });
@@ -48,27 +54,30 @@ public class ConcurrencyUtils {
     }
 
     public static void stopExecThreadNow() {
-        if (exec[getExecCounter()] != null) {
-            if (!exec[getExecCounter()].isTerminated()) {
-                exec[getExecCounter()].shutdownNow();
-                sprintf("execThread stopped: " + getExecCounter());
+        int currentCounter = execCounter.get();
+
+        if (exec[currentCounter] != null) {
+            if (!exec[currentCounter].isTerminated()) {
+                exec[currentCounter].shutdownNow();
+                sprintf("execThread stopped: " + currentCounter);
             }
-            if (!exec[getExecCounter()].isShutdown()) {
-                exec[getExecCounter()].shutdownNow();
-                sprintf("execThread stopped: " + getExecCounter());
+            if (!exec[currentCounter].isShutdown()) {
+                exec[currentCounter].shutdownNow();
+                sprintf("execThread stopped: " + currentCounter);
             }
         }
     }
 
     public static void stopExecThread() {
-        if (exec[getExecCounter()] != null) {
-            if (!exec[getExecCounter()].isTerminated()) {
-                exec[getExecCounter()].shutdown();
-                sprintf("execThread stopped: " + getExecCounter());
+        int currentCounter = execCounter.get();
+        if (exec[currentCounter] != null) {
+            if (!exec[currentCounter].isTerminated()) {
+                exec[currentCounter].shutdown();
+                sprintf("execThread stopped: " + currentCounter);
             }
-            if (!exec[getExecCounter()].isShutdown()) {
-                exec[getExecCounter()].shutdown();
-                sprintf("execThread stopped: " + getExecCounter());
+            if (!exec[currentCounter].isShutdown()) {
+                exec[currentCounter].shutdown();
+                sprintf("execThread stopped: " + currentCounter);
             }
         }
     }
