@@ -14,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.girbola.messages.Messages.sprintf;
 
 /**
- *
  * @author Marko Lokka
  */
 public class ConcurrencyUtils {
@@ -26,13 +25,14 @@ public class ConcurrencyUtils {
     public static int getExecCounter() {
         return execCounter.get();
     }
+
     public static ExecutorService getExec() {
-    	return exec[execCounter.get()];
+        return exec[execCounter.get()];
     }
 
     public static synchronized int incrementAndGetExecCounter() {
         int newVal = execCounter.incrementAndGet();
-        if(newVal >= exec.length) {
+        if (newVal >= exec.length) {
             // Increase the size of the array if necessary
             exec = Arrays.copyOf(exec, newVal + 1);
         }
