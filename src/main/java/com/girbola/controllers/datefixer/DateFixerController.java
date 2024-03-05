@@ -1089,12 +1089,10 @@ public class DateFixerController {
 
 	}
 
-	@FXML
-	private void hideRightInfo_btn_action(ActionEvent event) {
+	@FXML private void hideRightInfo_btn_action(ActionEvent event) {
 		if (model_datefix.getRightInfo_visible()) {
 			hideRightInfo_btn.setRotate(0);
 			rightInfoPanel_scrollPane.setVisible(false);
-
 			rightInfoPanel_scrollPane.setMinWidth(0);
 			rightInfoPanel_scrollPane.setPrefWidth(0);
 			rightInfoPanel_scrollPane.setMaxWidth(0);

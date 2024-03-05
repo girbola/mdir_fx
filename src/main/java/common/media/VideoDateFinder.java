@@ -19,15 +19,15 @@ import static common.utils.FileUtils.supportedVideo;
 public class VideoDateFinder {
 
     public static Path hasTHMFile(Path path) {
-	String orgFileName = FileNameParseUtils.parseFileExtentension(path);
-	Path thmFile = Paths.get(orgFileName + ".THM");
-	sprintf("trying to find thmFile. File name is: " + thmFile);
-	if (Files.exists(thmFile)) {
-	    sprintf("THM FILE FOUND: " + thmFile);
-	    return thmFile;
-	} else {
-	    return null;
-	}
+        String orgFileName = FileNameParseUtils.parseFileExtentension(path);
+        Path thmFile = Paths.get(orgFileName + ".THM");
+        sprintf("trying to find thmFile. File name is: " + thmFile);
+        if (Files.exists(thmFile)) {
+            sprintf("THM FILE FOUND: " + thmFile);
+            return thmFile;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -40,21 +40,21 @@ public class VideoDateFinder {
      */
     public static Path getThumb_External_Image_FileForVideo(Path file) {
 
-	String orgFileName = FileUtils.getExtension(file.toFile().toString());
-	if (supportedVideo(file)) {
-	    sprintf("thmFile: " + file.getFileName());
-	    // int last =
-	    Path thmFile = Paths.get(orgFileName + ".THM");
-	    if (Files.exists(thmFile)) {
-		sprintf("THM FILE FOUND: " + thmFile);
-		return thmFile;
-	    } else {
-		sprintf("THM FILE NOT FOUND: " + thmFile);
-		return null;
-	    }
+        String orgFileName = FileUtils.getExtension(file.toFile().toString());
+        if (supportedVideo(file)) {
+            sprintf("thmFile: " + file.getFileName());
+            // int last =
+            Path thmFile = Paths.get(orgFileName + ".THM");
+            if (Files.exists(thmFile)) {
+                sprintf("THM FILE FOUND: " + thmFile);
+                return thmFile;
+            } else {
+                sprintf("THM FILE NOT FOUND: " + thmFile);
+                return null;
+            }
 
-	}
+        }
 
-	return null;
+        return null;
     }
 }

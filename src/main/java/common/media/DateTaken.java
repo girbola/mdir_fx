@@ -35,15 +35,13 @@ public class DateTaken {
 
 	public static String getCameraModel(Metadata metaData) {
 		Directory directory2 = metaData.getFirstDirectoryOfType(ExifIFD0Directory.class);
-		String st = null;
+		String model = null;
 		try {
-			st = directory2.getString(0x110);
+			model = directory2.getString(0x110);
 		} catch (Exception e) {
-			// sprintf("getCameraModel Exception e: " + e.getMessage());
 			return null;
 		}
-		// sprintf("Camera model is: " + st);
-		return st;
+		return model;
 	}
 
 	public static int getMetaDataOrientation(Metadata metaData) {
