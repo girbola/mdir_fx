@@ -151,61 +151,44 @@ public class DateFixerController {
 
     @FXML
     private void selectRangeOfNumbers_btn_action(ActionEvent event) {
-        int startFrom = -1;
-        int endTo = -1;
-        try {
-            startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
-            endTo = Integer.parseInt(endToNumber_tf.getText().trim());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
+        int startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
+        int endTo = Integer.parseInt(endToNumber_tf.getText().trim());
+
         model_datefix.getSelectionModel().clearAll();
-
-        for (Node node : model_datefix.getTilePane().getChildren()) {
-            Messages.sprintf("node: " + node.getId());
-
-            if (node instanceof VBox) {
-                Messages.sprintf("2node name: " + node.getId());
-                VBox vbox = (VBox) node;
-                if (vbox.getId().equals("imageFrame")) {
-                    for (Node hbox : vbox.getChildren()) {
-                        if (hbox instanceof StackPane) {
-                            for (Node stp : ((StackPane) hbox).getChildren()) {
-                                if (stp instanceof Label label) {
-                                    int number = getInteger(label.getText());
-                                    if(number < 0) {
-                                        continue;
-                                    }
-                                    // 4 5 10
-                                    if (startFrom <= number && endTo >= number) {
-                                        model_datefix.getSelectionModel().addOnly(vbox);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        try {
-            Messages.sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
-            int start = Integer.parseInt(startFromNumber_tf.getText());
-
-            Messages.sprintf("Start will be: " + start);
-            startFromNumber_tf.getStyleClass().remove("notValidNumber");
-        } catch (Exception e) {
-            startFromNumber_tf.getStyleClass().add("notValidNumber");
-        }
-
-        try {
-            Messages.sprintf("endToNumber_tf.getText(): " + endToNumber_tf.getText());
-            int end = Integer.parseInt(endToNumber_tf.getText());
-            endToNumber_tf.getStyleClass().remove("notValidNumber");
-            Messages.sprintf("End will be: " + end);
-        } catch (Exception e) {
-            endToNumber_tf.getStyleClass().add("notValidNumber");
-        }
+        model_datefix.getTilePane().getChildren().stream()
+                .filter(node -> node instanceof VBox)
+                .map(node -> (VBox) node)
+                .filter(vbox -> vbox.getId().equals("imageFrame"))
+                .forEach(vbox -> vbox.getChildren().stream()
+                        .filter(hbox -> hbox instanceof StackPane)
+                        .forEach(hbox -> ((StackPane) hbox).getChildren().stream()
+                                .filter(stp -> stp instanceof Label)
+                                .map(stp -> (Label) stp)
+                                .map(Label::getText)
+                                .map(this::getInteger)
+                                .filter(number -> number >= 0 && startFrom <= number && endTo >= number)
+                                .forEach(number -> model_datefix.getSelectionModel().addOnly(vbox)))
+                );
+//
+//        try {
+//            sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
+//            int start = Integer.parseInt(startFromNumber_tf.getText());
+//
+//            sprintf("Start will be: " + start);
+//            startFromNumber_tf.getStyleClass().remove("notValidNumber");
+//        } catch (Exception e) {
+//            startFromNumber_tf.getStyleClass().add("notValidNumber");
+//        }
+//
+//        try {
+//            sprintf("endToNumber_tf.getText(): " + endToNumber_tf.getText());
+//            int end = Integer.parseInt(endToNumber_tf.getText());
+//            endToNumber_tf.getStyleClass().remove("notValidNumber");
+//            sprintf("End will be: " + end);
+//        } catch (Exception e) {
+//            endToNumber_tf.getStyleClass().add("notValidNumber");
+//        }
     }
 
     private int getInteger(String value) {
@@ -279,16 +262,16 @@ public class DateFixerController {
     @FXML
     private void addToUnsorted_btn_action(ActionEvent event) {
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
         if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-            warningText(Main.bundle.getString("workDirHasNotConnected"));
+            warningText(bundle.getString("workDirHasNotConnected"));
             return;
         }
         ConcurrencyUtils.stopExecThread();
 
-        Messages.warningText("Not ready yet!");
+        warningText("Not ready yet!");
     }
 
     @FXML
@@ -297,11 +280,11 @@ public class DateFixerController {
         // Copy files to workdir root as it is. If folder name is empty files will be
         // under Unsorted
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
         if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-            warningText(Main.bundle.getString("workDirHasNotConnected"));
+            warningText(bundle.getString("workDirHasNotConnected"));
             return;
         }
         ConcurrencyUtils.stopExecThread();
@@ -314,16 +297,16 @@ public class DateFixerController {
                 FileInfo fileInfo = (FileInfo) n.getUserData();
                 Path source = Paths.get(fileInfo.getOrgPath());
                 Path dest = DestinationResolver.getDestinationFileNameAsItIs(source, fileInfo);
-                Messages.sprintf("Dest: " + dest);
+                sprintf("Dest: " + dest);
                 if (dest != null && Main.conf.getDrive_connected()) {
-                    Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
+                    sprintf("copyToMisc_btn_action dest is: " + dest);
                     fileInfo.setWorkDir(Main.conf.getWorkDir());
                     fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
                     fileInfo.setDestination_Path(dest.toString());
                     fileInfo.setCopied(false);
                     fileInfo_list.add(fileInfo);
                 } else {
-                    Messages.sprintf("Dest were null. process is about to be cancelled");
+                    sprintf("Dest were null. process is about to be cancelled");
                     break;
                 }
             }
@@ -333,13 +316,13 @@ public class DateFixerController {
                 SceneNameType.DATEFIXER.getType());
         operateFiles.setOnSucceeded((workerStateEvent) -> {
 //			operateFiles.get
-            Messages.sprintf("operateFiles Succeeded");
+            sprintf("operateFiles Succeeded");
         });
         operateFiles.setOnCancelled((workerStateEvent) -> {
-            Messages.sprintf("operateFiles CANCELLED");
+            sprintf("operateFiles CANCELLED");
         });
         operateFiles.setOnFailed((workerStateEvent) -> {
-            Messages.sprintf("operateFiles FAILED");
+            sprintf("operateFiles FAILED");
             Main.setProcessCancelled(true);
         });
         Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
@@ -350,11 +333,11 @@ public class DateFixerController {
     @FXML
     private void addToBatch_btn_action(ActionEvent event) {
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
         if (!Files.exists(Paths.get(Main.conf.getWorkDir()))) {
-            warningText(Main.bundle.getString("workDirHasNotConnected"));
+            warningText(bundle.getString("workDirHasNotConnected"));
             return;
         }
         ConcurrencyUtils.stopExecThread();
@@ -367,14 +350,14 @@ public class DateFixerController {
                 Path source = Paths.get(fileInfo.getOrgPath());
                 Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
                 if (dest != null) {
-                    Messages.sprintf("blaaadestination is: " + dest);
+                    sprintf("blaaadestination is: " + dest);
                     fileInfo.setWorkDir(Main.conf.getWorkDir());
                     fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
                     fileInfo.setDestination_Path(dest.toString());
                     fileInfo.setCopied(false);
                     fileInfo_list.add(fileInfo);
                 } else {
-                    Messages.sprintf("Dest were null. process is about to be cancelled");
+                    sprintf("Dest were null. process is about to be cancelled");
                     break;
                 }
             }
@@ -383,7 +366,7 @@ public class DateFixerController {
         for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
             if (n instanceof VBox && n.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) n.getUserData();
-                Messages.sprintf(
+                sprintf(
                         "destination is: " + fileInfo.getDestination_Path() + " isCopied?: " + fileInfo.isCopied());
             }
         }
@@ -433,10 +416,10 @@ public class DateFixerController {
     @FXML
     private void cameras_hide_Deselected_btn_action(ActionEvent event) {
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            Messages.warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
-        Messages.sprintf("cameras_hide_Deselected_btn_action starting");
+        sprintf("cameras_hide_Deselected_btn_action starting");
 //		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
 //		loadingProcess_task.setTask(null);
 //		UpdateGridPane_Task.updateGridPaneContent(model_datefix, model_datefix.getSelectionModel().getSelectionList(),
@@ -455,7 +438,7 @@ public class DateFixerController {
 
     @FXML
     private void cameras_show_all_btn_action(ActionEvent event) {
-        Messages.sprintf("cameras_show_all_btn_action starting");
+        sprintf("cameras_show_all_btn_action starting");
         model_datefix.getSelectionModel().clearAll();
         model_datefix.deselectAllExifDataSelectors();
 //		LoadingProcess_Task loadingProcess_task = new LoadingProcess_Task(Main.scene_Switcher.getWindow());
@@ -480,7 +463,7 @@ public class DateFixerController {
     @FXML
     private void folderize_btn_action(ActionEvent event) {
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         } else {
             ConcurrencyUtils.stopExecThread();
@@ -491,11 +474,11 @@ public class DateFixerController {
                         bundle);
                 parent = loader.load();
                 if (model_main == null) {
-                    log.error(Main.bundle.getString("somethingWentWrong"));
-                    Messages.errorSmth(log.getName(), Main.bundle.getString("somethingWentWrong"), null,
+                    log.error(bundle.getString("somethingWentWrong"));
+                    Messages.errorSmth(log.getName(), bundle.getString("somethingWentWrong"), null,
                             Misc.getLineNumber(), true);
                 }
-                Messages.warningText("model_main is null? " + (model_main == null ? true : false));
+                warningText("model_main is null? " + (model_main == null ? true : false));
                 AskEventDialogController askEventDialogController = (AskEventDialogController) loader.getController();
                 askEventDialogController.init(model_main, model_datefix);
 
@@ -548,13 +531,13 @@ public class DateFixerController {
 
     @FXML
     private void updateDate_btn_action(ActionEvent event) {
-        Messages.warningText("updateDate_btn_action Not ready yet");
+        warningText("updateDate_btn_action Not ready yet");
     }
 
     @FXML
     private void accept_dates_btn_action(ActionEvent event) {
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
         for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
@@ -596,10 +579,10 @@ public class DateFixerController {
 
     @FXML
     private void close_btn_action(ActionEvent event) {
-        Messages.sprintf("Close button pressed");
+        sprintf("Close button pressed");
         Main.scene_Switcher.getWindow().getOnCloseRequest()
                 .handle(new WindowEvent(Main.scene_Switcher.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
-        model_main.getMonitorExternalDriveConnectivity().start();
+        model_main.getMonitorExternalDriveConnectivity().restart();
     }
 
     private Button getAcceptButton(Node node) {
@@ -634,7 +617,7 @@ public class DateFixerController {
         this.model_datefix.setCurrentFolderPath(currentPath);
         this.model_datefix.setFolderInfo_full(folderInfo);
         this.model_datefix.setTilePane(df_tilePane);
-        Messages.sprintf(model_datefix.getTilePane() == null ? "NUUUUU" : model_datefix.getTilePane().getId());
+        sprintf(model_datefix.getTilePane() == null ? "NUUUUU" : model_datefix.getTilePane().getId());
 
         //this.model_datefix.setGridPane(df_gridPane);
         this.model_datefix.setScrollPane(df_scrollPane);
@@ -714,7 +697,7 @@ public class DateFixerController {
         Main.scene_Switcher.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
-                Messages.sprintf("Close request pressed");
+                sprintf("Close request pressed");
                 model_datefix.getSelector_exec().shutdownNow();
                 model_datefix.exitDateFixerWindow(model_datefix.getTilePane(), Main.scene_Switcher.getWindow(), event);
                 // TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
@@ -724,7 +707,7 @@ public class DateFixerController {
         });
         model_datefix.getSelectionModel().getSelectionList().addListener(new ListChangeListener<Node>() {
             @Override
-            public void onChanged(ListChangeListener.Change<? extends Node> c) {
+            public void onChanged(Change<? extends Node> c) {
                 selected.setText("" + model_datefix.getSelectionModel().getSelectionList().size());
             }
         });
@@ -799,7 +782,7 @@ public class DateFixerController {
 
     @FXML
     private void select_video_bad_btn_action(ActionEvent event) {
-        Messages.sprintf("select_video_bad_btn_action");
+        sprintf("select_video_bad_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             sprintf("video_good_btn_action: " + root);
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -815,7 +798,7 @@ public class DateFixerController {
 
     @FXML
     private void select_video_good_btn_action(ActionEvent event) {
-        Messages.sprintf("select_video_good_btn_action");
+        sprintf("select_video_good_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
@@ -830,7 +813,7 @@ public class DateFixerController {
 
     @FXML
     private void select_modified_video_btn_action(ActionEvent event) {
-        Messages.sprintf("select_modified_video_btn_action");
+        sprintf("select_modified_video_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
@@ -851,7 +834,7 @@ public class DateFixerController {
 
     @FXML
     private void select_modified_btn_action(ActionEvent event) {
-        Messages.sprintf("select_modified_btn_action");
+        sprintf("select_modified_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
 //				FileInfo fileInfo = (FileInfo) root.getUserData();
@@ -871,7 +854,7 @@ public class DateFixerController {
 
     @FXML
     private void select_bad_video_btn_action(ActionEvent event) {
-        Messages.sprintf("select_bad_video_btn_action");
+        sprintf("select_bad_video_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             sprintf("video_bad_btn_action: " + root);
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -973,22 +956,22 @@ public class DateFixerController {
 
     @FXML
     private void remove_btn_action(ActionEvent event) {
-        Messages.sprintf("remove_btn_action");
+        sprintf("remove_btn_action");
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
 
         Dialog<ButtonType> dialog = new Dialog<>();
-        ButtonType yes = new ButtonType(Main.bundle.getString("yes"), ButtonData.YES);
-        ButtonType no = new ButtonType(Main.bundle.getString("no"), ButtonData.NO);
+        ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonData.YES);
+        ButtonType no = new ButtonType(bundle.getString("no"), ButtonData.NO);
         dialog.getDialogPane().getButtonTypes().addAll(yes, no);
-        dialog.setContentText(Main.bundle.getString("doYouWantToIgnoreTheseFiles"));
+        dialog.setContentText(bundle.getString("doYouWantToIgnoreTheseFiles"));
 
         Optional<ButtonType> result = dialog.showAndWait();
 
-        if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-            Messages.sprintf("yes pressed!");
+        if (result.get().getButtonData().equals(ButtonData.YES)) {
+            sprintf("yes pressed!");
             boolean update = false;
 
             List<Node> toRemove = new ArrayList<>();
@@ -1017,11 +1000,11 @@ public class DateFixerController {
                 LoadingProcess();
 
             } else {
-                Messages.sprintf("Nothing to update");
+                sprintf("Nothing to update");
             }
 
-        } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-            Messages.sprintf("no pressed!");
+        } else if (result.get().getButtonData().equals(ButtonData.NO)) {
+            sprintf("no pressed!");
             dialog.close();
         }
     }
@@ -1054,7 +1037,7 @@ public class DateFixerController {
 	@FXML
 	private void copyToMisc_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
+			warningText(bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
 		ConcurrencyUtils.stopExecThread();
@@ -1067,14 +1050,14 @@ public class DateFixerController {
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null && Main.conf.getDrive_connected()) {
-					Messages.sprintf("copyToMisc_btn_action dest is: " + dest);
+					sprintf("copyToMisc_btn_action dest is: " + dest);
 					fileInfo.setWorkDir(Main.conf.getWorkDir());
 					fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
 					fileInfo.setDestination_Path(dest.toString());
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
-					Messages.sprintf("Dest were null. process is about to be cancelled");
+					sprintf("Dest were null. process is about to be cancelled");
 					break;
 				}
 			}
@@ -1084,13 +1067,13 @@ public class DateFixerController {
 				SceneNameType.DATEFIXER.getType());
 		operateFiles.setOnSucceeded((workerStateEvent) -> {
 //			operateFiles.get
-			Messages.sprintf("operateFiles Succeeded");
+			sprintf("operateFiles Succeeded");
 		});
 		operateFiles.setOnCancelled((workerStateEvent) -> {
-			Messages.sprintf("operateFiles CANCELLED");
+			sprintf("operateFiles CANCELLED");
 		});
 		operateFiles.setOnFailed((workerStateEvent) -> {
-			Messages.sprintf("operateFiles FAILED");
+			sprintf("operateFiles FAILED");
 			Main.setProcessCancelled(true);
 		});
 		Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
