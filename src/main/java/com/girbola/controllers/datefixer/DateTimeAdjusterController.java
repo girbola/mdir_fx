@@ -24,7 +24,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -381,7 +380,7 @@ public class DateTimeAdjusterController {
                                         LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(tf.getText());
                                         Messages.sprintf("fileDate= " + fileDate);
                                         if (fileDate.isAfter(ldt_start) && fileDate.isBefore(ldt_end)) {
-                                            model_datefix.getSelectionModel().add(vbox);
+                                            model_datefix.getSelectionModel().addWithToggle(vbox);
                                         }
                                     }
                                 }

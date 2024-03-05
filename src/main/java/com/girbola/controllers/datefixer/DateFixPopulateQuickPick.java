@@ -246,7 +246,7 @@ public class DateFixPopulateQuickPick extends Task<Void> {
 
 											if (imv.getImage() != null) {
 
-												boolean deselected = model_dateFix.getSelectionModel().add(frame);
+												boolean deselected = model_dateFix.getSelectionModel().addWithToggle(frame);
 												if (model_dateFix.getRightInfo_visible()) {
 													File file = new File(fileInfo.getOrgPath());
 													model_dateFix.getMetaDataTableView_obs().add(new MetaData(
@@ -304,7 +304,7 @@ public class DateFixPopulateQuickPick extends Task<Void> {
 						}
 					} else {
 						Messages.sprintf("getselectionmodel. adding frame to selectionmodel");
-						model_dateFix.getSelectionModel().add(frame);
+						model_dateFix.getSelectionModel().addWithToggle(frame);
 					}
 				}
 			}
@@ -384,7 +384,7 @@ public class DateFixPopulateQuickPick extends Task<Void> {
 							}
 						}
 					} else {
-						model_dateFix.getSelectionModel().add(frame);
+						model_dateFix.getSelectionModel().addWithToggle(frame);
 					}
 				}
 			}

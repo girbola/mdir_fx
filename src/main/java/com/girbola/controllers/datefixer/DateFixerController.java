@@ -159,6 +159,7 @@ public class DateFixerController {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        model_datefix.getSelectionModel().clearAll();
 
         for (Node node : model_datefix.getTilePane().getChildren()) {
             Messages.sprintf("node: " + node.getId());
@@ -170,12 +171,14 @@ public class DateFixerController {
                     for (Node hbox : vbox.getChildren()) {
                         if (hbox instanceof StackPane) {
                             for (Node stp : ((StackPane) hbox).getChildren()) {
-                                if (stp instanceof Label) {
-                                    Label label = (Label) stp;
-                                    int number = Integer.parseInt(label.getText());
+                                if (stp instanceof Label label) {
+                                    int number = getInteger(label.getText());
+                                    if(number < 0) {
+                                        continue;
+                                    }
                                     // 4 5 10
                                     if (startFrom <= number && endTo >= number) {
-                                        model_datefix.getSelectionModel().add(vbox);
+                                        model_datefix.getSelectionModel().addOnly(vbox);
                                     }
                                 }
                             }
@@ -185,9 +188,6 @@ public class DateFixerController {
             }
         }
 
-        for (Node node : model_datefix.getTilePane().getChildren()) {
-
-        }
         try {
             Messages.sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
             int start = Integer.parseInt(startFromNumber_tf.getText());
@@ -206,6 +206,16 @@ public class DateFixerController {
         } catch (Exception e) {
             endToNumber_tf.getStyleClass().add("notValidNumber");
         }
+    }
+
+    private int getInteger(String value) {
+
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return -1;
+        }
+
     }
 
     @FXML
@@ -780,7 +790,7 @@ public class DateFixerController {
             Node hboxi = root.lookup("#fileDate");
             if (hboxi instanceof TextField) {
                 if (hboxi.getStyle().equals(CssStylesController.getSuggested_style())) {
-                    model_datefix.getSelectionModel().add(root);
+                    model_datefix.getSelectionModel().addWithToggle(root);
                 }
             }
         }
@@ -796,7 +806,7 @@ public class DateFixerController {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
                 if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
                     if (fileInfo.isBad()) {
-                        model_datefix.getSelectionModel().add(root);
+                        model_datefix.getSelectionModel().addWithToggle(root);
                     }
                 }
             }
@@ -811,7 +821,7 @@ public class DateFixerController {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
                 if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
                     if (fileInfo.isGood()) {
-                        model_datefix.getSelectionModel().add(root);
+                        model_datefix.getSelectionModel().addWithToggle(root);
                     }
                 }
             }
@@ -830,7 +840,7 @@ public class DateFixerController {
                         TextField tf = (TextField) hboxi;
                         if (tf != null) {
                             if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-                                model_datefix.getSelectionModel().add(root);
+                                model_datefix.getSelectionModel().addWithToggle(root);
                             }
                         }
                     }
@@ -850,7 +860,7 @@ public class DateFixerController {
                     TextField tf = (TextField) hboxi;
                     if (tf != null) {
                         if (tf.getStyle().equals(CssStylesController.getModified_style())) {
-                            model_datefix.getSelectionModel().add(root);
+                            model_datefix.getSelectionModel().addWithToggle(root);
                         }
                     }
                 }
@@ -874,7 +884,7 @@ public class DateFixerController {
                                     TextField tf = (TextField) tff;
                                     if (tf != null) {
                                         if (tf.getStyle().equals(CssStylesController.getBad_style())) {
-                                            model_datefix.getSelectionModel().add(root);
+                                            model_datefix.getSelectionModel().addWithToggle(root);
                                         }
                                     }
                                 }
@@ -912,7 +922,7 @@ public class DateFixerController {
             Node hboxi = root.lookup("#fileDate");
             if (hboxi instanceof TextField) {
                 if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
-                    model_datefix.getSelectionModel().add(root);
+                    model_datefix.getSelectionModel().addWithToggle(root);
                 }
             }
         }
@@ -929,7 +939,7 @@ public class DateFixerController {
                             if (hbox instanceof TextField) {
                                 if (hbox.getId().contains("fileDate")) {
                                     if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
-                                        model_datefix.getSelectionModel().add(root);
+                                        model_datefix.getSelectionModel().addWithToggle(root);
                                     }
                                 }
                             }

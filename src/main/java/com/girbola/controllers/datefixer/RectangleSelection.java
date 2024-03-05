@@ -227,12 +227,12 @@ public class RectangleSelection {
             }
             if (!event.isShiftDown() && !event.isControlDown()) {
                 selectionModel.clearAll();
-                selectionModel.add((Node) event.getTarget());
+                selectionModel.addWithToggle((Node) event.getTarget());
                 event.consume();
                 return;
             } else if (event.isShiftDown() && !event.isControlDown()) {
 
-                selectionModel.add((Node) event.getTarget());
+                selectionModel.addWithToggle((Node) event.getTarget());
                 List<Integer> integer_list = new ArrayList<>();
                 warningText("onMouseReleasedEventHandler is not ready!");
                 for (Node n : selectionModel.getSelectionList()) {
@@ -267,10 +267,10 @@ public class RectangleSelection {
                         }
                         if (passed) {
                             if (current == max) {
-                                selectionModel.add(node);
+                                selectionModel.addWithToggle(node);
                                 break;
                             } else {
-                                selectionModel.add(node);
+                                selectionModel.addWithToggle(node);
                             }
                         }
                     }

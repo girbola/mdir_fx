@@ -94,7 +94,7 @@ public class DateFixer extends Task<Void> {
 						sprintf("event StackPane target: " + event.getTarget());
 						StackPane node = (StackPane) event.getTarget();
 						if (node.getParent() instanceof VBox && node.lookupAll("#imageView") != null) {
-							model_datefix.getSelectionModel().add(node.getParent());
+							model_datefix.getSelectionModel().addWithToggle(node.getParent());
 							if (event.getClickCount() == 2) {
 								FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
 								sprintf("fileInfo: " + fileInfo.toString());
