@@ -20,15 +20,7 @@ public class ConcurrencyUtils {
 
     private static AtomicInteger execCounter = new AtomicInteger();
 
-    public static ExecutorService[] exec = new ExecutorService[3];
-
-    public static int getExecCounter() {
-        return execCounter.get();
-    }
-
-    public static ExecutorService getExec() {
-        return exec[execCounter.get()];
-    }
+    public static ExecutorService[] exec = new ExecutorService[1];
 
     public static synchronized int incrementAndGetExecCounter() {
         int newVal = execCounter.incrementAndGet();
@@ -81,4 +73,14 @@ public class ConcurrencyUtils {
             }
         }
     }
+
+
+    public static int getExecCounter() {
+        return execCounter.get();
+    }
+
+    public static ExecutorService getExec() {
+        return exec[execCounter.get()];
+    }
+
 }
