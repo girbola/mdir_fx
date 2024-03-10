@@ -72,18 +72,18 @@
                                         maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         styleClass="selectionButton" VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="start_hour_btn_down" alignment="CENTER"
                                         contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="12.0"
                                         maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0"
                                         styleClass="selectionButton" VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -115,17 +115,17 @@
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_min_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="start_min_btn_down" maxHeight="12.0"
                                         maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_min_btn_down_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -160,17 +160,17 @@
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="start_sec_btn_down" maxHeight="12.0"
                                         maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#start_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -222,17 +222,17 @@
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_min_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="end_min_btn_down" maxHeight="12.0" maxWidth="12.0"
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_min_btn_down" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -267,17 +267,17 @@
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="end_sec_btn_down" maxHeight="12.0" maxWidth="12.0"
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -312,17 +312,17 @@
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-up" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                                 <Button id="selectTimeButton" fx:id="end_hour_btn_down" maxHeight="12.0" maxWidth="12.0"
                                         minHeight="12.0" minWidth="12.0" mnemonicParsing="false"
                                         onAction="#end_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0"
                                         VBox.vgrow="NEVER">
-<!--                                    <graphic>-->
-<!--                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>-->
-<!--                                    </graphic>-->
+                                    <graphic>
+                                        <FontIcon iconLiteral="bi-chevron-down" iconSize="10"/>
+                                    </graphic>
                                 </Button>
                             </children>
                             <HBox.margin>
@@ -364,17 +364,17 @@
                         prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="5" GridPane.halignment="LEFT"
                         GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER"
                         GridPane.vgrow="NEVER">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="bi-arrow-90deg-up" iconSize="10" rotate="180.0"/>-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="bi-arrow-90deg-up" iconSize="10" rotate="180.0"/>
+                    </graphic>
                 </Button>
                 <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxHeight="25.0" maxWidth="25.0"
                         minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action"
                         prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" text="uppp"
                         GridPane.columnIndex="5" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.vgrow="NEVER">
-<!--                    <graphic>-->
-<!--                        <FontIcon iconLiteral="bi-arrow-90deg-down" iconSize="10" rotate="180.0"/>-->
-<!--                    </graphic>-->
+                    <graphic>
+                        <FontIcon iconLiteral="bi-arrow-90deg-down" iconSize="10" rotate="180.0"/>
+                    </graphic>
                 </Button>
                 <Button id="actionButtons" fx:id="selectRange_btn" mnemonicParsing="false"
                         onAction="#selectRange_btn_action" text="%selectRange" GridPane.columnIndex="1"

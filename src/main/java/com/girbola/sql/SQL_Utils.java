@@ -697,7 +697,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 	}
 
 	public static FolderInfo loadFolderInfoCurrentDir(Path path) {
-		Messages.sprintf("loadFoldersState started");
+		Messages.sprintf("loadFoldersState started: " + path);
 		FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(path.toString());
 		return folderInfo;
 	}

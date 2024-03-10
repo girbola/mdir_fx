@@ -152,7 +152,6 @@ public class FolderInfo_SQL {
 		FolderInfo folderInfo = null;
 
 		Connection connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
-//		createFolderInfoTable(src.getParent());
 
 		if (connection != null) {
 			try {

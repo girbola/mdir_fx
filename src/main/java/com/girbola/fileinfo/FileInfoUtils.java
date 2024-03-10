@@ -90,6 +90,7 @@ public class FileInfoUtils {
 		FileInfo fileInfo = null;
 		if (FileUtils.supportedImage(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+			Messages.sprintf("Createing fileInfo: " + fileInfo.getOrgPath());
 			setImage(fileInfo);
 			fileInfo.setSize(Files.size(fileName));
 			boolean metaDataFound = getImageMetadata(fileName, fileInfo);
@@ -272,6 +273,7 @@ public class FileInfoUtils {
 					}
 				}
 			} catch (IOException ex) {
+				Messages.sprintf("NONONONONONOOOO: " + ex.getMessage());
 				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 			}
 		}

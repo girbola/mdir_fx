@@ -107,9 +107,10 @@ public class CalculateFolderContent extends Task<Void> {
 
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
 		Path mdirDatabaseFilePath = Paths
-				.get(folderInfo.getFolderPath() + File.separator + conf.getMdir_db_fileName());
-		Messages.sprintf("handleFolderInfo trying to find folderinfo path: " + mdirDatabaseFilePath);
+				.get(folderInfo.getFolderPath(), conf.getMdir_db_fileName());
+		Messages.sprintf("mdirDatabaseFilePath trying to find folderinfo path: " + mdirDatabaseFilePath);
 		if (Files.exists(mdirDatabaseFilePath)) {
+			Messages.sprintf("File DOEST exists at: " + mdirDatabaseFilePath);
 
 			FolderInfo loaded_FolderInfo = null;
 			try {

@@ -91,7 +91,7 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                                     if (node instanceof VBox && node.getId().equals("imageFrame")) {
                                         FileInfo fi = (FileInfo) node.getUserData();
                                         if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model(new String("Unknown"));
+                                            fi.setCamera_model("Unknown");
                                         }
                                         if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
                                             fi.setCamera_model("Unknown");

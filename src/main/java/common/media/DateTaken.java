@@ -105,7 +105,10 @@ public class DateTaken {
         if (FileUtils.supportedImage(path.toFile()) || FileUtils.supportedRaw(path.toFile())) {
             for (Directory directory : directories) {
                 if (directory != null) {
-                    return directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL).getTime();
+                    Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                    if(date != null) {
+                        return date.getTime();
+                    }
                 }
             }
         } else if (FileUtils.supportedVideo(path)) {

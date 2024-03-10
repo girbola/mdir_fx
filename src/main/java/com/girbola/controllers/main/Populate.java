@@ -89,6 +89,7 @@ public class Populate {
 				try {
 					list = createFileList.get();
 				} catch (Exception ex) {
+					Messages.sprintfError("Something went wrong with createing filelist");
 					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 				}
 				if (list.isEmpty()) {

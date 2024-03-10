@@ -43,6 +43,7 @@ public class Sorter extends Task<Integer> {
 			for (Path folder : selectedList) {
 				sprintf("Adding folder: " + folder);
 				if (Main.getProcessCancelled()) {
+					Messages.sprintf("Sorter process were cancelled");
 					exec[getExecCounter()].shutdownNow();
 					break;
 				}
@@ -68,6 +69,7 @@ public class Sorter extends Task<Integer> {
 				counter.set(counter.get() + 1);
 
 				exec[getExecCounter()].submit(addToTable);
+				Messages.sprintf("Countering: " + counter.get());
 			}
 		} else {
 			sprintf("list was empty!");

@@ -508,13 +508,10 @@ public class TableUtils {
             return;
         }
         if (table.getColumns().get(0) != null) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    table.getColumns().get(0).setVisible(false);
-                    table.getColumns().get(0).setVisible(true);
-                    table.refresh();
-                }
+            Platform.runLater(() -> {
+                table.getColumns().get(0).setVisible(false);
+                table.getColumns().get(0).setVisible(true);
+                table.refresh();
             });
         }
 

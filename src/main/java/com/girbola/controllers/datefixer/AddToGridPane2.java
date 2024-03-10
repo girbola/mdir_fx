@@ -83,10 +83,8 @@ public class AddToGridPane2 extends Task<Integer> {
 
 		for (Node node : list) {
 			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-
 				createNode(node);
 				// loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
-
 			}
 		}
 		return null;
@@ -110,52 +108,11 @@ public class AddToGridPane2 extends Task<Integer> {
 
 	}
 
-
-//	private void createNodeGridPane(Node node) {
-//		StackPane sp = (StackPane) node.lookup("#stackPane");
-//		Label old_text = (Label) sp.lookup("#imageNumber");
-//		if (old_text == null) {
-//			Label imageNumber = createText(counter.get());
-//			sp.getChildren().add(imageNumber);
-//			StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
-//		} else {
-//			old_text.setText("" + counter.get());
-//		}
-//
-//		model_datefix.getGridPane().add(node, x.get(), y.get());
-//		if (x.get() >= model_datefix.getImagesPerLine() - 1) {
-//			x.set(0);
-//			y.incrementAndGet();
-//		} else {
-//			x.incrementAndGet();
-//		}
-//		counter.incrementAndGet();
-//
-//	}
-
 	private FileInfo getFileInfo(StackPane sp) {
 		if (sp.getUserData() != null) {
 			return (FileInfo) sp.getUserData();
 		}
 		return null;
-	}
-
-//	private void setGridPane_Constraints() {
-//		int imagesPerLine = defineImagesPerLine();
-//		model_datefix.setImagesPerLine(imagesPerLine);
-//		int rows_MAX = (int) Math.ceil((double) size / (double) (imagesPerLine));
-//		if (rows_MAX == 0) {
-//			rows_MAX = 1;
-//		} else if (rows_MAX < 0) {
-//			errorSmth(ERROR, "", null, getLineNumber(), true);
-//		}
-////		UI_Tools.setGridColumnConstraints(model_datefix.getGridPane(), imagesPerLine);
-////		UI_Tools.setGridRowConstraints(model_datefix.getGridPane(), rows_MAX);
-//	}
-
-	private int defineImagesPerLine() {
-		return (int) Math.floor((double) (ScreenUtils.screenBouds().getWidth()
-				- UI_Tools.getScrollBarWidth(model_datefix.getScrollPane())) / GUIPrefs.imageFrame_x);
 	}
 
 	@Override
@@ -185,8 +142,7 @@ public class AddToGridPane2 extends Task<Integer> {
 			loadingProcess_Task.closeStage();
 		});
 		loadingProcess_Task.closeStage();
-		sprintf("tilePane height: " + tilePane.getHeight() + " list size: " + list.size());
-		// model_datefix.updateAllInfos();
+
 		tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
 			if (event.getButton() == MouseButton.SECONDARY) {
 				if (event.getTarget() instanceof VBox && ((Node) event.getTarget()).getId().equals("imageFrame")) {

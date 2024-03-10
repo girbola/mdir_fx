@@ -767,7 +767,7 @@ public class DateFixerController {
 	 */
 	// @formatter:on
     @FXML
-    private void select_acceptable_btn_action(ActionEvent event) {
+    private void select_acceptable_image_btn_action(ActionEvent event) {
         sprintf("select_acceptable_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             Node hboxi = root.lookup("#fileDate");
@@ -777,17 +777,16 @@ public class DateFixerController {
                 }
             }
         }
-
     }
 
     @FXML
-    private void select_video_bad_btn_action(ActionEvent event) {
-        sprintf("select_video_bad_btn_action");
+    private void select_bad_image_btn_action(ActionEvent event) {
+        sprintf("select_bad_image_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             sprintf("video_good_btn_action: " + root);
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
-                if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))) {
                     if (fileInfo.isBad()) {
                         model_datefix.getSelectionModel().addWithToggle(root);
                     }
@@ -797,7 +796,7 @@ public class DateFixerController {
     }
 
     @FXML
-    private void select_video_good_btn_action(ActionEvent event) {
+    private void select_good_video_btn_action(ActionEvent event) {
         sprintf("select_video_good_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -832,8 +831,22 @@ public class DateFixerController {
         }
     }
 
+
     @FXML
-    private void select_modified_btn_action(ActionEvent event) {
+    private void select_acceptable_video_btn_action(ActionEvent event) {
+        sprintf("select_acceptable_video_btn_action");
+        for (Node root : df_tilePane.getChildren()) {
+            Node hboxi = root.lookup("#fileDate");
+            if (hboxi instanceof TextField) {
+                if (hboxi.getStyle().equals(CssStylesController.getSuggested_style())) {
+                    model_datefix.getSelectionModel().addWithToggle(root);
+                }
+            }
+        }
+    }
+
+    @FXML
+    private void select_modified_image_btn_action(ActionEvent event) {
         sprintf("select_modified_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
@@ -903,26 +916,34 @@ public class DateFixerController {
         sprintf("select_bad_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             Node hboxi = root.lookup("#fileDate");
-            if (hboxi instanceof TextField) {
-                if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
-                    model_datefix.getSelectionModel().addWithToggle(root);
+            if (root instanceof VBox && root.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) root.getUserData();
+                if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+                    if (hboxi instanceof TextField) {
+                        if (hboxi.getStyle().equals(CssStylesController.getBad_style())) {
+                            model_datefix.getSelectionModel().addWithToggle(root);
+                        }
+                    }
                 }
             }
         }
     }
 
     @FXML
-    private void select_good_btn_action(ActionEvent event) {
-        sprintf("select_good_btn_action");
+    private void select_good_image_btn_action(ActionEvent event) {
+        sprintf("select_good_image_btn_action");
         for (Node root : df_tilePane.getChildren()) {
-            if (root instanceof VBox) {
-                for (Node vbox : ((VBox) root).getChildren()) {
-                    if (vbox instanceof HBox) {
-                        for (Node hbox : ((HBox) vbox).getChildren()) {
-                            if (hbox instanceof TextField) {
-                                if (hbox.getId().contains("fileDate")) {
-                                    if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
-                                        model_datefix.getSelectionModel().addWithToggle(root);
+            if (root instanceof VBox && root.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) root.getUserData();
+                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))) {
+                    for (Node vbox : ((VBox) root).getChildren()) {
+                        if (vbox instanceof HBox) {
+                            for (Node hbox : ((HBox) vbox).getChildren()) {
+                                if (hbox instanceof TextField) {
+                                    if (hbox.getId().contains("fileDate")) {
+                                        if (hbox.getStyle().equals(CssStylesController.getGood_style())) {
+                                            model_datefix.getSelectionModel().addWithToggle(root);
+                                        }
                                     }
                                 }
                             }
