@@ -643,10 +643,10 @@ public class DateFixerController {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {
-                    LoadingProcess();
+                    loadingProcess();
 
                 } else {
-                    LoadingProcess();
+                    loadingProcess();
                 }
             }
         });
@@ -694,16 +694,13 @@ public class DateFixerController {
         model_datefix.setQuickPick_Navigator(quickPick_Navigator);
         model_datefix.instantiateRenderVisibleNodes();
 
-        Main.scene_Switcher.getWindow().setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
+        Main.scene_Switcher.getWindow().setOnCloseRequest(e -> {
                 sprintf("Close request pressed");
                 model_datefix.getSelector_exec().shutdownNow();
                 model_datefix.exitDateFixerWindow(model_datefix.getTilePane(), Main.scene_Switcher.getWindow(), event);
                 // TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
                 // event.consume();
-            }
         });
         model_datefix.getSelectionModel().getSelectionList().addListener(new ListChangeListener<Node>() {
             @Override
@@ -749,7 +746,7 @@ public class DateFixerController {
         });
     }
 
-    public void LoadingProcess() {
+    public void loadingProcess() {
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
@@ -1017,7 +1014,7 @@ public class DateFixerController {
 //				UpdateGridPane_Task.updateGridPaneContent(model_datefix,
 //						model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
 
-                LoadingProcess();
+                loadingProcess();
 
             } else {
                 sprintf("Nothing to update");

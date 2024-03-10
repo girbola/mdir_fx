@@ -188,13 +188,14 @@ long start = System.currentTimeMillis();
 	}
 
 	/**
-	 * getDateThumbFileForVideo will try to find original thumbnail file e.x some
-	 * camera brands records video file called IMG_5555.MOV and it saves
-	 * thumbnailfile into same folder as IMG_5555.THM
+	 * This method checks if the given video file has a corresponding thumbnail file with metadata,
+	 * and populates the FileInfo object with the metadata if found.
 	 *
-	 * @param path
+	 * @param path The path of the video file.
+	 * @param
 	 * @return
-	 */
+	 * */
+
 	public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) {
 		if (supportedVideo(path)) {
 			Path THM_path = VideoDateFinder.hasTHMFile(path);

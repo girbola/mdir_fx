@@ -61,6 +61,8 @@ public class DateTaken {
             long date = getMetadataDateTaken(path);
             if (date != 0) {
                 return date;
+            } else {
+                return 0;
             }
         } else if (FileUtils.supportedVideo(path)) {
             String orgFileName = FileNameParseUtils.parseFileExtentension(path);
@@ -106,11 +108,10 @@ public class DateTaken {
             ExifSubIFDDirectory directory2 = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 // create a descriptor
             Date date = directory2.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-                    if(date != null) {
-                        return date.getTime();
-                    }
+            if (date != null) {
+                return date.getTime();
+            }
 // get tag description
-
 
 
 // create a descriptor
