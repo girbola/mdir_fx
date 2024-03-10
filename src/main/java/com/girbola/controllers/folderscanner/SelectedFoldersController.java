@@ -65,7 +65,6 @@ public class SelectedFoldersController {
     private void selectedFolders_ok_action(ActionEvent event) {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
-
         // Load FolderInfo from database
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
@@ -87,7 +86,7 @@ public class SelectedFoldersController {
             }
         }
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
-        model_main.getMonitorExternalDriveConnectivity().cancel();
+
         model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();

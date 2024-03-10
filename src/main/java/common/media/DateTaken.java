@@ -12,6 +12,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.exif.ExifIFD0Directory;
+import com.drew.metadata.exif.ExifSubIFDDescriptor;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.mov.QuickTimeDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
@@ -84,8 +85,7 @@ public class DateTaken {
         Metadata metaData = null;
         try {
             metaData = ImageMetadataReader.readMetadata(path.toFile());
-        } catch (ImageProcessingException
-                 | IOException ex) {
+        } catch (ImageProcessingException | IOException ex) {
             return 0;
         }
         Iterable<Directory> directories = metaData.getDirectories();
@@ -103,14 +103,28 @@ public class DateTaken {
         Iterable<Directory> directories = metaData.getDirectories();
 
         if (FileUtils.supportedImage(path.toFile()) || FileUtils.supportedRaw(path.toFile())) {
-            for (Directory directory : directories) {
-                if (directory != null) {
-                    Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+
+            ExifSubIFDDirectory directory2 = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+// create a descriptor
+            Date date = directory2.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
                     if(date != null) {
                         return date.getTime();
                     }
-                }
-            }
+// get tag description
+
+
+
+// create a descriptor
+
+
+//            for (Directory directory : directories) {
+//                if (directory != null) {
+//                    Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+//                    if(date != null) {
+//                        return date.getTime();
+//                    }
+//                }
+//            }
         } else if (FileUtils.supportedVideo(path)) {
             for (Directory directory : directories) {
                 if (directory != null) {

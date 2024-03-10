@@ -17,6 +17,7 @@ import javafx.event.EventHandler;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
@@ -30,7 +31,7 @@ public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;
 	private Model_main model;
-	private IntegerProperty counter = new SimpleIntegerProperty(0);
+	private AtomicInteger counter = new AtomicInteger(0);
 
 	public Sorter(Model_main model, List<Path> selectedList) {
 		this.model = model;
@@ -66,10 +67,9 @@ public class Sorter extends Task<Integer> {
 						sprintf("addToTable.setOnCancelled: " + folder);
 					}
 				});
-				counter.set(counter.get() + 1);
+				counter.incrementAndGet();
 
 				exec[getExecCounter()].submit(addToTable);
-				Messages.sprintf("Countering: " + counter.get());
 			}
 		} else {
 			sprintf("list was empty!");

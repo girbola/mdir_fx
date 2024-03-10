@@ -86,22 +86,15 @@ public class FileInfoUtils {
 	}
 
 	public static FileInfo createFileInfo(Path fileName) throws IOException {
-
+long start = System.currentTimeMillis();
+		long end = System.currentTimeMillis();
 		FileInfo fileInfo = null;
 		if (FileUtils.supportedImage(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
 			Messages.sprintf("Createing fileInfo: " + fileInfo.getOrgPath());
 			setImage(fileInfo);
-			fileInfo.setSize(Files.size(fileName));
-			boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-			boolean tryFileNameDate;
-			if (!metaDataFound) {
-				tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-				if (!tryFileNameDate) {
-					setBad(fileInfo);
-					fileInfo.setDate(0);
-				}
-			}
+			calculcateTotalFileSizes(fileName, fileInfo);
+
 		} else if (FileUtils.supportedVideo(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
 			setVideo(fileInfo);
@@ -113,18 +106,43 @@ public class FileInfoUtils {
 		} else if (FileUtils.supportedRaw(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
 			setRaw(fileInfo);
-			fileInfo.setSize(Files.size(fileName));
-			boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-			boolean tryFileNameDate;
-			if (!metaDataFound) {
-				tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-				if (!tryFileNameDate) {
-					setBad(fileInfo);
-					fileInfo.setDate(0);
-				}
+			calculcateTotalFileSizes(fileName, fileInfo);
+		}
+		end = System.currentTimeMillis();
+		Messages.sprintf("It took: " +  (end-start));
+
+		return fileInfo;
+	}
+
+	public static void calculcateTotalFileSizes(Path fileName, FileInfo fileInfo) throws IOException {
+		long start = System.currentTimeMillis();
+		long end = System.currentTimeMillis();
+
+		fileInfo.setSize(Files.size(fileName));
+
+		end = System.currentTimeMillis();
+
+		Messages.sprintf("=-filesize: " + (end-start));
+
+		boolean metaDataFound = getImageMetadata(fileName, fileInfo);
+
+		end = System.currentTimeMillis();
+
+		Messages.sprintf("=-MetaData: " + (end-start));
+
+		boolean tryFileNameDate;
+		if (!metaDataFound) {
+
+			end = System.currentTimeMillis();
+
+			tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+
+			Messages.sprintf("=-MetaData: " + (end-start));
+			if (!tryFileNameDate) {
+				setBad(fileInfo);
+				fileInfo.setDate(0);
 			}
 		}
-		return fileInfo;
 	}
 
 	public static boolean getVideoDateTaken(Path path, FileInfo fileInfo) {

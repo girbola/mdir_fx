@@ -23,6 +23,8 @@ import javafx.stage.Window;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,6 +83,7 @@ public class Populate {
 			sprintf("SelectedFolder is: " + pt);
 		}
 		Task<List<Path>> createFileList = new SubList(list);
+
 		LoadingProcessTask loadingProcess_task = new LoadingProcessTask(owner);
 		createFileList.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 			@Override
@@ -93,10 +96,12 @@ public class Populate {
 					Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 				}
 				if (list.isEmpty()) {
-					Messages.warningText("List is empty at Populate class");
-					Main.setProcessCancelled(true);
+					Messages.warningText("List is empty at Populate class. Cancelling");
+					//Main.setProcessCancelled(true);
 					return;
 				}
+				Collections.sort(list);
+
 				Task<Integer> sorter = new Sorter(model_main, list);
 				loadingProcess_task.setTask(sorter);
 				sorter.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -165,10 +170,18 @@ public class Populate {
 
 					}
 				});
-				Thread sorter_th = new Thread(sorter, "sorter_th");
-				sprintf("sorter_th: " + sorter_th.getName());
-				sorter_th.start();
+
+				exec[getExecCounter()].execute(sorter);
+//				Thread sorter_th = new Thread(sorter, "sorter_th");
+//				sprintf("sorter_th: " + sorter_th.getName());
+//				sorter_th.start();
 			}
+		});
+		createFileList.setOnCancelled(e->{
+
+		});
+		createFileList.setOnFailed(e->{
+
 		});
 		Thread createFileList_th = new Thread(createFileList, "createFileList_th");
 		sprintf("createFileList_th.getName(): " + createFileList_th.getName());

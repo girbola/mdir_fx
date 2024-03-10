@@ -45,7 +45,7 @@
         <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
-        <metadata-extractor.version>2.18.0</metadata-extractor.version>
+        <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <oshi-core.version>6.4.4</oshi-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.3</slf4j.version>

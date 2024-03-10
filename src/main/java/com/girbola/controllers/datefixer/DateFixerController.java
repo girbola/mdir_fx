@@ -783,7 +783,6 @@ public class DateFixerController {
     private void select_bad_image_btn_action(ActionEvent event) {
         sprintf("select_bad_image_btn_action");
         for (Node root : df_tilePane.getChildren()) {
-            sprintf("video_good_btn_action: " + root);
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) root.getUserData();
                 if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))) {
