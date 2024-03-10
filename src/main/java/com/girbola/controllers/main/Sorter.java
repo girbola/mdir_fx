@@ -9,8 +9,6 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
@@ -49,23 +47,14 @@ public class Sorter extends Task<Integer> {
 					break;
 				}
 				Task<Integer> addToTable = new AddToTable(folder, model);
-				addToTable.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
+				addToTable.setOnSucceeded(e -> {
 						 Messages.sprintf("addToTable Sorter done! " + folder);
-					}
 				});
-				addToTable.setOnFailed(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
+				addToTable.setOnFailed(e -> {
 						sprintf("addToTable.setOnFailed: " + folder);
-					}
 				});
-				addToTable.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
+				addToTable.setOnCancelled(e -> {
 						sprintf("addToTable.setOnCancelled: " + folder);
-					}
 				});
 				counter.incrementAndGet();
 
