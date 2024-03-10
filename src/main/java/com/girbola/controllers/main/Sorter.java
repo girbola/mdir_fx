@@ -10,8 +10,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -47,15 +45,10 @@ public class Sorter extends Task<Integer> {
 					break;
 				}
 				Task<Integer> addToTable = new AddToTable(folder, model);
-				addToTable.setOnSucceeded(e -> {
-						 Messages.sprintf("addToTable Sorter done! " + folder);
-				});
-				addToTable.setOnFailed(e -> {
-						sprintf("addToTable.setOnFailed: " + folder);
-				});
-				addToTable.setOnCancelled(e -> {
-						sprintf("addToTable.setOnCancelled: " + folder);
-				});
+				addToTable.setOnSucceeded(e -> Messages.sprintf("addToTable Sorter done! " + folder));
+				addToTable.setOnFailed(e -> Messages. sprintf("addToTable.setOnFailed: " + folder));
+				addToTable.setOnCancelled(e -> Messages.sprintf("addToTable.setOnCancelled: " + folder));
+
 				counter.incrementAndGet();
 
 				exec[getExecCounter()].submit(addToTable);

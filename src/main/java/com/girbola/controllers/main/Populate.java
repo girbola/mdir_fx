@@ -16,8 +16,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.stage.Window;
 
 import java.nio.file.Path;
@@ -91,11 +89,11 @@ public class Populate {
                 Messages.sprintfError("Something went wrong with createing filelist");
                 Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
             }
-            if (fileList.isEmpty()) {
+            if (fileList == null || fileList.isEmpty()) {
                 Messages.warningText("List is empty at Populate class. Cancelling");
-                //Main.setProcessCancelled(true);
                 return;
             }
+
             Collections.sort(fileList);
 
             Task<Integer> sorter = new Sorter(model_main, fileList);
@@ -125,9 +123,7 @@ public class Populate {
                             Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
                         }
                     });
-                    calculateFolderContent.setOnCancelled(cancelled -> {
-                        sprintf("calculateFolderContent setOnCancelled");
-                    });
+                    calculateFolderContent.setOnCancelled(cancelled -> Messages.sprintf("calculateFolderContent setOnCancelled"));
                     calculateFolderContent.setOnFailed(failed -> {
                         sprintf("calculateFolderContent setOnFailed");
                         loadingProcess_task.setMessage("FAILED...");

@@ -13,6 +13,14 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,12 +37,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.ArrayList;
 
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
@@ -101,22 +103,26 @@ public class SelectedFoldersController {
 
     @FXML
     private void selectedFolders_select_folder_action(ActionEvent event) {
-        File folder = null;
+
         DirectoryChooser dc = new DirectoryChooser();
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
-        folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
+        File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
         if (folder != null) {
-            if (!model_main.getSelectedFolders().getSelectedFolderScanner_obs().contains(folder.toPath())) {
-                if (folder.toString().contains(conf.getWorkDir())) {
-                    Messages.warningText("Cannot be same folder with com.girbola.workdir!");
-                } else {
-                    model_main.getSelectedFolders().getSelectedFolderScanner_obs()
-                            .add(new SelectedFolder(true, folder.toString()));
-                }
+            addNewFolder(folder);
+        }
+
+    }
+
+    private void addNewFolder(File folder) {
+        List<SelectedFolder> existingFolders = model_main.getSelectedFolders().getSelectedFolderScanner_obs();
+        if (!SelectedFolderUtils.contains(existingFolders, folder)) {
+            if (folder.toString().contains(conf.getWorkDir())) {
+                Messages.warningText(Main.bundle.getString("workDirConflict"));
             } else {
-                sprintf("Won't be added because it already exists! " + folder.toPath());
+                existingFolders.add(new SelectedFolder(true, folder.toString()));
             }
-            // model.getSelection_FolderScanner().getSelectedFolderScanner_list().add(folder.toPath());
+        } else {
+            sprintf(Main.bundle.getString("folderExists") + folder.toPath());
         }
     }
 
