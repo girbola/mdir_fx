@@ -697,7 +697,7 @@ public class DateFixerController {
         Main.scene_Switcher.getWindow().setOnCloseRequest(e -> {
                 sprintf("Close request pressed");
                 model_datefix.getSelector_exec().shutdownNow();
-                model_datefix.exitDateFixerWindow(model_datefix.getTilePane(), Main.scene_Switcher.getWindow(), event);
+                model_datefix.exitDateFixerWindow(model_datefix.getTilePane(), Main.scene_Switcher.getWindow(), e);
                 // TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
                 // event.consume();
