@@ -15,17 +15,14 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -36,7 +33,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
@@ -44,24 +40,18 @@ import static com.girbola.messages.Messages.sprintf;
 public class SelectedFoldersController {
     private final String ERROR = SelectedFoldersController.class.getName();
 
-    private ScheduledService<Void> scanner;
-
     private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
     private Model_main model_main;
     private Model_folderScanner model_folderScanner;
 
-    @FXML
-    private TableColumn<SelectedFolder, String> folder_col;
-    @FXML
-    private TableColumn<SelectedFolder, Boolean> folder_connected_col;
-    @FXML
-    private Button selectedFolders_ok;
-    @FXML
-    private Button selectedFolders_remove;
-    @FXML
-    private Button selectedFolders_select_folder;
-    @FXML
-    private TableView<SelectedFolder> selectedFolder_TableView;
+    //@formatter:off
+    @FXML private TableColumn<SelectedFolder, String> folder_col;
+    @FXML private TableColumn<SelectedFolder, Boolean> folder_connected_col;
+    @FXML private Button selectedFolders_ok;
+    @FXML private Button selectedFolders_remove;
+    @FXML private Button selectedFolders_select_folder;
+    @FXML private TableView<SelectedFolder> selectedFolder_TableView;
+    //@formatter:on
 
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
@@ -83,7 +73,7 @@ public class SelectedFoldersController {
             try {
                 connection.close();
             } catch (Exception e) {
-                e.printStackTrace();
+                Messages.sprintfError("ERROR: " + e.getMessage());
                 Messages.errorSmth(ERROR, "Something went wrong with selecting folders", e, Misc.getLineNumber(), true);
             }
         }
@@ -103,14 +93,12 @@ public class SelectedFoldersController {
 
     @FXML
     private void selectedFolders_select_folder_action(ActionEvent event) {
-
         DirectoryChooser dc = new DirectoryChooser();
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
         File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
         if (folder != null) {
             addNewFolder(folder);
         }
-
     }
 
     private void addNewFolder(File folder) {
@@ -135,32 +123,26 @@ public class SelectedFoldersController {
     }
 
     private void removeFromTable(TableView<SelectedFolder> table) {
-        ArrayList<SelectedFolder> listToRemove = new ArrayList<>();
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
+        Connection connection = null;
 
-        ObservableList<SelectedFolder> rows = table.getSelectionModel().getSelectedItems();
-        for (SelectedFolder rm : rows) {
-            listToRemove.add(rm);
-        }
-        boolean removed = SQL_Utils.removeAllData_list(connection, listToRemove, SQL_Enums.SELECTEDFOLDERS.getType());
-        if (removed) {
-            Messages.sprintf("Table data removed: ");
-        } else {
-            Messages.sprintf("Table data not removed ");
-        }
-        if (connection != null) {
+        try {
+            connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+                    Main.conf.getConfiguration_db_fileName());
+
+            ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
+
+            SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
+
+            table.getItems().removeAll(selectedItems);
+            table.getSelectionModel().clearSelection();
+
+        } catch (Exception ex) {
             try {
-                connection.close();
-            } catch (Exception e) {
-            }
+                if (connection != null) {
+                    connection.close();
+                }
+            } catch (SQLException ignored) { }
         }
-        for (SelectedFolder r : listToRemove) {
-            sprintf("sorted value remove: " + r);
-            table.getItems().remove(r);
-        }
-        listToRemove.clear();
-        table.getSelectionModel().clearSelection();
     }
 
     public void init(Model_main aModel_main, Model_folderScanner aModel_folderScanner) {
@@ -177,38 +159,19 @@ public class SelectedFoldersController {
                         cellData.getValue().isConnected()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        Messages.sprintf(
-                "getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        scanner = new ScheduledService<Void>() {
 
-            @Override
-            protected Task createTask() {
-                return new Task<Integer>() {
-                    @Override
-                    protected Integer call() throws Exception {
-                        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                            sf.setConnected(Files.exists(Paths.get(sf.getFolder())));
-                            Messages.sprintf("sggg: " + sf.getFolder() + " isConnected?: " + sf.isConnected());
-                        }
-                        return null;
-                    }
-                };
-            }
-        };
-
-        scanner.setPeriod(Duration.seconds(10));
     }
 
     public void start() {
-        this.scanner.start();
+//        this.scanner.start();
     }
 
     public void restart() {
-        this.scanner.restart();
+//        this.scanner.restart();
     }
 
     public void stop() {
-        this.scanner.cancel();
+//        this.scanner.cancel();
     }
 
 }
