@@ -122,13 +122,7 @@ public class DateTimeAdjusterController {
 
         }
 
-        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-        Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
-                model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-        loadingProcess_task.setTask(updateGridPane_Task);
-
-        Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
-        thread.start();
+        LoadingProcessLoader.runUpdateTask(model_datefix);
 
         Messages.warningText(
                 "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);

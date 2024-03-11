@@ -41,7 +41,7 @@ public class Populate {
 
     private IntegerProperty total = new SimpleIntegerProperty();
 
-    private AtomicInteger process = new AtomicInteger(0);
+    private AtomicInteger processAtomicInteger = new AtomicInteger(0);
 
     public Populate(Model_main model) {
         this.model_main = model;
@@ -75,9 +75,7 @@ public class Populate {
             Messages.warningText("No selected folder(s) to scan. Choose \"File/Add folders\" to choose folder to scan");
             return;
         }
-        for (Path pt : selectedFolders) {
-            sprintf("SelectedFolder is: " + pt);
-        }
+
         Task<List<Path>> createFileList = new SubList(selectedFolders);
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(owner);
@@ -98,72 +96,76 @@ public class Populate {
 
             Task<Integer> sorter = new Sorter(model_main, fileList);
             loadingProcess_task.setTask(sorter);
-            sorter.setOnSucceeded(succeede -> {
-                    total.set(model_main.tables().getAsItIs_table().getItems().size()
-                            + model_main.tables().getSortIt_table().getItems().size()
-                            + model_main.tables().getSorted_table().getItems().size());
-                    process.set(total.get());
-                    sprintf("sorter.setOnSucceeded total: " + total);
-                    loadingProcess_task.setTask(sorter);
-                    loadingProcess_task.setMessage("Sorter");
-                    //Folder content checkki tähän. TArkistaa että onko tiedostot olemassa. Ja palauttaa varoituksen jos ei löydy tiedostoja.
-
-                    Task<Void> calculateFolderContent = new CalculateFolderContent(model_main, loadingProcess_task, total);
-                    loadingProcess_task.setTask(calculateFolderContent);
-                    calculateFolderContent.setOnSucceeded(success -> {
-                        try {
-                            process.set(process.get() - 1);
-                            loadingProcess_task.setMessage("Saving...");
-                            // XMLFunctions.saveAll(model.getTables());
-                            loadingProcess_task.closeStage();
-                            model_main.getMonitorExternalDriveConnectivity().restart();
-
-                            sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
-                        } catch (InterruptedException | ExecutionException ex) {
-                            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-                        }
-                    });
-                    calculateFolderContent.setOnCancelled(cancelled -> Messages.sprintf("calculateFolderContent setOnCancelled"));
-                    calculateFolderContent.setOnFailed(failed -> {
-                        sprintf("calculateFolderContent setOnFailed");
-                        loadingProcess_task.setMessage("FAILED...");
-                        Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-                        loadingProcess_task.closeStage();
-                    });
-                    exec[getExecCounter()].submit(calculateFolderContent);
+            sorter.setOnSucceeded(sorterSuccess -> {
+                Task<Void> calculateFolderContent = loadContentToContainer(loadingProcess_task, sorter);
+                exec[getExecCounter()].submit(calculateFolderContent);
             });
-            sorter.setOnCancelled(cancelled -> {
+            sorter.setOnCancelled(sorterCancelled -> {
                 sprintf("sorter.setOnCancelled");
                 loadingProcess_task.closeStage();
             });
-            sorter.setOnFailed(failed -> {
+            sorter.setOnFailed(sorterFailed -> {
                 loadingProcess_task.setMessage("FAILED...");
                 sprintf("sorter.setOnFailed");
                 loadingProcess_task.closeStage();
             });
 
-            exec[getExecCounter()].execute(sorter);
-//				Thread sorter_th = new Thread(sorter, "sorter_th");
-//				sprintf("sorter_th: " + sorter_th.getName());
-//				sorter_th.start();
+//            exec[getExecCounter()].execute(sorter);
+            Thread sorter_th = new Thread(sorter, "sorter_th");
+            sprintf("sorter_th: " + sorter_th.getName());
+            sorter_th.start();
         });
-        createFileList.setOnCancelled(e -> {
 
-        });
-        createFileList.setOnFailed(e -> {
+        createFileList.setOnCancelled(createFileListCancelled -> Messages.sprintf("CreateFileList cancelled"));
+        createFileList.setOnFailed(createFileListFailed -> Messages.sprintf("CreateFileList failed"));
 
-        });
         Thread createFileList_th = new Thread(createFileList, "createFileList_th");
         sprintf("createFileList_th.getName(): " + createFileList_th.getName());
         createFileList_th.start();
     }
 
+    public Task<Void> loadContentToContainer(LoadingProcessTask loadingProcess_task, Task<Integer> sorter) {
+        total.set(model_main.tables().getAsItIs_table().getItems().size()
+                + model_main.tables().getSortIt_table().getItems().size()
+                + model_main.tables().getSorted_table().getItems().size());
+        processAtomicInteger.set(total.get());
+        sprintf("sorter.setOnSucceeded total: " + total);
+        loadingProcess_task.setTask(sorter);
+        loadingProcess_task.setMessage("Sorter");
+        //Folder content checkki tähän. TArkistaa että onko tiedostot olemassa. Ja palauttaa varoituksen jos ei löydy tiedostoja.
+
+        Task<Void> calculateFolderContent = new CalculateFolderContent(model_main, loadingProcess_task, total);
+        loadingProcess_task.setTask(calculateFolderContent);
+        calculateFolderContent.setOnSucceeded(calculateFolderContentSuccess -> {
+            try {
+                processAtomicInteger.set(processAtomicInteger.get() - 1);
+                loadingProcess_task.setMessage("Saving...");
+                // XMLFunctions.saveAll(model.getTables());
+                loadingProcess_task.closeStage();
+                model_main.getMonitorExternalDriveConnectivity().restart();
+
+                sprintf("calculateFolderContent setOnSucceeded: " + sorter.get());
+            } catch (InterruptedException | ExecutionException ex) {
+                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            }
+        });
+        calculateFolderContent.setOnCancelled(calculateFolderContentCancelled -> Messages.sprintf("calculateFolderContent setOnCancelled"));
+        calculateFolderContent.setOnFailed(failed -> {
+            sprintf("calculateFolderContent setOnFailed");
+            loadingProcess_task.setMessage("FAILED...");
+            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+            loadingProcess_task.closeStage();
+        });
+        return calculateFolderContent;
+    }
+
     private boolean hasInIgnoredListMain(ObservableList<Path> ignoredList, String path) {
-        for (Path p : ignoredList) {
-            if (p.toString().equals(path)) {
+        for (Path ignored : ignoredList) {
+            if (ignored.toString().equals(path)) {
                 return true;
             }
         }
         return false;
     }
+
 }

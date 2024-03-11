@@ -60,8 +60,13 @@ public class SelectedFoldersController {
         // Load FolderInfo from database
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
+
         if (connection == null) {
             Messages.sprintfError("Could not connect: " + Main.conf.getConfiguration_db_fileName());
+        }
+
+        for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            Messages.sprintf("selectedFolder: " + selectedFolder);
         }
 
         //createFolderInfoDatabase
@@ -107,7 +112,11 @@ public class SelectedFoldersController {
             if (folder.toString().contains(conf.getWorkDir())) {
                 Messages.warningText(Main.bundle.getString("workDirConflict"));
             } else {
-                existingFolders.add(new SelectedFolder(true, folder.toString()));
+                boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder);
+                if (!folderExists) {
+                    Messages.warningText(Main.bundle.getString("folderExists") + folder.toPath());
+                    existingFolders.add(new SelectedFolder(true, folder.toString()));
+                }
             }
         } else {
             sprintf(Main.bundle.getString("folderExists") + folder.toPath());
@@ -141,7 +150,8 @@ public class SelectedFoldersController {
                 if (connection != null) {
                     connection.close();
                 }
-            } catch (SQLException ignored) { }
+            } catch (SQLException ignored) {
+            }
         }
     }
 
