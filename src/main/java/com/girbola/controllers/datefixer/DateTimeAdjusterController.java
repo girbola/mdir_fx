@@ -8,6 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.datefixer.tasks.MakeChanges;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -33,6 +34,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
@@ -58,8 +60,9 @@ public class DateTimeAdjusterController {
     @FXML private Button markFilesAccordingTheDateScale_btn;
     @FXML private Button findExistsPath_btn;
     //@formatter:on
-    
-    @FXML private void findExistsPath_btn_action(ActionEvent event) {
+
+    @FXML
+    private void findExistsPath_btn_action(ActionEvent event) {
         Messages.sprintf("findExistsPath_btn_action");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -131,7 +134,8 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
+    @FXML
+    private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
         Messages.sprintf("markFilesAccordingTheDateScale_btn_action");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -174,7 +178,8 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML private void copy_startToEnd_btn_action(ActionEvent event) {
+    @FXML
+    private void copy_startToEnd_btn_action(ActionEvent event) {
         sprintf("Date to copy_startToEnd: ");
         start_datePicker.setValue(end_datePicker.getValue());
 
@@ -184,7 +189,8 @@ public class DateTimeAdjusterController {
 
     }
 
-    @FXML private void setDateTimeRange_btn_action(ActionEvent event) {
+    @FXML
+    private void setDateTimeRange_btn_action(ActionEvent event) {
 
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("noSelectedFiles"));
@@ -243,9 +249,11 @@ public class DateTimeAdjusterController {
         }
     }
 
-    @FXML private Button copy_endToStart;
+    @FXML
+    private Button copy_endToStart;
 
-    @FXML private void copy_endToStart_action(ActionEvent event) {
+    @FXML
+    private void copy_endToStart_action(ActionEvent event) {
         start_datePicker.setValue(end_datePicker.getValue());
 
         model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
@@ -253,7 +261,8 @@ public class DateTimeAdjusterController {
         model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
 
     }
-//@formatter:off
+
+    //@formatter:off
     @FXML private Button end_hour_btn_down;
     @FXML private Button end_hour_btn_up;
     @FXML private TextField end_min;
@@ -275,79 +284,98 @@ public class DateTimeAdjusterController {
     @FXML private Button start_sec_btn_down;
     @FXML private Button start_sec_btn_up;
 //@formatter:on
-    @FXML private void end_hour_action(ActionEvent event) {
-        model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
-    }
+@FXML
+private void end_hour_action(ActionEvent event) {
+    model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
+}
 
-    @FXML private void end_hour_btn_down_action(ActionEvent event) {
+    @FXML
+    private void end_hour_btn_down_action(ActionEvent event) {
         model_datefix.getEnd_time().decrease_hour();
     }
 
-    @FXML private void end_hour_btn_up_action(ActionEvent event) {
+    @FXML
+    private void end_hour_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_hour();
     }
 
-    @FXML private void end_min_action(ActionEvent event) {
+    @FXML
+    private void end_min_action(ActionEvent event) {
         model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min));
     }
 
-    @FXML private void end_min_btn_down(ActionEvent event) {
+    @FXML
+    private void end_min_btn_down(ActionEvent event) {
         model_datefix.getEnd_time().decrease_min();
     }
 
-    @FXML private void end_min_btn_up_action(ActionEvent event) {
+    @FXML
+    private void end_min_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_min();
     }
 
-    @FXML private void end_sec_action(ActionEvent event) {
+    @FXML
+    private void end_sec_action(ActionEvent event) {
         model_datefix.getEnd_time().setSec(parseTextFieldToInteger(end_sec));
     }
 
-    @FXML private void end_sec_btn_down_action(ActionEvent event) {
+    @FXML
+    private void end_sec_btn_down_action(ActionEvent event) {
         model_datefix.getEnd_time().decrease_sec();
     }
 
-    @FXML private void end_sec_btn_up_action(ActionEvent event) {
+    @FXML
+    private void end_sec_btn_up_action(ActionEvent event) {
         model_datefix.getEnd_time().increase_sec();
     }
 
-    @FXML private void start_hour_action(ActionEvent event) {
+    @FXML
+    private void start_hour_action(ActionEvent event) {
         model_datefix.getStart_time().setHour(parseTextFieldToInteger(start_hour));
     }
 
-    @FXML private void start_hour_btn_up_action(ActionEvent event) {
+    @FXML
+    private void start_hour_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_hour();
     }
 
-    @FXML private void start_hour_btn_down_action(ActionEvent event) {
+    @FXML
+    private void start_hour_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_hour();
     }
 
-    @FXML private void start_min_action(ActionEvent event) {
+    @FXML
+    private void start_min_action(ActionEvent event) {
         model_datefix.getStart_time().setMin(parseTextFieldToInteger(start_min));
     }
 
-    @FXML private void start_min_btn_down_action(ActionEvent event) {
+    @FXML
+    private void start_min_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_min();
     }
 
-    @FXML private void start_min_btn_up_action(ActionEvent event) {
+    @FXML
+    private void start_min_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_min();
     }
 
-    @FXML private void start_sec_action(ActionEvent event) {
+    @FXML
+    private void start_sec_action(ActionEvent event) {
         model_datefix.getStart_time().setSec(parseTextFieldToInteger(start_sec));
     }
 
-    @FXML private void start_sec_btn_down_action(ActionEvent event) {
+    @FXML
+    private void start_sec_btn_down_action(ActionEvent event) {
         model_datefix.getStart_time().decrease_sec();
     }
 
-    @FXML private void start_sec_btn_up_action(ActionEvent event) {
+    @FXML
+    private void start_sec_btn_up_action(ActionEvent event) {
         model_datefix.getStart_time().increase_sec();
     }
 
-    @FXML private void selectRange_btn_action(ActionEvent event) {
+    @FXML
+    private void selectRange_btn_action(ActionEvent event) {
         Messages.sprintf("selected pressed");
         LocalDateTime ldt_start = null;
         LocalDateTime ldt_end = null;
@@ -390,93 +418,42 @@ public class DateTimeAdjusterController {
         LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
         ArrayList<LocalDateTime> localDateTime_list = localTimeDifference.createDateList_logic(files, ldt_start,
                 ldt_end);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss");
 
         if (localDateTime_list.isEmpty()) {
             errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
         }
+
         Main.setChanged(true);
-        Task<Integer> changeDates = new Task<Integer>() {
-            @Override
-            protected Integer call() throws Exception {
 
-                List<String> dateList = new ArrayList<>();
-                for (LocalDateTime localDateTime : localDateTime_list) {
-                    String d_temp = dtf.format(localDateTime);
-                    dateList.add(d_temp);
-                    sprintf("=========ldtime: " + d_temp);
-                }
-                List<Node> list = create_listOfSelectedNodes();
+        Task<Integer> changeDates = new MakeChanges(model_datefix, localDateTime_list);
 
-                if (list.isEmpty()) {
-                    errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-                }
-
-                Collections.sort(dateList);
-                Collections.sort(list, (Node o1, Node o2) -> {
-                    String value1 = o1.getId().replace("fileDate: ", "");
-                    if (value1.length() <= 1) {
-                        value1 = "0" + value1;
-                        sprintf("Zero added: " + value1);
-                    }
-                    String value2 = o2.getId().replace("fileDate: ", "");
-                    if (value2.length() <= 1) {
-                        value2 = "0" + value2;
-                        sprintf("Zero added: " + value2);
-                    }
-                    return value1.compareTo(value2);
-                });
-                for (String dl : dateList) {
-                    sprintf("DLLIST: " + dl);
-                }
-                Iterator<Node> it = list.iterator();
-                Iterator<String> it2 = dateList.iterator();
-                if (list.size() != dateList.size()) {
-                    sprintf("list size is: " + list.size() + " dateList size is: " + dateList.size());
-                    errorSmth(ERROR, "List were different", null, getLineNumber(), true);
-                }
-                while (it.hasNext() && it2.hasNext()) {
-                    Node node = it.next();
-                    if(node instanceof HBox) {
-                        for (Node nodeHBox : ((HBox) node).getChildren()) {
-                            if (nodeHBox instanceof TextField) {
-                                try {
-                                    TextField tf = (TextField) nodeHBox;
-                                    tf.setText(it2.next());
-                                    tf.setStyle(CssStylesController.getModified_style());
-                                } catch (Exception ex) {
-                                    errorSmth(ERROR, "Cannot make textfield changes. " + (it == null ? true : false), ex, Misc.getLineNumber(), true);
-                                }
-                            } else {
-                                Messages.sprintfError("is not instanceof TextField: " + node.toString());
-                            }
-                        }
-                    }
-
-
-
-                }
-                return null;
-            }
-        };
         LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
             model_datefix.getSelectionModel().clearAll();
             lpt.closeStage();
+            Messages.sprintf("changeDates were successfully done");
         });
         changeDates.setOnFailed(event -> {
+            Messages.sprintf("changeDates failed");
             errorSmth(ERROR, "Task failed", null, getLineNumber(), true);
             lpt.closeStage();
         });
         changeDates.setOnCancelled((event) -> {
+            Messages.sprintf("changeDates were cancelled");
             lpt.closeStage();
             errorSmth(ERROR, "Task cancelled", null, getLineNumber(), true);
         });
 
         lpt.setTask(changeDates);
+
         Thread changeDates_th = new Thread(changeDates, "changeDates_th");
-        sprintf("changeDates_th.getName(): " + changeDates_th.getName());
-        changeDates_th.run();
+        changeDates_th.setDaemon(true);
+        changeDates_th.start();
+
+    }
+
+    private List<String> getLocalDateTimeAsStringList(ArrayList<LocalDateTime> localDateTimeList) {
+        return localDateTimeList.stream().map(Main.simpleDates.getDtf_ymd_hms_minusDots_default()::format).collect(Collectors.toList());
     }
 
     private List<Node> create_listOfSelectedNodes() {
@@ -488,8 +465,6 @@ public class DateTimeAdjusterController {
                         for (Node hbc : ((HBox) n).getChildren()) {
                             if (hbc instanceof TextField) {
                                 list.add(n);
-                                sprintf("TextField found and it is date: " + ((TextField) hbc).getText()
-                                        + " getId() is " + hbc.getId());
                             }
                         }
                     }
@@ -501,7 +476,6 @@ public class DateTimeAdjusterController {
 
     private boolean checkIfInDateRange(LocalDateTime ldt_start, LocalDateTime ldt_end, int size) {
         Duration duration = Duration.between(ldt_start, ldt_end);
-        sprintf("checkIfInDateRange in sec= " + duration.getSeconds());
         if (size > 1) {
             if ((size - 1 - duration.getSeconds()) < 0) {
                 return false;
@@ -509,31 +483,8 @@ public class DateTimeAdjusterController {
                 return true;
             }
         } else {
-            sprintf("size were below 1= " + size);
             return false;
         }
-    }
-
-    private void setNumberTextField(TextField tf) {
-
-        tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-            if (newValue.matches("[0-9]*") && newValue.length() < 3 && newValue.length() >= 0) {
-                sprintf("is Text: " + newValue);
-
-            } else {
-                tf.setText(oldValue);
-            }
-        });
-        tf.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-            if (!newValue) {
-                tf.setText(defineFormat(tf));
-            }
-        });
-        tf.setOnAction(event -> {
-            sprintf("starthour on action");
-            model_datefix.getStart_time().setHour(Integer.parseInt(tf.getText()));
-            tf.setText("" + defineFormat(tf));
-        });
     }
 
     private void setTextProperty(TextField tf) {
