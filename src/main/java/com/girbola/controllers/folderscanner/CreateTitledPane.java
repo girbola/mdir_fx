@@ -32,15 +32,11 @@ public class CreateTitledPane extends Task<Void> {
     private Path path;
     private List<Path> list;
     private VBox analyzeList_vbox;
-//    private List<TreeItem<FolderInfo>> analyzeFolder_selected;
 
     public CreateTitledPane(Path path, List<Path> list, VBox analyzeList_vbox) {
         this.path = path;
         this.list = list;
         this.analyzeList_vbox = analyzeList_vbox;
-//        this.analyzeFolder_selected = analyzeFolder_selected;
-//        TreeItem<FolderInfo> treeItem = createTreeItem_FolderInfo(path.toFile(), analyzeFolder_selected);
-
     }
 
     @Override

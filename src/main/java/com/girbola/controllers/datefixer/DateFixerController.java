@@ -6,10 +6,10 @@
  */
 package com.girbola.controllers.datefixer;
 
+
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -21,6 +21,17 @@ import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -42,16 +53,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
@@ -59,11 +60,8 @@ import static com.girbola.messages.Messages.warningText;
 public class DateFixerController {
 
     private org.slf4j.Logger log = LoggerFactory.getLogger(DateFixerController.class);
-
     private static final String ERROR = DateFixerController.class.getSimpleName();
-    // private boolean infoTables_visible = true;
     private SimpleBooleanProperty leftInfoTables_visible = new SimpleBooleanProperty(true);
-
     private QuickPick_Navigator quickPick_Navigator;
     private Model_datefix model_datefix;
     private Model_main model_main;
@@ -217,23 +215,19 @@ public class DateFixerController {
 
     @FXML
     private void sortByDate_mi_action(ActionEvent event) {
-        model_datefix.getAllNodes().sort(new Comparator<Node>() {
-
-            @Override
-            public int compare(Node o1, Node o2) {
-                VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
-                VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
-                FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
-                FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
-                if (fileInfo1.getDate() > (fileInfo2.getDate())) {
-                    return 1;
-                } else if (fileInfo1.getDate() < (fileInfo2.getDate())) {
-                    return -1;
-                } else {
-                    return 0;
-                }
-
+        model_datefix.getAllNodes().sort((o1, o2) -> {
+            VBox vbox1 = Node_Methods.getImageFrameNode(o1, "imageFrame");
+            VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
+            FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
+            FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
+            if (fileInfo1.getDate() > (fileInfo2.getDate())) {
+                return 1;
+            } else if (fileInfo1.getDate() < (fileInfo2.getDate())) {
+                return -1;
+            } else {
+                return 0;
             }
+
         });
         LoadingProcessLoader.runUpdateTask(model_datefix);
 
@@ -353,7 +347,6 @@ public class DateFixerController {
                 }
             }
         }
-
     }
 
     @FXML
@@ -445,13 +438,6 @@ public class DateFixerController {
         sprintf("ImportImages about to start: " + p);
         new ImportImages(scene, model_datefix.getFolderInfo_full(), model_main, false);
 
-        // asc;
-        // DateFixer dateFixer = new DateFixer(scene,
-        // Paths.get(model_datefix.getFolderInfo_full().getFolderPath()),
-        // model_datefix.getFolderInfo_full(), model_main);
-        // Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
-        // sprintf("dateFixer_th.getName(): " + dateFixer_th.getName());
-        // dateFixer_th.run();
     }
 
     @FXML
@@ -555,13 +541,6 @@ public class DateFixerController {
         if (isImported) {
             applyChanges_btn.setDefaultButton(true);
         }
-//		df_scrollPane.onScrollStartedProperty().addListener((InvalidationListener) new ChangeListener<Number>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-//				
-//			}
-//		});
 
         ignored_chk.selectedProperty().bindBidirectional(this.model_datefix.ignored_property());
 
@@ -607,7 +586,6 @@ public class DateFixerController {
             model_datefix.exitDateFixerWindow(model_datefix.getTilePane(), Main.scene_Switcher.getWindow(), e);
             // TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
-            // event.consume();
         });
         model_datefix.getSelectionModel().getSelectionList().addListener(new ListChangeListener<Node>() {
             @Override
@@ -733,7 +711,6 @@ public class DateFixerController {
         sprintf("select_modified_btn_action");
         for (Node root : df_tilePane.getChildren()) {
             if (root instanceof VBox && root.getId().equals("imageFrame")) {
-//				FileInfo fileInfo = (FileInfo) root.getUserData();
                 Node hboxi = root.lookup("#fileDate");
                 if (hboxi instanceof TextField) {
                     TextField tf = (TextField) hboxi;

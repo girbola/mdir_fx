@@ -91,7 +91,6 @@ public class DateTimeAdjusterController {
                 LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
                 if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
                     if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-//						model_ FolderInfo_Utils. addToObservableFileInfoList.
                         collectedList.add(fileInfo);
                         Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
                                 + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
@@ -530,20 +529,15 @@ public class DateTimeAdjusterController {
                 tf.setText(defineFormat(tf));
             }
         });
-        tf.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                sprintf("starthour on action");
-                model_datefix.getStart_time().setHour(Integer.parseInt(tf.getText()));
-                tf.setText("" + defineFormat(tf));
-            }
+        tf.setOnAction(event -> {
+            sprintf("starthour on action");
+            model_datefix.getStart_time().setHour(Integer.parseInt(tf.getText()));
+            tf.setText("" + defineFormat(tf));
         });
     }
 
     private void setTextProperty(TextField tf) {
         tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-            // sprintf("changing: " + newValue);
             if (newValue.length() <= 1) {
                 tf.setText("0" + newValue);
             }
