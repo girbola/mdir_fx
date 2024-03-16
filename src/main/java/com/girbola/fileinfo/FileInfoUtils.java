@@ -19,6 +19,7 @@ import common.media.VideoDateFinder;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
+import common.utils.ImageUtils;
 import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
@@ -101,6 +102,9 @@ public class FileInfoUtils {
 					fileInfo.setDate(0);
 				}
 			}
+			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+			fileInfo.setImageDifferenceHash(imageDifferenceHash);
+
 		} else if (FileUtils.supportedVideo(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
 			setVideo(fileInfo);
@@ -122,6 +126,8 @@ public class FileInfoUtils {
 					fileInfo.setDate(0);
 				}
 			}
+			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+			fileInfo.setImageDifferenceHash(imageDifferenceHash);
 		}
 		return fileInfo;
 	}

@@ -8,7 +8,7 @@ import java.nio.file.Path;
 public class ImageUtils {
 
 
-    public static long calculateDHash(Path imagePath) throws IOException {
+    public static long calculateDifferenceHash(Path imagePath) throws IOException {
         BufferedImage image = ImageIO.read(imagePath.toFile());
         int width = 8; // Width of the resized image
         int height = 8; // Height of the resized image

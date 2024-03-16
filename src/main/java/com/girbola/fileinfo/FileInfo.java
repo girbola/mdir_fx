@@ -44,6 +44,7 @@ public class FileInfo extends Metadata implements Cloneable {
     private int orientation;
     private int thumb_length;
     private int thumb_offset;
+    private long imageDifferenceHash;
     private LocalDateTime localDateTime;
     private long date;
     private long size;
@@ -72,7 +73,7 @@ public class FileInfo extends Metadata implements Cloneable {
                 + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored + ", image=" + image
                 + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video + ", orientation=" + orientation
                 + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift + ", date=" + date + ", size=" + size
-                + ", tableDuplicated=" + tableDuplicated + ", thumb_offset=" + thumb_offset + " user " + user + "]";
+                + ", tableDuplicated=" + tableDuplicated + ", thumb_offset=" + thumb_offset + " imageDifferenceHash=" + imageDifferenceHash + ", user " + user + "]";
     }
 
     /**
@@ -102,6 +103,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.size = 0;
         this.thumb_offset = 0;
         this.thumb_length = 0;
+        this.imageDifferenceHash = 0L;
         this.user = "";
         this.workDir = "";
         this.workDirDriveSerialNumber = "";
@@ -112,7 +114,7 @@ public class FileInfo extends Metadata implements Cloneable {
      */
     public FileInfo() {
         this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
-                false, false, false, false, 0, 0, 0, 0);
+                false, false, false, false, 0, 0, 0, 0L, 0);
     }
 
     /**
@@ -141,13 +143,14 @@ public class FileInfo extends Metadata implements Cloneable {
      * @param aDate
      * @param aSize
      * @param aThumb_offset
+     * @param aImageDifferenceHash
      * @param aThumb_length
      */
     public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
                     String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
                     long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
                     boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
-                    long aDate, long aSize, int aThumb_offset, int aThumb_length) {
+                    long aDate, long aSize, int aThumb_offset, long aImageDifferenceHash, int aThumb_length) {
         this.orgPath = aOrgPath;
         this.workDir = aWorkDir;
         this.workDirDriveSerialNumber = aWorkDirDriveSerialNumber;
@@ -173,6 +176,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.copied = aCopied;
         this.thumb_offset = aThumb_offset;
         this.thumb_length = aThumb_length;
+        this.imageDifferenceHash = aImageDifferenceHash;
         this.user = user;
     }
 
