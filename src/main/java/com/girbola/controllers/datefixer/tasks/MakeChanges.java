@@ -1,8 +1,11 @@
 package com.girbola.controllers.datefixer.tasks;
 
+import com.girbola.Main;
 import com.girbola.controllers.datefixer.CssStylesController;
 import com.girbola.controllers.datefixer.DateTimeAdjusterController;
+import com.girbola.controllers.datefixer.LocalTimeDifference;
 import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
@@ -24,17 +27,38 @@ public class MakeChanges extends Task<Integer> {
     private final String ERROR = MakeChanges.class.getSimpleName();
 
     private ArrayList<LocalDateTime> localDateTimeList;
+    private LocalDateTime ldt_end;
+    private LocalDateTime ldt_start;
     private Model_datefix model_datefix;
+    private int files;
 
-    public MakeChanges(Model_datefix model_datefix, ArrayList<LocalDateTime> localDateTimeList) {
+
+    public MakeChanges(Model_datefix model_datefix, LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
         this.model_datefix = model_datefix;
-        this.localDateTimeList = localDateTimeList;
+        this.ldt_start = ldt_start;
+        this.ldt_end = ldt_end;
+        this.files = files;
+        Main.setChanged(true);
     }
 
     @Override
     protected Integer call() throws Exception {
 
+        LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
+        localDateTimeList = localTimeDifference.createDateList_logic(files, ldt_start,
+                ldt_end);
+
+        if (localDateTimeList.isEmpty()) {
+            errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
+            failed();
+            Main.setProcessCancelled(true);
+            return null;
+        }
+
         List<String> dateList = MakeChangesUtils.getLocalDateTimeAsStringList(localDateTimeList);
+        for(String datee : dateList) {
+            Messages.sprintf("DATEEEE OF LIST: " + datee);
+        }
 
         List<Node> list = MakeChangesUtils.create_listOfSelectedNodes(model_datefix);
 
@@ -84,4 +108,20 @@ public class MakeChanges extends Task<Integer> {
         }
         return null;
     }
+
+    @Override
+    protected void succeeded() {
+        super.succeeded();
+    }
+
+    @Override
+    protected void cancelled() {
+        super.cancelled();
+    }
+
+    @Override
+    protected void failed() {
+        super.failed();
+    }
+
 }

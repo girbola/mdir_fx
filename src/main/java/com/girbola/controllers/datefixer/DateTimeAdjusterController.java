@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -415,17 +415,8 @@ private void end_hour_action(ActionEvent event) {
 
     private void makeChanges(LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
 
-        LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
-        ArrayList<LocalDateTime> localDateTime_list = localTimeDifference.createDateList_logic(files, ldt_start,
-                ldt_end);
 
-        if (localDateTime_list.isEmpty()) {
-            errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-        }
-
-        Main.setChanged(true);
-
-        Task<Integer> changeDates = new MakeChanges(model_datefix, localDateTime_list);
+        Task<Integer> changeDates = new MakeChanges(model_datefix, ldt_start, ldt_end, files);
 
         LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
@@ -447,13 +438,18 @@ private void end_hour_action(ActionEvent event) {
         lpt.setTask(changeDates);
 
         Thread changeDates_th = new Thread(changeDates, "changeDates_th");
-        changeDates_th.setDaemon(true);
         changeDates_th.start();
 
     }
 
     private List<String> getLocalDateTimeAsStringList(ArrayList<LocalDateTime> localDateTimeList) {
-        return localDateTimeList.stream().map(Main.simpleDates.getDtf_ymd_hms_minusDots_default()::format).collect(Collectors.toList());
+        List<String> collect = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = Main.simpleDates.getDtf_ymd_hms_minusDots_default();
+        for (LocalDateTime localDateTime : localDateTimeList) {
+            String format = dateTimeFormatter.format(localDateTime);
+            collect.add(format);
+        }
+        return collect;
     }
 
     private List<Node> create_listOfSelectedNodes() {
