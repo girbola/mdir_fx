@@ -74,10 +74,6 @@ public class LocalTimeDifference {
 		this.end = end;
 	}
 
-	public boolean isIsOverDay() {
-		return isOverDay;
-	}
-
 	public long getTimeInSeconds(LocalTime start_lt, LocalTime end_lt) {
 		// Duration d = Duration.between(start_lt, end_lt);
 		long start_tm = convertTimeToMillis(start_lt);
