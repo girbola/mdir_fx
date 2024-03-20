@@ -53,7 +53,6 @@ public class DateFixer extends Task<Void> {
 
     public DateFixer(Path aCurrentPath, FolderInfo aFolderInfo, Model_main aModel_main, boolean isImported) {
         this.folderInfo = aFolderInfo;
-        Messages.sprintf("tabletype = " + this.folderInfo.getTableType());
         this.currentPath = aCurrentPath;
         this.model_main = aModel_main;
         this.isImported = isImported;
@@ -77,35 +76,25 @@ public class DateFixer extends Task<Void> {
                     (conf.getScreenBounds().getHeight() - 50));
             dateFixerController.init(model_datefix, model_main, currentPath, folderInfo, isImported);
 
-            scene_dateFixer.setOnKeyPressed(new EventHandler<KeyEvent>() {
-                @Override
-                public void handle(KeyEvent event) {
-                    if (event.getCode() == KeyCode.ENTER && event.isAltDown()) {
-                        sprintf("Alt + ENTER pressed");
-                        Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-                        stage.setFullScreen(true);
-                    }
+            scene_dateFixer.setOnKeyPressed(event -> {
+                if (event.getCode() == KeyCode.ENTER && event.isAltDown()) {
+                    Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+                    stage.setFullScreen(true);
                 }
             });
-            scene_dateFixer.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getTarget() instanceof StackPane) {
-                        sprintf("event StackPane target: " + event.getTarget());
-                        StackPane node = (StackPane) event.getTarget();
-                        if (node.getParent() instanceof VBox && node.lookupAll("#imageView") != null) {
-                            model_datefix.getSelectionModel().addWithToggle(node.getParent());
-                            if (event.getClickCount() == 2) {
-                                FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
-                                sprintf("fileInfo: " + fileInfo.toString());
-                                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
-                                        || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
 
-                                    ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
-                                            Main.scene_Switcher.getScene_dateFixer().getWindow());
-                                } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                                    ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
-                                }
+            scene_dateFixer.setOnMouseClicked(event -> {
+                if (event.getTarget() instanceof StackPane node) {
+                    if (node.getParent() instanceof VBox && node.lookupAll("#imageView") != null) {
+                        model_datefix.getSelectionModel().addWithToggle(node.getParent());
+                        if (event.getClickCount() == 2) {
+                            FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
+                            if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
+                                    || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
+                                ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
+                                        Main.scene_Switcher.getScene_dateFixer().getWindow());
+                            } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+                                ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
                             }
                         }
                     }
@@ -142,52 +131,24 @@ public class DateFixer extends Task<Void> {
         sprintf("dateFixLoader.setOnSucceeded");
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-// Check if files are already in destination
 
         Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
-        dateFixPopulateGridPane_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
+        dateFixPopulateGridPane_task.setOnCancelled(event -> {
                 sprintf("dateFixPopulateGridPane.setOnCancelled");
                 loadingProcess_task.closeStage();
-            }
         });
-        dateFixPopulateGridPane_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
+        dateFixPopulateGridPane_task.setOnSucceeded(event -> {
+            sprintf("dateFixPopulateGridPane.setOnSucceeded");
                 LoadingProcessLoader.runUpdateTask(model_datefix);
-            }
         });
-        dateFixPopulateGridPane_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
+        dateFixPopulateGridPane_task.setOnFailed(event -> {
                 sprintf("dateFixPopulateGridPane.setOnFailed");
                 loadingProcess_task.closeStage();
-            }
         });
 
         loadingProcess_task.setTask(dateFixPopulateGridPane_task);
         Thread dateFixPopulateGridPane_th = new Thread(dateFixPopulateGridPane_task, "dateFixPopulateGridPane_th");
         dateFixPopulateGridPane_th.start();
-
     }
-
-    /**
-     * @param fileInfo
-     * @return
-     */
-    public String getStatus(FileInfo fileInfo) {
-        if (fileInfo.isBad()) {
-            return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
-        } else if (fileInfo.isGood()) {
-            return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
-        } else if (fileInfo.isSuggested()) {
-            return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
-        } else if (fileInfo.isVideo()) {
-            return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
-        }
-        return null;
-    }
-
 }

@@ -138,15 +138,9 @@ public class Model_datefix extends DateFixerModel {
 
 	public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
 		this.currentFolderPath = aCurrentFolderPath;
-		Messages.sprintf("Model_datefix loading... " + currentFolderPath);
 		this.model_Main = model_Main;
 		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
-		// this.thumbInfo_list = SQL_Utils.loadThumbInfo_list(this.connection);
-		// if (this.thumbInfo_list != null) {
-		// Messages.sprintf("thumbInfo_list were loaded!");
-		// } else {
-		// Messages.sprintf("thumbInfo_list were not loaded");
-		// }
+
 
 	}
 
@@ -829,13 +823,13 @@ public class Model_datefix extends DateFixerModel {
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
-									byte[] res = byteArrayOS.toByteArray();
+                                    byte[] imageByteArray = byteArrayOS.toByteArray();
 									try {
 										byteArrayOS.close();
 									} catch (IOException ex) {
 										Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
 									}
-									thumbInfo.getThumbs().add(res);
+									thumbInfo.getThumbs().add(imageByteArray);
 									thumbInfo_list.add(thumbInfo);
 								}
 							}

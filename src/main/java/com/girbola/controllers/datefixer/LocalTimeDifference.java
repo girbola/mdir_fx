@@ -49,10 +49,11 @@ public class LocalTimeDifference {
         this.end = end;
     }
 
-    public int getEventLastedDurationPerDayInSeconds(LocalTime start_lt, LocalTime end_lt) {
-        Messages.sprintf("getTimeInSeconds");
+    public int getEventLastedDurationPerDayInSeconds(LocalTime start_lt, LocalTime end_lt, int files) {
+        Messages.sprintf("getTimeInSeconds : " + files);
         long start_tm = convertTimeToMillis(start_lt);
         long end_tm = convertTimeToMillis(end_lt);
+        Messages.sprintf("start_lt: " + start_lt + " end_lt: " + end_lt);
         if (start_tm > end_tm) {
             isOverDay = true;
             end_tm = (end_tm + (24 * 60 * 60));
@@ -60,7 +61,14 @@ public class LocalTimeDifference {
         } else {
             isOverDay = false;
             sprintf("start < end is not over day");
-            return Math.round(((float) end_tm / 1000) - ((float) start_tm / 1000));
+            int round = Math.round(((float) end_tm / 1000) - ((float) start_tm / 1000));
+            if (files == 2) {
+                round = round + Math.round((float) round / 2);
+            } else {
+                round = round + Math.round((float) round / files);
+            }
+            Messages.sprintf("ROUND: " + round);
+            return round;
         }
     }
 
@@ -120,7 +128,7 @@ public class LocalTimeDifference {
         double filesPerDay = 0;
 
         double current_day_splitter = 0;
-        long seconds = getEventLastedDurationPerDayInSeconds(getStart().toLocalTime(), getEnd().toLocalTime());
+        long seconds = getEventLastedDurationPerDayInSeconds(getStart().toLocalTime(), getEnd().toLocalTime(), files);
 
         sprintf("filesPerDay: " + filesPerDay);
         sprintf("time_duration (SEC): " + seconds);
@@ -197,8 +205,9 @@ public class LocalTimeDifference {
             days = getEventLastedDays(start.toLocalDate(), end.toLocalDate());
         } else {
             Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+            return null;
         }
-        int seconds = getEventLastedDurationPerDayInSeconds(start.toLocalTime(), end.toLocalTime());
+        int seconds = getEventLastedDurationPerDayInSeconds(start.toLocalTime(), end.toLocalTime(), files);
 
         runningDateTime = getStart();
 
@@ -284,14 +293,6 @@ public class LocalTimeDifference {
         return counter;
     }
 
-    private void listlc(ArrayList<LocalDateTime> list, int i) {
-        int c = 0;
-        for (LocalDateTime lt : list) {
-            sprintf(c + " * " + i + " localdt: " + lt);
-            c++;
-        }
-    }
-
     protected List<Integer> splitIntoParts(int whole, int parts) {
         List<Integer> list = new ArrayList<>();
         int[] arr = new int[parts];
@@ -310,4 +311,14 @@ public class LocalTimeDifference {
         return list;
     }
 
+    protected List<Integer> splitIntoParts_(int whole, int parts) {
+        List<Integer> list = new ArrayList<>();
+        int remainingWhole = whole;
+        for (int i = parts; i > 0; i--) {
+            int size = (remainingWhole + i - 1) / i;
+            list.add(size);
+            remainingWhole -= size;
+        }
+        return list;
+    }
 }

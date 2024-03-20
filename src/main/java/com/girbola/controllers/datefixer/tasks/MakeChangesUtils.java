@@ -8,6 +8,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,7 +16,13 @@ import java.util.stream.Collectors;
 public class MakeChangesUtils {
 
     protected static List<String> getLocalDateTimeAsStringList(ArrayList<LocalDateTime> localDateTimeList) {
-        return localDateTimeList.stream().map(Main.simpleDates.getDtf_ymd_hms_minusDots_default()::format).collect(Collectors.toList());
+        List<String> collect = new ArrayList<>();
+        DateTimeFormatter dateTimeFormatter = Main.simpleDates.getDtf_ymd_hms_minusDots_default();
+        for (LocalDateTime localDateTime : localDateTimeList) {
+            String format = dateTimeFormatter.format(localDateTime);
+            collect.add(format);
+        }
+        return collect;
     }
 
     protected static List<Node> create_listOfSelectedNodes(Model_datefix model_datefix) {

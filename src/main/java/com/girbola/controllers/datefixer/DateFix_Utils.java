@@ -22,12 +22,12 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class DateFix_Utils {
 
+
+
+
 	private ObservableList<EXIF_Data_Selector> cameras_obs = FXCollections.observableArrayList();
-
 	private ObservableList<EXIF_Data_Selector> date_obs = FXCollections.observableArrayList();
-
 	private ObservableList<EXIF_Data_Selector> events_obs = FXCollections.observableArrayList();
-
 	private ObservableList<EXIF_Data_Selector> locations_obs = FXCollections.observableArrayList();
 
 	public ObservableList<EXIF_Data_Selector> getDate_obs() {
@@ -45,11 +45,11 @@ public class DateFix_Utils {
 
 		for (FileInfo fi : fileInfo_list) {
 			if (fi.getCamera_model() == null) {
-				if (!has_value("Unknown", camera_list)) {
+				if (!hasValue("Unknown", camera_list)) {
 					camera_list.add("Unknown");
 				}
 			} else {
-				if (!has_value(fi.getCamera_model(), camera_list)) {
+				if (!hasValue(fi.getCamera_model(), camera_list)) {
 					camera_list.add(fi.getCamera_model());
 				}
 			}
@@ -62,12 +62,12 @@ public class DateFix_Utils {
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
 					if ("Unknown".equals(camera)) {
-						int count = map.containsKey(camera) ? map.get(camera) : 0;
+						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
 				} else {
 					if (fi.getCamera_model().equals(camera)) {
-						int count = map.containsKey(camera) ? map.get(camera) : 0;
+						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
 				}
@@ -91,7 +91,7 @@ public class DateFix_Utils {
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
 				fi.setCamera_model("Unknown");
 			}
-			if (!has_value(fi.getCamera_model(), camera_list)) {
+			if (!hasValue(fi.getCamera_model(), camera_list)) {
 				sprintf("3Adding camera: " + fi.getCamera_model());
 				camera_list.add(fi.getCamera_model());
 			}
@@ -103,12 +103,12 @@ public class DateFix_Utils {
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
 					if ("Unknown".equals(camera)) {
-						int count = map.containsKey(camera) ? map.get(camera) : 0;
+						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
 				} else {
 					if (fi.getCamera_model().equals(camera)) {
-						int count = map.containsKey(camera) ? map.get(camera) : 0;
+						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
 				}
@@ -126,7 +126,7 @@ public class DateFix_Utils {
 		List<Map<String, Integer>> list_map = new ArrayList<>();
 		List<String> date_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
-			if (!has_value(simpleDates.getSdf_ymd_minus().format(fi.getDate()), date_list)) {
+			if (!hasValue(simpleDates.getSdf_ymd_minus().format(fi.getDate()), date_list)) {
 				date_list.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}
 			fileInfoField(date_list, fi, Field.DATE.getType());
@@ -136,7 +136,7 @@ public class DateFix_Utils {
 			Map<String, Integer> map = findHashMap(dates, list_map);
 			for (FileInfo fi : fileInfo_list) {
 				if (simpleDates.getSdf_ymd_minus().format(fi.getDate()).equals(dates)) {
-					int count = map.containsKey(dates) ? map.get(dates) : 0;
+					int count = map.getOrDefault(dates, 0);
 					map.put(dates, count + 1);
 				}
 			}
@@ -168,7 +168,7 @@ public class DateFix_Utils {
 
 	}
 
-	private boolean has_value(String format, List<String> list) {
+	private boolean hasValue(String format, List<String> list) {
 		for (String str : list) {
 			if (format.equals(str)) {
 				return true;
@@ -246,13 +246,13 @@ public class DateFix_Utils {
 	private void fileInfoField(List<String> exifInfo_list, FileInfo fi, String fileInfoFieldexifInfo_list) {
 		if (fileInfoFieldexifInfo_list.equals(Field.EVENT.getType())) {
 			if (!fi.getEvent().isEmpty()) {
-				if (!has_value(fi.getEvent(), exifInfo_list)) {
+				if (!hasValue(fi.getEvent(), exifInfo_list)) {
 					exifInfo_list.add(fi.getEvent());
 				}
 			}
 		} else if (fileInfoFieldexifInfo_list.equals(Field.LOCATION.getType())) {
 			if (!fi.getLocation().isEmpty()) {
-				if (!has_value(fi.getLocation(), exifInfo_list)) {
+				if (!hasValue(fi.getLocation(), exifInfo_list)) {
 					exifInfo_list.add(fi.getLocation());
 				}
 			}
@@ -263,11 +263,11 @@ public class DateFix_Utils {
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
 				fi.setCamera_model("Unknown");
 			}
-			if (!has_value(fi.getCamera_model(), exifInfo_list)) {
+			if (!hasValue(fi.getCamera_model(), exifInfo_list)) {
 				exifInfo_list.add(fi.getCamera_model());
 			}
 		} else if (fileInfoFieldexifInfo_list.equals(Field.DATE.getType())) {
-			if (!has_value(simpleDates.getSdf_ymd_minus().format(fi.getDate()), exifInfo_list)) {
+			if (!hasValue(simpleDates.getSdf_ymd_minus().format(fi.getDate()), exifInfo_list)) {
 				exifInfo_list.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}
 		}
@@ -280,7 +280,7 @@ public class DateFix_Utils {
 		List<String> events_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
 			if (!fi.getEvent().isEmpty()) {
-				if (!has_value(fi.getEvent(), events_list)) {
+				if (!hasValue(fi.getEvent(), events_list)) {
 					events_list.add(fi.getEvent());
 				}
 			}
@@ -313,7 +313,7 @@ public class DateFix_Utils {
 		List<String> locations_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
 			if (!fi.getLocation().isEmpty()) {
-				if (!has_value(fi.getLocation(), locations_list)) {
+				if (!hasValue(fi.getLocation(), locations_list)) {
 					locations_list.add(fi.getLocation());
 				}
 			}

@@ -61,6 +61,29 @@ public class DateTimeAdjusterController {
     @FXML private Button findExistsPath_btn;
     //@formatter:on
 
+    //@formatter:off
+    @FXML private Button end_hour_btn_down;
+    @FXML private Button end_hour_btn_up;
+    @FXML private TextField end_min;
+    @FXML private Button end_min_btn_down;
+    @FXML private Button end_min_btn_up;
+    @FXML private TextField end_sec;
+    @FXML private Button end_sec_btn_down;
+    @FXML private Button end_sec_btn_up;
+    @FXML private Button set_btn;
+    @FXML private DatePicker start_datePicker;
+    @FXML private TextField start_hour;
+    @FXML private Button start_hour_btn_down;
+    @FXML private Button start_hour_btn_up;
+
+    @FXML private TextField start_min;
+    @FXML private Button start_min_btn_down;
+    @FXML private Button start_min_btn_up;
+    @FXML private TextField start_sec;
+    @FXML private Button start_sec_btn_down;
+    @FXML private Button start_sec_btn_up;
+    //@formatter:on
+
     @FXML
     private void findExistsPath_btn_action(ActionEvent event) {
         Messages.sprintf("findExistsPath_btn_action");
@@ -262,32 +285,8 @@ public class DateTimeAdjusterController {
 
     }
 
-    //@formatter:off
-    @FXML private Button end_hour_btn_down;
-    @FXML private Button end_hour_btn_up;
-    @FXML private TextField end_min;
-    @FXML private Button end_min_btn_down;
-    @FXML private Button end_min_btn_up;
-    @FXML private TextField end_sec;
-    @FXML private Button end_sec_btn_down;
-    @FXML private Button end_sec_btn_up;
-    @FXML private Button set_btn;
-    @FXML private DatePicker start_datePicker;
-    @FXML private TextField start_hour;
-    @FXML private Button start_hour_btn_down;
-    @FXML private Button start_hour_btn_up;
-
-    @FXML private TextField start_min;
-    @FXML private Button start_min_btn_down;
-    @FXML private Button start_min_btn_up;
-    @FXML private TextField start_sec;
-    @FXML private Button start_sec_btn_down;
-    @FXML private Button start_sec_btn_up;
-//@formatter:on
-@FXML
-private void end_hour_action(ActionEvent event) {
-    model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
-}
+    @FXML
+    private void end_hour_action(ActionEvent event) {    model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour)); }
 
     @FXML
     private void end_hour_btn_down_action(ActionEvent event) {
@@ -300,9 +299,7 @@ private void end_hour_action(ActionEvent event) {
     }
 
     @FXML
-    private void end_min_action(ActionEvent event) {
-        model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min));
-    }
+    private void end_min_action(ActionEvent event) { model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min)); }
 
     @FXML
     private void end_min_btn_down(ActionEvent event) {
@@ -414,7 +411,6 @@ private void end_hour_action(ActionEvent event) {
     }
 
     private void makeChanges(LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
-
 
         Task<Integer> changeDates = new MakeChanges(model_datefix, ldt_start, ldt_end, files);
 
