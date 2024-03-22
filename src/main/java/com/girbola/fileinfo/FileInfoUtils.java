@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -19,6 +19,7 @@ import common.media.VideoDateFinder;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
+import common.utils.ImageUtils;
 import common.utils.date.DateUtils;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXMLLoader;
@@ -95,6 +96,19 @@ long start = System.currentTimeMillis();
 			setImage(fileInfo);
 			calculcateTotalFileSizes(fileName, fileInfo);
 
+			fileInfo.setSize(Files.size(fileName));
+			boolean metaDataFound = getImageMetadata(fileName, fileInfo);
+			boolean tryFileNameDate;
+			if (!metaDataFound) {
+				tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+				if (!tryFileNameDate) {
+					setBad(fileInfo);
+					fileInfo.setDate(0);
+				}
+			}
+			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+			fileInfo.setImageDifferenceHash(imageDifferenceHash);
+
 		} else if (FileUtils.supportedVideo(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
 			setVideo(fileInfo);
@@ -142,6 +156,8 @@ long start = System.currentTimeMillis();
 				setBad(fileInfo);
 				fileInfo.setDate(0);
 			}
+			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+			fileInfo.setImageDifferenceHash(imageDifferenceHash);
 		}
 	}
 
