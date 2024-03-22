@@ -17,6 +17,7 @@ import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -286,7 +287,9 @@ public class DateTimeAdjusterController {
     }
 
     @FXML
-    private void end_hour_action(ActionEvent event) {    model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour)); }
+    private void end_hour_action(ActionEvent event) {
+        model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
+    }
 
     @FXML
     private void end_hour_btn_down_action(ActionEvent event) {
@@ -299,7 +302,9 @@ public class DateTimeAdjusterController {
     }
 
     @FXML
-    private void end_min_action(ActionEvent event) { model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min)); }
+    private void end_min_action(ActionEvent event) {
+        model_datefix.getEnd_time().setMin(parseTextFieldToInteger(end_min));
+    }
 
     @FXML
     private void end_min_btn_down(ActionEvent event) {
@@ -438,49 +443,14 @@ public class DateTimeAdjusterController {
 
     }
 
-    private List<String> getLocalDateTimeAsStringList(ArrayList<LocalDateTime> localDateTimeList) {
-        List<String> collect = new ArrayList<>();
-        DateTimeFormatter dateTimeFormatter = Main.simpleDates.getDtf_ymd_hms_minusDots_default();
-        for (LocalDateTime localDateTime : localDateTimeList) {
-            String format = dateTimeFormatter.format(localDateTime);
-            collect.add(format);
-        }
-        return collect;
-    }
+    private boolean checkIfInDateRange(LocalDateTime ldtStart, LocalDateTime ldtEnd, int size) {
+        long duration = Duration.between(ldtStart, ldtEnd).getSeconds();
 
-    private List<Node> create_listOfSelectedNodes() {
-        List<Node> list = new ArrayList<>();
-        for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
-            if (node_main instanceof VBox) {
-                for (Node n : ((VBox) node_main).getChildren()) {
-                    if (n instanceof HBox) {
-                        for (Node hbc : ((HBox) n).getChildren()) {
-                            if (hbc instanceof TextField) {
-                                list.add(n);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
-
-    private boolean checkIfInDateRange(LocalDateTime ldt_start, LocalDateTime ldt_end, int size) {
-        Duration duration = Duration.between(ldt_start, ldt_end);
-        if (size > 1) {
-            if ((size - 1 - duration.getSeconds()) < 0) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            return false;
-        }
+        return duration >= 0 && size > 1 && (size - 1 - duration) >= 0;
     }
 
     private void setTextProperty(TextField tf) {
-        tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
+        tf.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() <= 1) {
                 tf.setText("0" + newValue);
             }
@@ -489,10 +459,8 @@ public class DateTimeAdjusterController {
 
     private int parseTextFieldToInteger(TextField tf) {
         int sec = 0;
-        try {
-            sec = Integer.parseInt(tf.getText());
-        } catch (NumberFormatException e) {
-            sec = 0;
+        if (tf != null && tf.getText() != null) {
+            sec = Integer.parseInt(tf.getText().trim());
         }
         return sec;
     }
@@ -506,34 +474,24 @@ public class DateTimeAdjusterController {
         aModel_datefix.setStart_datePicker(start_datePicker);
         aModel_datefix.setEnd_datePicker(end_datePicker);
 
-        start_hour.textProperty().bindBidirectional(aModel_datefix.getStart_time().hour_property(),
-                new NumberStringConverter());
-        setTextProperty(start_hour);
+        setTextPropertiesAndDefaults(aModel_datefix, start_hour, start_min, start_sec, "12", "00", "00");
+        setTextPropertiesAndDefaults(aModel_datefix, end_hour, end_min, end_sec, "12", "00", "00");
+    }
 
-        start_min.textProperty().bindBidirectional(aModel_datefix.getStart_time().min_property(),
-                new NumberStringConverter());
-        setTextProperty(start_min);
+    private void setTextPropertiesAndDefaults(Model_datefix dateFixModel, TextField hourField, TextField
+            minField, TextField secField, String hourDefault, String minDefault, String secDefault) {
+        setTimeProperties(dateFixModel, hourField, dateFixModel.getStart_time().hour_property());
+        setTimeProperties(dateFixModel, minField, dateFixModel.getStart_time().min_property());
+        setTimeProperties(dateFixModel, secField, dateFixModel.getStart_time().sec_property());
 
-        start_sec.textProperty().bindBidirectional(aModel_datefix.getStart_time().sec_property(),
-                new NumberStringConverter());
-        setTextProperty(start_sec);
+        hourField.setText(hourDefault);
+        minField.setText(minDefault);
+        secField.setText(secDefault);
+    }
 
-        end_hour.textProperty().bindBidirectional(aModel_datefix.getEnd_time().hour_property(),
-                new NumberStringConverter());
-        setTextProperty(end_hour);
-
-        end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(), new NumberStringConverter());
-        setTextProperty(end_min);
-
-        end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
-        setTextProperty(end_sec);
-
-        start_hour.setText("12");
-        start_min.setText("00");
-        start_sec.setText("00");
-        end_hour.setText("12");
-        end_min.setText("00");
-        end_sec.setText("00");
+    private void setTimeProperties(Model_datefix dateFixModel, TextField field, Property<Number> property) {
+        field.textProperty().bindBidirectional(property, new NumberStringConverter());
+        setTextProperty(field);
     }
 
     public void centerNodeInScrollPane_(ScrollPane scrollPane, Node node) {
