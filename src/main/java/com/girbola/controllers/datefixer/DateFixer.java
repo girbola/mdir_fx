@@ -16,17 +16,11 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -140,7 +134,7 @@ public class DateFixer extends Task<Void> {
         });
         dateFixPopulateGridPane_task.setOnSucceeded(event -> {
             sprintf("dateFixPopulateGridPane.setOnSucceeded");
-                LoadingProcessLoader.runUpdateTask(model_datefix);
+                LoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
         });
         dateFixPopulateGridPane_task.setOnFailed(event -> {
                 sprintf("dateFixPopulateGridPane.setOnFailed");

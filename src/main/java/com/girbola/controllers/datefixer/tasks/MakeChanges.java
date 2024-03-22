@@ -2,9 +2,8 @@ package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.CssStylesController;
-import com.girbola.controllers.datefixer.DateTimeAdjusterController;
-import com.girbola.controllers.datefixer.LocalTimeDifference;
 import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.concurrent.Task;
@@ -44,9 +43,13 @@ public class MakeChanges extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
 
-        LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
-        localDateTimeList = localTimeDifference.createDateList_logic(files, ldt_start,
-                ldt_end);
+        if (files < 2) {
+            localDateTimeList = new ArrayList<>();
+            localDateTimeList.add(ldt_start);
+        } else {
+            localDateTimeList = DateFixCommonUtils.createDateList_logic(files, ldt_start,
+                    ldt_end);
+        }
 
         if (localDateTimeList.isEmpty()) {
             errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
@@ -56,7 +59,7 @@ public class MakeChanges extends Task<Integer> {
         }
 
         List<String> dateList = MakeChangesUtils.getLocalDateTimeAsStringList(localDateTimeList);
-        for(String datee : dateList) {
+        for (String datee : dateList) {
             Messages.sprintf("DATEEEE OF LIST: " + datee);
         }
 

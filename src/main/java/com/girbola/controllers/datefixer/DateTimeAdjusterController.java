@@ -147,7 +147,7 @@ public class DateTimeAdjusterController {
 
         }
 
-        LoadingProcessLoader.runUpdateTask(model_datefix);
+        LoadingProcessLoader.runUpdateTask(model_datefix, null);
 
         Messages.warningText(
                 "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);

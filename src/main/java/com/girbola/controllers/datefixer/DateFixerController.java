@@ -138,11 +138,11 @@ public class DateFixerController {
 	@FXML private Button selectRangeOfNumbers_btn;
 	@FXML private TextField startFromNumber_tf;
 	@FXML private TextField endToNumber_tf;
-
 	//@formatter:on
+
     @FXML
     private void listFileInfo_btn_action(ActionEvent event) {
-
+        warningText("listFileInfo_btn_action Not ready yet!");
     }
 
     @FXML
@@ -200,7 +200,7 @@ public class DateFixerController {
     @FXML
     private void fileName_mi_action(ActionEvent event) {
         sortNodes();
-        LoadingProcessLoader.runUpdateTask(model_datefix);
+        LoadingProcessLoader.runUpdateTask(model_datefix, null);
     }
 
     private void sortNodes() {
@@ -220,17 +220,9 @@ public class DateFixerController {
             VBox vbox2 = Node_Methods.getImageFrameNode(o2, "imageFrame");
             FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
             FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
-            if (fileInfo1.getDate() > (fileInfo2.getDate())) {
-                return 1;
-            } else if (fileInfo1.getDate() < (fileInfo2.getDate())) {
-                return -1;
-            } else {
-                return 0;
-            }
-
+            return Long.compare(fileInfo1.getDate(), fileInfo2.getDate());
         });
-        LoadingProcessLoader.runUpdateTask(model_datefix);
-
+        LoadingProcessLoader.runUpdateTask(model_datefix, null);
     }
 
     @FXML
@@ -243,7 +235,7 @@ public class DateFixerController {
             warningText(bundle.getString("workDirHasNotConnected"));
             return;
         }
-        ConcurrencyUtils.stopExecThread();
+        //ConcurrencyUtils.stopExecThread();
 
         warningText("Not ready yet!");
     }
@@ -376,7 +368,7 @@ public class DateFixerController {
         }
         sprintf("cameras_hide_Deselected_btn_action starting");
 
-        LoadingProcessLoader.runUpdateTask(model_datefix);
+        LoadingProcessLoader.runUpdateTask(model_datefix, null);
 
     }
 
@@ -386,7 +378,7 @@ public class DateFixerController {
         model_datefix.getSelectionModel().clearAll();
         model_datefix.deselectAllExifDataSelectors();
 
-        LoadingProcessLoader.runUpdateTask(model_datefix);
+        LoadingProcessLoader.runUpdateTask(model_datefix,null);
 
     }
 
@@ -550,7 +542,7 @@ public class DateFixerController {
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                LoadingProcessLoader.runUpdateTask(model_datefix);
+                LoadingProcessLoader.runUpdateTask(model_datefix, null);
             }
         });
 
@@ -866,7 +858,7 @@ public class DateFixerController {
                 model_datefix.getTilePane().getChildren().removeAll(toRemove);
                 model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
 
-                LoadingProcessLoader.runUpdateTask(model_datefix);
+                LoadingProcessLoader.runUpdateTask(model_datefix, null);
 
             }
         } else if (result.get().getButtonData().equals(ButtonData.NO)) {
