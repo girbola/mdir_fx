@@ -25,7 +25,6 @@ public class Sorting_Utils {
             public int compare(Node o1, Node o2) {
                 FileInfo f1 = (FileInfo) o1.getUserData();
                 FileInfo f2 = (FileInfo) o2.getUserData();
-                // return o1.getDate() < o2.getDate() ? -1 : 1;
                 if (f1.getOrgPath() != null && f2.getOrgPath() != null) {
                     return f1.getOrgPath().compareTo(f2.getOrgPath());
                 } else {

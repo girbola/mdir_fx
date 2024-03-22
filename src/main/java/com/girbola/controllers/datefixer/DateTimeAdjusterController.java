@@ -474,24 +474,34 @@ public class DateTimeAdjusterController {
         aModel_datefix.setStart_datePicker(start_datePicker);
         aModel_datefix.setEnd_datePicker(end_datePicker);
 
-        setTextPropertiesAndDefaults(aModel_datefix, start_hour, start_min, start_sec, "12", "00", "00");
-        setTextPropertiesAndDefaults(aModel_datefix, end_hour, end_min, end_sec, "12", "00", "00");
-    }
+        start_hour.textProperty().bindBidirectional(aModel_datefix.getStart_time().hour_property(),
+                new NumberStringConverter());
+        setTextProperty(start_hour);
 
-    private void setTextPropertiesAndDefaults(Model_datefix dateFixModel, TextField hourField, TextField
-            minField, TextField secField, String hourDefault, String minDefault, String secDefault) {
-        setTimeProperties(dateFixModel, hourField, dateFixModel.getStart_time().hour_property());
-        setTimeProperties(dateFixModel, minField, dateFixModel.getStart_time().min_property());
-        setTimeProperties(dateFixModel, secField, dateFixModel.getStart_time().sec_property());
+        start_min.textProperty().bindBidirectional(aModel_datefix.getStart_time().min_property(),
+                new NumberStringConverter());
+        setTextProperty(start_min);
 
-        hourField.setText(hourDefault);
-        minField.setText(minDefault);
-        secField.setText(secDefault);
-    }
+        start_sec.textProperty().bindBidirectional(aModel_datefix.getStart_time().sec_property(),
+                new NumberStringConverter());
+        setTextProperty(start_sec);
 
-    private void setTimeProperties(Model_datefix dateFixModel, TextField field, Property<Number> property) {
-        field.textProperty().bindBidirectional(property, new NumberStringConverter());
-        setTextProperty(field);
+        end_hour.textProperty().bindBidirectional(aModel_datefix.getEnd_time().hour_property(),
+                new NumberStringConverter());
+        setTextProperty(end_hour);
+
+        end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(), new NumberStringConverter());
+        setTextProperty(end_min);
+
+        end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
+        setTextProperty(end_sec);
+
+        start_hour.setText("12");
+        start_min.setText("00");
+        start_sec.setText("00");
+        end_hour.setText("12");
+        end_min.setText("00");
+        end_sec.setText("00");
     }
 
     public void centerNodeInScrollPane_(ScrollPane scrollPane, Node node) {
