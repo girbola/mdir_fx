@@ -87,12 +87,9 @@ public class FileInfoUtils {
 	}
 
 	public static FileInfo createFileInfo(Path fileName) throws IOException {
-long start = System.currentTimeMillis();
-		long end = System.currentTimeMillis();
 		FileInfo fileInfo = null;
 		if (FileUtils.supportedImage(fileName)) {
 			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-			Messages.sprintf("Createing fileInfo: " + fileInfo.getOrgPath());
 			setImage(fileInfo);
 			calculcateTotalFileSizes(fileName, fileInfo);
 
@@ -122,36 +119,21 @@ long start = System.currentTimeMillis();
 			setRaw(fileInfo);
 			calculcateTotalFileSizes(fileName, fileInfo);
 		}
-		end = System.currentTimeMillis();
-		Messages.sprintf("It took: " +  (end-start));
 
 		return fileInfo;
 	}
 
 	public static void calculcateTotalFileSizes(Path fileName, FileInfo fileInfo) throws IOException {
-		long start = System.currentTimeMillis();
-		long end = System.currentTimeMillis();
 
 		fileInfo.setSize(Files.size(fileName));
 
-		end = System.currentTimeMillis();
-
-		Messages.sprintf("=-filesize: " + (end-start));
-
 		boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-
-		end = System.currentTimeMillis();
-
-		Messages.sprintf("=-MetaData: " + (end-start));
 
 		boolean tryFileNameDate;
 		if (!metaDataFound) {
 
-			end = System.currentTimeMillis();
-
 			tryFileNameDate = tryFileNameDate(fileName, fileInfo);
 
-			Messages.sprintf("=-MetaData: " + (end-start));
 			if (!tryFileNameDate) {
 				setBad(fileInfo);
 				fileInfo.setDate(0);

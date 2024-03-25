@@ -107,9 +107,14 @@ public class DateTaken {
 
             ExifSubIFDDirectory directory2 = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 // create a descriptor
-            Date date = directory2.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-            if (date != null) {
-                return date.getTime();
+            Date date = null;
+            try {
+                date = directory2.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                if (date != null) {
+                    return date.getTime();
+                }
+            } catch (Exception ex) {
+
             }
 // get tag description
 
@@ -117,14 +122,14 @@ public class DateTaken {
 // create a descriptor
 
 
-//            for (Directory directory : directories) {
-//                if (directory != null) {
-//                    Date date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
-//                    if(date != null) {
-//                        return date.getTime();
-//                    }
-//                }
-//            }
+            for (Directory directory : directories) {
+                if (directory != null) {
+                    date = directory.getDate(ExifSubIFDDirectory.TAG_DATETIME_ORIGINAL);
+                    if (date != null) {
+                        return date.getTime();
+                    }
+                }
+            }
         } else if (FileUtils.supportedVideo(path)) {
             for (Directory directory : directories) {
                 if (directory != null) {

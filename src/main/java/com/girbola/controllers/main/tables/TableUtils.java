@@ -9,10 +9,7 @@ package com.girbola.controllers.main.tables;
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.CleanTableView;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.UpdateFolderInfoContent;
+import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
@@ -70,6 +67,32 @@ import static com.girbola.messages.Messages.sprintf;
 public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
+
+
+    public static void findDuplicatedImages(DuplicateStatistics duplicateStatistics, FileInfo fileInfoToFind, TableView<FolderInfo> tableToSearch) {
+
+        for (FolderInfo folderInfo : tableToSearch.getItems()) {
+            Messages.sprintf("### findDuplicatedImages: " + folderInfo.getFolderPath());
+            Iterator<FileInfo> fileInfoIterator = folderInfo.getFileInfoList().iterator();
+            while (fileInfoIterator.hasNext()) {
+                FileInfo fileInfo = fileInfoIterator.next();
+                if (fileInfo.getOrgPath().equals("D:\\Risto\\Music\\Blackfoot\\1983 - Siogo\\1983 - siogo.jpg")) {
+                    Messages.sprintf("DEBUGGING!: ");
+                }
+                Messages.sprintf("###### File name isiisiiisisiisii: " + fileInfo.getOrgPath() + " imageHash: " + fileInfo.getImageDifferenceHash() + " file to find" + fileInfoToFind.getOrgPath());
+                if (!fileInfo.getOrgPath().equals(fileInfoToFind.getOrgPath()) && fileInfo.getImageDifferenceHash() != 0) {
+                    Messages.sprintf("========File name isiisiiisisiisii imageDifferenceHash Something else than zero");
+                    if (fileInfoToFind.getImageDifferenceHash() == fileInfo.getImageDifferenceHash()) {
+                        Messages.sprintf("-------------FOUND DUPLICATED: " + fileInfo.getOrgPath() + " HASH " + fileInfo.getImageDifferenceHash() + " lifeInfoToFind: " + fileInfoToFind.getImageDifferenceHash());
+                        duplicateStatistics.getDuplicateCounter().incrementAndGet();
+                        duplicateStatistics.getFolderSavedSize().addAndGet(fileInfoToFind.getSize());
+                        folderInfo.setChanged(true);
+                        fileInfoIterator.remove();
+                    }
+                }
+            }
+        }
+    }
 
     public static void showConflictTable(Model_main model_Main, ObservableList<FileInfo> obs) {
         try {

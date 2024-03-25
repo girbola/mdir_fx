@@ -757,7 +757,6 @@ public class SQL_Utils extends FolderInfo_SQL {
 			stmt.close();
 			return true;
 		} catch (Exception e) {
-			Messages.sprintfError("Couldn't be able to clear table because table did not exists");
 			return false;
 		}
 	}

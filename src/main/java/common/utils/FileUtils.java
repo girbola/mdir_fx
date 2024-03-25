@@ -7,10 +7,13 @@
 package common.utils;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.DuplicateStatistics;
+import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
+import javafx.scene.control.TableView;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,12 +77,13 @@ public class FileUtils {
 
         if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
             sprintf("Files have same name but they differ with sizes");
-            return rename(srcFile, destFile.getParent(),filter_directories);
+            return rename(srcFile, destFile.getParent(), filter_directories);
         } else {
             Messages.sprintf("file did exists at destination folder: " + srcFile + " dest; " + destFile);
             return null;
         }
     }
+
     public static Path rename(Path srcFile, Path destFile, DirectoryStream.Filter<Path> filter_directories) {
 
         String prefix = "_";
@@ -120,6 +124,7 @@ public class FileUtils {
 
         return srcFile;
     }
+
     public static DirectoryStream.Filter<Path> filter_directories = new DirectoryStream.Filter<Path>() {
         @Override
         public boolean accept(Path path) throws IOException {
@@ -198,7 +203,7 @@ public class FileUtils {
     public static boolean supportedImage(Path path) {
         String result = getExtension(path.getFileName());
         for (String s : SUPPORTED_IMAGE_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s)) {
                 return true;
             }
         }
@@ -208,7 +213,7 @@ public class FileUtils {
     public static boolean isTiff(File file) {
         String result;
         result = getExtension(file.getName());
-        if (result.toLowerCase().equals("tiff".toLowerCase()) || result.toLowerCase().equals("tif".toLowerCase())) {
+        if (result.equalsIgnoreCase("tiff") || result.equalsIgnoreCase("tif")) {
             return true;
         }
         return false;
@@ -445,4 +450,5 @@ public class FileUtils {
             sprintf("Showing ALL fileinfo values: " + fileInfo.showAllValues());
         }
     }
+
 }
