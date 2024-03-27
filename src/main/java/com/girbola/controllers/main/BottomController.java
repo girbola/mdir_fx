@@ -227,27 +227,7 @@ public class BottomController {
         }
         TableUtils.refreshTableContent(model_main.tables().getSorted_table());
         TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
-//
-//        if (filesRemoved) {
-//            Messages.sprintf("Gonna remove some files: ");
-//            List<FolderInfo> folderInfoToRemove = new ArrayList<>();
-//            Iterator<FolderInfo> foi = tableToSearch.getItems().iterator();
-//            while (foi.hasNext()) {
-//                FolderInfo folderInfo = foi.next();
-//
-//                TableUtils.updateFolderInfo(folderInfo);
-//
-//                if (folderInfo.getFolderFiles() <= 0) {
-//                    folderInfoToRemove.add(folderInfo);
-//                }
-//                TableUtils.refreshTableContent(model_main.tables().getSorted_table());
-//                TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
-//            }
-//            Main.setChanged(true);
-//            if (!folderInfoToRemove.isEmpty()) {
-//                model_main.tables().getSortIt_table().getItems().removeAll(folderInfoToRemove);
-//            }
-//        }
+
     }
 
     private List<FileInfo> removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
