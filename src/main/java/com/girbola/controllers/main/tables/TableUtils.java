@@ -68,45 +68,6 @@ public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
 
-
-    public static void findDuplicatedImages(DuplicateStatistics duplicateStatistics, FileInfo fileInfoToFind, TableView<FolderInfo> tableToSearch) {
-
-        int folderCounter = 0;
-        int fileCounter = 0;
-        for (FolderInfo folderInfo : tableToSearch.getItems()) {
-            folderCounter++;
-            if(folderInfo.getFolderFiles() < 0) {
-                continue;
-            }
-            if(folderCounter == 277) {
-                Messages.sprintf(folderCounter + " ### findDuplicatedImages: " + folderInfo.toString());
-            }
-            Messages.sprintf(folderCounter + " ### findDuplicatedImages: " + folderInfo.getFolderPath());
-            Iterator<FileInfo> fileInfoIterator = folderInfo.getFileInfoList().iterator();
-            while (fileInfoIterator.hasNext()) {
-                fileCounter++;
-                FileInfo fileInfo = fileInfoIterator.next();
-                if(FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                    continue;
-                }
-                //if (fileInfoToFind.getOrgPath().equals("D:\\Risto\\Music\\Blackfoot\\1983 - Siogo\\1983 - siogo.jpg")) {
-                if(fileCounter==3111){
-                    Messages.sprintf("DEBUGGING!: ");
-                }
-                Messages.sprintf(fileCounter + " ###### File name isiisiiisisiisii: " + fileInfo.getOrgPath() + " imageHash: " + fileInfo.getImageDifferenceHash() + " file to find" + fileInfoToFind.getOrgPath() + " fileInfoToFind: " + fileInfoToFind.getImageDifferenceHash());
-                if (!fileInfo.getOrgPath().equals(fileInfoToFind.getOrgPath()) && fileInfo.getImageDifferenceHash() != 0) {
-                    if (fileInfoToFind.getImageDifferenceHash() == fileInfo.getImageDifferenceHash()) {
-                        Messages.sprintf("-------------FOUND DUPLICATED: " + fileInfo.getOrgPath() + " HASH " + fileInfo.getImageDifferenceHash() + " lifeInfoToFind: " + fileInfoToFind.getImageDifferenceHash());
-                        duplicateStatistics.getDuplicateCounter().incrementAndGet();
-                        duplicateStatistics.getFolderSavedSize().addAndGet(fileInfoToFind.getSize());
-                        folderInfo.setChanged(true);
-                        fileInfoIterator.remove();
-                    }
-                }
-            }
-        }
-    }
-
     public static void showConflictTable(Model_main model_Main, ObservableList<FileInfo> obs) {
         try {
             Parent parent = null;
@@ -114,7 +75,8 @@ public class TableUtils {
             try {
                 parent = loader.load();
             } catch (IOException ex) {
-                ex.printStackTrace();
+                Messages.errorSmth(ERROR, bundle.getString("cannotLoadConflictTable"), null,
+                        Misc.getLineNumber(), true);
             }
 
             ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader.getController();

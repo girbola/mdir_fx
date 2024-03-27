@@ -12,7 +12,6 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
@@ -182,7 +181,7 @@ public class BottomController {
             TableUtils.calculateTableViewsStatistic(model_main.tables());
             TableUtils.cleanTables(model_main.tables());
 
-            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
+            Messages.warningText("Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
                     + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
 
             duplicateStatistics.getDuplicateCounter().set(0);
