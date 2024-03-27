@@ -12,6 +12,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
@@ -209,56 +210,63 @@ public class BottomController {
 //		TableUtils.checkTableDuplicates(null, null)
     }
 
-    private void removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
+    private void removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableSource, TableView<FolderInfo> tableToSearch, String phase) {
         boolean filesRemoved = false;
-        for (FolderInfo folderInfo : table.getItems()) {
+        Iterator<FolderInfo> folderInfoIT = tableSource.getItems().iterator();
+        while (folderInfoIT.hasNext()) {
+            FolderInfo folderInfo = folderInfoIT.next();
             duplicateStatistics.getFolderCounter().incrementAndGet();
-            filesRemoved = removeImageDuplicates(duplicateStatistics, tableToSearch, folderInfo);
-            if(filesRemoved) {
+            List<FileInfo> listToRemove = removeImageDuplicates(duplicateStatistics, tableToSearch, folderInfo);
+            if (!listToRemove.isEmpty()) {
                 Messages.sprintf("Successfully checked");
-            } else {
-                Messages.sprintf("FAILEDDDD checked");
-            }
-        }
-        if (filesRemoved) {
-            Messages.sprintf("Gonna remove some files: ");
-            List<FolderInfo> folderInfoToRemove = new ArrayList<>();
-            Iterator<FolderInfo> foi = tableToSearch.getItems().iterator();
-            while (foi.hasNext()) {
-                FolderInfo folderInfo = foi.next();
-
+                folderInfo.getFileInfoList().removeAll(listToRemove);
                 TableUtils.updateFolderInfo(folderInfo);
-
-                if (folderInfo.getFolderFiles() <= 0) {
-                    folderInfoToRemove.add(folderInfo);
-                }
-                TableUtils.refreshTableContent(model_main.tables().getSorted_table());
-                TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
             }
-            Main.setChanged(true);
-            if (!folderInfoToRemove.isEmpty()) {
-                model_main.tables().getSortIt_table().getItems().removeAll(folderInfoToRemove);
+            if(folderInfo.getFileInfoList().isEmpty()) {
+                tableSource.getItems().remove(folderInfo);
             }
         }
+        TableUtils.refreshTableContent(model_main.tables().getSorted_table());
+        TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
+//
+//        if (filesRemoved) {
+//            Messages.sprintf("Gonna remove some files: ");
+//            List<FolderInfo> folderInfoToRemove = new ArrayList<>();
+//            Iterator<FolderInfo> foi = tableToSearch.getItems().iterator();
+//            while (foi.hasNext()) {
+//                FolderInfo folderInfo = foi.next();
+//
+//                TableUtils.updateFolderInfo(folderInfo);
+//
+//                if (folderInfo.getFolderFiles() <= 0) {
+//                    folderInfoToRemove.add(folderInfo);
+//                }
+//                TableUtils.refreshTableContent(model_main.tables().getSorted_table());
+//                TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
+//            }
+//            Main.setChanged(true);
+//            if (!folderInfoToRemove.isEmpty()) {
+//                model_main.tables().getSortIt_table().getItems().removeAll(folderInfoToRemove);
+//            }
+//        }
     }
 
-    private boolean removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
+    private List<FileInfo> removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
+        List<FileInfo> filesToRemove = new ArrayList<>();
+
         Iterator<FileInfo> list = folderInfo.getFileInfoList().iterator();
         while (list.hasNext()) {
             FileInfo fileInfoToFind = list.next();
             Messages.sprintf("HMmmmm: " + fileInfoToFind.getOrgPath());
             if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
                 if (fileInfoToFind.getImageDifferenceHash() != 0 && supportedImage(Paths.get(fileInfoToFind.getOrgPath()))) {
-                    TableUtils.findDuplicatedImages(duplicateStatistics, fileInfoToFind, tableToSearch);
-                    if (duplicateStatistics.getChangesMadeInFolderInfo().get()) {
-                        folderInfo.setChanged(true);
-                    }
+                    Messages.sprintf("We found a match!: " + fileInfoToFind.getOrgPath());
                 }
             }
 
         }
 
-        return true;
+        return filesToRemove;
     }
 
     private void removeTableDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
