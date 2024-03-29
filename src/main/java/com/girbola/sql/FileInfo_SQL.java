@@ -81,32 +81,6 @@ public class FileInfo_SQL {
         }
     }
 
-    public static boolean insertFileInfoToDatabase(Connection connection, FileInfo fileInfo) {
-        Messages.sprintf("insertFileInfo_list");
-        createFileInfoTable(connection);
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("NOT connected");
-            return false;
-        }
-        try {
-            connection.setAutoCommit(false);
-            Messages.sprintf("insertFileInfoToDatabase file id: " + fileInfo.getFileInfo_id());
-            PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
-            addToFileInfoDB(connection, pstmt, fileInfo);
-            int[] count = pstmt.executeBatch();
-            connection.commit();
-            if (count.length >= 1) {
-                Messages.sprintf("counted= " + count);
-            }
-            connection.close();
-            pstmt.close();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
     /**
      * @param connection
      * @param list
@@ -269,13 +243,8 @@ public class FileInfo_SQL {
 				loaded = true;
 			}
 		}
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        SQL_Utils.closeConnection(connection);
+
 		return loaded;
 	}
 

@@ -44,13 +44,7 @@ public class SelectedFolderScanner {
 			return;
 		}
 		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		SQL_Utils.closeConnection(connection);
 	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {

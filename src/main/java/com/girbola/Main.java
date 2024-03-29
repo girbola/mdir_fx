@@ -214,6 +214,7 @@ Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
                         }
                         Messages.sprintf("==============Loading workdir size is: "
                                 + model_main.getWorkDir_Handler().getWorkDir_List().size());
+
                         VLCJDiscovery.initVlc();
                     }
 

@@ -214,10 +214,13 @@ public class BottomController {
         Iterator<FolderInfo> folderInfoIT = tableSource.getItems().iterator();
         while (folderInfoIT.hasNext()) {
             FolderInfo folderInfo = folderInfoIT.next();
+            if(folderInfo == null) {
+                continue;
+            }
             duplicateStatistics.getFolderCounter().incrementAndGet();
             List<FileInfo> listToRemove = removeImageDuplicates(duplicateStatistics, tableToSearch, folderInfo);
             if (!listToRemove.isEmpty()) {
-                Messages.sprintf("Successfully checked");
+                Messages.sprintf("listToRemove were not empty");
                 folderInfo.getFileInfoList().removeAll(listToRemove);
                 TableUtils.updateFolderInfo(folderInfo);
             }

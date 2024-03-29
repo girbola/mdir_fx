@@ -19,6 +19,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.Conversion;
 import common.utils.FileUtils;
@@ -808,15 +809,10 @@ public class TableUtils {
             // Inserts all data info fileinfo.db
             FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
             FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
-            if (fileList_connection != null) {
-                fileList_connection.commit();
-                fileList_connection.close();
-                Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath() + " DONE! Closing connection");
-            } else {
-                Messages.sprintfError("ERROR with saveTableContent folderInfo: " + folderInfo.getFolderPath() + " FAILED! Closing connection");
-            }
+            SQL_Utils.commitChanges(fileList_connection);
+            SQL_Utils.closeConnection(fileList_connection);
         } catch (Exception e) {
-            // TODO: handle exception
+            Messages.warningText(Main.bundle.getString("cannotSaveFoldernfoToDatabase"));
         }
 
     }

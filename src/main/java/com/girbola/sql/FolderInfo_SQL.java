@@ -86,19 +86,6 @@ public class FolderInfo_SQL {
 		}
 	}
 
-	private static boolean close(Connection connection) {
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
 	private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
@@ -152,10 +139,10 @@ public class FolderInfo_SQL {
 		FolderInfo folderInfo = null;
 
 		Connection connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
-
-		if (connection != null) {
+		boolean dbConnected = SQL_Utils.isDbConnected(connection);
+		SQL_Utils.setAutoCommit(connection, false);
+		if (dbConnected) {
 			try {
-				connection.setAutoCommit(false);
 				String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
 				Statement smtm = connection.createStatement();
 				ResultSet rs = smtm.executeQuery(sql);
@@ -221,6 +208,8 @@ public class FolderInfo_SQL {
 				e.printStackTrace();
 				return null;
 			}
+		} else {
+			Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase"));
 		}
 		return null;
 	}

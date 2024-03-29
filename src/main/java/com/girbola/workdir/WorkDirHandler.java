@@ -80,12 +80,12 @@ public class WorkDirHandler {
 	 */
 	public boolean loadAllLists(Path workDirPath) {
 		Messages.sprintf("2WorkDir Handler loadAllLists:'" + workDirPath.toString().length() +"'");
-		if(workDirPath.toString().length() == 0) {
+		if(workDirPath.toString().isEmpty() || !workDirPath.toString().isBlank()) {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
 		}
-		if (!Files.exists(workDirPath) && !workDirPath.toString().isBlank()) {
-			
+		if (!Files.exists(workDirPath)) {
+
 			return false;
 		}
 		
@@ -96,26 +96,21 @@ public class WorkDirHandler {
 			e.printStackTrace();
 			return false;
 		}
-		if (connection != null) {
-			if (SQL_Utils.isDbConnected(connection)) {
-				List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
-				if (!fileInfo_list.isEmpty()) {
-					workDir_List.addAll(fileInfo_list);
-					Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
-				}
-			}
-			try {
-				connection.commit();
-				connection.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				Messages.warningText(Main.bundle.getString("couldNotSaveDestinationDatabase") + ": " + workDirPath);
-			}
-		} else {
-			Messages.sprintfError("Connectino were null at WorkDir_Handler at line: " + Misc.getLineNumber());
-			return false;
-		}
-		return true;
+        if (SQL_Utils.isDbConnected(connection)) {
+            List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
+            if (!fileInfo_list.isEmpty()) {
+                workDir_List.addAll(fileInfo_list);
+                Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
+            }
+        }
+        try {
+            connection.commit();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Messages.warningText(Main.bundle.getString("couldNotSaveDestinationDatabase") + ": " + workDirPath);
+        }
+        return true;
 	}
 
 	private void loadListFromWorkDir_To_List(String path) {
@@ -181,7 +176,8 @@ public class WorkDirHandler {
 				connection = SqliteConnection.connector(destionationPath, Main.conf.getMdir_db_fileName());
 				connection.setAutoCommit(false);
 			}
-			if (connection != null) {
+			boolean dbConnected = SQL_Utils.isDbConnected(connection);
+			if (dbConnected) {
 				if (SQL_Utils.isDbConnected(connection)) {
 					boolean inserting = FileInfo_SQL.insertFileInfoListToDatabase(connection, workDir_List, true);
 					if (inserting) {
@@ -192,21 +188,17 @@ public class WorkDirHandler {
 						connection.commit();
 					}
 				}
+			} else {
+				Messages.sprintfError(Main.bundle.getString("cannotSaveWorkdirDatabase"));
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			Messages.warningText(Main.bundle.getString("couldNotSaveDestinationDatabase") + ": " + destionationPath);
 		} finally {
-			if (connection != null) {
-				try {
-					Messages.sprintf("WorkDir database is closing now");
-					connection.close();
-				} catch (Exception e2) {
-					e2.printStackTrace();
-					Messages.warningText(
-							Main.bundle.getString("couldNotSaveDestinationDatabase") + ": " + destionationPath);
-				}
+			boolean dbConnected = SQL_Utils.isDbConnected(connection);
+			if (dbConnected) {
+				SQL_Utils.closeConnection(connection);
 			}
 		}
 
@@ -251,53 +243,6 @@ public class WorkDirHandler {
 			}
 		}
 		return list;
-	}
-
-	public boolean cleanDatabase(Connection connection) {
-		Messages.sprintf("Cleaning database...: ");
-		if (!SQL_Utils.isDbConnected(connection)) {
-			Messages.sprintfError("cleaning Database failed");
-			return false;
-		}
-		List<Integer> rm_list = new ArrayList<>();
-		try {
-			String sql = "SELECT * FROM " + SQL_Enums.FILEINFO.getType();
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				int id = rs.getInt("fileInfo_id");
-				String destinationPath = rs.getString("destinationPath");
-				if (!Files.exists(Paths.get(destinationPath))) {
-					Messages.sprintf("DEMO Unnessary row found. Deleting it: " + destinationPath);
-					rm_list.add(id);
-					Messages.sprintf("===========Deleted!===============");
-				}
-
-			}
-
-			String delete = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE fileInfo_id = ?";
-			PreparedStatement pstmt = connection.prepareStatement(delete);
-			Messages.sprintf("String list size is: " + rm_list.size());
-			for (Integer key : rm_list) {
-				Messages.sprintf("key: " + key);
-				pstmt.setInt(1, key);
-				pstmt.addBatch();
-			}
-
-			pstmt.executeBatch();
-			connection.commit();
-			pstmt.close();
-			if (connection != null) {
-				rs.close();
-				stmt.close();
-				connection.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
 	}
 
 }

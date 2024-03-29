@@ -74,14 +74,8 @@ public class SelectedFoldersController {
 
         SQL_Utils.insertSelectedFolders_List_ToDB(connection, model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (Exception e) {
-                Messages.sprintfError("ERROR: " + e.getMessage());
-                Messages.errorSmth(ERROR, "Something went wrong with selecting folders", e, Misc.getLineNumber(), true);
-            }
-        }
+        SQL_Utils.closeConnection(connection);
+
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
 
         model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
@@ -146,12 +140,7 @@ public class SelectedFoldersController {
             table.getSelectionModel().clearSelection();
 
         } catch (Exception ex) {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException ignored) {
-            }
+            SQL_Utils.closeConnection(connection);
         }
     }
 
