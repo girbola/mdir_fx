@@ -15,6 +15,8 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -23,6 +25,8 @@ import java.util.List;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -33,12 +37,15 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {
     private final String ERROR = SelectedFoldersController.class.getName();
+
+    private ScheduledService<Void> scanner;
 
     private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
     private Model_main model_main;
@@ -79,7 +86,7 @@ public class SelectedFoldersController {
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
 
         model_main.getMonitorExternalDriveConnectivity().cancel();
-        scanner.cancel();
+
         model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
@@ -130,15 +137,14 @@ public class SelectedFoldersController {
     private void removeFromTable(TableView<SelectedFolder> table) {
         Connection connection = null;
 
-            ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
+        ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
-            SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
+        SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
 
-            table.getItems().removeAll(selectedItems);
-            table.getSelectionModel().clearSelection();
+        table.getItems().removeAll(selectedItems);
+        table.getSelectionModel().clearSelection();
 
 
-        listToRemove.clear();
         table.getSelectionModel().clearSelection();
     }
 
@@ -156,7 +162,26 @@ public class SelectedFoldersController {
                         cellData.getValue().isConnected()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        Messages.sprintf(
+                "getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        scanner = new ScheduledService<Void>() {
 
+            @Override
+            protected Task createTask() {
+                return new Task<Integer>() {
+                    @Override
+                    protected Integer call() throws Exception {
+                        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                            sf.setConnected(Files.exists(Paths.get(sf.getFolder())));
+                            Messages.sprintf("sggg: " + sf.getFolder() + " isConnected?: " + sf.isConnected());
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+
+        scanner.setPeriod(Duration.seconds(10));
     }
 
     public void start() {

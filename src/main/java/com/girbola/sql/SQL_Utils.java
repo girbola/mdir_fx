@@ -107,26 +107,29 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    public static boolean closeConnection(Connection connection) {
-		try {
-			if (connection != null) {
-				connection.close();
-                return true;
-			}
-		} catch (Exception e) {
-			Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
-            return false;
-		}
-        return false;
-	}
-
     //@formatter:on
-    public static void commitChanges(Connection connection) {
+
+    public static boolean commitChanges(Connection connection) {
         try {
             connection.commit();
+            return true;
         } catch (SQLException e) {
             Messages.warningText(Main.bundle.getString("cannotCommitChanges") + e.getMessage());
+            return false;
         }
+    }
+
+    public static boolean closeConnection(Connection connection) {
+        try {
+            if (connection != null) {
+                connection.close();
+                return true;
+            }
+        } catch (Exception e) {
+            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
+            return false;
+        }
+        return false;
     }
 
     public static boolean setAutoCommit(Connection connection, boolean b) {
@@ -135,39 +138,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             return true;
         } catch (Exception e) {
             Messages.sprintfError("Cannot set connection AutoCommit to false: " + e.getMessage());
-            return false;
-        }
-
-    }
-
-    public static boolean commitChanges(Connection connection) {
-        try {
-        connection.commit();
-            return true;
-        } catch (SQLException e) {
-            Messages.warningText(Main.bundle.getString("cannotCommitChanges") + e.getMessage());
-            return false;
-        }
-        }
-
-    public static boolean closeConnection(Connection connection) {
-        try {
-            if (connection != null) {
-				connection.close();
-                return true;
-			}
-            } catch (Exception e) {
-            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
-            return false;
-            }
-            return false;
-            }
-
-            public static boolean setAutoCommit(Connection connection, boolean b) {
-        try {
-            connection.setAutoCommit(false);
-            return true;
-        } catch (Exception e) {Messages.sprintfError("Cannot set connection AutoCommit to false: " + e.getMessage());
             return false;
         }
     }
@@ -247,8 +217,8 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
-//
- @formatter:on
+
+    //@formatter:on
     public static boolean addToFolderStateDB(Connection connection, FolderState folderState) {
         if (connection == null) {
             return false;
@@ -268,7 +238,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
-
 
 
     public static List<FolderState> loadFoldersStateTo_Tables(Connection connection, Model_main model_Main) {

@@ -82,16 +82,8 @@ public class TableController {
     private Window owner;
 
     // @formatter:off
-
-    private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-
-    // @formatter:off
 	@FXML private AnchorPane tables_rootPane;
-
-
-
 	@FXML private AnchorPane table_RootPane;
-	@FXML private AnchorPane tables_rootPane;
     @FXML private AnchorPane hideablePane;
 	@FXML private Button select_all_btn;
 	@FXML private Button select_bad_btn;
@@ -179,33 +171,6 @@ public class TableController {
     public Label getAllFilesSize_lbl() {
         return allFilesSize_lbl;
     }
-
-	@FXML private MenuItem reload_all_mi;
-	@FXML private MenuItem select_dateDifference_btn;
-	@FXML private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
-	@FXML private TableColumn<FolderInfo, Boolean> connected_col;
-	@FXML private VBox table_Vbox;
-	@FXML private AnchorPane table_RootPane;
-	@FXML private TableView<FolderInfo> table;
-	@FXML private TableColumn<FolderInfo, Integer> badFiles_col;
-	@FXML private TableColumn<FolderInfo, Integer> folderFiles_col;
-	@FXML private TableColumn<FolderInfo, String> fullPath_col;
-	@FXML private TableColumn<FolderInfo, Integer> image_col;
-	@FXML private TableColumn<FolderInfo, String> justFolderName_col;
-	@FXML private TableColumn<FolderInfo, Integer> copied_col;
-	@FXML private TableColumn<FolderInfo, String> maxDates_col;
-	@FXML private TableColumn<FolderInfo, Integer> media_col;
-	@FXML private TableColumn<FolderInfo, String> minDate_col;
-	@FXML private TableColumn<FolderInfo, Integer> raw_col;
-	@FXML private TableColumn<FolderInfo, Long> size_col;
-	@FXML private TableColumn<FolderInfo, Integer> status_col;
-	@FXML private TableColumn<FolderInfo, Integer> suggested_col;
-	@FXML private TableColumn<FolderInfo, Integer> video_col;
-	@FXML private TableColumn<FolderInfo, String> dateFix_col;
-	// @formatter:on
-    private Image show_im;
-
-    private Image hide_im;
 
     @FXML
     private void resetSelectedFileInfos_btn_action(ActionEvent event) {

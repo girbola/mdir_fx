@@ -47,8 +47,7 @@ public class FolderScannerController {
 	/*
 	 * @FXML needed! SelectedFoldersController
 	 */
-	@FXML
-	SelectedFoldersController selectedFoldersController;
+	@FXML SelectedFoldersController selectedFoldersController;
 
 	@FXML
 	private Button analyzeList_add;

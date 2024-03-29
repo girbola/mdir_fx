@@ -71,85 +71,55 @@ public class WorkDirHandler {
 			dateList = null;
 		}
 	}
-
 	/**
 	 * Loading all workdir paths to WorkDir_Handler's workDir_List
-	 * 
+	 *
 	 * @param workDirPath
 	 * @return
 	 */
 	public boolean loadAllLists(Path workDirPath) {
-		Messages.sprintf("2WorkDir Handler loadAllLists:'" + workDirPath.toString().length() +"'");
-		if(workDirPath.toString().isEmpty() || !workDirPath.toString().isBlank()) {
+		Messages.sprintf("2WorkDir Handler loadAllLists:'" + workDirPath.toString().length() + "'");
+		if (workDirPath.toString().length() == 0) {
 			Messages.sprintf("workDirPath were empty!");
 			return false;
 		}
-		if (!Files.exists(workDirPath)) {
+		if (!Files.exists(workDirPath) && !workDirPath.toString().isBlank()) {
 
 			return false;
 		}
 
 		Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
-		try {
-			connection.setAutoCommit(false);
-		} catch (Exception e) {
-			e.printStackTrace();
+		boolean autoCommited = SQL_Utils.setAutoCommit(connection, false);
+		if (!autoCommited) {
+			Messages.warningText("Can't set autoCommit to false");
 			return false;
 		}
-        if (SQL_Utils.isDbConnected(connection)) {
-            List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
-            if (!fileInfo_list.isEmpty()) {
-                workDir_List.addAll(fileInfo_list);
-                Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
-            }
-        }
-        try {
-            connection.commit();
-            connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            Messages.warningText(Main.bundle.getString("couldNotSaveDestinationDatabase") + ": " + workDirPath);
-        }
-        return true;
+
+
+
+
+
+
+
+
+		if (SQL_Utils.isDbConnected(connection)) {
+			List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
+			if (!fileInfo_list.isEmpty()) {
+				workDir_List.addAll(fileInfo_list);
+				Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
+			}
+		} else {
+			return false;
+		}
+		SQL_Utils.commitChanges(connection);
+		SQL_Utils.closeConnection(connection);
+
+
+
+
+
+		return true;
 	}
-    /**
-     * Loading all workdir paths to WorkDir_Handler's workDir_List
-     *
-     * @param workDirPath
-     * @return
-     */
-    public boolean loadAllLists(Path workDirPath) {
-        Messages.sprintf("2WorkDir Handler loadAllLists:'" + workDirPath.toString().length() + "'");
-        if (workDirPath.toString().length() == 0) {
-            Messages.sprintf("workDirPath were empty!");
-            return false;
-        }
-        if (!Files.exists(workDirPath) && !workDirPath.toString().isBlank()) {
-
-            return false;
-        }
-
-        Connection connection = SqliteConnection.connector(workDirPath, Main.conf.getMdir_db_fileName());
-        boolean autoCommited = SQL_Utils.setAutoCommit(connection, false);
-        if (!autoCommited) {
-            Messages.warningText("Can't set autoCommit to false");
-            return false;
-        }
-
-        if (SQL_Utils.isDbConnected(connection)) {
-            List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
-            if (!fileInfo_list.isEmpty()) {
-                workDir_List.addAll(fileInfo_list);
-                Messages.sprintf("fileInfo added at: " + workDirPath + " list size were: " + fileInfo_list.size());
-            }
-        } else {
-            return false;
-        }
-        SQL_Utils.commitChanges(connection);
-        SQL_Utils.closeConnection(connection);
-
-        return true;
-    }
 
 	private void loadListFromWorkDir_To_List(String path) {
 		Connection connection = SqliteConnection.connector(Paths.get(path), Main.conf.getMdir_db_fileName());

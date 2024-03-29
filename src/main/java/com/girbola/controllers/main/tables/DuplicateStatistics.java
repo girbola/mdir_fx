@@ -1,14 +1,18 @@
 package com.girbola.controllers.main.tables;
 
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class DuplicateStatistics {
+    private AtomicBoolean changesMadeInFolderInfo = new AtomicBoolean(false);
     private AtomicInteger duplicateCounter = new AtomicInteger(0);
     private AtomicInteger fileCounter = new AtomicInteger(0);
-    private AtomicLong folderSavedSize = new AtomicLong(0);
     private AtomicInteger folderCounter = new AtomicInteger(0);
+    private AtomicLong folderSavedSize = new AtomicLong(0);
+
 
     public AtomicInteger getDuplicateCounter() {
         return duplicateCounter;
@@ -40,5 +44,9 @@ public class DuplicateStatistics {
 
     public void setFolderCounter(AtomicInteger folderCounter) {
         this.folderCounter = folderCounter;
+    }
+
+    public AtomicBoolean getChangesMadeInFolderInfo() {
+        return this.changesMadeInFolderInfo;
     }
 }
