@@ -150,15 +150,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 							+ folderInfo.getFolderFiles());
 				}
 			}
-			if (connection != null) {
-				try {
-					connection.close();
-					return true;
-				} catch (SQLException e) {
-					e.printStackTrace();
-					return false;
-				}
-			}
+			return SQL_Utils.isDbConnected(connection);
 		}
 		return false;
 	}

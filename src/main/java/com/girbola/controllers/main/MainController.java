@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -12,8 +12,11 @@ import com.girbola.messages.Messages;
 import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -21,123 +24,100 @@ import javafx.scene.layout.VBox;
 import static com.girbola.messages.Messages.sprintf;
 
 /**
- *
  * @author Marko Lokka
  */
 public class MainController {
 
-	private final static String ERROR = MainController.class.getSimpleName();
+    private final static String ERROR = MainController.class.getSimpleName();
 
-	private Model_main model_main;
+    private Model_main model_main;
 
-	private SimpleStringProperty table_hbox_pref_width = new SimpleStringProperty("TODO");
+    private SimpleStringProperty table_hbox_pref_width = new SimpleStringProperty("TODO");
 
-	public SimpleStringProperty getTable_hbox_pref_width() {
-		return table_hbox_pref_width;
-	}
+    private Bounds tables_rootPaneNodeLayoutBounds;
 
-	public void setTable_hbox_pref_width(SimpleStringProperty table_hbox_pref_width) {
-		this.table_hbox_pref_width = table_hbox_pref_width;
-	}
+    //@formatter:off
+	@FXML private HBox tables_hbox;
+	@FXML private AnchorPane main_container;
+    @FXML TabPane tablesTabPane;
+	@FXML private VBox main_vbox;
+    @FXML MenuBarController menuBar_topController;
+	@FXML private AnchorPane tables_rootPane;
+	@FXML TableController sortitController;
+	@FXML TableController sortedController;
+	@FXML TableController asitisController;
+	@FXML BottomController bottomController;
+	//@formatter:on
 
-	@FXML
-	private HBox tables_hbox;
+    public void initialize(Model_main model_main) {
+        this.model_main = model_main;
 
-	@FXML
-	private AnchorPane main_container;
-	@FXML
-	private VBox main_vbox;
-	@FXML
-	MenuBarController menuBar_topController;
+        sprintf("Maincontroller loading....");
 
-	private Bounds tables_rootPaneNodeLayoutBounds;
+        validateRootPane();
+        initControllers();
+        initStatistics();
+        configureTableActions();
 
-	//
-	// @FXML
-	// SortIt_TableController sortitController;
-	// @FXML
-	// Sorted_TableController sortedController;
-	// @FXML
-	// AsItIs_TableController asitisController;
+        bottomController.init(model_main);
+        setModelProperties();
+        tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
+        tablesTabPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+                Messages.sprintf("TABPANE WIDTH IS: " + newValue);
+            }
+        });
+    }
 
-	@FXML
-	private AnchorPane tables_rootPane;
+    private void validateRootPane() {
+        if (tables_rootPane == null) {
+            Messages.sprintfError(tables_rootPane.getId());
+        }
+        this.model_main.tables().setTables_rootPane(tables_rootPane);
+    }
 
-	@FXML
-	TableController sortitController;
+    private void initControllers() {
+        menuBar_topController.init(model_main);
+        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
+        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
+        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
 
-	@FXML
-	TableController sortedController;
+        sortitController.setShowHideTableButtonIcons(TableType.SORTIT.getType(), sortitController.hide_btn, true);
+        sortedController.setShowHideTableButtonIcons(TableType.SORTED.getType(), sortedController.hide_btn, true);
+        asitisController.setShowHideTableButtonIcons(TableType.ASITIS.getType(), asitisController.hide_btn, true);
+    }
 
-	@FXML
-	TableController asitisController;
+    private void initStatistics() {
+        TableStatistic sortitTableStatistic = new TableStatistic(sortitController.getAllFilesCopied_lbl(),
+                sortitController.getAllFilesSize_lbl(), sortitController.getAllFilesCopied_lbl());
+        TableStatistic sortedTableStatistic = new TableStatistic(sortedController.getAllFilesCopied_lbl(),
+                sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesCopied_lbl());
+        TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
+                asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesCopied_lbl());
 
-	@FXML
-	BottomController bottomController;
 
-	public void initialize(Model_main aModel) {
-		this.model_main = aModel;
-		sprintf("Maincontroller loading....");
-		if (tables_rootPane == null) {
-			Messages.sprintfError("		this.model_main.tables().setTables_rootPane(tables_rootPane);\r\n"
-					+ tables_rootPane.getId());
-		}
-		this.model_main.tables().setTables_rootPane(tables_rootPane);
 
-		menuBar_topController.init(model_main);
-		sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
-		sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
-		asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
+        this.model_main.tables().setSortIt_table(sortitController.getTable());
+        this.model_main.tables().setSorted_table(sortedController.getTable());
+        this.model_main.tables().setAsItIs_table(asitisController.getTable());
 
-		sortitController.setShowHideTableButtonIcons(TableType.SORTIT.getType(), sortitController.hide_btn, true);
-		sortedController.setShowHideTableButtonIcons(TableType.SORTED.getType(), sortedController.hide_btn, true);
-		asitisController.setShowHideTableButtonIcons(TableType.ASITIS.getType(), asitisController.hide_btn, true);
+        this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
+        this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
+        this.model_main.tables().setAsItIs_TableStatistic(asitisTableStatistic);
+    }
 
-		TableStatistic sortitTableStatistic = new TableStatistic(sortitController.getAllFilesCopied_lbl(),
-				sortitController.getAllFilesSize_lbl(), sortitController.getAllFilesTotal_lbl());
-		TableStatistic sortedTableStatistic = new TableStatistic(sortedController.getAllFilesCopied_lbl(),
-				sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesTotal_lbl());
-		TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
-				asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesTotal_lbl());
+    private void configureTableActions() {
+        this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSorted_table());
+        this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSortIt_table());
+        this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getAsItIs_table());
+    }
 
-		this.model_main.tables().setSortIt_table(sortitController.getTable());
-		this.model_main.tables().setSorted_table(sortedController.getTable());
-		this.model_main.tables().setAsItIs_table(asitisController.getTable());
-
-		this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
-		this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
-		this.model_main.tables().setAsItIs_TableStatistic(asitisTableStatistic);
-
-//		this.model_main.tables().getHideButtons().setSortItButtons_hbox(sortitController.getButtons_HBOX());
-//		this.model_main.tables().getHideButtons().setSortedButtons_hbox(sortedController.getButtons_HBOX());
-//		this.model_main.tables().getHideButtons().setAsItIsButtons_hbox(asitisController.getButtons_HBOX());
-
-		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSorted_table());
-		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getSortIt_table());
-		this.model_main.tables().setDeleteKeyPressed(this.model_main.tables().getAsItIs_table());
-
-		bottomController.init(model_main);
-		model_main.setBottomController(bottomController);
-		model_main.setMainContainer(main_container);
-		model_main.setMainVBox(main_vbox);
-
-		tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
-		tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
-
-//		tables_hbox.widthProperty().addListener(new ChangeListener<Number>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-//				model_main.setTable_root_hbox_width("" + newValue);
-//			}
-//		});
-
-//		model_main.tables().getHideButtons().setTables_RootPaneMaxWidth(tables_rootPaneNodeLayoutBounds.getWidth());
-
-//		table_SplitPane.setDividerPosition(0, 0);
-//		tables_rootPane.setMaxWidth(Double.MAX_VALUE);
-//		tables_rootPane.setPrefWidth(Double.MAX_VALUE);
-//		tables_rootPane.setMinWidth(Double.MIN_VALUE);
-	}
+    private void setModelProperties() {
+        model_main.setBottomController(bottomController);
+        model_main.setMainContainer(main_container);
+        model_main.setMainVBox(main_vbox);
+        tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
+    }
 
 }

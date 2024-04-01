@@ -15,7 +15,7 @@ limitations under the License.
  */
 
 /*
-@(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+@(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
 @(#)Author:     Marko Lokka
 @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
 @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -35,12 +35,10 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
+import common.utils.ui.ScreenUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
@@ -98,6 +96,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         stageControl = new StageControl(model_main, primaryStage);
+        //ScreenUtils.screenBouds().getmax
 
         try {
             locale = new Locale(lang, country);
@@ -115,6 +114,7 @@ public class Main extends Application {
                 conf.setModel(model_main);
                 conf.createProgramPaths();
                 conf.loadConfig();
+                Messages.sprintf("CONFIG contains: " + conf.toString());
                 System.out.println("Java version: " + System.getProperty("java.version"));
                 System.out.println("JavaFX version: " + System.getProperty("javafx.version"));
 
@@ -148,8 +148,10 @@ public class Main extends Application {
 
                 Platform.runLater(() -> {
                     primaryStage.setScene(primaryScene);
+
 //						defineScreenBounds(primaryStage);
                     primaryStage.show();
+
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
                 lpt = new LoadingProcessTask(scene_Switcher.getWindow());
@@ -157,209 +159,125 @@ public class Main extends Application {
                     lpt.setTask(mainTask);
 //					lpt.showLoadStage();
                 });
-//				ScenicView.show(parent);
+				//ScenicView.show(parent);
                 return null;
             }
         };
 
-        mainTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintf("main succeeded");
+        mainTask.setOnSucceeded(event -> {
+            Messages.sprintf("main succeeded");
 //				scene_Switcher.setWindow(primaryStage);
 //				scene_Switcher.setScene_main(primaryScene);
 
-                boolean isValidOS = Misc.checkOS();
-                if (isValidOS) {
-                    Messages.sprintf("Valid OS found");
-                } else {
-                    Messages.sprintfError("Valid OS NOT found");
-                }
+            boolean isValidOS = Misc.checkOS();
+            if (isValidOS) {
+                Messages.sprintf("Valid OS found");
+            } else {
+                Messages.sprintfError("Valid OS NOT found");
+            }
 
-                conf.loadConfig_GUI();
+            conf.loadConfig_GUI();
 
-                model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
+            model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
 
-                Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
-                        conf.getConfiguration_db_fileName());
-                if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
-                    Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "
-                            + conf.getConfiguration_db_fileName());
-                    load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
-                            connection_loadConfigurationFile);
-                    load_FileInfosBackToTableViews.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-                        @Override
-                        public void handle(WorkerStateEvent event) {
-                            Platform.runLater(() -> {
-                                lpt.closeStage();
-                            });
-                            model_main.tables().registerTableView_obs_listener();
-                            primaryStage.setOnCloseRequest(model_main.exitProgram);
-                            try {
-                                if (!load_FileInfosBackToTableViews.get()) {
-                                    Messages.warningText("Can't load previous session!");
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
+                    conf.getConfiguration_db_fileName());
+            stageControl.setStageBoundarys();
+Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
+            if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
+                Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "
+                        + conf.getConfiguration_db_fileName());
+                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
+                        connection_loadConfigurationFile);
+                load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
+                    Platform.runLater(() -> {
+                        lpt.closeStage();
+                    });
+                    model_main.tables().registerTableView_obs_listener();
+                    primaryStage.setOnCloseRequest(model_main.exitProgram);
+                    try {
+                        if (!load_FileInfosBackToTableViews.get()) {
+                            Messages.warningText("Can't load previous session!");
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                            TableUtils.refreshAllTableContent(model_main.tables());
+                    TableUtils.refreshAllTableContent(model_main.tables());
 
-                            Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
+                    Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
 
-                            model_main.getMonitorExternalDriveConnectivity().restart();
+                    model_main.getMonitorExternalDriveConnectivity().restart();
 
-                            boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
-                            if (loaded) {
-                                for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
-                                    Messages.sprintf("loadAllLists fileInfo loading: " + finfo.getOrgPath());
-                                }
-                                Messages.sprintf("==============Loading workdir size is: "
-                                        + model_main.getWorkDir_Handler().getWorkDir_List().size());
-                                VLCJDiscovery.initVlc();
-                            }
+                    boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
+                    if (loaded) {
+                        for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
+                            Messages.sprintf("loadAllLists fileInfo loading: " + finfo.getOrgPath());
+                        }
+                        Messages.sprintf("==============Loading workdir size is: "
+                                + model_main.getWorkDir_Handler().getWorkDir_List().size());
 
-                            TableUtils.calculateTableViewsStatistic(model_main.tables());
-                            getMain_stage().maximizedProperty().addListener(new ChangeListener<Boolean>() {
+                        VLCJDiscovery.initVlc();
+                    }
 
-                                @Override
-                                public void changed(ObservableValue<? extends Boolean> ov, Boolean t, Boolean t1) {
+                    TableUtils.calculateTableViewsStatistic(model_main.tables());
+                    getMain_stage().maximizedProperty().addListener((ov, t, t1) -> {
 //									model_main.tables().getHideButtons().updateVisibleTableWidths();
-                                    System.out.println("model_main.tables().getHideButtons().updateTableVisible();: "
-                                            + t1.booleanValue());
-                                }
-                            });
+                        System.out.println("model_main.tables().getHideButtons().updateTableVisible();: "
+                                + t1.booleanValue());
+                    });
 
 //							conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
+                });
+                load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
+                    try {
+                        if (load_FileInfosBackToTableViews.get() == false) {
+                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
+                                    Misc.getLineNumber(), true);
                         }
-                    });
-                    load_FileInfosBackToTableViews.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+                    } catch (InterruptedException | ExecutionException ex) {
+                        Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
+                                Misc.getLineNumber(), true);
+                    }
+                    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
                         @Override
-                        public void handle(WorkerStateEvent event) {
-                            try {
-                                if (load_FileInfosBackToTableViews.get() == false) {
-                                    Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
-                                            Misc.getLineNumber(), true);
-                                }
-                            } catch (InterruptedException | ExecutionException ex) {
-                                Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
-                                        Misc.getLineNumber(), true);
-                            }
-                            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                                @Override
-                                public void handle(WindowEvent event) {
-                                    model_main.exitProgram_NOSAVE();
-                                }
-                            });
-                            lpt.closeStage();
+                        public void handle(WindowEvent event12) {
+                            model_main.exitProgram_NOSAVE();
                         }
                     });
-                    load_FileInfosBackToTableViews.setOnFailed(new EventHandler<WorkerStateEvent>() {
-                        @Override
-                        public void handle(WorkerStateEvent event) {
-                            primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                                @Override
-                                public void handle(WindowEvent event) {
-                                    model_main.exitProgram_NOSAVE();
-                                }
-                            });
-                            lpt.closeStage();
-                        }
-                    });
-
-                    lpt.setTask(load_FileInfosBackToTableViews);
-                    Thread load = new Thread(load_FileInfosBackToTableViews, "Main thread");
-                    load.start();
-                } else {
                     lpt.closeStage();
-                }
-            }
-        });
-        mainTask.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintfError("Main Task failed!!!");
-                if (lpt != null) {
+                });
+                load_FileInfosBackToTableViews.setOnFailed(event13 -> {
+                    primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
                     lpt.closeStage();
-                }
-                primaryStage.setOnCloseRequest(model_main.dontExit);
-                Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
-                        true);
-                model_main.exitProgram_NOSAVE();
-            }
-        });
-        mainTask.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintf("Main Task cancelled");
+                });
+
+                lpt.setTask(load_FileInfosBackToTableViews);
+                Thread load = new Thread(load_FileInfosBackToTableViews, "Main thread");
+                load.start();
+            } else {
                 lpt.closeStage();
             }
+        });
+        mainTask.setOnFailed(event -> {
+            Messages.sprintfError("Main Task failed!!!");
+            if (lpt != null) {
+                lpt.closeStage();
+            }
+            primaryStage.setOnCloseRequest(model_main.dontExit);
+            Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
+                    true);
+            model_main.exitProgram_NOSAVE();
+        });
+        mainTask.setOnCancelled(event -> {
+            Messages.sprintf("Main Task cancelled");
+            lpt.closeStage();
         });
 
         Thread mainTask_th = new Thread(mainTask, "mainTask_th");
         mainTask_th.run();
-        // lp.showLoadStage();
 
-    }
-
-    private void defineScreenBounds(Stage stage) {
-        int screens = Screen.getScreens().size();
-        if (stage.isFullScreen()) {
-            return;
-        }
-        if (conf.getWindowStartPosX() == -1 && conf.getWindowStartPosY() == -1 && conf.getWindowStartWidth() == -1
-                && conf.getWindowStartHeight() == -1) {
-            stage.setX(0);
-            stage.setY(0);
-
-        } else {
-            if (screens > 1) {
-                double x = conf.getWindowStartPosX();
-                double y = conf.getWindowStartPosY();
-                double width = conf.getWindowStartWidth();
-                double heigth = conf.getWindowStartHeight();
-                if (x < 0) {
-                    x = 0;
-                }
-                if (y < 0) {
-                    y = 0;
-                }
-                /*
-                 * sc.getBounds().getHeight(): Rectangle2D [minX = 0.0, minY=0.0, maxX=1366.0,
-                 * maxY=768.0, width=1366.0, height=768.0] window x pos: 250.0 y POS: 73.0
-                 * window width: 1321.0 height: 623.0 sc.getVisualBounds().getWidth() 1366.0
-                 * height 728.0 sc.getBounds().getHeight(): Rectangle2D [minX = 1366.0,
-                 * minY=0.0, maxX=4806.0, maxY=1440.0, width=3440.0, height=1440.0] window x
-                 * pos: 250.0 y POS: 73.0 window width: 1321.0 height: 623.0
-                 * sc.getVisualBounds().getWidth() 3440.0 height 1400.0
-                 *
-                 */
-                for (Screen sc : Screen.getScreensForRectangle(x, y, width, heigth)) {
-                    Messages.sprintf("sc.getBounds().getHeight(): " + sc.getBounds());
-                    Messages.sprintf("window x pos: " + x + " y POS: " + y + " window width: " + width + " height: "
-                            + heigth + " sc.getVisualBounds().getWidth() " + sc.getVisualBounds().getWidth()
-                            + " height " + sc.getVisualBounds().getHeight());
-                    if (width >= sc.getBounds().getWidth()) {
-                        width = (sc.getBounds().getWidth() - 100);
-                    }
-
-                    if (heigth >= sc.getBounds().getHeight()) {
-                        heigth = (sc.getBounds().getHeight() - 100);
-                    }
-                }
-                stage.setX(x);
-                stage.setY(y);
-                stage.setWidth(width);
-                stage.setHeight(heigth);
-            } else {
-                stage.setX(0);
-                stage.setY(0);
-                stage.setWidth(800);
-                stage.setHeight(640);
-            }
-        }
     }
 
     private Point2D defineScreenWithMouseCursor() {
@@ -402,22 +320,14 @@ public class Main extends Application {
         }
         changed.set(value);
         if (changed.get() == true) {
-            Platform.runLater(new Runnable() {
-                @Override
-                public void run() {
-                    getMain_stage().setTitle("");
-                    getMain_stage().setTitle("* " + conf.getProgramName());
-                }
+            Platform.runLater(() -> {
+                getMain_stage().setTitle("");
+                getMain_stage().setTitle("* " + conf.getProgramName());
             });
         } else {
-            Platform.runLater(new Runnable() {
-
-                @Override
-                public void run() {
-                    getMain_stage().setTitle("");
-                    getMain_stage().setTitle(conf.getProgramName());
-                }
-
+            Platform.runLater(() -> {
+                getMain_stage().setTitle("");
+                getMain_stage().setTitle(conf.getProgramName());
             });
         }
     }
@@ -453,10 +363,6 @@ public class Main extends Application {
     public static void centerWindowDialog(Stage stage) {
         stage.setOnShowing(ev -> {
             Platform.runLater(() -> {
-                System.out.println("startposX: " + Main.conf.getWindowStartPosX() + " stage width: " + stage.getWidth()
-                        + " Main.conf.getWidth: " + Main.conf.getWindowStartWidth());
-                System.out.println("startposY: " + Main.conf.getWindowStartPosY() + " stage height: "
-                        + stage.getHeight() + " Main.conf.getHeight: " + Main.conf.getWindowStartHeight());
                 stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
                         - (stage.getWidth() / 2));
                 stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)
