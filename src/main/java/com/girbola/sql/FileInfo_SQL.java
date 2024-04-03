@@ -112,7 +112,6 @@ public class FileInfo_SQL {
 
 			PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
 			for (FileInfo fileInfo : list) {
-				long start = System.currentTimeMillis();
 				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
 				addToFileInfoDB(connection, pstmt, fileInfo);
 			}
@@ -196,7 +195,7 @@ public class FileInfo_SQL {
         boolean tableDuplicated = rs.getBoolean("tableDuplicated");
         long date = rs.getLong("date");
         long size = rs.getLong("size");
-        int imageDifferenceHash = rs.getInt("imageDifferenceHash");
+        long imageDifferenceHash = rs.getLong("imageDifferenceHash");
         int thumb_offset = rs.getInt("thumb_offset");
         int thumb_lenght = rs.getInt("thumb_length");
         return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags,
@@ -239,7 +238,6 @@ public class FileInfo_SQL {
 			List<FileInfo> fileInfo_list = loadFileInfoDatabase(connection);
 			if (!fileInfo_list.isEmpty()) {
 				folderInfo.setFileInfoList(fileInfo_list);
-//				TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				loaded = true;
 			}
 		}

@@ -17,10 +17,10 @@
 
 <AnchorPane fx:id="main_container" maxHeight="800.0" maxWidth="1800.0" styleClass="main" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
     <children>
-        <VBox fx:id="main_vbox" fillWidth="false" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+        <VBox fx:id="main_vbox" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
             <children>
-                <fx:include fx:id="menuBar_top" source="MenuBar.fxml" />
-            <AnchorPane VBox.vgrow="NEVER">
+                <fx:include fx:id="menuBar_top" source="MenuBar.fxml" VBox.vgrow="NEVER" />
+            <AnchorPane VBox.vgrow="ALWAYS">
                <children>
                       <TabPane fx:id="tablesTabPane" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                           <tabs>
@@ -48,9 +48,6 @@
                                                   </children>
                                               </HBox>
                                           </children>
-                                 <padding>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </padding>
                                       </AnchorPane>
                                   </content>
                               </Tab>
@@ -60,19 +57,13 @@
                                   </content>
                               </Tab>
                           </tabs>
-                     <padding>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </padding>
                       </TabPane>
                </children>
             </AnchorPane>
 
 
-                <fx:include fx:id="bottom" source="Bottom.fxml" />
+                <fx:include fx:id="bottom" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" source="Bottom.fxml" VBox.vgrow="NEVER" />
             </children>
-         <padding>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </padding>
         </VBox>
     </children>
    <padding>

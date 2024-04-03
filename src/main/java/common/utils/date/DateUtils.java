@@ -87,17 +87,4 @@ public class DateUtils {
 		}
 	}
 
-	public static long calculateMonthsOfLocalDates(LocalDate minDate, LocalDate maxDate) {
-		if (minDate != null || maxDate != null) {
-			return ChronoUnit.MONTHS.between(minDate, maxDate);
-		}
-		return 0;
-	}
-	public static long calculateYearsOfLocalDates(LocalDate minDate, LocalDate maxDate) {
-		if (minDate != null || maxDate != null) {
-			return ChronoUnit.YEARS.between(minDate, maxDate);
-		}
-		return 0;
-	}
-
 }

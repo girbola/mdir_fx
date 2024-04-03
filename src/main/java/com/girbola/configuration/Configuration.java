@@ -108,6 +108,7 @@ public class Configuration extends Configuration_defaults {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+
 		// Inserts default params to configuration
 		Configuration_SQL_Utils.insert_Configuration(connection, this);
 		Configuration_SQL_Utils.createIgnoredListTable(connection);

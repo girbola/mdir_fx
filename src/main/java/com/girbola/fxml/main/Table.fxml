@@ -42,11 +42,11 @@
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
       </HBox>
-      <AnchorPane fx:id="hideablePane" style="-fx-border-color: yellow;">
+      <AnchorPane fx:id="hideablePane" style="-fx-border-color: yellow;" VBox.vgrow="ALWAYS">
          <children>
             <VBox layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
-            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" spacing="1.0" styleClass="topButtons" VBox.vgrow="ALWAYS">
+            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
             			<children>
                         <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="1.0" vgap="1.0" HBox.hgrow="NEVER">
                            <children>

@@ -33,25 +33,6 @@ public class SelectedFolderScanner {
 		this.selectedFolderScanner_obs = selectedFolderScanner_list;
 	}
 
-	public void save_SelectedFolders_toSQL() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getConfiguration_db_fileName());
-		SQL_Utils.createFoldersStatesDatabase(connection);
-		SQL_Utils.createSelectedFoldersTable(connection);
-		if (!SQL_Utils.isDbConnected(connection)) {
-			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database",
-					null, Misc.getLineNumber(), false);
-			return;
-		}
-		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {
 		Connection connection = null;

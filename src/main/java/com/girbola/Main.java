@@ -183,6 +183,7 @@ public class Main extends Application {
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
+
 Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "

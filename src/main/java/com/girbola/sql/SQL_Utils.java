@@ -193,7 +193,13 @@ public class SQL_Utils extends FolderInfo_SQL {
      * FoldersStates
      */
     public static boolean createFoldersStatesDatabase(Connection connection) {
-        if (isDbConnected(connection)) {
+        if (!isDbConnected(connection)) {
+            try {
+                DatabaseMetaData metaData = connection.getMetaData();
+                Messages.sprintf("METADATA: " + metaData.toString());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
             return false;
         }
@@ -702,7 +708,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(sql);
-            stmt.close();
+//            stmt.close();
             return true;
         } catch (Exception e) {
             return false;

@@ -660,7 +660,7 @@ public class DateFixerController {
 		Messages.sprintf("Close button pressed");
 		Main.scene_Switcher.getWindow().getOnCloseRequest()
 				.handle(new WindowEvent(Main.scene_Switcher.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
-		model_main.getMonitorExternalDriveConnectivity().start();
+		model_main.getMonitorExternalDriveConnectivity().restart();
 	}
 
 	private Button getAcceptButton(Node node) {

@@ -177,9 +177,7 @@ public class Model_main {
 
     public boolean saveAllTableContents() {
         Messages.sprintf("save started");
-        if (tables() == null) {
-            Messages.warningText("model.getTables() were null!");
-        }
+
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName()); // folderInfo.db
         if (!SQL_Utils.isDbConnected(connection)) {
@@ -211,7 +209,6 @@ public class Model_main {
         if(!closeConnection) {
             return false;
         }
-
 
         Main.setChanged(true);
         return true;

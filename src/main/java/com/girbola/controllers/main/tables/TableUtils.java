@@ -10,8 +10,10 @@ import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.datefixer.Model;
-import com.girbola.controllers.main.*;
+import com.girbola.controllers.main.CleanTableView;
+import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
@@ -45,8 +47,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Control;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -1026,6 +1026,7 @@ public class TableUtils {
             Messages.warningText("copySelectedTableRows Workdir were empty");
             return;
         }
+
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
             if (folderInfo.getBadFiles() >= 1) {
                 Messages.warningText(Main.bundle.getString("badDatesFound"));
@@ -1048,8 +1049,4 @@ public class TableUtils {
             }
         }
     }
-
-
-
-
 }
