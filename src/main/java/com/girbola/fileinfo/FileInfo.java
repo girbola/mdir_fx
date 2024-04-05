@@ -103,7 +103,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.size = 0;
         this.thumb_offset = 0;
         this.thumb_length = 0;
-        this.imageDifferenceHash = 0L;
+        this.imageDifferenceHash = 0;
         this.user = "";
         this.workDir = "";
         this.workDirDriveSerialNumber = "";
@@ -159,6 +159,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.location = aLocation;
         this.tags = aTags;
         this.camera_model = aCamera_model;
+        this.user = user;
         this.orientation = aOrientation;
         this.timeShift = aTimeShift;
         this.fileInfo_id = aFileInfo_id;
@@ -174,10 +175,9 @@ public class FileInfo extends Metadata implements Cloneable {
         this.image = aImage;
         this.video = aVideo;
         this.copied = aCopied;
+        this.imageDifferenceHash = aImageDifferenceHash;
         this.thumb_offset = aThumb_offset;
         this.thumb_length = aThumb_length;
-        this.imageDifferenceHash = aImageDifferenceHash;
-        this.user = user;
     }
 
 

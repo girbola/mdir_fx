@@ -60,22 +60,22 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 					cancel();
 					Main.setProcessCancelled(true);
 				}
-
-				if (folderState.getTableType().equals(TableType.SORTIT.getType())) {
-					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
-						model_main.tables().getSortIt_table().getItems().add(folderInfo);
-					}
-				} else if (folderState.getTableType().equals(TableType.SORTED.getType())) {
-					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
-						model_main.tables().getSorted_table().getItems().add(folderInfo);
-					}
-				} else if (folderState.getTableType().equals(TableType.ASITIS.getType())) {
-					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
-						model_main.tables().getAsItIs_table().getItems().add(folderInfo);
-					}
-				} else {
-					Messages.sprintf("TableType were unknown!");
-				}
+//
+//				if (folderState.getTableType().equals(TableType.SORTIT.getType())) {
+//					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
+//						model_main.tables().getSortIt_table().getItems().add(folderInfo);
+//					}
+//				} else if (folderState.getTableType().equals(TableType.SORTED.getType())) {
+//					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
+//						model_main.tables().getSorted_table().getItems().add(folderInfo);
+//					}
+//				} else if (folderState.getTableType().equals(TableType.ASITIS.getType())) {
+//					if (!TableUtils.checkAllTablesForDuplicates(folderInfo, model_main.tables())) {
+//						model_main.tables().getAsItIs_table().getItems().add(folderInfo);
+//					}
+//				} else {
+//					Messages.sprintf("TableType were unknown!");
+//				}
 			}
 		} else {
 			if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {

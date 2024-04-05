@@ -49,12 +49,11 @@ public class VLCJDiscovery {
 				Messages.sprintf("Path disco: " + discoPath);
 			}*/
 		//		String discoPath = dis.discoveredPath();
-		Messages.sprintf("2Path disco: ");
-
+		Messages.sprintf("2Path VLC discovery: ");
 		boolean found = dis.discover(); //new NativeDiscovery().discover();
 		Messages.sprintf("Found?: " + found);
 		if (found) {
-			System.out.println("found? " + found + " discoveredPath: " + dis.discoveredPath());
+			System.out.println("VLC found? " + found + " discoveredPath: " + dis.discoveredPath());
 			Main.conf.setVlcPath(dis.discoveredPath());
 //			checkVlcPlayerVersion();
 			return true;
