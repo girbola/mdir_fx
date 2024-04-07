@@ -55,6 +55,7 @@ public class AddToTable extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 		for (Path p : list) {
+			Messages.sprintf("pppppp: " + p);
 			if (Main.getProcessCancelled()) {
 				cancel();
 				ConcurrencyUtils.stopExecThreadNow();

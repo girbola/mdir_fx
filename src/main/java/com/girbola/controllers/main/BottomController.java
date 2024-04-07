@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -8,6 +8,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
+import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.workdir.WorkDirController;
@@ -38,23 +39,18 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
+import static common.utils.FileUtils.supportedImage;
 
 public class BottomController {
 
     private final String ERROR = BottomController.class.getSimpleName();
     private Model_main model_main;
-
-    private AtomicInteger duplicateCounter = new AtomicInteger(0);
-    private AtomicInteger fileCounter = new AtomicInteger(0);
-    private AtomicLong folderSavedSize = new AtomicLong(0);
-    private AtomicInteger folderCounter = new AtomicInteger(0);
+    private DuplicateStatistics duplicateStatistics;
 
     @FXML
     private Label debug_pref_width;
@@ -84,7 +80,10 @@ public class BottomController {
     private Label drive_connected;
     @FXML
     private HBox drive_pane;
-
+    @FXML
+    private Button removeDuplicates_btn;
+    @FXML
+    private Button dates_ttv_btn;
     @FXML
     private Button showWorkdir_btn;
 
@@ -110,10 +109,56 @@ public class BottomController {
     }
 
     @FXML
-    private Button removeDuplicates_btn;
+    private void findImageDuplicates_Btn_action(ActionEvent event) {
+        duplicateStatistics = new DuplicateStatistics();
+
+        Task<Void> removeImageDuplicatestask = new Task<>() {
+
+            @Override
+            protected Void call() throws Exception {
+
+                Platform.runLater(() -> removeDuplicates_btn.setDisable(true));
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
+                        "Sorted -> Sorted");
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
+                        "Sorted -> SortIt");
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
+                        "SortIt -> SortIt");
+                return null;
+            }
+
+        };
+
+        removeImageDuplicatestask.setOnSucceeded(event1 -> {
+            TableUtils.updateAllFolderInfos(model_main.tables());
+            TableUtils.calculateTableViewsStatistic(model_main.tables());
+            TableUtils.cleanTables(model_main.tables());
+
+            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
+                    + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
+
+            duplicateStatistics.getDuplicateCounter().set(0);
+            duplicateStatistics.getFileCounter().set(0);
+            duplicateStatistics.getFolderCounter().set(0);
+            duplicateStatistics.getFolderSavedSize().set(0);
+
+            Platform.runLater(() -> removeDuplicates_btn.setDisable(false));
+
+        });
+        removeImageDuplicatestask.setOnFailed(event12 -> {
+            Messages.warningText("Unable to remove duplicates from tables");
+            Platform.runLater(() -> removeDuplicates_btn.setDisable(false));
+        });
+
+        removeImageDuplicatestask.setOnCancelled(event13 -> Platform.runLater(() -> removeDuplicates_btn.setDisable(false)));
+
+        Thread removeTableDuplicates_th = new Thread(removeImageDuplicatestask, "Removing table duplicates  thread");
+        removeTableDuplicates_th.run();
+    }
 
     @FXML
     private void removeDuplicates_btn_action(ActionEvent event) {
+        duplicateStatistics = new DuplicateStatistics();
 
         Task<Void> removeTableDuplicatestask = new Task<>() {
 
@@ -121,11 +166,11 @@ public class BottomController {
             protected Void call() throws Exception {
 
                 Platform.runLater(() -> removeDuplicates_btn.setDisable(true));
-                removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
+                removeTableDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
                         "Sorted -> Sorted");
-                removeTableDuplicates(model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
+                removeTableDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
                         "Sorted -> SortIt");
-                removeTableDuplicates(model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
+                removeTableDuplicates(duplicateStatistics, model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
                         "SortIt -> SortIt");
                 return null;
             }
@@ -137,13 +182,14 @@ public class BottomController {
             TableUtils.calculateTableViewsStatistic(model_main.tables());
             TableUtils.cleanTables(model_main.tables());
 
-            Messages.warningText("" + "Duplicated files: " + duplicateCounter + "\nFolders: " + folderCounter
-                    + "\nSaved space: " + Conversion.convertToSmallerConversion(folderSavedSize.get()));
+            Messages.warningText("Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
+                    + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
 
-            duplicateCounter.set(0);
-            folderCounter.set(0);
-            fileCounter.set(0);
-            folderSavedSize.set(0);
+            duplicateStatistics.getDuplicateCounter().set(0);
+            duplicateStatistics.getFileCounter().set(0);
+            duplicateStatistics.getFolderCounter().set(0);
+            duplicateStatistics.getFolderSavedSize().set(0);
+
 
             Platform.runLater(() -> removeDuplicates_btn.setDisable(false));
 
@@ -164,17 +210,63 @@ public class BottomController {
 //		TableUtils.checkTableDuplicates(null, null)
     }
 
-    private void removeTableDuplicates(TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
+    private void removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableSource, TableView<FolderInfo> tableToSearch, String phase) {
+        boolean filesRemoved = false;
+        Iterator<FolderInfo> folderInfoIT = tableSource.getItems().iterator();
+        while (folderInfoIT.hasNext()) {
+            FolderInfo folderInfo = folderInfoIT.next();
+            if(folderInfo == null) {
+                continue;
+            }
+            duplicateStatistics.getFolderCounter().incrementAndGet();
+            List<FileInfo> listToRemove = removeImageDuplicates(duplicateStatistics, tableToSearch, folderInfo);
+            if (!listToRemove.isEmpty()) {
+                Messages.sprintf("listToRemove were not empty");
+                folderInfo.getFileInfoList().removeAll(listToRemove);
+                TableUtils.updateFolderInfo(folderInfo);
+            }
+            if(folderInfo.getFileInfoList().isEmpty()) {
+                tableSource.getItems().remove(folderInfo);
+            }
+        }
+        TableUtils.refreshTableContent(model_main.tables().getSorted_table());
+        TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 
+    }
+
+    private List<FileInfo> removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
+        List<FileInfo> filesToRemove = new ArrayList<>();
+
+        Iterator<FileInfo> list = folderInfo.getFileInfoList().iterator();
+        while (list.hasNext()) {
+            FileInfo fileInfoToFind = list.next();
+            Messages.sprintf("HMmmmm: " + fileInfoToFind.getOrgPath());
+            if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
+                if (fileInfoToFind.getImageDifferenceHash() != 0 && supportedImage(Paths.get(fileInfoToFind.getOrgPath()))) {
+                    Messages.sprintf("We found a match!: " + fileInfoToFind.getOrgPath());
+                }
+            }
+
+        }
+
+        return filesToRemove;
+    }
+
+    private void removeTableDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> table, TableView<FolderInfo> tableToSearch, String phase) {
+
+        duplicateStatistics.getChangesMadeInFolderInfo().set(false);
         boolean folderNeedsToUpdate = false;
         for (FolderInfo folderInfo : table.getItems()) {
-            folderCounter.incrementAndGet();
+            duplicateStatistics.getFolderCounter().incrementAndGet();
             for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
                 if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
-                        Messages.sprintf(
-                                "fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
-                        folderNeedsToUpdate = findDuplicate(fileInfoToFind, tableToSearch);
+                    Messages.sprintf(
+                            "fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
+                    boolean duplicated = findDuplicate(duplicateStatistics, fileInfoToFind, tableToSearch);
+                    if (duplicated) {
+                        folderNeedsToUpdate = true;
                     }
+                }
             }
         }
         if (folderNeedsToUpdate) {
@@ -196,7 +288,7 @@ public class BottomController {
         }
     }
 
-    private boolean findDuplicate(FileInfo fileInfoToFind, TableView<FolderInfo> table) {
+    private boolean findDuplicate(DuplicateStatistics duplicateStatistics, FileInfo fileInfoToFind, TableView<FolderInfo> table) {
         boolean needsUpdate = false;
         for (FolderInfo folderInfo : table.getItems()) {
             if (folderInfo.getFolderFiles() > 0) {
@@ -206,8 +298,8 @@ public class BottomController {
                             fileInfoSearching.getSize() == fileInfoToFind.getSize() &&
                             fileInfoSearching.getDate() == fileInfoToFind.getDate()) {
                         fileInfoSearching.setTableDuplicated(true);
-                        duplicateCounter.incrementAndGet();
-                        folderSavedSize.addAndGet(fileInfoSearching.getSize());
+                        duplicateStatistics.getDuplicateCounter().incrementAndGet();
+                        duplicateStatistics.getFolderSavedSize().addAndGet(fileInfoSearching.getSize());
                         if (!needsUpdate) {
                             needsUpdate = true;
                         }
@@ -223,8 +315,6 @@ public class BottomController {
         return needsUpdate;
     }
 
-    @FXML
-    private Button dates_ttv_btn;
 
     @FXML
     private void dates_ttv_btn_action(ActionEvent event) {
@@ -401,7 +491,7 @@ public class BottomController {
     }
 
     public void initBottomWorkdirMonitors() {
-        if(drive_name == null || drive_space == null || drive_spaceLeft == null || drive_connected == null) {
+        if (drive_name == null || drive_space == null || drive_spaceLeft == null || drive_connected == null) {
             return;
         }
 

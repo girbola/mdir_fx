@@ -31,7 +31,7 @@ public class Misc {
 	public static boolean checkOS() {
 		String os = System.getProperty("os.name").toLowerCase();
 		Messages.sprintf("OS is: " + os);
-		if (os.contains("win") || os.contains("linux")) {
+		if (os.contains("win") || os.contains("linux") || os.contains("mac")) {
 			Path configPath = Paths.get(System.getProperty("user.home") + File.separator + ".mdir");
 			try {
 				Files.createDirectories(configPath);

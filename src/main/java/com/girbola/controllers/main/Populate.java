@@ -95,6 +95,7 @@ public class Populate {
                     Main.setProcessCancelled(true);
                     return;
                 }
+                Messages.sprintf("list: " + list.size());
                 Task<Integer> sorter = new Sorter(model_main, list);
                 loadingProcess_task.setTask(sorter);
                 sorter.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
@@ -148,7 +149,6 @@ public class Populate {
                     @Override
                     public void handle(WorkerStateEvent event) {
                         loadingProcess_task.setMessage("FAILED...");
-
                         sprintf("sorter.setOnFailed");
                         loadingProcess_task.closeStage();
 
@@ -159,6 +159,13 @@ public class Populate {
                 sorter_th.start();
             }
         });
+        createFileList.setOnCancelled(event -> {
+            Messages.sprintf("Sorter has been cancelled");
+        });
+        createFileList.setOnFailed(event -> {
+            Messages.sprintf("Sorter has been failed");
+        });
+
         Thread createFileList_th = new Thread(createFileList, "createFileList_th");
         sprintf("createFileList_th.getName(): " + createFileList_th.getName());
         createFileList_th.start();
