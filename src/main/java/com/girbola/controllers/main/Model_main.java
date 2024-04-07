@@ -62,7 +62,6 @@ public class Model_main {
 
     private StringProperty table_root_hbox_width = new SimpleStringProperty();
 
-
     public StringProperty getTable_root_hbox_width() {
         return table_root_hbox_width;
     }
