@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -10,10 +10,7 @@ import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.CleanTableView;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.UpdateFolderInfoContent;
+import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;

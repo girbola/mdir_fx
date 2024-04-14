@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -107,9 +107,10 @@ public class CalculateFolderContent extends Task<Void> {
 
 	private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
 		Path mdirDatabaseFilePath = Paths
-				.get(folderInfo.getFolderPath() + File.separator + conf.getMdir_db_fileName());
-		Messages.sprintf("handleFolderInfo trying to find folderinfo path: " + mdirDatabaseFilePath);
+				.get(folderInfo.getFolderPath(), conf.getMdir_db_fileName());
+		Messages.sprintf("mdirDatabaseFilePath trying to find folderinfo path: " + mdirDatabaseFilePath);
 		if (Files.exists(mdirDatabaseFilePath)) {
+			Messages.sprintf("File DOEST exists at: " + mdirDatabaseFilePath);
 
 			FolderInfo loaded_FolderInfo = null;
 			try {

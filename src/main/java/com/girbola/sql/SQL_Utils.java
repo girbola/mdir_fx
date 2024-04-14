@@ -76,7 +76,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                     "'totalSize', " +
                     "'connected,' " +
                     "'selected')" +
-                    " VALUES(?,?,?,?,?)";
+                    " VALUES(?,?,?,?)";
 
     final private static String DRIVE_INFO_TABLE_CREATION_QUERY =
             "CREATE TABLE IF NOT EXISTS " +
@@ -107,6 +107,8 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
+    //@formatter:on
+
     public static boolean commitChanges(Connection connection) {
         try {
             connection.commit();
@@ -118,17 +120,17 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static boolean closeConnection(Connection connection) {
-		try {
-			if (connection != null) {
-				connection.close();
+        try {
+            if (connection != null) {
+                connection.close();
                 return true;
-			}
-		} catch (Exception e) {
-			Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
+            }
+        } catch (Exception e) {
+            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
             return false;
-		}
+        }
         return false;
-	}
+    }
 
     public static boolean setAutoCommit(Connection connection, boolean b) {
         try {
@@ -138,7 +140,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             Messages.sprintfError("Cannot set connection AutoCommit to false: " + e.getMessage());
             return false;
         }
-
     }
 
     public static boolean addDriveInfo_list(Connection connection, List<DriveInfo> driveInfo_list) {
@@ -202,14 +203,10 @@ public class SQL_Utils extends FolderInfo_SQL {
                 throw new RuntimeException(e);
             }
             Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
+
             return false;
         }
-        String sql = "CREATE TABLE IF NOT EXISTS " +
-                SQL_Enums.FOLDERSSTATE.getType() +
-                " (path STRING NOT NULL PRIMARY KEY UNIQUE, " +
-                "justFolderName STRING, " +
-                "tableType STRING NOT NULL, " +
-                "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERSSTATE.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
@@ -220,7 +217,8 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
-    // @formatter:on
+
+    //@formatter:on
     public static boolean addToFolderStateDB(Connection connection, FolderState folderState) {
         if (connection == null) {
             return false;
@@ -240,6 +238,7 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
+
 
     public static List<FolderState> loadFoldersStateTo_Tables(Connection connection, Model_main model_Main) {
         if (connection == null) {
@@ -709,7 +708,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(sql);
-//            stmt.close();
+            //stmt.close();
             return true;
         } catch (Exception e) {
             return false;

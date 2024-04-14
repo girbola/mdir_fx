@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -55,6 +55,7 @@ public class AddToTable extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 		for (Path p : list) {
+			Messages.sprintf("PATH WOULD BE: " + p);
 			if (Main.getProcessCancelled()) {
 				cancel();
 				ConcurrencyUtils.stopExecThreadNow();
@@ -64,14 +65,16 @@ public class AddToTable extends Task<Integer> {
 
 			if (folderHasFiles(p)) {
 				TableType tableType = resolvePath(p);
+				Messages.sprintf("TABLETYPE IS: " + tableType + " Path is: PPPP: " + p);
 				switch (tableType) {
 				case SORTED: {
 					FolderInfo folderInfo = new FolderInfo(p);
+					Messages.sprintf("FolderINFOOOOO: " + folderInfo.getFolderPath());
 					if (!hasDuplicates(model.tables().getSorted_table(), folderInfo) || !hasDuplicates(model.tables().getSortIt_table(), folderInfo)) {
 						folderInfo.setTableType(TableType.SORTED.getType());
 						model.tables().getSorted_table().getItems().add(folderInfo);
 						TableUtils.refreshTableContent(model.tables().getSorted_table());
-						counter.set(counter.get() + 1);
+						counter.incrementAndGet();
 						sprintf("sorted: " + p + " c= " + counter.get());
 					}
 					break;
@@ -81,7 +84,7 @@ public class AddToTable extends Task<Integer> {
 					if (hasDuplicates(model.tables().getSortIt_table(), folderInfo) || !hasDuplicates(model.tables().getSorted_table(), folderInfo)) {
 						folderInfo.setTableType(TableType.SORTIT.getType());
 						model.tables().getSortIt_table().getItems().add(folderInfo);
-						counter.set(counter.get() + 1);
+						counter.incrementAndGet();
 						sprintf("sortit: " + p + " c= " + counter.get());
 						TableUtils.refreshTableContent(model.tables().getSortIt_table());
 					}
@@ -95,7 +98,7 @@ public class AddToTable extends Task<Integer> {
 			}
 		}
 
-		return counter.get();
+		return null;
 	}
 
 	private boolean hasDuplicates(TableView<FolderInfo> table, FolderInfo folderInfo) {

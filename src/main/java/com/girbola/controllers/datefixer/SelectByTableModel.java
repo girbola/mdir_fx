@@ -27,7 +27,7 @@ public class SelectByTableModel extends Task<Boolean> {
 
 	@Override
 	protected Boolean call() throws Exception {
-		Iterator<Node> it = model_datefix.getGridPane().getChildren().iterator();
+		Iterator<Node> it = model_datefix.getTilePane().getChildren().iterator();
 		Messages.sprintf("===============" + type + " tableView");
 		while (it.hasNext()) {
 			Node node = it.next();

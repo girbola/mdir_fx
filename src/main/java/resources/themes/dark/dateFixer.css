@@ -364,7 +364,18 @@
     -fx-background-color: -fx-base;
     -fx-padding: 15;
 }
-
+#selection-btns_bad {
+    -fx-background-color: red;
+}
+#selection-btns_good {
+    -fx-background-color: green;
+}
+#selection-btns_modified {
+    -fx-background-color: cyan;
+}
+#selection-btns_acceptable {
+    -fx-background-color: pink;
+}
 .selection_text {
     -fx-font-size: 14px;
     -fx-font-family: -fx-font-name;

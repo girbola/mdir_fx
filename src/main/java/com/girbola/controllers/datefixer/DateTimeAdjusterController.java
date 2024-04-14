@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -8,6 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.datefixer.tasks.MakeChanges;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -16,6 +17,7 @@ import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
+import javafx.beans.property.Property;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -24,7 +26,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -34,6 +35,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
@@ -43,25 +45,45 @@ import static com.girbola.misc.Misc.getLineNumber;
 public class DateTimeAdjusterController {
 
     private final String ERROR = DateTimeAdjusterController.class.getSimpleName();
-    private GridPane df_gridPane;
+    private TilePane df_tilePane;
+
+    //private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
     private Model_main model_main;
     private Model_datefix model_datefix;
 
-    @FXML
-    private DatePicker end_datePicker;
-    @FXML
-    private TextField end_hour;
-    @FXML
-    private Button copy_startToEnd_btn;
-    @FXML
-    private Button selectRange_btn;
-    @FXML
-    private Button setDateTimeRange_btn;
-    @FXML
-    private Button markFilesAccordingTheDateScale_btn;
-    @FXML
-    private Button findExistsPath_btn;
+    //@formatter:off
+    @FXML private DatePicker end_datePicker;
+    @FXML private TextField end_hour;
+    @FXML private Button copy_startToEnd_btn;
+    @FXML private Button selectRange_btn;
+    @FXML private Button setDateTimeRange_btn;
+    @FXML private Button markFilesAccordingTheDateScale_btn;
+    @FXML private Button findExistsPath_btn;
+    //@formatter:on
+
+    //@formatter:off
+    @FXML private Button end_hour_btn_down;
+    @FXML private Button end_hour_btn_up;
+    @FXML private TextField end_min;
+    @FXML private Button end_min_btn_down;
+    @FXML private Button end_min_btn_up;
+    @FXML private TextField end_sec;
+    @FXML private Button end_sec_btn_down;
+    @FXML private Button end_sec_btn_up;
+    @FXML private Button set_btn;
+    @FXML private DatePicker start_datePicker;
+    @FXML private TextField start_hour;
+    @FXML private Button start_hour_btn_down;
+    @FXML private Button start_hour_btn_up;
+
+    @FXML private TextField start_min;
+    @FXML private Button start_min_btn_down;
+    @FXML private Button start_min_btn_up;
+    @FXML private TextField start_sec;
+    @FXML private Button start_sec_btn_down;
+    @FXML private Button start_sec_btn_up;
+    //@formatter:on
 
     @FXML
     private void findExistsPath_btn_action(ActionEvent event) {
@@ -96,7 +118,6 @@ public class DateTimeAdjusterController {
                 LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
                 if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
                     if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-//						model_ FolderInfo_Utils. addToObservableFileInfoList.
                         collectedList.add(fileInfo);
                         Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
                                 + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
@@ -126,19 +147,8 @@ public class DateTimeAdjusterController {
             }
 
         }
-//		for(FileInfo fileInfo : collectedList) {
-//			Node n = createNode(fileInfo);
-//		}
-//		model_datefix.getFolderInfo_full().getFileInfoList();
-//		model_datefix.updateAllInfos(fileInfo_List);  AllInfos(model_datefix.getGridPane());
 
-        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-        Task<ObservableList<Node>> updateGridPane_Task = new UpdateGridPane_Task(model_datefix,
-                model_datefix.filterAllNodesList(model_datefix.getAllNodes()), loadingProcess_task);
-        loadingProcess_task.setTask(updateGridPane_Task);
-
-        Thread thread = new Thread(updateGridPane_Task, "updateGridPane_Task_th");
-        thread.start();
+        LoadingProcessLoader.runUpdateTask(model_datefix, null);
 
         Messages.warningText(
                 "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
@@ -277,47 +287,6 @@ public class DateTimeAdjusterController {
     }
 
     @FXML
-    private Button end_hour_btn_down;
-    @FXML
-    private Button end_hour_btn_up;
-    @FXML
-    private TextField end_min;
-    @FXML
-    private Button end_min_btn_down;
-    @FXML
-    private Button end_min_btn_up;
-    @FXML
-    private TextField end_sec;
-    @FXML
-    private Button end_sec_btn_down;
-    @FXML
-    private Button end_sec_btn_up;
-
-    @FXML
-    private Button set_btn;
-    @FXML
-    private DatePicker start_datePicker;
-    @FXML
-    private TextField start_hour;
-    @FXML
-    private Button start_hour_btn_down;
-    @FXML
-    private Button start_hour_btn_up;
-
-    @FXML
-    private TextField start_min;
-    @FXML
-    private Button start_min_btn_down;
-    @FXML
-    private Button start_min_btn_up;
-    @FXML
-    private TextField start_sec;
-    @FXML
-    private Button start_sec_btn_down;
-    @FXML
-    private Button start_sec_btn_up;
-
-    @FXML
     private void end_hour_action(ActionEvent event) {
         model_datefix.getEnd_time().setHour(parseTextFieldToInteger(end_hour));
     }
@@ -420,7 +389,7 @@ public class DateTimeAdjusterController {
             errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
         }
         Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
-        for (Node node : model_datefix.getGridPane().getChildren()) {
+        for (Node node : model_datefix.getTilePane().getChildren()) {
             if (node instanceof VBox) {
                 Messages.sprintf("123 node name " + node.getId());
                 VBox vbox = (VBox) node;
@@ -434,7 +403,7 @@ public class DateTimeAdjusterController {
                                         LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(tf.getText());
                                         Messages.sprintf("fileDate= " + fileDate);
                                         if (fileDate.isAfter(ldt_start) && fileDate.isBefore(ldt_end)) {
-                                            model_datefix.getSelectionModel().add(vbox);
+                                            model_datefix.getSelectionModel().addWithToggle(vbox);
                                         }
                                     }
                                 }
@@ -448,162 +417,40 @@ public class DateTimeAdjusterController {
 
     private void makeChanges(LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
 
-        LocalTimeDifference localTimeDifference = new LocalTimeDifference(ldt_start, ldt_end);
-        ArrayList<LocalDateTime> localDateTime_list = localTimeDifference.createDateList_logic(files, ldt_start,
-                ldt_end);
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH.mm.ss");
+        Task<Integer> changeDates = new MakeChanges(model_datefix, ldt_start, ldt_end, files);
 
-        if (localDateTime_list.isEmpty()) {
-            errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-        }
-        Main.setChanged(true);
-        Task<Integer> changeDates = new Task<Integer>() {
-            @Override
-            protected Integer call() throws Exception {
-
-                List<String> dateList = new ArrayList<>();
-                for (LocalDateTime localDateTime : localDateTime_list) {
-                    String d_temp = dtf.format(localDateTime);
-                    dateList.add(d_temp);
-                    sprintf("=========ldtime: " + d_temp);
-                }
-                List<Node> list = create_listOfSelectedNodes(df_gridPane);
-
-                if (list.isEmpty()) {
-                    errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
-                }
-
-                Collections.sort(dateList);
-                Collections.sort(list, (Node o1, Node o2) -> {
-                    String value1 = o1.getId().replace("fileDate: ", "");
-                    if (value1.length() <= 1) {
-                        value1 = "0" + value1;
-                        sprintf("Zero added: " + value1);
-                    }
-                    String value2 = o2.getId().replace("fileDate: ", "");
-                    if (value2.length() <= 1) {
-                        value2 = "0" + value2;
-                        sprintf("Zero added: " + value2);
-                    }
-                    return value1.compareTo(value2);
-                });
-                for (String dl : dateList) {
-                    sprintf("DLLIST: " + dl);
-                }
-                Iterator<Node> it = list.iterator();
-                Iterator<String> it2 = dateList.iterator();
-                if (list.size() != dateList.size()) {
-                    sprintf("list size is: " + list.size() + " dateList size is: " + dateList.size());
-                    errorSmth(ERROR, "List were different", null, getLineNumber(), true);
-                }
-                while (it.hasNext() && it2.hasNext()) {
-                    Node node = it.next();
-                    if(node instanceof HBox) {
-                        for (Node nodeHBox : ((HBox) node).getChildren()) {
-                            if (nodeHBox instanceof TextField) {
-                                try {
-                                    TextField tf = (TextField) nodeHBox;
-                                    tf.setText(it2.next());
-                                    tf.setStyle(CssStylesController.getModified_style());
-                                } catch (Exception ex) {
-                                    errorSmth(ERROR, "Cannot make textfield changes. " + (it == null ? true : false), ex, Misc.getLineNumber(), true);
-                                }
-                            } else {
-                                Messages.sprintfError("is not instanceof TextField: " + node.toString());
-                            }
-                        }
-                    }
-
-
-
-                }
-                return null;
-            }
-        };
         LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
             model_datefix.getSelectionModel().clearAll();
             lpt.closeStage();
+            Messages.sprintf("changeDates were successfully done");
         });
         changeDates.setOnFailed(event -> {
+            Messages.sprintf("changeDates failed");
             errorSmth(ERROR, "Task failed", null, getLineNumber(), true);
             lpt.closeStage();
         });
         changeDates.setOnCancelled((event) -> {
+            Messages.sprintf("changeDates were cancelled");
             lpt.closeStage();
             errorSmth(ERROR, "Task cancelled", null, getLineNumber(), true);
         });
 
         lpt.setTask(changeDates);
+
         Thread changeDates_th = new Thread(changeDates, "changeDates_th");
-        sprintf("changeDates_th.getName(): " + changeDates_th.getName());
-        changeDates_th.run();
+        changeDates_th.start();
+
     }
 
-    private List<Node> create_listOfSelectedNodes(GridPane df_gridpane) {
-        List<Node> list = new ArrayList<>();
-        for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
-            if (node_main instanceof VBox) {
-                for (Node n : ((VBox) node_main).getChildren()) {
-                    if (n instanceof HBox) {
-                        for (Node hbc : ((HBox) n).getChildren()) {
-                            if (hbc instanceof TextField) {
-                                list.add(n);
-                                sprintf("TextField found and it is date: " + ((TextField) hbc).getText()
-                                        + " getId() is " + hbc.getId());
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return list;
-    }
+    private boolean checkIfInDateRange(LocalDateTime ldtStart, LocalDateTime ldtEnd, int size) {
+        long duration = Duration.between(ldtStart, ldtEnd).getSeconds();
 
-    private boolean checkIfInDateRange(LocalDateTime ldt_start, LocalDateTime ldt_end, int size) {
-        Duration duration = Duration.between(ldt_start, ldt_end);
-        sprintf("checkIfInDateRange in sec= " + duration.getSeconds());
-        if (size > 1) {
-            if ((size - 1 - duration.getSeconds()) < 0) {
-                return false;
-            } else {
-                return true;
-            }
-        } else {
-            sprintf("size were below 1= " + size);
-            return false;
-        }
-    }
-
-    private void setNumberTextField(TextField tf) {
-
-        tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-            if (newValue.matches("[0-9]*") && newValue.length() < 3 && newValue.length() >= 0) {
-                sprintf("is Text: " + newValue);
-
-            } else {
-                tf.setText(oldValue);
-            }
-        });
-        tf.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
-            if (!newValue) {
-                tf.setText(defineFormat(tf));
-            }
-        });
-        tf.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                sprintf("starthour on action");
-                model_datefix.getStart_time().setHour(Integer.parseInt(tf.getText()));
-                tf.setText("" + defineFormat(tf));
-            }
-        });
+        return duration >= 0 && size > 1 && (size - 1 - duration) >= 0;
     }
 
     private void setTextProperty(TextField tf) {
-        tf.textProperty().addListener((ChangeListener<String>) (observable, oldValue, newValue) -> {
-            // sprintf("changing: " + newValue);
+        tf.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue.length() <= 1) {
                 tf.setText("0" + newValue);
             }
@@ -612,19 +459,17 @@ public class DateTimeAdjusterController {
 
     private int parseTextFieldToInteger(TextField tf) {
         int sec = 0;
-        try {
-            sec = Integer.parseInt(tf.getText());
-        } catch (NumberFormatException e) {
-            sec = 0;
+        if (tf != null && tf.getText() != null) {
+            sec = Integer.parseInt(tf.getText().trim());
         }
         return sec;
     }
 
-    public void init(Model_main aModel_main, Model_datefix aModel_datefix, GridPane aDf_gridPane,
+    public void init(Model_main aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
                      TilePane aQuickPick_tilePane) {
         this.model_main = aModel_main;
         this.model_datefix = aModel_datefix;
-        this.df_gridPane = aDf_gridPane;
+        this.df_tilePane = aTilePane;
         this.quickPick_tilePane = aQuickPick_tilePane;
         aModel_datefix.setStart_datePicker(start_datePicker);
         aModel_datefix.setEnd_datePicker(end_datePicker);

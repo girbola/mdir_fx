@@ -68,6 +68,8 @@ import static com.girbola.messages.Messages.warningText;
 
 public class TableController {
 
+
+
     private final String ERROR = TableController.class.getSimpleName();
 
     private Image hide_im;
@@ -76,18 +78,12 @@ public class TableController {
     private Model_main model_main;
     private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
     private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
-    private String tableType;
+    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);private String tableType;
     private Window owner;
 
     // @formatter:off
-
-
-
-
-
-	@FXML private AnchorPane table_RootPane;
 	@FXML private AnchorPane tables_rootPane;
+	@FXML private AnchorPane table_RootPane;
     @FXML private AnchorPane hideablePane;
 	@FXML private Button select_all_btn;
 	@FXML private Button select_bad_btn;
@@ -96,18 +92,30 @@ public class TableController {
 	@FXML private Button select_none_btn;
 	@FXML private Button updateFolderInfo_btn;
 	@FXML private FlowPane tableInformation_flowpane;
+
 	@FXML private FlowPane topMenuButtonFlowPane;
+
 	@FXML private HBox buttons_hbox;
+
 	@FXML private HBox showHideButton_hbox;
+
 	@FXML private HBox tableInformation_hbox;
+
 	@FXML private HBox tables_parent;
+
 	@FXML private ImageView hide_btn_iv;
+
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesSize_lbl;
+
 	@FXML private Label allFilesTotal_lbl;
+
 	@FXML private MenuItem checkChanges_mi;
+
 	@FXML private MenuItem mergeCopy_MenuItem;
+
 	@FXML private MenuItem mergeMove_MenuItem;
+
 	@FXML private MenuItem reload_all_mi;
 	@FXML private MenuItem select_dateDifference_btn;
 	@FXML private TableColumn<FolderInfo, Boolean> connected_col;
@@ -140,10 +148,15 @@ public class TableController {
 	@FXML private Tooltip select_good_btn_tooltip;
 	@FXML private Tooltip select_invert_btn_tooltip;
 	@FXML private Tooltip select_none_btn_tooltip;
+
 	@FXML private Tooltip tableDescription_tf_tooltip;
+
 	@FXML private Tooltip updateFolderInfo_btn_tooltip;
+
 	@FXML private VBox group;
+
 	@FXML private VBox table_Vbox;
+
 	@FXML public Button hide_btn;
 	// @formatter:on
 
@@ -558,6 +571,8 @@ public class TableController {
         }
     }
 
+
+
     public void init(Model_main aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
@@ -719,8 +734,12 @@ public class TableController {
         });
     }
 
-    public TableView<FolderInfo> getTable() {
-        return table;
+
+
+
+            public TableView<FolderInfo> getTable() {
+                return table;
+
     }
 
 }

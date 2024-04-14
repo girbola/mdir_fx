@@ -15,7 +15,7 @@ limitations under the License.
  */
 
 /*
-@(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+@(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
 @(#)Author:     Marko Lokka
 @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
 @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -182,7 +182,6 @@ public class Main extends Application {
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
-
 Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "

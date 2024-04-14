@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -57,9 +57,9 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     // setItem(newValue);
-                    Task<ObservableList<Node>> updateCamera_Task = new Task<ObservableList<Node>>() {
+                    Task<ObservableList<Node>> updateCamera_Task = new Task<>() {
                         @Override
-                        protected ObservableList<Node> call() throws Exception {
+                        protected ObservableList<Node> call() {
                             model_DateFix.getCameras_TableView().setDisable(true);
                             model_DateFix.getDates_TableView().setDisable(true);
                             model_DateFix.getEvents_TableView().setDisable(true);
@@ -87,11 +87,11 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                             }
                             int counter = 0;
                             if (newValue == true) {
-                                for (Node node : model_DateFix.getGridPane().getChildren()) {
+                                for (Node node : model_DateFix.getTilePane().getChildren()) {
                                     if (node instanceof VBox && node.getId().equals("imageFrame")) {
                                         FileInfo fi = (FileInfo) node.getUserData();
                                         if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model(new String("Unknown"));
+                                            fi.setCamera_model("Unknown");
                                         }
                                         if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
                                             fi.setCamera_model("Unknown");
@@ -104,7 +104,7 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                                     }
                                 }
                             } else if (newValue == false) {
-                                for (Node node : model_DateFix.getGridPane().getChildren()) {
+                                for (Node node : model_DateFix.getTilePane().getChildren()) {
                                     if (node instanceof VBox && node.getId().equals("imageFrame")) {
                                         FileInfo fi = (FileInfo) node.getUserData();
                                         if (fi.getCamera_model() == null) {

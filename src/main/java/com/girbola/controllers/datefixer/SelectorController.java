@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -17,6 +17,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
 
@@ -28,7 +29,8 @@ public class SelectorController {
 
 	private WorkDir_Loader workDir_Loader;
 	private Model_datefix model_datefix;
-	private GridPane df_gridPane;
+	private TilePane df_tilePane;
+	//private GridPane df_gridPane;
 	private FolderInfo folderInfo;
 	//@formatter:off
 	@FXML private ScrollPane infoTables_container;
@@ -54,9 +56,9 @@ public class SelectorController {
 	@FXML private TableColumn<EXIF_Data_Selector, String> events_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> events_counter_col;
 	
-	public GridPane getDf_gridPane() {
-		return df_gridPane;
-	}
+//	public GridPane getDf_gridPane() {
+//		return df_gridPane;
+//	}
 
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = p -> new CheckBoxCell_Dates(model_datefix);
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);
@@ -68,16 +70,18 @@ public class SelectorController {
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> dates_INFO_Select_CellFactory = p -> new Dates_INFO_Select_CellFactory(
 			model_datefix);
 
-	public void init(Model_datefix aModel_datefix, GridPane aDf_gridPane) {
+	public void init(Model_datefix aModel_datefix, TilePane aDf_tilePane) {
 		this.model_datefix = aModel_datefix;
-		this.df_gridPane = aDf_gridPane;
+		this.df_tilePane = aDf_tilePane;
 		this.folderInfo = model_datefix.getFolderInfo_full();
 		if (folderInfo == null) {
 			Messages.sprintfError("folderinfo were null!!!");
 		}
+
 		Messages.sprintf("Folderinfo path name is: " + this.folderInfo.getFolderPath());
+
 		workDir_Loader = new WorkDir_Loader(Paths.get(folderInfo.getFolderPath()));
-		df_gridPane.setGridLinesVisible(true);
+		//df_gridPane.setGridLinesVisible(true);
 		model_datefix.setDates_TableView(dates_tableView);
 		model_datefix.setCameras_TableView(cameras_tableView);
 		model_datefix.setEvents_TableView(events_tableView);

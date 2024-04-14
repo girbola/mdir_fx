@@ -97,7 +97,6 @@ public class MainController {
                 asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesCopied_lbl());
 
 
-
         this.model_main.tables().setSortIt_table(sortitController.getTable());
         this.model_main.tables().setSorted_table(sortedController.getTable());
         this.model_main.tables().setAsItIs_table(asitisController.getTable());

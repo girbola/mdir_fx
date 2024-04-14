@@ -109,23 +109,24 @@ public class FileInfo_SQL {
                 return false;
             }
 
-			PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
-			for (FileInfo fileInfo : list) {
-				Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
-				addToFileInfoDB(connection, pstmt, fileInfo);
-			}
-			pstmt.executeBatch();
+            PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
+            for (FileInfo fileInfo : list) {
+
+                Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
+                addToFileInfoDB(connection, pstmt, fileInfo);
+            }
+            pstmt.executeBatch();
 //			pstmt.closeOnCompletion();
-			pstmt.close();
-			connection.commit();
-			Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED");
-			return false;
-		}
-	}
+            pstmt.close();
+            connection.commit();
+            Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED");
+            return false;
+        }
+    }
 
     /**
      * @param connection
@@ -171,8 +172,7 @@ public class FileInfo_SQL {
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
         String orgPath = rs.getString("orgPath");
-        Messages.sprintf("loadFileInfo orgPath: " + orgPath);
-        String workDir = rs.getString("workDir");
+        Messages.sprintf("loadFileInfo orgPath: " + orgPath);String workDir = rs.getString("workDir");
         String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
         String destPath = rs.getString("destination_Path");
         String event = rs.getString("event");

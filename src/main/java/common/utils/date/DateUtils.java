@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -85,6 +85,19 @@ public class DateUtils {
 		} catch (Exception ex) {
 			return null;
 		}
+	}
+
+	public static long calculateMonthsOfLocalDates(LocalDate minDate, LocalDate maxDate) {
+		if (minDate != null || maxDate != null) {
+			return ChronoUnit.MONTHS.between(minDate, maxDate);
+		}
+		return 0;
+	}
+	public static long calculateYearsOfLocalDates(LocalDate minDate, LocalDate maxDate) {
+		if (minDate != null || maxDate != null) {
+			return ChronoUnit.YEARS.between(minDate, maxDate);
+		}
+		return 0;
 	}
 
 }

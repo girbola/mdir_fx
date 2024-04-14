@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved.  
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.  
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -258,17 +258,11 @@ public class RenderVisibleNode {
 					exec_single.submit(slow_render);
 				}
 			}
-
 			exec_single.shutdown();
 		} else {
 			sprintf("Visible node were empty");
 		}
 	}
-	//
-	// private int handle_tiff_thumb(FileInfo fileInfo, boolean betterQualityThumbs)
-	// {
-	// return 0;
-	// }
 
 	/**
 	 * 0 = thumbinfo found 1 = thumbinfo create thumbs
@@ -307,9 +301,9 @@ public class RenderVisibleNode {
 
 		Node mainNode = scrollPane.getContent();
 
-		if (mainNode instanceof GridPane && mainNode.getId().equals("dateFixer")) {
+		if (mainNode instanceof TilePane && mainNode.getId().equals("dateFixer")) {
 			Messages.sprintf("datefixer");
-			for (Node gridPane : ((GridPane) mainNode).getChildren()) {
+			for (Node gridPane : ((TilePane) mainNode).getChildren()) {
 				if (gridPane instanceof VBox && gridPane.getId().equals("imageFrame")) {
 					Bounds nodeBounds = gridPane.localToScene(gridPane.getBoundsInLocal());
 					if (paneBounds.intersects(nodeBounds)) {

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -115,32 +115,22 @@ public class LoadingProcessTask {
 			yOffset = loadingStage.getY();
 
 			Main.centerWindowDialog(loadingStage);
-			loadingScene.setOnMousePressed(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					xOffset = (loadingStage.getX() - event.getScreenX());
-					yOffset = (loadingStage.getY() - event.getScreenY());
-					sprintf("yOffset: " + yOffset);
-				}
+			loadingScene.setOnMousePressed(event -> {
+				xOffset = (loadingStage.getX() - event.getScreenX());
+				yOffset = (loadingStage.getY() - event.getScreenY());
+				sprintf("yOffset: " + yOffset);
 			});
 
-			loadingScene.setOnMouseDragged(new EventHandler<MouseEvent>() {
-
-				@Override
-				public void handle(MouseEvent event) {
-					loadingStage.setX(event.getScreenX() + xOffset);
-					if (event.getScreenY() <= 0) {
-						loadingStage.setY(0);
-					} else {
-						loadingStage.setY(event.getScreenY() + yOffset);
-					}
-
-					sprintf("event.getScreenY(); = " + event.getScreenY());
+			loadingScene.setOnMouseDragged(event -> {
+				loadingStage.setX(event.getScreenX() + xOffset);
+				if (event.getScreenY() <= 0) {
+					loadingStage.setY(0);
+				} else {
+					loadingStage.setY(event.getScreenY() + yOffset);
 				}
-			});
 
-//		loadingStage.initStyle(StageStyle.UTILITY);
+				sprintf("event.getScreenY(); = " + event.getScreenY());
+			});
 
 			loadingStage.setScene(loadingScene);
 			loadingStage.setAlwaysOnTop(true);
@@ -161,18 +151,8 @@ public class LoadingProcessTask {
 	private void bind() {
 		if (modelLoading.getTask() != null) {
 			sprintf("progressBar or task arent null");
-			modelLoading.getTask().progressProperty().addListener(new ChangeListener<Number>() {
-				@Override
-				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-					modelLoading.getProgressBar().setProgress((double) newValue);
-				}
-			});
-			modelLoading.getTask().messageProperty().addListener(new ChangeListener<String>() {
-				@Override
-				public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-					modelLoading.getMessages_lbl().setText(newValue);
-				}
-			});
+			modelLoading.getTask().progressProperty().addListener((observable, oldValue, newValue) -> modelLoading.getProgressBar().setProgress((double) newValue));
+			modelLoading.getTask().messageProperty().addListener((observable, oldValue, newValue) -> modelLoading.getMessages_lbl().setText(newValue));
 
 		} else {
 			sprintf("task were null BIND()");
@@ -188,13 +168,7 @@ public class LoadingProcessTask {
 		KeyFrame key = new KeyFrame(Duration.millis(2000),
 				new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
-		timeline.setOnFinished(new EventHandler<ActionEvent>() {
-
-			@Override
-			public void handle(ActionEvent event) {
-				Main.scene_Switcher.getWindow_loadingprogress().close();
-			}
-		});
+		timeline.setOnFinished(event -> Main.scene_Switcher.getWindow_loadingprogress().close());
 		timeline.play();
 
 		Platform.runLater(() -> {

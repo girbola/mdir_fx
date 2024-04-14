@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -17,6 +17,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,7 +46,7 @@ public class RectangleSelection {
     private double dy;
 
     Point2D mouseSceneCoords;
-    private GridPane grid;
+    private TilePane tilePane;
     private Pane pane;
 //    private AnchorPane anchorPane;
 
@@ -63,11 +64,11 @@ public class RectangleSelection {
     private SelectionModel selectionModel;
     private SimpleBooleanProperty drag = new SimpleBooleanProperty(false);
 
-    public RectangleSelection(Scene scene, Pane pane, GridPane grid, SelectionModel selectionModel) {
+    public RectangleSelection(Scene scene, Pane pane, TilePane aTilePane, SelectionModel selectionModel) {
 
 //        this.id_path_map = id_path_map;
 //        this.pane = grid.getParent();
-        this.grid = grid;
+        this.tilePane = aTilePane;
         this.scene = scene;
 
         this.stage = (Stage) scene.getWindow();
@@ -84,10 +85,10 @@ public class RectangleSelection {
         rect.setStrokeLineCap(StrokeLineCap.ROUND);
         rect.setFill(Color.RED.deriveColor(0, 0.6, 1, 0.6));
 
-        grid.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
+        tilePane.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
 //        grid.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
 //            grid.addEventHandler(MouseEvent.MOUSE_MOVED, onMouseMovedEventHandler);
-        grid.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
+        tilePane.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
 //        scene.addEventHandler(KeyEvent.KEY_PRESSED, onKeyPressed);
     }
 
@@ -163,7 +164,7 @@ public class RectangleSelection {
         public void handle(MouseEvent event) {
             drag.set(false);
             Point mouse = java.awt.MouseInfo.getPointerInfo().getLocation();
-            Point2D local = grid.screenToLocal(mouse.x, mouse.y);
+            Point2D local = tilePane.screenToLocal(mouse.x, mouse.y);
 
             dx = local.getX();
             dy = local.getY();
@@ -226,12 +227,12 @@ public class RectangleSelection {
             }
             if (!event.isShiftDown() && !event.isControlDown()) {
                 selectionModel.clearAll();
-                selectionModel.add((Node) event.getTarget());
+                selectionModel.addWithToggle((Node) event.getTarget());
                 event.consume();
                 return;
             } else if (event.isShiftDown() && !event.isControlDown()) {
 
-                selectionModel.add((Node) event.getTarget());
+                selectionModel.addWithToggle((Node) event.getTarget());
                 List<Integer> integer_list = new ArrayList<>();
                 warningText("onMouseReleasedEventHandler is not ready!");
                 for (Node n : selectionModel.getSelectionList()) {
@@ -257,7 +258,7 @@ public class RectangleSelection {
                 }
                 boolean passed = false;
 
-                for (Node node : grid.getChildren()) {
+                for (Node node : tilePane.getChildren()) {
 
                     int current = parseNodeId(node, "imageFrame: ");
                     if (current >= 0) {
@@ -266,10 +267,10 @@ public class RectangleSelection {
                         }
                         if (passed) {
                             if (current == max) {
-                                selectionModel.add(node);
+                                selectionModel.addWithToggle(node);
                                 break;
                             } else {
-                                selectionModel.add(node);
+                                selectionModel.addWithToggle(node);
                             }
                         }
                     }

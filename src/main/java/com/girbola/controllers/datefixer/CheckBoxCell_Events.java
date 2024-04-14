@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -95,7 +95,7 @@ public class CheckBoxCell_Events extends TableCell<EXIF_Data_Selector, Boolean> 
 							}
 							int counter = 0;
 							if (newValue == true) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 
 										Messages.sprintf("NODEEEE: " + node.getId());
@@ -111,7 +111,7 @@ public class CheckBoxCell_Events extends TableCell<EXIF_Data_Selector, Boolean> 
 									}
 								}
 							} else if (newValue == false) {
-								for (Node node : model_DateFix.getGridPane().getChildren()) {
+								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (has_events(fi.getEvent(), listOfEvents)) {

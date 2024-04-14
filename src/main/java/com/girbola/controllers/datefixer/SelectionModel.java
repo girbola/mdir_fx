@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -30,9 +30,9 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class SelectionModel {
 
-	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 <1 1;"
+	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 1 1;"
 			+ "-fx-border-style: none;" + "-fx-border-width: 2px;";
-	final private String style_removed = "-fx-border-color: red;" + "-fx-border-width: 2px;";
+	//final private String style_removed = "-fx-border-color: red;" + "-fx-border-width: 2px;";
 	final private String style_selected = "-fx-border-color: red;" + "-fx-border-width: 2px;";
 
 	private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
@@ -40,18 +40,9 @@ public class SelectionModel {
 	private ObservableList<Node> selectionList = FXCollections.observableArrayList();
 
 	public SelectionModel() {
-		this.selectionList.addListener(new ListChangeListener<Node>() {
-			@Override
-			public void onChanged(ListChangeListener.Change<? extends Node> c) {
-				Platform.runLater(() -> {
-					selectedIndicator_property.set(selectionList.size());
-				});
-			}
-		});
-	}
-
-	public String getStyle_removed() {
-		return style_removed;
+		this.selectionList.addListener((ListChangeListener<Node>) c -> Platform.runLater(() -> {
+            selectedIndicator_property.set(selectionList.size());
+        }));
 	}
 
 	public synchronized void addAll(Node node) {
@@ -69,7 +60,7 @@ public class SelectionModel {
 	 * @param node
 	 * @return
 	 */
-	public synchronized boolean add(Node node) {
+	public synchronized boolean addWithToggle(Node node) {
 		if (!contains(node)) {
 			Platform.runLater(() -> {
 				node.setStyle(style_selected);
@@ -79,7 +70,6 @@ public class SelectionModel {
 			// }
 		} else {
 			Platform.runLater(() -> {
-				sprintf("remove: " + node);
 				remove(node);
 			});
 			return true;
@@ -149,37 +139,10 @@ public class SelectionModel {
 		}
 		clearAll();
 		list.forEach((n) -> {
-			add(n);
+			addWithToggle(n);
 		});
 		list.clear();
 
-	}
-
-	public synchronized void isAllSelected(CheckBox checkBox, List<FileInfo> list) {
-		List<FileInfo> sel = new ArrayList<>();
-		if (list == null) {
-			Messages.sprintf("isAllSelected getUserData were null");
-			return;
-		}
-		for (FileInfo fileInfo : list) {
-			for (Node node : selectionList) {
-				FileInfo node_fl = (FileInfo) node.getUserData();
-				if (node_fl.equals(fileInfo)) {
-					sel.add(node_fl);
-				}
-			}
-		}
-		if (sel.size() == 0) {
-			checkBox.setSelected(false);
-		} else if (sel.size() == list.size()) {
-			checkBox.setSelected(true);
-		} else if (sel.size() != list.size()) {
-			checkBox.setIndeterminate(true);
-		}
-	}
-
-	public synchronized void setSelectionList(ObservableList<Node> selectionList) {
-		this.selectionList = selectionList;
 	}
 
 	public ObservableList<Node> getSelectionList() {

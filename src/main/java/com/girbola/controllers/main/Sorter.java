@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -9,14 +9,11 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
@@ -30,7 +27,7 @@ public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;
 	private Model_main model;
-	private IntegerProperty counter = new SimpleIntegerProperty(0);
+	private AtomicInteger counter = new AtomicInteger(0);
 
 	public Sorter(Model_main model, List<Path> selectedList) {
 		this.model = model;
@@ -43,29 +40,16 @@ public class Sorter extends Task<Integer> {
 			for (Path folder : selectedList) {
 				sprintf("Adding folder: " + folder);
 				if (Main.getProcessCancelled()) {
+					Messages.sprintf("Sorter process were cancelled");
 					exec[getExecCounter()].shutdownNow();
 					break;
 				}
 				Task<Integer> addToTable = new AddToTable(folder, model);
-				addToTable.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
-						 Messages.sprintf("addToTable Sorter done! " + folder);
-					}
-				});
-				addToTable.setOnFailed(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
-						sprintf("addToTable.setOnFailed: " + folder);
-					}
-				});
-				addToTable.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-					@Override
-					public void handle(WorkerStateEvent event) {
-						sprintf("addToTable.setOnCancelled: " + folder);
-					}
-				});
-				counter.set(counter.get() + 1);
+				addToTable.setOnSucceeded(e -> Messages.sprintf("addToTable Sorter done! " + folder));
+				addToTable.setOnFailed(e -> Messages. sprintf("addToTable.setOnFailed: " + folder));
+				addToTable.setOnCancelled(e -> Messages.sprintf("addToTable.setOnCancelled: " + folder));
+
+				counter.incrementAndGet();
 
 				exec[getExecCounter()].submit(addToTable);
 			}

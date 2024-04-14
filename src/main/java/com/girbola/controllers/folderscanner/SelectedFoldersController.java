@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -10,7 +10,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import javafx.beans.property.SimpleObjectProperty;
@@ -35,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
@@ -48,29 +48,29 @@ public class SelectedFoldersController {
     private Model_main model_main;
     private Model_folderScanner model_folderScanner;
 
-    @FXML
-    private TableColumn<SelectedFolder, String> folder_col;
-    @FXML
-    private TableColumn<SelectedFolder, Boolean> folder_connected_col;
-    @FXML
-    private Button selectedFolders_ok;
-    @FXML
-    private Button selectedFolders_remove;
-    @FXML
-    private Button selectedFolders_select_folder;
-    @FXML
-    private TableView<SelectedFolder> selectedFolder_TableView;
+    //@formatter:off
+    @FXML private TableColumn<SelectedFolder, String> folder_col;
+    @FXML private TableColumn<SelectedFolder, Boolean> folder_connected_col;
+    @FXML private Button selectedFolders_ok;
+    @FXML private Button selectedFolders_remove;
+    @FXML private Button selectedFolders_select_folder;
+    @FXML private TableView<SelectedFolder> selectedFolder_TableView;
+    //@formatter:on
 
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
-
         // Load FolderInfo from database
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
+
         if (connection == null) {
             Messages.sprintfError("Could not connect: " + Main.conf.getConfiguration_db_fileName());
+        }
+
+        for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            Messages.sprintf("selectedFolder: " + selectedFolder);
         }
 
         //createFolderInfoDatabase
@@ -81,8 +81,9 @@ public class SelectedFoldersController {
         SQL_Utils.closeConnection(connection);
 
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
+
         model_main.getMonitorExternalDriveConnectivity().cancel();
-        scanner.cancel();
+
         model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
@@ -97,22 +98,28 @@ public class SelectedFoldersController {
 
     @FXML
     private void selectedFolders_select_folder_action(ActionEvent event) {
-        File folder = null;
         DirectoryChooser dc = new DirectoryChooser();
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
-        folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
+        File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
         if (folder != null) {
-            if (!model_main.getSelectedFolders().getSelectedFolderScanner_obs().contains(folder.toPath())) {
-                if (folder.toString().contains(conf.getWorkDir())) {
-                    Messages.warningText("Cannot be same folder with com.girbola.workdir!");
-                } else {
-                    model_main.getSelectedFolders().getSelectedFolderScanner_obs()
-                            .add(new SelectedFolder(true, folder.toString()));
-                }
+            addNewFolder(folder);
+        }
+    }
+
+    private void addNewFolder(File folder) {
+        List<SelectedFolder> existingFolders = model_main.getSelectedFolders().getSelectedFolderScanner_obs();
+        if (!SelectedFolderUtils.contains(existingFolders, folder)) {
+            if (folder.toString().contains(conf.getWorkDir())) {
+                Messages.warningText(Main.bundle.getString("workDirConflict"));
             } else {
-                sprintf("Won't be added because it already exists! " + folder.toPath());
+                boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder);
+                if (!folderExists) {
+                    Messages.warningText(Main.bundle.getString("folderExists") + folder.toPath());
+                    existingFolders.add(new SelectedFolder(true, folder.toString()));
+                }
             }
-            // model.getSelection_FolderScanner().getSelectedFolderScanner_list().add(folder.toPath());
+        } else {
+            sprintf(Main.bundle.getString("folderExists") + folder.toPath());
         }
     }
 
@@ -125,19 +132,16 @@ public class SelectedFoldersController {
     }
 
     private void removeFromTable(TableView<SelectedFolder> table) {
-        ArrayList<SelectedFolder> listToRemove = new ArrayList<>();
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
+        Connection connection = null;
 
-            ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
+        ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
-            SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
+        SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
 
-            table.getItems().removeAll(selectedItems);
-            table.getSelectionModel().clearSelection();
+        table.getItems().removeAll(selectedItems);
+        table.getSelectionModel().clearSelection();
 
 
-        listToRemove.clear();
         table.getSelectionModel().clearSelection();
     }
 
@@ -178,15 +182,15 @@ public class SelectedFoldersController {
     }
 
     public void start() {
-        this.scanner.start();
+//        this.scanner.start();
     }
 
     public void restart() {
-        this.scanner.restart();
+//        this.scanner.restart();
     }
 
     public void stop() {
-        this.scanner.cancel();
+//        this.scanner.cancel();
     }
 
 }

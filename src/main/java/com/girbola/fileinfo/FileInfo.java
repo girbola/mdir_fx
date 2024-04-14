@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -40,25 +40,24 @@ public class FileInfo extends Metadata implements Cloneable {
     private boolean tableDuplicated;
     private boolean video;
 
-    private int fileInfo_id;
-    private int orientation;
-    private int thumb_length;
-    private int thumb_offset;
-    private long imageDifferenceHash;
     private LocalDateTime localDateTime;
-    private long date;
-    private long size;
-    private long timeShift;
     private String camera_model;
     private String destination_Path;
     private String event;
     private String location;
     private String orgPath;
-
     private String tags;
     private String user;
     private String workDir;
     private String workDirDriveSerialNumber;
+    private int fileInfo_id;
+    private int orientation;
+    private int thumb_length;
+    private int thumb_offset;
+    private long date;
+    private long imageDifferenceHash;
+    private long size;
+    private long timeShift;
 
     /*
      * (non-Javadoc)
@@ -159,7 +158,6 @@ public class FileInfo extends Metadata implements Cloneable {
         this.location = aLocation;
         this.tags = aTags;
         this.camera_model = aCamera_model;
-        this.user = user;
         this.orientation = aOrientation;
         this.timeShift = aTimeShift;
         this.fileInfo_id = aFileInfo_id;
@@ -178,6 +176,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.imageDifferenceHash = aImageDifferenceHash;
         this.thumb_offset = aThumb_offset;
         this.thumb_length = aThumb_length;
+        this.user = user;
     }
 
 

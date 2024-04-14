@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -47,7 +47,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -100,7 +99,17 @@ public class Model_datefix extends DateFixerModel {
 	private FolderInfo folderInfo_full;
 	private FolderInfo folderInfo_filtered;
 
-	private GridPane gridPane;
+	private TilePane tilePane;
+
+	public TilePane getTilePane() {
+		return tilePane;
+	}
+
+	public void setTilePane(TilePane tilePane) {
+		this.tilePane = tilePane;
+	}
+
+	//private GridPane gridPane;
 	private TableView<EXIF_Data_Selector> cameras_TableView;
 	private TableView<EXIF_Data_Selector> dates_TableView;
 	private TableView<EXIF_Data_Selector> events_TableView;
@@ -129,15 +138,9 @@ public class Model_datefix extends DateFixerModel {
 
 	public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
 		this.currentFolderPath = aCurrentFolderPath;
-		Messages.sprintf("Model_datefix loading... " + currentFolderPath);
 		this.model_Main = model_Main;
 		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
-		// this.thumbInfo_list = SQL_Utils.loadThumbInfo_list(this.connection);
-		// if (this.thumbInfo_list != null) {
-		// Messages.sprintf("thumbInfo_list were loaded!");
-		// } else {
-		// Messages.sprintf("thumbInfo_list were not loaded");
-		// }
+
 
 	}
 
@@ -252,13 +255,13 @@ public class Model_datefix extends DateFixerModel {
 		this.quickPick_tilePane = quickPick_tilePane;
 	}
 
-	public GridPane getGridPane() {
-		return gridPane;
-	}
-
-	public void setGridPane(GridPane gridPane) {
-		this.gridPane = gridPane;
-	}
+//	public GridPane getGridPane() {
+//		return gridPane;
+//	}
+//
+//	public void setGridPane(GridPane gridPane) {
+//		this.gridPane = gridPane;
+//	}
 
 	public FolderInfo getFolderInfo_full() {
 		return folderInfo_full;
@@ -419,22 +422,22 @@ public class Model_datefix extends DateFixerModel {
 		updateLocationInfos(fileInfo_List);
 	}
 
-	public void updateAllInfos(GridPane gridPane) {
+	public void updateAllInfos(TilePane gridPane) {
 		getCameras_TableView().getItems().clear();
 		getDates_TableView().getItems().clear();
 		getEvents_TableView().getItems().clear();
 		getLocations_TableView().getItems().clear();
 
-		updateCameraInfo(gridPane);
-		updateDatesInfos(gridPane);
-		updateEventsInfos(gridPane);
-		updateLocationsInfos(gridPane);
+		updateCameraInfo(tilePane);
+		updateDatesInfos(tilePane);
+		updateEventsInfos(tilePane);
+		updateLocationsInfos(tilePane);
 	}
 
-	public void updateCameraInfo(GridPane gridPane) {
+	public void updateCameraInfo(TilePane tilePane) {
 
 		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : gridPane.getChildren()) {
+		for (Node node : tilePane.getChildren()) {
 			if (node instanceof VBox) {
 				FileInfo fileInfo = (FileInfo) node.getUserData();
 				if (fileInfo != null) {
@@ -450,9 +453,9 @@ public class Model_datefix extends DateFixerModel {
 		}
 	}
 
-	public void updateEventsInfos(GridPane gridPane) {
+	public void updateEventsInfos(TilePane tilePane) {
 		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : gridPane.getChildren()) {
+		for (Node node : tilePane.getChildren()) {
 			if (node instanceof VBox) {
 				FileInfo fileInfo = (FileInfo) node.getUserData();
 				if (fileInfo != null) {
@@ -464,9 +467,9 @@ public class Model_datefix extends DateFixerModel {
 				Field.EVENT.getType());
 	}
 
-	public void updateLocationsInfos(GridPane gridPane) {
+	public void updateLocationsInfos(TilePane tilePane) {
 		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : gridPane.getChildren()) {
+		for (Node node : tilePane.getChildren()) {
 			if (node instanceof VBox) {
 				FileInfo fileInfo = (FileInfo) node.getUserData();
 				if (fileInfo != null) {
@@ -478,9 +481,9 @@ public class Model_datefix extends DateFixerModel {
 				Field.LOCATION.getType());
 	}
 
-	public void updateDatesInfos(GridPane gridPane) {
+	public void updateDatesInfos(TilePane tilePane) {
 		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : gridPane.getChildren()) {
+		for (Node node : tilePane.getChildren()) {
 			if (node instanceof VBox && node.getId().equals("imageFrame")) {
 				FileInfo fileInfo = (FileInfo) node.getUserData();
 				if (fileInfo != null) {
@@ -494,7 +497,7 @@ public class Model_datefix extends DateFixerModel {
 		dateFix_Utils.createDates_list(fileInfo_list);
 	}
 
-	public void acceptEverything() {
+	public void acceptEverything(TilePane tilePane) {
 		boolean changed = false;
 		// CssStylesController css = new CssStylesController();
 		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
@@ -503,7 +506,7 @@ public class Model_datefix extends DateFixerModel {
 
 		Optional<ButtonType> result = changesDialog.showAndWait();
 		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-			for (Node node : getGridPane().getChildren()) {
+			for (Node node : tilePane.getChildren()) {
 				TextField tf = getTextField(node);
 				if (tf != null) {
 					if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
@@ -671,11 +674,11 @@ public class Model_datefix extends DateFixerModel {
 		}
 	}
 
-	public void exitDateFixerWindow(GridPane gridPane, Window owner, WindowEvent event) {
+	public void exitDateFixerWindow(TilePane tilePane, Window owner, WindowEvent event) {
 		Messages.sprintf("exitDateFixerWindow");
 		model_Main.getMonitorExternalDriveConnectivity().cancel();
 
-		int badDates = checkIfRedDates(gridPane);
+		int badDates = checkIfRedDates(tilePane);
 		if (badDates != 0) {
 			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
 					bundle.getString("badFilesFoundWantToClose"));
@@ -687,7 +690,7 @@ public class Model_datefix extends DateFixerModel {
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-				saveThumbs();
+				saveThumbs(tilePane);
 				event.consume();
 
 			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
@@ -697,7 +700,7 @@ public class Model_datefix extends DateFixerModel {
 		}
 
 		if (Main.conf.isSavingThumb()) {
-			saveThumbs();
+			saveThumbs(tilePane);
 		}
 
 		if (changes_made.get()) {
@@ -713,7 +716,7 @@ public class Model_datefix extends DateFixerModel {
 			}
 			Optional<ButtonType> result = changesDialog.showAndWait();
 			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				acceptEverything();
+				acceptEverything(tilePane);
 				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
@@ -758,7 +761,7 @@ public class Model_datefix extends DateFixerModel {
 
 	}
 
-	public void saveThumbs() {
+	public void saveThumbs(TilePane tilePane) {
 		if (!Main.conf.isSavingThumb()) {
 			Messages.sprintf("isSavingThumb() were turned off");
 			return;
@@ -767,7 +770,7 @@ public class Model_datefix extends DateFixerModel {
 		getRenderVisibleNode().stopTimeLine();
 		ConcurrencyUtils.stopExecThreadNow();
 		List<ThumbInfo> thumbInfo_list = new ArrayList<>();
-		for (Node n : getGridPane().getChildren()) {
+		for (Node n : tilePane.getChildren()) {
 			if (n instanceof VBox) {
 				for (Node vbox : ((VBox) n).getChildren()) {
 					if (vbox instanceof StackPane) {
@@ -820,13 +823,13 @@ public class Model_datefix extends DateFixerModel {
 									} catch (IOException e) {
 										e.printStackTrace();
 									}
-									byte[] res = byteArrayOS.toByteArray();
+                                    byte[] imageByteArray = byteArrayOS.toByteArray();
 									try {
 										byteArrayOS.close();
 									} catch (IOException ex) {
 										Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
 									}
-									thumbInfo.getThumbs().add(res);
+									thumbInfo.getThumbs().add(imageByteArray);
 									thumbInfo_list.add(thumbInfo);
 								}
 							}
@@ -1010,9 +1013,9 @@ public class Model_datefix extends DateFixerModel {
 		return connection;
 	}
 
-	private int checkIfRedDates(GridPane gridPane) {
+	private int checkIfRedDates(TilePane tilePane) {
 		int counter = 0;
-		for (Node n : gridPane.getChildren()) {
+		for (Node n : tilePane.getChildren()) {
 			if (n instanceof VBox) {
 				if (n.getId().contains("imageFrame")) {
 					for (Node vbox : ((VBox) n).getChildren()) {

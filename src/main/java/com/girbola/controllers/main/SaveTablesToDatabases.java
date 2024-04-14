@@ -14,28 +14,28 @@ import java.sql.Connection;
 
 public class SaveTablesToDatabases extends Task<Integer> {
 
-    private final String ERROR = SaveTablesToDatabases.class.getName();
+	private final String ERROR = SaveTablesToDatabases.class.getName();
 
-    private Stage stage;
-    private LoadingProcessTask loadingProcess_Task;
-    private boolean closeLoadingStage;
-    private Model_main model_main;
+	private Stage stage;
+	private LoadingProcessTask loadingProcess_Task;
+	private boolean closeLoadingStage;
+	private Model_main model_main;
 
-    public SaveTablesToDatabases(Model_main model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
-                                 boolean closeLoadingStage) {
-        super();
-        this.model_main = model_main;
-        this.stage = stage;
-        if (loadingProcess_Task == null) {
-            loadingProcess_Task = new LoadingProcessTask(stage);
-            loadingProcess_Task.setTask(this);
-        }
-        this.loadingProcess_Task = loadingProcess_Task;
-        this.closeLoadingStage = closeLoadingStage;
-    }
+	public SaveTablesToDatabases(Model_main model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
+			boolean closeLoadingStage) {
+		super();
+		this.model_main = model_main;
+		this.stage = stage;
+		if (loadingProcess_Task == null) {
+			loadingProcess_Task = new LoadingProcessTask(stage);
+			loadingProcess_Task.setTask(this);
+		}
+		this.loadingProcess_Task = loadingProcess_Task;
+		this.closeLoadingStage = closeLoadingStage;
+	}
 
-    @Override
-    protected Integer call() throws Exception {
+	@Override
+	protected Integer call() throws Exception {
 
         Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName()); // folderState.db
