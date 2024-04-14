@@ -15,7 +15,7 @@ limitations under the License.
  */
 
 /*
-@(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+@(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
 @(#)Author:     Marko Lokka
 @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
 @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -35,6 +35,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
+import common.utils.ui.ScreenUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

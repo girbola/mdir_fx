@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -8,6 +8,7 @@ package com.girbola.controllers.main.tables;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
+import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -15,6 +16,7 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
+import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -24,6 +26,7 @@ import com.girbola.sql.SqliteConnection;
 import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
+import common.utils.ui.ScreenUtils;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -34,10 +37,16 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Control;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.java.Log;
@@ -445,6 +454,19 @@ public class TableUtils {
         }
     }
 
+    public static void setHandleDividingTableWidthEqually(TableView<FolderInfo> table, double divider) {
+        Messages.sprintf("Divider is: " + divider);
+        table.setPrefWidth(divider);
+        table.setMinWidth(divider);
+        table.setMaxWidth(divider);
+    }
+
+    public static void setWidth(HBox hBox, double width) {
+        hBox.setPrefWidth(width);
+        hBox.setMinWidth(width);
+        hBox.setMaxWidth(width);
+    }
+
     public void check_All_TableView_forChanges(Model_main model_main) {
         Iterator<FolderInfo> sorted_it = model_main.tables().getSorted_table().getItems().iterator();
         Iterator<FolderInfo> sortit_it = model_main.tables().getSortIt_table().getItems().iterator();
@@ -843,5 +865,192 @@ public class TableUtils {
         }
         table.getItems().removeAll(toRemove);
         return true;
+    }
+
+    private static Pane getPaneFromParent(Parent parent, String id) {
+        Pane pane = (Pane) parent;
+        if (pane instanceof VBox) {
+            Messages.sprintf("pane: " + pane.getId());
+            if (pane.getId().contains("table_vbox")) {
+                VBox main = (VBox) pane;
+                Messages.sprintf("main: " + main.getId());
+                for (Node node : main.getChildren()) {
+                    if (node instanceof HBox) {
+                        if (node.getId().equals(id) && node.getId().equals("showHideButton_hbox")) {
+                            return (HBox) node;
+                        }
+                        if (node.getId().equals(id) && node.getId().equals("buttons_hbox")) {
+                            return (HBox) node;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static int getVisibleTables(Model_main model_main) {
+        int visibles = 0;
+        if (model_main.tables().showAndHideTables.getSortit_show_property().get()) {
+            visibles++;
+        }
+        if (model_main.tables().showAndHideTables.getSorted_show_property().get()) {
+            visibles++;
+        }
+        if (model_main.tables().showAndHideTables.getAsitis_show_property().get()) {
+            visibles++;
+        }
+
+        return visibles;
+    }
+
+    public static void handleTableStates(Model_main model_main, Button hide_btn) {
+
+        int visibles = getVisibleTables(model_main);
+
+        double tableWidth = Math.floor(ScreenUtils.screenBouds().getWidth() / visibles);
+        double buttonWidth = hide_btn.getLayoutBounds().getWidth();
+        double divideredWidth = Main.getMain_stage().getWidth();
+        Messages.sprintf("DividerWidth: " + divideredWidth);
+
+//        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "showHideButton_hbox");
+//        HBox buttons_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "buttons_hbox");
+//
+//        HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "showHideButton_hbox");
+//        HBox buttons_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "buttons_hbox");
+//
+//        HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "showHideButton_hbox");
+//        HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "buttons_hbox");
+
+        if (model_main.tables().getSortIt_table().isVisible()) {
+            model_main.tables().showAndHideTables.setSortit_show_property(true);
+        } else {
+            model_main.tables().showAndHideTables.setSortit_show_property(false);
+        }
+
+        if (model_main.tables().getSorted_table().isVisible()) {
+            model_main.tables().showAndHideTables.setSorted_show_property(true);
+        } else {
+            model_main.tables().showAndHideTables.setSorted_show_property(false);
+        }
+
+        if (model_main.tables().getAsItIs_table().isVisible()) {
+            model_main.tables().showAndHideTables.setAsitis_show_property(true);
+        } else {
+            model_main.tables().showAndHideTables.setAsitis_show_property(false);
+        }
+    }
+
+    public static void setParentWidths(Parent parent, double tableWidth) {
+        Platform.runLater(() -> {
+            parent.prefWidth(tableWidth);
+            parent.minWidth(tableWidth);
+            parent.maxWidth(tableWidth);
+            Messages.sprintf("Parents parent is: " + parent.toString() + " tableWidth: " + tableWidth);
+        });
+    }
+
+    public static void hideTooltip(Control control) {
+        control.getTooltip().setText("");
+        control.getTooltip().hide();
+    }
+
+    public static void copySelectedTableRows(Model_main model_main, TableView<FolderInfo> table, String tableType) {
+        if (Main.conf.getWorkDir() == null) {
+            Messages.warningText("copySelectedTableRows Workdir were null");
+            return;
+        }
+        if (Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText("copySelectedTableRows Workdir were empty");
+            return;
+        }
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo, tableType);
+                if (destPath != null) {
+                    if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+                        fileInfo.setWorkDir(Main.conf.getWorkDir());
+                        fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+                        fileInfo.setDestination_Path(destPath.toString());
+                        fileInfo.setCopied(false);
+                        Main.setChanged(true);
+                        if (!folderInfo.getChanged()) {
+                            folderInfo.setChanged(true);
+                        }
+                    }
+                }
+                Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+            }
+        }
+        List<FileInfo> list = new ArrayList<>();
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+            list.addAll(folderInfo.getFileInfoList());
+
+        }
+
+        Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+
+        operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent event) {
+                for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+                    TableUtils.updateFolderInfo(folderInfo);
+                }
+                TableUtils.refreshAllTableContent(model_main.tables());
+            }
+        });
+        operate.setOnFailed(event -> {
+            Messages.warningText("Copy process failed");
+        });
+        operate.setOnCancelled(event -> {
+            Messages.sprintf("Copy process were cancelled");
+        });
+
+        Thread thread = new Thread(operate, "Operate Thread");
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        exec.submit(thread);
+
+    }
+
+    public static void addToBatchSelectedTableRows(Model_main model_main, TableView<FolderInfo> table, String tableType) {
+        if (Main.conf.getWorkDir() == null) {
+            Messages.warningText("copySelectedTableRows Workdir were null");
+            return;
+        }
+        if (Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText("copySelectedTableRows Workdir were empty");
+            return;
+        }
+
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+
+                Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo, tableType);
+                if (destPath != null) {
+                    if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
+                        fileInfo.setWorkDir(Main.conf.getWorkDir());
+                        fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
+                        fileInfo.setDestination_Path(destPath.toString());
+                        fileInfo.setCopied(false);
+                        Main.setChanged(true);
+                    }
+                }
+                Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+            }
+        }
     }
 }

@@ -23,15 +23,28 @@ public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
 
     // @formatter:off
-	final static String thumbInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.THUMBINFO.getType() + " ('id',"
-			+ "'filepath', " + "'thumb_width', " + "'thumb_height', " + "'thumb_fast_width', " + "'thumb_fast_height', "
-			+ "'orientation', " + "'image_0', " + "'image_1', " + "'image_2', " + "'image_3', "
-			+ "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
+	final static String thumbInfoInsert =
+            "INSERT OR REPLACE INTO " +
+                    SQL_Enums.THUMBINFO.getType() +
+                    " ('id',"+
+                    "'filepath', " +
+                    "'thumb_width', " +
+                    "'thumb_height', " +
+                    "'thumb_fast_width', " +
+                    "'thumb_fast_height', " +
+                    "'orientation', " +
+                    "'image_0', " +
+                    "'image_1', " +
+                    "'image_2', " +
+                    "'image_3', " +
+                    "'image_4') VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	
 
-	final static String selectedFolderTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.SELECTEDFOLDERS.getType()
-			+ " (path STRING PRIMARY KEY, connected BOOLEAN)";
+	final static String selectedFolderTable =
+            "CREATE TABLE IF NOT EXISTS " +
+                SQL_Enums.SELECTEDFOLDERS.getType() +
+                " (path STRING PRIMARY KEY, connected BOOLEAN)";
 	
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
@@ -45,38 +58,56 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
-	final static String foldersStateInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FOLDERSSTATE.getType() + " ("
-			+ "'path', " + "'tableType', " + "'justFolderName', " + "'connected')" + " VALUES(?,?,?,?)";
+	final static String foldersStateInsert =
+            "INSERT OR REPLACE INTO " +
+                    SQL_Enums.FOLDERSSTATE.getType() +
+                    " ("+
+                    "'path', " +
+                    "'tableType', " +
+                    "'justFolderName', " +
+                    "'connected')" +
+                    " VALUES(?,?,?,?)";
 
-	final static String insertDriveInfo = "INSERT OR REPLACE INTO " + SQL_Enums.DRIVEINFO.getType() + "('drivePath', "
-			+ "'identifier', " + "'totalSize', " + "'connected,' " + "'selected')" + " VALUES(?,?,?,?,?)";
+	final static String insertDriveInfo =
+            "INSERT OR REPLACE INTO " +
+                    SQL_Enums.DRIVEINFO.getType() +
+                    "('drivePath', " +
+                    "'identifier', " +
+                    "'totalSize', " +
+                    "'connected,' " +
+                    "'selected')" +
+                    " VALUES(?,?,?,?,?)";
 
-	/*
-	 * DriveInfo
-	 */
-	private static boolean createDriveInfoTable(Connection connection) {
-		Messages.sprintf("createDriveInfoTable creating..." + connection);
-		if (connection == null) {
-			return false;
-		}
-		if (!isDbConnected(connection)) {
-			Messages.sprintf("NOT connected");
-			return false;
-		}
-		try {
-			Statement stmt = connection.createStatement();
-			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.DRIVEINFO.getType() + " ("
-					+ "drivePath STRING NOT NULL, " + "driveTotalSize INTEGER, " + "identifier STRING, "
-					+ "driveSelected STRING," + "driveConnected BOOLEAN)";
-			stmt.execute(sql);
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return false;
-		}
-	}
+    final private static String DRIVE_INFO_TABLE_CREATION_QUERY =
+            "CREATE TABLE IF NOT EXISTS " +
+                    SQL_Enums.DRIVEINFO.getType() +
+                    " (" +
+                    "drivePath STRING NOT NULL, " +
+                    "driveTotalSize INTEGER, " +
+                    "identifier STRING, " +
+                    "driveSelected STRING," +
+                    "driveConnected BOOLEAN)";
 
-	public static boolean closeConnection(Connection connection) {
+    //@formatter:on
+    /*
+     * DriveInfo
+     */
+    private static boolean createDriveInfoTable(Connection connection) {
+        Messages.sprintf("createDriveInfoTable creating..." + connection);
+        if (!isDbConnected(connection)) {
+            return false;
+        }
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.execute(DRIVE_INFO_TABLE_CREATION_QUERY);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean closeConnection(Connection connection) {
 		try {
 			if (connection != null) {
 				connection.close();
@@ -109,29 +140,40 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     }
 
-    public boolean addDriveInfo(Connection connection, DriveInfo driveInfo) {
-        if (connection == null) {
+    public static boolean commitChanges(Connection connection) {
+        try {
+        connection.commit();
+            return true;
+        } catch (SQLException e) {
+            Messages.warningText(Main.bundle.getString("cannotCommitChanges") + e.getMessage());
             return false;
         }
-        createDriveInfoTable(connection);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(insertDriveInfo);
-            pstmt.setString(1, driveInfo.getDrivePath());
-            pstmt.setBoolean(2, driveInfo.isConnected());
-            pstmt.setBoolean(3, driveInfo.getSelected());
-            pstmt.setLong(4, driveInfo.getDriveTotalSize());
-            pstmt.setString(5, driveInfo.getIdentifier());
+        }
 
-            pstmt.executeUpdate();
-            pstmt.close();
+    public static boolean closeConnection(Connection connection) {
+        try {
+            if (connection != null) {
+				connection.close();
+                return true;
+			}
+            } catch (Exception e) {
+            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
+            return false;
+            }
+            return false;
+            }
+
+            public static boolean setAutoCommit(Connection connection, boolean b) {
+        try {
+            connection.setAutoCommit(false);
             return true;
-        } catch (Exception e) {
+        } catch (Exception e) {Messages.sprintfError("Cannot set connection AutoCommit to false: " + e.getMessage());
             return false;
         }
     }
 
     public static boolean addDriveInfo_list(Connection connection, List<DriveInfo> driveInfo_list) {
-        if (connection == null) {
+        if (isDbConnected(connection)) {
             return false;
         }
         createDriveInfoTable(connection);
@@ -169,7 +211,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                 boolean isSelected = rs.getBoolean("driveSelected");
                 long driveTotalSize = rs.getLong("driveTotalSize");
                 String identifier = rs.getString("identifier");
-                // SelectedFolder sel = new SelectedFolder(isConnected, drivePath);
+
                 DriveInfo driveInfo = new DriveInfo(drivePath, driveTotalSize, isConnected, isSelected, identifier);
                 model_folderScanner.drive().getDrivesList_obs().add(driveInfo);
             }
@@ -183,12 +225,15 @@ public class SQL_Utils extends FolderInfo_SQL {
      * FoldersStates
      */
     public static boolean createFoldersStatesDatabase(Connection connection) {
-        if (connection == null) {
-            Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
-            return false;
-        }
         if (!isDbConnected(connection)) {
-            Messages.sprintf("createFolderInfoDatabase NOT connected");
+            try {
+                DatabaseMetaData metaData = connection.getMetaData();
+                Messages.sprintf("METADATA: " + metaData.toString());
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
+
             return false;
         }
         String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERSSTATE.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
@@ -203,35 +248,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 //
-//	public static boolean createFoldersStateDatabase() {
-//		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-//				Main.conf.getConfiguration_db_fileName());
-//		if (connection == null) {
-//			Messages.sprintfError("Can't connect folderInfo.db!!");
-//		}
-//		if (!isDbConnected(connection)) {
-//			Messages.sprintf("createFolderInfoDatabase NOT connected");
-//			return false;
-//		}
-//		try {
-//			Statement stmt = connection.createStatement();
-//			stmt.execute(foldersStateDatabaseSQL);
-//			stmt.close();
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//			return false;
-//		} finally {
-//			try {
-//				connection.close();
-//			} catch (Exception e) {
-//				return false;
-//			}
-//
-//		}
-//		return true;
-//	}
-
-    // @formatter:on
+ @formatter:on
     public static boolean addToFolderStateDB(Connection connection, FolderState folderState) {
         if (connection == null) {
             return false;
@@ -252,49 +269,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    public static boolean updateFolderInfoDB(FolderInfo folderInfo, String previousName) {
-        String sql = "SELECT path, tabletype, justfoldername, connected FROM " + SQL_Enums.FILEINFO.getType() + " WHERE folderpath = ?";
-        try {
-            Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
-            connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(sql);
-            pstmt.setString(1, folderInfo.getFolderPath());
-            pstmt.setString(2, folderInfo.getTableType());
-            pstmt.setString(3, folderInfo.getJustFolderName());
-            pstmt.setBoolean(4, folderInfo.isConnected());
-            pstmt.executeUpdate();
-            pstmt.close();
-            connection.close();
 
-            return true;
-        } catch (Exception e) {
-            Messages.sprintfError("sql is: " + sql);
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean renameToFolderInfoDB(FolderInfo folderInfo, String previousName) {
-//		String sql = "SELECT path,tabletype,justfoldername, connected FROM " + SQL_Enums.FOLDERSSTATE.getType()
-//				+ "WHERE folderpath = " + previousName + ";";
-        try {
-            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-            connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
-            pstmt.setString(1, folderInfo.getFolderPath());
-            pstmt.setString(2, folderInfo.getTableType());
-            pstmt.setString(3, folderInfo.getJustFolderName());
-            pstmt.setBoolean(4, folderInfo.isConnected());
-            pstmt.executeUpdate();
-            pstmt.close();
-            connection.close();
-
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
 
     public static List<FolderState> loadFoldersStateTo_Tables(Connection connection, Model_main model_Main) {
         if (connection == null) {
@@ -764,7 +739,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         try {
             Statement stmt = connection.createStatement();
             stmt.executeUpdate(sql);
-            stmt.close();
+            //stmt.close();
             return true;
         } catch (Exception e) {
             return false;

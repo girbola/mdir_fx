@@ -16,7 +16,7 @@ public class FileInfo_SQL {
     private static final String ERROR = FileInfo_SQL.class.getName();
 
     private static String fileInfoTableColumns() {
-        String sql = " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING,"
+        return " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING,"
                 + "workDirDriveSerialNumber STRING," + "destination_Path STRING," + "event           STRING,"
                 + "location        STRING," + "tags            STRING," + "camera_model    STRING,"
                 + "user			   STRING," + "orientation 	   INTEGER," + "timeshift       INTEGER,"
@@ -24,9 +24,8 @@ public class FileInfo_SQL {
                 + "confirmed       BOOLEAN," + "copied          BOOLEAN," + "ignored         BOOLEAN,"
                 + "tableduplicated BOOLEAN," + "image           BOOLEAN," + "video           BOOLEAN,"
                 + "raw             BOOLEAN," + "date            NUMERIC," + "size            NUMERIC,"
-                + "imageDifferenceHash   NUMERIC," + "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
+                + "imageDifferenceHash   INTEGER," + "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
 
-        return sql;
     }
 
     final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " ("
@@ -112,7 +111,7 @@ public class FileInfo_SQL {
 
             PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
             for (FileInfo fileInfo : list) {
-                long start = System.currentTimeMillis();
+
                 Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
                 addToFileInfoDB(connection, pstmt, fileInfo);
             }
@@ -173,7 +172,7 @@ public class FileInfo_SQL {
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
         String orgPath = rs.getString("orgPath");
-        String workDir = rs.getString("workDir");
+        Messages.sprintf("loadFileInfo orgPath: " + orgPath);String workDir = rs.getString("workDir");
         String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
         String destPath = rs.getString("destination_Path");
         String event = rs.getString("event");
@@ -239,7 +238,6 @@ public class FileInfo_SQL {
 			List<FileInfo> fileInfo_list = loadFileInfoDatabase(connection);
 			if (!fileInfo_list.isEmpty()) {
 				folderInfo.setFileInfoList(fileInfo_list);
-//				TableUtils.updateFolderInfos_FileInfo(folderInfo);
 				loaded = true;
 			}
 		}
@@ -277,6 +275,7 @@ public class FileInfo_SQL {
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				FileInfo finfo = loadFileInfo(rs);
+                Messages.sprintf("fileinfo Loadedddd: " + finfo.getOrgPath());
 				list.add(finfo);
 			}
 		} catch (Exception e) {

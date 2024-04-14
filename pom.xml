@@ -5,6 +5,7 @@
     <artifactId>mdir_fx_2021</artifactId>
     <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
+
     <name>MDir Image &amp; Video organizer tool</name>
     <licenses>
         <license>

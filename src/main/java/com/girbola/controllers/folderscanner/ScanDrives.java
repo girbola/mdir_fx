@@ -74,7 +74,7 @@ public class ScanDrives {
 					if (com.sun.jna.Platform.isWindows()) {
 						listOfRoots = File.listRoots();
 					} else if (com.sun.jna.Platform.isMac()) {
-						File media = new File(File.separator + "media");
+						File media = new File(File.separator + "/Volumes");
 						listOfRoots = media.listFiles();
 					} else if (com.sun.jna.Platform.isLinux()) {
 						File media = new File(File.separator + "media");
@@ -92,7 +92,7 @@ public class ScanDrives {
 
 						}
 					} else {
-						Messages.errorSmth(ERROR, "Listing Drives list were null", null, Misc.getLineNumber(), true);
+						Messages.errorSmth(ERROR, "Listing Drives list were null", null, Misc.getLineNumber(), false);
 					}
 					return null;
 				}

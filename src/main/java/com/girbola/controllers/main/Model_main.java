@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -176,9 +176,7 @@ public class Model_main {
 
     public boolean saveAllTableContents() {
         Messages.sprintf("save started");
-        if (tables() == null) {
-            Messages.warningText("model.getTables() were null!");
-        }
+
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName()); // folderInfo.db
         if (!SQL_Utils.isDbConnected(connection)) {

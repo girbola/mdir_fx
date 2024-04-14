@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -51,7 +51,7 @@ public class Populate {
     public void populateTables_FolderScanner_list(Window owner) {
         sprintf("SorterTest action started");
         Main.setProcessCancelled(false);
-
+        model_main.getMonitorExternalDriveConnectivity().cancel();
         if (model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
             sprintf("getSelection_FolderScanner list were empty");
             return;
@@ -167,5 +167,4 @@ public class Populate {
         }
         return false;
     }
-
 }

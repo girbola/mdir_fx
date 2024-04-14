@@ -227,6 +227,16 @@ public class MenuBarController {
 		sprintf("menuItem_file_save_action");
 		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
 				null, true);
+
+		saveTablesToDatabases.setOnSucceeded(event2 -> {
+			Messages.sprintfError("saveTablesToDatabases succeeded");
+		});
+		saveTablesToDatabases.setOnFailed(event2 -> {
+			Messages.sprintfError("saveTablesToDatabases failed");
+		});
+		saveTablesToDatabases.setOnCancelled(event2 -> {
+			Messages.sprintfError("saveTablesToDatabases cancelled");
+		});
 		Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
 		thread.setDaemon(true);
 		thread.start();

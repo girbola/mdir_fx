@@ -1,10 +1,12 @@
 package com.girbola;
 
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Bounds;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
@@ -58,25 +60,41 @@ public class StageControl extends Stage {
                 double sortedWidth = -1;
                 double sortItWidth = -1;
                 double asitisWidth = -1;
-                double divider = Math.floor((double) newValue / (double) visibles);
+                double hiddenWidths = ((3 - visibles) * 50);
+                double bWidth = modelMain.tables().getTables_rootPane().getPrefWidth();
+                double divider = Math.floor(((double) bWidth) / (double) visibles);
+                divider -= (hiddenWidths);
+
                 if (modelMain.tables().showAndHideTables.getSorted_show_property().get()) {
-                    modelMain.tables().getSorted_table().setPrefWidth(divider);
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), divider);
                     sortedWidth = modelMain.tables().getSorted_table().getPrefWidth();
-                } else {
-
+                } else if (!modelMain.tables().showAndHideTables.getSorted_show_property().get()) {
+                    Messages.sprintf("Hiding sorted table!!!");
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), 35);
+                    sortedWidth = modelMain.tables().getSorted_table().getPrefWidth();
                 }
+
                 if (modelMain.tables().showAndHideTables.getSortit_show_property().get()) {
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSortIt_table(), divider);
                     sortItWidth = modelMain.tables().getSortIt_table().getPrefWidth();
-                } else {
 
+                } else if (!modelMain.tables().showAndHideTables.getSortit_show_property().get()) {
+                    Messages.sprintf("Hiding sortit table!!!");
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSortIt_table(), 35);
+                    sortItWidth = modelMain.tables().getSortIt_table().getPrefWidth();
                 }
+
                 if (modelMain.tables().showAndHideTables.getAsitis_show_property().get()) {
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getAsItIs_table(), divider);
                     asitisWidth = modelMain.tables().getAsItIs_table().getPrefWidth();
-                } else {
+                } else if (!modelMain.tables().showAndHideTables.getAsitis_show_property().get()) {
+                    Messages.sprintf("Hiding asitis table!!!");
+                    TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getAsItIs_table(), 35);
+                    asitisWidth = modelMain.tables().getAsItIs_table().getPrefWidth();
 
                 }
 
-                Messages.sprintf(visibles + " setWindowStartWidth: " + newValue + " sorted: " + sortedWidth + " sortit: " + sortItWidth + " asitis: " + asitisWidth + " divider: " + divider);
+                Messages.sprintf(visibles + " setWindowStartWidth newValue : " + newValue + " bWidth " + bWidth + " sorted: " + sortedWidth + " sortit: " + sortItWidth + " asitis: " + asitisWidth + " divider: " + divider + " hiddenWidths: " + hiddenWidths + " modelMain.tables().getSorted_table().getParent(); " + modelMain.tables().getSorted_table().getParent().getParent().getParent().getId());
             }
         });
 

@@ -12,8 +12,11 @@ import com.girbola.messages.Messages;
 import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -32,11 +35,13 @@ public class MainController {
     private SimpleStringProperty table_hbox_pref_width = new SimpleStringProperty("TODO");
 
     private Bounds tables_rootPaneNodeLayoutBounds;
+
     //@formatter:off
 	@FXML private HBox tables_hbox;
 	@FXML private AnchorPane main_container;
+    @FXML TabPane tablesTabPane;
 	@FXML private VBox main_vbox;
-	@FXML MenuBarController menuBar_topController;
+    @FXML MenuBarController menuBar_topController;
 	@FXML private AnchorPane tables_rootPane;
 	@FXML TableController sortitController;
 	@FXML TableController sortedController;
@@ -57,6 +62,12 @@ public class MainController {
         bottomController.init(model_main);
         setModelProperties();
         tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
+        tablesTabPane.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+                Messages.sprintf("TABPANE WIDTH IS: " + newValue);
+            }
+        });
     }
 
     private void validateRootPane() {
@@ -84,6 +95,7 @@ public class MainController {
                 sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesCopied_lbl());
         TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
                 asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesCopied_lbl());
+
 
         this.model_main.tables().setSortIt_table(sortitController.getTable());
         this.model_main.tables().setSorted_table(sortedController.getTable());

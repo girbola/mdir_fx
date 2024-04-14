@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -102,7 +102,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.size = 0;
         this.thumb_offset = 0;
         this.thumb_length = 0;
-        this.imageDifferenceHash = 0L;
+        this.imageDifferenceHash = 0;
         this.user = "";
         this.workDir = "";
         this.workDirDriveSerialNumber = "";
@@ -113,7 +113,7 @@ public class FileInfo extends Metadata implements Cloneable {
      */
     public FileInfo() {
         this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
-                false, false, false, false, 0, 0, 0L, 0, 0);
+                false, false, false, false, 0, 0L, 0, 0, 0);
     }
 
     /**

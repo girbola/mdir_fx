@@ -9,7 +9,6 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
-import com.girbola.SceneNameType;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcessTask;
@@ -22,7 +21,6 @@ import com.girbola.fxml.main.collect.Collect_DialogController;
 import com.girbola.fxml.main.collect.Model_CollectDialog;
 import com.girbola.fxml.main.merge.copy.MergeCopyDialogController;
 import com.girbola.fxml.main.merge.move.MergeMoveDialogController;
-import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -39,16 +37,13 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -57,106 +52,71 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class TableController {
 
-    private Model_main model_main;
-    private Model_CollectDialog model_CollectDialog;
 
-    private Window owner;
 
     private final String ERROR = TableController.class.getSimpleName();
 
+    private Image hide_im;
+    private Image show_im;
+    private Model_CollectDialog model_CollectDialog;
+    private Model_main model_main;
     private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
+    private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
+    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);private String tableType;
+    private Window owner;
 
-    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
+    // @formatter:off
 
     private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
 
     // @formatter:off
 	@FXML private AnchorPane tables_rootPane;
 
-	@FXML private FlowPane tableInformation_flowpane;
 
-	@FXML private HBox showHideButton_hbox;
 
-	@FXML private HBox tables_parent;
-
-	@FXML private TextField tableDescription_tf;
-
+	@FXML private AnchorPane table_RootPane;
+	@FXML private AnchorPane tables_rootPane;
+    @FXML private AnchorPane hideablePane;
 	@FXML private Button select_all_btn;
-
-	@FXML private HBox buttons_hbox;
-
-	@FXML private ImageView hide_btn_iv;
+	@FXML private Button select_bad_btn;
+	@FXML private Button select_good_btn;
+	@FXML private Button select_invert_btn;
+	@FXML private Button select_none_btn;
+	@FXML private Button updateFolderInfo_btn;
+	@FXML private FlowPane tableInformation_flowpane;
 
 	@FXML private FlowPane topMenuButtonFlowPane;
 
-	@FXML
-	public Button hide_btn;
+	@FXML private HBox buttons_hbox;
 
-	@FXML private Button updateFolderInfo_btn;
-
-	@FXML private Button select_bad_btn;
-
-	@FXML private Button select_good_btn;
-
-	@FXML private Button select_invert_btn;
-
-	@FXML private Button select_none_btn;
-
-//	@FXML
-//	private Button copySelected_btn;
-//	@FXML
-//	private Button addToBatch_btn;
-//	@FXML
-//	private Button mergeCopy_btn;
-//	@FXML
-//	private Button collectSimilarDates_btn;
-//	@FXML
-//	private Button resetSelectedFileInfos_btn;
-
-	@FXML private Label allFilesCopied_lbl;
-	@FXML private Label allFilesTotal_lbl;
-	@FXML private Label allFilesSize_lbl;
-	@FXML private Tooltip select_all_btn_tooltip;
-	@FXML private Tooltip updateFolderInfo_btn_tooltip;
-	@FXML private Tooltip select_bad_btn_tooltip;
-	@FXML private Tooltip select_good_btn_tooltip;
-	@FXML private Tooltip select_invert_btn_tooltip;
-	@FXML private Tooltip select_none_btn_tooltip;
-	@FXML private Tooltip select_dateDifference_tooltip;
-	@FXML private Tooltip tableDescription_tf_tooltip;
-	@FXML private Tooltip mergeCopy_btn_tooltip;
-	@FXML private Tooltip collectSimilarDates_btn_tooltip;
-	@FXML private Tooltip copySelected_btn_tooltip;
-	@FXML private Tooltip addToBatch_tooltip;
-	@FXML private Tooltip resetSelectedFileInfos_btn_tooltip;
-
-	@FXML private VBox group;
+	@FXML private HBox showHideButton_hbox;
 
 	@FXML private HBox tableInformation_hbox;
+
+	@FXML private HBox tables_parent;
+
+	@FXML private ImageView hide_btn_iv;
+
+	@FXML private Label allFilesCopied_lbl;
+	@FXML private Label allFilesSize_lbl;
+
+	@FXML private Label allFilesTotal_lbl;
 
 	@FXML private MenuItem checkChanges_mi;
 
@@ -164,17 +124,61 @@ public class TableController {
 
 	@FXML private MenuItem mergeMove_MenuItem;
 
-	public Label getAllFilesCopied_lbl() {
-		return allFilesCopied_lbl;
-	}
+	@FXML private MenuItem reload_all_mi;
+	@FXML private MenuItem select_dateDifference_btn;
+	@FXML private TableColumn<FolderInfo, Boolean> connected_col;
+	@FXML private TableColumn<FolderInfo, Double> dateDifference_ratio_col;
+	@FXML private TableColumn<FolderInfo, Integer> badFiles_col;
+	@FXML private TableColumn<FolderInfo, Integer> copied_col;
+	@FXML private TableColumn<FolderInfo, Integer> folderFiles_col;
+	@FXML private TableColumn<FolderInfo, Integer> image_col;
+	@FXML private TableColumn<FolderInfo, Integer> media_col;
+	@FXML private TableColumn<FolderInfo, Integer> raw_col;
+	@FXML private TableColumn<FolderInfo, Integer> status_col;
+	@FXML private TableColumn<FolderInfo, Integer> suggested_col;
+	@FXML private TableColumn<FolderInfo, Integer> video_col;
+	@FXML private TableColumn<FolderInfo, Long> size_col;
+	@FXML private TableColumn<FolderInfo, String> dateFix_col;
+	@FXML private TableColumn<FolderInfo, String> fullPath_col;
+	@FXML private TableColumn<FolderInfo, String> justFolderName_col;
+	@FXML private TableColumn<FolderInfo, String> maxDates_col;
+	@FXML private TableColumn<FolderInfo, String> minDate_col;
+	@FXML private TableView<FolderInfo> table;
+	@FXML private TextField tableDescription_tf;
+	@FXML private Tooltip addToBatch_tooltip;
+	@FXML private Tooltip collectSimilarDates_btn_tooltip;
+	@FXML private Tooltip copySelected_btn_tooltip;
+	@FXML private Tooltip mergeCopy_btn_tooltip;
+	@FXML private Tooltip resetSelectedFileInfos_btn_tooltip;
+	@FXML private Tooltip select_all_btn_tooltip;
+	@FXML private Tooltip select_bad_btn_tooltip;
+	@FXML private Tooltip select_dateDifference_tooltip;
+	@FXML private Tooltip select_good_btn_tooltip;
+	@FXML private Tooltip select_invert_btn_tooltip;
+	@FXML private Tooltip select_none_btn_tooltip;
 
-	public Label getAllFilesTotal_lbl() {
-		return allFilesTotal_lbl;
-	}
+	@FXML private Tooltip tableDescription_tf_tooltip;
 
-	public Label getAllFilesSize_lbl() {
-		return allFilesSize_lbl;
-	}
+	@FXML private Tooltip updateFolderInfo_btn_tooltip;
+
+	@FXML private VBox group;
+
+	@FXML private VBox table_Vbox;
+
+	@FXML public Button hide_btn;
+	// @formatter:on
+
+    public Label getAllFilesCopied_lbl() {
+        return allFilesCopied_lbl;
+    }
+
+    public Label getAllFilesTotal_lbl() {
+        return allFilesTotal_lbl;
+    }
+
+    public Label getAllFilesSize_lbl() {
+        return allFilesSize_lbl;
+    }
 
 	@FXML private MenuItem reload_all_mi;
 	@FXML private MenuItem select_dateDifference_btn;
@@ -373,7 +377,7 @@ public class TableController {
         Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
             Messages.sprintf("Starting moving files from sortit to sorted");
-            copySelectedTableRows(model_main.tables(), table, tableType);
+            TableUtils.copySelectedTableRows(model_main, table, tableType);
         }
     }
 
@@ -389,7 +393,7 @@ public class TableController {
             warningText(bundle.getString("cannotFindWorkDir"));
             return;
         }
-        addToBatchSelectedTableRows(model_main.tables(), table, tableType);
+        TableUtils.addToBatchSelectedTableRows(model_main, table, tableType);
     }
 
     // @formatter:on
@@ -478,31 +482,31 @@ public class TableController {
         HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "buttons_hbox");
 
         if (model_main.tables().getSortIt_table().isVisible()) {
-            setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
+            TableUtils.setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
             buttons_hbox_sortit.setVisible(true);
             model_main.tables().showAndHideTables.setSortit_show_property(true);
         } else {
-            setWidth(showHideButton_hbox_sortit, buttonWidth);
+            TableUtils.setWidth(showHideButton_hbox_sortit, buttonWidth);
             buttons_hbox_sortit.setVisible(false);
             model_main.tables().showAndHideTables.setSortit_show_property(false);
         }
 
         if (model_main.tables().getSorted_table().isVisible()) {
-            setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
+            TableUtils.setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
             buttons_hbox_sorted.setVisible(true);
             model_main.tables().showAndHideTables.setSorted_show_property(true);
         } else {
-            setWidth(showHideButton_hbox_sorted, buttonWidth);
+            TableUtils.setWidth(showHideButton_hbox_sorted, buttonWidth);
             buttons_hbox_sorted.setVisible(false);
             model_main.tables().showAndHideTables.setSorted_show_property(false);
         }
 
         if (model_main.tables().getAsItIs_table().isVisible()) {
-            setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
+            TableUtils.setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
             buttons_hbox_asitis.setVisible(true);
             model_main.tables().showAndHideTables.setAsitis_show_property(true);
         } else {
-            setWidth(showHideButton_hbox_asitis, buttonWidth);
+            TableUtils.setWidth(showHideButton_hbox_asitis, buttonWidth);
             buttons_hbox_asitis.setVisible(false);
             model_main.tables().showAndHideTables.setAsitis_show_property(false);
         }
@@ -511,11 +515,12 @@ public class TableController {
     @FXML
     private void hide_btn_action(ActionEvent event) {
 
-        int visibles = getVisibles();
+        int visibles = TableUtils.getVisibleTables(model_main);
         if (visibles <= 1 && table.isVisible()) {
             return;
         }
         table.setVisible(!table.isVisible());
+        hideablePane.setVisible(!hideablePane.isVisible());
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
         handleTableStates();
@@ -555,7 +560,6 @@ public class TableController {
         }
         return null;
     }
-
     private void setTableWidth(Parent parent, double tableWidth) {
         Platform.runLater(() -> {
             parent.prefWidth(tableWidth);
@@ -602,27 +606,7 @@ public class TableController {
         }
     }
 
-    public TableView<FolderInfo> getTable() {
-        return this.table;
-    }
 
-    public HBox getButtons_HBOX() {
-        return this.buttons_hbox;
-    }
-
-    public Label allFilesTotal_label() {
-        return this.allFilesTotal_lbl;
-    }
-
-    public Label allFilesCopied_label() {
-        return this.allFilesCopied_lbl;
-    }
-
-    public Label allFilesSize_label() {
-        return this.allFilesSize_lbl;
-    }
-
-    private String tableType;
 
     public void init(Model_main aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
@@ -633,11 +617,11 @@ public class TableController {
         hide_im = GUI_Methods.loadImage("hideTable.png", GUIPrefs.BUTTON_WIDTH);
 
         showTable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (tableType.equals(TableType.SORTIT)) {
+            if (tableType.equals(TableType.SORTIT.getType())) {
                 model_main.tables().showAndHideTables.setSortit_show_property(newValue);
-            } else if (tableType.equals(TableType.SORTED)) {
+            } else if (tableType.equals(TableType.SORTED.getType())) {
                 model_main.tables().showAndHideTables.setSorted_show_property(newValue);
-            } else if (tableType.equals(TableType.ASITIS)) {
+            } else if (tableType.equals(TableType.ASITIS.getType())) {
                 model_main.tables().showAndHideTables.setAsitis_show_property(newValue);
             }
         });
@@ -774,132 +758,22 @@ public class TableController {
                         tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
                     }
                 } else {
-                    hideTooltip(updateFolderInfo_btn);
-                    hideTooltip(select_bad_btn);
-                    hideTooltip(select_good_btn);
-                    hideTooltip(select_invert_btn);
-                    hideTooltip(select_none_btn);
-                    hideTooltip(select_all_btn);
+                    TableUtils.hideTooltip(updateFolderInfo_btn);
+                    TableUtils.hideTooltip(select_bad_btn);
+                    TableUtils.hideTooltip(select_good_btn);
+                    TableUtils.hideTooltip(select_invert_btn);
+                    TableUtils.hideTooltip(select_none_btn);
+                    TableUtils.hideTooltip(select_all_btn);
                 }
             }
         });
     }
 
-    private void setWidth(Pane pane, double width) {
-        Platform.runLater(() -> {
-            pane.setMinWidth(width);
-            pane.setMaxWidth(width);
-            pane.setPrefWidth(width);
-        });
-    }
 
-    private void hideTooltip(Control control) {
-        control.getTooltip().setText("");
-        control.getTooltip().hide();
-    }
 
-    private void addToBatchSelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
-        if (Main.conf.getWorkDir() == null) {
-            Messages.warningText("copySelectedTableRows Workdir were null");
-            return;
-        }
-        if (Main.conf.getWorkDir().isEmpty()) {
-            Messages.warningText("copySelectedTableRows Workdir were empty");
-            return;
-        }
-        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
-            }
 
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-
-                Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo, tableType);
-                if (destPath != null) {
-                    if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
-                        fileInfo.setWorkDir(Main.conf.getWorkDir());
-                        fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-                        fileInfo.setDestination_Path(destPath.toString());
-                        fileInfo.setCopied(false);
-                        Main.setChanged(true);
-                    }
-                }
-                Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-            }
-        }
-    }
-
-    private void copySelectedTableRows(Tables tables, TableView<FolderInfo> table, String tableType) {
-        if (Main.conf.getWorkDir() == null) {
-            Messages.warningText("copySelectedTableRows Workdir were null");
-            return;
-        }
-        if (Main.conf.getWorkDir().isEmpty()) {
-            Messages.warningText("copySelectedTableRows Workdir were empty");
-            return;
-        }
-        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
-            }
-
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo, tableType);
-                if (destPath != null) {
-                    if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
-                        fileInfo.setWorkDir(Main.conf.getWorkDir());
-                        fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-                        fileInfo.setDestination_Path(destPath.toString());
-                        fileInfo.setCopied(false);
-                        Main.setChanged(true);
-                        if (!folderInfo.getChanged()) {
-                            folderInfo.setChanged(true);
-                        }
-                    }
-                }
-                Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-            }
-        }
-        List<FileInfo> list = new ArrayList<>();
-        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
-            }
-            list.addAll(folderInfo.getFileInfoList());
-
-        }
-
-        Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
-
-        operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-                    TableUtils.updateFolderInfo(folderInfo);
-                }
-                TableUtils.refreshAllTableContent(tables);
-            }
-        });
-        operate.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.warningText("Copy process failed");
-            }
-        });
-
-        operate.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintf("Copy process were cancelled");
-            }
-        });
-
-        Thread thread = new Thread(operate, "Operate Thread");
-        ExecutorService exec = Executors.newSingleThreadExecutor();
-        exec.submit(thread);
+            public TableView<FolderInfo> getTable() {
+                return table;
 
     }
 

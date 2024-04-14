@@ -1,0 +1,1789 @@
+commit 001e4e9479b8ff61689589c79e10b296f7400692
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Apr 5 20:04:05 2024 +0300
+
+    Ignore SQLite database files in git
+    
+    This commit adds an entry to .gitignore to prevent SQLite database files from being tracked. This is useful if an SQLite database is used during local development or testing but should not be included in the project repository.
+
+commit 19c123b816a4107ee5dab8160f5308598dda25fd
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Apr 5 20:02:51 2024 +0300
+
+    Refactor code for metadata handling and directory status verification
+    
+    This commit specifically improves how metadata within images and videos is handled. Additionally
+
+commit c67b37a09054a0df8fb59e0b5f0e927a6a5f4683
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Wed Apr 3 21:29:26 2024 +0300
+
+    Update methods for handling metadata and check work directories
+    
+    Made changes to improve the handling of metadata within images and videos. Improved the method for verifying the work directories ensuring it properly identifies directory status. Created a new method to standardize file renaming for better organization. Altered FileInfo.java and FileInfoUtils.java to implement these changes.
+
+commit 611b446f29ef874c7b08d9367d44e8e562717230
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Apr 1 21:01:26 2024 +0300
+
+    Update Lombok version and refactor ConcurrencyUtils and FileInfo_SQL classes
+    
+    Lombok version in pom.xml has been updated for better code quality and maintenance. In ConcurrencyUtils, executor service management code improved, making the concurrent execution more reliable and efficient. Additionally, the readability of the FileInfo_SQL class has been improved by several small refactoring steps.
+
+commit 2fea72e6296e27dbeb9a8f7649e8f746753cb269
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Apr 1 17:38:34 2024 +0300
+
+    Update source code in 'TableController.java'
+    
+    This update includes the revamp of multiple actions and methods, such as changes in 'updateFolderInfo_btn_action', 'reload_all_mi_action', 'select_all_btn_action', and several others. Also, the copyright year range has been adjusted and unused imports have been removed.
+
+commit f137f662c40e34fd9e72a5b06367ae225ca12151
+Merge: 3ad0e55 1a4c52e
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Mar 17 00:00:17 2024 +0200
+
+    Merge remote-tracking branch 'origin/master'
+
+commit 3ad0e55340ffdf45a4f840d97dae7f6b9b59b59b
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Mar 16 23:57:27 2024 +0200
+
+    Upgrade made
+
+commit c176ad08b2f64da05f8747f30bd9630819dafba3
+Author: Marko Lokka <marko.lokka@gmail.comr>
+Date:   Sun Mar 3 22:00:07 2024 +0200
+
+    ImageUtils.calculateDHash to calculate hash from
+
+commit 96a42bdd869f53af3498948417cae4fa98598241
+Author: Marko Lokka <marko.lokka@gmail.comr>
+Date:   Sun Mar 3 21:59:03 2024 +0200
+
+    ImageUtils.calculateDHash to calculate hash from
+
+commit 1a4c52e95ab5260aeca4ab638972adbc33975dcf
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Feb 25 18:20:32 2024 +0200
+
+    Video thumbnail fix
+
+commit 85ddba364f2a28790da595b42d8137f90f491046
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat Feb 24 12:55:41 2024 +0200
+
+    Improvements
+
+commit 6081abad3a46ff6c4258f4caf4832712b4fa7683
+Merge: 82dd88d 6f9a17c
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Jan 21 14:43:55 2024 +0200
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       src/main/java/common/utils/FileUtils.java
+    #       src/test/java/common/utils/FileUtilsTest.java
+
+commit 82dd88df2d611d546da77580ec6d4b3e11dfc634
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Jan 21 14:43:06 2024 +0200
+
+    Updates
+
+commit 6f9a17c958379fe5955555518dc6887f466a2baf
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Oct 23 20:13:28 2023 +0300
+
+    Testing
+
+commit 83107f6855ef541049f6bdf1ec7c4db06c513a76
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Wed Sep 13 21:35:52 2023 +0300
+
+    Ubuntu changes (#20)
+    
+    * pom version were sorted and sqlite were updated to 3.41.2.2
+    * Refactoring, cleanup and tests improved
+    * DateFixer improvement
+
+commit 8f4cdc6f7d6cebda3c5b757bc53c933606ad3c63
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Wed Sep 13 21:17:33 2023 +0300
+
+    DateFixer improvement (#19)
+
+commit d7bb9dd805b4778a7582e4cfbef4fdbdae99189d
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Sep 10 22:30:24 2023 +0300
+
+    Fixing code
+
+commit 4c4699f57de570aa7856b62f89f1002d7dbc4e32
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Aug 6 22:11:14 2023 +0300
+
+    DateFixer improvement
+
+commit eda4c3aade2e525964599b87b45480f83ea66f86
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat Jul 22 23:29:40 2023 +0300
+
+    Ubuntu changes (#18)
+    
+    * pom version were sorted and sqlite were updated to 3.41.2.2
+    
+    * Refactoring, cleanup and tests were improved
+
+commit 62ec8c87917f8f6e329cf89b405775f166db7e50
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat Jul 22 00:01:41 2023 +0300
+
+    pom version were sorted
+
+commit 16c3e55bab95c41df22131e16ad161b0fdd3aa6c
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat Jul 22 00:01:12 2023 +0300
+
+    Working version on windows 10
+
+commit 7c730408cca0378327181b8ea8f8c64529a25f60
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Jul 21 23:52:17 2023 +0300
+
+    Working version on windows 10
+
+commit 098bee374edd37d59e7ed40690100f3d37d118be
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Jul 21 22:58:44 2023 +0300
+
+    Refactoring, cleanup and tests improved
+
+commit a8b2add4d55e9de5828aa7dad6a94a8d6839922a
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Jul 21 14:21:26 2023 +0300
+
+    Refactoring, cleanup and tests improved
+
+commit 751c803ff6708cebcebbf97dbd18b348dd1ba48f
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Jul 21 14:08:27 2023 +0300
+
+    Refactoring, cleanup and tests improved
+
+commit 52bd35becbddaefe6bdbaf0e67ebbec89bf93ee8
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Jul 21 14:08:20 2023 +0300
+
+    Refactoring, cleanup and tests improved
+
+commit 0c31ec886d933faf36984a15c2ceb58ff74d1bd7
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Jul 21 14:06:12 2023 +0300
+
+    Refactoring, cleanup and tests improved
+
+commit 68eb70b2ef4c57b14d13fe33e08241d3bc38729f
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Jun 2 21:57:24 2023 +0300
+
+    pom fixed
+
+commit bc775d9bb0825a9dcfe324d504d363705dc930fe
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 20 09:24:47 2023 +0300
+
+    Code cleaning
+
+commit 6d7cf63faa0f9a7b37ee0d205fcf9c531ae3caec
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 20 09:13:41 2023 +0300
+
+    Code cleaning
+
+commit 46371ceec5882fa67bc40299b87520ed843e4ff5
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed May 10 18:23:06 2023 +0300
+
+    Changing javafx version to 19
+
+commit d0001845b31df09a500ba3fa484ae966b5b6e3c0
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed May 10 18:06:43 2023 +0300
+
+    Changing javafx version to 19
+
+commit 4da1d0bd0756201d5fbf248cb2538fdde76bc070
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Apr 18 21:26:02 2023 +0300
+
+    Removed deadcode
+
+commit ac93468e4dde63460c129dc0718cd9182fae6a8b
+Author: girbola <marko.lokka@gmail.com>
+Date:   Thu Mar 16 19:54:43 2023 +0200
+
+    not done
+
+commit 80d933442698e87d02a75585b30507fd3508a141
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Mar 4 09:53:55 2023 +0200
+
+    Test added
+
+commit e85c9ed20add25428b4a0d31d022da2dc10660a9
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Mar 4 09:53:10 2023 +0200
+
+    apt_generated added
+
+commit 73b92808f28f914adc3ec2a9e9bd4d87bb97d2c2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Feb 20 22:06:34 2023 +0200
+
+    Year changed for copyrights and little imporments made
+
+commit 87bef844c10e6f941fd63ad894cd2b101a2c9bfa
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Feb 20 17:49:56 2023 +0200
+
+    .idea added
+
+commit c36c73afd6d6120722217449c0e3486aeba399d3
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Feb 20 17:47:33 2023 +0200
+
+    New file
+
+commit aade9880c8f8c419645107c978dbdc97bcf76752
+Merge: 42b3e6a 98c9743
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Feb 20 17:43:15 2023 +0200
+
+    Merging code
+
+commit 98c9743800e09578f78218b03d2b7dd27af487cc
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Feb 19 10:51:50 2023 +0200
+
+    Merge branch 'dii' of git@github.com:girbola/mdir_fx.git into dii
+
+commit 00740a597d92c7c811e67ea2d262fc5b0f86c534
+Merge: 97d5e60 eee5145
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Feb 19 10:48:19 2023 +0200
+
+    Merge branch 'dii' of git@github.com:girbola/mdir_fx.git into dii
+
+commit eee51455754c200a8cbe01afdc60c94080d2610c
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Feb 19 10:26:06 2023 +0200
+
+    Updates made
+
+commit 97d5e6006fa0c9fd9f7c650863da2e7afecd80cd
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Feb 18 15:20:18 2023 +0200
+
+    Fixed made
+
+commit 42b3e6a8b92dd2c96ad6a21d30993423dff293b1
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Feb 17 18:34:14 2023 +0200
+
+    Create SECURITY.md
+
+commit 622d4bc10dac8fd7af4f38fb6133f3fe05ff5366
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Feb 17 16:56:16 2023 +0200
+
+    lambda conversion
+
+commit ec961d71363dfe339c4a0e14b2c86c1fb640504e
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Feb 13 21:17:12 2023 +0200
+
+    Fixed compiler error
+
+commit 2d1bf31d4be4a51c49caa7d1478434603e2b94cd
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Feb 7 21:01:53 2023 +0200
+
+    EOL
+
+commit 57f2c41d857868ae7edb9b79ef555100a6b8b5d0
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Dec 27 12:20:24 2022 +0200
+
+    Fixing merging files
+
+commit 37a01c0d5bfac3f775d196bf012506e49b34773b
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Dec 2 22:44:51 2022 +0200
+
+    Updating
+
+commit 93ce637694996e8942ad57a85c0c9685bc55584e
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Nov 6 10:45:06 2022 +0200
+
+    Upgrade
+
+commit 765682ac2e3d1cec9231068ffb589d8d82340f46
+Merge: 78a84fd 9368a2e
+Author: girbola <marko.lokka@gmail.com>
+Date:   Thu Oct 20 20:49:59 2022 +0300
+
+    Table changed
+
+commit 78a84fdf5bbc678758fbd79695c7f2204361b732
+Author: girbola <marko.lokka@gmail.com>
+Date:   Thu Oct 20 20:44:35 2022 +0300
+
+    Updates made
+
+commit eae6dd8b5cce80910fe9525b96f1582a91513b75
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Oct 15 09:56:25 2022 +0300
+
+    Bug fixes
+
+commit 9368a2e63c88d48c6f570ebb2b175b8978a23c79
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Oct 1 22:59:48 2022 +0300
+
+    Pull request commits made
+
+commit 4ba3725b02fd6f0b4d775767678542ec323b03a9
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Oct 1 22:52:51 2022 +0300
+
+    Gradle added. Also fixed were made
+
+commit 31f631187dbffda866c99bb83f5b7d5043d39223
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Oct 1 22:59:48 2022 +0300
+
+    Pull request commits made
+
+commit 160e72628b943afd127f8c469fdbd7f49b886fd0
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Oct 1 22:52:51 2022 +0300
+
+    Gradle added. Also fixed were made
+
+commit 136eb835a7dbcd39a4dfaf32a75e19b477932d62
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed Sep 14 21:21:34 2022 +0300
+
+    Added few spaces to separate funtions
+
+commit 8a6a74461d7f7f591f14411c2666d127071ff923
+Merge: 974070b 7704357
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Sep 13 22:04:47 2022 +0300
+
+    Merge branch 'master' of github.com:girbola/mdir_fx
+
+commit 974070b1b5f51dffedc04d8aff14afc0c0208962
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Sep 13 21:54:18 2022 +0300
+
+    Tables width were fixed
+    
+    commit 8906977c754b3fba9e51660976a45ecc40bcad77
+    Author: girbola <marko.lokka@gmail.com>
+    Date:   Tue Sep 13 21:48:17 2022 +0300
+    
+     #   Show hide button fixed
+    
+     #   Copyright year updated
+    
+     #   Table width issues
+
+commit 77043579e877b3ef514b21b7a5f11e95c92bef25
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Sep 13 21:54:18 2022 +0300
+
+    Squashed commit of the following:
+    
+    commit 8906977c754b3fba9e51660976a45ecc40bcad77
+    Author: girbola <marko.lokka@gmail.com>
+    Date:   Tue Sep 13 21:48:17 2022 +0300
+    
+        Tables width fixed
+    
+     #   Show hide button fixed
+    
+     #   Copyright year updated
+    
+     #   Table width issues
+
+commit 1c30ab0f30d66b70608147aeff108480f59dc526
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Jul 17 00:20:09 2022 +0300
+
+    Delete null/Mdir directory
+
+commit 6889684f87bd70b3eae37b7849440371c58fa409
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Jun 18 11:41:50 2022 +0300
+
+    Test
+
+commit fb8f0656eaf3a014faf2ebc29b1112ab64344a76
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Jun 18 11:32:46 2022 +0300
+
+    Fixing loading issues
+
+commit 124b6c9f3871b871728c9efb7b9a119e6d876fa3
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Jun 12 23:24:21 2022 +0300
+
+    Simplifying logic for hiding tables
+
+commit e3e9152bfb64f0348955f295d8d5dfa934c7f752
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Jun 11 23:19:10 2022 +0300
+
+    Updates made
+
+commit aca354f79f32272959ebf0ae176d8ada1cbee7d3
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Jun 5 11:27:48 2022 +0300
+
+    Fixes made
+
+commit 8f43afcf20273ffad896b716437bb540f0491bda
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun May 29 23:41:18 2022 +0300
+
+    Copyright year changed
+
+commit 5da1b20573a932ab3efb976e0a50e1126100b75e
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun May 29 13:32:26 2022 +0300
+
+    Updatea made
+
+commit 2f6841c9de9265f050a23eb008765ac4f7ce40a2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun May 29 13:28:44 2022 +0300
+
+    Refactored code
+
+commit 3a887bf224033a692b0782c836693e357aa365f9
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri May 13 23:41:24 2022 +0300
+
+    Fixing px to em
+
+commit 5c227fc293f6f676db4fb0b89264c52a86a2b1b2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri May 13 23:32:48 2022 +0300
+
+    Added null folder
+
+commit 8c2e99bcdf60c8da49631a0bbd96d3051bc598e2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri May 13 23:31:52 2022 +0300
+
+    Styling improvements
+
+commit 103bad7881ec91ac315d042252dc1206f1cac16f
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue May 10 22:49:59 2022 +0300
+
+    File fixed
+
+commit dc4428c7cfc3dba89055e851007cd9ac3a24b077
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri May 13 21:55:53 2022 +0300
+
+    removed project files
+
+commit 6d1ab280d2f3a6550143137fdbe7cdcbd9fc3855
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri May 13 21:37:08 2022 +0300
+
+    File removed
+
+commit fb353d1a288c614bcd64015d6977114f2b1c9045
+Merge: a6f6917 bc63d91
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue May 10 22:40:53 2022 +0300
+
+    Merge remote branch 'origin/master'
+
+commit bc63d91066ed0ae0c1d59202515806f8faf0b2b0
+Merge: a6f6917 0fca2c4
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 10 22:39:48 2022 +0300
+
+    Merge pull request #8 from girbola/onedatabase
+    
+    Updated content
+
+commit 0fca2c44a9f23d6eba99ced79b1991bba83e1af4
+Merge: 9932b6c a6f6917
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 10 22:38:34 2022 +0300
+
+    Merge branch 'master' into onedatabase
+
+commit a6f69179cf111a59176a185172ba791b19c7362b
+Merge: 0afe65a 4b19d66
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue May 10 22:23:55 2022 +0300
+
+    Merge branch 'master' of github.com:girbola/mdir_fx
+
+commit 0afe65a0b1ee2279fb75ee405d75c33fdb04bbdc
+Merge: 4e2c84c 6b00ac5
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue May 10 21:55:53 2022 +0300
+
+    Merge remote branch 'origin/master'
+
+commit 4b19d66d0b97da1ce5d8d5db378aec19279a7751
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 7 21:58:54 2022 +0300
+
+    Something
+
+commit 6fd3ff309008cbe0a7d5fa5bf3754e027cee4e4d
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 7 21:40:45 2022 +0300
+
+    Updating the content
+
+commit 4e2c84ca93255ed64b495c6d7da4178981cce837
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 7 21:31:01 2022 +0300
+
+    Fixes
+
+commit 22e41d15577e0f2451098827350895b0e64272f3
+Merge: 4b62bce 6b00ac5
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 7 21:30:27 2022 +0300
+
+    Merge branch 'master' of https://github.com/girbola/mdir_fx.git into
+    scandrives_improvement
+    
+    Conflicts:
+            README.md
+
+commit 9932b6c339f01015ad2b2d87ee1064616a65d3f7
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat May 7 21:03:51 2022 +0300
+
+    Updated content
+
+commit 4b62bcefede85ad4b3fc51524b1d3a55d3af52d0
+Author: girbola <girbola9@gmail.com>
+Date:   Sat Apr 30 23:32:20 2022 +0300
+
+    Fixes were made
+
+commit dbdd43ed64cba3edfff93975f6a6488d54b386a1
+Author: gerbiloi <girbola9@gmail.com>
+Date:   Sat Jan 29 23:00:07 2022 +0200
+
+    Content updated
+
+commit 19a74f76c4fdb335230bca7b0b5daf1bbe12080d
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Dec 28 22:06:02 2021 +0200
+
+    SNAPSHOT version changed
+
+commit 449f03d3a6cdb53dad5da0c948b42bd11a70eae2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Tue Dec 28 22:04:25 2021 +0200
+
+    New branch
+
+commit 72c62bca626cb83595fbb9a3337d9a59d072ad5c
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri May 7 22:49:18 2021 +0300
+
+    Added *.settings, *.zip and *.project
+
+commit d87d3125b8c162ffda1f8cfd241e679b1c72ed6e
+Merge: 5b98e64 f36e241
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri May 7 22:12:53 2021 +0300
+
+    Merge pull request #4 from girbola/girbola-patch-1
+    
+    Delete .classpath
+
+commit f36e241c4ad85d27c865580c4b83a8a7ff0c5d02
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri May 7 22:12:38 2021 +0300
+
+    Delete .classpath
+    
+    .classpath moved from repository
+
+commit 5b98e64072186dffa2f738e1128ab6ef4279b077
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Tue Dec 8 21:28:13 2020 +0200
+
+    Updates made
+
+commit 0a23d43d8e3f238996c4a35759ff073a11f4006f
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Dec 7 20:58:01 2020 +0200
+
+    Datefixer - Bug fixes
+
+commit dddc649358f18ed93e6a4632275897390451ac1d
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sat Dec 5 12:30:13 2020 +0200
+
+    Updates made
+
+commit 8520d4560116505e0844f55de76c11ac18aab845
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Tue Dec 1 21:27:37 2020 +0200
+
+    Updates made
+
+commit a9347e04cb790c876f6ced3bf0a5ce96640c0dd4
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Nov 22 13:27:07 2020 +0200
+
+    Uodates made
+
+commit ca73a96e65d7a4b402131bc937b27daf6066c9b2
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Nov 22 13:26:51 2020 +0200
+
+    Metadata Extractor update to 2.15.0
+
+commit 933e9a6ab94fdc9427c7d3a4af69a2aa28bab249
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Nov 22 13:26:24 2020 +0200
+
+    Updates made
+
+commit 052aef4f35641edca94fd20f5bb66f2e1208bd04
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Nov 22 13:25:49 2020 +0200
+
+    ComboBox Event fixed
+
+commit 821f03d5d524d91ea729396bcd6831623966081f
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Nov 16 22:29:18 2020 +0200
+
+    Updates made
+
+commit 24d25ff40865e0b9b91858419e8e5e981ddc139d
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Nov 8 00:13:06 2020 +0200
+
+    Udpates made
+
+commit 3e27c511883f47477760f516e653ce012f472f23
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sat Oct 31 21:55:35 2020 +0200
+
+    Improving moving files to new folders
+
+commit 5c41724d10b36524864db85283171ff68a4068eb
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Oct 25 22:01:07 2020 +0200
+
+    Updates made
+
+commit dd6011dab20800291bec3017b1bfbc9ec8a21639
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Fri Oct 9 21:45:08 2020 +0300
+
+    Update DateFixerController.java
+
+commit 747972200a41811a2e6c7bb388a4dd07efcf2a63
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sat Oct 3 16:03:00 2020 +0300
+
+    Updates made
+
+commit 307acba3c9481676747859cada42848600cac81b
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Sep 28 16:48:20 2020 +0300
+
+    Updates made
+
+commit 16854dd5a3616411f9b9b39acc802cc9af7e629b
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Sep 28 16:28:06 2020 +0300
+
+    Update OperateFiles.java
+
+commit 60f79bf3cd2585bdfdc11793ee843aa22fbb9f2c
+Merge: 58714fb c600708
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Sep 27 00:14:13 2020 +0300
+
+    Merge branch 'mdir_fx14' of https://github.com/girbola/mdir_fx into mdir_fx14
+
+commit 58714fbce9b97aac7346b05ccc045383e81b77dd
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sun Sep 27 00:14:01 2020 +0300
+
+    Updates made
+
+commit c600708891a0ab61046c5b9b535aea5664de456d
+Merge: dc2325c cca098d
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Sep 27 00:12:17 2020 +0300
+
+    Merge branch 'mdir_fx14' of https://github.com/girbola/mdir_fx into mdir_fx14
+
+commit dc2325c902fcbe1631af0cd06e617617617da997
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Sep 27 00:12:00 2020 +0300
+
+    Update .gitignore
+
+commit cca098dfa2592f957d6a77263185c8782636ff74
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Sat Sep 26 12:20:05 2020 +0300
+
+    Updates made
+
+commit 05224c0195492983637ebd7dbfd1bc15fb82c3c8
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Sep 25 23:22:54 2020 +0300
+
+    Delete mdir_fx_13.jar
+
+commit 7ad3763348b0cf2bbb063ee207759de302c11229
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Sep 25 23:19:51 2020 +0300
+
+    Update .gitignore
+
+commit 5f6655825936276c670b9e259d4eb2172c213ec9
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Sep 25 23:12:37 2020 +0300
+
+    Updates made
+
+commit 15f4a46865836ac0fad94b2e9e910fc1f4fb2716
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Sep 21 22:10:51 2020 +0300
+
+    Updates made
+
+commit 305cd07fa477d28cec7b4be1a34c7f7e98905e0e
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Sep 14 20:53:44 2020 +0300
+
+    Update Conversion.java
+
+commit 9a60c54df0f1685b699517451c3bfff929c88109
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Sep 14 20:48:40 2020 +0300
+
+    Update .gitignore
+
+commit 6f96132095490e4e453aba858d35a8e6094acd23
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Mon Sep 14 20:47:24 2020 +0300
+
+    Updates made
+
+commit d6d5e982aedfc359c92b4323f2d9240dd5f24679
+Author: Marko Lokka <marko.lokka@gmail.com>
+Date:   Thu Sep 10 21:52:15 2020 +0300
+
+    Updates made
+
+commit 2c18cd7ac0b46c3fdf1232f8931fab5f3e61fcde
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 18 21:25:11 2020 +0300
+
+    Updates made
+
+commit 932a86ed66fddc4043e1686363ccfa98c0fdcb52
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:41:15 2020 +0300
+
+    Updates made
+
+commit 65e47721b291931b4d2b93348c79146300c9ecb9
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:21:57 2020 +0300
+
+    Updates were made
+
+commit cd694bd4c62aaf63ec0fdffd42509d81e98478a0
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:21:40 2020 +0300
+
+    cleanTables added to clean empty rows from TableViews
+
+commit 21269330ce71f02c017085185333d8be2c5cee65
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:20:37 2020 +0300
+
+    Bug fixed
+    
+    Files were not copied because of bug with fileinfo isCopy flag were set to true. It was supposed to be false and only act when file has successsfully copied by setting setCopy to true.
+
+commit 75cae01e88dd80bbfb4181501c37bdb3afe5c7ee
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:17:10 2020 +0300
+
+    Collect files according the date&time scale added to TableView
+
+commit 02ffbf09747cf29e70e27741e554270b5e47188e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:15:44 2020 +0300
+
+    Eclipse settings updated to use Java version 14
+
+commit 6d8526b161bb96c66a26c4a3a15d6fabeff9fbf1
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Aug 17 21:15:07 2020 +0300
+
+    Collect files according the date&time scale added to TableView
+
+commit 99f27b2d438256b1cb8185de1919964ba0a42540
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Aug 17 11:55:14 2020 +0300
+
+    Update README.md
+
+commit 695fe968503347edffd6555f595a7463a0b72c8b
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun Aug 16 21:28:25 2020 +0300
+
+    Updates made
+
+commit 4680ed1f4750c2aa0fe2dd5a0b20cd0ea9e7be95
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun Aug 16 10:22:08 2020 +0300
+
+    Added immediately saving after changes
+
+commit 792b34c507628ec315d476ebfee1d0d09de9d674
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun Aug 16 09:54:33 2020 +0300
+
+    Updates made
+
+commit d4b6113cec9cb5ccee54f9b7ab4d815854eef280
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Aug 15 11:16:06 2020 +0300
+
+    Fixed statistic counting
+
+commit 4c4f8ccd3fd5a978465948c1e1ad2901ae7d3d33
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri Aug 14 22:47:04 2020 +0300
+
+    Updates made
+
+commit b57309ca155076a9370c9abea804988547d1a1d9
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri Aug 14 21:41:02 2020 +0300
+
+    Update BottomController.java
+
+commit 2297c1ec877231c1b953262f2a49a3068ad781e7
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri Aug 14 21:38:29 2020 +0300
+
+    Updates made
+
+commit aa19eb06e4b4bb0e5e04b76c07423ba4a1fd1dc9
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Aug 13 08:10:42 2020 +0300
+
+    Bug fixed made
+
+commit 3a67527701c4d6b1800c4003d942d929aa90d097
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 21:31:20 2020 +0300
+
+    Updates made
+
+commit 6b6d534f2ede0e525a5666e8de656b858fa4683d
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 17:41:08 2020 +0300
+
+    Update Model_datefix.java
+
+commit 9be516231cb1236fde45e207449ae9c00b2ec36d
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 15:31:52 2020 +0300
+
+    Clear code
+
+commit fa7a88aecfaa2d10f087a7c1296c6e8b64cb02f3
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 15:11:30 2020 +0300
+
+    Update SelectorModelType.java
+
+commit 1f84ee57ee522aad41ce1984239acf3c5d176362
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 15:00:36 2020 +0300
+
+    Updates made
+
+commit b52eaaec50bc0c080e06abc92ba89013fcdb1be4
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 15:00:25 2020 +0300
+
+    Update UpdateGridPane_Task.java
+
+commit 08d7ada5540abc637ffb0a20b991e68c65bdcaef
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 15:00:00 2020 +0300
+
+    Create SelectorModelType.java
+
+commit 1fb683c35c2331f4020cd967dead63de73341b39
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:59:51 2020 +0300
+
+    Update SelectorController.java
+    
+    Replaced inner Task with SelectedByTableModel.java
+
+commit 983dfa50c71e3318b235d982c7ca8f2825ee231a
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:57:16 2020 +0300
+
+    SelectByTableModel created
+    
+    This will work in every EXIF_Data_Selector model. Now there are 4. Event, location, dates and camera model
+
+commit 4d5448d50538b07c486efd10b850511436fd3558
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:55:49 2020 +0300
+
+    Showing and hiding ignored and copied class cleaned
+
+commit 33a23145d06fa36f463e4543005697162d9d58c8
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:53:53 2020 +0300
+
+    Update DateFixerController.java
+
+commit 89d3bffb53df02802baa4d401ccc2cbafb5e6b72
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:53:35 2020 +0300
+
+    Updating process method task changed to class UpdateGridPane_Task
+
+commit 35b5304a2d3e46ad7c73febe7ddc4d3d2e0091ec
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Aug 11 14:51:50 2020 +0300
+
+    Changed debug message to be Messages.sprintf
+
+commit 123ed6166de4967dbc6179327aceb72dac6489c9
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Aug 8 12:00:27 2020 +0300
+
+    Loading improved
+
+commit 12127e6483689b78288aff8e83625be63657920f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Aug 6 22:42:54 2020 +0300
+
+    Updates made
+
+commit a24dadff99c4710a16ab29d59687cd0eea4558f6
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Aug 6 07:59:24 2020 +0300
+
+    Table statistic created
+
+commit 21dcb118da2f67e14ae73ae3a664856e8298cd1e
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Thu Aug 6 07:18:43 2020 +0300
+
+    Update README.md
+
+commit b0beba0e341c1b02e6211c0e60a35d0f90475626
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Aug 5 19:10:23 2020 +0300
+
+    Updates made
+
+commit 237a06c7b9c4e8a3b88f11e47b26957e91b53e35
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jul 4 23:55:58 2020 +0300
+
+    Update .project
+
+commit b93cdcd3ede266cb06f7eb98096818b805bc6b86
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jul 4 23:50:34 2020 +0300
+
+    Update Model_main.java
+
+commit dae9701393217cc8e0a8d249dce9ef60b76d58b9
+Merge: b3b7c37 e0f39ab
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jul 1 23:40:21 2020 +0300
+
+    Merge branch 'mdir_fx13_test' of https://github.com/girbola/mdir_fx13 into mdir_fx13_test
+
+commit b3b7c37332e5ed49427a47aea81418f3781415b3
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jul 1 23:39:31 2020 +0300
+
+    Updates made
+
+commit e0f39ab53bb7a2e398071bd52c3a0cf881aacd50
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sun Jun 28 10:56:14 2020 +0300
+
+    Update README.md
+
+commit bac0471a59fbab036dbc5b237d0e75827e2b7a7b
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jun 27 11:40:01 2020 +0300
+
+    Updates made
+
+commit 7602670829dcac13532a1036b5cdd4c793455272
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun Jun 21 22:11:26 2020 +0300
+
+    Updates made
+
+commit 5b2386e48c2be0ed0382663a7755288205bff42c
+Merge: 0ba2ec3 fd30e27
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jun 20 12:28:10 2020 +0300
+
+    Merge branch 'mdir_fx13_test' of https://github.com/girbola/mdir_fx13 into mdir_fx13_test
+
+commit 0ba2ec3bd72ccf844b17bb8d4d549a928d05510c
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jun 20 12:27:38 2020 +0300
+
+    Updates made
+
+commit 5ffde90b06dcd64b9ea4ebdfb3a4545bc0168177
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jun 20 12:27:27 2020 +0300
+
+    Updates made
+
+commit fd30e278fb66815338c9a238dd5c00908eb828a0
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Jun 15 14:46:18 2020 +0300
+
+    Update README.md
+
+commit 43262e3b1c03368c738a66dd839cdcb27ec72fbb
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Jun 15 14:26:17 2020 +0300
+
+    Updates made
+
+commit 00a23e94b3946a7cf15d2831d9b045fe9c032edc
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun Jun 14 15:26:13 2020 +0300
+
+    Updates made
+
+commit 3ee90286103a9a62929a37ca4fc3713c363862b0
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 10 16:33:37 2020 +0300
+
+    Update README.md
+
+commit 32135088524c933222f95012d18bb86e60a0026f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 10 13:52:25 2020 +0300
+
+    Updates made
+
+commit dd72858b824f2924008ee0216557c5518ec75c45
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 10 13:44:05 2020 +0300
+
+    Updates made
+
+commit 464f0dcf6d9f302b3324ca8a57c1112bf7d99662
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 10 10:57:17 2020 +0300
+
+    Update .gitignore
+
+commit 8b3e67cabd432492d6aaa7eb4bbfc8ef507df6c4
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 10 10:55:23 2020 +0300
+
+    Added option to ask if all files will be added under the same folder
+
+commit 72a5784129ddf55f95148fe461f28fd5f0a2a7b6
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 9 22:35:25 2020 +0300
+
+    Updates made
+
+commit 8cd315839eddbe19648e42184a1a946f4d88c7bb
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Jun 8 13:20:33 2020 +0300
+
+    Updates made
+
+commit c7f1975ceff9a8fc66ed1139fa19b257e54c042a
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Jun 8 10:14:59 2020 +0300
+
+    Editing camera icons
+
+commit 43a05e20cd426b516560f428faf27d863821f0ce
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat Jun 6 22:57:02 2020 +0300
+
+    Updates made
+
+commit daa00af6eec7e5dfcbc305b8947a1d539dd00070
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 3 19:19:49 2020 +0300
+
+    Added trim on user input
+
+commit 559d4db2e0436f2f0d1dee62e9079eab32993ab6
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 3 17:30:43 2020 +0300
+
+    Gitignore were added scenicview.properties
+
+commit 7aab7d0f4f7739748f951a400d2767522e231d72
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Jun 3 17:29:59 2020 +0300
+
+    Bug fixes
+
+commit af45fdc53c13754a6c2eabb188aa02e993a69342
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 22:53:47 2020 +0300
+
+    Added statistic in tableview
+
+commit 73bab9ea6b0d3407d06d04d3b4a1794b411052c5
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 22:41:04 2020 +0300
+
+    Updates made
+
+commit 9cc1aa9fbcadd20eb9e6f0019911ba59cd4d2372
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:40:02 2020 +0300
+
+    Updates made
+
+commit fe673e84ed5f1a13313fdd860f6af733c3a87c14
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:39:20 2020 +0300
+
+    Copied tablecolumn moved closer to beginning
+
+commit bf03bbb77f7cb388af49c4bc9691f3f5fc9989d8
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:36:00 2020 +0300
+
+    VLCJ Player added new implementations after new dependency update
+
+commit 27749d102a8b2511f8f25acd740672f61a6e3afa
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:35:04 2020 +0300
+
+    Copied tablecolumn were fixed
+
+commit 5a15420aad044c443b2152266461ee9c27b616fb
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:33:45 2020 +0300
+
+    SQL request fixed for reading thumbinfos by id
+
+commit ba12b78a809ee37237e5c3cb6dea69e296d36e24
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:33:27 2020 +0300
+
+    Dependencies versions were updated
+
+commit 75a2fabdb627a7343c130f4cf273f9dc81733824
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 12:32:39 2020 +0300
+
+    Fixing SQL request for reading thumbinfos
+
+commit f40152d92479c9862d2c21284e0099d74b7693a2
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 10:21:51 2020 +0300
+
+    CopiedCell fixed for empty lines with styling to null
+
+commit a26e8723c78d48e045c0ec3421aad4996ca91aaa
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Jun 2 10:15:00 2020 +0300
+
+    Size conversion added
+
+commit 4b7f91d7c7899e069886ed6d5ac494b78fb8a6ea
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Jun 1 14:21:15 2020 +0300
+
+    Updates made
+
+commit 1e542a7e32032589af4f358c23346ff6ad87042c
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Jun 1 14:11:04 2020 +0300
+
+    Updates made
+
+commit 4a50145eeb9a916a7111177d210e7b87495cf043
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 31 15:14:13 2020 +0300
+
+    Updates made
+
+commit bc4b832a82b8f6fd44aea6a7c9025781cf3ebdd1
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 29 21:01:59 2020 +0300
+
+    Updates made
+
+commit f179cde11a4993dbdfcc2caf197b50b7ff0d7184
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 29 11:05:09 2020 +0300
+
+    Tablecell edit color changed for more visible one
+
+commit 2d48cf6355aec0415224429ab75a7e2077e5389f
+Merge: 1ce6bbc ef19c8f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 29 10:50:58 2020 +0300
+
+    Merge branch 'mdir_fx13_test' of https://github.com/girbola/mdir_fx13.git into mdir_fx13_test
+
+commit 1ce6bbc4f372fa2ef883457e3644d087f7873c79
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 29 10:50:33 2020 +0300
+
+    Updates made
+
+commit ef19c8fed2d8347148c779029169c4cbf9bb3d68
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Thu May 28 13:50:45 2020 +0300
+
+    FolderInfo Unique removed from path value
+
+commit 8bde6e3cb64baf87697bd19bca4ce5415ae7d936
+Merge: ac500ac 86852ac
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 15:28:53 2020 +0300
+
+    Merge branch 'mdir_fx13_test' of https://github.com/girbola/mdir_fx13.git into mdir_fx13_test
+
+commit 86852ac8f42ddc08cd91f9b50821826efb297699
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 26 14:21:09 2020 +0300
+
+    Bug fixed
+
+commit ac500ace6f94f1f442e20d45556c2c2bfa52ffe1
+Merge: 0430f1f ff3a0c5
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 13:51:37 2020 +0300
+
+    Merge branch 'mdir_fx13_test' of https://github.com/girbola/mdir_fx13.git into mdir_fx13_test
+
+commit 0430f1f264adcda42415b6f5012df1a382abfedf
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 13:51:12 2020 +0300
+
+    Adding test
+
+commit ff3a0c5e594b46a245b6513849dde99eea7a2a36
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 26 13:47:08 2020 +0300
+
+    Updates made
+
+commit fd2cfae07d651f662d2d9a95527a7889b1e6abbb
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 26 13:43:46 2020 +0300
+
+    Updates made
+
+commit d979066eeeeea902fb7e2834198eeebba6712c0a
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 26 12:10:14 2020 +0300
+
+    Update SQL_Utils.java
+
+commit 6a0d74133c8cfbaaaee6821dedb82dc985c50df7
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Tue May 26 11:43:24 2020 +0300
+
+    Updates made
+
+commit 9cdf2189a3b64330878d1dfe9cbe8ba668f661d7
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 11:34:42 2020 +0300
+
+    Updates made
+
+commit c7e9c5b967927aa08d9aded13c0a6625e0cd8123
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 11:24:45 2020 +0300
+
+    Updates made
+
+commit 75343507a287a89b0e78f1e06438251016d26823
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 26 08:51:27 2020 +0300
+
+    Updates made
+
+commit ebe11c754d89a0dae1f813bcaab2910b23110fb2
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 25 17:56:35 2020 +0300
+
+    Updates made
+
+commit c7cd216b92a33ba0383f8f1390323405a8770e6d
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon May 25 13:40:11 2020 +0300
+
+    Fixing bugs
+
+commit 03705b04f9fd89147f2b338f81b83d41f502c5a1
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 24 22:17:03 2020 +0300
+
+    Updates made
+
+commit abc14cb81db3234cb8a404efe7d331c3a7a06001
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat May 23 22:51:43 2020 +0300
+
+    Updates made
+
+commit 9c6e2ded85f03480539d3c999261b50f2f3f8637
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri May 22 13:30:20 2020 +0300
+
+    Save process fixed
+
+commit 5515bebf495ff4ebcde65896c85c25e4d584017c
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Fri May 22 12:29:15 2020 +0300
+
+    Deleting existing table from database fixed
+
+commit a8a4f06598774edd350178c59631c3a6b3d9157e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 22 11:49:03 2020 +0300
+
+    Updates made
+
+commit de05af54b2eb766ac6d1356f5b7faa496ad66131
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 19 21:20:08 2020 +0300
+
+    Updates made
+
+commit 1ed4d1a2462a598b0035432856e0a62ce2d725de
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 18 15:29:10 2020 +0300
+
+    Added dialog in case of corrupted file
+
+commit cfd86c67796b1a08d9c47d54175a7968809cb841
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 17 22:11:55 2020 +0300
+
+    Updates made
+
+commit 67e2a38f52bf218219c740c3eac6fd586582f11d
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat May 16 11:52:49 2020 +0300
+
+    Updates made
+
+commit 90d20c207c587eb434ff8cc4224e96b61301219e
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat May 16 11:16:54 2020 +0300
+
+    Updates made
+
+commit 8098bcd0c5e2402483a1dea0a67065969251d47a
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Thu May 14 10:27:31 2020 +0300
+
+    Updates made
+
+commit 35318575d328e8a6e0a95f2b557bc2696289f4de
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Thu May 14 09:42:01 2020 +0300
+
+    Updates made
+
+commit 68128707072b573d393c9a5d4c761306e685653c
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Thu May 14 09:28:22 2020 +0300
+
+    Cleaning code, corrupted file handling dialog created
+
+commit eb5cada30b7f56b1824359831cf55a4c2a0b67b9
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed May 13 21:36:29 2020 +0300
+
+    Table functionality improved.
+
+commit 4a133fd95e6ddf3c4ad0884611ef7e97c20de692
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed May 13 21:33:53 2020 +0300
+
+    Updates made
+
+commit 3cc07159260c6ceee0120d69857fb29c3420a69e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 12 21:36:15 2020 +0300
+
+    MergeDialog created
+
+commit cda06c80fd83f8b60dbfbc679683f58235b2203d
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue May 12 13:12:04 2020 +0300
+
+    Updates made
+
+commit 6a8e9f38cf07ba42c2aa8e53c6c5fe4920e0e920
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 21:04:11 2020 +0300
+
+    Update made
+
+commit f827799ba17ec01bacdf345528b55699c8e0f446
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 21:02:29 2020 +0300
+
+    Updates made
+
+commit c27d1e698535979ff0b1a60b2c387719e23e42e4
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 13:17:23 2020 +0300
+
+    Updates made
+
+commit 77d57da8feb81e3a3d3805712496cbed0df48862
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 13:04:23 2020 +0300
+
+    Updates made
+
+commit a1e5e1673529305e95abbb0ffa06b4549be49e70
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 11:24:18 2020 +0300
+
+    Updates made
+
+commit d6f0cc985e9580d465b26d31bb4d0718b9e7e177
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 11 10:59:57 2020 +0300
+
+    Bug fixes
+
+commit 0de45c9364217860f47abb74751ff40cbb90350c
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 10 21:18:34 2020 +0300
+
+    Updates made
+
+commit dc2f323aca5c63fdd6f86339499b9db474387c30
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 10 12:45:20 2020 +0300
+
+    Updates made
+
+commit 74a83f4b5f97b4fcd7f69e1dc612a08d9c96d61e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 8 15:00:13 2020 +0300
+
+    Updates made
+
+commit 45090af70d2fcec571c4109aa5de5d4df641064e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 8 14:46:30 2020 +0300
+
+    Updates made
+
+commit 6122bdd5a7caf42287efefe085aa051bbff63403
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 8 14:16:15 2020 +0300
+
+    Update .classpath
+
+commit 650cfd45658d6e469d32c36240ae680872db0825
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 8 11:54:30 2020 +0300
+
+    Updates made
+
+commit 115930cc72575a6319de307371f51d1ebb611cc6
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu May 7 13:25:57 2020 +0300
+
+    Updates made
+
+commit a4ef764f6a3dbf877de6464d62a77bedaa151e9f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu May 7 10:59:43 2020 +0300
+
+    Fixing Dialogs
+
+commit dc0cd8c3c4b8cf217fb9a3ea9c04d0521e75ea99
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu May 7 09:55:20 2020 +0300
+
+    Update pom.xml
+
+commit 6ee85217eef2901d4057d14d9f08ccd8c1203fa8
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed May 6 12:52:31 2020 +0300
+
+    Updates made
+
+commit cec15df6db53e89dfac2594ac5935de9635c2fc0
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon May 4 15:32:05 2020 +0300
+
+    Update mades. Screen position detection
+
+commit 76c05ba67fd325822433dd83af9c8748edbb7deb
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sun May 3 21:04:27 2020 +0300
+
+    Fixing outlook
+
+commit 5a7004446a2fce57766148769ff78bc71806b294
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Sat May 2 23:32:04 2020 +0300
+
+    Tooltips added
+
+commit 865e71a32f86f74362f40d836de813351cbc41b7
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 1 17:04:03 2020 +0300
+
+    Updates made
+
+commit 8ab965a2506034c4493e63e561cf663321270406
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri May 1 14:41:24 2020 +0300
+
+    Updating icons
+
+commit 26030100f29768760519c5932f82626c3cd4a2b7
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Apr 30 22:51:35 2020 +0300
+
+    Updates made
+
+commit 6c17792a257fa0d2584f0c7e644ace92fa560873
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Apr 30 14:45:09 2020 +0300
+
+    TableView scrollpane styling changes
+
+commit e814c1ae0232b47af767f7af33c5cafaa4f6b547
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Thu Apr 30 10:56:10 2020 +0300
+
+    Organizing DateFix Window icons
+
+commit 6b59d41f8cc4dad847e884ed7b59408642c5e585
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Wed Apr 29 21:53:18 2020 +0300
+
+    Updates made
+
+commit 5a18bd462c54e3d5d6ef208cdca118e4ee4625d2
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Apr 28 11:55:39 2020 +0300
+
+    Updates made
+
+commit 7ae84656b6a0ee516ba2c724ff402783114f93a0
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Apr 27 15:45:49 2020 +0300
+
+    Hide and show tables fixed
+
+commit 2163664a4ed3ba9644d6d50270f10dd6f3dd2e9b
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Apr 27 14:46:38 2020 +0300
+
+    Update README.md
+
+commit 7f6768b256e1b689fa1caf8692e32d53939c625f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Apr 27 12:49:00 2020 +0300
+
+    Bug fixes
+
+commit c949492154a75e245e3d811568328f93edb909b0
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Apr 27 12:33:21 2020 +0300
+
+    Update .gitignore
+
+commit deed7289634b5cdbf1893823ee7e99c2e898f03e
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Apr 27 12:30:06 2020 +0300
+
+    Updates made
+
+commit 9f9c836ddb4be860825e33d293f01643a77ffc54
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Fri Apr 24 16:15:29 2020 +0300
+
+    Drive serialnumber added for better identification
+
+commit 5faa372d1eb522d931499d84da0d8eab6bb5508f
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Apr 21 10:38:42 2020 +0300
+
+    Updates made
+
+commit 117ecdebaff5a2df1e9c6519ea2ce1aef0080ad1
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Mon Apr 20 21:32:39 2020 +0300
+
+    Updates made
+
+commit 531024e1467da94136e44257a1b5f94afe526509
+Author: Marko Lokka <e1901043@edu.vamk.fi>
+Date:   Tue Mar 31 21:43:42 2020 +0300
+
+    Updates made
+
+commit 6b00ac51b1eb46c1652a632316d9339635931ddf
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Sat Feb 29 11:57:43 2020 +0200
+
+    Update README.md
+
+commit 96938d16e273e6bd3f6a89024c8aefad568dea7c
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Feb 14 22:51:25 2020 +0200
+
+    Updates made
+
+commit 0b29287e00c3e3ad772532c1df17ace334242165
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Jan 20 21:34:45 2020 +0200
+
+    Updates made
+
+commit 0d1b38a726cb3b8f8b955d00fd1d142ca7035839
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Jan 20 21:24:30 2020 +0200
+
+    Updates made
+
+commit e6189a80404a0e273cd72faa89de792e62d95571
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sun Jan 12 20:54:05 2020 +0200
+
+    Updates made
+
+commit 4373861d1bf42b74c733fe4aeebe1602fbe1eff2
+Author: girbola <marko.lokka@gmail.com>
+Date:   Sat Jan 4 10:20:18 2020 +0200
+
+    Updates made
+
+commit 4236e5c0c94c968b03934491c507f3b32fed943b
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed Jan 1 20:43:34 2020 +0200
+
+    Updates made
+
+commit 09d356af796684dd347b63129c275cc22154ebda
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed Jan 1 18:51:07 2020 +0200
+
+    Updates made
+
+commit 84dadfb6a0f0594214657a2b1a15d1aa04a39bea
+Author: girbola <marko.lokka@gmail.com>
+Date:   Wed Jan 1 18:13:09 2020 +0200
+
+    Updates made
+
+commit 142b18abc408176335a5b20c938157b1a189941b
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Dec 27 22:40:54 2019 +0200
+
+    Content updated
+
+commit 5d22e28799a2c92d34e67836c8e5f21f7ff800ea
+Author: girbola <marko.lokka@gmail.com>
+Date:   Fri Dec 27 22:39:27 2019 +0200
+
+    Updated content
+
+commit 00894432bee60aab801a68ba9c1fa7c37f407678
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 21:57:39 2019 +0200
+
+    Bug fixed
+
+commit e789e037fc35e817e107a1b93d13c363d862dd72
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 20:48:29 2019 +0200
+
+    Update made
+
+commit 605281691a3b2ea7aaba6b77a0c2e7b414ec5439
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 20:33:32 2019 +0200
+
+    Update made
+
+commit 2974628bff6abb8cbc6b65ead846548c0f247e83
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 12:37:57 2019 +0200
+
+    Bug fixes
+
+commit 48fc757c49cbde8ae0be90574388f77a83de03e2
+Author: girbola <girbola@users.noreply.github.com>
+Date:   Mon Dec 23 12:09:26 2019 +0200
+
+    Create LICENSE
+
+commit 5a6d4e937cee3c5768b40beba922cd60919452b5
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 12:03:39 2019 +0200
+
+    README.md created
+
+commit df9b41eda83aa9541c1a2ab13717ec31b776be48
+Author: girbola <marko.lokka@gmail.com>
+Date:   Mon Dec 23 11:51:50 2019 +0200
+
+    First commit

@@ -37,85 +37,81 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 
-		Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getConfiguration_db_fileName()); // folderState.db
-		if (connection_Configuration == null) {
-			Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
-					Misc.getLineNumber(), true);
-			cancel();
-			Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
-			return null;
-		}
-		try {
-			connection_Configuration.setAutoCommit(false);
-		} catch (Exception e) {
-			e.printStackTrace();
-			cancel();
-			return null;
-		}
-		SQL_Utils.clearTable(connection_Configuration,  SQL_Enums.FOLDERSSTATE.getType());
-		SQL_Utils.createFoldersStatesDatabase(connection_Configuration); // create new foldersStateDatabase
-																			// folderState.db
+        Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
+                Main.conf.getConfiguration_db_fileName()); // folderState.db
+        if (connection_Configuration == null) {
+            Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
+                    Misc.getLineNumber(), true);
+            cancel();
+            Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
+            return null;
+        }
+        try {
+            connection_Configuration.setAutoCommit(false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            cancel();
+            return null;
+        }
+        SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERSSTATE.getType());
+        SQL_Utils.createFoldersStatesDatabase(connection_Configuration); // create new foldersStateDatabase
+        if(!SQL_Utils.isDbConnected(connection_Configuration)) {
+            Messages.errorSmth(ERROR, "Connection were closed!", new Exception("Connection were closed"),
+                    Misc.getLineNumber(), true);
+
+        }
 //		SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderState.db
 
-		long start = System.currentTimeMillis();
-		updateMessage("Loading Sorted");
-		boolean sorted = model_main.saveTableContent(connection_Configuration,
-				model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
-		if (sorted) {
-			Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
-		}
-		start = System.currentTimeMillis();
-		updateMessage("Loading SortIt");
-		boolean sortit = model_main.saveTableContent(connection_Configuration,
-				model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
-		if (sortit) {
-			Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
-		}
-		start = System.currentTimeMillis();
-		updateMessage("Loading AsItIs");
-		boolean asitis = model_main.saveTableContent(connection_Configuration,
-				model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
-		if (asitis) {
-			Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
-		}
+        long start = System.currentTimeMillis();
+        updateMessage("Loading Sorted");
+        boolean sorted = model_main.saveTableContent(connection_Configuration,
+                model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
+        if (sorted) {
+            Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
+        }
+        start = System.currentTimeMillis();
+        updateMessage("Loading SortIt");
+        boolean sortit = model_main.saveTableContent(connection_Configuration,
+                model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
+        if (sortit) {
+            Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
+        }
+        start = System.currentTimeMillis();
+        updateMessage("Loading AsItIs");
+        boolean asitis = model_main.saveTableContent(connection_Configuration,
+                model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
+        if (asitis) {
+            Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
+        }
+        SQL_Utils.closeConnection(connection_Configuration);
 
-		try {
-			if (connection_Configuration != null) {
-				connection_Configuration.close();
-			}
-		} catch (Exception e) {
-			Main.setChanged(true);
-		} finally {
-			connection_Configuration.close();
-		}
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	protected void succeeded() {
-		super.succeeded();
-		Messages.sprintf("Saving succeeded");
-		if (closeLoadingStage) {
-			loadingProcess_Task.closeStage();
-		}
-		Main.setChanged(false);
-	}
+    @Override
+    protected void succeeded() {
+        super.succeeded();
+        Messages.sprintf("Saving succeeded");
+        if (closeLoadingStage) {
+            loadingProcess_Task.closeStage();
+        }
+        Main.setChanged(false);
+    }
 
-	@Override
-	protected void cancelled() {
-		super.cancelled();
-		if (closeLoadingStage) {
-			loadingProcess_Task.closeStage();
-		}
-	}
+    @Override
+    protected void cancelled() {
+        super.cancelled();
+        if (closeLoadingStage) {
+            loadingProcess_Task.closeStage();
+        }
+    }
 
-	@Override
-	protected void failed() {
-		super.failed();
-		if (closeLoadingStage) {
-			loadingProcess_Task.closeStage();
-		}
-	}
+    @Override
+    protected void failed() {
+        super.failed();
+        if (closeLoadingStage) {
+            loadingProcess_Task.closeStage();
+        }
+    }
 
 }

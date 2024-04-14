@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -78,6 +78,8 @@ public class SelectedFoldersController {
 
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
 
+        model_main.getMonitorExternalDriveConnectivity().cancel();
+        scanner.cancel();
         model_main.populate().populateTables_FolderScanner_list(Main.scene_Switcher.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
@@ -128,10 +130,6 @@ public class SelectedFoldersController {
     private void removeFromTable(TableView<SelectedFolder> table) {
         Connection connection = null;
 
-        try {
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                    Main.conf.getConfiguration_db_fileName());
-
             ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
             SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
@@ -139,9 +137,9 @@ public class SelectedFoldersController {
             table.getItems().removeAll(selectedItems);
             table.getSelectionModel().clearSelection();
 
-        } catch (Exception ex) {
-            SQL_Utils.closeConnection(connection);
-        }
+
+        listToRemove.clear();
+        table.getSelectionModel().clearSelection();
     }
 
     public void init(Model_main aModel_main, Model_folderScanner aModel_folderScanner) {
