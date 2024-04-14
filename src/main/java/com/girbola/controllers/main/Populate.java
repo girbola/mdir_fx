@@ -95,7 +95,6 @@ public class Populate {
                     Main.setProcessCancelled(true);
                     return;
                 }
-                Messages.sprintf("list: " + list.size());
                 Task<Integer> sorter = new Sorter(model_main, list);
                 loadingProcess_task.setTask(sorter);
                 sorter.setOnSucceeded(new EventHandler<WorkerStateEvent>() {

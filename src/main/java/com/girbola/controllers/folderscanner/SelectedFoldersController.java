@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2022 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -78,14 +78,8 @@ public class SelectedFoldersController {
 
         SQL_Utils.insertSelectedFolders_List_ToDB(connection, model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-                Messages.errorSmth(ERROR, "Something went wrong with selecting folders", e, Misc.getLineNumber(), true);
-            }
-        }
+        SQL_Utils.closeConnection(connection);
+
 //		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
         model_main.getMonitorExternalDriveConnectivity().cancel();
         scanner.cancel();
@@ -135,26 +129,14 @@ public class SelectedFoldersController {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
 
-        ObservableList<SelectedFolder> rows = table.getSelectionModel().getSelectedItems();
-        for (SelectedFolder rm : rows) {
-            listToRemove.add(rm);
-        }
-        boolean removed = SQL_Utils.removeAllData_list(connection, listToRemove, SQL_Enums.SELECTEDFOLDERS.getType());
-        if (removed) {
-            Messages.sprintf("Table data removed: ");
-        } else {
-            Messages.sprintf("Table data not removed ");
-        }
-        if (connection != null) {
-            try {
-                connection.close();
-            } catch (Exception e) {
-            }
-        }
-        for (SelectedFolder r : listToRemove) {
-            sprintf("sorted value remove: " + r);
-            table.getItems().remove(r);
-        }
+            ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
+
+            SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
+
+            table.getItems().removeAll(selectedItems);
+            table.getSelectionModel().clearSelection();
+
+
         listToRemove.clear();
         table.getSelectionModel().clearSelection();
     }

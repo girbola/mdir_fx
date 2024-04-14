@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -33,6 +33,19 @@ public class SelectedFolderScanner {
 		this.selectedFolderScanner_obs = selectedFolderScanner_list;
 	}
 
+	public void save_SelectedFolders_toSQL() {
+		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+				Main.conf.getConfiguration_db_fileName());
+		SQL_Utils.createFoldersStatesDatabase(connection);
+		SQL_Utils.createSelectedFoldersTable(connection);
+		if (!SQL_Utils.isDbConnected(connection)) {
+			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database",
+					null, Misc.getLineNumber(), false);
+			return;
+		}
+		SQL_Utils.insertSelectedFolders_List_ToDB(connection, selectedFolderScanner_obs);
+		SQL_Utils.closeConnection(connection);
+	}
 
 	public boolean load_SelectedFolders_UsingSQL(Model_main model_Main) {
 		Connection connection = null;

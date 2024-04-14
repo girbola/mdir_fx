@@ -464,6 +464,12 @@ public class TableUtils {
         table.setMaxWidth(divider);
     }
 
+    public static void setWidth(HBox hBox, double width) {
+        hBox.setPrefWidth(width);
+        hBox.setMinWidth(width);
+        hBox.setMaxWidth(width);
+    }
+
     public void check_All_TableView_forChanges(Model_main model_main) {
         Iterator<FolderInfo> sorted_it = model_main.tables().getSorted_table().getItems().iterator();
         Iterator<FolderInfo> sortit_it = model_main.tables().getSortIt_table().getItems().iterator();
@@ -946,6 +952,7 @@ public class TableUtils {
             Messages.sprintf("Parents parent is: " + parent.toString() + " tableWidth: " + tableWidth);
         });
     }
+
     public static void hideTooltip(Control control) {
         control.getTooltip().setText("");
         control.getTooltip().hide();
@@ -1005,10 +1012,10 @@ public class TableUtils {
             }
         });
         operate.setOnFailed(event -> {
-                Messages.warningText("Copy process failed");
+            Messages.warningText("Copy process failed");
         });
         operate.setOnCancelled(event -> {
-                Messages.sprintf("Copy process were cancelled");
+            Messages.sprintf("Copy process were cancelled");
         });
 
         Thread thread = new Thread(operate, "Operate Thread");

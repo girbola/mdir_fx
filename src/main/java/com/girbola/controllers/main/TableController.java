@@ -27,6 +27,7 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.Conversion;
+import common.utils.ui.ScreenUtils;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -39,6 +40,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -46,10 +48,7 @@ import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
@@ -392,6 +391,79 @@ public class TableController {
         model_main.buttons().select_all_Table(table);
     }
 
+    public void setShowHideTableButtonIcons(String tableType, Button button, boolean show) {
+        ImageView iv = (ImageView) button.getGraphic();
+        if (show) {
+            iv.setImage(hide_im);
+            iv.setRotate(-90);
+            button.setGraphic(iv);
+        } else {
+            iv.setImage(show_im);
+            iv.setRotate(0);
+            button.setGraphic(iv);
+        }
+    }
+
+    public void setTableIsShown(boolean show) {
+        if (tableType.equals(TableType.SORTIT)) {
+            model_main.tables().showAndHideTables.setSortit_show_property(!model_main.tables().showAndHideTables.getSortit_show_property().get());
+        } else if (tableType.equals(TableType.SORTED)) {
+            model_main.tables().showAndHideTables.setSorted_show_property(!model_main.tables().showAndHideTables.getSorted_show_property().get());
+        } else if (tableType.equals(TableType.ASITIS)) {
+            model_main.tables().showAndHideTables.setAsitis_show_property(!model_main.tables().showAndHideTables.getAsitis_show_property().get());
+        }
+
+    }
+
+    private void handleTableStates() {
+
+        int visibles = getVisibles();
+        int hidden = (3 - visibles) + 1;
+        double tableWidth = Math.floor(ScreenUtils.screenBouds().getWidth() / visibles);
+        double buttonWidth = hide_btn.getLayoutBounds().getWidth();
+
+        Messages.sprintf("Show table?: " + table.isVisible() + " visibles: " + visibles + " hidden: " + hidden + " buttonWidth " + buttonWidth + " tableWidth: " + tableWidth);
+
+        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "showHideButton_hbox");
+        HBox buttons_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "buttons_hbox");
+
+        HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "showHideButton_hbox");
+        HBox buttons_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "buttons_hbox");
+
+        HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "showHideButton_hbox");
+        HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "buttons_hbox");
+
+        if (model_main.tables().getSortIt_table().isVisible()) {
+            TableUtils.setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
+            buttons_hbox_sortit.setVisible(true);
+            model_main.tables().showAndHideTables.setSortit_show_property(true);
+        } else {
+            TableUtils.setWidth(showHideButton_hbox_sortit, buttonWidth);
+            buttons_hbox_sortit.setVisible(false);
+            model_main.tables().showAndHideTables.setSortit_show_property(false);
+        }
+
+        if (model_main.tables().getSorted_table().isVisible()) {
+            TableUtils.setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
+            buttons_hbox_sorted.setVisible(true);
+            model_main.tables().showAndHideTables.setSorted_show_property(true);
+        } else {
+            TableUtils.setWidth(showHideButton_hbox_sorted, buttonWidth);
+            buttons_hbox_sorted.setVisible(false);
+            model_main.tables().showAndHideTables.setSorted_show_property(false);
+        }
+
+        if (model_main.tables().getAsItIs_table().isVisible()) {
+            TableUtils.setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
+            buttons_hbox_asitis.setVisible(true);
+            model_main.tables().showAndHideTables.setAsitis_show_property(true);
+        } else {
+            TableUtils.setWidth(showHideButton_hbox_asitis, buttonWidth);
+            buttons_hbox_asitis.setVisible(false);
+            model_main.tables().showAndHideTables.setAsitis_show_property(false);
+        }
+    }
+
     @FXML
     private void hide_btn_action(ActionEvent event) {
 
@@ -401,39 +473,53 @@ public class TableController {
         }
         table.setVisible(!table.isVisible());
         hideablePane.setVisible(!hideablePane.isVisible());
-
-        visibles = TableUtils.getVisibleTables(model_main);
-
-        if(tableType.equals(TableType.SORTIT.getType())) {
-            model_main.tables().showAndHideTables.setSortit_show_property(false);
-        } else {
-            model_main.tables().showAndHideTables.setSortit_show_property(true);
-        }
-
-        if(tableType.equals(TableType.SORTED.getType())) {
-            model_main.tables().showAndHideTables.setSorted_show_property(false);
-        } else {
-            model_main.tables().showAndHideTables.setSorted_show_property(true);
-        }
-
-        if(tableType.equals(TableType.ASITIS.getType())) {
-            model_main.tables().showAndHideTables.setAsitis_show_property(false);
-        } else {
-            model_main.tables().showAndHideTables.setAsitis_show_property(true);
-        }
-
-//        if(hideablePane.isVisible()) {
-//            TableUtils.setHandleDividingTableWidthEqually(table, 300);
-//        } else {
-//            TableUtils.setHandleDividingTableWidthEqually(table, 24);
-//        }
-//        table.setVisible(!table.isVisible());
-//        tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
-
-        //tableInformation_flowpane.getStyleClass().add("notOk");
-        TableUtils.handleTableStates(model_main, hide_btn);
+        tableInformation_flowpane.setVisible(!table.isVisible());
+        tableInformation_flowpane.getStyleClass().add("notOk");
+        handleTableStates();
     }
 
+    private int getVisibles() {
+        int visibles = 0;
+        if (model_main.tables().getSortIt_table().isVisible()) {
+            visibles++;
+        }
+        if (model_main.tables().getSorted_table().isVisible()) {
+            visibles++;
+        }
+        if (model_main.tables().getAsItIs_table().isVisible()) {
+            visibles++;
+        }
+
+        return visibles;
+    }
+
+    private Pane getPaneFromParent(Parent parent, String id) {
+        Pane pane = (Pane) parent;
+        if (pane instanceof VBox) {
+            if (pane.getId().contains("table_vbox")) {
+                VBox main = (VBox) pane;
+                for (Node node : main.getChildren()) {
+                    if (node instanceof HBox) {
+                        if (node.getId().equals(id) && node.getId().equals("showHideButton_hbox")) {
+                            return (HBox) node;
+                        }
+                        if (node.getId().equals(id) && node.getId().equals("buttons_hbox")) {
+                            return (HBox) node;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    private void setTableWidth(Parent parent, double tableWidth) {
+        Platform.runLater(() -> {
+            parent.prefWidth(tableWidth);
+            parent.minWidth(tableWidth);
+            parent.maxWidth(tableWidth);
+            Messages.sprintf("Parents parent is: " + parent.toString() + " tableWidth: " + tableWidth);
+        });
+    }
 
     @FXML
     private void reload_btn_action(ActionEvent event) {
@@ -636,16 +722,5 @@ public class TableController {
     public TableView<FolderInfo> getTable() {
         return table;
     }
-    public void setShowHideTableButtonIcons(String tableType, Button button, boolean show) {
-        ImageView iv = (ImageView) button.getGraphic();
-        if (show) {
-            iv.setImage(hide_im);
-            iv.setRotate(-90);
-            button.setGraphic(iv);
-        } else {
-            iv.setImage(show_im);
-            iv.setRotate(0);
-            button.setGraphic(iv);
-        }
-    }
+
 }

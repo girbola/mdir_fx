@@ -49,10 +49,7 @@ public class SubList extends Task<List<Path>> {
 				break;
 			}
 			if (ValidatePathUtils.validFolder(path)) {
-				sprintf("----calculating: " + path.toAbsolutePath());
-				if(path.toAbsolutePath().equals("/Users/lokkamarko/Pictures/images")) {
-					Messages.sprintf("FOUND!!!!!");
-				}
+				sprintf("----calculating: " + path);
 				if (!list.contains(path)) {
 					list.add(path);
 					calculate(path);

@@ -96,7 +96,6 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         stageControl = new StageControl(model_main, primaryStage);
-        //ScreenUtils.screenBouds().getmax
 
         try {
             locale = new Locale(lang, country);
@@ -159,7 +158,7 @@ public class Main extends Application {
                     lpt.setTask(mainTask);
 //					lpt.showLoadStage();
                 });
-				//ScenicView.show(parent);
+//				ScenicView.show(parent);
                 return null;
             }
         };

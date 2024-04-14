@@ -107,27 +107,28 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    public static boolean closeConnection(Connection connection) {
-        try {
-            if (connection != null) {
-                connection.close();
-                return true;
-            }
-        } catch (Exception e) {
-            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
-            return false;
-        }
-        return false;
-    }
-
-    //@formatter:on
-    public static void commitChanges(Connection connection) {
+    public static boolean commitChanges(Connection connection) {
         try {
             connection.commit();
+            return true;
         } catch (SQLException e) {
             Messages.warningText(Main.bundle.getString("cannotCommitChanges") + e.getMessage());
+            return false;
         }
     }
+
+    public static boolean closeConnection(Connection connection) {
+		try {
+			if (connection != null) {
+				connection.close();
+                return true;
+			}
+		} catch (Exception e) {
+			Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
+            return false;
+		}
+        return false;
+	}
 
     public static boolean setAutoCommit(Connection connection, boolean b) {
         try {

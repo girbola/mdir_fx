@@ -838,13 +838,8 @@ public class Model_datefix extends DateFixerModel {
 
 		Messages.sprintf("Thumbinfo list size is: " + thumbInfo_list.size());
 		SQL_Utils.insertThumbInfoListToDatabase(connection, thumbInfo_list);
-		try {
-			if (connection != null) {
-				connection.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		SQL_Utils.closeConnection(connection);
+
 	}
 
 	public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {

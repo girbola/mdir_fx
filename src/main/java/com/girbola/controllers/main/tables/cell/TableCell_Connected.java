@@ -8,6 +8,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
@@ -73,13 +74,8 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 				TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());
 
-				if (connection != null) {
-					try {
-						connection.close();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}
+				SQL_Utils.closeConnection(connection);
+
 			} else {
 				Messages.sprintf("Still not exists");
 				//				setGood();
