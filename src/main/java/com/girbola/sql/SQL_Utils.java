@@ -76,7 +76,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                     "'totalSize', " +
                     "'connected,' " +
                     "'selected')" +
-                    " VALUES(?,?,?,?,?)";
+                    " VALUES(?,?,?,?)";
 
     final private static String DRIVE_INFO_TABLE_CREATION_QUERY =
             "CREATE TABLE IF NOT EXISTS " +

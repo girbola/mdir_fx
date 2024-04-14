@@ -1,13 +1,11 @@
 package com.girbola.workdir;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -21,9 +19,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
