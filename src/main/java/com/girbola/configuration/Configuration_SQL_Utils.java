@@ -96,7 +96,30 @@ public class Configuration_SQL_Utils {
 	private static int configuration_id = 0;
 
 	public static boolean loadConfiguration(Connection connection, Configuration configuration) {
-		String sql = "SELECT * FROM " + SQL_Enums.CONFIGURATION.getType();
+		//String sql = "SELECT id,betterQualityThumbs,confirmOnExit,id_counter,showFullPath,showHints,showTooltips,themePath,vlcPath,vlcSupport,saveDataToHD,windowStartPosX,windowStartPosY,windowStartWidth,windowStartHeigth,imageViewXPos,imageViewYPos,workDirSerialNumber,workDir,tableShow_sortIt,tableShow_sorted,tableShow_asItIs FROM " + SQL_Enums.CONFIGURATION.getType();
+		String sql = "SELECT id, " +
+				"betterQualityThumbs, " +
+				"confirmOnExit, " +
+				"id_counter, " +
+				"showFullPath, " +
+				"showHints, " +
+				"showTooltips, " +
+				"themePath, " +
+				"vlcPath, " +
+				"vlcSupport, " +
+				"saveDataToHD, " +
+				"windowStartPosX, " +
+				"windowStartPosY, " +
+				"windowStartWidth, " +
+				"windowStartHeigth, " +
+				"imageViewXPos, " +
+				"imageViewYPos, " +
+				"workDirSerialNumber, " +
+				"workDir, " +
+				"tableShow_sortIt, " +
+				"tableShow_sorted, " +
+				"tableShow_asItIs " +
+				"FROM " + SQL_Enums.CONFIGURATION.getType();
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(sql);
 			pstmt.executeQuery();
