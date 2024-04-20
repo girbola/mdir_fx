@@ -36,7 +36,7 @@ public class SelectedFolderScanner {
 	public void save_SelectedFolders_toSQL() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
-		SQL_Utils.createFoldersStatesDatabase(connection);
+		SQL_Utils.createFolderInfosDatabase(connection);
 		SQL_Utils.createSelectedFoldersTable(connection);
 		if (!SQL_Utils.isDbConnected(connection)) {
 			Messages.errorSmth(ERROR, "Can't connect to " + Main.conf.getConfiguration_db_fileName() + " database",

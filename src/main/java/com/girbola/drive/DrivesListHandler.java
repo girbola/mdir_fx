@@ -50,7 +50,7 @@ public class DrivesListHandler {
 	public void saveList() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 		if(!SQL_Utils.isDbConnected(connection)) {
-			SQL_Utils.createFoldersStatesDatabase(connection);
+			SQL_Utils.createFolderInfosDatabase(connection);
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
 		SQL_Utils.addDriveInfo_list(connection, drivesList_obs);

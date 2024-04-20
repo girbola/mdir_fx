@@ -38,9 +38,9 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	protected Integer call() throws Exception {
 
         Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName()); // folderState.db
+                Main.conf.getConfiguration_db_fileName());
         if (connection_Configuration == null) {
-            Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving folderinfo's failed!"),
+            Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving FolderInfos failed!"),
                     Misc.getLineNumber(), true);
             cancel();
             Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
@@ -53,14 +53,13 @@ public class SaveTablesToDatabases extends Task<Integer> {
             cancel();
             return null;
         }
-        SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERSSTATE.getType());
-        SQL_Utils.createFoldersStatesDatabase(connection_Configuration); // create new foldersStateDatabase
+        SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERINFOS.getType());
+        SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new foldersStateDatabase
         if(!SQL_Utils.isDbConnected(connection_Configuration)) {
             Messages.errorSmth(ERROR, "Connection were closed!", new Exception("Connection were closed"),
                     Misc.getLineNumber(), true);
 
         }
-//		SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderState.db
 
         long start = System.currentTimeMillis();
         updateMessage("Loading Sorted");

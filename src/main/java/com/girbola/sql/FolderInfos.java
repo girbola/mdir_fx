@@ -1,12 +1,12 @@
 package com.girbola.sql;
 
-public class FolderState {
+public class FolderInfos {
 	private String path;
 	private String tableType;
 	private String justFolderName;
 	private boolean isConnected;
 
-	public FolderState(String path, String tableType, String justFolderName, boolean isConnected) {
+	public FolderInfos(String path, String tableType, String justFolderName, boolean isConnected) {
 		super();
 		this.path = path;
 		this.tableType = tableType;

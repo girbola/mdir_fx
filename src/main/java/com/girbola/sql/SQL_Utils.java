@@ -56,11 +56,11 @@ public class SQL_Utils extends FolderInfo_SQL {
 	 * = 0; this.thumb_length = 0; this.user = "";
 	 */
 
-	final static String selectedFoldersInsert = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
+	final static String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
 			+ " ('path', 'connected') VALUES(?,?)";
-	final static String foldersStateInsert =
+	final static String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
-                    SQL_Enums.FOLDERSSTATE.getType() +
+                    SQL_Enums.FOLDERINFOS.getType() +
                     " ("+
                     "'path', " +
                     "'tableType', " +
@@ -194,7 +194,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     /*
      * FoldersStates
      */
-    public static boolean createFoldersStatesDatabase(Connection connection) {
+    public static boolean createFolderInfosDatabase(Connection connection) {
         if (!isDbConnected(connection)) {
             try {
                 DatabaseMetaData metaData = connection.getMetaData();
@@ -206,7 +206,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
             return false;
         }
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERSSTATE.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
@@ -219,17 +219,17 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     //@formatter:on
-    public static boolean addToFolderStateDB(Connection connection, FolderState folderState) {
+    public static boolean addToFolderInfosDB(Connection connection, FolderInfos folderInfos) {
         if (connection == null) {
             return false;
         }
-        createFoldersStatesDatabase(connection);
+        createFolderInfosDatabase(connection);
         try {
-            PreparedStatement pstmt = connection.prepareStatement(foldersStateInsert);
-            pstmt.setString(1, folderState.getPath());
-            pstmt.setString(2, folderState.getTableType());
-            pstmt.setString(3, folderState.getJustFolderName());
-            pstmt.setBoolean(4, folderState.isConnected());
+            PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
+            pstmt.setString(1, folderInfos.getPath());
+            pstmt.setString(2, folderInfos.getTableType());
+            pstmt.setString(3, folderInfos.getJustFolderName());
+            pstmt.setBoolean(4, folderInfos.isConnected());
             pstmt.executeUpdate();
             pstmt.close();
             return true;
@@ -240,22 +240,16 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
-    public static List<FolderState> loadFoldersStateTo_Tables(Connection connection, Model_main model_Main) {
-        if (connection == null) {
-            Messages.sprintf("Not connected NULL!");
-        }
-        if (isDbConnected(connection)) {
+    public static List<FolderInfos> loadFolderInfosToTables(Connection connection, Model_main model_Main) {
+        if (!isDbConnected(connection)) {
             Messages.sprintf("Connected!");
-        } else {
-            Messages.sprintf("Not Connected!");
-            return null;
         }
 
-        String sql = "SELECT * FROM " + SQL_Enums.FOLDERSSTATE.getType();
+        String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFOS.getType();
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            List<FolderState> arrayList = new ArrayList<>();
+            List<FolderInfos> arrayList = new ArrayList<>();
 
             while (rs.next()) {
                 String path = rs.getString("path");
@@ -267,10 +261,10 @@ public class SQL_Utils extends FolderInfo_SQL {
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
                     return null;
                 }
-                FolderState folderState = new FolderState(path, tableType, justFolderName, isConnected);
-                folderState.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " folderState were connected? " + folderState.isConnected());
-                arrayList.add(folderState);
+                FolderInfos folderInfos = new FolderInfos(path, tableType, justFolderName, isConnected);
+                folderInfos.setConnected(Files.exists(Paths.get(path)));
+                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + folderInfos.isConnected());
+                arrayList.add(folderInfos);
             }
 
             return arrayList;
@@ -318,11 +312,11 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static boolean insertSelectedFolders_List_ToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
-        Messages.sprintf("insertSelectedFolders_List_ToDB: " + selectedFoldersInsert);
+        Messages.sprintf("insertSelectedFolders_List_ToDB: " + insertSelectedFolders);
         createSelectedFoldersTable(connection);
         try {
             connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(selectedFoldersInsert);
+            PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
 
             for (SelectedFolder selectedFolder : selectedFolder_list) {
                 Messages.sprintf("select: " + selectedFolder.getFolder());
@@ -350,8 +344,8 @@ public class SQL_Utils extends FolderInfo_SQL {
         createSelectedFoldersTable(connection);
         try {
             connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(selectedFoldersInsert);
-            Messages.sprintf("selectedFoldersInsert: " + selectedFoldersInsert + " create one: " + selectedFolderTable);
+            PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
+            Messages.sprintf("selectedFoldersInsert: " + insertSelectedFolders + " create one: " + selectedFolderTable);
             addToSelectedFoldersDB(connection, pstmt, selectedFolder);
             connection.commit();
             int[] value = pstmt.executeBatch();
@@ -639,6 +633,11 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
     // @formatter:on
 
+    /**
+     *
+     * @param connection
+     * @return
+     */
     public static boolean isDbConnected(Connection connection) {
         if (connection == null) {
             return false;

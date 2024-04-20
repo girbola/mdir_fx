@@ -184,8 +184,8 @@ public class Model_main {
         }
         SQL_Utils.setAutoCommit(connection, false);
 
-        SQL_Utils.clearTable(connection, SQL_Enums.FOLDERSSTATE.getType()); // clear table folderInfo.db
-        SQL_Utils.createFoldersStatesDatabase(connection); // create new folderinfodatabase folderInfo.db
+        SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFOS.getType()); // clear table folderInfo.db
+        SQL_Utils.createFolderInfosDatabase(connection); // create new folderinfodatabase folderInfo.db
 
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(),
                 TableType.SORTED.getType());
@@ -227,11 +227,11 @@ public class Model_main {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
-                    FolderState folderState = new FolderState(folderInfo.getFolderPath(), tableType,
+                    FolderInfos folderInfos = new FolderInfos(folderInfo.getFolderPath(), tableType,
                             folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderState = SQL_Utils.addToFolderStateDB(connection_Configuration, folderState);
-                    if (!addingToFolderState) {
+                    boolean addingToFolderInfos = SQL_Utils.addToFolderInfosDB(connection_Configuration, folderInfos);
+                    if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
                     }
                     /*
@@ -254,16 +254,15 @@ public class Model_main {
                             + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
                     return false;
                 }
-
             }
         }
+
         try {
-            Messages.sprintf("foldersStateConnection.commit() " + " foldersStateConnection.close();");
-            connection_Configuration.commit();
+            SQL_Utils.commitChanges(connection_Configuration);
             return true;
         } catch (Exception e) {
+            Messages.sprintfError("Cannot commit to SQL database");
             Messages.errorSmth(ERROR, "Cannot commit to SQL database", e, Misc.getLineNumber(), true);
-            e.printStackTrace();
             return false;
         }
     }

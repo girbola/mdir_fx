@@ -11,7 +11,7 @@ public enum SQL_Enums {
 	IGNOREDLIST("ignoredlist"),
 	CONFIG("config"),
 	TABLES_COLS("tables_cols"),
-	FOLDERSSTATE("folderStates");
+	FOLDERINFOS("folderinfos");
 
 	private String type;
 
