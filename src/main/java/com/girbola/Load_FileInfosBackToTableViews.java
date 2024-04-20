@@ -3,6 +3,7 @@ package com.girbola;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.*;
@@ -36,26 +37,41 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
                     + (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
             return false;
         }
-        if(SQL_Utils.isDbConnected(connection)) {
+        if(!SQL_Utils.isDbConnected(connection)) {
             return false;
         }
 
         List<FolderInfos> folderInfos_list = SQL_Utils.loadFolderInfosToTables(connection, model_main);
 
-        if (folderInfos_list.isEmpty()) {
+        if (folderInfos_list == null || folderInfos_list.isEmpty()) {
             Messages.sprintf("folderInfo_list were empty" + Load_FileInfosBackToTableViews.class.getName());
             return false;
         } else {
             for (FolderInfos folderInfos : folderInfos_list) {
-                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfos.getPath());
-                boolean loadFileInfoIntoFolderInfo = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
-                if (!loadFileInfoIntoFolderInfo) {
+                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfos.getFolderPath());
+                Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath());
+/*                 boolean loadFileInfoIntoFolderInfo = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
+               if (!loadFileInfoIntoFolderInfo) {
                     Messages.sprintfError("Something went wrong with loading from FolderInfos: " + folderInfo.getFolderPath());
                     cancel();
                     Main.setProcessCancelled(true);
+                }*/
+                if(folderInfo == null) {
+                    Messages.sprintfError("FolderInfo were null!: " + folderInfos.getFolderPath());
+                    continue;
                 }
-            }
+                if(folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
+                    model_main.tables().getSortIt_table().getItems().add(folderInfo);
+                }
+                if(folderInfo.getTableType().equals(TableType.SORTED.getType())) {
+                    model_main.tables().getSorted_table().getItems().add(folderInfo);
+                }
+                if(folderInfo.getTableType().equals(TableType.ASITIS.getType())) {
+                    model_main.tables().getAsItIs_table().getItems().add(folderInfo);
+                }
 
+            }
+/*
             if (!model_main.tables().getSortIt_table().getItems().isEmpty()) {
                 populateTable(model_main.tables().getSortIt_table().getItems());
             }
@@ -64,7 +80,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
             }
             if (!model_main.tables().getAsItIs_table().getItems().isEmpty()) {
                 populateTable(model_main.tables().getAsItIs_table().getItems());
-            }
+            }*/
         }
 
         return true;
@@ -73,10 +89,6 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
     private boolean populateTable(List<FolderInfo> folderInfo_list) {
 
         for (FolderInfo folderInfo : folderInfo_list) {
-            if (folderInfo.getFolderPath()
-                    .equals("C:\\Users\\marko_000\\Pictures\\2018\\Väinön rippijuhlat\\Väinön kuvat UUDET\\Editoi")) {
-                Messages.sprintf("Väinö found!");
-            }
             boolean addTable = populateTable(folderInfo);
             if (!addTable) {
                 Messages.sprintf("Skipping folder scan: " + folderInfo.getFolderPath());

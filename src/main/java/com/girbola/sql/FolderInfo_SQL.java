@@ -134,6 +134,7 @@ public class FolderInfo_SQL {
 		Path src = Paths.get(path + File.separator + Main.conf.getMdir_db_fileName());
 		Messages.sprintf("loadFolderInfo src is: " + src);
 		if (!Files.exists(src)) {
+			Messages.sprintfError("Cannot load FolderInfo from: " + path);
 			return null;
 		}
 		FolderInfo folderInfo = null;

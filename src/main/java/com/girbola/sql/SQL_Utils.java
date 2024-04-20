@@ -192,7 +192,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     /*
-     * FoldersStates
+     * FolderInfos
      */
     public static boolean createFolderInfosDatabase(Connection connection) {
         if (!isDbConnected(connection)) {
@@ -226,7 +226,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         createFolderInfosDatabase(connection);
         try {
             PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, folderInfos.getPath());
+            pstmt.setString(1, folderInfos.getFolderPath());
             pstmt.setString(2, folderInfos.getTableType());
             pstmt.setString(3, folderInfos.getJustFolderName());
             pstmt.setBoolean(4, folderInfos.isConnected());
@@ -651,7 +651,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static FolderInfo loadFolderInfoCurrentDir(Path path) {
-        Messages.sprintf("loadFoldersState started: " + path);
+        Messages.sprintf("loadFolderInfos started: " + path);
         FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(path.toString());
         return folderInfo;
     }

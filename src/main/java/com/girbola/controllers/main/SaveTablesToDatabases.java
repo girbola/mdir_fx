@@ -54,7 +54,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
             return null;
         }
         SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERINFOS.getType());
-        SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new foldersStateDatabase
+        SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new FoldersInfos table
         if(!SQL_Utils.isDbConnected(connection_Configuration)) {
             Messages.errorSmth(ERROR, "Connection were closed!", new Exception("Connection were closed"),
                     Misc.getLineNumber(), true);
