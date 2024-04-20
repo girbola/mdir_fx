@@ -20,7 +20,6 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 
-import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
