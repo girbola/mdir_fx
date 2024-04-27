@@ -21,6 +21,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
@@ -48,7 +49,10 @@ public class Tables {
 //	private HideButtons hideButtons;
 	public ShowAndHideTables showAndHideTables; 
 	private TableStatistic tableStatistic;
-	private Sorter sorter;
+
+	private Pane sortItRootPane;
+	private Pane sortedRootPane;
+	private Pane asItIsRootPane;
 
 	private TableView<FolderInfo> sortIt_table;
 	private TableView<FolderInfo> sorted_table;
@@ -309,10 +313,6 @@ public class Tables {
 		return newList;
 	}
 
-	public Sorter getSorter() {
-		return this.sorter;
-	}
-
 	public TableView<FolderInfo> getSortIt_table() {
 		return this.sortIt_table;
 	}
@@ -517,4 +517,31 @@ public class Tables {
 	public void setSorted_TableStatistic(TableStatistic sorted_TableStatistic) {
 		this.sorted_TableStatistic = sorted_TableStatistic;
 	}
+
+
+	public Pane getSortItRootPane() {
+		return sortItRootPane;
+	}
+
+	public void setSortItRootPane(Pane sortItRootPane) {
+		this.sortItRootPane = sortItRootPane;
+	}
+
+	public Pane getSortedRootPane() {
+		return sortedRootPane;
+	}
+
+	public void setSortedRootPane(Pane sortedRootPane) {
+		this.sortedRootPane = sortedRootPane;
+	}
+
+	public Pane getAsItIsRootPane() {
+		return asItIsRootPane;
+	}
+
+	public void setAsItIsRootPane(Pane asItIsRootPane) {
+		this.asItIsRootPane = asItIsRootPane;
+	}
+
+
 }

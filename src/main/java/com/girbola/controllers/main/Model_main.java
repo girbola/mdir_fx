@@ -66,9 +66,6 @@ public class Model_main {
         return table_root_hbox_width;
     }
 
-    public void setTable_root_hbox_width(String table_root_hbox_width) {
-        this.table_root_hbox_width.set(table_root_hbox_width);
-    }
 
     private Stage main_stage;
 
@@ -89,6 +86,11 @@ public class Model_main {
     private SimpleDoubleProperty sortitTableWidth_prop;
     private SimpleDoubleProperty sortedTableWidth_prop;
     private SimpleDoubleProperty asitisTableWidth_prop;
+
+
+    public void setTable_root_hbox_width(String table_root_hbox_width) {
+        this.table_root_hbox_width.set(table_root_hbox_width);
+    }
 
     public TableStatistic getSortitTableStatistic() {
         return sortitTableStatistic;

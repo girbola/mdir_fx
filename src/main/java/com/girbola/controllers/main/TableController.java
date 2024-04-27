@@ -69,7 +69,6 @@ import static com.girbola.messages.Messages.warningText;
 public class TableController {
 
 
-
     private final String ERROR = TableController.class.getSimpleName();
 
     private Image hide_im;
@@ -78,7 +77,8 @@ public class TableController {
     private Model_main model_main;
     private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
     private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);private String tableType;
+    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
+    private String tableType;
     private Window owner;
 
     // @formatter:off
@@ -437,42 +437,42 @@ public class TableController {
 
         Messages.sprintf("Show table?: " + table.isVisible() + " visibles: " + visibles + " hidden: " + hidden + " buttonWidth " + buttonWidth + " tableWidth: " + tableWidth);
 
-        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "showHideButton_hbox");
-        HBox buttons_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "buttons_hbox");
+        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortItRootPane(), "showHideButton_hbox");
+        AnchorPane hideablePane_sortit = (AnchorPane) getPaneFromParent(model_main.tables().getSortItRootPane(), "hideablePane");
 
-        HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "showHideButton_hbox");
-        HBox buttons_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSorted_table().getParent(), "buttons_hbox");
+        HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSortedRootPane(), "showHideButton_hbox");
+        AnchorPane hideablePane_sorted = (AnchorPane) getPaneFromParent(model_main.tables().getSortedRootPane(), "hideablePane");
 
-        HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "showHideButton_hbox");
-        HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "buttons_hbox");
+        HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIsRootPane(), "showHideButton_hbox");
+        AnchorPane hideablePane_asitis = (AnchorPane) getPaneFromParent(model_main.tables().getAsItIsRootPane(), "hideablePane");
 
         if (model_main.tables().getSortIt_table().isVisible()) {
             TableUtils.setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
-            buttons_hbox_sortit.setVisible(true);
+            hideablePane_sortit.setVisible(true);
             model_main.tables().showAndHideTables.setSortit_show_property(true);
         } else {
             TableUtils.setWidth(showHideButton_hbox_sortit, buttonWidth);
-            buttons_hbox_sortit.setVisible(false);
+            hideablePane_sortit.setVisible(false);
             model_main.tables().showAndHideTables.setSortit_show_property(false);
         }
 
         if (model_main.tables().getSorted_table().isVisible()) {
             TableUtils.setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
-            buttons_hbox_sorted.setVisible(true);
+            hideablePane_sorted.setVisible(true);
             model_main.tables().showAndHideTables.setSorted_show_property(true);
         } else {
             TableUtils.setWidth(showHideButton_hbox_sorted, buttonWidth);
-            buttons_hbox_sorted.setVisible(false);
+            hideablePane_sorted.setVisible(false);
             model_main.tables().showAndHideTables.setSorted_show_property(false);
         }
 
         if (model_main.tables().getAsItIs_table().isVisible()) {
             TableUtils.setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
-            buttons_hbox_asitis.setVisible(true);
+            hideablePane_asitis.setVisible(true);
             model_main.tables().showAndHideTables.setAsitis_show_property(true);
         } else {
             TableUtils.setWidth(showHideButton_hbox_asitis, buttonWidth);
-            buttons_hbox_asitis.setVisible(false);
+            hideablePane_asitis.setVisible(false);
             model_main.tables().showAndHideTables.setAsitis_show_property(false);
         }
     }
@@ -507,24 +507,28 @@ public class TableController {
     }
 
     private Pane getPaneFromParent(Parent parent, String id) {
-        Pane pane = (Pane) parent;
+        Messages.sprintf("getPaneFromParent parent is: " + parent);
+        VBox pane = (VBox) parent;
         if (pane instanceof VBox) {
-            if (pane.getId().contains("table_vbox")) {
-                VBox main = (VBox) pane;
-                for (Node node : main.getChildren()) {
-                    if (node instanceof HBox) {
-                        if (node.getId().equals(id) && node.getId().equals("showHideButton_hbox")) {
-                            return (HBox) node;
-                        }
-                        if (node.getId().equals(id) && node.getId().equals("buttons_hbox")) {
-                            return (HBox) node;
-                        }
+            Messages.sprintf("getPaneFromParent pane: " + pane.getId());
+            for (Node table_vbox_node : pane.getChildren()) {
+                if (table_vbox_node instanceof HBox) {
+                    if (table_vbox_node.getId().equals(id)) {
+                        return (HBox) table_vbox_node;
                     }
                 }
+                if (table_vbox_node instanceof AnchorPane) {
+                    if (table_vbox_node.getId().equals(id)) {
+                        return (AnchorPane) table_vbox_node;
+                    }
+
+                }
+
             }
         }
         return null;
     }
+
     private void setTableWidth(Parent parent, double tableWidth) {
         Platform.runLater(() -> {
             parent.prefWidth(tableWidth);
@@ -572,10 +576,10 @@ public class TableController {
     }
 
 
-
     public void init(Model_main aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
+
         this.tableType = tableType;
 
         show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
@@ -600,10 +604,13 @@ public class TableController {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setEditable(true);
         table.setPlaceholder(new Label(bundle.getString("tableContentEmpty")));
+
         table_Vbox.setId("table_vbox");
         table_Vbox.setFillWidth(true);
 
         table.setId(tableType);
+
+
         table.setItems(data_obs);
         model_main.tables().setDrag(table);
         connected_col.setCellValueFactory((TableColumn.CellDataFeatures<FolderInfo, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
@@ -690,6 +697,14 @@ public class TableController {
         }
         Messages.sprintf("table is editable? " + table.isEditable() + " just fold editable?  " + justFolderName_col.isEditable());
 
+        if(tableType.equals(TableType.SORTIT.getType())) {
+            model_main.tables().setSortItRootPane(table_Vbox);
+        } else if(tableType.equals(TableType.SORTED.getType())) {
+            model_main.tables().setSortedRootPane(table_Vbox);
+        } else if(tableType.equals(TableType.ASITIS.getType())) {
+            model_main.tables().setAsItIsRootPane(table_Vbox);
+        }
+
         if (tableType == TableType.ASITIS.getType()) {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
@@ -735,10 +750,8 @@ public class TableController {
     }
 
 
-
-
-            public TableView<FolderInfo> getTable() {
-                return table;
+    public TableView<FolderInfo> getTable() {
+        return table;
 
     }
 
