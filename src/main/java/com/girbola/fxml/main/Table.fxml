@@ -18,7 +18,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" style="-fx-background-color: red;" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <HBox fx:id="showHideButton_hbox" alignment="CENTER" fillHeight="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" style="-fx-border-color: red;" VBox.vgrow="NEVER">
          <children>

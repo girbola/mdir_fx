@@ -246,6 +246,8 @@ public class HideButtons {
 //
 //	}
 
+
+
 	void hide_show_table(Button button, String tableType) {
 		Messages.sprintf("button pressed: " + tableType);
 		if (visible_prop.get() == 1) {

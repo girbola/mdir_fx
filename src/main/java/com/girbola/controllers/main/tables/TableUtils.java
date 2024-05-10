@@ -891,13 +891,13 @@ public class TableUtils {
 
     public static int getVisibleTables(Model_main model_main) {
         int visibles = 0;
-        if (model_main.tables().showAndHideTables.getSortit_show_property().get()) {
+        if (model_main.tables().getSortIt_table().isVisible()) {
             visibles++;
         }
-        if (model_main.tables().showAndHideTables.getSorted_show_property().get()) {
+        if (model_main.tables().getSorted_table().isVisible()) {
             visibles++;
         }
-        if (model_main.tables().showAndHideTables.getAsitis_show_property().get()) {
+        if (model_main.tables().getAsItIs_table().isVisible()) {
             visibles++;
         }
 
@@ -910,7 +910,7 @@ public class TableUtils {
 
         double tableWidth = Math.floor(ScreenUtils.screenBouds().getWidth() / visibles);
         double buttonWidth = hide_btn.getLayoutBounds().getWidth();
-        double divideredWidth = Main.getMain_stage().getWidth();
+        double divideredWidth = Math.floor(model_main.tables().getTables_rootPane().getWidth() / visibles);
         Messages.sprintf("DividerWidth: " + divideredWidth);
 
 //        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortIt_table().getParent(), "showHideButton_hbox");
@@ -923,21 +923,21 @@ public class TableUtils {
 //        HBox buttons_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIs_table().getParent(), "buttons_hbox");
 
         if (model_main.tables().getSortIt_table().isVisible()) {
-            model_main.tables().showAndHideTables.setSortit_show_property(true);
+
         } else {
-            model_main.tables().showAndHideTables.setSortit_show_property(false);
+
         }
 
         if (model_main.tables().getSorted_table().isVisible()) {
-            model_main.tables().showAndHideTables.setSorted_show_property(true);
+
         } else {
-            model_main.tables().showAndHideTables.setSorted_show_property(false);
+
         }
 
         if (model_main.tables().getAsItIs_table().isVisible()) {
-            model_main.tables().showAndHideTables.setAsitis_show_property(true);
+
         } else {
-            model_main.tables().showAndHideTables.setAsitis_show_property(false);
+
         }
     }
 

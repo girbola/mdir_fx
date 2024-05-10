@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.main;
 
+
 import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -20,6 +21,14 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
 import com.girbola.workdir.WorkDirHandler;
+
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -39,13 +48,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
@@ -55,51 +57,63 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class Model_main {
 
-    private final String ERROR = Model_main.class.getSimpleName();
-
-    private Tables tables;
-    private WorkDirHandler workDirHandler = new WorkDirHandler();
-
-    private StringProperty table_root_hbox_width = new SimpleStringProperty();
-
-    public StringProperty getTable_root_hbox_width() {
-        return table_root_hbox_width;
-    }
-
-
-    private Stage main_stage;
-
     private AnchorPane main_container;
-    private VBox main_vbox;
+    private BottomController bottomController;
     private Buttons buttons;
+    private List<ThumbInfo> thumbInfo = new ArrayList<>();
+    private MainWindowSizing mainWindowSizing;
     private Populate populate;
     private Scene scene;
-    private SelectedFolderScanner selectedFolders;
-    private TablePositionHolder tablePositionHolder;
-    private List<ThumbInfo> thumbInfo = new ArrayList<>();
     private ScheduledService<Void> monitorExternalDriveConnectivity;
-
-    private TableStatistic sortitTableStatistic;
-    private TableStatistic sortedTableStatistic;
-    private TableStatistic asitisTableStatistic;
-
-    private SimpleDoubleProperty sortitTableWidth_prop;
-    private SimpleDoubleProperty sortedTableWidth_prop;
+    private SelectedFolderScanner selectedFolders;
     private SimpleDoubleProperty asitisTableWidth_prop;
+    private SimpleDoubleProperty sortedTableWidth_prop;
+    private SimpleDoubleProperty sortitTableWidth_prop;
+    private Stage main_stage;
+    private StringProperty table_root_hbox_width = new SimpleStringProperty();
+    private TablePositionHolder tablePositionHolder;
+    private TableStatistic asitisTableStatistic;
+    private TableStatistic sortedTableStatistic;
+    private TableStatistic sortitTableStatistic;
+    private Tables tables;
+    private VBox main_vbox;
+    private WorkDirHandler workDirHandler = new WorkDirHandler();
 
+    private final String ERROR = Model_main.class.getSimpleName();
 
+    public Model_main() {
+        sprintf("Model instantiated...");
+
+        buttons = new Buttons(this);
+        mainWindowSizing = new MainWindowSizing(this);
+        monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
+        monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
+        populate = new Populate(this);
+        selectedFolders = new SelectedFolderScanner();
+        tablePositionHolder = new TablePositionHolder(this);
+        tables = new Tables(this);
+
+        sortitTableWidth_prop = new SimpleDoubleProperty(0);
+        sortedTableWidth_prop = new SimpleDoubleProperty(0);
+        asitisTableWidth_prop = new SimpleDoubleProperty(0);
+
+        tables.init();
+
+    }
+/*
     public void setTable_root_hbox_width(String table_root_hbox_width) {
         this.table_root_hbox_width.set(table_root_hbox_width);
-    }
+    }*/
 
     public TableStatistic getSortitTableStatistic() {
         return sortitTableStatistic;
     }
-
+/*
     public void setSortitTableStatistic(TableStatistic sortitTableStatistic) {
         this.sortitTableStatistic = sortitTableStatistic;
-    }
+    }*/
 
+/*
     public TableStatistic getSortedTableStatistic() {
         return sortedTableStatistic;
     }
@@ -115,31 +129,15 @@ public class Model_main {
     public void setAsitisTableStatistic(TableStatistic asitisTableStatistic) {
         this.asitisTableStatistic = asitisTableStatistic;
     }
+*/
 
-    public Model_main() {
-        sprintf("Model instantiated...");
 
-        tables = new Tables(this);
-
-        buttons = new Buttons(this);
-
-        selectedFolders = new SelectedFolderScanner();
-
-        populate = new Populate(this);
-
-        tablePositionHolder = new TablePositionHolder(this);
-
-        monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
-        monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
-        tables.init();
-
-        sortitTableWidth_prop = new SimpleDoubleProperty(0);
-        sortedTableWidth_prop = new SimpleDoubleProperty(0);
-        asitisTableWidth_prop = new SimpleDoubleProperty(0);
-
-//		tables.getSorted_table().widthProperty();
+    public StringProperty getTable_root_hbox_width() {
+        return table_root_hbox_width;
     }
 
+
+/*
     public final List<ThumbInfo> getThumbInfo() {
         return thumbInfo;
     }
@@ -147,10 +145,13 @@ public class Model_main {
     public final void setThumbInfo(List<ThumbInfo> thumbInfo) {
         this.thumbInfo = thumbInfo;
     }
+*/
 
+/*
     public TablePositionHolder getTablePositionHolder() {
         return this.tablePositionHolder;
     }
+*/
 
     public SelectedFolderScanner getSelectedFolders() {
         return selectedFolders;
@@ -207,7 +208,7 @@ public class Model_main {
 
         SQL_Utils.commitChanges(connection);
         boolean closeConnection = SQL_Utils.closeConnection(connection);
-        if(!closeConnection) {
+        if (!closeConnection) {
             return false;
         }
 
@@ -350,7 +351,6 @@ public class Model_main {
         return monitorExternalDriveConnectivity;
     }
 
-    private BottomController bottomController;
 
     public void setBottomController(BottomController bottomController) {
         this.bottomController = bottomController;
@@ -374,6 +374,11 @@ public class Model_main {
         } else {
             Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
         }
+    }
+
+
+    public MainWindowSizing getMainWindowSizing() {
+        return this.mainWindowSizing;
     }
 
     public void saveTablesToDatabases_(Stage stage, LoadingProcessTask loadingProcess_Task,

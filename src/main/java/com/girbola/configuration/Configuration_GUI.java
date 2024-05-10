@@ -36,14 +36,20 @@ class Configuration_GUI {
 
 	private BooleanProperty betterQualityThumbs = new SimpleBooleanProperty(false);
 	private BooleanProperty confirmOnExit = new SimpleBooleanProperty(true);
-	private BooleanProperty showHints = new SimpleBooleanProperty(true);
-	private BooleanProperty showFullPath = new SimpleBooleanProperty(true);
-	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
 	private BooleanProperty savingThumb = new SimpleBooleanProperty(true);
-
+	private BooleanProperty showFullPath = new SimpleBooleanProperty(true);
+	private BooleanProperty showHints = new SimpleBooleanProperty(true);
+	private BooleanProperty showTooltips = new SimpleBooleanProperty(true);
+	private BooleanProperty tableShow_asItIs = new SimpleBooleanProperty(true);
 	private BooleanProperty tableShow_sortIt = new SimpleBooleanProperty(true);
 	private BooleanProperty tableShow_sorted = new SimpleBooleanProperty(true);
-	private BooleanProperty tableShow_asItIs = new SimpleBooleanProperty(true);
+	private SimpleDoubleProperty windowStartHeight = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartPosX = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartPosY = new SimpleDoubleProperty(-1);
+	private SimpleDoubleProperty windowStartWidth = new SimpleDoubleProperty(-1);
+	private SimpleStringProperty workDir = new SimpleStringProperty("");
+	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("");
+	private String themePath = ThemePath.DARK.getType();
 
 	public boolean getTableShow_sortIt() {
 		return this.tableShow_sortIt.get();
@@ -69,16 +75,7 @@ class Configuration_GUI {
 		this.tableShow_asItIs.set(tableShow_asItIs);
 	}
 
-	private SimpleDoubleProperty windowStartPosX = new SimpleDoubleProperty(-1);
-	private SimpleDoubleProperty windowStartPosY = new SimpleDoubleProperty(-1);
 
-	private SimpleDoubleProperty windowStartWidth = new SimpleDoubleProperty(-1);
-	private SimpleDoubleProperty windowStartHeight = new SimpleDoubleProperty(-1);
-
-	private SimpleStringProperty workDir = new SimpleStringProperty("");
-	private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("");
-
-	private String themePath = ThemePath.DARK.getType();
 
 	public SimpleDoubleProperty windowStartPosX_property() {
 		return this.windowStartPosX;

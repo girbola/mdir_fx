@@ -16,6 +16,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
+import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -37,16 +38,19 @@ public class MainController {
     private Bounds tables_rootPaneNodeLayoutBounds;
 
     //@formatter:off
-	@FXML private HBox tables_hbox;
-	@FXML private AnchorPane main_container;
-    @FXML TabPane tablesTabPane;
-	@FXML private VBox main_vbox;
-    @FXML MenuBarController menuBar_topController;
-	@FXML private AnchorPane tables_rootPane;
-	@FXML TableController sortitController;
-	@FXML TableController sortedController;
-	@FXML TableController asitisController;
 	@FXML BottomController bottomController;
+	@FXML TableController asitisController;
+	@FXML TableController sortedController;
+	@FXML TableController sortitController;
+	@FXML private AnchorPane main_container;
+	@FXML private AnchorPane tables_rootPane;
+	@FXML private HBox tables_hbox;
+	@FXML private VBox main_vbox;
+    @FXML Button asitisTopButton;
+    @FXML Button sortedTopButton;
+    @FXML Button sortitTopButton;
+    @FXML MenuBarController menuBar_topController;
+    @FXML TabPane tablesTabPane;
 	//@formatter:on
 
     public void initialize(Model_main model_main) {
@@ -61,11 +65,13 @@ public class MainController {
 
         bottomController.init(model_main);
         setModelProperties();
-        tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
+
+
+        //tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
         tablesTabPane.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                Messages.sprintf("TABPANE WIDTH IS: " + newValue);
+                /*Messages.sprintf("TABPANE WIDTH IS: " + newValue);*/
             }
         });
     }
@@ -79,13 +85,13 @@ public class MainController {
 
     private void initControllers() {
         menuBar_topController.init(model_main);
-        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
-        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
-        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
+        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType(), sortitTopButton);
+        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType(), sortedTopButton);
+        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType(), asitisTopButton);
 
-        sortitController.setShowHideTableButtonIcons(TableType.SORTIT.getType(), sortitController.hide_btn, true);
-        sortedController.setShowHideTableButtonIcons(TableType.SORTED.getType(), sortedController.hide_btn, true);
-        asitisController.setShowHideTableButtonIcons(TableType.ASITIS.getType(), asitisController.hide_btn, true);
+        sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
+        sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);
+        asitisController.setShowHideTableButtonIcons(asitisController.hide_btn, true);
     }
 
     private void initStatistics() {

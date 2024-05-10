@@ -52,13 +52,13 @@ public class ShowAndHideTables {
 	public int getVisibles() {
 		int visibles = 0;
 
-		if (sortit_show_property.get() == true) {
+		if (model_Main.tables().getSortIt_table().isVisible()) {
 			visibles++;
 		}
-		if (sorted_show_property.get() == true) {
+		if (model_Main.tables().getSorted_table().isVisible()) {
 			visibles++;
 		}
-		if (asitis_show_property.get() == true) {
+		if (model_Main.tables().getAsItIs_table().isVisible()) {
 			visibles++;
 		}
 		return visibles;

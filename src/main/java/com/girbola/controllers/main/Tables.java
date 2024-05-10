@@ -10,6 +10,7 @@ import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.cell.*;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -67,7 +68,7 @@ public class Tables {
 	boolean isSameTable = false;
 
 	public AnchorPane getTables_rootPane() {
-		return tables_rootPane;
+		return this.tables_rootPane;
 	}
 
 	public void setTables_rootPane(AnchorPane tables_rootPane) {
@@ -544,4 +545,14 @@ public class Tables {
 	}
 
 
+    public TableView<FolderInfo> getTableByType(String tableType) {
+		if(tableType.equals(TableType.SORTIT.getType())) {
+			return getSortIt_table();
+		} else if(tableType.equals(TableType.SORTED.getType())) {
+			return getSorted_table();
+		} else if (tableType.equals(TableType.ASITIS.getType())) {
+			return getAsItIs_table();
+		}
+		return null;
+    }
 }
