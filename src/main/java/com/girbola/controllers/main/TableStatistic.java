@@ -19,12 +19,11 @@ public class TableStatistic {
 	private Label totalFilesTotal_lbl;
 
 	/**
-	 * Represents a table statistic that displays information about the total number of files copied,
-	 * the total size of copied files, and the total number of files.
+	 * Represents a Table Statistic object that updates the labels with the total files copied, total file size, and total files.
 	 *
-	 * @param totalFilesCopied_lbl The label that displays the total number of files copied.
-	 * @param totalFilesSize_lbl The label that displays the total size of copied files.
-	 * @param totalFilesTotal_lbl The label that displays the total number of files.
+	 * @param aTotalFilesCopied_lbl The label to display the total number of files copied.
+	 * @param aTotalFilesSize_lbl The label to display the total size of the files.
+	 * @param aTotalFilesTotal_lbl The label to display the total number of files.
 	 */
 	public TableStatistic(Label aTotalFilesCopied_lbl, Label aTotalFilesSize_lbl, Label aTotalFilesTotal_lbl) {
 		this.totalFilesCopied_lbl = aTotalFilesCopied_lbl;

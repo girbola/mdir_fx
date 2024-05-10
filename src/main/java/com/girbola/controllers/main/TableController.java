@@ -515,7 +515,7 @@ public class TableController {
         hideablePane.setVisible(!hideablePane.isVisible());
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
-        model_main.getMainWindowSizing();
+
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
         //handleTableStates();
@@ -539,7 +539,7 @@ public class TableController {
     private Pane getPaneFromParent(Parent parent, String id) {
         Messages.sprintf("getPaneFromParent parent is: " + parent);
         VBox pane = (VBox) parent;
-        if (pane instanceof VBox) {
+        if (pane != null) {
             Messages.sprintf("getPaneFromParent pane: " + pane.getId());
             for (Node table_vbox_node : pane.getChildren()) {
                 if (table_vbox_node instanceof HBox) {
@@ -553,7 +553,6 @@ public class TableController {
                     }
 
                 }
-
             }
         }
         return null;
