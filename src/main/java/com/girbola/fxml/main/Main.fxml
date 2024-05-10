@@ -49,7 +49,7 @@
                                                    </graphic></Button>
                                             </buttons>
                                           </ButtonBar>
-                                                    <HBox fx:id="tables_hbox" style="-fx-background-color: cyan; -fx-border-color: black; -fx-border-width: 5px;">
+                                                    <HBox fx:id="tables_hbox" style="-fx-background-color: cyan; -fx-border-color: black; -fx-border-width: 5px;" VBox.vgrow="ALWAYS">
                                                         <children>
                                                             <AnchorPane fx:id="sortit_table_parent">
                                                                 <children>

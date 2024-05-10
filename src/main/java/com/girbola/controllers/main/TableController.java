@@ -70,7 +70,6 @@ public class TableController {
 
     private final String ERROR = TableController.class.getSimpleName();
 
-    private Image hide_im;
     private Image show_im;
     private Model_CollectDialog model_CollectDialog;
     private Model_main model_main;
@@ -390,13 +389,13 @@ public class TableController {
     public void setShowHideTableButtonIcons(Button button, boolean show) {
         ImageView iv = (ImageView) button.getGraphic();
         if (show) {
-            iv.setImage(hide_im);
-            iv.setRotate(-90);
-            button.setGraphic(iv);
+            Platform.runLater(() -> {
+                iv.setRotate(0);
+            });
         } else {
-            iv.setImage(show_im);
-            iv.setRotate(0);
-            button.setGraphic(iv);
+            Platform.runLater(() -> {
+                iv.setRotate(-90);
+            });
         }
     }
 
@@ -516,9 +515,11 @@ public class TableController {
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
 
+        setShowHideTableButtonIcons(hide_btn, table.isVisible());
+
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
-        //handleTableStates();
+
     }
 
     private int getVisibles() {
@@ -622,8 +623,7 @@ public class TableController {
         });
 
         show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
-        hide_im = GUI_Methods.loadImage("hideTable.png", GUIPrefs.BUTTON_WIDTH);
-
+        setShowHideTableButtonIcons(hide_btn, table.isVisible());
       /*  showTable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (tableType.equals(TableType.SORTIT.getType())) {
                 model_main.tables().showAndHideTables.setSortit_show_property(newValue);

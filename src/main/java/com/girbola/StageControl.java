@@ -64,7 +64,7 @@ public class StageControl extends Stage {
                 double asitisWidth = 0;
                 double hiddenWidths = ((3 - visibles) * 50);
                 double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-145);
-                double divider = Math.floor(((double) tablesRootPane) / (double) visibles);
+                double divider = Math.floor(tablesRootPane / (double) visibles);
                 divider -= hiddenWidths;
 
                 //divider -= (hiddenWidths*3);
