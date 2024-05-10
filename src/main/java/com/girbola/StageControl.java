@@ -3,10 +3,6 @@ package com.girbola;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
-import javafx.beans.binding.DoubleBinding;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Bounds;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
