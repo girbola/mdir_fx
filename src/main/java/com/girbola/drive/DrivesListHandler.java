@@ -7,7 +7,7 @@
 package com.girbola.drive;
 
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.Model_folderScanner;
+import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -33,7 +33,7 @@ public class DrivesListHandler {
 		return false;
 	}
 
-	public boolean loadList(Model_folderScanner model_folderScanner) {
+	public boolean loadList(ModelFolderScanner model_folderScanner) {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 		boolean driveInfoLoaded = SQL_Utils.loadDriveInfo(connection, model_folderScanner);
 		if (driveInfoLoaded) {

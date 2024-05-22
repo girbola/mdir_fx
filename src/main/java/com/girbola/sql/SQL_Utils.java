@@ -1,7 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.Model_folderScanner;
+import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.SQL_Enums;
@@ -44,7 +44,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 	final static String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
                 SQL_Enums.SELECTEDFOLDERS.getType() +
-                " (path STRING PRIMARY KEY, connected BOOLEAN)";
+                " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN)";
 	
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
@@ -169,7 +169,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     // @formatter:on
-    public static boolean loadDriveInfo(Connection connection, Model_folderScanner model_folderScanner) {
+    public static boolean loadDriveInfo(Connection connection, ModelFolderScanner model_folderScanner) {
         String sql = "SELECT * FROM " + SQL_Enums.DRIVEINFO.getType();
         try {
             Statement stmt = connection.createStatement();
@@ -275,14 +275,21 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     }
 
-    /*
-     * SelectedFolders
-     */
 
+    /**
+     * Adds the selected folder to the selected folders database.
+     *
+     * @param connection The database connection.
+     * @param pstmt      The prepared statement for the query.
+     * @param selectedFolder The SelectedFolder object containing the folder details.
+     * @return true if the folder is successfully added, false otherwise.
+     */
     private static boolean addToSelectedFoldersDB(Connection connection, PreparedStatement pstmt, SelectedFolder selectedFolder) {
         try {
-            pstmt.setString(1, selectedFolder.getFolder());
+            pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
             pstmt.setBoolean(2, selectedFolder.connected_property().get());
+            pstmt.setString(3, selectedFolder.getFolder());
+
             Messages.sprintf("selectedfolder is. " + selectedFolder.getFolder() + " is connected? " + selectedFolder.connected_property().get());
             pstmt.addBatch();
             return true;
@@ -320,7 +327,9 @@ public class SQL_Utils extends FolderInfo_SQL {
 
             for (SelectedFolder selectedFolder : selectedFolder_list) {
                 Messages.sprintf("select: " + selectedFolder.getFolder());
-                if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
+                if(selectedFolder.isSelected()) {
+                //if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
+
                     addToSelectedFoldersDB(connection, pstmt, selectedFolder);
                 } else {
                     Messages.sprintfError("insertSelectedFolders_List_ToDB SelectedFolder did not exist: " + selectedFolder.getFolder());
@@ -378,9 +387,10 @@ public class SQL_Utils extends FolderInfo_SQL {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Messages.sprintf("loadFolders_list starting: " + sql);
+                boolean selected = rs.getBoolean("selected");
                 String path = rs.getString("path");
                 boolean connected = rs.getBoolean("connected");
-                SelectedFolder selectedFolder = new SelectedFolder(connected, path);
+                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path);
                 model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
             }
             Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());
@@ -405,9 +415,10 @@ public class SQL_Utils extends FolderInfo_SQL {
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
                 Messages.sprintf("loadFolders_list starting: " + sql);
+                boolean selected = rs.getBoolean("selected");
                 String path = rs.getString("path");
                 boolean connected = rs.getBoolean("connected");
-                SelectedFolder selectedFolder = new SelectedFolder(connected, path);
+                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path);
                 model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
             }
             Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());

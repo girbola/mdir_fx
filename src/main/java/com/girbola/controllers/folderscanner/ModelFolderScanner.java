@@ -24,7 +24,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Model_folderScanner {
+public class ModelFolderScanner {
 
 	//	@SuppressWarnings("unused")
 	private Model_main model_main;

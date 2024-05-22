@@ -1,48 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
     <children>
-        <SplitPane fx:id="splitPane_root" dividerPositions="0.6140939597315436" AnchorPane.bottomAnchor="0.0"
-                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane fx:id="splitPane_root" dividerPositions="0.5721476510067114" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
-                <fx:include fx:id="selectedFolders" source="SelectedFolders.fxml"/>
+                <fx:include fx:id="selectedFolders" source="SelectedFolders.fxml" />
                 <AnchorPane>
                     <children>
-                        <SplitPane fx:id="splitPane_drives" prefHeight="638.0" prefWidth="396.0"
-                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane fx:id="splitPane_drives" prefHeight="638.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="300.0" minWidth="150.0">
                                     <children>
-                                        <VBox styleClass="listRoots" AnchorPane.bottomAnchor="0.0"
-                                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                              AnchorPane.topAnchor="0.0">
+                                        <VBox styleClass="listRoots" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <Label text="%drives"/>
-                                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS"
-                                                            pannable="true" vbarPolicy="ALWAYS" GridPane.columnSpan="2"
-                                                            GridPane.rowIndex="1" GridPane.rowSpan="3"
-                                                            VBox.vgrow="ALWAYS">
+                                                <Label text="%drives" />
+                                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3" VBox.vgrow="ALWAYS">
                                                     <content>
-                                                        <TreeView fx:id="drives_treeView" minWidth="150.0"
-                                                                  styleClass="listRoots"/>
+                                                        <TreeView fx:id="drives_treeView" minWidth="150.0" styleClass="listRoots" />
                                                     </content>
                                                 </ScrollPane>
                                                 <HBox alignment="CENTER">
                                                     <children>
-                                                        <Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false"
-                                                                onAction="#addToSelectedFolders_btn_action"
-                                                                text="&lt;-"/>
-                                                        <Button fx:id="list" maxHeight="50.0" maxWidth="75.0"
-                                                                minHeight="30.0" minWidth="50.0" mnemonicParsing="false"
-                                                                onAction="#list_action" prefHeight="30.0"
-                                                                prefWidth="75.0" text="List DEBUG"
-                                                                textAlignment="CENTER" wrapText="true"
-                                                                HBox.hgrow="ALWAYS"/>
+                                                        <Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false" onAction="#addToSelectedFolders_btn_action" text="&lt;-" />
+                                                        <Button fx:id="list" maxHeight="50.0" maxWidth="75.0" minHeight="30.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="30.0" prefWidth="75.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />
                                                     </children>
                                                 </HBox>
                                             </children>
@@ -57,6 +48,6 @@
         </SplitPane>
     </children>
     <padding>
-        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0"/>
+        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
     </padding>
 </AnchorPane>

@@ -28,14 +28,9 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class SubList extends Task<List<Path>> {
 	private final String ERROR = SubList.class.getSimpleName();
-	private List<Path> selectedFolderScanner_list;
 
 	private static List<Path> list = new ArrayList<>();
-
-	public SubList(ObservableList<Path> selectedFolderScanner_list) {
-		this.selectedFolderScanner_list = selectedFolderScanner_list;
-		// list.addAll(selectedFolderScanner_list);
-	}
+	private List<Path> selectedFolderScanner_list;
 
 	public SubList(List<Path> selectedFolderScanner_list) {
 		this.selectedFolderScanner_list = selectedFolderScanner_list;

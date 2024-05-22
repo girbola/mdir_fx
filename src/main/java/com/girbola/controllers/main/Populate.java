@@ -64,7 +64,7 @@ public class Populate {
          */
         List<Path> selectedFolders = new ArrayList<>();
         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder())) {
+            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
                 if (sf.isConnected()) {
                     selectedFolders.add(Paths.get(sf.getFolder()));
                     sprintf("Path is: " + sf + " isConnected: " + sf.isConnected());
@@ -76,9 +76,22 @@ public class Populate {
             return;
         }
 
+        Thread createFileList_th = getThread(owner, selectedFolders);
+        sprintf("createFileList_th.getName(): " + createFileList_th.getName());
+        createFileList_th.start();
+    }
+
+    /**
+     * Retrieves a thread for processing file list creation and sorting.
+     *
+     * @param owner The owning window of the thread
+     * @param selectedFolders The list of selected folders
+     * @return The created thread for file list processing
+     */
+    private Thread getThread(Window owner, List<Path> selectedFolders) {
+        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(owner);
         Task<List<Path>> createFileList = new SubList(selectedFolders);
 
-        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(owner);
         createFileList.setOnSucceeded(succeeded -> {
             List<Path> fileList = null;
             try {
@@ -119,9 +132,7 @@ public class Populate {
         createFileList.setOnCancelled(createFileListCancelled -> Messages.sprintf("CreateFileList cancelled"));
         createFileList.setOnFailed(createFileListFailed -> Messages.sprintf("CreateFileList failed"));
 
-        Thread createFileList_th = new Thread(createFileList, "createFileList_th");
-        sprintf("createFileList_th.getName(): " + createFileList_th.getName());
-        createFileList_th.start();
+        return new Thread(createFileList, "createFileList_th");
     }
 
     public Task<Void> loadContentToContainer(LoadingProcessTask loadingProcess_task, Task<Integer> sorter) {

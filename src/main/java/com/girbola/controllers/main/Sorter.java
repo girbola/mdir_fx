@@ -45,9 +45,9 @@ public class Sorter extends Task<Integer> {
 					break;
 				}
 				Task<Integer> addToTable = new AddToTable(folder, model);
-				addToTable.setOnSucceeded(e -> Messages.sprintf("addToTable Sorter done! " + folder));
-				addToTable.setOnFailed(e -> Messages. sprintf("addToTable.setOnFailed: " + folder));
-				addToTable.setOnCancelled(e -> Messages.sprintf("addToTable.setOnCancelled: " + folder));
+				addToTable.setOnSucceeded(e -> Messages.sprintf("Sorter addToTable Sorter done! " + folder));
+				addToTable.setOnFailed(e -> Messages. sprintf("Sorter addToTable.setOnFailed: " + folder));
+				addToTable.setOnCancelled(e -> Messages.sprintf("Sorter addToTable.setOnCancelled: " + folder));
 
 				counter.incrementAndGet();
 

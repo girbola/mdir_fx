@@ -8,7 +8,7 @@ package com.girbola.controllers.folderscanner.choosefolders;
 
 import com.girbola.controllers.folderscanner.FolderInfoTable;
 import com.girbola.controllers.folderscanner.FolderScanner_Methods;
-import com.girbola.controllers.folderscanner.Model_folderScanner;
+import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.filelisting.ValidatePathUtils;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -31,10 +31,10 @@ import static com.girbola.messages.Messages.sprintf;
 public class AnalyzeFolderContent extends Task<Void> {
 
 	private List<Path> selected;
-	private Model_folderScanner model_folderScanner;
+	private ModelFolderScanner model_folderScanner;
 	//    private Path rootPath = null;
 
-	public AnalyzeFolderContent(List<Path> selected, Model_folderScanner model_folderScanner) {
+	public AnalyzeFolderContent(List<Path> selected, ModelFolderScanner model_folderScanner) {
 		this.selected = selected;
 		this.model_folderScanner = model_folderScanner;
 

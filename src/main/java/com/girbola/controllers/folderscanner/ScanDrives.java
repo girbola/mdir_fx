@@ -34,7 +34,7 @@ public class ScanDrives {
 	private CheckBoxTreeItem rootItem;
 //	private DriveInfo driveInfo;
 	private ObservableList<Path> drivesList_selected_obs;
-	private Model_folderScanner model_folderScanner;
+	private ModelFolderScanner model_folderScanner;
 	private Set<DriveInfo> rootDrives = new HashSet<>();
 	private int i = 0;
 	private int rootCount = 0;
@@ -43,7 +43,7 @@ public class ScanDrives {
 	private Model_main model_Main;
 
 	public ScanDrives(Model_main aModel_main, CheckBoxTreeItem aRootItem, ObservableList<Path> aDrivesList_selected_obs,
-			DrivesListHandler aDrivesListHandler, Model_folderScanner aModel_folderScanner) {
+			DrivesListHandler aDrivesListHandler, ModelFolderScanner aModel_folderScanner) {
 		this.model_Main = aModel_main;
 		this.rootItem = aRootItem;
 		this.drivesList_selected_obs = aDrivesList_selected_obs;
@@ -216,7 +216,7 @@ public class ScanDrives {
 												model_Main.getSelectedFolders().getSelectedFolderScanner_obs(),
 												Paths.get(cb.getValue()))) {
 											model_Main.getSelectedFolders().getSelectedFolderScanner_obs()
-													.add(new SelectedFolder(true, cb.getValue()));
+													.add(new SelectedFolder(true, true, cb.getValue()));
 										}
 									}
 									model_folderScanner.getSelectedDrivesFoldersList_obs()

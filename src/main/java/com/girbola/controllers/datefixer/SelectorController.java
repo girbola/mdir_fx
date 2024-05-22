@@ -55,10 +55,6 @@ public class SelectorController {
 	@FXML private TableColumn<EXIF_Data_Selector, Boolean> events_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> events_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> events_counter_col;
-	
-//	public GridPane getDf_gridPane() {
-//		return df_gridPane;
-//	}
 
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = p -> new CheckBoxCell_Dates(model_datefix);
 	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);

@@ -47,7 +47,7 @@ public class FolderScannerController {
     @FXML private VBox analyzeList_vbox;
 
     private Model_main model_main;
-    private Model_folderScanner model_folderScanner = new Model_folderScanner();
+    private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
 
     private Scene folderScannerController_scene;
     private Stage folderScannerController_stage;
@@ -63,8 +63,9 @@ public class FolderScannerController {
             if (Files.exists(path)) {
                 if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),
                         path)) {
+                    //TODO Check selectedfolder selected. It might not work correctly?
                     this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
-                            .add(new SelectedFolder(true, path.toString()));
+                            .add(new SelectedFolder(true,true, path.toString()));
                 }
             }
         }

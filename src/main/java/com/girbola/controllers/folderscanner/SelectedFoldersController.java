@@ -8,6 +8,7 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.Populate;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
@@ -15,19 +16,14 @@ import com.girbola.sql.SqliteConnection;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -42,13 +38,13 @@ import static com.girbola.messages.Messages.sprintf;
 public class SelectedFoldersController {
     private final String ERROR = SelectedFoldersController.class.getName();
 
-    private ScheduledService<Void> scanner;
+    /*private ScheduledService<Void> scanner;*/
 
-    private ObservableList<SelectedFolder> selectedFolder = FXCollections.observableArrayList();
     private Model_main model_main;
-    private Model_folderScanner model_folderScanner;
+    private ModelFolderScanner model_folderScanner;
 
     //@formatter:off
+    @FXML private TableColumn<SelectedFolder, Boolean> folder_selected_col;
     @FXML private TableColumn<SelectedFolder, String> folder_col;
     @FXML private TableColumn<SelectedFolder, Boolean> folder_connected_col;
     @FXML private Button selectedFolders_ok;
@@ -57,20 +53,19 @@ public class SelectedFoldersController {
     @FXML private TableView<SelectedFolder> selectedFolder_TableView;
     //@formatter:on
 
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
+
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
+        Messages.sprintf("selectedFolders_ok_action pressed");
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
+
         // Load FolderInfo from database
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
-
         if (connection == null) {
             Messages.sprintfError("Could not connect: " + Main.conf.getConfiguration_db_fileName());
-        }
-
-        for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            Messages.sprintf("selectedFolder: " + selectedFolder);
         }
 
         //createFolderInfoDatabase
@@ -115,7 +110,7 @@ public class SelectedFoldersController {
                 boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder);
                 if (!folderExists) {
                     Messages.warningText(Main.bundle.getString("folderExists") + folder.toPath());
-                    existingFolders.add(new SelectedFolder(true, folder.toString()));
+                    existingFolders.add(new SelectedFolder(true, true, folder.toString()));
                 }
             }
         } else {
@@ -145,23 +140,28 @@ public class SelectedFoldersController {
         table.getSelectionModel().clearSelection();
     }
 
-    public void init(Model_main aModel_main, Model_folderScanner aModel_folderScanner) {
+    public void init(Model_main aModel_main, ModelFolderScanner aModel_folderScanner) {
         this.model_main = aModel_main;
         this.model_folderScanner = aModel_folderScanner;
 
         selectedFolder_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         model_folderScanner.setDeleteKeyPressed(selectedFolder_TableView);
-        folder_col.setCellValueFactory(
-                (TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(
-                        cellData.getValue().getFolder()));
-        folder_connected_col.setCellValueFactory(
-                (TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(
-                        cellData.getValue().isConnected()));
+        folder_selected_col.setCellFactory(selectedFoldersCellFactory);
+        folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
+
+                //setCellFactory(TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().selected);
+
+                /*
+                        active.setCellValueFactory(cd -> cd.getValue().activeProperty());
+        active.setCellFactory(CheckBoxTableCell.forTableColumn(active));
+                 */
+        folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+        folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        Messages.sprintf(
-                "getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        scanner = new ScheduledService<Void>() {
+        Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+
+      /*  scanner = new ScheduledService<Void>() {
 
             @Override
             protected Task createTask() {
@@ -170,7 +170,7 @@ public class SelectedFoldersController {
                     protected Integer call() throws Exception {
                         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
                             sf.setConnected(Files.exists(Paths.get(sf.getFolder())));
-                            Messages.sprintf("sggg: " + sf.getFolder() + " isConnected?: " + sf.isConnected());
+                            Messages.sprintf("SelectedFolder: " + sf.getFolder() + " isConnected?: " + sf.isConnected());
                         }
                         return null;
                     }
@@ -178,7 +178,7 @@ public class SelectedFoldersController {
             }
         };
 
-        scanner.setPeriod(Duration.seconds(10));
+        scanner.setPeriod(Duration.seconds(10));*/
     }
 
     public void start() {

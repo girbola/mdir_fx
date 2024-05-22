@@ -4,10 +4,11 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.main;
+package com.girbola.controllers.main.selectedfolder;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
+import com.girbola.controllers.main.Model_main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;

@@ -13,37 +13,35 @@ import javafx.beans.property.SimpleStringProperty;
 
 public class SelectedFolder {
 
-	private SimpleStringProperty folder;
-	private SimpleBooleanProperty connected;
+    private SimpleStringProperty folder;
+    private SimpleBooleanProperty selected;
+    private SimpleBooleanProperty connected;
 
-	public SelectedFolder(boolean connected, String folder) {
+    public SelectedFolder(boolean selected, boolean connected, String folder) {
+		this.selected = new SimpleBooleanProperty(selected);
 		this.connected = new SimpleBooleanProperty(connected);
-		this.folder = new SimpleStringProperty(folder);
-	}
+        this.folder = new SimpleStringProperty(folder);
+    }
 
+    //@formatter:off
 	public SimpleStringProperty folder_property() {
 		return folder;
 	}
 
-	public String getFolder() {
-		return folder.get();
-	}
+	public String getFolder() { return folder.get(); }
 
-	public void setFolder(String folder) {
-		this.folder.set(folder);
-	}
+	public void setFolder(String folder) { this.folder.set(folder); }
 
-	public BooleanProperty connected_property() {
-		return connected;
-	}
+	public BooleanProperty connected_property() {return connected; }
 
-	public boolean isConnected() {
-		return connected.get();
-	}
+	public boolean isConnected() { return connected.get(); }
 
-	public void setConnected(boolean connected) {
-		this.connected.set(connected);
-	}
+	public void setConnected(boolean connected) { this.connected.set(connected); }
 
-	// private
+	public boolean isSelected() { return selected.get(); }
+
+	public SimpleBooleanProperty selectedProperty() { return selected; }
+
+	public void setSelected(boolean selected) {	this.selected.set(selected); }
+
 }

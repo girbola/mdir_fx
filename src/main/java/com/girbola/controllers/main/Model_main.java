@@ -12,6 +12,7 @@ import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.loading.LoadingProcessTask;
+import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;

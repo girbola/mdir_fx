@@ -6,8 +6,8 @@
  */
 package com.girbola.controllers.folderscanner.choosefolders;
 
-import com.girbola.controllers.folderscanner.Model_folderScanner;
-import com.girbola.controllers.main.SelectedFolderScanner;
+import com.girbola.controllers.folderscanner.ModelFolderScanner;
+import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.filelisting.ValidatePathUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -46,7 +46,7 @@ import static com.girbola.messages.Messages.sprintf;
 public class ChooseFoldersController {
 
 	// private ObservableList<Path> rootFolder_obs;
-	private Model_folderScanner model_folderScanner;
+	private ModelFolderScanner model_folderScanner;
 	private SelectedFolderScanner selection_FolderScanner;
 	private Stage inherited_stage;
 	private Scene inherited_scene;
@@ -67,7 +67,7 @@ public class ChooseFoldersController {
 		inherited_stage.setScene(inherited_scene);
 	}
 
-	public void init(Model_folderScanner model_folderScanner, SelectedFolderScanner selection_FolderScanner) {
+	public void init(ModelFolderScanner model_folderScanner, SelectedFolderScanner selection_FolderScanner) {
 		this.model_folderScanner = model_folderScanner;
 		this.selection_FolderScanner = selection_FolderScanner;
 
