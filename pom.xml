@@ -2,8 +2,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.girbola</groupId>
-    <artifactId>mdir_fx_2021</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <artifactId>mdir_fx_2024</artifactId>
+    <version>0.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>MDir Image &amp; Video organizer tool</name>
@@ -38,12 +38,12 @@
         <imageio-tiff.version>3.8.3</imageio-tiff.version>
         <javacv-platform.version>1.5.8</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <javafx.version>21.0.2</javafx.version>
+        <javafx.version>22.0.1</javafx.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jcodec.version>0.2.5</jcodec.version>
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <lombok.version>1.18.32</lombok.version>
-        <maven.compiler.plugin.version>3.11.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
@@ -203,8 +203,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                 </configuration>
             </plugin>
             <plugin>

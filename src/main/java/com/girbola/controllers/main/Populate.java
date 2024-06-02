@@ -9,6 +9,7 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
+import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -18,6 +19,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.stage.Window;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -56,8 +58,8 @@ public class Populate {
             sprintf("getSelection_FolderScanner list were empty");
             return;
         }
-        model_main.tables().getSortIt_table().getItems().clear();
-        model_main.tables().getSorted_table().getItems().clear();
+/*        model_main.tables().getSortIt_table().getItems().clear();
+        model_main.tables().getSorted_table().getItems().clear();*/
 
         /*
          * Load from selectedFolder list Sort to tables Calculate tables content
@@ -66,13 +68,16 @@ public class Populate {
         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
                 if (sf.isConnected()) {
-                    selectedFolders.add(Paths.get(sf.getFolder()));
-                    sprintf("Path is: " + sf + " isConnected: " + sf.isConnected());
+                    boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), Paths.get(sf.getFolder()));
+                    if(!selectedFolderExists) {
+                        selectedFolders.add(Paths.get(sf.getFolder()));
+                        sprintf("! selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
+                    }
                 }
             }
         }
         if (selectedFolders.isEmpty()) {
-            Messages.warningText("No selected folder(s) to scan. Choose \"File/Add folders\" to choose folder to scan");
+            /*Messages.warningText("Some folder(s) did exists already");*/
             return;
         }
 

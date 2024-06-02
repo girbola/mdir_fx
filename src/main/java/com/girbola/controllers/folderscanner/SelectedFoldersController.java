@@ -10,9 +10,13 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Populate;
 import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.filelisting.GetAllMediaFiles;
+import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,6 +31,7 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -47,6 +52,8 @@ public class SelectedFoldersController {
     @FXML private TableColumn<SelectedFolder, Boolean> folder_selected_col;
     @FXML private TableColumn<SelectedFolder, String> folder_col;
     @FXML private TableColumn<SelectedFolder, Boolean> folder_connected_col;
+    @FXML private TableColumn<SelectedFolder, Boolean> hasMedia_col;
+
     @FXML private Button selectedFolders_ok;
     @FXML private Button selectedFolders_remove;
     @FXML private Button selectedFolders_select_folder;
@@ -102,21 +109,23 @@ public class SelectedFoldersController {
     }
 
     private void addNewFolder(File folder) {
+        Messages.sprintf("addNewFolder: " + folder);
+        if (folder == null) {
+            Messages.errorSmth(ERROR, "Something went wrong while loading folders", null, Misc.getLineNumber(), true);
+        }
         List<SelectedFolder> existingFolders = model_main.getSelectedFolders().getSelectedFolderScanner_obs();
         if (!SelectedFolderUtils.contains(existingFolders, folder)) {
-            if (folder.toString().contains(conf.getWorkDir())) {
+            if (conf.getWorkDir().contains(folder.toString())) {
                 Messages.warningText(Main.bundle.getString("workDirConflict"));
             } else {
-                boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder);
+                boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder.toPath());
                 if (!folderExists) {
-                    Messages.warningText(Main.bundle.getString("folderExists") + folder.toPath());
-                    existingFolders.add(new SelectedFolder(true, true, folder.toString()));
+                    existingFolders.add(new SelectedFolder(true, true, folder.toString(), FileUtils.getHasMedia(folder)));
                 }
             }
-        } else {
-            sprintf(Main.bundle.getString("folderExists") + folder.toPath());
         }
     }
+
 
     public void setDeleteKeyPressed() {
         selectedFolder_TableView.setOnKeyPressed((KeyEvent event) -> {
@@ -149,14 +158,10 @@ public class SelectedFoldersController {
         folder_selected_col.setCellFactory(selectedFoldersCellFactory);
         folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
 
-                //setCellFactory(TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().selected);
-
-                /*
-                        active.setCellValueFactory(cd -> cd.getValue().activeProperty());
-        active.setCellFactory(CheckBoxTableCell.forTableColumn(active));
-                 */
         folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+
+        hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());

@@ -8,6 +8,10 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -35,16 +39,26 @@ public class FolderScannerController {
     /*
      * @FXML needed! SelectedFoldersController
      */
-    @FXML SelectedFoldersController selectedFoldersController;
-    @FXML private Button addToSelectedFolders_btn;
-    @FXML private Button analyzeList_add;
-    @FXML private Button analyzeList_remove;
-    @FXML private Button list;
-    @FXML private ScrollPane analyzeList_scrollPane;
-    @FXML private SplitPane splitPane_drives;
-    @FXML private SplitPane splitPane_root;
-    @FXML private TreeView<File> drives_treeView;
-    @FXML private VBox analyzeList_vbox;
+    @FXML
+    SelectedFoldersController selectedFoldersController;
+    @FXML
+    private Button addToSelectedFolders_btn;
+    @FXML
+    private Button analyzeList_add;
+    @FXML
+    private Button analyzeList_remove;
+    @FXML
+    private Button list;
+    @FXML
+    private ScrollPane analyzeList_scrollPane;
+    @FXML
+    private SplitPane splitPane_drives;
+    @FXML
+    private SplitPane splitPane_root;
+    @FXML
+    private TreeView<File> drives_treeView;
+    @FXML
+    private VBox analyzeList_vbox;
 
     private Model_main model_main;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
@@ -63,9 +77,11 @@ public class FolderScannerController {
             if (Files.exists(path)) {
                 if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),
                         path)) {
-                    //TODO Check selectedfolder selected. It might not work correctly?
-                    this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
-                            .add(new SelectedFolder(true,true, path.toString()));
+                    if (!hasTableSelectedFolderPath(model_main.tables(), path)) {
+                        //TODO Check selectedfolder selected. It might not work correctly?
+                        this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
+                                .add(new SelectedFolder(true, true, path.toString(),true));
+                    }
                 }
             }
         }
@@ -79,12 +95,36 @@ public class FolderScannerController {
         }
     }
 
+    private boolean hasTableSelectedFolderPath(Tables tables, Path toSearchPath) {
+
+        if (checkFolderInfoHasFolder(tables, toSearchPath.toString(), toSearchPath)) return true;
+
+        return false;
+
+    }
+
+    static boolean checkFolderInfoHasFolder(Tables tables, String string, Path toSearchPath) {
+        for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(string)) {
+                return true;
+            }
+        }
+
+        for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(string)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private boolean selectedFolderHasValue(ObservableList<SelectedFolder> selectedFolderScanner_list, Path path) {
         for (SelectedFolder sf : selectedFolderScanner_list) {
             if (Paths.get(sf.getFolder()).equals(path)) {
                 return true;
             }
         }
+
         return false;
     }
 

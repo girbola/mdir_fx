@@ -22,6 +22,7 @@
                   <TableColumn fx:id="folder_selected_col" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" />
                   <TableColumn fx:id="folder_connected_col" editable="false" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" />
                   <TableColumn fx:id="folder_col" editable="false" prefWidth="75.0" text="%folder" />
+                  <TableColumn fx:id="hasMedia_col" editable="false" prefWidth="75.0" text="Media" />
                   </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

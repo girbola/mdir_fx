@@ -7,13 +7,11 @@
 package common.utils;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.DuplicateStatistics;
-import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.filelisting.CheckMediaExistenceInFolder;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
-import javafx.scene.control.TableView;
 
 import java.io.File;
 import java.io.IOException;
@@ -39,6 +37,15 @@ public class FileUtils {
     private final static String[] SUPPORTED_RAW_FORMATS = {"cr2", "nef"};
 
     private final static String[] IGNORED_FORMATS = {"ini", "db", "exe", "sh", "dll", "sys", "java", "jar"};
+
+
+    public static boolean getHasMedia(String folder) {
+        return getHasMedia(Paths.get(folder).toFile());
+    }
+
+    public static boolean getHasMedia(File folder) {
+        return CheckMediaExistenceInFolder.getAllMediaFiles(folder.toPath());
+    }
 
     /**
      * fileSeparator hack replaces file paths "/" separator to "\\" using

@@ -41,10 +41,10 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 	
 
-	final static String selectedFolderTable =
+	final private static String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
                 SQL_Enums.SELECTEDFOLDERS.getType() +
-                " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN)";
+                " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN)";
 	
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
@@ -55,9 +55,14 @@ public class SQL_Utils extends FolderInfo_SQL {
 	 * this.tableDuplicated = false; this.date = 0; this.size = 0; this.thumb_offset
 	 * = 0; this.thumb_length = 0; this.user = "";
 	 */
+/*
+  pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
+            pstmt.setBoolean(2, selectedFolder.connected_property().get());
+            pstmt.setString(3, selectedFolder.getFolder());
+ */
 
 	final static String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
-			+ " ('path', 'connected') VALUES(?,?)";
+			+ " ('selected', 'connected', 'path', 'media') VALUES(?,?,?,?)";
 	final static String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
                     SQL_Enums.FOLDERINFOS.getType() +
@@ -279,8 +284,8 @@ public class SQL_Utils extends FolderInfo_SQL {
     /**
      * Adds the selected folder to the selected folders database.
      *
-     * @param connection The database connection.
-     * @param pstmt      The prepared statement for the query.
+     * @param connection     The database connection.
+     * @param pstmt          The prepared statement for the query.
      * @param selectedFolder The SelectedFolder object containing the folder details.
      * @return true if the folder is successfully added, false otherwise.
      */
@@ -327,9 +332,9 @@ public class SQL_Utils extends FolderInfo_SQL {
 
             for (SelectedFolder selectedFolder : selectedFolder_list) {
                 Messages.sprintf("select: " + selectedFolder.getFolder());
-                if(selectedFolder.isSelected()) {
-                //if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
-
+                if (selectedFolder.isSelected()) {
+                    //if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
+                    Messages.sprintf("332 addToSelectedFoldersDB");
                     addToSelectedFoldersDB(connection, pstmt, selectedFolder);
                 } else {
                     Messages.sprintfError("insertSelectedFolders_List_ToDB SelectedFolder did not exist: " + selectedFolder.getFolder());
@@ -338,64 +343,10 @@ public class SQL_Utils extends FolderInfo_SQL {
             }
             pstmt.executeBatch();
             connection.commit();
-            if (pstmt != null) {
-                pstmt.close();
-            }
+            pstmt.close();
             return true;
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean insertSelectedFolder_ToDB(Connection connection, SelectedFolder selectedFolder) {
-        Messages.sprintf("insertSelectedFolder_ToDB: " + selectedFolder.getFolder());
-        createSelectedFoldersTable(connection);
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
-            Messages.sprintf("selectedFoldersInsert: " + insertSelectedFolders + " create one: " + selectedFolderTable);
-            addToSelectedFoldersDB(connection, pstmt, selectedFolder);
-            connection.commit();
-            int[] value = pstmt.executeBatch();
-            for (int v : value) {
-                Messages.sprintf("v: " + v);
-            }
-
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean loadSelectedFolders_list(Connection connection, Model_main model_Main) {
-        if (connection == null) {
-            Messages.sprintfError("Connection were null!");
-            return false;
-        }
-        if (!isDbConnected(connection)) {
-            Messages.sprintf("NOT connected");
-            return false;
-        }
-        try {
-            String sql = "SELECT * FROM " + SQL_Enums.SELECTEDFOLDERS.getType();
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                Messages.sprintf("loadFolders_list starting: " + sql);
-                boolean selected = rs.getBoolean("selected");
-                String path = rs.getString("path");
-                boolean connected = rs.getBoolean("connected");
-                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path);
-                model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-            }
-            Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());
-            return true;
-        } catch (Exception e) {
             return false;
         }
     }
@@ -418,7 +369,8 @@ public class SQL_Utils extends FolderInfo_SQL {
                 boolean selected = rs.getBoolean("selected");
                 String path = rs.getString("path");
                 boolean connected = rs.getBoolean("connected");
-                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path);
+                boolean media= rs.getBoolean("media");
+                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
                 model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
             }
             Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());
@@ -429,19 +381,6 @@ public class SQL_Utils extends FolderInfo_SQL {
         } catch (Exception e) {
             Messages.sprintfError("Can't find selectedfolders list.");
             return false;
-        }
-    }
-
-    public static int countTableRows(Connection connection, String table) {
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet res = stmt.executeQuery("select * from " + table);
-            res.last(); // record pointer is placed on the last row.
-            int counter = res.getRow();
-            System.out.println("Number of records in ResultSet: " + counter);
-            return counter;
-        } catch (Exception e) {
-            return 0;
         }
     }
 
@@ -645,7 +584,6 @@ public class SQL_Utils extends FolderInfo_SQL {
     // @formatter:on
 
     /**
-     *
      * @param connection
      * @return
      */

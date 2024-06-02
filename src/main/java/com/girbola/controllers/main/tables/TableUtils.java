@@ -89,7 +89,7 @@ public class TableUtils {
                         Misc.getLineNumber(), true);
             }
 
-            ConflictTableViewController conflictTableViewController = (ConflictTableViewController) loader.getController();
+            ConflictTableViewController conflictTableViewController = loader.getController();
             conflictTableViewController.init(model_Main, obs);
 
             Scene scene_conflictTableView = new Scene(parent);
@@ -465,6 +465,10 @@ public class TableUtils {
         hBox.setPrefWidth(width);
         hBox.setMinWidth(width);
         hBox.setMaxWidth(width);
+    }
+
+    public static List<TableView<FolderInfo>> getAllTables(Tables tables) {
+        return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
 
     public void check_All_TableView_forChanges(Model_main model_main) {

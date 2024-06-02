@@ -4,6 +4,7 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
+import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -51,27 +52,7 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
                     Messages.sprintf("CHECKBOX IS: " + newValue);
                     SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
                     selectedFolder.setSelected(newValue);
-/*                    if(newValue==true) {
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().remove(selectedFolder);
-                    } else {
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-                    }*/
-
-
-
-                  /*  for(SelectedFolder selectedItems : ) {
-                        Messages.sprintf("selectedItems: " + selectedItems.getFolder());
-                        if (newValue) {
-                            Platform.runLater(() -> {
-                                Messages.sprintf("CHECKBOX IS SELECT?: " + newValue + " selectedFolder: " + selectedItems);
-                            });
-                        } else {
-                            Platform.runLater(() -> {
-                                Messages.sprintf("CHECKBOX IS SELECT?: " + newValue + " selectedFolder: " + selectedItems);
-                            });
-                        }
-
-                    }*/
+                    selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
 
                 }
             });

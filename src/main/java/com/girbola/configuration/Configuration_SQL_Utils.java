@@ -531,23 +531,18 @@ public class Configuration_SQL_Utils {
 	/**
      * Updates the configuration in the database.
      */
-    public static void update_Configuration() {
+    public synchronized static void update_Configuration() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
 			connection.setAutoCommit(false);
 			insert_Configuration(connection, Main.conf);
+            connection.commit();
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
 		}
-		try {
-			connection.commit();
-			connection.close();
-		} catch (Exception e) {
-			System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());
-			e.printStackTrace();
-		}
+        SQL_Utils.closeConnection(connection);
 	}
 
 }
