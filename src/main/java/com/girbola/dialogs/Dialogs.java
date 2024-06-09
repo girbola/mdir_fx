@@ -1,5 +1,6 @@
 package com.girbola.dialogs;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import javafx.beans.value.ChangeListener;
@@ -49,7 +50,7 @@ public class Dialogs {
 
 
 		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + "dialogsStyle.css").toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE).toExternalForm());
 		
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
@@ -68,7 +69,7 @@ public class Dialogs {
 		DialogPane dialogPane = new DialogPane();
 		Messages.sprintf("width: " + dialog.getWidth());
 		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + "dialogsStyle.css").toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE).toExternalForm());
 		dialog.setDialogPane(dialogPane);
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);

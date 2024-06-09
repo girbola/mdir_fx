@@ -18,9 +18,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" style="-fx-background-color: red;" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
-      <HBox fx:id="showHideButton_hbox" alignment="CENTER" fillHeight="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" style="-fx-border-color: red;" VBox.vgrow="NEVER">
+      <HBox fx:id="showHideButton_hbox" alignment="CENTER" fillHeight="false" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" VBox.vgrow="NEVER">
          <children>
 				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" styleClass="showAndHide" HBox.hgrow="NEVER">
 					<graphic>
@@ -42,7 +42,7 @@
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
          </padding>
       </HBox>
-      <AnchorPane fx:id="hideablePane" style="-fx-border-color: yellow;" VBox.vgrow="ALWAYS">
+      <AnchorPane fx:id="hideablePane" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
             <VBox layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
@@ -219,8 +219,11 @@
             				<TableColumn fx:id="fullPath_col" editable="false" minWidth="50.0" prefWidth="250.0" text="%fullPath" />
             			</columns>
                      <VBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets />
                      </VBox.margin>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
             		</TableView>
                   <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER">
                      <children>

@@ -108,6 +108,11 @@ public class SelectedFoldersController {
         }
     }
 
+    /**
+     * Adds a new folder to the list of selected folders.
+     *
+     * @param folder The folder to be added.
+     */
     private void addNewFolder(File folder) {
         Messages.sprintf("addNewFolder: " + folder);
         if (folder == null) {
@@ -120,7 +125,9 @@ public class SelectedFoldersController {
             } else {
                 boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder.toPath());
                 if (!folderExists) {
-                    existingFolders.add(new SelectedFolder(true, true, folder.toString(), FileUtils.getHasMedia(folder)));
+                    SelectedFolder selectedFolder = new SelectedFolder(true, true, folder.toString(), FileUtils.getHasMedia(folder));
+                    Messages.sprintf("PATH: " + selectedFolder.getFolder() + " Media is selected? " + selectedFolder.isMedia());
+                    existingFolders.add(selectedFolder);
                 }
             }
         }

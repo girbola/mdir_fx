@@ -51,6 +51,14 @@
 .button:hover {
 	-fx-background-color: linear-gradient(to bottom, grey, -fx-base);
 }
+
+.hideablePane {
+	-fx-border-color: #666666;
+}
+
+.table_parent {
+	-fx-background-color: linear-gradient(to bottom, #212020, -fx-base);
+}
 .main_rootPane {
 	-fx-background-color: -fx-base;
 	-fx-border-color: -fx-dark-border-color;

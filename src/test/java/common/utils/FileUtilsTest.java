@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 public class FileUtilsTest {
 
@@ -25,7 +26,7 @@ public class FileUtilsTest {
 
         String checkSumFromFile = FileUtils.getCheckSumFromFile(destTest);
 
-        assertTrue(checkSumFromFile.equals("7b262121e97031af48756b501faa05ac"));
+        assertEquals("7b262121e97031af48756b501faa05ac", checkSumFromFile);
     }
 
     @Test
@@ -47,5 +48,17 @@ public class FileUtilsTest {
         String actual = FileUtils.getCheckSumFromFile(destTest);
 
         assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testRenameFile() throws IOException {
+        Path srcFile = Paths.get("src/main/resources/in/IMG.jpg");
+        Path destFile = Paths.get("src/main/resources/out/IMG1.jpg");
+
+        Path path = FileUtils.renameFile(srcFile, destFile);
+        log.info("PATH: " + path);
+
+        assertTrue(Files.exists(destFile));
+        assertFalse(Files.exists(srcFile));
     }
 }

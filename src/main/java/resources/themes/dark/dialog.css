@@ -37,12 +37,12 @@
     -fx-text-fill: -fx-text-color;
 }
 .alertDiag:header *.header-panel *.label{
-    -fx-font-size: 12.0px;
+    -fx-font-size:  1.75em;
     -fx-fill: -fx-text-color;
 }
 
 .label {
-	-fx-font-size: 12.0px;
+	-fx-font-size:  1.75em;
     -fx-text-fill: white;
 }
 .text-area{

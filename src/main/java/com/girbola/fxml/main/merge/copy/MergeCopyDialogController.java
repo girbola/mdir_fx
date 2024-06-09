@@ -13,6 +13,8 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -36,396 +38,341 @@ import java.util.concurrent.Executors;
 
 public class MergeCopyDialogController {
 
-	private final String ERROR = MergeCopyDialogController.class.getSimpleName();
+    private final String ERROR = MergeCopyDialogController.class.getSimpleName();
 
-	private Model_main model_main;
-	private Tables tables;
-	private TableView<FolderInfo> table;
-	private String tableType;
+    private Model_main model_main;
+    private Tables tables;
+    private TableView<FolderInfo> table;
+    private String tableType;
 
-	@FXML
-	private Label event_lbl;
-	@FXML
-	private ComboBox<String> event_cmb;
-	@FXML
-	private Label location_lbl;
-	@FXML
-	private ComboBox<String> location_cmb;
-	@FXML
-	private ComboBox<String> user_cmb;
+    //@formatter:off
+	@FXML private Button apply_and_copy_btn;
+	@FXML private Button apply_and_move_btn;
+	@FXML private Button apply_btn;
+	@FXML private Button cancel_btn;
+	@FXML private CheckBox addEverythingInsameDir_chb;
+	@FXML private ComboBox<String> absolutePath_cmb;
+	@FXML private ComboBox<String> event_cmb;
+	@FXML private ComboBox<String> location_cmb;
+	@FXML private ComboBox<String> user_cmb;
+    @FXML private Label absolutePath_lbl;
+	@FXML private Label event_lbl;
+	@FXML private Label location_lbl;
 
-	@FXML
-	private Button apply_and_move_btn;
-	@FXML
-	private Button apply_btn;
-	@FXML
-	private Button apply_and_copy_btn;
-	@FXML
-	private Button cancel_btn;
-	@FXML
-	private CheckBox addEverythingInsameDir_chb;
+	//@formatter:on
+    private void close() {
+        Stage stage = (Stage) cancel_btn.getScene().getWindow();
+        stage.close();
+    }
 
-	private void close() {
-		Stage stage = (Stage) cancel_btn.getScene().getWindow();
-		stage.close();
-	}
+    @FXML
+    private void apply_and_move_btn_action(ActionEvent event) {
+        if (Main.conf.getWorkDir() == null) {
+            Messages.warningText("copySelectedTableRows Workdir were null");
+            return;
+        }
+        if (Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText("copySelectedTableRows Workdir were empty");
+            return;
+        }
 
-	@FXML
-	private void apply_and_move_btn_action(ActionEvent event) {
-		if (Main.conf.getWorkDir() == null) {
-			Messages.warningText("copySelectedTableRows Workdir were null");
-			return;
-		}
-		if (Main.conf.getWorkDir().isEmpty()) {
-			Messages.warningText("copySelectedTableRows Workdir were empty");
-			return;
-		}
-		String eventName = "";
-		String locationName = "";
-		String userName = "";
+        String absolutePath = "";
+        String eventName = "";
+        String locationName = "";
+        String userName = "";
 
-		if (!event_cmb.getEditor().getText().isEmpty()) {
-			eventName = event_cmb.getEditor().getText().trim();
-		}
-		if (!location_cmb.getEditor().getText().isEmpty()) {
-			locationName = location_cmb.getEditor().getText().trim();
-		}
-		if (!user_cmb.getEditor().getText().isEmpty()) {
-			userName = user_cmb.getEditor().getText().trim();
-		}
-		Messages.sprintf(
-				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
-		FolderInfo newFolderInfo = new FolderInfo();
-		String newDestinationPathForMoving = Main.conf.getUserHome() + File.separator + Main.conf.getPictures();
+        absolutePath = absolutePath_cmb.getEditor().getText().isEmpty() ? absolutePath : absolutePath_cmb.getEditor().getText();
+        eventName = event_cmb.getEditor().getText().isEmpty() ? eventName : event_cmb.getEditor().getText();
+        locationName = location_cmb.getEditor().getText().isEmpty() ? locationName : location_cmb.getEditor().getText();
+        userName = user_cmb.getEditor().getText().isEmpty() ? userName : user_cmb.getEditor().getText();
 
-		String pathDefiner = definePathByEventLocation(eventName, locationName);
+        Messages.sprintf(
+                "locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
-		Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
+        List<String> list = new ArrayList<>();
+        if (absolutePath.isEmpty()) {
+            Messages.warningText("Path can't be empty");
+            return;
+        }
 
-		while (it.hasNext()) {
-			FolderInfo folderInfo = it.next();
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
-			}
-			if (Main.getProcessCancelled()) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-						Misc.getLineNumber(), true);
-				break;
-			}
-			Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(),
-					Main.conf.getMdir_db_fileName());
-			try {
-				connection.setAutoCommit(false);
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-			Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
-			List<FileInfo> fileList = new ArrayList<>();
-			while (fileInfo_list_it.hasNext()) {
-				FileInfo fileInfo = fileInfo_list_it.next();
-				if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+        Path newDestinationPath = definePathByEventLocation(absolutePath, eventName, locationName, userName);
 
-					fileInfo.setEvent(eventName);
-					fileInfo.setLocation(locationName);
-					fileInfo.setUser(userName);
-					Path destinationPath = Paths.get(FileUtils
-							.getFileNameDateWithEventAndLocation(fileInfo, newDestinationPathForMoving).toString());
-					Path finalDest = Paths.get(newDestinationPathForMoving + destinationPath.toString());
+        Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
 
-					if (Files.exists(finalDest)) {
-						try {
+        while (it.hasNext()) {
+            FolderInfo folderInfo = it.next();
+            if (folderInfo.getBadFiles() > 0) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+            if (Main.getProcessCancelled()) {
+                Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+                        Misc.getLineNumber(), true);
+                break;
+            }
+            Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(),
+                    Main.conf.getMdir_db_fileName());
+            try {
+                connection.setAutoCommit(false);
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+            Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
+            List<FileInfo> fileList = new ArrayList<>();
+            while (fileInfo_list_it.hasNext()) {
+                FileInfo fileInfo = fileInfo_list_it.next();
+                if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
 
-							Path finalDest_tmp = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), finalDest);
-							finalDest = finalDest_tmp;
-							Messages.sprintfError("RENAMING! new dest path: " + finalDest);
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					} else {
-						Messages.sprintf(
-								"+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
-					}
+                    fileInfo.setEvent(eventName);
+                    fileInfo.setLocation(locationName);
+                    fileInfo.setUser(userName);
+                    Path destinationPath = Paths.get(FileUtils
+                            .getFileNameDateWithEventAndLocation(fileInfo, newDestinationPath.toString()).toString());
+                    Path finalDest = Paths.get(newDestinationPath + destinationPath.toString());
 
-					try {
-						Files.createDirectories(finalDest.getParent());
-						Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						System.exit(0);
-					}
+                    if (Files.exists(finalDest)) {
+                        try {
 
-					fileList.add(fileInfo);
-//				fileInfo.setOrgPath(destinationPath.toString());
-//				fileInfo.setDestination_Path("");
-//				fileInfo.setWorkDir("");
-//				fileInfo.setWorkDirDriveSerialNumber("");
-//				folderInfo.getFileInfoList().add(fileInfo);
-//				Messages.sprintf(" fileInfo: " + fileInfo.toString());
-				}
-				boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
-				if (deleteFileInfoListToDatabase) {
-					Messages.sprintf("Deleting fileInfo_list from database were success");
-				} else {
-					Messages.sprintfError("Bug sniffer when deleting files form database");
-				}
+                            finalDest = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), finalDest);
+                            Messages.sprintfError("RENAMING! new dest path: " + finalDest);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Messages.sprintf(
+                                "+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
+                    }
 
-				try {
-					connection.commit();
-					connection.close();
+                    try {
+                        Files.createDirectories(finalDest.getParent());
+                        Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
+                    } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        System.exit(0);
+                    }
 
-				} catch (SQLException e) {
-					Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
-					e.printStackTrace();
-				}
+                    fileList.add(fileInfo);
+                }
 
-			}
+                boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
+                if (deleteFileInfoListToDatabase) {
+                    Messages.sprintf("Deleting fileInfo_list from database were success");
+                } else {
+                    Messages.sprintfError("Bug sniffer when deleting files form database");
+                }
 
-		}
-//		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-//			if (folderInfo.getBadFiles() >= 1) {
-//				Messages.warningText(Main.bundle.getString("badDatesFound"));
-//				return;
-//			}
-//			if (Main.getProcessCancelled()) {
-//				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-//						Misc.getLineNumber(), true);
-//				break;
-//			}
-//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//
-//				if (Main.getProcessCancelled()) {
-//					Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-//							Misc.getLineNumber(), true);
-//					break;
-//				}
-//				fileInfo.setEvent(eventName);
-//				fileInfo.setLocation(locationName);
-//				fileInfo.setUser(userName);
-//
-//				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-//				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-//				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+                try {
+                    connection.commit();
+                    connection.close();
+
+                } catch (SQLException e) {
+                    Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
+
+        TableUtils.refreshAllTableContent(tables);
+        close();
+
+    }
+
+    @FXML
+    private void apply_btn_action(ActionEvent event) {
+        if (Main.conf.getWorkDir() == null) {
+            Messages.warningText("copySelectedTableRows Workdir were null");
+            return;
+        }
+        if (Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText("copySelectedTableRows Workdir were empty");
+            return;
+        }
+        String eventName = "";
+        String locationName = "";
+        String userName = "";
+
+        if (!event_cmb.getEditor().getText().isEmpty()) {
+            eventName = event_cmb.getEditor().getText().trim();
+        }
+        if (!location_cmb.getEditor().getText().isEmpty()) {
+            locationName = location_cmb.getEditor().getText().trim();
+        }
+        if (!user_cmb.getEditor().getText().isEmpty()) {
+            userName = user_cmb.getEditor().getText().trim();
+        }
+        Messages.sprintf(
+                "locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
+
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+            if (Main.getProcessCancelled()) {
+                Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+                        Misc.getLineNumber(), true);
+                break;
+            }
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+
+                if (Main.getProcessCancelled()) {
+                    Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
+                            Misc.getLineNumber(), true);
+                    break;
+                }
+                fileInfo.setEvent(eventName);
+                fileInfo.setLocation(locationName);
+                fileInfo.setUser(userName);
+
+                // I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
+                // I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
+                Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+                if (!Files.exists(destinationPath)) {
+                    Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
+                            + destinationPath);
+                    Main.setProcessCancelled(true);
+                    break;
+                }
+                fileInfo.setCopied(false);
+                folderInfo.setChanged(true);
+                Main.setChanged(true);
+                Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
+            }
+        }
+        TableUtils.refreshAllTableContent(tables);
+        close();
+    }
+
+
+
+    public static Path definePathByEventLocation(String absolutePath, String locationName, String eventName, String userName) {
+
+        String locationStr, eventNameStr, userNameStr = "";
+
+        locationStr = (locationName != null && !locationName.trim().isEmpty()) ? (" - " + locationName.trim()) : "";
+        eventNameStr = (eventName != null && !eventName.trim().isEmpty()) ? ( " - " + eventName.trim()) : "";
+        userNameStr = (userName != null && !userName.trim().isEmpty()) ? (userName.trim()) : "";
+
+        return Paths.get(absolutePath + locationStr + eventNameStr + userNameStr);
+    }
+
+    @FXML
+    private void apply_and_copy_btn_action(ActionEvent event) {
+        if (Main.conf.getWorkDir() == null) {
+            Messages.warningText("copySelectedTableRows Workdir were null");
+            return;
+        }
+        if (Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText("copySelectedTableRows Workdir were empty");
+            return;
+        }
+
+        String absolutePath = "";
+        String eventName = "";
+        String locationName = "";
+        String userName = "";
+
+        absolutePath = absolutePath_cmb.getEditor().getText().isEmpty() ? absolutePath : absolutePath_cmb.getEditor().getText();
+        eventName = event_cmb.getEditor().getText().isEmpty() ? eventName : event_cmb.getEditor().getText();
+        locationName = location_cmb.getEditor().getText().isEmpty() ? locationName : location_cmb.getEditor().getText();
+        userName = user_cmb.getEditor().getText().isEmpty() ? userName : user_cmb.getEditor().getText();
+
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+            if (Main.getProcessCancelled()) {
+                Messages.sprintfError("Merging were cancelled");
+                break;
+            }
+
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                if (Main.getProcessCancelled()) {
+                    Messages.sprintfError("Merging were cancelled");
+                    break;
+                }
+                if (!fileInfo.getEvent().isEmpty()) {
+                    if (addEverythingInsameDir_chb.isSelected()) {
+                        if (folderInfo.getJustFolderName() != eventName) {
+                            folderInfo.setJustFolderName(eventName);
+                        }
+                    }
+                }
+
+                fileInfo.setEvent(eventName);
+                fileInfo.setLocation(locationName);
+                fileInfo.setUser(userName);
+
+                Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
+
 //				if (!Files.exists(destinationPath)) {
 //					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
 //							+ destinationPath);
 //					Main.setProcessCancelled(true);
 //					break;
 //				}
-//				fileInfo.setCopied(false);
-//				folderInfo.setChanged(true);
-//				Main.setChanged(true);
-//				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-//			}
-//		}
-		TableUtils.refreshAllTableContent(tables);
-		close();
-
-	}
-
-	@FXML
-	private void apply_btn_action(ActionEvent event) {
-		if (Main.conf.getWorkDir() == null) {
-			Messages.warningText("copySelectedTableRows Workdir were null");
-			return;
-		}
-		if (Main.conf.getWorkDir().isEmpty()) {
-			Messages.warningText("copySelectedTableRows Workdir were empty");
-			return;
-		}
-		String eventName = "";
-		String locationName = "";
-		String userName = "";
-
-		if (!event_cmb.getEditor().getText().isEmpty()) {
-			eventName = event_cmb.getEditor().getText().trim();
-		}
-		if (!location_cmb.getEditor().getText().isEmpty()) {
-			locationName = location_cmb.getEditor().getText().trim();
-		}
-		if (!user_cmb.getEditor().getText().isEmpty()) {
-			userName = user_cmb.getEditor().getText().trim();
-		}
-		Messages.sprintf(
-				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
-
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
-			}
-			if (Main.getProcessCancelled()) {
-				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-						Misc.getLineNumber(), true);
-				break;
-			}
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-
-				if (Main.getProcessCancelled()) {
-					Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-							Misc.getLineNumber(), true);
-					break;
-				}
-				fileInfo.setEvent(eventName);
-				fileInfo.setLocation(locationName);
-				fileInfo.setUser(userName);
-
-				// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
-				// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
-				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
-				if (!Files.exists(destinationPath)) {
-					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-							+ destinationPath);
-					Main.setProcessCancelled(true);
-					break;
-				}
-				fileInfo.setCopied(false);
-				folderInfo.setChanged(true);
-				Main.setChanged(true);
-				Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
-			}
-		}
-		TableUtils.refreshAllTableContent(tables);
-		close();
-	}
-
-	private static String definePathByEventLocation(String locationName, String eventName) {
-
-		String location_str = "", event_str = "";
-
-		// Location = "KAINUU" Event = ""
-		if (!locationName.isEmpty() && eventName.isEmpty()) {
-			location_str = " - " + locationName;
-			// Event = "KALASSA" Location = ""
-		} else if (!eventName.isEmpty() && locationName.isEmpty()) {
-			event_str = " - " + eventName;
-			// Event = "" Location = ""
-		} else if (!eventName.isEmpty() && !locationName.isEmpty()) {
-			location_str = " - " + locationName;
-			event_str = " - " + eventName;
-		}
-
-		return location_str + event_str + File.separator;
-	}
-
-	@FXML
-	private void apply_and_copy_btn_action(ActionEvent event) {
-		if (Main.conf.getWorkDir() == null) {
-			Messages.warningText("copySelectedTableRows Workdir were null");
-			return;
-		}
-		if (Main.conf.getWorkDir().isEmpty()) {
-			Messages.warningText("copySelectedTableRows Workdir were empty");
-			return;
-		}
-		String eventName = "";
-		String locationName = "";
-		String userName = "";
-
-		if (!event_cmb.getEditor().getText().isEmpty()) {
-			eventName = event_cmb.getEditor().getText();
-		}
-		if (!location_cmb.getEditor().getText().isEmpty()) {
-			locationName = location_cmb.getEditor().getText();
-		}
-		if (!user_cmb.getEditor().getText().isEmpty()) {
-			userName = user_cmb.getEditor().getText();
-		}
-
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
-			}
-			if (Main.getProcessCancelled()) {
-				Messages.sprintfError("Merging were cancelled");
-				break;
-			}
-
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				if (Main.getProcessCancelled()) {
-					Messages.sprintfError("Merging were cancelled");
-					break;
-				}
-				if (!fileInfo.getEvent().isEmpty()) {
-					if (addEverythingInsameDir_chb.isSelected()) {
-						if (folderInfo.getJustFolderName() != eventName) {
-							folderInfo.setJustFolderName(eventName);
-						}
-					}
-				}
-
-				fileInfo.setEvent(eventName);
-				fileInfo.setLocation(locationName);
-				fileInfo.setUser(userName);
-
-				Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
-//				if (!Files.exists(destinationPath)) {
-//					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-//							+ destinationPath);
-//					Main.setProcessCancelled(true);
-//					break;
-//				}
-			}
-		}
+            }
+        }
 //		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
 
-		List<FileInfo> list = new ArrayList<>();
-		ExecutorService exec = Executors.newSingleThreadExecutor();
-		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
-			}
-			list.addAll(folderInfo.getFileInfoList());
-		}
+        List<FileInfo> list = new ArrayList<>();
+        ExecutorService exec = Executors.newSingleThreadExecutor();
+        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+            if (folderInfo.getBadFiles() >= 1) {
+                Messages.warningText(Main.bundle.getString("badDatesFound"));
+                return;
+            }
+            list.addAll(folderInfo.getFileInfoList());
+        }
 
-		Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+        Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
 
-		operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfo(folderInfo);
-				}
-				TableUtils.refreshAllTableContent(tables);
-				TableUtils.saveChangesContentsToTables(model_main.tables());
-				Main.setChanged(false);
-				close();
-			}
-		});
-		operate.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.warningText("Copy process failed");
-				close();
-			}
-		});
+        operate.setOnSucceeded(succeeded -> {
+                for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+                    TableUtils.updateFolderInfo(folderInfo);
+                }
+                TableUtils.refreshAllTableContent(tables);
+                TableUtils.saveChangesContentsToTables(model_main.tables());
+                Main.setChanged(false);
+                close();
+        });
 
-		operate.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("Copy process were cancelled");
-				close();
-			}
-		});
+        operate.setOnFailed(failed -> {
+                Messages.warningText("Copy process failed");
+                close();
+        });
 
-		Thread thread = new Thread(operate, "Operate Thread");
-		exec.submit(thread);
+        operate.setOnCancelled(cancelled -> {
+                Messages.sprintf("Copy process were cancelled");
+                close();
+        });
 
-	}
+        Thread thread = new Thread(operate, "Operate Thread");
+        exec.submit(thread);
 
-	@FXML
-	private void cancel_btn_action(ActionEvent event) {
-		close();
-	}
+    }
 
-	public void init(Model_main model_main, Tables tables, TableView<FolderInfo> table, String tableType) {
-		this.model_main = model_main;
-		this.tables = tables;
-		this.table = table;
-		this.tableType = tableType;
-	}
+    @FXML
+    private void cancel_btn_action(ActionEvent event) {
+        close();
+    }
+
+    public void init(Model_main model_main, Tables tables, TableView<FolderInfo> table, String tableType) {
+        this.model_main = model_main;
+        this.tables = tables;
+        this.table = table;
+        this.tableType = tableType;
+
+        ObservableList<String> paths = FXCollections.observableArrayList();
+        for (FolderInfo selectedItems : table.getSelectionModel().getSelectedItems()) {
+            paths.add(selectedItems.getFolderPath());
+        }
+        absolutePath_cmb.setItems(paths);
+
+    }
 }

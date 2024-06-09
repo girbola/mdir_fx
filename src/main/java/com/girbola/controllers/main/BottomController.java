@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.main;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
@@ -391,7 +392,7 @@ public class BottomController {
 
         Scene fc_scene = new Scene(parent, 800, 400);
         fc_scene.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + "folderChooser.css").toExternalForm());
+                .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER).toExternalForm());
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);

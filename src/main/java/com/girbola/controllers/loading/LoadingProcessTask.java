@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.loading;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -109,7 +110,7 @@ public class LoadingProcessTask {
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 			loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
 			loadingScene.getStylesheets()
-					.add(getClass().getResource(conf.getThemePath() + "loadingprocess.css").toExternalForm());
+					.add(getClass().getResource(conf.getThemePath() + MDir_Constants.LOADINGPROCESS).toExternalForm());
 
 			xOffset = loadingStage.getX();
 			yOffset = loadingStage.getY();

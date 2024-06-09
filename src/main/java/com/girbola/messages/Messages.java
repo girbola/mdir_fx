@@ -45,7 +45,7 @@ public class Messages {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		dialog.setDialogPane(dialogPane);
-		dialog.getDialogPane().getStylesheets().add(Main.conf.getThemePath() + "dialogsStyle.css");
+		dialog.getDialogPane().getStylesheets().add(Main.conf.getThemePath() + MDir_Constants.DIALOGSTYLE);
 		return dialog;
 	}
 

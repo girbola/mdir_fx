@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.imageViewer.ImageViewerController;
 import com.girbola.fileinfo.FileInfo;
@@ -56,7 +57,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + "imageViewer.css").toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
@@ -84,7 +85,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + "imageViewer.css").toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
@@ -111,7 +112,7 @@ public class ImageUtils {
 				VLCPlayerController vlcPlayerController = (VLCPlayerController) loader.getController();
 				Scene scene = new Scene(root);
 				scene.getStylesheets()
-						.add(Main.class.getResource(conf.getThemePath() + "vlcPlayer.css").toExternalForm());
+						.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.VLCPLAYER).toExternalForm());
 
 				Stage stage = new Stage();
 

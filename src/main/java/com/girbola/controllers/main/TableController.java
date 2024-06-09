@@ -237,7 +237,7 @@ public class TableController {
 
             stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
-            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGS.getType()).toExternalForm());
+            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
             MergeMoveDialogController mergeMoveDialogController = (MergeMoveDialogController) loader.getController();
             mergeMoveDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
@@ -277,7 +277,8 @@ public class TableController {
 
             stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
-            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGS.getType()).toExternalForm());
+            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+
             MergeCopyDialogController mergeCopyDialogController = (MergeCopyDialogController) loader.getController();
             mergeCopyDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);

@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.Model_main;
@@ -98,7 +99,7 @@ public class FileOperationsController {
 			moveController.init(model_main, model_datefix);
 
 			Scene scene = new Scene(parent);
-			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + "dateFixer.css").toExternalForm());
+			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Constants.DATEFIXER).toExternalForm());
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.show();

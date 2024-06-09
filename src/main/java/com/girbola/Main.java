@@ -136,7 +136,7 @@ public class Main extends Application {
                 primaryScene = new Scene(parent);
 
                 primaryScene.getStylesheets()
-                        .add(Main.class.getResource(conf.getThemePath() + "mainStyle.css").toExternalForm());
+                        .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE).toExternalForm());
 
                 Messages.sprintf("theme path is: " + conf.getThemePath());
                 MainController mainController = (MainController) main_loader.getController();
