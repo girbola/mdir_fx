@@ -65,14 +65,37 @@ public class FileInfo extends Metadata implements Cloneable {
      * @see java.lang.Object#toString()
      */
     public String showAllValues() {
-        return "FileInfo [orgPath=" + orgPath + ", workdir=" + workDir + ", workDirDriveSerialNumber="
-                + workDirDriveSerialNumber + ", destination_Path=" + destination_Path + ", fileInfo_version="
-                + fileInfo_version + ", event=" + event + ", location=" + location + ", tags=" + tags
-                + ", + fileInfo_id=" + fileInfo_id + ", camera_model=" + camera_model + ", bad=" + bad + ", confirmed="
-                + confirmed + ", copied=" + copied + ", good=" + good + ", ignored=" + ignored + ", image=" + image
-                + ", raw=" + raw + ", suggested=" + suggested + ", video=" + video + ", orientation=" + orientation
-                + ", thumb_length=" + thumb_length + ", timeShift=" + timeShift + ", date=" + date + ", size=" + size
-                + ", tableDuplicated=" + tableDuplicated + ", thumb_offset=" + thumb_offset + " imageDifferenceHash=" + imageDifferenceHash + ", user " + user + "]";
+        return "FileInfo{" +
+                "fileInfo_version=" + fileInfo_version +
+                ", bad=" + bad +
+                ", confirmed=" + confirmed +
+                ", copied=" + copied +
+                ", good=" + good +
+                ", ignored=" + ignored +
+                ", image=" + image +
+                ", raw=" + raw +
+                ", suggested=" + suggested +
+                ", tableDuplicated=" + tableDuplicated +
+                ", video=" + video +
+                ", localDateTime=" + localDateTime +
+                ", camera_model='" + camera_model + '\'' +
+                ", destination_Path='" + destination_Path + '\'' +
+                ", event='" + event + '\'' +
+                ", location='" + location + '\'' +
+                ", orgPath='" + orgPath + '\'' +
+                ", tags='" + tags + '\'' +
+                ", user='" + user + '\'' +
+                ", workDir='" + workDir + '\'' +
+                ", workDirDriveSerialNumber='" + workDirDriveSerialNumber + '\'' +
+                ", fileInfo_id=" + fileInfo_id +
+                ", orientation=" + orientation +
+                ", thumb_length=" + thumb_length +
+                ", thumb_offset=" + thumb_offset +
+                ", date=" + date +
+                ", imageDifferenceHash=" + imageDifferenceHash +
+                ", size=" + size +
+                ", timeShift=" + timeShift +
+                '}';
     }
 
     /**

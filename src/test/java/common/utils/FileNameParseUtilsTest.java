@@ -15,31 +15,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class FileNameParseUtilsTest {
 
-	@Test
-	void testHasFileNameDate() throws IOException {
-		File file = new File(".");
-		Path theFile = Paths.get(file.getAbsolutePath() + File.separator + "src" + File.separator + "test"
-				+ File.separator + "resources" + File.separator + "2023-01-01 12.03.50-TestFile.jpg");
+    @Test
+    void testGetFileNameRunningNumber() {
+        String fileName = "IMG_1234";
+        Integer expected = 1234;
+        Integer actual = FileNameParseUtils.getFileNameRunningNumber(fileName);
+        assertEquals(expected, actual);
+    }
 
-		System.out.println("theFile: " + theFile.toFile().getCanonicalPath() + " EXISTS? " + Files.exists(theFile)
-				+ " file: " + Files.size(theFile));
+    @Test
+    void testGetFileNameRunningNumberWithMultipleSeriesOfDigits() {
+        String fileName = "IMG_12_34_56_78";
+        Integer expected = 12345678;
+        Integer actual = FileNameParseUtils.getFileNameRunningNumber(fileName);
+        assertEquals(expected, actual);
+    }
 
-		long start = System.currentTimeMillis();
-		long actual = FileNameParseUtils.hasFileNameDate(theFile);
-		String longToLocalDateTime = null;
-		try {
-			longToLocalDateTime = DateUtils.longToLocalDateTime(actual)
-					.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    @Test
+    void testGetFileNameRunningNumberWithNoDigits() {
+        String fileName = "IMG";
+        Integer expected = 0;
+        Integer actual = FileNameParseUtils.getFileNameRunningNumber(fileName);
+        assertEquals(expected, actual);
+    }
 
-		System.out
-				.println("Testing if file name contain date and/or time took: " + (System.currentTimeMillis() - start));
-		System.out.println("hasFileNameDate: " + file + " And it is date? " + longToLocalDateTime);
-
-		assertTrue(Files.exists(theFile));
-		assertTrue(Files.size(theFile) > 0);
-		assertEquals("2023-01-01 12.03.50", longToLocalDateTime);
-	}
 }

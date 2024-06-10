@@ -57,7 +57,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER).toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER.getType()).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
@@ -85,7 +85,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER).toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER.getType()).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
@@ -112,7 +112,7 @@ public class ImageUtils {
 				VLCPlayerController vlcPlayerController = (VLCPlayerController) loader.getController();
 				Scene scene = new Scene(root);
 				scene.getStylesheets()
-						.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.VLCPLAYER).toExternalForm());
+						.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.VLCPLAYER.getType()).toExternalForm());
 
 				Stage stage = new Stage();
 

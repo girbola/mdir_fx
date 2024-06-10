@@ -125,7 +125,7 @@ public class MenuBarController {
 
 		Scene fc_scene = new Scene(parent, 800, 400);
 		fc_scene.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER).toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER.getType()).toExternalForm());
 		folderScannerController.setStage(fc_stage);
 		folderScannerController.setScene(fc_scene);
 		folderScannerController.init(model_main);
@@ -314,7 +314,7 @@ public class MenuBarController {
 		stage_opt.setAlwaysOnTop(true);
 		Scene scene_opt = new Scene(parent);
 		scene_opt.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + "option_pane.css").toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.OPTIONPANE.getType()).toExternalForm());
 
 		stage_opt.setScene(scene_opt);
 		stage_opt.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -372,7 +372,7 @@ public class MenuBarController {
 		conf.setThemePath("/resources/themes/dark/");
 		menuItem_tools_themes_light.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
-				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE).toExternalForm());
+				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
 		Configuration_SQL_Utils.update_Configuration();
 	}
 
@@ -382,7 +382,7 @@ public class MenuBarController {
 		conf.setThemePath("/resources/themes/light/");
 		menuItem_tools_themes_dark.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
-				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE).toExternalForm());
+				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
 		Configuration_SQL_Utils.update_Configuration();
 	}
 

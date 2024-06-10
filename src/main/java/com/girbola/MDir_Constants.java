@@ -12,7 +12,9 @@ public enum MDir_Constants {
 	DIALOGS("dialogs.css"),
 	VLCPLAYER("vlcPlayer.css"),
 	LOADINGPROCESS("loadingprocess.css"),
-	DIALOGSSTYLE("dialogsStyle.css");
+	DIALOGSSTYLE("dialogsStyle.css"),
+	OPTIONPANE( "option_pane.css");
+
 	//======== Styling css file names============ ENDS
 	
 	MDir_Constants(String type) {

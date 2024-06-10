@@ -392,7 +392,7 @@ public class BottomController {
 
         Scene fc_scene = new Scene(parent, 800, 400);
         fc_scene.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER).toExternalForm());
+                .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER.getType()).toExternalForm());
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);

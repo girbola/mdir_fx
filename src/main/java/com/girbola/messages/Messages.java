@@ -7,6 +7,7 @@
  */
 package com.girbola.messages;
 
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.messages.html.HTMLClass;
 import javafx.application.Platform;
@@ -45,7 +46,7 @@ public class Messages {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		dialog.setDialogPane(dialogPane);
-		dialog.getDialogPane().getStylesheets().add(Main.conf.getThemePath() + MDir_Constants.DIALOGSTYLE);
+		dialog.getDialogPane().getStylesheets().add(Main.conf.getThemePath() + MDir_Constants.DIALOGSSTYLE);
 		return dialog;
 	}
 
@@ -89,7 +90,7 @@ public class Messages {
 	private static Alert createAlert(AlertType alertType) {
 		Alert alert = new Alert(alertType);
 		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "dialog.css").toExternalForm());
+		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGS.getType()).toExternalForm());
 		dialogPane.getStyleClass().add("alertDiag");
 		return alert;
 	}
@@ -326,7 +327,7 @@ public class Messages {
 		Alert alert = new Alert(AlertType.WARNING);
 		DialogPane dialogPane = alert.getDialogPane();
 		dialogPane.setContentText(text);
-		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "dialog.css").toExternalForm());
+		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		dialogPane.setHeaderText("");
 
 		dialogPane.getStyleClass().add("alertDiag");
@@ -482,14 +483,10 @@ public class Messages {
 
 	}
 
-	public static void printf(String string, Object object) {
-		System.out.printf(string, object);
-	}
-
 	public static void showAlert(String message, @SuppressWarnings("exports") AlertType alertType) {
 		Alert alert = new Alert(alertType);
 		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + "dialogs.css").toExternalForm());
+		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		dialogPane.getStyleClass().add("alertDiag");
 		dialogPane.setHeaderText(null);
 		dialogPane.setContentText(message);

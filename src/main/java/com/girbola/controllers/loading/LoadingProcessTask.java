@@ -110,7 +110,7 @@ public class LoadingProcessTask {
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 			loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
 			loadingScene.getStylesheets()
-					.add(getClass().getResource(conf.getThemePath() + MDir_Constants.LOADINGPROCESS).toExternalForm());
+					.add(getClass().getResource(conf.getThemePath() + MDir_Constants.LOADINGPROCESS.getType()).toExternalForm());
 
 			xOffset = loadingStage.getX();
 			yOffset = loadingStage.getY();

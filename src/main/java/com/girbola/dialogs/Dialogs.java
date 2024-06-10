@@ -50,7 +50,7 @@ public class Dialogs {
 
 
 		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE).toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
@@ -69,7 +69,7 @@ public class Dialogs {
 		DialogPane dialogPane = new DialogPane();
 		Messages.sprintf("width: " + dialog.getWidth());
 		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE).toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		dialog.setDialogPane(dialogPane);
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);

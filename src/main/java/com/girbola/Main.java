@@ -136,7 +136,7 @@ public class Main extends Application {
                 primaryScene = new Scene(parent);
 
                 primaryScene.getStylesheets()
-                        .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE).toExternalForm());
+                        .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
 
                 Messages.sprintf("theme path is: " + conf.getThemePath());
                 MainController mainController = (MainController) main_loader.getController();
@@ -264,10 +264,12 @@ Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
             if (lpt != null) {
                 lpt.closeStage();
             }
-            primaryStage.setOnCloseRequest(model_main.dontExit);
-            Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
+            //primaryStage.setOnCloseRequest(model_main.dontExit);
+            Messages.sprintf("Something went wrong while loading main window");
+            /*Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
                     true);
-            model_main.exitProgram_NOSAVE();
+            model_main.exitProgram_NOSAVE(); */
+            System.exit(1);
         });
         mainTask.setOnCancelled(event -> {
             Messages.sprintf("Main Task cancelled");

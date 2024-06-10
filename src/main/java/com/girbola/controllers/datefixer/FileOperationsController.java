@@ -99,7 +99,7 @@ public class FileOperationsController {
 			moveController.init(model_main, model_datefix);
 
 			Scene scene = new Scene(parent);
-			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Constants.DATEFIXER).toExternalForm());
+			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.show();

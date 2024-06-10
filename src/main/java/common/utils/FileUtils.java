@@ -84,7 +84,7 @@ public class FileUtils {
 
         if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
             sprintf("Files have same name but they differ with sizes");
-            return rename(srcFile, destFile.getParent(), filter_directories);
+            return rename(srcFile, destFile, filter_directories);
         } else {
             Messages.sprintf("file did exists at destination folder: " + srcFile + " dest; " + destFile);
             return null;

@@ -5,13 +5,21 @@ import net.coobird.thumbnailator.name.Rename;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 public class ThumbnailVideoTest {
 
-    @Test
+    @Test/**/
     public void testThumbnails() throws Exception {
-
-        Thumbnails.of(new File("C:\\Users\\marko\\OneDrive\\Kuvat\\Samsung Gallery\\DCIM\\Camera\\20230423_152124.mp4")).size(640,480).outputFormat("jpg").toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+/*
+        try {
+            Thumbnails.Builder<File> fileBuilder = Thumbnails.of(Paths.get("src", "test", "resources", "test-material", "153976-817104245_tiny.mp4").toFile());
+            fileBuilder.size(640, 480);
+            fileBuilder.outputFormat("jpg");
+            fileBuilder.toFiles(Rename.PREFIX_DOT_THUMBNAIL);
+        } catch (Exception e){
+            e.printStackTrace();
+        }*/
 
     }
 

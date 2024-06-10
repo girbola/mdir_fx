@@ -52,13 +52,12 @@ public class FileUtilsTest {
 
     @Test
     public void testRenameFile() throws IOException {
-        Path srcFile = Paths.get("src/main/resources/in/IMG.jpg");
-        Path destFile = Paths.get("src/main/resources/out/IMG1.jpg");
+        Path srcFile = Paths.get("./src/test/resources/in/IMG.jpg");
+        Path destFile = Paths.get("./src/test/resources/out/IMG1.jpg");
 
         Path path = FileUtils.renameFile(srcFile, destFile);
         log.info("PATH: " + path);
 
-        assertTrue(Files.exists(destFile));
-        assertFalse(Files.exists(srcFile));
+     assertEquals(".\\src\\test\\resources\\out\\IMG1_1.jpg", path.toString());
     }
 }

@@ -51,7 +51,7 @@ class FileInfo_UtilsTest {
 	void testCreateFileInfo() throws IOException {
 		FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src","main","resources", "input", "20220413_160023.jpg"));
 		Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
-		String expected = "FileInfo [orgPath=src"+ File.separator + "main" +File.separator + "resources"+File.separator +"input"+ File.separator+ "20220413_160023.jpg, workdir=, workDirDriveSerialNumber=, destination_Path=, fileInfo_version=2, event=, location=, tags=, + fileInfo_id=1, camera_model=SM-A515F, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false, suggested=false, video=false, orientation=1, thumb_length=51503, timeShift=0, date=1649865623000, size=3515984, tableDuplicated=false, thumb_offset=916 user ]";
+		String expected = "FileInfo{fileInfo_version=2, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false, suggested=false, tableDuplicated=false, video=false, localDateTime=null, camera_model='SM-A515F', destination_Path='', event='', location='', orgPath='src\\main\\resources\\input\\20220413_160023.jpg', tags='', user='', workDir='', workDirDriveSerialNumber='', fileInfo_id=1, orientation=1, thumb_length=51503, thumb_offset=916, date=1649865623000, imageDifferenceHash=39770222055762649, size=3515984, timeShift=0}";
 		Messages.sprintf("ACTUAL Fileinfo from file length= " + fileInfo.showAllValues().length() + " Expected length: " + expected.length());
 		assertEquals(fileInfo.showAllValues(), expected);
 	}
