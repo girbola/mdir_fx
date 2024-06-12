@@ -395,7 +395,7 @@ public class TableController {
             });
         } else {
             Platform.runLater(() -> {
-                iv.setRotate(-90);
+                iv.setRotate(-180);
             });
         }
     }
@@ -512,6 +512,22 @@ public class TableController {
             return;
         }
         table.setVisible(!table.isVisible());
+        if(!table.isVisible()) {
+            table_Vbox.setPrefWidth(35);
+            table_Vbox.setMinWidth(35);
+            table_Vbox.setMaxWidth(35);
+
+            Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
+        } else {
+            table_Vbox.setPrefWidth(-1);
+            table_Vbox.setMinWidth(-1);
+            table_Vbox.setMaxWidth(-1);
+            Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
+        }
+/*
+        table_Vbox.setPrefWidth(55.0);
+        table_Vbox.setMinWidth(55.0);
+        table_Vbox.setMaxWidth(55.0);*/
         hideablePane.setVisible(!hideablePane.isVisible());
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
@@ -647,7 +663,7 @@ public class TableController {
         table.setId(tableType);
         table.setItems(data_obs);
 
-        table_Vbox.setId("table_vbox");
+        table_Vbox.setId(tableType.toLowerCase() + "_table_vbox");
         /*table_Vbox.setMinWidth(40);*/
         table_Vbox.setFillWidth(true);
 

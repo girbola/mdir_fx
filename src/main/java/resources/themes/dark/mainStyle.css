@@ -114,10 +114,10 @@
     -fx-text-fill: white;
 }
 
-.table_vbox {
+.sortit_table_vbox, .sorted_table_vbox {
 	-fx-border-color: derive(-fx-base, 15%);
 	-fx-padding: 3;
-	-fx-background-color: -fx-base;
+	-fx-background-color: red;
 }
 .table-view {
 	-fx-background-color: #3a3838;

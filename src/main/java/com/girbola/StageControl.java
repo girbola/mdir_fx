@@ -3,6 +3,7 @@ package com.girbola;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
+import javafx.geometry.Bounds;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
@@ -59,12 +60,13 @@ public class StageControl extends Stage {
                 double sortItWidth = 0;
                 double asitisWidth = 0;
                 double hiddenWidths = ((3 - visibles) * 50);
-                double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-145);
-                double divider = Math.floor(tablesRootPane / (double) visibles);
+                double bounds = modelMain.tables().getTables_rootPane().getLayoutBounds().getWidth();
+                //double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-75);
+                double divider = Math.floor(bounds / (double) visibles);
                 divider -= hiddenWidths;
 
                 //divider -= (hiddenWidths*3);
-                Messages.sprintf(" hiddenWidths: " + hiddenWidths + " divider: " + divider + " tableRootPane Width: " + tablesRootPane);
+                Messages.sprintf("bounds width: " + bounds +  " hiddenWidths: " + hiddenWidths + " divider: " + divider);
 
                 if (modelMain.tables().getSorted_table().isVisible()) {
                     TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), divider);
@@ -96,7 +98,6 @@ public class StageControl extends Stage {
 
                 Messages.sprintf("visibles: " + visibles +
                         " setWindowStartWidth newValue : " + newValue +
-                        " tablesRootPane " + tablesRootPane +
                         " sorted: " + sortedWidth +
                         " sortit: " + sortItWidth +
                         " asitis: " + asitisWidth +
