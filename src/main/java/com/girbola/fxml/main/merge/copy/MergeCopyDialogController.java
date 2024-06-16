@@ -51,6 +51,7 @@ public class MergeCopyDialogController {
 	@FXML private Button apply_btn;
 	@FXML private Button cancel_btn;
 	@FXML private CheckBox addEverythingInsameDir_chb;
+
 	@FXML private ComboBox<String> absolutePath_cmb;
 	@FXML private ComboBox<String> event_cmb;
 	@FXML private ComboBox<String> location_cmb;
@@ -87,8 +88,7 @@ public class MergeCopyDialogController {
         locationName = location_cmb.getEditor().getText().isEmpty() ? locationName : location_cmb.getEditor().getText();
         userName = user_cmb.getEditor().getText().isEmpty() ? userName : user_cmb.getEditor().getText();
 
-        Messages.sprintf(
-                "locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
+        Messages.sprintf("absolutePath "+ absolutePath + " locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
         List<String> list = new ArrayList<>();
         if (absolutePath.isEmpty()) {
@@ -155,6 +155,10 @@ public class MergeCopyDialogController {
 
                     fileList.add(fileInfo);
                 }
+                if(fileList.isEmpty()) {
+                    Messages.sprintf("FileList were empty");
+                    return;
+                }
 
                 boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
                 if (deleteFileInfoListToDatabase) {
@@ -163,17 +167,17 @@ public class MergeCopyDialogController {
                     Messages.sprintfError("Bug sniffer when deleting files form database");
                 }
 
-                try {
-                    connection.commit();
-                    connection.close();
-
-                } catch (SQLException e) {
-                    Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
-                    e.printStackTrace();
-                }
 
             }
 
+            try {
+                connection.commit();
+                connection.close();
+
+            } catch (SQLException e) {
+                Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
 
         TableUtils.refreshAllTableContent(tables);

@@ -421,89 +421,6 @@ public class TableController {
         }
     }
 
-    private void handleTableStates_() {
-
-        int visibles = getVisibles();
-        int hidden = (3 - visibles) + 1;
-        //double tableWidth = Math.floor(ScreenUtils.screenBouds().getWidth() / visibles);
-        double tableWidth = Math.floor((model_main.tables().getTables_rootPane().getWidth() + 150) / visibles);
-
-        double buttonWidth = hide_btn.getLayoutBounds().getWidth();
-
-        Messages.sprintf("Show table?: " + table.isVisible() + " visibles: " + visibles + " hidden: " + hidden + " buttonWidth " + buttonWidth + " tableWidth: " + tableWidth + " tables rootpane: " + model_main.tables().getTables_rootPane().getWidth() + " divided width: " + tableWidth);
-
-        HBox showHideButton_hbox_sortit = (HBox) getPaneFromParent(model_main.tables().getSortItRootPane(), "showHideButton_hbox");
-        AnchorPane hideablePane_sortit = (AnchorPane) getPaneFromParent(model_main.tables().getSortItRootPane(), "hideablePane");
-
-        HBox showHideButton_hbox_sorted = (HBox) getPaneFromParent(model_main.tables().getSortedRootPane(), "showHideButton_hbox");
-        AnchorPane hideablePane_sorted = (AnchorPane) getPaneFromParent(model_main.tables().getSortedRootPane(), "hideablePane");
-
-        HBox showHideButton_hbox_asitis = (HBox) getPaneFromParent(model_main.tables().getAsItIsRootPane(), "showHideButton_hbox");
-        AnchorPane hideablePane_asitis = (AnchorPane) getPaneFromParent(model_main.tables().getAsItIsRootPane(), "hideablePane");
-        if (model_main.tables().getSortIt_table().isVisible()) {
-            Messages.sprintf("showing SORTIT pane");
-            setTableWidth(model_main.tables().getSortItRootPane(), tableWidth, TableType.SORTIT);
-            hideablePane_sortit.setVisible(true);
-            model_main.tables().showAndHideTables.setSortit_show_property(true);
-        } else {
-            Messages.sprintf("hiding SORTIT pane");
-            setTableWidth(model_main.tables().getSortedRootPane(), buttonWidth, TableType.SORTIT);
-            hideablePane_sortit.setVisible(false);
-            model_main.tables().showAndHideTables.setSortit_show_property(false);
-        }
-
-        if (model_main.tables().getSorted_table().isVisible()) {
-            Messages.sprintf("showing SORTED pane");
-            setTableWidth(model_main.tables().getSortedRootPane(), tableWidth, TableType.SORTED);
-
-            model_main.tables().showAndHideTables.setSorted_show_property(true);
-        } else {
-            Messages.sprintf("hiding SORTED pane");
-            setTableWidth(model_main.tables().getSortedRootPane(), buttonWidth, TableType.SORTED);
-            model_main.tables().showAndHideTables.setSorted_show_property(false);
-        }
-
-        if (model_main.tables().getAsItIs_table().isVisible()) {
-            Messages.sprintf("showing ASITIS pane");
-            setTableWidth(model_main.tables().getAsItIsRootPane(), tableWidth, TableType.ASITIS);
-            model_main.tables().showAndHideTables.setAsitis_show_property(true);
-        } else {
-            Messages.sprintf("hiding ASITIS pane");
-            setTableWidth(model_main.tables().getAsItIsRootPane(), buttonWidth, TableType.ASITIS);
-            model_main.tables().showAndHideTables.setAsitis_show_property(false);
-        }
-/*
-        if (model_main.tables().getSortIt_table().isVisible()) {
-            TableUtils.setWidth(showHideButton_hbox_sortit, tableWidth - (buttonWidth * hidden));
-            hideablePane_sortit.setVisible(true);
-            model_main.tables().showAndHideTables.setSortit_show_property(true);
-        } else {
-            TableUtils.setWidth(showHideButton_hbox_sortit, buttonWidth);
-            hideablePane_sortit.setVisible(false);
-            model_main.tables().showAndHideTables.setSortit_show_property(false);
-        }
-
-        if (model_main.tables().getSorted_table().isVisible()) {
-            TableUtils.setWidth(showHideButton_hbox_sorted, tableWidth - (buttonWidth * hidden));
-            hideablePane_sorted.setVisible(true);
-            model_main.tables().showAndHideTables.setSorted_show_property(true);
-        } else {
-            TableUtils.setWidth(showHideButton_hbox_sorted, buttonWidth);
-            hideablePane_sorted.setVisible(false);
-            model_main.tables().showAndHideTables.setSorted_show_property(false);
-        }
-
-        if (model_main.tables().getAsItIs_table().isVisible()) {
-            TableUtils.setWidth(showHideButton_hbox_asitis, tableWidth - (buttonWidth * hidden));
-            hideablePane_asitis.setVisible(true);
-            model_main.tables().showAndHideTables.setAsitis_show_property(true);
-        } else {
-            TableUtils.setWidth(showHideButton_hbox_asitis, buttonWidth);
-            hideablePane_asitis.setVisible(false);
-            model_main.tables().showAndHideTables.setAsitis_show_property(false);
-        }*/
-    }
-
     @FXML
     private void hide_btn_action(ActionEvent event) {
 
@@ -512,77 +429,45 @@ public class TableController {
             return;
         }
         table.setVisible(!table.isVisible());
-        if(!table.isVisible()) {
-            table_Vbox.setPrefWidth(35);
-            table_Vbox.setMinWidth(35);
-            table_Vbox.setMaxWidth(35);
-
-            Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
-        } else {
-            table_Vbox.setPrefWidth(-1);
-            table_Vbox.setMinWidth(-1);
-            table_Vbox.setMaxWidth(-1);
-            Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
-        }
-/*
-        table_Vbox.setPrefWidth(55.0);
-        table_Vbox.setMinWidth(55.0);
-        table_Vbox.setMaxWidth(55.0);*/
+        tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
         hideablePane.setVisible(!hideablePane.isVisible());
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
 
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
+        if(!table.isVisible()) {
+            table_Vbox.setPrefWidth(35);
+            table_Vbox.setMinWidth(35);
+            table_Vbox.setMaxWidth(35);
+            tableInformation_flowpane.setVisible(false);
+            Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
+        } else {
+            table_Vbox.setPrefWidth(-1);
+            table_Vbox.setMinWidth(-1);
+            table_Vbox.setMaxWidth(-1);
+            tableInformation_flowpane.setVisible(true);
+            Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
+        }
 
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
 
     }
 
-    private int getVisibles() {
-        int visibles = 0;
-        if (model_main.tables().getSortIt_table().isVisible()) {
-            visibles++;
-        }
-        if (model_main.tables().getSorted_table().isVisible()) {
-            visibles++;
-        }
-        if (model_main.tables().getAsItIs_table().isVisible()) {
-            visibles++;
-        }
-
-        return visibles;
-    }
-
     private Pane getPaneFromParent(Parent parent, String id) {
         Messages.sprintf("getPaneFromParent parent is: " + parent);
         VBox pane = (VBox) parent;
         if (pane != null) {
-            Messages.sprintf("getPaneFromParent pane: " + pane.getId());
             for (Node table_vbox_node : pane.getChildren()) {
-                if (table_vbox_node instanceof HBox) {
-                    if (table_vbox_node.getId().equals(id)) {
-                        return (HBox) table_vbox_node;
-                    }
+                if (table_vbox_node instanceof HBox && table_vbox_node.getId().equals(id)) {
+                    return (HBox) table_vbox_node;
                 }
-                if (table_vbox_node instanceof AnchorPane) {
-                    if (table_vbox_node.getId().equals(id)) {
-                        return (AnchorPane) table_vbox_node;
-                    }
-
+                if (table_vbox_node instanceof AnchorPane && table_vbox_node.getId().equals(id)) {
+                    return (AnchorPane) table_vbox_node;
                 }
             }
         }
         return null;
-    }
-
-    private void setTableWidth(Parent parent, double tableWidth) {
-        Platform.runLater(() -> {
-            parent.prefWidth(tableWidth);
-            parent.minWidth(tableWidth);
-            parent.maxWidth(tableWidth);
-            Messages.sprintf("Parents parent is: " + parent.toString() + " tableWidth: " + tableWidth);
-        });
     }
 
     @FXML
@@ -641,15 +526,6 @@ public class TableController {
 
         show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
-      /*  showTable.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-            if (tableType.equals(TableType.SORTIT.getType())) {
-                model_main.tables().showAndHideTables.setSortit_show_property(newValue);
-            } else if (tableType.equals(TableType.SORTED.getType())) {
-                model_main.tables().showAndHideTables.setSorted_show_property(newValue);
-            } else if (tableType.equals(TableType.ASITIS.getType())) {
-                model_main.tables().showAndHideTables.setAsitis_show_property(newValue);
-            }
-        });*/
 
         Platform.runLater(() -> {
             setShowHideTableButtonIcons(hide_btn, true);
@@ -704,7 +580,6 @@ public class TableController {
             FolderInfo folderInfo = (FolderInfo) event.getRowValue();
             if (event.getNewValue().isEmpty()) {
                 folderInfo.setJustFolderName(Paths.get(folderInfo.getFolderPath()).getFileName().toString());
-
             } else if (!folderInfo.getJustFolderName().equals(event.getNewValue()) && !event.getNewValue().isEmpty()) {
                 folderInfo.setJustFolderName(event.getNewValue());
 

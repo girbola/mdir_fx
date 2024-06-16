@@ -138,9 +138,8 @@ public class FileInfo_SQL {
         Messages.sprintf("deleteFileInfoListToDatabase tableCreated Started");
 
         try {
-            if (!connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
+
+            SQL_Utils.setAutoCommit(connection, false);
             boolean tableCreated = createFileInfoTable(connection);
             if (tableCreated) {
                 Messages.sprintf("insertFileInfoListToDatabase tableCreated");
@@ -154,7 +153,8 @@ public class FileInfo_SQL {
             String sql = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE orgPath = ?";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             for (FileInfo fileInfo : list) {
-                pstmt.addBatch(fileInfo.getOrgPath());
+                pstmt.setString(1, fileInfo.getOrgPath());
+                pstmt.addBatch();
                 Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
             }
             pstmt.executeBatch();

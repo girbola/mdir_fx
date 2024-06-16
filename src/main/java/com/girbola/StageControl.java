@@ -38,14 +38,14 @@ public class StageControl extends Stage {
         primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartPosX((double) newValue);
-                Messages.sprintf("windowstartposX: " + newValue);
+                //Messages.sprintf("windowstartposX: " + newValue);
             }
         });
 
         primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartPosY((double) newValue);
-                Messages.sprintf("windowstartposY: " + newValue);
+                //Messages.sprintf("windowstartposY: " + newValue);
             }
         });
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {

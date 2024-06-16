@@ -34,7 +34,7 @@
                   <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="3" />
                   <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="absolutePath_cmb" maxWidth="600" promptText="Absolute path" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="absolutePath_cmb" editable="true" maxWidth="600" promptText="%absolutePath" GridPane.columnIndex="1" />
                   <Label fx:id="absolutePath_lbl" text="%absolutePath" />
                </children>
             </GridPane>
