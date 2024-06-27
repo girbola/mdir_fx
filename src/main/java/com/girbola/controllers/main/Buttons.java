@@ -11,6 +11,8 @@ import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.scene.control.TableView;
 
+import java.util.stream.IntStream;
+
 import static com.girbola.messages.Messages.sprintf;
 
 /**
@@ -26,17 +28,6 @@ public class Buttons {
 		sprintf("Buttons instantiated...");
 	}
 
-	private void setFocusOnTable(TableView<FolderInfo> tableView) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				tableView.requestFocus();
-				tableView.getSelectionModel().select(0);
-				tableView.getFocusModel().focus(0);
-			}
-		});
-	}
-
 	private boolean isSelectedTable(TableView<FolderInfo> table, FolderInfo aFolderInfo) {
 
 		for (FolderInfo tv : table.getSelectionModel().getSelectedItems()) {
@@ -50,13 +41,13 @@ public class Buttons {
 	}
 
 	void select_invert_Table(TableView<FolderInfo> table) {
-		for (int i = 0; i < table.getItems().size(); i++) {
-			if (isSelectedTable(table, table.getItems().get(i))) {
-				table.getSelectionModel().clearSelection(i);
-			} else {
-				table.getSelectionModel().select(i);
-			}
-		}
+        IntStream.range(0, table.getItems().size()).forEach(i -> {
+            if (isSelectedTable(table, table.getItems().get(i))) {
+                table.getSelectionModel().clearSelection(i);
+            } else {
+                table.getSelectionModel().select(i);
+            }
+        });
 //		setFocusOnTable(table);
 	}
 
@@ -72,13 +63,13 @@ public class Buttons {
 	}
 
 	void select_bad_Table(TableView<FolderInfo> table) {
-		for (int i = 0; i < table.getItems().size(); i++) {
-			if (table.getItems().get(i).getBadFiles() >= 1) {
-				table.getSelectionModel().select(i);
-			} else {
-				table.getSelectionModel().clearSelection(i);
-			}
-		}
+        IntStream.range(0, table.getItems().size()).forEach(i -> {
+            if (table.getItems().get(i).getBadFiles() >= 1) {
+                table.getSelectionModel().select(i);
+            } else {
+                table.getSelectionModel().clearSelection(i);
+            }
+        });
 
 		/*
 		 * for (int j = 0; j < table.getColumns().size(); j++) { if
@@ -92,27 +83,25 @@ public class Buttons {
 	}
 
 	void select_dateDifference_Table(TableView<FolderInfo> table) {
-		for (int i = 0; i < table.getItems().size(); i++) {
-			if (table.getItems().get(i).getDateDifferenceRatio() >= 2) {
-				Messages.sprintf("selected by dateratio: " + table.getItems().get(i).getFolderPath() + " ratio: "
-						+ table.getItems().get(i).getDateDifferenceRatio());
-				table.getSelectionModel().select(i);
-			} else {
-				table.getSelectionModel().clearSelection(i);
-			}
-		}
+        IntStream.range(0, table.getItems().size()).forEach(i -> {
+            if (table.getItems().get(i).getDateDifferenceRatio() >= 2) {
+                table.getSelectionModel().select(i);
+            } else {
+                table.getSelectionModel().clearSelection(i);
+            }
+        });
 //		setFocusOnTable(table);
 	}
 
 	void select_good_Table(TableView<FolderInfo> table) {
-		for (int i = 0; i < table.getItems().size(); i++) {
-			if (table.getItems().get(i).getBadFiles() == 0 && table.getItems().get(i).getGoodFiles() >= 1
-					&& table.getItems().get(i).getDateDifferenceRatio() <= 1) {
-				table.getSelectionModel().select(i);
-			} else {
-				table.getSelectionModel().clearSelection(i);
-			}
-		}
+        IntStream.range(0, table.getItems().size()).forEach(i -> {
+            if (table.getItems().get(i).getBadFiles() == 0 && table.getItems().get(i).getGoodFiles() >= 1
+                    && table.getItems().get(i).getDateDifferenceRatio() <= 1) {
+                table.getSelectionModel().select(i);
+            } else {
+                table.getSelectionModel().clearSelection(i);
+            }
+        });
 //		setFocusOnTable(table);
 	}
 

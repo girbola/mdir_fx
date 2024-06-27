@@ -5,13 +5,15 @@ import com.girbola.fileinfo.FileInfoUtils;
 import lombok.extern.java.Log;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 @Log
 public class FileInfoTestUtil {
 
     public static FileInfo createFileInfoForTesting() {
-        return createFileInfoForTesting("src/main/resources/input/20220413_160023.jpg");
+        Path filePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
+        return createFileInfoForTesting(filePath.toString());
     }
 
     public static FileInfo createFileInfoForTesting(String path) {

@@ -969,9 +969,8 @@ public class TableUtils {
             return;
         }
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
+            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+                continue;
             }
 
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
@@ -993,9 +992,8 @@ public class TableUtils {
         }
         List<FileInfo> list = new ArrayList<>();
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
+            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+                continue;
             }
             list.addAll(folderInfo.getFileInfoList());
 
@@ -1036,9 +1034,8 @@ public class TableUtils {
         }
 
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (folderInfo.getBadFiles() >= 1) {
-                Messages.warningText(Main.bundle.getString("badDatesFound"));
-                return;
+            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+                continue;
             }
 
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {

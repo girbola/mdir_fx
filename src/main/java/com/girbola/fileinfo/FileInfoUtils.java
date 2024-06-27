@@ -85,64 +85,65 @@ public class FileInfoUtils {
 
     }
 
-	public static FileInfo createFileInfo(Path fileName) throws IOException {
-		if (fileName.toString().contains("CR2")) {
-            Messages.sprintf("fileName found: " + fileName);
-        }FileInfo fileInfo = null;
-		if (FileUtils.supportedImage(fileName)) {
-			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-			setImage(fileInfo);
-			calculcateTotalFileSizes(fileName, fileInfo);
+    public static FileInfo createFileInfo(Path fileName) throws IOException {
 
-			fileInfo.setSize(Files.size(fileName));
-			boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-			boolean tryFileNameDate;
-			if (!metaDataFound) {
-				tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-				if (!tryFileNameDate) {
-					setBad(fileInfo);
-					fileInfo.setDate(0);
-				}
-			}
-			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
-			fileInfo.setImageDifferenceHash(imageDifferenceHash);
+        FileInfo fileInfo = null;
+        if (FileUtils.supportedImage(fileName)) {
+            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+            setImage(fileInfo);
+            calculcateTotalFileSizes(fileName, fileInfo);
 
-		} else if (FileUtils.supportedVideo(fileName)) {
-			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-			setVideo(fileInfo);
-			fileInfo.setSize(Files.size(fileName));
-			boolean metaDataFound = getVideoDateTaken(fileName, fileInfo);
-			if (!metaDataFound) {
-				fileInfo.setBad(true);
-			}
-		} else if (FileUtils.supportedRaw(fileName)) {
-			fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-			setRaw(fileInfo);
-			calculcateTotalFileSizes(fileName, fileInfo);
-		}
+            fileInfo.setSize(Files.size(fileName));
+            boolean metaDataFound = getImageMetadata(fileName, fileInfo);
+            boolean tryFileNameDate;
+            if (!metaDataFound) {
+                tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+                if (!tryFileNameDate) {
+                    setBad(fileInfo);
+                    fileInfo.setDate(0);
+                }
+            }
 
-		return fileInfo;
-	}
+            long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+            Messages.sprintf("333imageDifferenceHash: " + imageDifferenceHash);
+            fileInfo.setImageDifferenceHash(imageDifferenceHash);
 
-	public static void calculcateTotalFileSizes(Path fileName, FileInfo fileInfo) throws IOException {
+        } else if (FileUtils.supportedVideo(fileName)) {
+            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+            setVideo(fileInfo);
+            fileInfo.setSize(Files.size(fileName));
+            boolean metaDataFound = getVideoDateTaken(fileName, fileInfo);
+            if (!metaDataFound) {
+                fileInfo.setBad(true);
+            }
+        } else if (FileUtils.supportedRaw(fileName)) {
+            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+            setRaw(fileInfo);
+            calculcateTotalFileSizes(fileName, fileInfo);
+        }
 
-		fileInfo.setSize(Files.size(fileName));
+        return fileInfo;
+    }
 
-		boolean metaDataFound = getImageMetadata(fileName, fileInfo);
+    public static void calculcateTotalFileSizes(Path fileName, FileInfo fileInfo) throws IOException {
 
-		boolean tryFileNameDate;
-		if (!metaDataFound) {
+        fileInfo.setSize(Files.size(fileName));
 
-			tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+        boolean metaDataFound = getImageMetadata(fileName, fileInfo);
 
-			if (!tryFileNameDate) {
-				setBad(fileInfo);
-				fileInfo.setDate(0);
-			}
-			long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
-			fileInfo.setImageDifferenceHash(imageDifferenceHash);
-		}
-	}
+        boolean tryFileNameDate;
+        if (!metaDataFound) {
+
+            tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+
+            if (!tryFileNameDate) {
+                setBad(fileInfo);
+                fileInfo.setDate(0);
+            }
+            long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
+            fileInfo.setImageDifferenceHash(imageDifferenceHash);
+        }
+    }
 
     public static boolean getVideoDateTaken(Path path, FileInfo fileInfo) {
         if (!Files.exists(path)) {
@@ -189,11 +190,11 @@ public class FileInfoUtils {
     /**
      * This method checks if the given video file has a corresponding thumbnail file with metadata,
      * and populates the FileInfo object with the metadata if found.
-	 *
-	 * @param path The path of the video file.
-	 * @param
-	 * @return
-	 * */
+     *
+     * @param path The path of the video file.
+     * @param
+     * @return
+     */
 
     public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) {
         if (supportedVideo(path)) {
@@ -293,12 +294,12 @@ public class FileInfoUtils {
                 }
             } catch (IOException ex) {
                 Messages.sprintf("NONONONONONOOOO: " + ex.getMessage());
-				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-			}
-		}
-		sprintf("=======entire createFileInfo_list took: " + (System.currentTimeMillis() - start));
-		return fileInfo_list;
-	}
+                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            }
+        }
+        sprintf("=======entire createFileInfo_list took: " + (System.currentTimeMillis() - start));
+        return fileInfo_list;
+    }
 
     public static void setSuggested(FileInfo fileInfo) {
         fileInfo.setSuggested(true);
@@ -415,7 +416,6 @@ public class FileInfoUtils {
     }
 
     /**
-     *
      * @param path
      * @param fileInfo
      * @return

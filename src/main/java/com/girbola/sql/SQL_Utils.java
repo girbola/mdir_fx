@@ -114,6 +114,12 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     //@formatter:on
 
+    /**
+     * Commits any pending changes to the database.
+     *
+     * @param connection The database connection.
+     * @return true if the changes are successfully committed, false otherwise.
+     */
     public static boolean commitChanges(Connection connection) {
         try {
             connection.commit();
@@ -200,18 +206,28 @@ public class SQL_Utils extends FolderInfo_SQL {
      * FolderInfos
      */
     public static boolean createFolderInfosDatabase(Connection connection) {
-        if (!isDbConnected(connection)) {
+/*        if (!isDbConnected(connection)) {
+
             try {
                 DatabaseMetaData metaData = connection.getMetaData();
                 Messages.sprintf("METADATA: " + metaData.toString());
+                return true;
             } catch (SQLException e) {
+                Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase" + connection.getMetaData().getURL()), e, Misc.getLineNumber(), true);
                 throw new RuntimeException(e);
             }
             Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
 
             return false;
+        }*/
+
+        if(!SQL_Utils.isDbConnected(connection)) {
+            Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
+            return false;
         }
+
         String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);

@@ -125,6 +125,10 @@ public class FolderInfo_SQL {
 		}
 	}
 
+	public static FolderInfo loadFolderInfo(Path path) {
+		return loadFolderInfo(path.toAbsolutePath().toString());
+	}
+
 	/**
 	 * 
 	 * @param path
@@ -206,7 +210,7 @@ public class FolderInfo_SQL {
 				return folderInfo;
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase") + path);
 				return null;
 			}
 		} else {
@@ -218,12 +222,7 @@ public class FolderInfo_SQL {
 	public static boolean saveFolderInfoToTable(Connection connection_mdirFile, FolderInfo folderInfo) {
 		boolean create = createFolderInfoTable(connection_mdirFile);
 		if (create) {
-			boolean insert = insertFolderInfo(connection_mdirFile, folderInfo);
-			if (!insert) {
-				return false;
-			} else {
-				return true;
-			}
+            return insertFolderInfo(connection_mdirFile, folderInfo);
 		}
 		return false;
 //		try {
@@ -238,4 +237,5 @@ public class FolderInfo_SQL {
 //			return false;
 //		}
 	}
+
 }

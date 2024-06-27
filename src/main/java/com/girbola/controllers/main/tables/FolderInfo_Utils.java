@@ -92,6 +92,10 @@ public class FolderInfo_Utils {
 
                 Path renamed = FileUtils.renameFile(source, destinationFinalPath);
 
+                if(renamed == null) {
+                    Messages.sprintf("File did exists: " + source + " at destination: " + destinationFinalPath);
+                    continue;
+                }
                 try {
                     Files.move(source, renamed, StandardCopyOption.REPLACE_EXISTING);
 
@@ -158,6 +162,14 @@ public class FolderInfo_Utils {
         sourceFileInfoList.removeAll(sourceFileInfoListRemove);
 
 
+        return true;
+    }
+
+    public static boolean hasBadFiles(FolderInfo folderInfo) {
+        if (folderInfo.getBadFiles() >= 1) {
+            Messages.warningText(Main.bundle.getString("badDatesFound"));
+            return false;
+        }
         return true;
     }
 }

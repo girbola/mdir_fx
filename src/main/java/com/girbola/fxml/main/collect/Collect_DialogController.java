@@ -6,6 +6,7 @@ import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
@@ -102,10 +103,10 @@ public class Collect_DialogController {
 				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
+			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+				continue;
 			}
+			// TODO extract to method
 			if (Main.getProcessCancelled()) {
 				Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
 						Misc.getLineNumber(), true);
@@ -167,9 +168,8 @@ public class Collect_DialogController {
 		}
 
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
+			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+				continue;
 			}
 
 			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
@@ -232,9 +232,8 @@ public class Collect_DialogController {
 		List<FileInfo> list = new ArrayList<>();
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (folderInfo.getBadFiles() >= 1) {
-				Messages.warningText(Main.bundle.getString("badDatesFound"));
-				return;
+			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+				continue;
 			}
 			list.addAll(folderInfo.getFileInfoList());
 		}

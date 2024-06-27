@@ -82,16 +82,21 @@ public class FileUtils {
         String fileName = "";
         String ext = getExtension(destFile);
 
+        long start = System.currentTimeMillis();
+        long src = ImageUtils.calculateDifferenceHash(srcFile);
+        long dest = ImageUtils.calculateDifferenceHash(destFile);
+        long end = System.currentTimeMillis() - start;
+        Messages.sprintf("Took: " + end + " ms");
         if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
-            sprintf("Files have same name but they differ with sizes");
+            Messages.sprintf("Files have same name but they differ with sizes");
             return rename(srcFile, destFile, filter_directories);
         } else {
-            Messages.sprintf("file did exists at destination folder: " + srcFile + " dest; " + destFile);
+            Messages.sprintf("file did already exists at destination folder: " + srcFile + " dest; " + destFile);
             return null;
         }
     }
 
-    public static Path rename(Path srcFile, Path destFile, DirectoryStream.Filter<Path> filter_directories) {
+    private static Path rename(Path srcFile, Path destFile, DirectoryStream.Filter<Path> filter_directories) {
 
         String prefix = "_";
         String fileName = "";
@@ -109,14 +114,14 @@ public class FileUtils {
                         .substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "."
                         + ext;
 
-                sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
+                Messages.sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
 
                 counter++;
 
                 Path path = Paths.get(fileName);
                 if (Files.exists(path)) {
                     if (Files.size(srcFile) == Files.size(path)) {
-                        sprintf("DUPLICATED. File existed: " + destFile + " filename: " + fileName);
+                        Messages.sprintf("DUPLICATED. File existed: " + destFile + " filename: " + fileName);
                         return null;
                     }
                 } else {
@@ -458,4 +463,14 @@ public class FileUtils {
         }
     }
 
+    public static boolean createFolders(Path newDestinationPath) {
+        try {
+            Files.createDirectories(newDestinationPath);
+        } catch (IOException e) {
+            boolean writable = Files.isWritable(newDestinationPath);
+            Messages.warningText("Cannot create folders: " + newDestinationPath + " write access to folder is: " + writable);
+            return false;
+        }
+        return true;
+    }
 }

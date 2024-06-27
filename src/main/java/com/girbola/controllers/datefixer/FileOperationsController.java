@@ -244,12 +244,9 @@ public class FileOperationsController {
 
 		boolean update = false;
 		for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
-			String folderSQLFileName = entry.getKey() + File.separator + Main.conf.getMdir_db_fileName();
-//			if(folderSQLFileName)
-			FolderInfo loadFolderInfo = FolderInfo_SQL.loadFolderInfo(folderSQLFileName);
-//			if(loadFolderInfo == null) {
-//				createNew
-//			}
+			Path folderSQLFile = Paths.get(entry.getKey(),  Main.conf.getMdir_db_fileName());
+			FolderInfo loadFolderInfo = FolderInfo_SQL.loadFolderInfo(folderSQLFile);
+
 			for (FileInfo fileInfo : entry.getValue()) {
 				if (!FileInfoUtils.findDuplicates(fileInfo, loadFolderInfo)) {
 					loadFolderInfo.getFileInfoList().add(fileInfo);

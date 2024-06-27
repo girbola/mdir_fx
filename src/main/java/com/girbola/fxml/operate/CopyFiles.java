@@ -68,9 +68,9 @@ public class CopyFiles {
 		if (Main.getProcessCancelled()) {
 			task.cancel();
 		}
-		Path destFolder = createDirectory(dest.getParent());
+		boolean destinationFolderExists = FileUtils.createFolders(dest.getParent());
 
-		if (!Files.exists(destFolder)) {
+		if (!destinationFolderExists) {
 			sprintf("destfolder didn't exists!");
 			task.cancel();
 			Main.setProcessCancelled(true);

@@ -9,31 +9,37 @@ public class ImageUtils {
 
 
     public static long calculateDifferenceHash(Path imagePath) throws IOException {
-        BufferedImage image = ImageIO.read(imagePath.toFile());
-        int width = 8; // Width of the resized image
-        int height = 8; // Height of the resized image
-        image = resizeImage(image, width, height);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(imagePath.toFile());
+            int width = 8; // Width of the resized image
+            int height = 8; // Height of the resized image
+            image = resizeImage(image, width, height);
 
-        // Convert the resized image to grayscale
-        int[][] pixels = new int[width][height];
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                pixels[x][y] = image.getRGB(x, y) & 0xFF;
-            }
-        }
-
-        // Calculate dHash
-        long hash = 0;
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width - 1; x++) {
-                hash <<= 1;
-                if (pixels[x][y] > pixels[x + 1][y]) {
-                    hash |= 1;
+            // Convert the resized image to grayscale
+            int[][] pixels = new int[width][height];
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    pixels[x][y] = image.getRGB(x, y) & 0xFF;
                 }
             }
+
+            // Calculate dHash
+            long hash = 0;
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width - 1; x++) {
+                    hash <<= 1;
+                    if (pixels[x][y] > pixels[x + 1][y]) {
+                        hash |= 1;
+                    }
+                }
+            }
+            return hash;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
         }
 
-        return hash;
     }
 
     public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {

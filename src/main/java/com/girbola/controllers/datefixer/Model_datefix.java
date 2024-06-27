@@ -140,8 +140,6 @@ public class Model_datefix extends DateFixerModel {
 		this.currentFolderPath = aCurrentFolderPath;
 		this.model_Main = model_Main;
 		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
-
-
 	}
 
 	public boolean getRightInfo_visible() {
