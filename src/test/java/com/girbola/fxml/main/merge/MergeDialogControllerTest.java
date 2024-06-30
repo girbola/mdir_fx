@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.merge.copy;
+package com.girbola.fxml.main.merge;
 
 
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MergeCopyDialogControllerTest {
+public class MergeDialogControllerTest {
 
     @Test
     public void testDefinePathByEventLocationUserName() {
@@ -16,7 +16,7 @@ public class MergeCopyDialogControllerTest {
         String eventName = "event";
         String userName = "user";
 
-        Path actual = MergeCopyDialogController.definePathByEventLocationUserName(absolutePath, locationName, eventName, userName);
+        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, locationName, eventName, userName);
 
         Path expected = Paths.get(absolutePath + " - " + locationName + " - " + eventName + userName);
         assertEquals(expected, actual);
@@ -28,7 +28,7 @@ public class MergeCopyDialogControllerTest {
         String locationName = "location";
         String userName = "user";
 
-        Path actual = MergeCopyDialogController.definePathByEventLocationUserName(absolutePath, locationName, "", userName);
+        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, locationName, "", userName);
 
         Path expected = Paths.get(absolutePath + " - " + locationName + userName);
         assertEquals(expected, actual);
@@ -40,7 +40,7 @@ public class MergeCopyDialogControllerTest {
         String eventName = "event";
         String userName = "user";
 
-        Path actual = MergeCopyDialogController.definePathByEventLocationUserName(absolutePath, "", eventName, userName);
+        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, "", eventName, userName);
 
         Path expected = Paths.get(absolutePath + " - " + eventName + userName);
         assertEquals(expected, actual);
@@ -51,7 +51,7 @@ public class MergeCopyDialogControllerTest {
         String absolutePath = "C:\\girbola";
         String userName = "user";
 
-        Path actual = MergeCopyDialogController.definePathByEventLocationUserName(absolutePath, "", "", userName);
+        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, "", "", userName);
 
         Path expected = Paths.get(absolutePath + userName);
         assertEquals(expected, actual);

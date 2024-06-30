@@ -135,12 +135,11 @@ public class FolderInfo_Utils {
     public static boolean moveFolderInfoToDestination(FolderInfo folderInfoSrc, FolderInfo folderInfoDest) {
 
         if (folderInfoSrc.getFolderPath().equals(folderInfoDest.getFolderPath())) {
-            Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame=Source and destination folders were the same"));
+            Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame"));
             return false;
         }
 
         List<FileInfo> sourceFileInfoList = folderInfoSrc.getFileInfoList();
-        List<FileInfo> sourceFileInfoListRemove = new ArrayList<>();
 
         List<FileInfo> destFileInfoList = folderInfoDest.getFileInfoList();
         List<FileInfo> destFileInfoListRemove = new ArrayList<>();
@@ -148,6 +147,12 @@ public class FolderInfo_Utils {
         for (FileInfo sourceFileInfo : sourceFileInfoList) {
             String sourceFileName = Paths.get(sourceFileInfo.getOrgPath()).getFileName().toString();
             Path destFolderPath = Paths.get(folderInfoDest.getFolderPath());
+
+            try {
+                FileUtils.renameFile(Paths.get(folderInfoDest.getFolderPath()), destFolderPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
 
 
         }
@@ -159,7 +164,7 @@ public class FolderInfo_Utils {
                 destFileInfoListRemove.add(fileInfo);
             }
         }
-        sourceFileInfoList.removeAll(sourceFileInfoListRemove);
+        //sourceFileInfoList.removeAll(sourceFileInfoListRemove);
 
 
         return true;

@@ -19,8 +19,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.main.collect.Collect_DialogController;
 import com.girbola.fxml.main.collect.Model_CollectDialog;
-import com.girbola.fxml.main.merge.copy.MergeCopyDialogController;
-import com.girbola.fxml.main.merge.move.MergeMoveDialogController;
+import com.girbola.fxml.main.merge.MergeDialogController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -67,7 +66,6 @@ import static com.girbola.messages.Messages.warningText;
 
 public class TableController {
 
-
     private final String ERROR = TableController.class.getSimpleName();
 
     private Image show_im;
@@ -98,7 +96,6 @@ public class TableController {
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesTotal_lbl;
 	@FXML private MenuItem checkChanges_mi;
-	@FXML private MenuItem mergeCopy_MenuItem;
 	@FXML private MenuItem mergeMove_MenuItem;
 	@FXML private MenuItem reload_all_mi;
 	@FXML private MenuItem select_dateDifference_btn;
@@ -124,7 +121,6 @@ public class TableController {
 	@FXML private Tooltip addToBatch_tooltip;
 	@FXML private Tooltip collectSimilarDates_btn_tooltip;
 	@FXML private Tooltip copySelected_btn_tooltip;
-	@FXML private Tooltip mergeCopy_btn_tooltip;
 	@FXML private Tooltip resetSelectedFileInfos_btn_tooltip;
 	@FXML private Tooltip select_all_btn_tooltip;
 	@FXML private Tooltip select_bad_btn_tooltip;
@@ -225,21 +221,20 @@ public class TableController {
         Parent root = null;
 
         try {
-            loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/move/MergeMoveDialog.fxml"), Main.bundle);
+            loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/MergeDialog.fxml"), Main.bundle);
             root = loader.load();
             Stage stage = new Stage();
             Scene scene = new Scene(root);
             stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
-            stage.setMaxHeight(200);
 
             Main.centerWindowDialog(stage);
 
             stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
             scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-            MergeMoveDialogController mergeMoveDialogController = (MergeMoveDialogController) loader.getController();
-            mergeMoveDialogController.init(model_main, model_main.tables(), table, tableType);
+            MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
+            mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
 
             stage.showAndWait();
@@ -247,46 +242,6 @@ public class TableController {
             e.printStackTrace();
         }
 
-    }
-
-    @FXML
-    private void mergeCopy_btn_action(ActionEvent event) {
-        Main.setProcessCancelled(false);
-        try {
-            if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
-                warningText(bundle.getString("cannotFindWorkDir"));
-                return;
-            }
-        } catch (IOException ex) {
-            warningText(bundle.getString("cannotFindWorkDir"));
-            return;
-        }
-        FXMLLoader loader = null;
-
-        Parent root = null;
-
-        try {
-            loader = new FXMLLoader(Main.class.getResource("fxml/main/merge/copy/MergeCopyDialog.fxml"), Main.bundle);
-            root = loader.load();
-            Stage stage = new Stage();
-            Scene scene = new Scene(root);
-            stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.setMaxHeight(200);
-            Main.centerWindowDialog(stage);
-
-            stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
-            stage.setAlwaysOnTop(true);
-            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-
-            MergeCopyDialogController mergeCopyDialogController = (MergeCopyDialogController) loader.getController();
-            mergeCopyDialogController.init(model_main, model_main.tables(), table, tableType);
-            stage.setScene(scene);
-
-            stage.showAndWait();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -623,9 +578,6 @@ public class TableController {
         /*
          * Disabling buttons
          */
-        if (tableType.equals(TableType.ASITIS.getType())) {
-            mergeCopy_MenuItem.setVisible(false);
-        }
         Messages.sprintf("table is editable? " + table.isEditable() + " just fold editable?  " + justFolderName_col.isEditable());
 
         if (tableType.equals(TableType.ASITIS.getType())) {

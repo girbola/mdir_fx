@@ -12,42 +12,42 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="500.0" maxWidth="600.0" minHeight="150.0" minWidth="350.0" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.merge.copy.MergeCopyDialogController">
+<AnchorPane prefHeight="250.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.main.merge.MergeDialogController">
    <children>
-      <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minWidth="-Infinity" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <GridPane>
                <columnConstraints>
-                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" />
+                  <ColumnConstraints halignment="LEFT" hgrow="NEVER" />
+                  <ColumnConstraints hgrow="ALWAYS" />
                </columnConstraints>
                <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
+                  <RowConstraints vgrow="SOMETIMES" />
                </rowConstraints>
                <children>
                   <Label fx:id="location_lbl" text="%location" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="location_cmb" editable="true" maxWidth="600" promptText="Location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="location_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="Location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label fx:id="event_lbl" text="%event" GridPane.rowIndex="2" />
                   <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="3" />
                   <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="absolutePath_cmb" editable="true" maxWidth="600" promptText="%absolutePath" GridPane.columnIndex="1" />
+                  <ComboBox fx:id="absolutePath_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="%absolutePath" GridPane.columnIndex="1" />
                   <Label fx:id="absolutePath_lbl" text="%absolutePath" />
                </children>
             </GridPane>
-            <HBox alignment="CENTER_RIGHT" spacing="5.0" VBox.vgrow="NEVER">
+            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" VBox.vgrow="NEVER">
                <children>
-                  <CheckBox fx:id="addEverythingInsameDir_chb" mnemonicParsing="false" text="Add everything under the same directory">
+                  <CheckBox fx:id="addEverythingInsameDir_chb" mnemonicParsing="false" text="Add everything under the same directory" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="15.0" />
                      </HBox.margin>
                   </CheckBox>
                </children>
             </HBox>
-            <HBox alignment="BOTTOM_RIGHT" spacing="5.0" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" fillHeight="false" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <Button fx:id="apply_btn" mnemonicParsing="false" onAction="#apply_btn_action" text="%apply" HBox.hgrow="NEVER" />
                   <Button fx:id="apply_and_copy_btn" mnemonicParsing="false" onAction="#apply_and_copy_btn_action" text="%applyAndCopy" />
@@ -57,6 +57,9 @@
                <VBox.margin>
                   <Insets />
                </VBox.margin>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
             </HBox>
          </children>
          <padding>
@@ -64,4 +67,7 @@
          </padding>
       </VBox>
    </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
 </AnchorPane>

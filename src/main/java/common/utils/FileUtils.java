@@ -87,7 +87,7 @@ public class FileUtils {
         long dest = ImageUtils.calculateDifferenceHash(destFile);
         long end = System.currentTimeMillis() - start;
         Messages.sprintf("Took: " + end + " ms");
-        if (Files.exists(destFile) && Files.size(destFile) != Files.size(srcFile)) {
+        if (Files.size(destFile) != Files.size(srcFile) && src != dest && src != 0 && dest !=0) {
             Messages.sprintf("Files have same name but they differ with sizes");
             return rename(srcFile, destFile, filter_directories);
         } else {
