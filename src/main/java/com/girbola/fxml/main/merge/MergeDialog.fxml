@@ -2,9 +2,9 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -29,28 +29,25 @@
                </rowConstraints>
                <children>
                   <Label fx:id="location_lbl" text="%location" GridPane.rowIndex="1" />
-                  <ComboBox fx:id="location_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="Location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="location_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="%location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                   <Label fx:id="event_lbl" text="%event" GridPane.rowIndex="2" />
-                  <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="%event" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                   <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="absolutePath_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="%absolutePath" GridPane.columnIndex="1" />
-                  <Label fx:id="absolutePath_lbl" text="%absolutePath" />
+                  <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="%user" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="selectedDestinationPath_cmb" editable="true" maxWidth="1.7976931348623157E308" promptText="%selectedDestinationPath" GridPane.columnIndex="1" />
+                  <Label fx:id="absolutePath_lbl" text="%selectedDestinationPath" />
                </children>
             </GridPane>
-            <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" VBox.vgrow="NEVER">
+            <VBox VBox.vgrow="NEVER">
                <children>
-                  <CheckBox fx:id="addEverythingInsameDir_chb" mnemonicParsing="false" text="Add everything under the same directory" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets left="15.0" />
-                     </HBox.margin>
-                  </CheckBox>
+                  <RadioButton fx:id="sortitTableSelected" mnemonicParsing="false" text="Move folder to first table (Sort it)" />
+                  <RadioButton fx:id="sortedTableSelected" mnemonicParsing="false" text="Move folder to second table (Sorted)" />
+                  <RadioButton fx:id="asitisTableSelected" mnemonicParsing="false" text="Move folder to third table (As It Is as Collection)" />
                </children>
-            </HBox>
+            </VBox>
             <HBox alignment="CENTER_RIGHT" fillHeight="false" spacing="5.0" VBox.vgrow="ALWAYS">
                <children>
                   <Button fx:id="apply_btn" mnemonicParsing="false" onAction="#apply_btn_action" text="%apply" HBox.hgrow="NEVER" />
-                  <Button fx:id="apply_and_copy_btn" mnemonicParsing="false" onAction="#apply_and_copy_btn_action" text="%applyAndCopy" />
                   <Button fx:id="apply_and_move_btn" layoutX="162.0" layoutY="38.0" mnemonicParsing="false" onAction="#apply_and_move_btn_action" text="%applyAndMove" />
                   <Button fx:id="cancel_btn" cancelButton="true" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" />
                </children>

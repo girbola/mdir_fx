@@ -16,6 +16,7 @@ import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -23,7 +24,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 
 import java.io.IOException;
@@ -33,13 +33,10 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.girbola.controllers.main.tables.FolderInfo_Utils.moveFolderInfoToDestination;
 
 public class MergeDialogController {
 
@@ -57,13 +54,16 @@ public class MergeDialogController {
 	@FXML private Button apply_and_move_btn;
 	@FXML private Button apply_btn;
 	@FXML private Button cancel_btn;
-	@FXML private CheckBox addEverythingInsameDir_chb;
+	@FXML private RadioButton sortitTableSelected;
+    @FXML private RadioButton sortedTableSelected;
+    @FXML private RadioButton asitisTableSelected;
 
-	@FXML private ComboBox<FolderInfo> absolutePath_cmb;
+
+    @FXML private ComboBox<FolderInfo> selectedDestinationPath_cmb;
 	@FXML private ComboBox<String> event_cmb;
 	@FXML private ComboBox<String> location_cmb;
 	@FXML private ComboBox<String> user_cmb;
-    @FXML private Label absolutePath_lbl;
+    @FXML private Label destinationPath_lbl;
 	@FXML private Label event_lbl;
 	@FXML private Label location_lbl;
 
@@ -84,8 +84,8 @@ public class MergeDialogController {
         }
     }
 
-    private String getAbsolutePath() {
-        return absolutePath_cmb.getEditor().getText().isEmpty() ? "" : absolutePath_cmb.getEditor().getText();
+    private String getSelectedDestinationPath() {
+        return selectedDestinationPath_cmb.getEditor().getText().isEmpty() ? "" : selectedDestinationPath_cmb.getEditor().getText();
     }
 
     private String getEventName() {
@@ -105,7 +105,7 @@ public class MergeDialogController {
     private void apply_and_move_btn_action(ActionEvent event) {
         verifyWorkDirectory();
 
-        String absolutePath = getAbsolutePath();
+        String absolutePath = getSelectedDestinationPath();
         String eventName = getEventName();
         String locationName = getLocationName();
         String userName = getUserName();
@@ -123,11 +123,12 @@ public class MergeDialogController {
         Messages.sprintf("newDestinationPath will be: " + newDestinationPath);
 
         if (!FileUtils.createFolders(newDestinationPath)) {
-            Messages.warningText("Cannot create folders: " + newDestinationPath);
+            Messages.warningText(Main.bundle.getString("cannotCreateFolders") + " " + newDestinationPath);
+            Main.setProcessCancelled(true);
             return;
         }
 
-        FolderInfo selectedItem = absolutePath_cmb.getSelectionModel().getSelectedItem();
+        FolderInfo selectedItem = selectedDestinationPath_cmb.getSelectionModel().getSelectedItem();
 
         Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
 
@@ -148,13 +149,13 @@ public class MergeDialogController {
 
             if (folderInfoSource == null) {
                 folderInfoSource = new FolderInfo();
-                folderInfoSource.setTableType(selectedItem.getTableType());
+                folderInfoSource.setTableType(TableUtils.resolvePath(newDestinationPath).getType());
 
                 Path destFolder = Paths.get(folderInfo.getFolderPath());
 
                 Messages.sprintf("folderInfo were not found at destination: " + destFolder + " with database name " + Main.conf.getMdir_db_fileName());
 
-                connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+                connection = SqliteConnection.connector(newDestinationPath, Main.conf.getMdir_db_fileName());
 
                 SQL_Utils.setAutoCommit(connection, false);
 
@@ -166,6 +167,7 @@ public class MergeDialogController {
             while (fileInfo_list_it.hasNext()) {
                 FileInfo fileInfo = fileInfo_list_it.next();
                 if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+
 
                     fileInfo.setEvent(eventName);
                     fileInfo.setLocation(locationName);
@@ -184,21 +186,21 @@ public class MergeDialogController {
                         Messages.sprintf("+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
                     }
                     try {
+                        if (finalDest != null) {
+                            if (!Files.isDirectory(finalDest.getFileName())) {
+                                Path parent = Files.createDirectories(finalDest.getParent());
+                                boolean exists = Files.exists(parent);
+                                if (exists) {
+                                    Path movedToDestination = Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
+                                    if (!Files.exists(movedToDestination)) {
+                                        Messages.errorSmth(ERROR, Main.bundle.getString("cannotMoveFile" + "\nRadically stopping the app, before proper testing"), null, Misc.getLineNumber(), true);
+                                    }
 
-                        if (!Files.isDirectory(finalDest.getFileName())) {
-                            Path parent = Files.createDirectories(finalDest.getParent());
-                            boolean exists = Files.exists(parent);
-                            if (exists) {
-                                Path movedToDestination = Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
-                                if (!Files.exists(movedToDestination)) {
-                                    Messages.errorSmth(ERROR, Main.bundle.getString("cannotMoveFile" + "\nRadically stopping the app, before proper testing"), null, Misc.getLineNumber(), true);
+                                } else {
+                                    Messages.warningText(Main.bundle.getString("cannotCreateDir"));
                                 }
-
-                            } else {
-                                Messages.warningText(Main.bundle.getString("cannotCreateDir"));
                             }
                         }
-
 
                     } catch (IOException e) {
                         // TODO Auto-generated catch block
@@ -317,101 +319,6 @@ public class MergeDialogController {
     }
 
     @FXML
-    private void apply_and_copy_btn_action(ActionEvent event) {
-        if (Main.conf.getWorkDir() == null) {
-            Messages.warningText("copySelectedTableRows Workdir were null");
-            return;
-        }
-
-        if (Main.conf.getWorkDir().isEmpty()) {
-            Messages.warningText("copySelectedTableRows Workdir were empty");
-            return;
-        }
-
-        String absolutePath = getAbsolutePath();
-        String eventName = getEventName();
-        String locationName = getLocationName();
-        String userName = getUserName();
-
-        //moveFolderInfoToDestination(table.getSelectionModel().getSelectedItems(), absolutePath);
-
-        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
-                Messages.sprintf("folderInfo had bad files and it was not handled: " + folderInfo.getFolderPath());
-                continue;
-            }
-
-            if (Main.getProcessCancelled()) {
-                Messages.sprintfError("Merging were cancelled");
-                break;
-            }
-
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                if (Main.getProcessCancelled()) {
-                    Messages.sprintfError("Merging were cancelled");
-                    break;
-                }
-                if (!fileInfo.getEvent().isEmpty()) {
-                    if (addEverythingInsameDir_chb.isSelected()) {
-                        if (folderInfo.getJustFolderName() != eventName) {
-                            folderInfo.setJustFolderName(eventName);
-                        }
-                    }
-                }
-
-                fileInfo.setEvent(eventName);
-                fileInfo.setLocation(locationName);
-                fileInfo.setUser(userName);
-
-                Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
-
-//				if (!Files.exists(destinationPath)) {
-//					Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-//							+ destinationPath);
-//					Main.setProcessCancelled(true);
-//					break;
-//				}
-            }
-        }
-//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
-
-        List<FileInfo> list = new ArrayList<>();
-        ExecutorService exec = Executors.newSingleThreadExecutor();
-        for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
-                continue;
-            }
-            list.addAll(folderInfo.getFileInfoList());
-        }
-
-        Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
-
-        operate.setOnSucceeded(succeeded -> {
-            for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-                TableUtils.updateFolderInfo(folderInfo);
-            }
-            TableUtils.refreshAllTableContent(tables);
-            TableUtils.saveChangesContentsToTables(model_main.tables());
-            Main.setChanged(false);
-            close();
-        });
-
-        operate.setOnFailed(failed -> {
-            Messages.warningText("Copy process failed");
-            close();
-        });
-
-        operate.setOnCancelled(cancelled -> {
-            Messages.sprintf("Copy process were cancelled");
-            close();
-        });
-
-        Thread thread = new Thread(operate, "Operate Thread");
-        exec.submit(thread);
-
-    }
-
-    @FXML
     private void cancel_btn_action(ActionEvent event) {
         close();
     }
@@ -422,25 +329,23 @@ public class MergeDialogController {
         this.table = table;
         this.tableType = tableType;
 
-        absolutePath_cmb.setCellFactory(cell -> new AbsolutePathCellFactory());
+        selectedDestinationPath_cmb.setCellFactory(cell -> new AbsolutePathCellFactory());
 
-        absolutePath_cmb.setItems(paths);
+        selectedDestinationPath_cmb.setItems(paths);
 
         paths.addAll(table.getSelectionModel().getSelectedItems());
 
-        paths.sort(new Comparator<FolderInfo>() {
-            @Override
-            public int compare(FolderInfo o1, FolderInfo o2) {
-                if (o1.getFolderPath().length() < o2.getFolderPath().length()) {
-                    return -1;
-                } else if (o1.getFolderPath().length() > o2.getFolderPath().length()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
+        paths.sort((o1, o2) -> {
+            if (o1.getFolderPath().length() < o2.getFolderPath().length()) {
+                return -1;
+            } else if (o1.getFolderPath().length() > o2.getFolderPath().length()) {
+                return 1;
+            } else {
+                return 0;
             }
         });
-        absolutePath_cmb.setConverter(new StringConverter<FolderInfo>() {
+
+        selectedDestinationPath_cmb.setConverter(new StringConverter<>() {
             @Override
             public String toString(FolderInfo folderInfo) {
                 return folderInfo.getFolderPath();
@@ -448,11 +353,21 @@ public class MergeDialogController {
 
             @Override
             public FolderInfo fromString(String s) {
-                return absolutePath_cmb.getSelectionModel().getSelectedItem();
+                return selectedDestinationPath_cmb.getSelectionModel().getSelectedItem();
             }
         });
-        absolutePath_cmb.getSelectionModel().select(0);
+
+        selectedDestinationPath_cmb.getSelectionModel().select(0);
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        Platform.runLater(() -> {
+            sortitTableSelected.setToggleGroup(toggleGroup);
+            sortedTableSelected.setToggleGroup(toggleGroup);
+            asitisTableSelected.setToggleGroup(toggleGroup);
+
+            sortitTableSelected.setSelected(true);
+        });
+
 
     }
-
 }

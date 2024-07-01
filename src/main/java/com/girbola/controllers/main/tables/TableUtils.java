@@ -467,6 +467,57 @@ public class TableUtils {
         hBox.setMaxWidth(width);
     }
 
+
+    public static TableType resolvePath(Path p) {
+        // sprintf("REGULAR EXPRESSIONS STARTED");
+
+        int numberTotal = 0;
+        int letterTotal = 0;
+        int characterTotal = 0;
+        int spaceCount = 0;
+
+        String path = p.getFileName().toString();
+        if (path.contains("Pictures") || path.contains("Videos")) {
+            return TableType.SORTIT;
+        }
+        for (int i = 0; i < path.length(); i++) {
+            char c = path.charAt(i);
+            if (Character.isLetter(c)) {
+                letterTotal++;
+            } else if (Character.isDigit(c)) {
+                numberTotal++;
+            } else if (c == ' ') {
+                spaceCount++;
+            } else {
+                characterTotal++;
+            }
+        }
+
+        /*
+         * Lisää 2014-12-11 ja 2012_12_05
+         */
+
+        // 100Canon jne
+        if (numberTotal == 3 && letterTotal == 5 && characterTotal == 0 && spaceCount == 0) { // The
+            // most
+            // common
+            // format
+            // 123Canon
+            return TableType.SORTIT;
+
+            // O'layreys pub 2013
+        } else if (numberTotal >= 0 && letterTotal >= 1 && characterTotal >= 0 && spaceCount >= 0) { // Just
+            // letters
+            return TableType.SORTED;
+        } else if (numberTotal >= 1 && letterTotal == 0 && characterTotal == 0 && spaceCount == 0) { // 1-9
+            // numbers
+            return TableType.SORTIT;
+        } else {
+            return TableType.SORTIT;
+        }
+    }
+
+
     public static List<TableView<FolderInfo>> getAllTables(Tables tables) {
         return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
