@@ -35,10 +35,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
@@ -604,4 +601,22 @@ public class FileInfoUtils {
         }
         return null;
     }
+
+    public static boolean compareImageHashes(FileInfo fileInfo, FolderInfo folderInfo) {
+        Iterator<FileInfo> iterator = folderInfo.getFileInfoList().iterator();
+        while(iterator.hasNext()) {
+            FileInfo fileInfo_dest = iterator.next();
+            if(fileInfo.getOrgPath().equals(fileInfo_dest.getOrgPath())) {
+                return true;
+            }
+            if(fileInfo.getImageDifferenceHash() == fileInfo_dest.getImageDifferenceHash()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+
 }
