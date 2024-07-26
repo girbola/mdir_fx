@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
@@ -97,7 +97,7 @@ public class DateFixer extends Task<Void> {
 
             sprintf("conf.getThemePath(): " + conf.getThemePath());
             scene_dateFixer.getStylesheets().add(
-                    Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
+                    Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
             Platform.runLater(() -> {
                 Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);

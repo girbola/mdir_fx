@@ -44,6 +44,13 @@ public class DestinationResolver {
 		return destPath;
 	}
 
+	/**
+	 * Returns the destination file name for miscellaneous files.
+	 *
+	 * @param source The source file path.
+	 * @param fileInfo The information about the file.
+	 * @return The destination file path for the miscellaneous file.
+	 */
 	public static Path getDestinationFileNameMisc(Path source, FileInfo fileInfo) {
 //		if (Main.conf.getWorkDir().equals("null")) {
 //			Messages.warningText(Main.bundle.getString("destinationDirNotSet"));
@@ -53,7 +60,7 @@ public class DestinationResolver {
 		// I:\\2017\\2017-06-23 Merikarvia - Kalassa äijien kanssa
 		// I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
 		String fileName = DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default());
-		
+
 		Path destPath = Paths.get(File.separator + ld.getYear() + File.separator
 				+ Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(source));
 		return destPath;

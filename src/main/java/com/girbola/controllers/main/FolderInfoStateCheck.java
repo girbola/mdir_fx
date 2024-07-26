@@ -2,6 +2,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
 import com.girbola.messages.Messages;
@@ -26,7 +27,7 @@ public class FolderInfoStateCheck extends Task<Boolean> {
 	protected Boolean call() throws Exception {
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (folderInfo.getState().equals(FolderInfoStateType.CHANGED.getType())) {
-				TableUtils.updateFolderInfo(folderInfo);
+				FolderInfo_Utils.updateFolderInfo(folderInfo);
 				folderInfo.setState(FolderInfoStateType.OK.getType());
 				if(!updated.get()) {
 					updated.set(true);

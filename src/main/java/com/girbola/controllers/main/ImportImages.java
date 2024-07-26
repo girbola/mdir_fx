@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.importimages.ImportImagesController;
@@ -72,7 +72,7 @@ public class ImportImages {
 		});
 		Scene importImages_scene = new Scene(parent, conf.getScreenBounds().getWidth(), conf.getScreenBounds().getHeight() - 50, true,
 				SceneAntialiasing.BALANCED);
-		importImages_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
+		importImages_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
 		stage.setScene(importImages_scene);
 		stage.show();

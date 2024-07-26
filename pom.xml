@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+         xsi:schemaLocation="https://maven.apache.org/POM/4.0.0 https://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.girbola</groupId>
     <artifactId>mdir_fx_2024</artifactId>
@@ -33,6 +33,7 @@
         </developer>
     </developers>
     <properties>
+        <apache-common-imaging.version>2.16.1</apache-common-imaging.version>
         <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
         <imageio-jpeg.version>3.8.3</imageio-jpeg.version>
         <imageio-tiff.version>3.8.3</imageio-tiff.version>
@@ -44,10 +45,11 @@
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <lombok.version>1.18.32</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <oshi-core.version>6.4.4</oshi-core.version>
+        <org.openpnp.version>4.9.0-0</org.openpnp.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.3</slf4j.version>
         <sqlite-jdbc.version>3.41.2.2</sqlite-jdbc.version>
@@ -58,13 +60,23 @@
 
     <dependencies>
 
+<!--        <dependency>-->
+<!--            <groupId>commons-io</groupId>-->
+<!--            <artifactId>commons-io</artifactId>-->
+<!--            <version>${apache-common-imaging.version}</version>-->
+<!--        </dependency>-->
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-imaging -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-imaging</artifactId>-->
+<!--            <version>1.0.0-alpha5</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
             <version>${thumbnailator.version}</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.kordamp.ikonli/ikonli-javafx -->
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-javafx</artifactId>

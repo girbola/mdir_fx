@@ -6,11 +6,12 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.workdir.WorkDirController;
 import com.girbola.fileinfo.FileInfo;
@@ -224,7 +225,7 @@ public class BottomController {
             if (!listToRemove.isEmpty()) {
                 Messages.sprintf("listToRemove were not empty");
                 folderInfo.getFileInfoList().removeAll(listToRemove);
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
             }
             if(folderInfo.getFileInfoList().isEmpty()) {
                 tableSource.getItems().remove(folderInfo);
@@ -238,18 +239,19 @@ public class BottomController {
     private List<FileInfo> removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
         List<FileInfo> filesToRemove = new ArrayList<>();
 
-        Iterator<FileInfo> list = folderInfo.getFileInfoList().iterator();
-        while (list.hasNext()) {
-            FileInfo fileInfoToFind = list.next();
-            Messages.sprintf("HMmmmm: " + fileInfoToFind.getOrgPath());
-            if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
-                if (fileInfoToFind.getImageDifferenceHash() != 0 && supportedImage(Paths.get(fileInfoToFind.getOrgPath()))) {
-                    Messages.sprintf("We found a match!: " + fileInfoToFind.getOrgPath());
+        Iterator<FolderInfo> items = tableToSearch.getItems().iterator();
+        while(items.hasNext()) {
+            FolderInfo fo = items.next();
+            Iterator<FileInfo> list = folderInfo.getFileInfoList().iterator();
+            while (list.hasNext()) {
+                FileInfo fileInfoToFind = list.next();
+                Messages.sprintf("HMmmmm: " + fileInfoToFind.getOrgPath());
+                if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
+
                 }
+
             }
-
         }
-
         return filesToRemove;
     }
 
@@ -275,7 +277,7 @@ public class BottomController {
             Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
             while (foi.hasNext()) {
                 FolderInfo folderInfo = foi.next();
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
                 if (folderInfo.getFolderFiles() <= 0) {
                     toRemove.add(folderInfo);
                 }
@@ -392,7 +394,7 @@ public class BottomController {
 
         Scene fc_scene = new Scene(parent, 800, 400);
         fc_scene.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER.getType()).toExternalForm());
+                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);

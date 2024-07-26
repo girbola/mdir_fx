@@ -1,5 +1,7 @@
 package com.girbola.fileinfo;
 
+import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.messages.Messages;
 import common.utils.FileInfoTestUtil;
 import org.junit.jupiter.api.Test;
@@ -39,11 +41,30 @@ public class FileInfoUtilsTest {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
         Messages.sprintf("fileInfo1giihgo: " + fileInfo.getImageDifferenceHash());
-        String expected = "FileInfo{fileInfo_version=2, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false, suggested=false, tableDuplicated=false, video=false, localDateTime=null, camera_model='SM-A515F', destination_Path='', event='', location='', orgPath='src" + File.separator +
-                "test" + File.separator + "resources" + File.separator + "in" + File.separator + "20220413_160023.jpg', tags='', user='', workDir='', workDirDriveSerialNumber='', fileInfo_id=2, orientation=1, thumb_length=51503, thumb_offset=916, date=1649865623000, imageDifferenceHash=39770222055762649, size=3515984, timeShift=0}";
+        Path path = Paths.get("src","test","resources", "in","20220413_160023.jpg");
+
+        String expected = "FileInfo{bad=false, camera_model='SM-A515F', confirmed=false, copied=false, date=1649865623000, destination_Path='', event='', fileInfo_id=9, fileInfo_version=1, good=true, ignored=false, image=true, imageDifferenceHash=9024515497931845856, localDateTime=null, location='', orientation=1, orgPath='src\\test\\resources\\in\\20220413_160023.jpg', raw=false, size=0, suggested=false, tableDuplicated=false, tags='', thumb_length=51503, thumb_offset=916, timeShift=0, user='', video=false, workDir='', workDirDriveSerialNumber=''}";
+        String expected2 = "FileInfo{fileInfo_version=1, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false," +
+                " suggested=false, tableDuplicated=false, video=false, localDateTime=null, camera_model='SM-A515F', destination_Path='', event='', location=''," +
+                " orgPath=" + path + "', tags='', user='', workDir='', workDirDriveSerialNumber='', fileInfo_id=2, orientation=1, thumb_length=51503, thumb_offset=916, date=1649865623000, imageDifferenceHash=9024515497931845856, size=3515984, timeShift=0}";
 
         Messages.sprintf("ACTUAL Fileinfo from file length= " + fileInfo.showAllValues().length() + " Expected length: " + expected.length());
         assertEquals(expected, fileInfo.showAllValues());
+    }
+
+    @Test
+    public void testRenameFile() throws IOException {
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
+        FileInfo fileInfo2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "out", "20220413_160023.jpg"));
+
+        FolderInfo folderInfo = new FolderInfo(Paths.get("src", "test", "resources", "in"));
+        folderInfo.getFileInfoList().add(fileInfo2);
+
+        Path newPath = FileInfoUtils.renameFile(fileInfo, folderInfo);
+
+        assertNotNull(newPath, "Renamed file path is null");
+        assertNotEquals(fileInfo.getOrgPath(), newPath.toString(), "Original path and renamed path should not be same");
+        assertTrue(newPath.toString().contains("_"), "Renamed path should contain '_' ");
     }
 
     @Test
@@ -59,6 +80,22 @@ public class FileInfoUtilsTest {
             fail("IOException thrown on createFileInfo: " + e.getMessage());
         }
     }
+
+    @Test
+    public void testRenameFile_FileAlreadyExistsInDestination() throws IOException {
+        FileInfo fileInfoSrc = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "IMG.jpg"));
+        FolderInfo folderInfoDest = new FolderInfo(Paths.get("src", "test", "resources", "in"));
+
+        FileInfo fileInfoSrc2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "out", "IMG1.jpg"));
+
+
+        // Add fileInfoSrc in folderInfoDest's list to simulate a file with same name already exists
+        folderInfoDest.getFileInfoList().add(fileInfoSrc2);
+        Path newPath = FileInfoUtils.renameFile(fileInfoSrc, folderInfoDest);
+
+        assertEquals("src\\test\\resources\\in\\IMG.jpg",newPath.toString());
+    }
+
 
     @Test
     public void createFileInfoTest_rawType() {

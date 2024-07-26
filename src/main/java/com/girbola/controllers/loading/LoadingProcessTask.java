@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.loading;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -14,16 +14,11 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
@@ -110,7 +105,7 @@ public class LoadingProcessTask {
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
 			loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
 			loadingScene.getStylesheets()
-					.add(getClass().getResource(conf.getThemePath() + MDir_Constants.LOADINGPROCESS.getType()).toExternalForm());
+					.add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
 
 			xOffset = loadingStage.getX();
 			yOffset = loadingStage.getY();

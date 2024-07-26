@@ -76,7 +76,7 @@ public class FolderInfo_SQLTest {
         list.add(fileInfo);
         fi.setFileInfoList(list);
 
-        TableUtils.updateFolderInfo(fi);
+        FolderInfo_Utils.updateFolderInfo(fi);
 
         FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, fi);
         FolderInfo loadedFi = FolderInfo_SQL.loadFolderInfo(Paths.get(fi.getFolderPath()));

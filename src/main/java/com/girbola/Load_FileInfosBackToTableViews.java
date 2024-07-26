@@ -2,6 +2,7 @@ package com.girbola;
 
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
@@ -126,7 +127,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
                     }
                     if (fileInfoList.size() > 0) {
                         folderInfo.getFileInfoList().addAll(fileInfoList);
-                        TableUtils.updateFolderInfo(folderInfo);
+                        FolderInfo_Utils.updateFolderInfo(folderInfo);
                         Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
                                 + " List were empty. Path" + folderInfo.getFolderPath() + " files == "
                                 + folderInfo.getFolderFiles());

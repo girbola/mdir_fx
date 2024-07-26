@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.imageViewer.ImageViewerController;
 import com.girbola.fileinfo.FileInfo;
@@ -85,7 +85,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER.getType()).toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.IMAGEVIEWER.getType()).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();
@@ -112,7 +112,7 @@ public class ImageUtils {
 				VLCPlayerController vlcPlayerController = (VLCPlayerController) loader.getController();
 				Scene scene = new Scene(root);
 				scene.getStylesheets()
-						.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.VLCPLAYER.getType()).toExternalForm());
+						.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.VLCPLAYER.getType()).toExternalForm());
 
 				Stage stage = new Stage();
 

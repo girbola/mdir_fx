@@ -6,12 +6,12 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fxml.move.MoveController;
@@ -99,7 +99,7 @@ public class FileOperationsController {
 			moveController.init(model_main, model_datefix);
 
 			Scene scene = new Scene(parent);
-			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Constants.DATEFIXER.getType()).toExternalForm());
+			scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 			Stage stage = new Stage();
 			stage.setScene(scene);
 			stage.show();
@@ -256,7 +256,7 @@ public class FileOperationsController {
 				}
 			}
 			if (update) {
-				TableUtils.updateFolderInfo(loadFolderInfo);
+				FolderInfo_Utils.updateFolderInfo(loadFolderInfo);
 //				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
@@ -264,10 +264,10 @@ public class FileOperationsController {
 		// Remove moved fileinfos from original source
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
 		// Clean Source FolderInfo from moved FileInfos
-		TableUtils.updateFolderInfo(folderInfo);
+		FolderInfo_Utils.updateFolderInfo(folderInfo);
 
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
-		TableUtils.updateFolderInfo(folderInfo);
+		FolderInfo_Utils.updateFolderInfo(folderInfo);
 
 	}
 }

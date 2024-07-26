@@ -120,7 +120,7 @@ public class DatesTreeTableViewController {
 			FolderInfo folderInfo = new FolderInfo(destPath);
 			List<FileInfo> listFileInfos = entry.getValue();
 			FolderInfo_Utils.addFileInfoList(folderInfo, listFileInfos);
-			TableUtils.updateFolderInfo(folderInfo);
+			FolderInfo_Utils.updateFolderInfo(folderInfo);
 			TreeItem<TreeFolderInfo> fold = new TreeItem<>();
 			root.getChildren().add(fold);
 

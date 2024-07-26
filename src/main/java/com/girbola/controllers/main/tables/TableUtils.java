@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main.tables;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -53,7 +53,6 @@ import lombok.extern.java.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -67,6 +66,7 @@ import java.util.concurrent.Executors;
 import static com.girbola.Main.*;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
+import static com.girbola.controllers.main.tables.FolderInfo_Utils.updateFolderInfo;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -93,7 +93,7 @@ public class TableUtils {
             conflictTableViewController.init(model_Main, obs);
 
             Scene scene_conflictTableView = new Scene(parent);
-            scene_conflictTableView.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+            scene_conflictTableView.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
             Stage window = new Stage();
             window.setScene(scene_conflictTableView);
@@ -203,7 +203,7 @@ public class TableUtils {
             if (tv.getFolderPath().equals(folderInfo.getFolderPath())) {
                 sprintf("hasTabe found! " + tv.getFolderPath());
                 tv.setFileInfoList(folderInfo.getFileInfoList());
-                TableUtils.updateFolderInfo(tv);
+                FolderInfo_Utils.updateFolderInfo(tv);
                 return true;
             }
         }
@@ -254,137 +254,6 @@ public class TableUtils {
             folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(Collections.max(dateCounter)));
         }
 
-    }
-
-    @Deprecated
-    public static void updateFolderInfo(FolderInfo folderInfo) {
-        Messages.sprintf("tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
-
-        int bad = 0;
-        int good = 0;
-        int image = 0;
-        int raw = 0;
-        int video = 0;
-        int confirmed = 0;
-        long size = 0;
-        int copied = 0;
-        int ignored = 0;
-        TreeMap<LocalDate, Integer> map = new TreeMap<>();
-
-        List<Long> dateCounter_list = new ArrayList<>();
-        if (folderInfo.getFileInfoList() == null) {
-            Messages.sprintf("Somehow fileInfo list were null!!!");
-            Main.setProcessCancelled(true);
-            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-            return;
-        }
-
-        for (FileInfo fi : folderInfo.getFileInfoList()) {
-            if (Main.getProcessCancelled()) {
-                return;
-            }
-            if (fi.isIgnored() || fi.isTableDuplicated()) {
-                Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
-                ignored++;
-            } else {
-                size += fi.getSize();
-                if (fi.isCopied()) {
-                    copied++;
-                }
-                if (fi.isBad()) {
-                    bad++;
-                }
-                if (fi.isConfirmed()) {
-                    confirmed++;
-                }
-                if (fi.isGood()) {
-                    good++;
-                }
-                if (fi.isIgnored()) {
-                    Messages.sprintfError("isignored!");
-                }
-                if (fi.isTableDuplicated()) {
-                    Messages.sprintfError("isTABLRignored!");
-                }
-                if (fi.isRaw()) {
-                    raw++;
-                }
-                if (fi.isImage()) {
-                    image++;
-                }
-                if (fi.isVideo()) {
-                    video++;
-                }
-                if (fi.getDate() != 0) {
-                    dateCounter_list.add(fi.getDate());
-                } else {
-                    fi.getDate();
-                }
-
-                LocalDate localDate = null;
-                try {
-                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
-
-                } catch (Exception ex) {
-                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-                }
-
-                map.put(localDate, 0);
-            }
-        }
-        Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video) + " ignored: " + ignored);
-        folderInfo.setConfirmed(confirmed);
-        folderInfo.setFolderFiles(image + raw + video);
-
-        folderInfo.setBadFiles(bad);
-
-        folderInfo.setFolderRawFiles(raw);
-
-        folderInfo.setFolderVideoFiles(video);
-
-        folderInfo.setGoodFiles(good);
-
-        folderInfo.setCopied(copied);
-
-        folderInfo.setFolderSize(size);
-        folderInfo.setFolderImageFiles(image);
-        folderInfo.setFolderVideoFiles(video);
-
-        long min = 0;
-        long max = 0;
-
-        if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
-            folderInfo.setConnected(true);
-        } else {
-            folderInfo.setConnected(false);
-        }
-        if (!dateCounter_list.isEmpty()) {
-            Collections.sort(dateCounter_list);
-            try {
-                min = Collections.min(dateCounter_list);
-                max = Collections.max(dateCounter_list);
-
-            } catch (Exception ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-            }
-        }
-
-        folderInfo.setMinDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(min));
-        folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(max));
-
-        double dateDifferenceRatio = calculateDateDifferenceRatio(map);
-        folderInfo.setDateDifferenceRatio(dateDifferenceRatio);
-        // sprintf("Datedifference ratio completed");
-        // folderInfo.setDateDifferenceRatio(0);
-        dateCounter_list.clear();
-        bad = 0;
-        good = 0;
-        image = 0;
-        raw = 0;
-        video = 0;
-        confirmed = 0;
-
-        // sdv;
     }
 
     public static ChangeListener<Number> folderFiles_ChangeListener(String folderPath) {
@@ -543,7 +412,7 @@ public class TableUtils {
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
                 folderInfo.setState("Updated");
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
                 TableUtils.refreshTableContent(model_main.tables().getSorted_table());
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(false);
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(true);
@@ -567,7 +436,7 @@ public class TableUtils {
             List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
 
                 folderInfo.setState("Updated");
                 model_main.tables().getSortIt_table().getColumns().get(0).setVisible(false);
@@ -1056,7 +925,7 @@ public class TableUtils {
             @Override
             public void handle(WorkerStateEvent event) {
                 for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-                    TableUtils.updateFolderInfo(folderInfo);
+                    updateFolderInfo(folderInfo);
                 }
                 TableUtils.refreshAllTableContent(model_main.tables());
             }

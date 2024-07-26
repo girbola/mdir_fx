@@ -244,7 +244,7 @@ public class Collect_DialogController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfo(folderInfo);
+					FolderInfo_Utils.updateFolderInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 				close();

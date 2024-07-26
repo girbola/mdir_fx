@@ -8,6 +8,7 @@ package com.girbola.fileinfo;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
+import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.filelisting.ValidatePathUtils;
@@ -40,8 +41,7 @@ import java.util.*;
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
 import static common.media.DateTaken.readMetaData;
-import static common.utils.FileUtils.filter_directories;
-import static common.utils.FileUtils.supportedVideo;
+import static common.utils.FileUtils.*;
 
 /**
  * @author Marko Lokka
@@ -88,23 +88,10 @@ public class FileInfoUtils {
         if (FileUtils.supportedImage(fileName)) {
             fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
             setImage(fileInfo);
-            calculcateTotalFileSizes(fileName, fileInfo);
-
-            fileInfo.setSize(Files.size(fileName));
-            boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-            boolean tryFileNameDate;
-            if (!metaDataFound) {
-                tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-                if (!tryFileNameDate) {
-                    setBad(fileInfo);
-                    fileInfo.setDate(0);
-                }
-            }
-
-            long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
-            Messages.sprintf("333imageDifferenceHash: " + imageDifferenceHash);
+            handleImageMetadata(fileName, fileInfo);
+            String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName.toAbsolutePath());
+            Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
             fileInfo.setImageDifferenceHash(imageDifferenceHash);
-
         } else if (FileUtils.supportedVideo(fileName)) {
             fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
             setVideo(fileInfo);
@@ -116,29 +103,22 @@ public class FileInfoUtils {
         } else if (FileUtils.supportedRaw(fileName)) {
             fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
             setRaw(fileInfo);
-            calculcateTotalFileSizes(fileName, fileInfo);
+            handleImageMetadata(fileName, fileInfo);
+            fileInfo.setSize(Files.size(fileName));
+            String imageDifferenceHash = ImageUtils.calculateRAWImagePHash(fileName.toAbsolutePath());
+            fileInfo.setImageDifferenceHash(imageDifferenceHash);
         }
-
         return fileInfo;
     }
 
-    public static void calculcateTotalFileSizes(Path fileName, FileInfo fileInfo) throws IOException {
-
-        fileInfo.setSize(Files.size(fileName));
-
-        boolean metaDataFound = getImageMetadata(fileName, fileInfo);
-
-        boolean tryFileNameDate;
+    public static void handleImageMetadata(Path fileName, FileInfo fileInfo) throws IOException {
+        boolean metaDataFound = setImageMetadata(fileName, fileInfo);
         if (!metaDataFound) {
-
-            tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-
+            boolean tryFileNameDate = tryFileNameDate(fileName, fileInfo);
             if (!tryFileNameDate) {
                 setBad(fileInfo);
                 fileInfo.setDate(0);
             }
-            long imageDifferenceHash = ImageUtils.calculateDifferenceHash(fileName.toAbsolutePath());
-            fileInfo.setImageDifferenceHash(imageDifferenceHash);
         }
     }
 
@@ -200,7 +180,7 @@ public class FileInfoUtils {
                 return false;
             }
             if (Files.exists(THM_path)) {
-                boolean metaDataFound = getImageMetadata(THM_path, fileInfo);
+                boolean metaDataFound = setImageMetadata(THM_path, fileInfo);
                 if (metaDataFound) {
                     return true;
                 }
@@ -357,13 +337,13 @@ public class FileInfoUtils {
         // TODO Auto-generated method stub
     }
 
-    public static boolean getImageMetadata(Path path, FileInfo fileInfo) {
+    public static boolean setImageMetadata(Path path, FileInfo fileInfo) {
 
         long creationDate = 0;
         int orientation = 0;
         int width = 0;
         int height = 0;
-        String camera_model = "Unknown";
+        String camera_model = MDir_Constants.UNKNOWN.getType();
         Metadata metaData = null;
         fileInfo.setCamera_model(camera_model);
         try {
@@ -392,7 +372,7 @@ public class FileInfoUtils {
                     fileInfo.setCamera_model(camera_model);
                 }
             }
-            boolean imageThumbOffsets = getImageThumb_Offset_Length(metaData, fileInfo);
+            getImageThumb_Offset_Length(metaData, fileInfo);
 
             if (creationDate != 0) {
                 creationDate = 0;
@@ -410,6 +390,51 @@ public class FileInfoUtils {
         orientation = 0;
         camera_model = null;
         return false;
+    }
+
+    public static Path renameFile(FileInfo fileInfoSrc, FolderInfo folderInfoDest) {
+        final String prefix = "_";
+
+        for (FileInfo fileInfoDest : folderInfoDest.getFileInfoList()) {
+//            if (fileInfoSrc.getOrgPath().equals(fileInfoDest.getOrgPath()) && (fileInfoSrc.getSize() != fileInfoDest.getSize())) {
+            if (!fileInfoSrc.getImageDifferenceHash().isEmpty() && !fileInfoDest.getImageDifferenceHash().isEmpty() && !fileInfoSrc.getImageDifferenceHash().equals(fileInfoDest.getImageDifferenceHash())) {
+
+                Path sourceFile = Paths.get(fileInfoDest.getOrgPath());
+                Path destFolder = Paths.get(fileInfoDest.getOrgPath()).getParent();
+
+                Path destFile = null;
+
+                String fileNameWithoutExtension = getFilenameWithoutExtension(sourceFile);
+                String fileExtension = getFileExtension(sourceFile);
+
+                for (int runningNumber = 2; runningNumber < folderInfoDest.getFileInfoList().size() + 3; runningNumber++) {
+                    destFile = Paths.get(destFolder.toString(), fileNameWithoutExtension + prefix + "" + runningNumber + "." + fileExtension);
+                    if (!Files.exists(destFile)) {
+                        return destFile;
+                    }
+                }
+            }
+        }
+        String fileName = Paths.get(fileInfoSrc.getOrgPath()).getFileName().toString();
+        return Paths.get(folderInfoDest.getFolderPath(), fileName);
+    }
+
+    private static String getFilenameWithoutExtension(Path path) {
+        return getFilenameWithoutExtension(path.getFileName().toString());
+    }
+
+    private static String getFilenameWithoutExtension(String filename) {
+        int dotIndex = filename.lastIndexOf('.');
+        return (dotIndex == -1) ? filename : filename.substring(0, dotIndex);
+    }
+
+    private static String getFileExtension(Path path) {
+        return getExtension(path.getFileName().toString());
+    }
+
+    private static String getFileExtension(String filename) {
+        int dotIndex = filename.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : filename.substring(dotIndex + 1);
     }
 
     /**
@@ -604,19 +629,17 @@ public class FileInfoUtils {
 
     public static boolean compareImageHashes(FileInfo fileInfo, FolderInfo folderInfo) {
         Iterator<FileInfo> iterator = folderInfo.getFileInfoList().iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             FileInfo fileInfo_dest = iterator.next();
-            if(fileInfo.getOrgPath().equals(fileInfo_dest.getOrgPath())) {
+            if (fileInfo.getOrgPath().equals(fileInfo_dest.getOrgPath())) {
                 return true;
             }
-            if(fileInfo.getImageDifferenceHash() == fileInfo_dest.getImageDifferenceHash()) {
+            if (fileInfo.getImageDifferenceHash() == fileInfo_dest.getImageDifferenceHash()) {
                 return true;
             }
         }
         return false;
     }
-
-
 
 
 }

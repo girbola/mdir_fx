@@ -8,6 +8,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
@@ -66,7 +67,7 @@ public class CreateFileInfoRow extends Task<Void> {
 							+ " list size: " + list.size());
 					if (list != null) {
 						folderInfo.setFileInfoList(list);
-						TableUtils.updateFolderInfo(folderInfo);
+						FolderInfo_Utils.updateFolderInfo(folderInfo);
 						TableUtils.refreshTableContent(table);
 
 						updateProgress(counter.incrementAndGet(), table.getSelectionModel().getSelectedItems().size());
