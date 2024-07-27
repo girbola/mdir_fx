@@ -699,6 +699,7 @@ public class Model_datefix extends DateFixerModel {
 
 		if (Main.conf.isSavingThumb()) {
 			saveThumbs(tilePane);
+			Messages.sprintf("thumbs were saved");
 		}
 
 		if (changes_made.get()) {

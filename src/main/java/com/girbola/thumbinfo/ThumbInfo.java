@@ -11,8 +11,6 @@ import java.util.Arrays;
 
 @Getter
 @Setter
-@XmlRootElement(name = "ThumbInfo")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class ThumbInfo {
 
 	private int id;
@@ -29,21 +27,6 @@ public class ThumbInfo {
 		this.fileName = aFileName;
 		this.id = id;
 		this.thumbs = new ArrayList<>();
-	}
-
-	//	public ThumbInfo() {
-	//		this(null, 0);
-	//	}
-	public ThumbInfo() {
-		this(
-				0,
-				null,
-				0,
-				0,
-				0,
-				0,
-				0,
-				null);
 	}
 
 	public ThumbInfo(int id,

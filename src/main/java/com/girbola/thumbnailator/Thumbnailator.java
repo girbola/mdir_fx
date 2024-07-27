@@ -1,5 +1,6 @@
 package com.girbola.thumbnailator;
 
+import com.girbola.messages.Messages;
 import net.coobird.thumbnailator.Thumbnails;
 
 import java.awt.image.BufferedImage;
@@ -26,7 +27,7 @@ public class Thumbnailator {
 		long start = System.currentTimeMillis();
 		try {
 			Thumbnails.of(source.toFile()).width(width).keepAspectRatio(true).rotate(rotate).toFile(destination.toFile());
-			System.out.println("thumbnails done: " + (System.currentTimeMillis() - start) + " ms ");
+			Messages.sprintf("thumbnails done: " + (System.currentTimeMillis() - start) + " ms ");
 			if (Files.exists(destination)) {
 				return true;
 			} else {
