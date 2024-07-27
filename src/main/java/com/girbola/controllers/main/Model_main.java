@@ -17,19 +17,11 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
+import com.girbola.thumbinfo.ThumbInfo;
 import com.girbola.workdir.WorkDirHandler;
-
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -48,6 +40,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -105,11 +104,11 @@ public class Model_main {
     public void setTable_root_hbox_width(String table_root_hbox_width) {
         this.table_root_hbox_width.set(table_root_hbox_width);
     }*/
-
+/*
     public TableStatistic getSortitTableStatistic() {
         return sortitTableStatistic;
     }
-/*
+
     public void setSortitTableStatistic(TableStatistic sortitTableStatistic) {
         this.sortitTableStatistic = sortitTableStatistic;
     }*/

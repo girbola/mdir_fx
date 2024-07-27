@@ -1,4 +1,6 @@
-package com.girbola.fileinfo;
+package com.girbola.utils;
+
+import com.girbola.thumbinfo.ThumbInfo;
 
 import java.util.List;
 

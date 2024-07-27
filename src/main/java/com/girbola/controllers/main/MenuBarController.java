@@ -17,7 +17,7 @@ import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;

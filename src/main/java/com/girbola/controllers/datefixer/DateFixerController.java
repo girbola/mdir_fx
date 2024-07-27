@@ -14,24 +14,12 @@ import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.fileinfo.DestinationResolver;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -52,6 +40,16 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;

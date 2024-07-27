@@ -1,4 +1,4 @@
-package com.girbola.fileinfo;
+package com.girbola.thumbinfo;
 
 import lombok.Getter;
 import lombok.Setter;

@@ -1,12 +1,11 @@
 package com.girbola.fileinfo;
 
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.messages.Messages;
+import com.girbola.utils.FileInfoUtils;
 import common.utils.FileInfoTestUtil;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;

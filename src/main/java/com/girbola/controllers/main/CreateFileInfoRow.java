@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
+import static com.girbola.utils.FileInfoUtils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 /**

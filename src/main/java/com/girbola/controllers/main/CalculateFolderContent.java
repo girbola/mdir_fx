@@ -27,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.girbola.Main.conf;
-import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
+import static com.girbola.utils.FileInfoUtils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 /**

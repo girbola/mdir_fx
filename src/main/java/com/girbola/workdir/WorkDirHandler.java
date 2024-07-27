@@ -3,7 +3,7 @@ package com.girbola.workdir;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FileInfo_SQL;

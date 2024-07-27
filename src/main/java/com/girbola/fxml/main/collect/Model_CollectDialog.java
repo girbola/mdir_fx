@@ -4,8 +4,7 @@ import com.girbola.controllers.datefixer.DateFixerModel;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
-import com.girbola.fileinfo.FileInfo_Event;
+import com.girbola.utils.FileInfoUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

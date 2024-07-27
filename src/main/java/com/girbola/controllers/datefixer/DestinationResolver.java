@@ -1,6 +1,7 @@
-package com.girbola.fileinfo;
+package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.Conversion;
 import common.utils.FileUtils;

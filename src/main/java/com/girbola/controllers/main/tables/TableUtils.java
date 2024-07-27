@@ -13,7 +13,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.fxml.conflicttableview.ConflictTableViewController;
 import com.girbola.fxml.operate.OperateFiles;

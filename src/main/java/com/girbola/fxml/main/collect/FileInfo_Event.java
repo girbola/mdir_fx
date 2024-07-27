@@ -1,4 +1,6 @@
-package com.girbola.fileinfo;
+package com.girbola.fxml.main.collect;
+
+import com.girbola.fileinfo.FileInfo;
 
 public class FileInfo_Event {
 

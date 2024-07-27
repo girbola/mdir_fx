@@ -1,15 +1,13 @@
 package common.utils;
 
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.*;

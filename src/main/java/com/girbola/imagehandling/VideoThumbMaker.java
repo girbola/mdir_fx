@@ -17,8 +17,6 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.OpenCVFrameGrabber;
 
 import java.awt.image.BufferedImage;
 import java.io.File;

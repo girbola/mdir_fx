@@ -4,13 +4,14 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.fileinfo;
+package com.girbola.utils;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.MDir_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController;
 import com.girbola.messages.Messages;
