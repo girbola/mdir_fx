@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Constants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -91,10 +92,10 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                                     if (node instanceof VBox && node.getId().equals("imageFrame")) {
                                         FileInfo fi = (FileInfo) node.getUserData();
                                         if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model("Unknown");
+                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
                                         }
                                         if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-                                            fi.setCamera_model("Unknown");
+                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
                                         }
                                         if (has_cameraModel(fi.getCamera_model(), listOfCameras)) {
                                             theList.add(node);
@@ -108,10 +109,10 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                                     if (node instanceof VBox && node.getId().equals("imageFrame")) {
                                         FileInfo fi = (FileInfo) node.getUserData();
                                         if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model(new String("Unknown"));
+                                            fi.setCamera_model(new String(MDir_Constants.UNKNOWN.getType()));
                                         }
                                         if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-                                            fi.setCamera_model("Unknown");
+                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
                                         }
                                         if (has_cameraModel(fi.getCamera_model(), listOfCameras)) {
                                             theList.add(node);
@@ -150,7 +151,7 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
                             return true;
                         }
                         if (str.isEmpty() || str.length() <= 0) {
-                            if (str.equals("Unknown")) {
+                            if (str.equals(MDir_Constants.UNKNOWN.getType())) {
                                 Messages.sprintf("Unknown has format match");
                                 return true;
                             }

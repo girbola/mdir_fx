@@ -75,23 +75,18 @@ public class FileUtils {
      * @throws java.io.IOException
      */
 
-
     public static Path renameFile(Path srcFile, Path destFile) throws IOException {
 
-        String prefix = "_";
-        String fileName = "";
-        String ext = getExtension(destFile);
-
         long start = System.currentTimeMillis();
-        long src = ImageUtils.calculateDifferenceHash(srcFile);
-        long dest = ImageUtils.calculateDifferenceHash(destFile);
+        String srcImageHash = ImageUtils.calculateImagePHash(srcFile);
+        String destImageHash = ImageUtils.calculateImagePHash(destFile);
         long end = System.currentTimeMillis() - start;
         Messages.sprintf("Took: " + end + " ms");
-        if (Files.size(destFile) != Files.size(srcFile) && src != dest && src != 0 && dest !=0) {
+        if (Files.size(destFile) != Files.size(srcFile) && srcImageHash != destImageHash && !srcImageHash.isEmpty() && !destImageHash.isEmpty()) {
             Messages.sprintf("Files have same name but they differ with sizes");
             return rename(srcFile, destFile, filter_directories);
         } else {
-            Messages.sprintf("file did already exists at destination folder: " + srcFile + " dest; " + destFile);
+            Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
             return null;
         }
     }

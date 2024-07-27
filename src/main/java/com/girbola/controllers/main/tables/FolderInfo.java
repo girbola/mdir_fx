@@ -20,6 +20,7 @@ import static com.girbola.Main.simpleDates;
  */
 public class FolderInfo implements TableValues_inf {
 
+    //@formatter:off
     private IntegerProperty status;
     private List<FileInfo> fileInfoList;
     private SimpleBooleanProperty changed;
@@ -131,172 +132,6 @@ public class FolderInfo implements TableValues_inf {
         Bindings.subtract(folderFiles, badFiles);
 
     }
-
-    @Override
-    public void setStatus(int value) {
-        this.status.set(value);
-    }
-
-    @Override
-    public int getStatus() {
-        return this.status.get();
-    }
-
-    @Override
-    public void setState(String value) {
-        this.state.set(value);
-    }
-
-    @Override
-    public String getState() {
-        return this.state.get();
-    }
-
-    @Override
-    public int getBadFiles() {
-        return this.badFiles.get();
-    }
-
-    @Override
-    public void setBadFiles(int value) {
-        this.badFiles.set(value);
-        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
-    }
-
-    @Override
-    public double getDateDifferenceRatio() {
-        return this.dateDifference.get();
-    }
-
-    @Override
-    public void setDateDifferenceRatio(double value) {
-        this.dateDifference.set(value);
-    }
-
-    @Override
-    public int getFolderFiles() {
-        return this.folderFiles.get();
-    }
-
-    @Override
-    public void setFolderFiles(int value) {
-        this.folderFiles.set(value);
-    }
-
-    @Override
-    public int getFolderImageFiles() {
-        return this.folderImageFiles.get();
-    }
-
-    @Override
-    public void setFolderImageFiles(int value) {
-        this.folderImageFiles.set(value);
-        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
-    }
-
-    @Override
-    public String getJustFolderName() {
-        return this.justFolderName.get();
-    }
-
-    @Override
-    public void setJustFolderName(String value) {
-        this.justFolderName.set(value);
-    }
-
-    @Override
-    public int getFolderRawFiles() {
-        return this.folderRawFiles.get();
-    }
-
-    @Override
-    public void setFolderRawFiles(int value) {
-        this.folderRawFiles.set(value);
-        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
-    }
-
-    @Override
-    public long getFolderSize() {
-        return this.folderSize.get();
-    }
-
-    @Override
-    public void setFolderSize(long value) {
-        this.folderSize.set(value);
-    }
-
-    @Override
-    public int getFolderVideoFiles() {
-        return this.folderVideoFiles.get();
-    }
-
-    @Override
-    public void setFolderVideoFiles(int value) {
-        this.folderVideoFiles.set(value);
-        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
-    }
-
-    @Override
-    public int getGoodFiles() {
-        return this.goodFiles.get();
-    }
-
-    @Override
-    public void setGoodFiles(int value) {
-        this.goodFiles.set(value);
-    }
-
-    @Override
-    public int getCopied() {
-        return this.copied.get();
-    }
-
-    @Override
-    public void setCopied(int value) {
-        this.copied.set(value);
-    }
-
-    @Override
-    public String getMaxDate() {
-        return this.maxDate.get();
-    }
-
-    @Override
-    public void setMaxDate(String value) {
-        this.maxDate.set(value);
-    }
-
-    @Override
-    public String getMinDate() {
-        return this.minDate.get();
-    }
-
-    @Override
-    public void setMinDate(String value) {
-        this.minDate.set(value);
-    }
-
-    @Override
-    public int getSuggested() {
-        return this.suggested.get();
-    }
-
-    @Override
-    public void setSuggested(int value) {
-        this.suggested.set(value);
-        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
-    }
-
-    @Override
-    public String getFolderPath() {
-        return this.folderPath.get();
-    }
-
-    @Override
-    public void setFolderPath(String value) {
-        this.folderPath.set(value);
-    }
-
     @Override
     public Map<String, String> getFileList() {
         Map<String, String> map = new HashMap<>();
@@ -312,85 +147,105 @@ public class FolderInfo implements TableValues_inf {
     }
 
     @Override
-    public List<FileInfo> getFileInfoList() {
-        return this.fileInfoList;
-    }
-
+    public void setStatus(int value) { this.status.set(value); }
     @Override
-    public void setFileInfoList(List<FileInfo> value) {
-        this.fileInfoList = value;
-    }
-
+    public int getStatus() { return this.status.get(); }
     @Override
-    public SimpleIntegerProperty badFiles_prop() {
-        return badFiles;
-    }
-
+    public void setState(String value) { this.state.set(value); }
     @Override
-    public SimpleDoubleProperty dateDifferenceRatio_prop() {
-        return dateDifference;
-    }
-
+    public String getState() { return this.state.get(); }
     @Override
-    public SimpleIntegerProperty folderFiles_prop() {
-        return this.folderFiles;
-    }
-
+    public int getBadFiles() { return this.badFiles.get(); }
     @Override
-    public SimpleIntegerProperty folderImageFiles_prop() {
-        return this.folderImageFiles;
-    }
-
+    public void setBadFiles(int value) { this.badFiles.set(value); TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get()); }
     @Override
-    public SimpleStringProperty folderPath_prop() {
-        return this.folderPath;
-    }
-
+    public double getDateDifferenceRatio() { return this.dateDifference.get(); }
     @Override
-    public SimpleIntegerProperty folderRawFiles_prop() {
-        return this.folderRawFiles;
-    }
-
+    public void setDateDifferenceRatio(double value) { this.dateDifference.set(value); }
     @Override
-    public SimpleLongProperty folderSize_prop() {
-        return this.folderSize;
-    }
-
+    public int getFolderFiles() { return this.folderFiles.get(); }
     @Override
-    public SimpleIntegerProperty folderVideoFiles_prop() {
-        return this.folderVideoFiles;
-    }
-
+    public void setFolderFiles(int value) { this.folderFiles.set(value); }
     @Override
-    public SimpleIntegerProperty goodFiles_prop() {
-        return this.goodFiles;
-    }
-
+    public int getFolderImageFiles() { return this.folderImageFiles.get(); }
     @Override
-    public SimpleIntegerProperty copied_property() {
-        return this.copied;
-    }
-
+    public void setFolderImageFiles(int value) { this.folderImageFiles.set(value); TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get()); }
     @Override
-    public SimpleStringProperty maxDate_prop() {
-        return this.maxDate;
-    }
-
+    public String getJustFolderName() { return this.justFolderName.get(); }
     @Override
-    public SimpleStringProperty minDate_prop() {
-        return this.minDate;
-    }
-
+    public void setJustFolderName(String value) { this.justFolderName.set(value); }
+    @Override
+    public int getFolderRawFiles() { return this.folderRawFiles.get(); }
+    @Override
+    public void setFolderRawFiles(int value) { this.folderRawFiles.set(value); TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get()); }
+    @Override
+    public long getFolderSize() { return this.folderSize.get(); }
+    @Override
+    public void setFolderSize(long value) { this.folderSize.set(value); }
+    @Override
+    public int getFolderVideoFiles() { return this.folderVideoFiles.get(); }
+    @Override
+    public void setFolderVideoFiles(int value) { this.folderVideoFiles.set(value); TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get()); }
+    @Override
+    public int getGoodFiles() { return this.goodFiles.get(); }
+    @Override
+    public void setGoodFiles(int value) { this.goodFiles.set(value); }
+    @Override
+    public int getCopied() { return this.copied.get(); }
+    @Override
+    public void setCopied(int value) { this.copied.set(value); }
+    @Override
+    public String getMaxDate() { return this.maxDate.get(); }
+    @Override
+    public void setMaxDate(String value) { this.maxDate.set(value); }
+    @Override
+    public String getMinDate() { return this.minDate.get(); }
+    @Override
+    public void setMinDate(String value) { this.minDate.set(value); }
+    @Override
+    public int getSuggested() { return this.suggested.get(); }
+    @Override
+    public void setSuggested(int value) { this.suggested.set(value); TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get()); }
+    @Override
+    public String getFolderPath() { return this.folderPath.get(); }
+    @Override
+    public void setFolderPath(String value) { this.folderPath.set(value); }
+    @Override
+    public List<FileInfo> getFileInfoList() { return this.fileInfoList; }
+    @Override
+    public void setFileInfoList(List<FileInfo> value) { this.fileInfoList = value; }
+    @Override
+    public SimpleIntegerProperty badFiles_prop() { return badFiles; }
+    @Override
+    public SimpleDoubleProperty dateDifferenceRatio_prop() { return dateDifference; }
+    @Override
+    public SimpleIntegerProperty folderFiles_prop() { return this.folderFiles; }
+    @Override
+    public SimpleIntegerProperty folderImageFiles_prop() { return this.folderImageFiles; }
+    @Override
+    public SimpleStringProperty folderPath_prop() { return this.folderPath; }
+    @Override
+    public SimpleIntegerProperty folderRawFiles_prop() { return this.folderRawFiles; }
+    @Override
+    public SimpleLongProperty folderSize_prop() { return this.folderSize; }
+    @Override
+    public SimpleIntegerProperty folderVideoFiles_prop() { return this.folderVideoFiles; }
+    @Override
+    public SimpleIntegerProperty goodFiles_prop() { return this.goodFiles; }
+    @Override
+    public SimpleIntegerProperty copied_property() { return this.copied; }
+    @Override
+    public SimpleStringProperty maxDate_prop() { return this.maxDate; }
+    @Override
+    public SimpleStringProperty minDate_prop() { return this.minDate; }
     @Override
     public IntegerProperty status_property() {
         return status;
     }
-
     @Override
     public SimpleStringProperty state_property() {
         return state;
     }
-
     @Override
     public SimpleIntegerProperty suggested_prop() {
         return this.suggested;
@@ -400,12 +255,10 @@ public class FolderInfo implements TableValues_inf {
     public SimpleBooleanProperty changed_property() {
         return this.changed;
     }
-
     @Override
     public boolean getChanged() {
         return this.changed.get();
     }
-
     @Override
     public void setChanged(boolean changed) {
         this.changed.set(changed);
@@ -415,12 +268,10 @@ public class FolderInfo implements TableValues_inf {
     public SimpleIntegerProperty confirmed_property() {
         return confirmed;
     }
-
     @Override
     public int getConfirmed() {
         return this.confirmed.get();
     }
-
     @Override
     public void setConfirmed(int value) {
         this.confirmed.set(value);
@@ -430,12 +281,10 @@ public class FolderInfo implements TableValues_inf {
     public SimpleStringProperty tableType_property() {
         return tableType;
     }
-
     @Override
     public String getTableType() {
         return tableType.get();
     }
-
     @Override
     public void setTableType(String value) {
         this.tableType.set(value);
@@ -445,12 +294,10 @@ public class FolderInfo implements TableValues_inf {
     public SimpleBooleanProperty connected_property() {
         return connected;
     }
-
     @Override
     public boolean isConnected() {
         return this.connected.get();
     }
-
     @Override
     public void setConnected(boolean connected) {
         this.connected.set(connected);
@@ -460,15 +307,14 @@ public class FolderInfo implements TableValues_inf {
     public SimpleBooleanProperty ignored_prop() {
         return this.ignored;
     }
-
     @Override
     public boolean getIgnored() {
         return this.ignored.get();
     }
-
     @Override
     public void setIgnored(boolean value) {
         this.ignored.set(value);
     }
+
 
 }

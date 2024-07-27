@@ -32,9 +32,7 @@ public class UI_Tools {
 	final private static String ERROR = UI_Tools.class.getSimpleName();
 
 	public static Bounds getNodeLayoutBounds(Node node) {
-		// log.error(arg0);
-		Bounds bound = node.getLayoutBounds();
-		return bound;
+		return node.getLayoutBounds();
 	}
 
 	public static double getScrollBarWidth(ScrollPane scrollPane) {
@@ -48,25 +46,4 @@ public class UI_Tools {
 		return 0;
 	}
 
-	public static void setGridRowConstraints(GridPane gridPane, int mRows) {
-		if (mRows == 0) {
-			errorSmth(ERROR, "", null, getLineNumber(), true);
-		} else {
-			for (int i = 0; i < mRows; i++) {
-				RowConstraints grid_row1 = new RowConstraints(GUIPrefs.imageFrame_y, GUIPrefs.imageFrame_y, GUIPrefs.imageFrame_y, Priority.NEVER,
-						VPos.CENTER, false);
-				grid_row1.setValignment(VPos.CENTER);
-				gridPane.getRowConstraints().add(grid_row1);
-			}
-		}
-	}
-
-	public static void setGridColumnConstraints(GridPane gridPane, int imagesPerLine) {
-		// sprintf("setGridColumnConstraints started imagesPerLine: " + imagesPerLine);
-		ColumnConstraints[] col = new ColumnConstraints[imagesPerLine];
-		for (int i = 0; i < imagesPerLine; i++) {
-			col[i] = new ColumnConstraints(GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_x, Priority.NEVER, HPos.CENTER, false);
-			gridPane.getColumnConstraints().add(col[i]);
-		}
-	}
 }

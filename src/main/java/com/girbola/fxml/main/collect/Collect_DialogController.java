@@ -10,7 +10,6 @@ import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfo_Event;
 import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -244,7 +243,7 @@ public class Collect_DialogController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					TableUtils.updateFolderInfo(folderInfo);
+					FolderInfo_Utils.updateFolderInfo(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 				close();

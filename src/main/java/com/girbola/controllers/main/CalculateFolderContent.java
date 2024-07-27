@@ -9,6 +9,7 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
@@ -26,7 +27,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 import static com.girbola.Main.conf;
-import static com.girbola.fileinfo.FileInfoUtils.createFileInfo_list;
+import static com.girbola.utils.FileInfoUtils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
 /**
@@ -120,7 +121,7 @@ public class CalculateFolderContent extends Task<Void> {
                     loaded_FolderInfo = new FolderInfo(mdirDatabaseFilePath.getParent());
                     folderInfo.setFileInfoList(listOfFileInfos);
                     if (!folderInfo.getFileInfoList().isEmpty()) {
-                        TableUtils.updateFolderInfo(folderInfo);
+                        FolderInfo_Utils.updateFolderInfo(folderInfo);
                         counter.set(counter.get() - 1);
                         updateProgress(counter.get(), total.get());
                         updateMessage(folderInfo.getFolderPath());
@@ -133,7 +134,7 @@ public class CalculateFolderContent extends Task<Void> {
                     List<FileInfo> li = createFileInfo_list(folderInfo);
                     folderInfo.setFileInfoList(li);
                     if (!folderInfo.getFileInfoList().isEmpty()) {
-                        TableUtils.updateFolderInfo(folderInfo);
+                        FolderInfo_Utils.updateFolderInfo(folderInfo);
                         counter.set(counter.get() - 1);
                         updateProgress(counter.get(), total.get());
                         updateMessage(folderInfo.getFolderPath());
@@ -146,7 +147,7 @@ public class CalculateFolderContent extends Task<Void> {
             }
             if (loaded_FolderInfo != null) {
                 folderInfo.setFileInfoList(loaded_FolderInfo.getFileInfoList());
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
                 Messages.sprintf("folderInfo were not zero: " + folderInfo.getFolderPath());
             } else {
                 Messages.sprintf("folderInfo were were zero: " + mdirDatabaseFilePath);
@@ -160,7 +161,7 @@ public class CalculateFolderContent extends Task<Void> {
             List<FileInfo> li = createFileInfo_list(folderInfo);
             folderInfo.setFileInfoList(li);
             if (!folderInfo.getFileInfoList().isEmpty()) {
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
                 counter.set(counter.get() - 1);
                 updateProgress(counter.get(), total.get());
                 updateMessage(folderInfo.getFolderPath());

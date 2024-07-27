@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Metadata {
+public class Metadata extends FileMetadata {
 	private double width;
 	private double height;
 }

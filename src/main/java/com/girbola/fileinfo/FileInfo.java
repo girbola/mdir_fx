@@ -6,6 +6,7 @@
  */
 package com.girbola.fileinfo;
 
+import com.girbola.MDir_Constants;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -22,113 +23,85 @@ public class FileInfo extends Metadata implements Cloneable {
         return super.clone();
     }
 
-    private final int fileInfo_version = 2;
-    /**
-     * FileInfo version 1 ================== fileInfo_version number created
-     * fileName changed from thumbfile.xml to fileinfo.dat
-     * <p>
-     * FileInfo version 2 ================== workDirDriveSerialNumber added
-     */
-    private boolean bad;
-    private boolean confirmed;
-    private boolean copied;
-    private boolean good;
-    private boolean ignored;
-    private boolean image;
-    private boolean raw;
-    private boolean suggested;
-    private boolean tableDuplicated;
-    private boolean video;
+    private final int fileInfo_version = 1;
 
     private LocalDateTime localDateTime;
-    private String camera_model;
-    private String destination_Path;
-    private String event;
-    private String location;
-    private String orgPath;
-    private String tags;
-    private String user;
-    private String workDir;
-    private String workDirDriveSerialNumber;
-    private int fileInfo_id;
-    private int orientation;
-    private int thumb_length;
-    private int thumb_offset;
-    private long date;
-    private long imageDifferenceHash;
-    private long size;
+
     private long timeShift;
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Object#toString()
-     */
     public String showAllValues() {
+
         return "FileInfo{" +
-                "fileInfo_version=" + fileInfo_version +
-                ", bad=" + bad +
-                ", confirmed=" + confirmed +
-                ", copied=" + copied +
-                ", good=" + good +
-                ", ignored=" + ignored +
-                ", image=" + image +
-                ", raw=" + raw +
-                ", suggested=" + suggested +
-                ", tableDuplicated=" + tableDuplicated +
-                ", video=" + video +
-                ", localDateTime=" + localDateTime +
-                ", camera_model='" + camera_model + '\'' +
-                ", destination_Path='" + destination_Path + '\'' +
-                ", event='" + event + '\'' +
-                ", location='" + location + '\'' +
-                ", orgPath='" + orgPath + '\'' +
-                ", tags='" + tags + '\'' +
-                ", user='" + user + '\'' +
-                ", workDir='" + workDir + '\'' +
-                ", workDirDriveSerialNumber='" + workDirDriveSerialNumber + '\'' +
-                ", fileInfo_id=" + fileInfo_id +
-                ", orientation=" + orientation +
-                ", thumb_length=" + thumb_length +
-                ", thumb_offset=" + thumb_offset +
-                ", date=" + date +
-                ", imageDifferenceHash=" + imageDifferenceHash +
-                ", size=" + size +
-                ", timeShift=" + timeShift +
+                "bad=" + isBad() +
+                ", camera_model='" + getCamera_model() + '\'' +
+                ", confirmed=" + isConfirmed() +
+                ", copied=" + isCopied() +
+                ", date=" + getDate() +
+                ", destination_Path='" + getDestination_Path() + '\'' +
+                ", event='" + getEvent() + '\'' +
+                ", fileInfo_id=" + getFileInfo_id() +
+                ", fileInfo_version=" + getFileInfo_version() +
+                ", good=" + isGood() +
+                ", ignored=" + isIgnored() +
+                ", image=" + isImage() +
+                ", imageDifferenceHash=" + getImageDifferenceHash() +
+                ", localDateTime=" + getLocalDateTime() +
+                ", location='" + getLocation() + '\'' +
+                ", orientation=" + getOrientation() +
+                ", orgPath='" + getOrgPath() + '\'' +
+                ", raw=" + isRaw() +
+                ", size=" + getSize() +
+                ", suggested=" + isSuggested() +
+                ", tableDuplicated=" + isTableDuplicated() +
+                ", tags='" + getTags() + '\'' +
+                ", thumb_length=" + getThumb_length() +
+                ", thumb_offset=" + getThumb_offset() +
+                ", timeShift=" + getTimeShift() +
+                ", user='" + getUser() + '\'' +
+                ", video=" + isVideo() +
+                ", workDir='" + getWorkDir() + '\'' +
+                ", workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() + '\'' +
                 '}';
     }
 
     /**
-     * @param aOrgPath
-     * @param fileInfo_id
+     * Represents information about a file.
+     *
+     * @param orgPath                     The original path of the file.
+     * @param fileInfo_id                 The ID of the file info.
      */
-    public FileInfo(String aOrgPath, int fileInfo_id) {
-        this.orgPath = aOrgPath;
-        this.fileInfo_id = fileInfo_id;
-        this.destination_Path = "";
-        this.event = "";
-        this.location = "";
-        this.tags = "";
-        this.camera_model = "Unknown";
-        this.orientation = 0;
+    public FileInfo(String orgPath, int fileInfo_id) {
+        this.setOrgPath(orgPath);
+        this.setFileInfo_id(fileInfo_id);
+
+        this.setDestination_Path("");
+        this.setEvent("");
+        this.setLocation("");
+        this.setOrientation(0);
+        this.setTags("");
+
+        this.setCamera_model(MDir_Constants.UNKNOWN.getType());
+        this.setBad(false);
+        this.setGood(false);
+        this.setSuggested(false);
+        this.setConfirmed(false);
+
+        this.setIgnored(false);
+        this.setTableDuplicated(false);
+        this.setRaw(false);
+        this.setImage(false);
+        this.setVideo(false);
+        this.setDate(0);
+        this.setSize(0);
+        this.setThumb_offset(0);
+        this.setThumb_length(0);
+        this.setImageDifferenceHash("");
+        this.setUser("");
+        this.setWorkDir("");
+        this.setWorkDirDriveSerialNumber("");
+
         this.timeShift = 0;
-        this.bad = false;
-        this.good = false;
-        this.suggested = false;
-        this.confirmed = false;
-        this.raw = false;
-        this.image = false;
-        this.video = false;
-        this.ignored = false;
-        this.tableDuplicated = false;
-        this.date = 0;
-        this.size = 0;
-        this.thumb_offset = 0;
-        this.thumb_length = 0;
-        this.imageDifferenceHash = 0;
-        this.user = "";
-        this.workDir = "";
-        this.workDirDriveSerialNumber = "";
+
     }
 
     /**
@@ -136,76 +109,51 @@ public class FileInfo extends Metadata implements Cloneable {
      */
     public FileInfo() {
         this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
-                false, false, false, false, 0, 0L, 0, 0, 0);
+                false, false, false, false, 0, 0L, "", 0, 0);
     }
 
+
     /**
-     * @param aOrgPath
-     * @param aWorkDir
-     * @param aWorkDirDriveSerialNumber
-     * @param aDestinationStructure
-     * @param aEvent
-     * @param aLocation
-     * @param aTags
-     * @param aCamera_model
-     * @param user
-     * @param aOrientation
-     * @param aTimeShift
-     * @param aFileInfo_id
-     * @param aBad
-     * @param aGood
-     * @param aSuggested
-     * @param aConfirmed
-     * @param aImage
-     * @param aRaw
-     * @param aVideo
-     * @param aIgnored
-     * @param aCopied
-     * @param aTableDuplicated
-     * @param aDate
-     * @param aSize
-     * @param aThumb_offset
-     * @param aImageDifferenceHash
-     * @param aThumb_length
+     * Represents information about a file.
      */
     public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
                     String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
                     long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
                     boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
-                    long aDate, long aSize, long aImageDifferenceHash, int aThumb_offset, int aThumb_length) {
-        this.orgPath = aOrgPath;
-        this.workDir = aWorkDir;
-        this.workDirDriveSerialNumber = aWorkDirDriveSerialNumber;
-        this.destination_Path = aDestinationStructure;
-        this.event = aEvent;
-        this.location = aLocation;
-        this.tags = aTags;
-        this.camera_model = aCamera_model;
-        this.orientation = aOrientation;
-        this.timeShift = aTimeShift;
-        this.fileInfo_id = aFileInfo_id;
-        this.date = aDate;
-        this.size = aSize;
-        this.bad = aBad;
-        this.good = aGood;
-        this.ignored = aIgnored;
-        this.tableDuplicated = aTableDuplicated;
-        this.suggested = aSuggested;
-        this.confirmed = aConfirmed;
-        this.raw = aRaw;
-        this.image = aImage;
-        this.video = aVideo;
-        this.copied = aCopied;
-        this.imageDifferenceHash = aImageDifferenceHash;
-        this.thumb_offset = aThumb_offset;
-        this.thumb_length = aThumb_length;
-        this.user = user;
+                    long aDate, long aSize, String aImageDifferenceHash, int aThumb_offset, int aThumb_length) {
+        this.setOrgPath(aOrgPath);
+        this.setWorkDir(aWorkDir);
+        this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
+        this.setDestination_Path(aDestinationStructure);
+        this.setEvent(aEvent);
+        this.setLocation(aLocation);
+        this.setTags(aTags);
+        this.setOrientation(aOrientation);
+        this.setFileInfo_id(aFileInfo_id);
+        this.setCamera_model(aCamera_model);
+        this.setTimeShift(aTimeShift);
+        this.setDate(aDate);
+        this.setSize(aSize);
+        this.setBad(aBad);
+        this.setGood(aGood);
+        this.setIgnored(aIgnored);
+        this.setTableDuplicated(aTableDuplicated);
+        this.setSuggested(aSuggested);
+        this.setConfirmed(aConfirmed);
+        this.setRaw(aRaw);
+        this.setImage(aImage);
+        this.setVideo(aVideo);
+        this.setCopied(aCopied);
+        this.setImageDifferenceHash(aImageDifferenceHash);
+        this.setThumb_offset(aThumb_offset);
+        this.setThumb_length(aThumb_length);
+        this.setUser(user);
     }
 
 
     @Override
     public String toString() {
-        return this.orgPath;
+        return this.getOrgPath();
     }
 
 }

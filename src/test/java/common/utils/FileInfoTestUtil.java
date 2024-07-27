@@ -1,7 +1,7 @@
 package common.utils;
 
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import lombok.extern.java.Log;
 
 import java.io.IOException;

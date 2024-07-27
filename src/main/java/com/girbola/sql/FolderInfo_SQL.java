@@ -4,7 +4,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 
 import java.io.File;

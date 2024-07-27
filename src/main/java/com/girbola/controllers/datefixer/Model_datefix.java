@@ -11,12 +11,12 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.DateFix_Utils.Field;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
-import com.girbola.fileinfo.ThumbInfo;
-import com.girbola.fileinfo.ThumbInfo_Utils;
+import com.girbola.utils.FileInfoUtils;
+import com.girbola.thumbinfo.ThumbInfo;
+import com.girbola.utils.ThumbInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -526,7 +526,7 @@ public class Model_datefix extends DateFixerModel {
 			}
 			if (changed) {
 				// TODO Korjaa apply_btn;
-				TableUtils.updateFolderInfo(getFolderInfo_full());
+				FolderInfo_Utils.updateFolderInfo(getFolderInfo_full());
 				if (model_Main.tables() == null) {
 					Main.setProcessCancelled(true);
 					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
@@ -699,6 +699,7 @@ public class Model_datefix extends DateFixerModel {
 
 		if (Main.conf.isSavingThumb()) {
 			saveThumbs(tilePane);
+			Messages.sprintf("thumbs were saved");
 		}
 
 		if (changes_made.get()) {

@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Constants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -152,7 +153,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 							return true;
 						}
 						if (str.isEmpty() || str.length() <= 0) {
-							if (str.equals("Unknown")) {
+							if (str.equals(MDir_Constants.UNKNOWN.getType())) {
 								Messages.sprintf("Unknown has format match");
 								return true;
 							}

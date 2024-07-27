@@ -7,12 +7,13 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -172,7 +173,7 @@ public class TableController {
                         fileInfo.setTags("");
                         Main.setChanged(true);
                     }
-                    TableUtils.updateFolderInfo(folderInfo);
+                    FolderInfo_Utils.updateFolderInfo(folderInfo);
                     TableUtils.refreshAllTableContent(model_main.tables());
                     // ldt.setMessage("counter; " + counter.get());
                     counter.getAndIncrement();
@@ -232,7 +233,7 @@ public class TableController {
 
             stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
-            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
             MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
@@ -544,7 +545,7 @@ public class TableController {
 
                 Main.setChanged(true);
                 folderInfo.setChanged(true);
-                TableUtils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.updateFolderInfo(folderInfo);
 
                 Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
                 SQL_Utils.isDbConnected(connection);

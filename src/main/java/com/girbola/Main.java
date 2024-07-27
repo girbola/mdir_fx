@@ -35,7 +35,6 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
-import common.utils.ui.ScreenUtils;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -136,7 +135,7 @@ public class Main extends Application {
                 primaryScene = new Scene(parent);
 
                 primaryScene.getStylesheets()
-                        .add(Main.class.getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+                        .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
                 Messages.sprintf("theme path is: " + conf.getThemePath());
                 MainController mainController = (MainController) main_loader.getController();

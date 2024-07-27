@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Constants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.collections.FXCollections;
@@ -42,8 +43,8 @@ public class DateFix_Utils {
 
 		for (FileInfo fi : fileInfo_list) {
 			if (fi.getCamera_model() == null) {
-				if (!hasValue("Unknown", camera_list)) {
-					camera_list.add("Unknown");
+				if (!hasValue(MDir_Constants.UNKNOWN.getType(), camera_list)) {
+					camera_list.add(MDir_Constants.UNKNOWN.getType());
 				}
 			} else {
 				if (!hasValue(fi.getCamera_model(), camera_list)) {
@@ -58,7 +59,7 @@ public class DateFix_Utils {
 			Map<String, Integer> map = findHashMap(camera, list_map);
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
-					if ("Unknown".equals(camera)) {
+					if (MDir_Constants.UNKNOWN.getType().equals(camera)) {
 						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
@@ -83,10 +84,10 @@ public class DateFix_Utils {
 		List<String> camera_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
 			if (fi.getCamera_model() == null) {
-				fi.setCamera_model("Unknown");
+				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
 			}
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-				fi.setCamera_model("Unknown");
+				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
 			}
 			if (!hasValue(fi.getCamera_model(), camera_list)) {
 				sprintf("3Adding camera: " + fi.getCamera_model());
@@ -99,7 +100,7 @@ public class DateFix_Utils {
 			Map<String, Integer> map = findHashMap(camera, list_map);
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
-					if ("Unknown".equals(camera)) {
+					if (MDir_Constants.UNKNOWN.getType().equals(camera)) {
 						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
@@ -255,10 +256,10 @@ public class DateFix_Utils {
 			}
 		} else if (fileInfoFieldexifInfo_list.equals(Field.CAMERA.getType())) {
 			if (fi.getCamera_model() == null) {
-				fi.setCamera_model("Unknown");
+				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
 			}
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-				fi.setCamera_model("Unknown");
+				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
 			}
 			if (!hasValue(fi.getCamera_model(), exifInfo_list)) {
 				exifInfo_list.add(fi.getCamera_model());

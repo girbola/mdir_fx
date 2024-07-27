@@ -6,7 +6,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;

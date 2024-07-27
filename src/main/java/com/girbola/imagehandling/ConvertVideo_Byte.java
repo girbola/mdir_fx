@@ -6,9 +6,9 @@
  */
 package com.girbola.imagehandling;
 
-import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.thumbinfo.ThumbInfo;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;

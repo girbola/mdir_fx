@@ -3,9 +3,10 @@ package com.girbola.controllers.main.tables;
 import com.girbola.Main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +17,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
+
+import static com.girbola.Main.simpleDates;
+import static com.girbola.controllers.main.tables.TableUtils.calculateDateDifferenceRatio;
 
 public class FolderInfo_Utils {
 
@@ -92,7 +95,7 @@ public class FolderInfo_Utils {
 
                 Path renamed = FileUtils.renameFile(source, destinationFinalPath);
 
-                if(renamed == null) {
+                if (renamed == null) {
                     Messages.sprintf("File did exists: " + source + " at destination: " + destinationFinalPath);
                     continue;
                 }
@@ -111,19 +114,19 @@ public class FolderInfo_Utils {
             }
         }
         FolderInfo folderInfo = SQL_Utils.loadFolderInfo(destinationPath);
-        if(folderInfo == null) {
+        if (folderInfo == null) {
             folderInfo = new FolderInfo();
         }
         folderInfo.getFileInfoList().addAll(removeList);
 
         folderInfoSrc.getFileInfoList().removeAll(removeList);
 
-        if(!folderInfoSrc.getFileInfoList().isEmpty()) {
+        if (!folderInfoSrc.getFileInfoList().isEmpty()) {
             Messages.warningText_title("All files were not able to move", "Not able to move");
         } else {
             TableView<FolderInfo> table = tables.getTableByType(folderInfoSrc.getTableType());
             boolean remove = table.getItems().remove(folderInfoSrc);
-            if(remove) {
+            if (remove) {
 
             }
 
@@ -132,24 +135,112 @@ public class FolderInfo_Utils {
         return true;
     }
 
-    public static boolean moveFolderInfoToDestination(FolderInfo folderInfoSrc, FolderInfo folderInfoDest) {
+    public static boolean moveFolderInfo(FolderInfo folderInfoSrc, Path dest) {
 
-        if (folderInfoSrc.getFolderPath().equals(folderInfoDest.getFolderPath())) {
-            Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame"));
+        return false;
+    }
+
+    public static boolean moveFolderInto(FolderInfo folderInfoSrc, FolderInfo folderInfoDest) {
+
+        Path destPath = Paths.get(folderInfoDest.getFolderPath());
+
+        List<FileInfo> fileInfoList = folderInfoDest.getFileInfoList();
+
+        if (fileInfoList.isEmpty()) {
             return false;
         }
 
-        List<FileInfo> sourceFileInfoList = folderInfoSrc.getFileInfoList();
+        for (Iterator<FileInfo> it = folderInfoSrc.getFileInfoList().iterator(); it.hasNext(); ) {
+            FileInfo fileInfo = it.next();
+            Path fileName = Paths.get(fileInfo.getOrgPath()).getFileName();
+            Path changeDestPath = Paths.get(destPath.getParent().toString(), fileName.toString());
+            if (!FileInfoUtils.compareImageHashes(fileInfo, folderInfoDest)) {
+
+            }
+            for (Iterator<FileInfo> it2 = folderInfoSrc.getFileInfoList().iterator(); it2.hasNext(); ) {
+/*
+            try {
+                FileUtils.moveFile();
+                Path changeDestPath1 = Files.move(Paths.get(fileInfo.getOrgPath()), changeDestPath);
+                Messages.sprintf("changeDestPath1: " + changeDestPath1);
+
+                fileInfo.setOrgPath(changeDestPath.toString());
+                fileInfo.setDestination_Path(changeDestPath.toString());
+
+                return true;
+            } catch (IOException e) {
+                Messages.errorSmth(ERROR, Main.bundle.getString("cannotMoveFile"),null, Misc.getLineNumber(), false);
+                return false;
+            }
+*/
+
+
+            }
+
+
+        }
+        return false;
+    }
+
+    public static boolean moveFolderInfoToDestination(List<FolderInfo> folderInfoSrcList, FolderInfo folderInfoDest) {
+
+        /*
+        event    =      hiking
+        location =      mount everest
+        C:\temp <-      absolutePath
+        C:\kala\temp\a1 to be moved. Move files. Remove if empty
+        C:\lohi\1       to be moved. Move files. Remove if empty
+
+        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
+        Path newAbsolutePath = C:\temp\hiking\mount everest\
+
+        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
+        Path path1ToMove = C:\kala\temp\a1 # Move files
+        Path path2ToMove = C:\lohi\1       # Move files
+
+         */
+
+
+
+
+        Iterator<FolderInfo> folderInfoSrcIt = folderInfoSrcList.iterator();
+        while(folderInfoSrcIt.hasNext()) {
+            FolderInfo folderInfoSrc = folderInfoSrcIt.next();
+            if (folderInfoSrc.getFolderPath().equals(folderInfoDest.getFolderPath())) {
+                Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame"));
+                return false;
+            }
+            Iterator<FileInfo> fileInfoSrcIt = folderInfoSrc.getFileInfoList().iterator();
+            while(fileInfoSrcIt.hasNext()) {
+                FileInfo fileInfoSrc = fileInfoSrcIt.next();
+
+                boolean duplicates = FileInfoUtils.findDuplicates(fileInfoSrc, folderInfoDest);
+                if(duplicates) {
+
+                }
+            }
+
+
+        }
+
+        /*
+        Iterator<FileInfo> sourceFileInfoList = folderInfoSrc.getFileInfoList().iterator();
 
         List<FileInfo> destFileInfoList = folderInfoDest.getFileInfoList();
-        List<FileInfo> destFileInfoListRemove = new ArrayList<>();
+        List<FileInfo> sourceFileInfoListRemove = new ArrayList<>();
 
-        for (FileInfo sourceFileInfo : sourceFileInfoList) {
+        for (Iterator<FileInfo> it = sourceFileInfoList; it.hasNext(); ) {
+            FileInfo sourceFileInfo = it.next();
             String sourceFileName = Paths.get(sourceFileInfo.getOrgPath()).getFileName().toString();
-            Path destFolderPath = Paths.get(folderInfoDest.getFolderPath());
+            Path destFolderPath = Paths.get(folderInfoDest.getFolderPath(), sourceFileName);
 
             try {
-                FileUtils.renameFile(Paths.get(folderInfoDest.getFolderPath()), destFolderPath);
+                Path renamedFilePath = FileUtils.renameFile(Paths.get(sourceFileInfo.getOrgPath()), destFolderPath);
+                if (renamedFilePath != null && Files.exists(renamedFilePath)) {
+                    sourceFileInfo.setOrgPath(renamedFilePath.toString());
+                    destFileInfoList.add(sourceFileInfo);
+                    sourceFileInfoList.remove(sourceFileInfo);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -163,12 +254,142 @@ public class FolderInfo_Utils {
                 destFileInfoList.add(fileInfo);
                 destFileInfoListRemove.add(fileInfo);
             }
-        }
+        }*/
         //sourceFileInfoList.removeAll(sourceFileInfoListRemove);
 
 
         return true;
     }
+
+    public static void updateFolderInfo(FolderInfo folderInfo) {
+        Messages.sprintf("tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
+
+        int bad = 0;
+        int good = 0;
+        int image = 0;
+        int raw = 0;
+        int video = 0;
+        int confirmed = 0;
+        long size = 0;
+        int copied = 0;
+        int ignored = 0;
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+
+        List<Long> dateCounter_list = new ArrayList<>();
+        if (folderInfo.getFileInfoList() == null) {
+            Messages.sprintf("Somehow fileInfo list were null!!!");
+            Main.setProcessCancelled(true);
+            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+            return;
+        }
+
+        for (FileInfo fi : folderInfo.getFileInfoList()) {
+            if (Main.getProcessCancelled()) {
+                return;
+            }
+            if (fi.isIgnored() || fi.isTableDuplicated()) {
+                Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
+                ignored++;
+            } else {
+                size += fi.getSize();
+                if (fi.isCopied()) {
+                    copied++;
+                }
+                if (fi.isBad()) {
+                    bad++;
+                }
+                if (fi.isConfirmed()) {
+                    confirmed++;
+                }
+                if (fi.isGood()) {
+                    good++;
+                }
+                if (fi.isIgnored()) {
+                    Messages.sprintfError("isignored!");
+                }
+                if (fi.isTableDuplicated()) {
+                    Messages.sprintfError("isTABLRignored!");
+                }
+                if (fi.isRaw()) {
+                    raw++;
+                }
+                if (fi.isImage()) {
+                    image++;
+                }
+                if (fi.isVideo()) {
+                    video++;
+                }
+                if (fi.getDate() != 0) {
+                    dateCounter_list.add(fi.getDate());
+                } else {
+                    fi.getDate();
+                }
+
+                LocalDate localDate = null;
+                try {
+                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
+
+                } catch (Exception ex) {
+                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+                }
+
+                map.put(localDate, 0);
+            }
+        }
+        Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video) + " ignored: " + ignored);
+        folderInfo.setConfirmed(confirmed);
+        folderInfo.setFolderFiles(image + raw + video);
+
+        folderInfo.setBadFiles(bad);
+
+        folderInfo.setFolderRawFiles(raw);
+
+        folderInfo.setFolderVideoFiles(video);
+
+        folderInfo.setGoodFiles(good);
+
+        folderInfo.setCopied(copied);
+
+        folderInfo.setFolderSize(size);
+        folderInfo.setFolderImageFiles(image);
+        folderInfo.setFolderVideoFiles(video);
+
+        long min = 0;
+        long max = 0;
+
+        if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
+            folderInfo.setConnected(true);
+        } else {
+            folderInfo.setConnected(false);
+        }
+        if (!dateCounter_list.isEmpty()) {
+            Collections.sort(dateCounter_list);
+            try {
+                min = Collections.min(dateCounter_list);
+                max = Collections.max(dateCounter_list);
+
+            } catch (Exception ex) {
+                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            }
+        }
+
+        folderInfo.setMinDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(min));
+        folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(max));
+
+        double dateDifferenceRatio = calculateDateDifferenceRatio(map);
+        folderInfo.setDateDifferenceRatio(dateDifferenceRatio);
+        // sprintf("Datedifference ratio completed");
+        // folderInfo.setDateDifferenceRatio(0);
+        dateCounter_list.clear();
+        bad = 0;
+        good = 0;
+        image = 0;
+        raw = 0;
+        video = 0;
+        confirmed = 0;
+
+    }
+
 
     public static boolean hasBadFiles(FolderInfo folderInfo) {
         if (folderInfo.getBadFiles() >= 1) {

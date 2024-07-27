@@ -7,9 +7,9 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.drive.DriveInfo;
-import com.girbola.fileinfo.ThumbInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.thumbinfo.ThumbInfo;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

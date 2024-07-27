@@ -13,16 +13,12 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
-import javafx.beans.property.Property;
-import javafx.beans.value.ChangeListener;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -33,9 +29,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;

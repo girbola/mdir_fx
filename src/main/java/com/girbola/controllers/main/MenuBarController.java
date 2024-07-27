@@ -6,17 +6,18 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.MDir_Constants;
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
@@ -125,7 +126,7 @@ public class MenuBarController {
 
 		Scene fc_scene = new Scene(parent, 800, 400);
 		fc_scene.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.FOLDERCHOOSER.getType()).toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
 		folderScannerController.setStage(fc_stage);
 		folderScannerController.setScene(fc_scene);
 		folderScannerController.init(model_main);
@@ -162,7 +163,7 @@ public class MenuBarController {
 
 			if (list != null) {
 				folderInfo.setFileInfoList(list);
-				TableUtils.updateFolderInfo(folderInfo);
+				FolderInfo_Utils.updateFolderInfo(folderInfo);
 			}
 
 			if (folderInfo.getFileInfoList().isEmpty()) {
@@ -314,7 +315,7 @@ public class MenuBarController {
 		stage_opt.setAlwaysOnTop(true);
 		Scene scene_opt = new Scene(parent);
 		scene_opt.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.OPTIONPANE.getType()).toExternalForm());
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.OPTIONPANE.getType()).toExternalForm());
 
 		stage_opt.setScene(scene_opt);
 		stage_opt.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -372,7 +373,7 @@ public class MenuBarController {
 		conf.setThemePath("/resources/themes/dark/");
 		menuItem_tools_themes_light.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
-				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+				.add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 		Configuration_SQL_Utils.update_Configuration();
 	}
 
@@ -382,7 +383,7 @@ public class MenuBarController {
 		conf.setThemePath("/resources/themes/light/");
 		menuItem_tools_themes_dark.setSelected(false);
 		Main.scene_Switcher.getScene_main().getStylesheets()
-				.add(getClass().getResource(conf.getThemePath() + MDir_Constants.MAINSTYLE.getType()).toExternalForm());
+				.add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 		Configuration_SQL_Utils.update_Configuration();
 	}
 

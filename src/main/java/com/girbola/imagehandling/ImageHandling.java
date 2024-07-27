@@ -10,7 +10,7 @@ import com.drew.metadata.Metadata;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.FileInfoUtils;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.media.DateTaken;
@@ -266,52 +266,6 @@ public class ImageHandling {
 		}
 		return img;
 	}
-	//
-	// @Deprecated
-	// public static Task<Image> convertImage_byte_(FileInfo fileInfo, double
-	// image_width, ImageView imageView) {
-	// Task<Image> image_byte_task = new Task<Image>() {
-	// @Override
-	// protected Image call() throws Exception {
-	// try {
-	// Image image = new Image(new ByteArrayInputStream(fileInfo.getThumb()));
-	// if (image != null) {
-	// // imageView.setImage(image);
-	// return image;
-	// } else {
-	// return null;
-	// }
-	// } catch (Exception ex) {
-	// return null;
-	// }
-	// }
-	// };
-	// image_byte_task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent event) {
-	// try {
-	// imageView.setImage(image_byte_task.get());
-	// } catch (Exception ex) {
-	// Messages.errorSmth(ERROR, "", ex, Misc_GUI.getLineNumber(), true);
-	// }
-	// }
-	// });
-	// image_byte_task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent event) {
-	//
-	// }
-	// });
-	// image_byte_task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-	// @Override
-	// public void handle(WorkerStateEvent event) {
-	//
-	// }
-	// });
-	//
-	// return image_byte_task;
-	// }
-
 	/**
 	 * Converts RAW image to Image using JRawio library. It is inherited with
 	 * ImageIO.
@@ -322,7 +276,8 @@ public class ImageHandling {
 	 */
 	@Deprecated
 	public static Task<Image> convertRAWImageUsingJRawio_(FileInfo fileInfo, ImageView imageView) {
-		Task<Image> convert = new Task<Image>() {
+
+        return new Task<Image>() {
 			@Override
 			protected Image call() throws Exception {
 				sprintf("convertRAWImageUsingJRawio: " + fileInfo.getOrgPath());
@@ -337,8 +292,6 @@ public class ImageHandling {
 				return null;
 			}
 		};
-
-		return convert;
 	}
 
 	/**
@@ -394,10 +347,8 @@ public class ImageHandling {
 	 */
 	public static Task<Image> convertImage_offset(Path fileName, int offset, int length, double image_width,
 			ImageView imageView) {
-		// sprintf("convertImage_offset fileName " + fileName + " offset: " +
-		// offset + "
-		// length: " + length);
-		Task<Image> convertImage_task = new Task<Image>() {
+
+        return new Task<Image>() {
 			@Override
 			protected Image call() throws Exception {
 
@@ -419,16 +370,14 @@ public class ImageHandling {
 				try {
 					slice = Arrays.copyOfRange(data, offset, (offset + length));
 				} catch (Exception ex) {
-					Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 					return null;
 				}
 
 				ByteArrayInputStream in = new ByteArrayInputStream(slice);
 				BufferedImage bufferedImage = null;
 				try {
-					bufferedImage = javax.imageio.ImageIO.read(in);
+					bufferedImage = ImageIO.read(in);
 				} catch (IOException ex) {
-					Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
 					return null;
 				}
 				try {
@@ -446,8 +395,6 @@ public class ImageHandling {
 				}
 			}
 		};
-
-		return convertImage_task;
 	}
 
 }

@@ -120,7 +120,10 @@ public class MergeDialogController {
 
         Path newDestinationPath = definePathByEventLocationUserName(absolutePath, eventName, locationName, userName);
 
+
         Messages.sprintf("newDestinationPath will be: " + newDestinationPath);
+
+
 
         if (!FileUtils.createFolders(newDestinationPath)) {
             Messages.warningText(Main.bundle.getString("cannotCreateFolders") + " " + newDestinationPath);
@@ -128,17 +131,18 @@ public class MergeDialogController {
             return;
         }
 
-        FolderInfo selectedItem = selectedDestinationPath_cmb.getSelectionModel().getSelectedItem();
-
         Iterator<FolderInfo> it = table.getSelectionModel().getSelectedItems().iterator();
 
         while (it.hasNext()) {
             FolderInfo folderInfo = it.next();
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+/*            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
                 Messages.warningText(Main.bundle.getString("badDatesFound") + " at: " + folderInfo.getFolderPath());
                 continue;
-            }
-
+            }*/
+ /*           if(folderInfo.getFolderPath().equals(absolutePath)) {
+                Messages.sprintf("Source and destination are the same: " + folderInfo.getFolderPath());
+                continue;
+            }*/
             if (Main.getProcessCancelled()) {
                 Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null, Misc.getLineNumber(), true);
                 break;
@@ -149,38 +153,41 @@ public class MergeDialogController {
 
             if (folderInfoSource == null) {
                 folderInfoSource = new FolderInfo();
+                folderInfoSource.setFolderPath(newDestinationPath.toFile().getAbsolutePath());
                 folderInfoSource.setTableType(TableUtils.resolvePath(newDestinationPath).getType());
 
-                Path destFolder = Paths.get(folderInfo.getFolderPath());
-
-                Messages.sprintf("folderInfo were not found at destination: " + destFolder + " with database name " + Main.conf.getMdir_db_fileName());
+                Messages.sprintf("folderInfo were not found at destination: " + folderInfoSource + " with database name " + Main.conf.getMdir_db_fileName());
 
                 connection = SqliteConnection.connector(newDestinationPath, Main.conf.getMdir_db_fileName());
 
                 SQL_Utils.setAutoCommit(connection, false);
 
-                Messages.sprintf("folderInfoSource were created at: " + folderInfo.getFolderPath());
+                Messages.sprintf("folderInfoSource were created at: " + folderInfoSource.getFolderPath());
             }
 
             Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
             List<FileInfo> fileList = new ArrayList<>();
             while (fileInfo_list_it.hasNext()) {
                 FileInfo fileInfo = fileInfo_list_it.next();
-                if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
+
 
 
                     fileInfo.setEvent(eventName);
                     fileInfo.setLocation(locationName);
                     fileInfo.setUser(userName);
+
                     Path destinationPath = Paths.get(FileUtils.getFileNameDateWithEventAndLocation(fileInfo, newDestinationPath.toString()).toString());
-                    Path finalDest = Paths.get(newDestinationPath + destinationPath.toString());
+                    Path finalDest = Paths.get(newDestinationPath.toString(), destinationPath.toString());
+
+                    Messages.sprintf("New dest path? " + finalDest);
 
                     if (Files.exists(finalDest)) {
                         try {
                             finalDest = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), finalDest);
-                            Messages.sprintfError("RENAMING to new dest path: " + finalDest);
+                            Messages.sprintf("and RENAMING to new dest path: " + finalDest);
                         } catch (IOException e) {
                             Messages.sprintfError(Main.bundle.getString("cannotRename"));
+                            continue;
                         }
                     } else {
                         Messages.sprintf("+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
@@ -209,23 +216,23 @@ public class MergeDialogController {
                     }
 
                     fileList.add(fileInfo);
-                }
+
 
                 if (fileList.isEmpty()) {
                     Messages.sprintf("FileList were empty");
                     return;
                 }
 
-                boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
+               /* boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
                 if (deleteFileInfoListToDatabase) {
                     Messages.sprintf("Deleting fileInfo_list from database were success");
                 } else {
                     Messages.sprintfError("Bug sniffer when deleting files form database");
-                }
+                }*/
 
 
             }
-
+/*
             try {
                 connection.commit();
                 connection.close();
@@ -233,7 +240,7 @@ public class MergeDialogController {
             } catch (SQLException e) {
                 Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
                 e.printStackTrace();
-            }
+            }*/
         }
 
         TableUtils.refreshAllTableContent(tables);

@@ -69,7 +69,7 @@ public class FileInfo_SQL {
             pstmt.setString(22, fileInfo.getTags());
             pstmt.setString(23, fileInfo.getEvent());
             pstmt.setString(24, fileInfo.getLocation());
-            pstmt.setLong(25, fileInfo.getImageDifferenceHash());
+            pstmt.setString(25, fileInfo.getImageDifferenceHash());
             pstmt.setInt(26, fileInfo.getThumb_offset());
             pstmt.setInt(27, fileInfo.getThumb_length());
             pstmt.addBatch();
@@ -176,10 +176,12 @@ public class FileInfo_SQL {
         String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
         String destPath = rs.getString("destination_Path");
         String event = rs.getString("event");
+        String imageDifferenceHash = rs.getString("imageDifferenceHash");
         String location = rs.getString("location");
         String tags = rs.getString("tags");
         String camera_model = rs.getString("camera_model");
         String user = rs.getString("user");
+
         int orientation = rs.getInt("orientation");
         long timeShift = rs.getInt("timeshift");
         int fileInfo_id = rs.getInt("fileInfo_id");
@@ -195,7 +197,6 @@ public class FileInfo_SQL {
         boolean tableDuplicated = rs.getBoolean("tableDuplicated");
         long date = rs.getLong("date");
         long size = rs.getLong("size");
-        long imageDifferenceHash = rs.getLong("imageDifferenceHash");
         int thumb_offset = rs.getInt("thumb_offset");
         int thumb_lenght = rs.getInt("thumb_length");
         return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags,
