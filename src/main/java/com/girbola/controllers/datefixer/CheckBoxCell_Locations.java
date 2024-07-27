@@ -149,12 +149,10 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 				private boolean has_locations(String format, List<String> listOfLocations) {
 					for (String str : listOfLocations) {
 						if (str.equals(format)) {
-							Messages.sprintf("has format: " + str);
 							return true;
 						}
 						if (str.isEmpty() || str.length() <= 0) {
 							if (str.equals(MDir_Constants.UNKNOWN.getType())) {
-								Messages.sprintf("Unknown has format match");
 								return true;
 							}
 						}

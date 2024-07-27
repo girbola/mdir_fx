@@ -49,7 +49,6 @@ public class SelectByTableModel extends Task<Boolean> {
 	}
 
 	private boolean hasNewValue(FileInfo fileInfo) {
-		Messages.sprintf("HASVALUE: type is: " + type);
 		Iterator<EXIF_Data_Selector> it = tableView.getSelectionModel().getSelectedItems().iterator();
 		SelectorModelType sbt = SelectorModelType.valueOf(type);
 		String dataModel = "";
@@ -62,7 +61,6 @@ public class SelectByTableModel extends Task<Boolean> {
 			break;
 		case DATE:
 			dataModel = Main.simpleDates.getSdf_ymd_minus().format(fileInfo.getDate());
-			Messages.sprintf("dataModel is " + dataModel);
 			break;
 		case LOCATION:
 			dataModel = fileInfo.getLocation();
@@ -71,7 +69,6 @@ public class SelectByTableModel extends Task<Boolean> {
 
 		while (it.hasNext()) {
 			EXIF_Data_Selector eds = it.next();
-			Messages.sprintf("Edt is: " + eds.getInfo() + " type is:  " + type + " datamodel " + dataModel);
 			if (eds.getInfo().equals(dataModel)) {
 				return true;
 			}

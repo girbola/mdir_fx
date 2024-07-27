@@ -16,12 +16,12 @@
  * -fx-selection-bar-text for text on top of -fx-selection-bar
  */
     -fx-dark-text-color: black;
-    -fx-mid-text-color: #aaaaaa;
+    -fx-mid-text-color: white;
     -fx-light-text-color: white;
 }
 .text {
 	-fx-font-smoothing-type: lcd;
-    -fx-font-size: 1em;
+    -fx-font-size: 1.3em;
     -fx-font-family: "Segoe UI Light";
     -fx-text-fill: white;
 
@@ -33,8 +33,11 @@
     -fx-background-radius: 5,5,5,5,3;
     -fx-padding: 5 5 5 5;
     -fx-effect: dropshadow( three-pass-box , rgba(100,100,100,0.9) , 1, 0.0 , 0 , 1);
-}
 
+}
+.button .text {
+    -fx-font-size: 1.1em;
+}
 .button:hover {
     -fx-background-color: derive(-fx-primary, 10%);
 }

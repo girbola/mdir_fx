@@ -40,10 +40,10 @@ public class SaveTablesToDatabases extends Task<Integer> {
         Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
         if (connection_Configuration == null) {
+            Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
             Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving FolderInfos failed!"),
                     Misc.getLineNumber(), true);
             cancel();
-            Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
             return null;
         }
         try {
