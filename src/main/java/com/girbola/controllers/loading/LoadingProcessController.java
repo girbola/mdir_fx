@@ -34,18 +34,14 @@ public class LoadingProcessController {
 
 	private final static String ERROR = LoadingProcessController.class.getSimpleName();
 
-	@FXML
-	private Button cancel_btn;
-	@FXML
-	private Label messages_lbl;
+   @FXML private Button cancel_btn;
+   @FXML private Label messages_lbl;
 
 	private ModelLoading model_loading;
 
-	@FXML
-	private ProgressBar progressBar;
+   @FXML private ProgressBar progressBar;
 
-	@FXML
-	private void cancel_btn_action(ActionEvent event) {
+   @FXML private void cancel_btn_action(ActionEvent event) {
 		sprintf("Cancel pressed!");
 		Main.setProcessCancelled(true);
 		closeWindow();

@@ -37,23 +37,15 @@ public class AskEventDialogController {
 	private Model_main model_main;
 	private Model_datefix model_dateFix;
 
-	@FXML
-	private Label event_lbl;
-	@FXML
-	private ComboBox<String> event_cmb;
-	@FXML
-	private Label location_lbl;
-	@FXML
-	private ComboBox<String> location_cmb;
-	@FXML
-	private ComboBox<String> user_cmb;
+   @FXML private Label event_lbl;
+   @FXML private ComboBox<String> event_cmb;
+   @FXML private Label location_lbl;
+   @FXML private ComboBox<String> location_cmb;
+   @FXML private ComboBox<String> user_cmb;
 
-	@FXML
-	private Button apply_btn;
-	@FXML
-	private Button apply_and_copy_btn;
-	@FXML
-	private Button cancel_btn;
+   @FXML private Button apply_btn;
+   @FXML private Button apply_and_copy_btn;
+   @FXML private Button cancel_btn;
 
 	private List<FileInfo> applyChanges(String workDir) {
 		List<FileInfo> list = new ArrayList<>();
@@ -87,8 +79,7 @@ public class AskEventDialogController {
 		return list;
 	}
 
-	@FXML
-	private void apply_btn_action(ActionEvent event) {
+   @FXML private void apply_btn_action(ActionEvent event) {
 		Messages.sprintf("apply_btn_action started");
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
@@ -99,8 +90,7 @@ public class AskEventDialogController {
 
 	}
 
-	@FXML
-	private void apply_and_copy_btn_action(ActionEvent event) {
+   @FXML private void apply_and_copy_btn_action(ActionEvent event) {
 		Messages.sprintf("apply_and_copy_btn_action started");
 		if (apply_and_copy_btn == null) {
 			Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
@@ -150,8 +140,7 @@ public class AskEventDialogController {
 		Messages.sprintf("OperateFiles instance ended?");
 	}
 
-	@FXML
-	private void cancel_btn_action(ActionEvent event) {
+   @FXML private void cancel_btn_action(ActionEvent event) {
 		Messages.sprintf("Cancel pressed");
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
 		stage.close();

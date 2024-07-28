@@ -870,8 +870,7 @@ public class DateFixerController {
 	 * ENDS
 	 */
 
-	@FXML
-	private void hideInfoTables_btn_action(ActionEvent event) {
+   @FXML private void hideInfoTables_btn_action(ActionEvent event) {
 		if (leftInfoTables_visible.get()) {
 			hideInfoTables_btn.setRotate(0);
 			selectorController.getInfoTables_container().setVisible(false);
@@ -889,8 +888,7 @@ public class DateFixerController {
 		}
 	}
 
-	@FXML
-	private void copyToMisc_btn_action(ActionEvent event) {
+   @FXML private void copyToMisc_btn_action(ActionEvent event) {
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
 			warningText(bundle.getString("youHaventSelectedMedia"));
 			return;

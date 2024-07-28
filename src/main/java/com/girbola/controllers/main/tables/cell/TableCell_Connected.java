@@ -70,7 +70,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
 				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
-				FolderInfo_Utils.updateFolderInfo(folderInfo);
+				FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 				TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());

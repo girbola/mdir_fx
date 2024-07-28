@@ -59,44 +59,27 @@ public class MenuBarController {
 
 	private Model_main model_main;
 
-	@FXML
-	private MenuItem menuItem_tools_options_viewIgnoredList;
+   @FXML private MenuItem menuItem_tools_options_viewIgnoredList;
 
-	@FXML
-	private CheckMenuItem menuItem_tools_themes_dark;
-	@FXML
-	private CheckMenuItem menuItem_tools_themes_light;
-	@FXML
-	private CheckMenuItem menuItem_tools_showFullPath;
+   @FXML private CheckMenuItem menuItem_tools_themes_dark;
+   @FXML private CheckMenuItem menuItem_tools_themes_light;
+   @FXML private CheckMenuItem menuItem_tools_showFullPath;
 
-	@FXML
-	private MenuBar menuBar;
+   @FXML private MenuBar menuBar;
 
-	@FXML
-	private MenuItem menuItem_file_addFolders;
-	@FXML
-	private MenuItem menuItem_file_clear;
-	@FXML
-	private MenuItem menuItem_file_close;
-	@FXML
-	private MenuItem menuItem_file_import;
-	@FXML
-	private MenuItem menuItem_file_load;
-	@FXML
-	private MenuItem menuItem_file_save;
-	@FXML
-	private MenuItem menuItem_help_about;
-	@FXML
-	private MenuItem menuItem_help_help;
-	@FXML
-	private MenuItem menuItem_tools_options;
-	@FXML
-	private MenuItem menuItem_help_supportUs;
-	@FXML
-	private MenuItem menuItem_help_update;
+   @FXML private MenuItem menuItem_file_addFolders;
+   @FXML private MenuItem menuItem_file_clear;
+   @FXML private MenuItem menuItem_file_close;
+   @FXML private MenuItem menuItem_file_import;
+   @FXML private MenuItem menuItem_file_load;
+   @FXML private MenuItem menuItem_file_save;
+   @FXML private MenuItem menuItem_help_about;
+   @FXML private MenuItem menuItem_help_help;
+   @FXML private MenuItem menuItem_tools_options;
+   @FXML private MenuItem menuItem_help_supportUs;
+   @FXML private MenuItem menuItem_help_update;
 
-	@FXML
-	private void menuItem_file_addFolders_action(ActionEvent event) {
+   @FXML private void menuItem_file_addFolders_action(ActionEvent event) {
 		Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
 		model_main.getMonitorExternalDriveConnectivity().cancel();
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
@@ -136,19 +119,16 @@ public class MenuBarController {
 
 	}
 
-	@FXML
-	private void menuItem_file_clear_action(ActionEvent event) {
+   @FXML private void menuItem_file_clear_action(ActionEvent event) {
 		TableUtils.clearTablesContents(model_main.tables());
 		Main.setChanged(false);
 	}
 
-	@FXML
-	private void menuItem_file_close_action(ActionEvent event) {
+   @FXML private void menuItem_file_close_action(ActionEvent event) {
 		model_main.exitProgram();
 	}
 
-	@FXML
-	private void menuItem_file_import_action(ActionEvent event) {
+   @FXML private void menuItem_file_import_action(ActionEvent event) {
 		// t�h�n tarvitaan folderinfo creator
 		// srth;
 		Stage stage = (Stage) menuBar.getScene().getWindow();
@@ -163,7 +143,7 @@ public class MenuBarController {
 
 			if (list != null) {
 				folderInfo.setFileInfoList(list);
-				FolderInfo_Utils.updateFolderInfo(folderInfo);
+				FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 			}
 
 			if (folderInfo.getFileInfoList().isEmpty()) {
@@ -193,8 +173,7 @@ public class MenuBarController {
 
 	}
 
-	@FXML
-	private void menuItem_file_load_action(ActionEvent event) {
+   @FXML private void menuItem_file_load_action(ActionEvent event) {
 		Messages.sprintf("menuItem_file_load_action");
 //		boolean load = true;
 		if (Main.getChanged()) {
@@ -224,8 +203,7 @@ public class MenuBarController {
 		}
 	}
 
-	@FXML
-	private void menuItem_file_save_action(ActionEvent event) {
+   @FXML private void menuItem_file_save_action(ActionEvent event) {
 		sprintf("menuItem_file_save_action");
 		Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
 				null, true);
@@ -245,8 +223,7 @@ public class MenuBarController {
 
 	}
 
-	@FXML
-	private void menuItem_help_about_action(ActionEvent event) {
+   @FXML private void menuItem_help_about_action(ActionEvent event) {
 		VBox root = new VBox();
 		root.setAlignment(Pos.CENTER);
 		Label programName = new Label("Organizer tool for backing up image & video files");
@@ -283,23 +260,19 @@ public class MenuBarController {
 		}
 	}
 
-	@FXML
-	private void menuItem_help_help_action(ActionEvent event) {
+   @FXML private void menuItem_help_help_action(ActionEvent event) {
 		viewWebPage("http://girbola.com/index.html");
 	}
 
-	@FXML
-	private void menuItem_help_supportUs_action(ActionEvent event) {
+   @FXML private void menuItem_help_supportUs_action(ActionEvent event) {
 		viewWebPage("http://girbola.com/supportUs.html");
 	}
 
-	@FXML
-	private void menuItem_help_update_action(ActionEvent event) {
+   @FXML private void menuItem_help_update_action(ActionEvent event) {
 		viewWebPage("http://girbola.com/downloads.html");
 	}
 
-	@FXML
-	private void menuItem_tools_options_action(ActionEvent event) {
+   @FXML private void menuItem_tools_options_action(ActionEvent event) {
 		sprintf("menuItem_tools_options_action starting Theme path is: " + conf.getThemePath());
 		FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/options/Options.fxml"), bundle);
 		Parent parent = null;
@@ -347,8 +320,7 @@ public class MenuBarController {
 		}
 	}
 
-	@FXML
-	private void menuItem_tools_options_viewIgnoredList_action(ActionEvent event) {
+   @FXML private void menuItem_tools_options_viewIgnoredList_action(ActionEvent event) {
 		try {
 			Parent parent = FXMLLoader.load(Main.class.getResource("fxml/misc/ViewIgnoredList.fxml"), bundle);
 
@@ -367,8 +339,7 @@ public class MenuBarController {
 
 	}
 
-	@FXML
-	private void menuItem_tools_themes_dark_action(ActionEvent event) {
+   @FXML private void menuItem_tools_themes_dark_action(ActionEvent event) {
 		Main.scene_Switcher.getScene_main().getStylesheets().clear();
 		conf.setThemePath("/resources/themes/dark/");
 		menuItem_tools_themes_light.setSelected(false);
@@ -377,8 +348,7 @@ public class MenuBarController {
 		Configuration_SQL_Utils.update_Configuration();
 	}
 
-	@FXML
-	private void menuItem_tools_themes_light_action(ActionEvent event) {
+   @FXML private void menuItem_tools_themes_light_action(ActionEvent event) {
 		Main.scene_Switcher.getScene_main().getStylesheets().clear();
 		conf.setThemePath("/resources/themes/light/");
 		menuItem_tools_themes_dark.setSelected(false);

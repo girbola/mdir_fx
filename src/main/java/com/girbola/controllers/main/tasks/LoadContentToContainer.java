@@ -2,7 +2,6 @@ package com.girbola.controllers.main.tasks;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.Populate;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
@@ -23,7 +22,7 @@ public class LoadContentToContainer extends Task<Integer> {
 
     public LoadContentToContainer(Model_main model_main) {
         this.model_main = model_main;
-        ConcurrencyUtils.initSingleExecutionService();
+        ConcurrencyUtils.initNewSingleExecutionService();
     }
 
     @Override

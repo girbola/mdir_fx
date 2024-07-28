@@ -30,6 +30,8 @@ public class RefreshTableContent extends Task<Void> {
                 if(tableIT.next().getFileInfoList().isEmpty()) {
                     Messages.sprintf("tableIT had empty folder. Removing...");
                     tableIT.remove();
+                } else {
+
                 }
             }
             Platform.runLater(()-> {

@@ -38,19 +38,13 @@ public class ImportImagesController {
 	private Model_main model_main;
 	private Model_importImages model_importImages;
 
-	@FXML
-	private Button apply_btn_main;
-	@FXML
-	private ComboBox<String> event_main;
-	@FXML
-	private ComboBox<String> location_main;
+   @FXML private Button apply_btn_main;
+   @FXML private ComboBox<String> event_main;
+   @FXML private ComboBox<String> location_main;
 
-	@FXML
-	private Button start_ok;
-	@FXML
-	private TitledPane titledPane_demo;
-	@FXML
-	private HBox topButtons;
+   @FXML private Button start_ok;
+   @FXML private TitledPane titledPane_demo;
+   @FXML private HBox topButtons;
 
 	// private ObservableList<Node> visibleNodes =
 	// FXCollections.observableArrayList();
@@ -58,39 +52,30 @@ public class ImportImagesController {
 
 	private Path currentPath;
 
-	@FXML
-	private ScrollPane scrollPane;
+   @FXML private ScrollPane scrollPane;
 
-	@FXML
-	private VBox container;
-	@FXML
-	private MenuItem close;
+   @FXML private VBox container;
+   @FXML private MenuItem close;
 
-	@FXML
-	private MenuItem view_compact;
-	@FXML
-	private MenuItem view_full;
+   @FXML private MenuItem view_compact;
+   @FXML private MenuItem view_full;
 
 	// Needed @FXML DateTimeSelectorController dateTimeSelectorController;
-	@FXML
-	private DateTimeSelectorController dateTimeSelectorController;
+   @FXML private DateTimeSelectorController dateTimeSelectorController;
 
 	// private List<FileInfo> fileInfo_list;
 	private boolean importer;
 
 	private FolderInfo folderInfo;
 
-	@FXML
-	private void apply_btn_main_action(ActionEvent event) {
+   @FXML private void apply_btn_main_action(ActionEvent event) {
 	}
 
-	@FXML
-	private void close_action(ActionEvent event) {
+   @FXML private void close_action(ActionEvent event) {
 		// dfb;
 	}
 
-	@FXML
-	private void view_full_action(ActionEvent event) {
+   @FXML private void view_full_action(ActionEvent event) {
 		Task<Void> drawImages = new DrawImagesToImportImages_Full(model_importImages.getTheList(), model_importImages, folderInfo,
 				container, null);
 
@@ -175,8 +160,7 @@ public class ImportImagesController {
 		getList_th.start();
 	}
 
-	@FXML
-	private void start_ok_action(ActionEvent event) {
+   @FXML private void start_ok_action(ActionEvent event) {
 		sprintf("start_ok_action");
 		if (container == null) {
 			sprintf("start_ok_action container were null");

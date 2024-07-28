@@ -19,7 +19,6 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.stage.Window;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -47,7 +46,7 @@ public class Populate {
 
     public Populate(Model_main model) {
         this.model_main = model;
-        ConcurrencyUtils.initSingleExecutionService();
+        ConcurrencyUtils.initNewSingleExecutionService();
     }
 
     public void populateTables_FolderScanner_list(Window owner) {

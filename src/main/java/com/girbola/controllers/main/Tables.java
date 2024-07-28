@@ -496,6 +496,7 @@ public class Tables {
 		return this.sortit_TableStatistic;
 	}
 
+
 	public TableStatistic getSorted_TableStatistic() {
 		return this.sorted_TableStatistic;
 	}
@@ -556,4 +557,16 @@ public class Tables {
 		}
 		return null;
     }
+
+	public TableStatistic getTableStatisticByType(String tableType) {
+		if(tableType.equals(TableType.SORTIT.getType())) {
+			return getSortit_TableStatistic();
+		} else if(tableType.equals(TableType.SORTED.getType())) {
+			return getSorted_TableStatistic();
+		} else if (tableType.equals(TableType.ASITIS.getType())) {
+			return getAsItIs_TableStatistic();
+		}
+		return null;
+	}
+
 }

@@ -28,22 +28,15 @@ public class WorkDirController {
 	SimpleDateFormat dateFormat = new SimpleDateFormat();
 	NumberFormat numberFormat = NumberFormat.getIntegerInstance();
 
-	@FXML
-	private ComboBox<String> combBox_Day;
-	@FXML
-	private ComboBox<String> combBox_Month;
-	@FXML
-	private ComboBox<String> combBox_Year;
-	@FXML
-	private ComboBox<String> combBox_Event;
-	@FXML
-	private ComboBox<String> combBox_Location;
+   @FXML private ComboBox<String> combBox_Day;
+   @FXML private ComboBox<String> combBox_Month;
+   @FXML private ComboBox<String> combBox_Year;
+   @FXML private ComboBox<String> combBox_Event;
+   @FXML private ComboBox<String> combBox_Location;
 
-	@FXML
-	private TreeTableView<File> treeTableView;
+   @FXML private TreeTableView<File> treeTableView;
 
-	@FXML
-	private Label label;
+   @FXML private Label label;
 
 	private Model_main model_Main;
 
@@ -51,12 +44,9 @@ public class WorkDirController {
 		this.model_Main = aModel_main;
 	}
 
-	@FXML
-	private TreeTableColumn<File, FileTreeItem> nameColumn;
-	@FXML
-	private TreeTableColumn<File, String> sizeColumn;
-	@FXML
-	private TreeTableColumn<File, String> lastModifiedColumn;
+   @FXML private TreeTableColumn<File, FileTreeItem> nameColumn;
+   @FXML private TreeTableColumn<File, String> sizeColumn;
+   @FXML private TreeTableColumn<File, String> lastModifiedColumn;
 
 	public void createFileBrowserTreeTableView() {
 

@@ -56,36 +56,22 @@ public class FileOperationsController {
 	private Model_main model_main;
 	private ObservableList<Folder> comboList = FXCollections.observableArrayList();
 
-	@FXML
-	private Button mixDates_btn;
+   @FXML private Button fixBadDates_btn;
+   @FXML private Button mixDates_btn;
+   @FXML private Button splitFolder_SortIt_btn;
+   @FXML private Button splitFolder_Sorted_btn;
+   @FXML private Button thisFolderIsOk_btn;
+   @FXML private ComboBox<Folder> move_comboBox;
 
-	@FXML
-	private Button fixBadDates_btn;
-
-	@FXML
-	private Button thisFolderIsOk_btn;
-
-	@FXML
-	private Button splitFolder_SortIt_btn;
-
-	@FXML
-	private Button splitFolder_Sorted_btn;
-
-	@FXML
-	private ComboBox<Folder> move_comboBox;
-
-	@FXML
-	private void fixBadDates_btn_action(ActionEvent event) {
+   @FXML private void fixBadDates_btn_action(ActionEvent event) {
 		Messages.warningText("fixBadDates_btn_action NOT READY YET");
 	}
 
-	@FXML
-	private void thisFolderIsOk_btn_action(ActionEvent event) {
+   @FXML private void thisFolderIsOk_btn_action(ActionEvent event) {
 		Messages.warningText("thisFolderIsOk_btn_action NOT READY YET");
 	}
 
-	@FXML
-	private void splitFolder_Sorted_btn_action(ActionEvent event) {
+   @FXML private void splitFolder_Sorted_btn_action(ActionEvent event) {
 //		aerg;
 		ConcurrencyUtils.stopExecThread();
 		Parent parent = null;
@@ -118,8 +104,7 @@ public class FileOperationsController {
 		}
 	}
 
-	@FXML
-	private void splitFolder_SortIt_btn_action(ActionEvent event) {
+   @FXML private void splitFolder_SortIt_btn_action(ActionEvent event) {
 
 	}
 
@@ -157,12 +142,10 @@ public class FileOperationsController {
 		move_comboBox.setItems(comboList);
 	}
 
-	@FXML
-	private void mixDates_btn_action(ActionEvent event) {
+   @FXML private void mixDates_btn_action(ActionEvent event) {
 	}
 
-	@FXML
-	private void move_comboBox_action(ActionEvent event) {
+   @FXML private void move_comboBox_action(ActionEvent event) {
 		sprintf("move_comboBox_action is under constructor");
 //        ComboBox cb = (ComboBox) event.getSource();
 		if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
@@ -256,7 +239,7 @@ public class FileOperationsController {
 				}
 			}
 			if (update) {
-				FolderInfo_Utils.updateFolderInfo(loadFolderInfo);
+				FolderInfo_Utils.calculateFileInfoStatuses(loadFolderInfo);
 //				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
@@ -264,10 +247,10 @@ public class FileOperationsController {
 		// Remove moved fileinfos from original source
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
 		// Clean Source FolderInfo from moved FileInfos
-		FolderInfo_Utils.updateFolderInfo(folderInfo);
+		FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
-		FolderInfo_Utils.updateFolderInfo(folderInfo);
+		FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 
 	}
 }

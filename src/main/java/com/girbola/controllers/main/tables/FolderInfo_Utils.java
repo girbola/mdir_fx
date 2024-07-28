@@ -261,8 +261,8 @@ public class FolderInfo_Utils {
         return true;
     }
 
-    public static void updateFolderInfo(FolderInfo folderInfo) {
-        Messages.sprintf("264 tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
+    public static void calculateFileInfoStatuses(FolderInfo folderInfo) {
+        Messages.sprintf("calculateFileInfoStatuses updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
 
         int badFiles = 0;
         int goodFiles = 0;

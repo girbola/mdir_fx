@@ -29,27 +29,17 @@ import static com.girbola.messages.Messages.warningText;
 
 public class OptionsController {
 
-	@FXML
-	private Button chooseFolder_workDir;
-	@FXML
-	private CheckBox confirmOnExit;
-	@FXML
-	private CheckBox savingThumbs;
-	@FXML
-	private CheckBox betterQuality;
-	@FXML
-	private CheckBox showHints;
-	@FXML
-	private CheckBox showTooltips;
-	@FXML
-	private Button vlcPath_choose;
-	@FXML
-	private TextField vlcPath_input;
-	@FXML
-	private TextField workDir_input;
+   @FXML private Button chooseFolder_workDir;
+   @FXML private CheckBox confirmOnExit;
+   @FXML private CheckBox savingThumbs;
+   @FXML private CheckBox betterQuality;
+   @FXML private CheckBox showHints;
+   @FXML private CheckBox showTooltips;
+   @FXML private Button vlcPath_choose;
+   @FXML private TextField vlcPath_input;
+   @FXML private TextField workDir_input;
 
-	@FXML
-	private void chooseFolder_workDir_action(ActionEvent event) {
+   @FXML private void chooseFolder_workDir_action(ActionEvent event) {
 		Messages.sprintf("chooseFolder_workDir_action start");
 
 		DirectoryChooser dc = new DirectoryChooser();
@@ -100,8 +90,7 @@ public class OptionsController {
 		vlcPath_input.textProperty().bindBidirectional(conf.vlcPath_property());
 	}
 
-	@FXML
-	private void vlcPath_choose_action(ActionEvent event) {
+   @FXML private void vlcPath_choose_action(ActionEvent event) {
 		FileChooser dc = new FileChooser();
 		dc.getExtensionFilters().add(new FileChooser.ExtensionFilter("libvlc.dll", "libvlc.dll"));
 		sprintf("Getting vlc path with filechooser");

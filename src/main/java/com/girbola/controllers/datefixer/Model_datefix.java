@@ -526,7 +526,7 @@ public class Model_datefix extends DateFixerModel {
 			}
 			if (changed) {
 				// TODO Korjaa apply_btn;
-				FolderInfo_Utils.updateFolderInfo(getFolderInfo_full());
+				FolderInfo_Utils.calculateFileInfoStatuses(getFolderInfo_full());
 				if (model_Main.tables() == null) {
 					Main.setProcessCancelled(true);
 					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);

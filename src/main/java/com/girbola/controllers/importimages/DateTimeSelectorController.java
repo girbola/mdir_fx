@@ -37,108 +37,73 @@ import static com.girbola.messages.Messages.sprintf;
 public class DateTimeSelectorController {
 
 	private final String ERROR = DateTimeSelectorController.class.getSimpleName();
-	@FXML
-	private GridPane selector_gridPane;
-	@FXML
-	private ToggleButton pick_endDateTime;
-	@FXML
-	private ToggleButton pick_startDateTime;
-	@FXML
-	private Label selectedFiles_lbl;
+   @FXML private GridPane selector_gridPane;
+   @FXML private ToggleButton pick_endDateTime;
+   @FXML private ToggleButton pick_startDateTime;
+   @FXML private Label selectedFiles_lbl;
 
 	boolean datePicker_start;
 	private Model_importImages model_ImportImages;
 
-	@FXML
-	private DatePicker end_datePicker;
-	@FXML
-	private TextField end_hour;
-	@FXML
-	private Button end_hour_btn_down;
-	@FXML
-	private Button end_hour_btn_up;
-	@FXML
-	private TextField end_min;
-	@FXML
-	private Button end_min_btn_down;
-	@FXML
-	private Button end_min_btn_up;
-	@FXML
-	private TextField end_sec;
-	@FXML
-	private Button end_sec_btn_down;
-	@FXML
-	private Button end_sec_btn_up;
-	@FXML
-	private Button select_btn;
-	@FXML
-	private DatePicker start_datePicker;
-	@FXML
-	private TextField start_hour;
-	@FXML
-	private Button start_hour_btn_down;
-	@FXML
-	private Button start_hour_btn_up;
-	@FXML
-	private TextField start_min;
-	@FXML
-	private Button start_min_btn_down;
-	@FXML
-	private Button start_min_btn_up;
-	@FXML
-	private TextField start_sec;
-	@FXML
-	private Button start_sec_btn_down;
-	@FXML
-	private Button start_sec_btn_up;
+   @FXML private DatePicker end_datePicker;
+   @FXML private TextField end_hour;
+   @FXML private Button end_hour_btn_down;
+   @FXML private Button end_hour_btn_up;
+   @FXML private TextField end_min;
+   @FXML private Button end_min_btn_down;
+   @FXML private Button end_min_btn_up;
+   @FXML private TextField end_sec;
+   @FXML private Button end_sec_btn_down;
+   @FXML private Button end_sec_btn_up;
+   @FXML private Button select_btn;
+   @FXML private DatePicker start_datePicker;
+   @FXML private TextField start_hour;
+   @FXML private Button start_hour_btn_down;
+   @FXML private Button start_hour_btn_up;
+   @FXML private TextField start_min;
+   @FXML private Button start_min_btn_down;
+   @FXML private Button start_min_btn_up;
+   @FXML private TextField start_sec;
+   @FXML private Button start_sec_btn_down;
+   @FXML private Button start_sec_btn_up;
 
-	@FXML
-	private void end_hour_action(ActionEvent event) {
+   @FXML private void end_hour_action(ActionEvent event) {
 		model_ImportImages.end_time().setHour(parseTextFieldToInteger(end_hour));
 	}
 
-	@FXML
-	private void end_hour_btn_down_action(ActionEvent event) {
+   @FXML private void end_hour_btn_down_action(ActionEvent event) {
 		model_ImportImages.end_time().decrease_hour();
 	}
 
-	@FXML
-	private void end_hour_btn_up_action(ActionEvent event) {
+   @FXML private void end_hour_btn_up_action(ActionEvent event) {
 		model_ImportImages.end_time().increase_hour();
 	}
 
-	@FXML
-	private void end_min_action(ActionEvent event) {
+   @FXML private void end_min_action(ActionEvent event) {
 		model_ImportImages.end_time().setMin(parseTextFieldToInteger(end_min));
 	}
 
-	@FXML
-	private void end_min_btn_down(ActionEvent event) {
+   @FXML private void end_min_btn_down(ActionEvent event) {
 		model_ImportImages.end_time().decrease_min();
 	}
 
-	@FXML
-	private void end_min_btn_up_action(ActionEvent event) {
+   @FXML private void end_min_btn_up_action(ActionEvent event) {
 		model_ImportImages.end_time().increase_min();
 	}
 
-	@FXML
-	private void end_sec_action(ActionEvent event) {
+   @FXML private void end_sec_action(ActionEvent event) {
 		model_ImportImages.end_time().setSec(parseTextFieldToInteger(end_sec));
 	}
 
-	@FXML
-	private void end_sec_btn_down_action(ActionEvent event) {
+   @FXML private void end_sec_btn_down_action(ActionEvent event) {
 		model_ImportImages.end_time().decrease_sec();
 	}
 
-	@FXML
-	private void end_sec_btn_up_action(ActionEvent event) {
+   @FXML private void end_sec_btn_up_action(ActionEvent event) {
 		model_ImportImages.end_time().increase_sec();
 	}
 
-	@FXML
-	private void select_btn_action(ActionEvent event) {
+   @FXML private void select_btn_action(ActionEvent event) {
 		LocalDateTime ldt_start = null;
 		LocalDateTime ldt_end = null;
 
@@ -197,48 +162,39 @@ public class DateTimeSelectorController {
 		}
 	}
 
-	@FXML
-	private void start_hour_action(ActionEvent event) {
+   @FXML private void start_hour_action(ActionEvent event) {
 		model_ImportImages.start_time().setHour(parseTextFieldToInteger(start_hour));
 	}
 
-	@FXML
-	private void start_hour_btn_up_action(ActionEvent event) {
+   @FXML private void start_hour_btn_up_action(ActionEvent event) {
 		model_ImportImages.start_time().increase_hour();
 	}
 
-	@FXML
-	private void start_hour_btn_down_action(ActionEvent event) {
+   @FXML private void start_hour_btn_down_action(ActionEvent event) {
 		model_ImportImages.start_time().decrease_hour();
 	}
 
-	@FXML
-	private void start_min_action(ActionEvent event) {
+   @FXML private void start_min_action(ActionEvent event) {
 		model_ImportImages.start_time().setMin(parseTextFieldToInteger(start_min));
 	}
 
-	@FXML
-	private void start_min_btn_down_action(ActionEvent event) {
+   @FXML private void start_min_btn_down_action(ActionEvent event) {
 		model_ImportImages.start_time().decrease_min();
 	}
 
-	@FXML
-	private void start_min_btn_up_action(ActionEvent event) {
+   @FXML private void start_min_btn_up_action(ActionEvent event) {
 		model_ImportImages.start_time().increase_min();
 	}
 
-	@FXML
-	private void start_sec_action(ActionEvent event) {
+   @FXML private void start_sec_action(ActionEvent event) {
 		model_ImportImages.start_time().setSec(parseTextFieldToInteger(start_sec));
 	}
 
-	@FXML
-	private void start_sec_btn_down_action(ActionEvent event) {
+   @FXML private void start_sec_btn_down_action(ActionEvent event) {
 		model_ImportImages.start_time().decrease_sec();
 	}
 
-	@FXML
-	private void start_sec_btn_up_action(ActionEvent event) {
+   @FXML private void start_sec_btn_up_action(ActionEvent event) {
 		model_ImportImages.start_time().increase_sec();
 	}
 

@@ -133,7 +133,6 @@ public class BottomController {
 
         removeImageDuplicatestask.setOnSucceeded(event1 -> {
             TableUtils.updateAllFolderInfos(model_main.tables());
-            TableUtils.calculateTableViewsStatistic(model_main.tables());
             TableUtils.cleanTables(model_main.tables());
 
             Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
@@ -225,7 +224,7 @@ public class BottomController {
             if (!listToRemove.isEmpty()) {
                 Messages.sprintf("listToRemove were not empty");
                 folderInfo.getFileInfoList().removeAll(listToRemove);
-                FolderInfo_Utils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
             }
             if(folderInfo.getFileInfoList().isEmpty()) {
                 tableSource.getItems().remove(folderInfo);
@@ -277,7 +276,7 @@ public class BottomController {
             Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
             while (foi.hasNext()) {
                 FolderInfo folderInfo = foi.next();
-                FolderInfo_Utils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
                 if (folderInfo.getFolderFiles() <= 0) {
                     toRemove.add(folderInfo);
                 }

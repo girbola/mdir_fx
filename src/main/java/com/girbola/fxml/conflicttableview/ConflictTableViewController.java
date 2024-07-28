@@ -27,25 +27,18 @@ public class ConflictTableViewController {
 	private Model_main model_Main;
 	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
 
-	@FXML
-	private Button fixConflicts_btn;
-	@FXML
-	private TableView<FileInfo> tableView;
+   @FXML private Button fixConflicts_btn;
+   @FXML private TableView<FileInfo> tableView;
 
-	@FXML
-	private TableColumn<FileInfo, String> folderName;
+   @FXML private TableColumn<FileInfo, String> folderName;
 
-	@FXML
-	private TableColumn<FileInfo, String> destination;
+   @FXML private TableColumn<FileInfo, String> destination;
 
-	@FXML
-	private TableColumn<FileInfo, String> workDir;
+   @FXML private TableColumn<FileInfo, String> workDir;
 
-	@FXML
-	private TableColumn<FileInfo, Boolean> canCopy;
+   @FXML private TableColumn<FileInfo, Boolean> canCopy;
 
-	@FXML
-	private void fixConflicts_btn_action(ActionEvent event) {
+   @FXML private void fixConflicts_btn_action(ActionEvent event) {
 		for (FileInfo fileInfo : list) {
 			if (Main.conf.getWorkDir() != fileInfo.getWorkDir()) {
 				fileInfo.setWorkDir(Main.conf.getWorkDir());
@@ -54,8 +47,7 @@ public class ConflictTableViewController {
 		}
 	}
 
-	@FXML
-	private void copy_btn_action(ActionEvent event) {
+   @FXML private void copy_btn_action(ActionEvent event) {
 
 		Task<Boolean> task = new OperateFiles(list, true, model_Main, SceneNameType.MAIN.getType());
 		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
@@ -83,13 +75,11 @@ public class ConflictTableViewController {
 
 	}
 
-	@FXML
-	private void apply_btn_action(ActionEvent event) {
+   @FXML private void apply_btn_action(ActionEvent event) {
 
 	}
 
-	@FXML
-	private void close_btn_action(ActionEvent event) {
+   @FXML private void close_btn_action(ActionEvent event) {
 		Platform.runLater(() -> {
 			Stage stage = (Stage) ((Node) (event.getSource())).getScene().getWindow();
 			stage.close();

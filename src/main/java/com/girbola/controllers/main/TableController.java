@@ -173,7 +173,7 @@ public class TableController {
                         fileInfo.setTags("");
                         Main.setChanged(true);
                     }
-                    FolderInfo_Utils.updateFolderInfo(folderInfo);
+                    FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
                     TableUtils.refreshAllTableContent(model_main.tables());
                     // ldt.setMessage("counter; " + counter.get());
                     counter.getAndIncrement();
@@ -330,6 +330,7 @@ public class TableController {
             lpt.closeStage();
             Messages.warningText("Creating file info cancelled");
         });
+
         updateTableValuesUsingFileInfo_task.setOnFailed(event13 -> {
             lpt.closeStage();
             Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
@@ -546,7 +547,7 @@ public class TableController {
 
                 Main.setChanged(true);
                 folderInfo.setChanged(true);
-                FolderInfo_Utils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 
                 Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
                 SQL_Utils.isDbConnected(connection);

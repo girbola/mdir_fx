@@ -25,30 +25,24 @@ import java.util.ResourceBundle;
 
 public class ViewIgnoredListController implements Initializable {
 
-	@FXML
-	private Button cancel_btn;
+   @FXML private Button cancel_btn;
 
 	private ObservableList<Path> ignoredList = FXCollections.observableArrayList();
 
-	@FXML
-	private Button apply_btn;
+   @FXML private Button apply_btn;
 
-	@FXML
-	private ListView<Path> ignoredList_lv;
+   @FXML private ListView<Path> ignoredList_lv;
 
 	private Model_main model_main;
-	@FXML
-	private Button remove_btn;
+   @FXML private Button remove_btn;
 
-	@FXML
-	private void apply_btn_action(ActionEvent event) {
+   @FXML private void apply_btn_action(ActionEvent event) {
 		Main.conf.setIgnoredFoldersScanList(ignoredList);
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
 		stage.close();
 	}
 
-	@FXML
-	private void cancel_btn_action(ActionEvent event) {
+   @FXML private void cancel_btn_action(ActionEvent event) {
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
 		stage.close();
 	}
@@ -61,8 +55,7 @@ public class ViewIgnoredListController implements Initializable {
 		ignoredList_lv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 	}
 
-	@FXML
-	private void remove_btn_action(ActionEvent event) {
+   @FXML private void remove_btn_action(ActionEvent event) {
 		List<Path> toRemoved = ignoredList_lv.getSelectionModel().getSelectedItems();
 		ignoredList_lv.getItems().removeAll(toRemoved);
 	}

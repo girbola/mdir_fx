@@ -17,65 +17,47 @@ import java.util.ResourceBundle;
 
 public class MoveController {
 
-	@FXML
-	private ResourceBundle resources;
+   @FXML private ResourceBundle resources;
 
-	@FXML
-	private URL location;
+   @FXML private URL location;
 
-	@FXML
-	private Label folderName_lbl;
+   @FXML private Label folderName_lbl;
 
-	@FXML
-	private ComboBox<FileInfo> folderName_cmb;
+   @FXML private ComboBox<FileInfo> folderName_cmb;
 
-	@FXML
-	private Label location_lbl;
+   @FXML private Label location_lbl;
 
-	@FXML
-	private ComboBox<String> event_cmb;
+   @FXML private ComboBox<String> event_cmb;
 
-	@FXML
-	private ComboBox<String> location_cmb;
+   @FXML private ComboBox<String> location_cmb;
 
-	@FXML
-	private ComboBox<String> user_cmb;
+   @FXML private ComboBox<String> user_cmb;
 
-	@FXML
-	private Label event_lbl;
+   @FXML private Label event_lbl;
 
-	@FXML
-	private Label user_lbl;
+   @FXML private Label user_lbl;
 
-	@FXML
-	private CheckBox addEverythingInsameDir_chb;
+   @FXML private CheckBox addEverythingInsameDir_chb;
 
-	@FXML
-	private Button apply_btn;
+   @FXML private Button apply_btn;
 
-	@FXML
-	private Button apply_and_copy_btn;
+   @FXML private Button apply_and_copy_btn;
 
-	@FXML
-	private Button cancel_btn;
+   @FXML private Button cancel_btn;
 
-	@FXML
-	void apply_and_move_btn_action(ActionEvent event) {
+   @FXML void apply_and_move_btn_action(ActionEvent event) {
 
 	}
 
-	@FXML
-	void apply_btn_action(ActionEvent event) {
+   @FXML void apply_btn_action(ActionEvent event) {
 
 	}
 
-	@FXML
-	void cancel_btn_action(ActionEvent event) {
+   @FXML void cancel_btn_action(ActionEvent event) {
 
 	}
 
-	@FXML
-	void initialize() {
+   @FXML void initialize() {
 		assert folderName_lbl != null
 				: "fx:id=\"folderName_lbl\" was not injected: check your FXML file 'SplitFolderToNewFolderName.fxml'.";
 		assert folderName_cmb != null

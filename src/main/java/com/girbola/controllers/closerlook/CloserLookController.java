@@ -43,38 +43,30 @@ public class CloserLookController {
 	private List<FileInfo> current_fileInfo;
 	private Connection connection;
 
-	@FXML
-	private VBox images_root;
+   @FXML private VBox images_root;
 
-	@FXML
-	private Button viewByDate;
+   @FXML private Button viewByDate;
 
-	@FXML
-	private Button viewByHour;
+   @FXML private Button viewByHour;
 
-	@FXML
-	private Button viewByMin;
-	@FXML
-	private ScrollPane scrollPane;
+   @FXML private Button viewByMin;
+   @FXML private ScrollPane scrollPane;
 
-	@FXML
-	private void viewByDate_action(ActionEvent event) {
+   @FXML private void viewByDate_action(ActionEvent event) {
 		images_root.getChildren().clear();
 		scrollPane.setVvalue(0);
 		Map<String, List<FileInfo>> dateList = DateCollectionUtils.getByDay(current_fileInfo);
 		drawNodes(dateList);
 	}
 
-	@FXML
-	private void viewByHour_action(ActionEvent event) {
+   @FXML private void viewByHour_action(ActionEvent event) {
 		images_root.getChildren().clear();
 		scrollPane.setVvalue(0);
 		Map<String, List<FileInfo>> dateList = DateCollectionUtils.getByHour(current_fileInfo);
 		drawNodes(dateList);
 	}
 
-	@FXML
-	private void viewByMinute_action(ActionEvent event) {
+   @FXML private void viewByMinute_action(ActionEvent event) {
 		images_root.getChildren().clear();
 		scrollPane.setVvalue(0);
 		Map<String, List<FileInfo>> dateList = DateCollectionUtils.getByMin(current_fileInfo);

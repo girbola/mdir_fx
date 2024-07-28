@@ -218,7 +218,6 @@ Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
                         VLCJDiscovery.initVlc();
                     }
 
-                    TableUtils.calculateTableViewsStatistic(model_main.tables());
                     getMain_stage().maximizedProperty().addListener((ov, t, t1) -> {
 //									model_main.tables().getHideButtons().updateVisibleTableWidths();
                         System.out.println("model_main.tables().getHideButtons().updateTableVisible();: "

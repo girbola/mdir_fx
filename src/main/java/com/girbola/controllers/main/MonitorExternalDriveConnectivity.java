@@ -127,7 +127,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					if (!loaded) {
 						List<FileInfo> list = FileInfoUtils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);
-						FolderInfo_Utils.updateFolderInfo(folderInfo);
+						FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 						Main.setChanged(true);
 						folderInfo.setChanged(true);
 						folderInfo.setState("*");
@@ -140,7 +140,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					folderInfo.setConnected(false);
 					Messages.sprintf("===Updating folder doesn't exists: " + folderInfo.isConnected());
 					folderInfo.getFileInfoList().clear();
-					FolderInfo_Utils.updateFolderInfo(folderInfo);
+					FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 					TableUtils.refreshAllTableContent(model_Main.tables());
 				}
 			}

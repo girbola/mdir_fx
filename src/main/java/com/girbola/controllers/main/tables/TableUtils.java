@@ -66,7 +66,7 @@ import java.util.concurrent.Executors;
 import static com.girbola.Main.*;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
-import static com.girbola.controllers.main.tables.FolderInfo_Utils.updateFolderInfo;
+import static com.girbola.controllers.main.tables.FolderInfo_Utils.calculateFileInfoStatuses;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -204,7 +204,7 @@ public class TableUtils {
             if (tv.getFolderPath().equals(folderInfo.getFolderPath())) {
                 sprintf("hasTabe found! " + tv.getFolderPath());
                 tv.setFileInfoList(folderInfo.getFileInfoList());
-                FolderInfo_Utils.updateFolderInfo(tv);
+                FolderInfo_Utils.calculateFileInfoStatuses(tv);
                 return true;
             }
         }
@@ -413,7 +413,7 @@ public class TableUtils {
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
                 folderInfo.setState("Updated");
-                FolderInfo_Utils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
                 TableUtils.refreshTableContent(model_main.tables().getSorted_table());
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(false);
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(true);
@@ -437,7 +437,7 @@ public class TableUtils {
             List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
-                FolderInfo_Utils.updateFolderInfo(folderInfo);
+                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 
                 folderInfo.setState("Updated");
                 model_main.tables().getSortIt_table().getColumns().get(0).setVisible(false);
@@ -578,8 +578,26 @@ public class TableUtils {
         return false;
     }
 
+    public static void refreshAllTableContent(Tables tables, TableView<FolderInfo> tableView) {
+        ConcurrencyUtils.initNewSingleExecutionService();
+
+        Task<Void> refreshTableViewTask = new RefreshTableContent(tables.getTableByType(tableView.getId()));
+        Thread refreshTableViewThread = new Thread(refreshTableViewTask, "refreshTableViewThread");
+        exec[ConcurrencyUtils.getExecCounter()].submit(refreshTableViewThread);
+
+        calculateTableViewsStatistic(tables);
+        // TODO Folderinfo fileList päivittäminen sekä tablestaticstis päivittäminen. Nyt ne on jtoenkin sekaisin
+
+        updateTableViewStatistic(tables, tableView);
+    }
+
+    public static void updateTableViewStatistic(Tables tables, TableView<FolderInfo> tableView) {
+        CalculateTableViewsStatistic calculateTableViewsStatisticTask = new CalculateTableViewsStatistic(tables, tableView);
+        Thread calculateTableViewsStatisticThread = new Thread(calculateTableViewsStatisticTask, "calculateTableViewsStatisticThread");
+        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticThread);
+    }
     public static void refreshAllTableContent(Tables tables) {
-        ConcurrencyUtils.initSingleExecutionService();
+        ConcurrencyUtils.initNewSingleExecutionService();
 
         Task<Void> refreshSortItTableTask = new RefreshTableContent(tables.getSortIt_table());
         Thread refreshSortItThread = new Thread(refreshSortItTableTask, "refreshSortItThread");
@@ -593,9 +611,19 @@ public class TableUtils {
         Thread refreshAsItIsThread = new Thread(refreshAsItIsTableTask, "refreshAsItIsThread");
         exec[ConcurrencyUtils.getExecCounter()].submit(refreshAsItIsThread);
 
-        Task<Void> calculateTableViewsStatisticTask = new CalculateTableViewsStatistic(tables);
-        Thread calculateTableViewsStatisticThread = new Thread(calculateTableViewsStatisticTask, "calculateTableViewsStatisticTask");
-        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticThread);
+        calculateTableViewsStatistic(tables);
+
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSortItTask = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
+//        Thread calculateTableViewsStatisticSortItThread = new Thread(calculateTableViewsStatisticSortItTask, "calculateTableViewsStatisticSortItThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortItThread);
+//
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSortedTask = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
+//        Thread calculateTableViewsStatisticSortedThread = new Thread(calculateTableViewsStatisticSortedTask, "calculateTableViewsStatisticSortedThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortedThread);
+//
+//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIsTask = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
+//        Thread calculateTableViewsStatisticAsItIsItThread = new Thread(calculateTableViewsStatisticAsItIsTask, "calculateTableViewsStatisticSortItThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticAsItIsItThread);
 
 
     }
@@ -633,64 +661,45 @@ public class TableUtils {
 
     public static void updateAllFolderInfos(Tables tables) {
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
-            updateFolderInfo(folderInfo);
+            calculateFileInfoStatuses(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-            updateFolderInfo(folderInfo);
+            calculateFileInfoStatuses(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
-            updateFolderInfo(folderInfo);
+            calculateFileInfoStatuses(folderInfo);
         }
     }
 
     public static void calculateTableViewsStatistic(Tables tables) {
-        CalculateTableViewsStatistic.resetStatistics(tables);
 
-        Iterator<FolderInfo> sortIT = tables.getSortIt_table().getItems().iterator();
-        while (sortIT.hasNext()) {
-            FolderInfo folderInfo = sortIT.next();
-            if (folderInfo.getFolderFiles() > 0) {
-                tables.getSortit_TableStatistic().setTotalFiles(tables.getSortit_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-                tables.getSortit_TableStatistic().setTotalFilesCopied(tables.getSortit_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-                tables.getSortit_TableStatistic().setTotalFilesSize(tables.getSortit_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
-            } else {
-                sortIT.remove();
-            }
-        }
-        Iterator<FolderInfo> sortedIT = tables.getSorted_table().getItems().iterator();
-        while (sortedIT.hasNext()) {
-            FolderInfo folderInfo = sortedIT.next();
-            if (folderInfo.getFolderFiles() > 0) {
-                tables.getSorted_TableStatistic().setTotalFiles(tables.getSorted_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-                tables.getSorted_TableStatistic().setTotalFilesCopied(tables.getSorted_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-                tables.getSorted_TableStatistic().setTotalFilesSize(tables.getSorted_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
-            } else {
-                sortedIT.remove();
-            }
-        }
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSortit = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
+//
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSorted = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
+//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIs = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
+//
+        //ConcurrencyUtils.initNewSingleExecutionService();
 
-        Iterator<FolderInfo> asitisIT = tables.getAsItIs_table().getItems().iterator();
-        while (asitisIT.hasNext()) {
-            FolderInfo folderInfo = asitisIT.next();
-            if (folderInfo.getFolderFiles() > 0) {
-                tables.getAsItIs_TableStatistic().setTotalFiles(tables.getAsItIs_TableStatistic().totalFiles_property().get() + folderInfo.getFolderFiles());
-                tables.getAsItIs_TableStatistic().setTotalFilesCopied(tables.getAsItIs_TableStatistic().totalFilesCopied_property().get() + folderInfo.getCopied());
-                tables.getAsItIs_TableStatistic().setTotalFilesSize(tables.getAsItIs_TableStatistic().totalFilesSize_property().get() + folderInfo.getFolderSize());
-            } else {
-                asitisIT.remove();
-            }
-
-        }
-
-//        removeTableViewEmptyFolderInfos(tables);
-        refreshAllTableContent(tables);
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSortItTask = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
+//        Thread calculateTableViewsStatisticSortItThread = new Thread(calculateTableViewsStatisticSortItTask, "calculateTableViewsStatisticSortItThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortItThread);
+//
+//        CalculateTableViewsStatistic calculateTableViewsStatisticSortedTask = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
+//        Thread calculateTableViewsStatisticSortedThread = new Thread(calculateTableViewsStatisticSortedTask, "calculateTableViewsStatisticSortedThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortedThread);
+//
+//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIsTask = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
+//        Thread calculateTableViewsStatisticAsItIsItThread = new Thread(calculateTableViewsStatisticAsItIsTask, "calculateTableViewsStatisticSortItThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticAsItIsItThread);
+//
+//        refreshAllTableContent(tables);
     }
 
     public static void removeTableViewEmptyFolderInfos(Tables tables) {
 //        removeTableViewsEmptyFolderInfo(tables.getSortIt_table());
 //        removeTableViewsEmptyFolderInfo(tables.getSorted_table());
 //        removeTableViewsEmptyFolderInfo(tables.getAsItIs_table());
-        ConcurrencyUtils.initSingleExecutionService();
+        ConcurrencyUtils.initNewSingleExecutionService();
 
         Task<Void> removeSortItEmptyFoldersFromTableViews = new CleanTableView(tables.getSortIt_table());
         exec[getExecCounter()].submit(removeSortItEmptyFoldersFromTableViews);
@@ -926,7 +935,7 @@ public class TableUtils {
             @Override
             public void handle(WorkerStateEvent event) {
                 for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-                    updateFolderInfo(folderInfo);
+                    calculateFileInfoStatuses(folderInfo);
                 }
                 TableUtils.refreshAllTableContent(model_main.tables());
             }

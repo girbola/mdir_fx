@@ -35,30 +35,22 @@ public class YesNoCancelDialogController {
 		abort_btn.setText(cancelText);
 	}
 
-	@FXML
-	private TextArea header_ta;
-	@FXML
-	private TextArea content_ta;
+   @FXML private TextArea header_ta;
+   @FXML private TextArea content_ta;
 
-	@FXML
-	private Button yes_btn;
+   @FXML private Button yes_btn;
 
-	@FXML
-	private Button no_btn;
+   @FXML private Button no_btn;
 
-	@FXML
-	private Button abort_btn;
-	@FXML
-	private CheckBox checkBox;
+   @FXML private Button abort_btn;
+   @FXML private CheckBox checkBox;
 
-	@FXML
-	void abort_btn_action(ActionEvent event) {
+   @FXML void abort_btn_action(ActionEvent event) {
 		answer.set(2);
 		stage.close();
 	}
 
-	@FXML
-	void no_btn_action(ActionEvent event) {
+   @FXML void no_btn_action(ActionEvent event) {
 		answer.set(1);
 		if (checkBox.isSelected()) {
 			rememberAnswer.set(CopyAnswerType.DONTCOPY);
@@ -66,8 +58,7 @@ public class YesNoCancelDialogController {
 		stage.close();
 	}
 
-	@FXML
-	void yes_btn_action(ActionEvent event) {
+   @FXML void yes_btn_action(ActionEvent event) {
 		answer.set(0);
 		if (checkBox.isSelected()) {
 			rememberAnswer.set(CopyAnswerType.COPY);

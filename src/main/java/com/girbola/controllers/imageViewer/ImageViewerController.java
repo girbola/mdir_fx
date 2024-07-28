@@ -71,36 +71,24 @@ public class ImageViewerController {
 	private DoubleProperty C_WIDTH = new SimpleDoubleProperty();
 	private DoubleProperty C_HEIGHT = new SimpleDoubleProperty();
 
-	@FXML
-	private AnchorPane anchor_main;
+   @FXML private AnchorPane anchor_main;
 
-	@FXML
-	private HBox bottom_controls;
-	@FXML
-	private StackPane stackPane;
+   @FXML private HBox bottom_controls;
+   @FXML private StackPane stackPane;
 
-	@FXML
-	private HBox top_bar;
+   @FXML private HBox top_bar;
 
-	@FXML
-	private AnchorPane image_anchor;
-	@FXML
-	private Button view_next;
-	@FXML
-	private Button view_prev;
+   @FXML private AnchorPane image_anchor;
+   @FXML private Button view_next;
+   @FXML private Button view_prev;
 
-	@FXML
-	private Button close;
-	@FXML
-	private Button zoom_in;
-	@FXML
-	private Button zoom_out;
+   @FXML private Button close;
+   @FXML private Button zoom_in;
+   @FXML private Button zoom_out;
 
-	@FXML
-	private ImageView imageView;
+   @FXML private ImageView imageView;
 
-	@FXML
-	private void close_button(ActionEvent event) {
+   @FXML private void close_button(ActionEvent event) {
 		closeWindow();
 	}
 
@@ -157,8 +145,7 @@ public class ImageViewerController {
 		});
 	}
 
-	@FXML
-	private void view_next_action(ActionEvent event) {
+   @FXML private void view_next_action(ActionEvent event) {
 		currentImageIndex.set(currentImageIndex.get() + 1);
 		if (currentImageIndex.get() > (fileInfoList.size() + 1)) {
 			currentImageIndex.set(0);
@@ -221,8 +208,7 @@ public class ImageViewerController {
 //		});
 	}
 
-	@FXML
-	private void view_prev_action(ActionEvent event) {
+   @FXML private void view_prev_action(ActionEvent event) {
 		currentImageIndex.set(currentImageIndex.get() - 1);
 		if (currentImageIndex.get() < 0) {
 			Messages.sprintf("min exceeded currentImageIndex.get(): " + currentImageIndex.get());
@@ -233,13 +219,11 @@ public class ImageViewerController {
 		loadImage(fileInfo);
 	}
 
-	@FXML
-	private void zoom_in_action(ActionEvent event) {
+   @FXML private void zoom_in_action(ActionEvent event) {
 		zoomIn();
 	}
 
-	@FXML
-	private void zoom_out_action(ActionEvent event) {
+   @FXML private void zoom_out_action(ActionEvent event) {
 		zoomOut();
 	}
 

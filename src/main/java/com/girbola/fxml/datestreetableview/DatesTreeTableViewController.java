@@ -4,7 +4,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -29,19 +28,13 @@ public class DatesTreeTableViewController {
 	TreeMap<String, List<FileInfo>> filesMap = new TreeMap<>();
 
 	private Model_main model_main;
-	@FXML
-	private TreeTableView<TreeFolderInfo> dates_treeTableView;
-	@FXML
-	private TreeTableColumn<TreeFolderInfo, String> folders_ttc;
-	@FXML
-	private TreeTableColumn<TreeFolderInfo, String> rootMonth_ttc;
-	@FXML
-	private TreeTableColumn<TreeFolderInfo, String> dayMonth_ttc;
-	@FXML
-	private TreeTableColumn<TreeFolderInfo, String> possibleEvents_ttc;
+   @FXML private TreeTableView<TreeFolderInfo> dates_treeTableView;
+   @FXML private TreeTableColumn<TreeFolderInfo, String> folders_ttc;
+   @FXML private TreeTableColumn<TreeFolderInfo, String> rootMonth_ttc;
+   @FXML private TreeTableColumn<TreeFolderInfo, String> dayMonth_ttc;
+   @FXML private TreeTableColumn<TreeFolderInfo, String> possibleEvents_ttc;
 
-	@FXML
-	private TreeTableColumn rootDay_ttc;
+   @FXML private TreeTableColumn rootDay_ttc;
 
 	private TreeItem<TreeFolderInfo> root;
 
@@ -120,7 +113,7 @@ public class DatesTreeTableViewController {
 			FolderInfo folderInfo = new FolderInfo(destPath);
 			List<FileInfo> listFileInfos = entry.getValue();
 			FolderInfo_Utils.addFileInfoList(folderInfo, listFileInfos);
-			FolderInfo_Utils.updateFolderInfo(folderInfo);
+			FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 			TreeItem<TreeFolderInfo> fold = new TreeItem<>();
 			root.getChildren().add(fold);
 

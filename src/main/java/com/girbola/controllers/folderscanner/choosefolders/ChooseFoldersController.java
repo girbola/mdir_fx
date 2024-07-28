@@ -55,15 +55,11 @@ public class ChooseFoldersController {
 	// private FolderScannerController folderScannerController;
 	private TreeItem<Path> root = new TreeItem<>(Paths.get(System.getProperty("user.home")));
 
-	@FXML
-	private TreeView<Path> chooseFolders_treeView;
-	@FXML
-	private Button ok;
-	@FXML
-	private Button cancel;
+   @FXML private TreeView<Path> chooseFolders_treeView;
+   @FXML private Button ok;
+   @FXML private Button cancel;
 
-	@FXML
-	private void cancel_action(ActionEvent event) {
+   @FXML private void cancel_action(ActionEvent event) {
 		inherited_stage.setScene(inherited_scene);
 	}
 
@@ -79,8 +75,7 @@ public class ChooseFoldersController {
 
 	}
 
-	@FXML
-	private void ok_action(ActionEvent event) {
+   @FXML private void ok_action(ActionEvent event) {
 		sprintf("Stage ok_action pressed");
 
 		inherited_stage.setScene(inherited_scene);

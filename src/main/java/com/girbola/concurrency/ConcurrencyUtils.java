@@ -6,6 +6,8 @@
  */
 package com.girbola.concurrency;
 
+import com.girbola.messages.Messages;
+
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -31,8 +33,14 @@ public class ConcurrencyUtils {
         return newVal;
     }
 
-    public static void initSingleExecutionService() {
+    public static void initNewSingleExecutionService() {
         stopExecThreadNow();
+//        boolean terminated = exec[getExecCounter()].isTerminated();
+//        if(!terminated) {
+//            Messages.sprintf("Single Thread Execution Service were not terminated");
+//            return;
+//        }
+
         int currentCounter = incrementAndGetExecCounter();
         sprintf("========NEW initExecutionService initializing execThreads: " + currentCounter);
 

@@ -47,36 +47,25 @@ public class Collect_DialogController {
 	 * 
 	 * @FXML Collect_DateTimeAdjusterController collect_DateTimeAdjusterController;
 	 */
-	@FXML
-	Collect_DateTimeAdjusterController collect_DateTimeAdjusterController;
+   @FXML Collect_DateTimeAdjusterController collect_DateTimeAdjusterController;
 
-	@FXML
-	private Label event_lbl;
-	@FXML
-	private ComboBox<FileInfo_Event> event_cmb;
-	@FXML
-	private Label location_lbl;
-	@FXML
-	private ComboBox<FileInfo> location_cmb;
-	@FXML
-	private ComboBox<FileInfo> user_cmb;
+   @FXML private Label event_lbl;
+   @FXML private ComboBox<FileInfo_Event> event_cmb;
+   @FXML private Label location_lbl;
+   @FXML private ComboBox<FileInfo> location_cmb;
+   @FXML private ComboBox<FileInfo> user_cmb;
 
-	@FXML
-	private Button apply_btn;
-	@FXML
-	private Button apply_and_copy_btn;
-	@FXML
-	private Button cancel_btn;
-	@FXML
-	private CheckBox addEverythingInsameDir_chb;
+   @FXML private Button apply_btn;
+   @FXML private Button apply_and_copy_btn;
+   @FXML private Button cancel_btn;
+   @FXML private CheckBox addEverythingInsameDir_chb;
 
 	private void close() {
 		Stage stage = (Stage) cancel_btn.getScene().getWindow();
 		stage.close();
 	}
 
-	@FXML
-	private void apply_btn_action(ActionEvent event) {
+   @FXML private void apply_btn_action(ActionEvent event) {
 		if (Main.conf.getWorkDir() == null) {
 			Messages.warningText("copySelectedTableRows Workdir were null");
 			return;
@@ -142,8 +131,7 @@ public class Collect_DialogController {
 		close();
 	}
 
-	@FXML
-	private void apply_and_copy_btn_action(ActionEvent event) {
+   @FXML private void apply_and_copy_btn_action(ActionEvent event) {
 		if (Main.conf.getWorkDir() == null) {
 			Messages.warningText("copySelectedTableRows Workdir were null");
 			return;
@@ -243,7 +231,7 @@ public class Collect_DialogController {
 			@Override
 			public void handle(WorkerStateEvent event) {
 				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					FolderInfo_Utils.updateFolderInfo(folderInfo);
+					FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
 				}
 				TableUtils.refreshAllTableContent(tables);
 				close();
@@ -270,8 +258,7 @@ public class Collect_DialogController {
 
 	}
 
-	@FXML
-	private void cancel_btn_action(ActionEvent event) {
+   @FXML private void cancel_btn_action(ActionEvent event) {
 		close();
 	}
 

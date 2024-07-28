@@ -12,22 +12,17 @@ import java.nio.file.Path;
 public class PossibleFolderChooserController {
 	private SimpleStringProperty path = new SimpleStringProperty();
 
-	@FXML
-	private ListView<Path> possibleFoldersList;
+   @FXML private ListView<Path> possibleFoldersList;
 
-	@FXML
-	private Button ok_btn;
+   @FXML private Button ok_btn;
 
-	@FXML
-	private Button cancel_btn;
+   @FXML private Button cancel_btn;
 
-	@FXML
-	void cancel_btn_action(ActionEvent event) {
+   @FXML void cancel_btn_action(ActionEvent event) {
 		Messages.sprintf("Cancelled");
 	}
 
-	@FXML
-	void ok_btn_action(ActionEvent event) {
+   @FXML void ok_btn_action(ActionEvent event) {
 		Messages.sprintf("Selected: " + possibleFoldersList.getSelectionModel().getSelectedItem());
 	}
 

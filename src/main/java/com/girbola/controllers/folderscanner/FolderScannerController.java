@@ -10,8 +10,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.tabletype.TableType;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -30,7 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static com.girbola.concurrency.ConcurrencyUtils.initSingleExecutionService;
+import static com.girbola.concurrency.ConcurrencyUtils.initNewSingleExecutionService;
 import static com.girbola.messages.Messages.sprintf;
 
 public class FolderScannerController {
@@ -175,7 +173,7 @@ public class FolderScannerController {
         Main.setProcessCancelled(false);
 
         this.model_main = aModel_main;
-        initSingleExecutionService();
+        initNewSingleExecutionService();
 
         drives_rootItem = new CheckBoxTreeItem<>();
         drives_rootItem.setExpanded(true);

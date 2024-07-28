@@ -25,41 +25,24 @@ public class OperateDialogController {
 
 	private final String ERROR = OperateDialogController.class.getSimpleName();
 
-	@FXML
-	ResourceBundle bundle;
-	@FXML
-	private Label cp_copyTo_Input;
-	@FXML
-	private Label cp_copyFrom_Input;
-	@FXML
-	private Label cp_copied_Input;
-	@FXML
-	private Label cp_renamedFiles_Input;
-	@FXML
-	private Label cp_totalFiles_Input;
-	@FXML
-	private Label cp_filesLeft_Input;
-	@FXML
-	private Label cp_transferRate_Input;
-	@FXML
-	private Label cp_timeElapsed_Input;
-	@FXML
-	private Label cp_timeLeft_Input;
-	@FXML
-	private Label cp_duplicatedFiles_Input;
-	@FXML
-	private ProgressBar totalProgressBar;
-	@FXML
-	private Button start_btn;
-	@FXML
-	private Button cancel_btn;
-	@FXML
-	private Label current_workdir;
+   @FXML ResourceBundle bundle;
+   @FXML private Label cp_copyTo_Input;
+   @FXML private Label cp_copyFrom_Input;
+   @FXML private Label cp_copied_Input;
+   @FXML private Label cp_renamedFiles_Input;
+   @FXML private Label cp_totalFiles_Input;
+   @FXML private Label cp_filesLeft_Input;
+   @FXML private Label cp_transferRate_Input;
+   @FXML private Label cp_timeElapsed_Input;
+   @FXML private Label cp_timeLeft_Input;
+   @FXML private Label cp_duplicatedFiles_Input;
+   @FXML private ProgressBar totalProgressBar;
+   @FXML private Button start_btn;
+   @FXML private Button cancel_btn;
+   @FXML private Label current_workdir;
 
-	@FXML
-	private Button listOfWorkDir;
-	@FXML
-	private ProgressBar copyProgressBar;
+   @FXML private Button listOfWorkDir;
+   @FXML private ProgressBar copyProgressBar;
 
 	private Model_operate model_operate;
 
