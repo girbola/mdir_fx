@@ -262,17 +262,17 @@ public class FolderInfo_Utils {
     }
 
     public static void updateFolderInfo(FolderInfo folderInfo) {
-        Messages.sprintf("tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
+        Messages.sprintf("264 tableutils updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
 
-        int bad = 0;
-        int good = 0;
-        int image = 0;
-        int raw = 0;
-        int video = 0;
-        int confirmed = 0;
-        long size = 0;
-        int copied = 0;
-        int ignored = 0;
+        int badFiles = 0;
+        int goodFiles = 0;
+        int imageFiles = 0;
+        int rawFiles = 0;
+        int videoFiles = 0;
+        int confirmedFiles = 0;
+        long sizeOfFiles = 0;
+        int copiedFiles = 0;
+        int ignoredFiles = 0;
         TreeMap<LocalDate, Integer> map = new TreeMap<>();
 
         List<Long> dateCounter_list = new ArrayList<>();
@@ -289,35 +289,30 @@ public class FolderInfo_Utils {
             }
             if (fi.isIgnored() || fi.isTableDuplicated()) {
                 Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
-                ignored++;
+                ignoredFiles++;
             } else {
-                size += fi.getSize();
+                sizeOfFiles += fi.getSize();
                 if (fi.isCopied()) {
-                    copied++;
+                    copiedFiles++;
                 }
                 if (fi.isBad()) {
-                    bad++;
+                    badFiles++;
                 }
                 if (fi.isConfirmed()) {
-                    confirmed++;
+                    confirmedFiles++;
                 }
                 if (fi.isGood()) {
-                    good++;
+                    goodFiles++;
                 }
-                if (fi.isIgnored()) {
-                    Messages.sprintfError("isignored!");
-                }
-                if (fi.isTableDuplicated()) {
-                    Messages.sprintfError("isTABLRignored!");
-                }
+
                 if (fi.isRaw()) {
-                    raw++;
+                    rawFiles++;
                 }
                 if (fi.isImage()) {
-                    image++;
+                    imageFiles++;
                 }
                 if (fi.isVideo()) {
-                    video++;
+                    videoFiles++;
                 }
                 if (fi.getDate() != 0) {
                     dateCounter_list.add(fi.getDate());
@@ -336,23 +331,23 @@ public class FolderInfo_Utils {
                 map.put(localDate, 0);
             }
         }
-        Messages.sprintf("Copied: " + copied + " files: " + (image + raw + video) + " ignored: " + ignored);
-        folderInfo.setConfirmed(confirmed);
-        folderInfo.setFolderFiles(image + raw + video);
+        Messages.sprintf("SIZES: " + sizeOfFiles + " Copied: " + copiedFiles + " files: " + (imageFiles + rawFiles + videoFiles) + " ignoredFiles: " + ignoredFiles);
+        folderInfo.setConfirmed(confirmedFiles);
+        folderInfo.setFolderFiles(imageFiles + rawFiles + videoFiles);
 
-        folderInfo.setBadFiles(bad);
+        folderInfo.setBadFiles(badFiles);
 
-        folderInfo.setFolderRawFiles(raw);
+        folderInfo.setFolderRawFiles(rawFiles);
 
-        folderInfo.setFolderVideoFiles(video);
+        folderInfo.setFolderVideoFiles(videoFiles);
 
-        folderInfo.setGoodFiles(good);
+        folderInfo.setGoodFiles(goodFiles);
 
-        folderInfo.setCopied(copied);
+        folderInfo.setCopied(copiedFiles);
 
-        folderInfo.setFolderSize(size);
-        folderInfo.setFolderImageFiles(image);
-        folderInfo.setFolderVideoFiles(video);
+        folderInfo.setFolderSize(sizeOfFiles);
+        folderInfo.setFolderImageFiles(imageFiles);
+        folderInfo.setFolderVideoFiles(videoFiles);
 
         long min = 0;
         long max = 0;
@@ -381,12 +376,12 @@ public class FolderInfo_Utils {
         // sprintf("Datedifference ratio completed");
         // folderInfo.setDateDifferenceRatio(0);
         dateCounter_list.clear();
-        bad = 0;
-        good = 0;
-        image = 0;
-        raw = 0;
-        video = 0;
-        confirmed = 0;
+        badFiles = 0;
+        goodFiles = 0;
+        imageFiles = 0;
+        rawFiles = 0;
+        videoFiles = 0;
+        confirmedFiles = 0;
 
     }
 

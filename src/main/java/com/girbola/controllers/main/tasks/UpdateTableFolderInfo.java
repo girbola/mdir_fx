@@ -83,6 +83,7 @@ public class UpdateTableFolderInfo extends Task<Integer> {
 				if (fi.isRaw()) {
 					raw++;
 				}
+
 				if (fi.isImage()) {
 					image++;
 				}

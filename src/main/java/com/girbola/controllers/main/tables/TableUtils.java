@@ -121,7 +121,7 @@ public class TableUtils {
 //		}
 //
 //	}
-    public static void updateTableContent(TableView<FolderInfo> table) {
+    public static void updateTableContent(TableView<FolderInfo> table, Tables tables) {
         ExecutorService exec = Executors.newSingleThreadExecutor();
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
             UpdateFolderInfoContent up = new UpdateFolderInfoContent(folderInfo);
@@ -135,6 +135,7 @@ public class TableUtils {
                 @Override
                 public void handle(WorkerStateEvent event) {
                     Messages.sprintf("Updating folderinfo succeeded: " + folderInfo.getFolderPath());
+                    TableUtils.calculateTableViewsStatistic(tables);
                 }
             });
             up.setOnFailed(event -> Messages.sprintf("Updating folderinfo failed: " + folderInfo.getFolderPath()));

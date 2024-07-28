@@ -312,7 +312,7 @@ public class TableController {
 
     @FXML
     private void updateFolderInfo_btn_action(ActionEvent event) {
-        TableUtils.updateTableContent(table);
+        TableUtils.updateTableContent(table, model_main.tables());
     }
 
     @FXML
@@ -323,6 +323,7 @@ public class TableController {
         updateTableValuesUsingFileInfo_task.setOnSucceeded(event1 -> {
             sprintf("updateTableValuesFileInfo done successfully");
             lpt.closeStage();
+            TableUtils.calculateTableViewsStatistic(model_main.tables());
         });
 
         updateTableValuesUsingFileInfo_task.setOnCancelled(event12 -> {

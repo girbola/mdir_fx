@@ -9,6 +9,7 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.cell.*;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -176,7 +177,7 @@ public class Tables {
 						break;
 					}
 				}
-
+				TableUtils.calculateTableViewsStatistic(model_Main.tables());
 			} else {
 				isSameTable = true;
 			}
