@@ -1,6 +1,7 @@
 package com.girbola.controllers.main.tables;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
@@ -23,22 +24,19 @@ public class RefreshTableContent extends Task<Void> {
             return null;
         }
         if (table.getColumns().get(0) != null) {
+            if(table.getId().equals(TableType.SORTIT.getType())) {
+                Messages.sprintf("Something is gonna fail soon");
+            }
             Iterator<FolderInfo> tableIT = table.getItems().iterator();
             while(tableIT.hasNext()) {
                 FolderInfo folderInfo = tableIT.next();
+
                 Messages.sprintf(folderInfo.getFolderPath() + " tableIT folderInfo.getFileInfoList().size(): " + folderInfo.getFileInfoList().size());
-                if(tableIT.next().getFileInfoList().isEmpty()) {
+                if(folderInfo.getFileInfoList().isEmpty()) {
                     Messages.sprintf("tableIT had empty folder. Removing...");
                     tableIT.remove();
-                } else {
-
                 }
             }
-            Platform.runLater(()-> {
-                table.getColumns().get(0).setVisible(false);
-                table.getColumns().get(0).setVisible(true);
-                table.refresh();
-            });
         }
         return null;
     }
@@ -47,21 +45,38 @@ public class RefreshTableContent extends Task<Void> {
     @Override
     protected void succeeded() {
         super.succeeded();
-        Messages.sprintf("RefreshTableContent succeeded");
+        Messages.sprintf("RefreshTableContent succeeded: " + table.getId());
+        Platform.runLater(()-> {
+            table.getColumns().get(0).setVisible(false);
+            table.getColumns().get(0).setVisible(true);
+            table.refresh();
+        });
     }
 
     @Override
     protected void cancelled() {
         super.cancelled();
-        Messages.sprintf("RefreshTableContent succeeded");
+        Messages.sprintf("RefreshTableContent cancelled: " + table.getId());
 //        Main.setProcessCancelled(true);
+
+        Platform.runLater(()-> {
+            table.getColumns().get(0).setVisible(false);
+            table.getColumns().get(0).setVisible(true);
+            table.refresh();
+        });
     }
 
     @Override
     protected void failed() {
         super.failed();
-        Messages.sprintf("RefreshTableContent failed");
+        Messages.sprintf("RefreshTableContent failed: " + table.getId());
 //        Main.setProcessCancelled(true);
+
+        Platform.runLater(()-> {
+            table.getColumns().get(0).setVisible(false);
+            table.getColumns().get(0).setVisible(true);
+            table.refresh();
+        });
     }
 
 }

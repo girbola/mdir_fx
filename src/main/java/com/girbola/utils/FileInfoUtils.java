@@ -92,6 +92,7 @@ public class FileInfoUtils {
             handleImageMetadata(fileName, fileInfo);
             String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName.toAbsolutePath());
             Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
+            fileInfo.setSize(Files.size(fileName));
             fileInfo.setImageDifferenceHash(imageDifferenceHash);
         } else if (FileUtils.supportedVideo(fileName)) {
             fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
@@ -244,35 +245,34 @@ public class FileInfoUtils {
     public static List<FileInfo> createFileInfo_list(FolderInfo folderInfo) {
         long start = System.currentTimeMillis();
         List<FileInfo> fileInfo_list = new ArrayList<>();
-        DirectoryStream<Path> list = null;
-        try {
-            list = Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
-        } catch (IOException ex) {
-            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-        }
+        DirectoryStream<Path> list = FileUtils.createDirectoryStream(folderInfo, filter_directories);
+
+        Iterator<Path> listIterator = list.iterator();
+
         sprintf("newDirStream created took: " + (System.currentTimeMillis() - start));
-        for (Path p : list) {
-            // start = System.currentTimeMillis();
+        while (listIterator.hasNext()) {
+            Path path = listIterator.next();
             if (Main.getProcessCancelled()) {
                 // cancel();
                 break;
             }
+
             try {
-                if (ValidatePathUtils.validFile(p)) {
-                    Messages.sprintf("PPPPPPPPPPPPPPP: " + p.toString());
-                    FileInfo fileInfo = null;
-                    try {
-                        fileInfo = createFileInfo(p);
-                    } catch (IOException ex) {
-                        Messages.errorSmth(ERROR, "Error with creating FileInfo object: " + ex.getMessage(), ex, Misc.getLineNumber(), true);
-                    }
+                if (ValidatePathUtils.validFile(path)) {
+                    Messages.sprintf("validFile: " + path.toString());
+
+                    FileInfo fileInfo = createFileInfo(path);
                     if (fileInfo != null) {
                         fileInfo_list.add(fileInfo);
+                    } else {
+                        Messages.sprintfError("fileInfo were null!");
                     }
                 }
             } catch (IOException ex) {
-                Messages.sprintf("NONONONONONOOOO: " + ex.getMessage());
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+                Messages.sprintf("createFileInfo_list had some issue(s): " + ex.getMessage());
+                Messages.errorSmth(ERROR, "createFileInfo_list had some issue(s)", ex, Misc.getLineNumber(), true);
+                Main.setProcessCancelled(true);
+                break;
             }
         }
         sprintf("=======entire createFileInfo_list took: " + (System.currentTimeMillis() - start));

@@ -56,6 +56,7 @@ public class CreateFileInfoRow extends Task<Void> {
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
 			if (Main.getProcessCancelled() || isCancelled()) {
 				// cancel();
+				Messages.sprintf("Main process were cancelled. Breaking");
 				break;
 			}
 			if (folderInfo.isConnected()) {

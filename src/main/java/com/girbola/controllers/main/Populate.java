@@ -17,6 +17,8 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.stage.Window;
 
 import java.nio.file.Path;
@@ -46,7 +48,7 @@ public class Populate {
 
     public Populate(Model_main model) {
         this.model_main = model;
-        ConcurrencyUtils.initNewSingleExecutionService();
+        Messages.sprintf("Populate starting");
     }
 
     public void populateTables_FolderScanner_list(Window owner) {

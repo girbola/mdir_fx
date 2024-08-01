@@ -7,6 +7,7 @@
 package common.utils;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.CheckMediaExistenceInFolder;
 import com.girbola.messages.Messages;
@@ -130,6 +131,14 @@ public class FileUtils {
         }
 
         return srcFile;
+    }
+
+    public static DirectoryStream<Path> createDirectoryStream(FolderInfo folderInfo, DirectoryStream.Filter<Path> filter_directories) {
+        try {
+            return Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
+        } catch (IOException ex) {
+            return null;
+        }
     }
 
     public static DirectoryStream.Filter<Path> filter_directories = new DirectoryStream.Filter<Path>() {

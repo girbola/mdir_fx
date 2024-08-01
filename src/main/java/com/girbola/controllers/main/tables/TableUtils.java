@@ -578,25 +578,27 @@ public class TableUtils {
         return false;
     }
 
-    public static void refreshAllTableContent(Tables tables, TableView<FolderInfo> tableView) {
-        ConcurrencyUtils.initNewSingleExecutionService();
-
-        Task<Void> refreshTableViewTask = new RefreshTableContent(tables.getTableByType(tableView.getId()));
-        Thread refreshTableViewThread = new Thread(refreshTableViewTask, "refreshTableViewThread");
-        exec[ConcurrencyUtils.getExecCounter()].submit(refreshTableViewThread);
-
-        calculateTableViewsStatistic(tables);
-        // TODO Folderinfo fileList päivittäminen sekä tablestaticstis päivittäminen. Nyt ne on jtoenkin sekaisin
-
-        updateTableViewStatistic(tables, tableView);
-    }
+//    public static void refreshAllTableContent(Tables tables, TableView<FolderInfo> tableView) {
+//        ConcurrencyUtils.initNewSingleExecutionService();
+//
+//        Task<Void> refreshTableViewTask = new RefreshTableContent(tables.getTableByType(tableView.getId()));
+//        Thread refreshTableViewThread = new Thread(refreshTableViewTask, "refreshTableViewThread");
+//        exec[ConcurrencyUtils.getExecCounter()].submit(refreshTableViewThread);
+//
+//        calculateTableViewsStatistic(tables);
+//        // TODO Folderinfo fileList päivittäminen sekä tablestaticstis päivittäminen. Nyt ne on jtoenkin sekaisin
+//
+//        updateTableViewStatistic(tables, tableView);
+//    }
 
     public static void updateTableViewStatistic(Tables tables, TableView<FolderInfo> tableView) {
         CalculateTableViewsStatistic calculateTableViewsStatisticTask = new CalculateTableViewsStatistic(tables, tableView);
         Thread calculateTableViewsStatisticThread = new Thread(calculateTableViewsStatisticTask, "calculateTableViewsStatisticThread");
         exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticThread);
     }
+
     public static void refreshAllTableContent(Tables tables) {
+        Messages.sprintf("refreshAllTableContent started");
         ConcurrencyUtils.initNewSingleExecutionService();
 
         Task<Void> refreshSortItTableTask = new RefreshTableContent(tables.getSortIt_table());
@@ -613,19 +615,6 @@ public class TableUtils {
 
         calculateTableViewsStatistic(tables);
 
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSortItTask = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
-//        Thread calculateTableViewsStatisticSortItThread = new Thread(calculateTableViewsStatisticSortItTask, "calculateTableViewsStatisticSortItThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortItThread);
-//
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSortedTask = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
-//        Thread calculateTableViewsStatisticSortedThread = new Thread(calculateTableViewsStatisticSortedTask, "calculateTableViewsStatisticSortedThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortedThread);
-//
-//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIsTask = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
-//        Thread calculateTableViewsStatisticAsItIsItThread = new Thread(calculateTableViewsStatisticAsItIsTask, "calculateTableViewsStatisticSortItThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticAsItIsItThread);
-
-
     }
 
     public static void clearTablesContents(Tables tables) {
@@ -638,7 +627,6 @@ public class TableUtils {
             tables.getSortIt_table().getItems().clear();
             refreshAllTableContent(tables);
         });
-
     }
 
     public static Path resolveFileDestinationPath(String justFolderName, FileInfo fileInfo, String tableType) {
@@ -647,14 +635,11 @@ public class TableUtils {
         LocalDate ld = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
 
         if (tableType.equals(TableType.SORTED.getType())) {
-            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + ld + " - " + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-            return destPath;
+            return Paths.get(File.separator + ld.getYear() + File.separator + ld + " - " + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
         } else if (tableType.equals(TableType.SORTIT.getType())) {
-            Path destPath = Paths.get(File.separator + ld.getYear() + File.separator + Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-            return destPath;
+            return Paths.get(File.separator + ld.getYear() + File.separator + Conversion.stringTwoDigits(ld.getMonthValue()) + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
         } else if (tableType.equals(TableType.ASITIS.getType())) {
-            Path destPath = Paths.get(File.separator + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
-            return destPath;
+            return Paths.get(File.separator + justFolderName + File.separator + fileName + "." + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
         }
         return null;
     }
