@@ -34,29 +34,20 @@ import static com.girbola.messages.Messages.sprintf;
 public class FolderScannerController {
 
     private final String ERROR = FolderScannerController.class.getSimpleName();
+    //@formatter:off
     /*
      * @FXML needed! SelectedFoldersController
      */
-    @FXML
-    SelectedFoldersController selectedFoldersController;
-    @FXML
-    private Button addToSelectedFolders_btn;
-    @FXML
-    private Button analyzeList_add;
-    @FXML
-    private Button analyzeList_remove;
-    @FXML
-    private Button list;
-    @FXML
-    private ScrollPane analyzeList_scrollPane;
-    @FXML
-    private SplitPane splitPane_drives;
-    @FXML
-    private SplitPane splitPane_root;
-    @FXML
-    private TreeView<File> drives_treeView;
-    @FXML
-    private VBox analyzeList_vbox;
+    @FXML SelectedFoldersController selectedFoldersController;
+    @FXML private Button addToSelectedFolders_btn;
+    @FXML private Button analyzeList_add;
+    @FXML private Button analyzeList_remove;
+    @FXML private Button list;
+    @FXML private ScrollPane analyzeList_scrollPane;
+    @FXML private SplitPane splitPane_drives;
+    @FXML private SplitPane splitPane_root;
+    @FXML private TreeView<File> drives_treeView;
+    @FXML private VBox analyzeList_vbox;
 
     private Model_main model_main;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
@@ -65,7 +56,6 @@ public class FolderScannerController {
     private Stage folderScannerController_stage;
 
     private CheckBoxTreeItem<File> drives_rootItem;
-
 
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
@@ -94,11 +84,7 @@ public class FolderScannerController {
     }
 
     private boolean hasTableSelectedFolderPath(Tables tables, Path toSearchPath) {
-
-        if (checkFolderInfoHasFolder(tables, toSearchPath.toString(), toSearchPath)) return true;
-
-        return false;
-
+        return checkFolderInfoHasFolder(tables, toSearchPath.toString(), toSearchPath);
     }
 
     static boolean checkFolderInfoHasFolder(Tables tables, String string, Path toSearchPath) {

@@ -10,6 +10,7 @@ import com.girbola.Main;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import common.utils.FileUtils;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 
@@ -38,7 +39,10 @@ public class SubList extends Task<List<Path>> {
 
 	private static void calculate(Path p) throws IOException {
 		sprintf("SubList - calculate: " + p);
-		DirectoryStream<Path> ds = Files.newDirectoryStream(p);
+		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
+		if(ds == null) {
+			Messages.sprintfError("Calculate has failed. Cannot read folder: " + p);
+		}
 		for (Path path : ds) {
 			if(Main.getProcessCancelled()) {
 				break;

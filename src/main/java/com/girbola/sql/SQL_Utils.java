@@ -41,11 +41,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 	
 
-	final private static String selectedFolderTable =
-            "CREATE TABLE IF NOT EXISTS " +
-                SQL_Enums.SELECTEDFOLDERS.getType() +
-                " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN)";
-	
+
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
 	 * = ""; this.event = ""; this.location = ""; this.tags = ""; this.camera_model
@@ -61,12 +57,10 @@ public class SQL_Utils extends FolderInfo_SQL {
             pstmt.setString(3, selectedFolder.getFolder());
  */
 
-	final static String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
-			+ " ('selected', 'connected', 'path', 'media') VALUES(?,?,?,?)";
-	final static String insertToFolderInfos =
+    final static String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
                     SQL_Enums.FOLDERINFOS.getType() +
-                    " ("+
+                    " (" +
                     "'path', " +
                     "'tableType', " +
                     "'justFolderName', " +
@@ -221,7 +215,7 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }*/
 
-        if(!SQL_Utils.isDbConnected(connection)) {
+        if (!SQL_Utils.isDbConnected(connection)) {
             Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
             return false;
         }
@@ -297,76 +291,6 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
-    /**
-     * Adds the selected folder to the selected folders database.
-     *
-     * @param connection     The database connection.
-     * @param pstmt          The prepared statement for the query.
-     * @param selectedFolder The SelectedFolder object containing the folder details.
-     * @return true if the folder is successfully added, false otherwise.
-     */
-    private static boolean addToSelectedFoldersDB(Connection connection, PreparedStatement pstmt, SelectedFolder selectedFolder) {
-        try {
-            pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
-            pstmt.setBoolean(2, selectedFolder.connected_property().get());
-            pstmt.setString(3, selectedFolder.getFolder());
-
-            Messages.sprintf("selectedfolder is. " + selectedFolder.getFolder() + " is connected? " + selectedFolder.connected_property().get());
-            pstmt.addBatch();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public static boolean createSelectedFoldersTable(Connection connection) {
-        if (connection == null) {
-            Messages.sprintf("createSelectedFoldersTable Connection were null!");
-            return false;
-        }
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("createSelectedFoldersTable Not connected");
-            return false;
-        }
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(selectedFolderTable);
-            return true;
-        } catch (Exception ex) {
-            Messages.sprintf("createSelectedFoldersTable were not able to connect to");
-            return false;
-        }
-    }
-
-    public static boolean insertSelectedFolders_List_ToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
-        Messages.sprintf("insertSelectedFolders_List_ToDB: " + insertSelectedFolders);
-        createSelectedFoldersTable(connection);
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
-
-            for (SelectedFolder selectedFolder : selectedFolder_list) {
-                Messages.sprintf("select: " + selectedFolder.getFolder());
-                if (selectedFolder.isSelected()) {
-                    //if (Files.exists(Paths.get(selectedFolder.getFolder()))) {
-                    Messages.sprintf("332 addToSelectedFoldersDB");
-                    addToSelectedFoldersDB(connection, pstmt, selectedFolder);
-                } else {
-                    Messages.sprintfError("insertSelectedFolders_List_ToDB SelectedFolder did not exist: " + selectedFolder.getFolder());
-                    break;
-                }
-            }
-            pstmt.executeBatch();
-            connection.commit();
-            pstmt.close();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
     public static boolean loadFolders_list(Connection connection, Model_main model_Main) {
         if (connection == null) {
             Messages.sprintfError("Connection were null!");
@@ -385,7 +309,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                 boolean selected = rs.getBoolean("selected");
                 String path = rs.getString("path");
                 boolean connected = rs.getBoolean("connected");
-                boolean media= rs.getBoolean("media");
+                boolean media = rs.getBoolean("media");
                 SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
                 model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
             }

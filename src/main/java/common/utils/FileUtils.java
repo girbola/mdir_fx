@@ -85,19 +85,18 @@ public class FileUtils {
         Messages.sprintf("Took: " + end + " ms");
         if (Files.size(destFile) != Files.size(srcFile) && srcImageHash != destImageHash && !srcImageHash.isEmpty() && !destImageHash.isEmpty()) {
             Messages.sprintf("Files have same name but they differ with sizes");
-            return rename(srcFile, destFile, filter_directories);
+            return rename(srcFile, destFile);
         } else {
             Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
             return null;
         }
     }
 
-    private static Path rename(Path srcFile, Path destFile, DirectoryStream.Filter<Path> filter_directories) {
+    private static Path rename(Path srcFile, Path destFile) {
 
         String prefix = "_";
         String fileName = "";
         String ext = getExtension(destFile);
-
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(destFile.getParent(), FileUtils.filter_directories)) {
 
             int counter = 1;
@@ -123,31 +122,35 @@ public class FileUtils {
                 } else {
                     return path;
                 }
-
             }
         } catch (IOException e) {
             Messages.sprintfError("Can't read directory: " + destFile);
             return null;
         }
-
         return srcFile;
     }
 
-    public static DirectoryStream<Path> createDirectoryStream(FolderInfo folderInfo, DirectoryStream.Filter<Path> filter_directories) {
+    public static DirectoryStream<Path> createDirectoryStream(Path path) {
         try {
-            return Files.newDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
+            return Files.newDirectoryStream(path);
         } catch (IOException ex) {
+            Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
+            Messages.warningText("Cannot read directory: " + path.toString());
             return null;
         }
     }
 
-    public static DirectoryStream.Filter<Path> filter_directories = new DirectoryStream.Filter<Path>() {
-        @Override
-        public boolean accept(Path path) throws IOException {
-            return !Files.isDirectory(path) && supportedMediaFormat(path.toFile()); // Failed to determine if it's a
-            // directory.
+    public static DirectoryStream<Path> createDirectoryStream(Path path, DirectoryStream.Filter<Path> filter_directories) {
+        try {
+            return Files.newDirectoryStream(path, filter_directories);
+        } catch (IOException ex) {
+            Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
+            Messages.warningText("Cannot read directory: " + path.toString());
+            return null;
         }
-    };
+    }
+
+    public static DirectoryStream.Filter<Path> filter_directories = path -> !Files.isDirectory(path) && supportedMediaFormat(path.toFile());
 
     public static boolean compareFilesChecksums(Path src, Path dest) {
         try {

@@ -81,6 +81,7 @@ public class ModelFolderScanner {
 		return chooseFoldersController;
 	}
 
+	@Deprecated
 	public void setDeleteKeyPressed(TableView<SelectedFolder> table) {
 		table.setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == (KeyCode.DELETE)) {
@@ -92,13 +93,11 @@ public class ModelFolderScanner {
 					listToRemove.add(folderInfo);
 				}
 
-				for (SelectedFolder folderInfo : listToRemove) {
-					table.getItems().remove(folderInfo);
-				}
+				model_main.getSelectedFolders().getSelectedFolderScanner_obs().removeAll(listToRemove);
 				listToRemove.clear();
 
 				table.getSelectionModel().clearSelection();
-				Main.setChanged(true);
+
 			}
 		});
 	}

@@ -245,7 +245,7 @@ public class FileInfoUtils {
     public static List<FileInfo> createFileInfo_list(FolderInfo folderInfo) {
         long start = System.currentTimeMillis();
         List<FileInfo> fileInfo_list = new ArrayList<>();
-        DirectoryStream<Path> list = FileUtils.createDirectoryStream(folderInfo, filter_directories);
+        DirectoryStream<Path> list = FileUtils.createDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
 
         Iterator<Path> listIterator = list.iterator();
 

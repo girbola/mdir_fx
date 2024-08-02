@@ -14,6 +14,7 @@ import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FolderScannerSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
@@ -35,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.girbola.Main.conf;
@@ -68,21 +70,7 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        // Load FolderInfo from database
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
-        if (connection == null) {
-            Messages.sprintfError("Could not connect: " + Main.conf.getConfiguration_db_fileName());
-        }
-
-        //createFolderInfoDatabase
-        SQL_Utils.createSelectedFoldersTable(connection);
-
-        SQL_Utils.insertSelectedFolders_List_ToDB(connection, model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-
-        SQL_Utils.closeConnection(connection);
-
-//		TODO korjaa tämä järkevämmäksi. Osais mm huomioida jo olemassa olevat kansiot.
+        com.girbola.sql.FolderScannerSQL.saveSelectedFolder(model_main);
 
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
@@ -143,15 +131,24 @@ public class SelectedFoldersController {
     }
 
     private void removeFromTable(TableView<SelectedFolder> table) {
+        Messages.sprintf("RemoveFromtable started");
+
+        Iterator<SelectedFolder> selectedFolderScannerObs = model_main.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
+        while(selectedFolderScannerObs.hasNext()) {
+            SelectedFolder selectedFolder = selectedFolderScannerObs.next();
+        }
         Connection connection = null;
 
         ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
-        SQL_Utils.removeAllData_list(connection, new ArrayList<>(selectedItems), SQL_Enums.SELECTEDFOLDERS.getType());
+        for (SelectedFolder selectedItem : selectedItems) {
+
+        }
+
+        FolderScannerSQL.removeSelectedFolders(model_main);
 
         table.getItems().removeAll(selectedItems);
         table.getSelectionModel().clearSelection();
-
 
         table.getSelectionModel().clearSelection();
     }
@@ -161,11 +158,18 @@ public class SelectedFoldersController {
         this.model_folderScanner = aModel_folderScanner;
 
         selectedFolder_TableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        model_folderScanner.setDeleteKeyPressed(selectedFolder_TableView);
+        //model_folderScanner.setDeleteKeyPressed(selectedFolder_TableView);
+        selectedFolder_TableView.setOnKeyPressed((KeyEvent event) -> {
+            if (event.getCode() == (KeyCode.DELETE)) {
+                removeFromTable(selectedFolder_TableView);
+            }
+        });
+
         folder_selected_col.setCellFactory(selectedFoldersCellFactory);
         folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
 
         folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
 
         hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));

@@ -36,12 +36,11 @@ public class ValidatePathUtils {
     public final static String[] skippedFolderList_MAC = {};
 
     public static boolean hasMediaFilesInFolder(Path path) {
-        DirectoryStream<Path> directoryStream = null;
-        try {
-            directoryStream = Files.newDirectoryStream(path, FileUtils.filter_directories);
-        } catch (IOException ex) {
-            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        DirectoryStream<Path> directoryStream = FileUtils.createDirectoryStream(path, FileUtils.filter_directories);
+        if(directoryStream == null) {
+            return false;
         }
+        
         for (Path file : directoryStream) {
             try {
                 if (ValidatePathUtils.validFile(file)) {

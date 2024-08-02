@@ -32,6 +32,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FolderScannerSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
@@ -176,7 +177,7 @@ public class Main extends Application {
 
             conf.loadConfig_GUI();
 
-            model_main.getSelectedFolders().load_SelectedFolders_UsingSQL(model_main);
+            FolderScannerSQL.loadSelectedFolders(model_main);
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());

@@ -66,6 +66,7 @@ public class AddToTable extends Task<Integer> {
 
 			if (folderHasFiles(p)) {
 				TableType tableType = TableUtils.resolvePath(p);
+
 				Messages.sprintf("TABLETYPE IS: " + tableType + " Path is: PPPP: " + p);
 				switch (tableType) {
 				case SORTED: {
@@ -116,12 +117,7 @@ public class AddToTable extends Task<Integer> {
 		if (isIgnoredList(p)) {
 			return false;
 		}
-		DirectoryStream<Path> list = null;
-		try {
-			list = Files.newDirectoryStream(p, FileUtils.filter_directories);
-		} catch (IOException ex) {
-			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
+		DirectoryStream<Path> list = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
 
 		for (Path path : list) {
 			try {

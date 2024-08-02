@@ -106,36 +106,35 @@ public class ScanDrives {
 
 //					for (i = 0; i < listOfRoots.length; i++) {
                         CheckBoxTreeItem<String> checkBoxTreeItem = createBranch(driveInfo.getDrivePath());
-                        DirectoryStream<Path> stream = Files.newDirectoryStream(Paths.get(driveInfo.getDrivePath()));
+                        DirectoryStream<Path> stream = FileUtils.createDirectoryStream(Paths.get(driveInfo.getDrivePath()));
                         for (Path f : stream) {
                             if (ValidatePathUtils.validFolder(f)) {
                                 Messages.sprintf("==== validfolderstream file: " + f);
-                                if (Main.conf.getUserHome().contains(f.toString())) {
-                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Pictures"))) {
-                                        CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(
-                                                Main.conf.getUserHome() + File.separator + "Pictures");
-                                        boolean driveAlreadyInRegister = drivesListHandler.isDriveAlreadyInRegister(
-                                                Paths.get(Main.conf.getUserHome() + File.separator + "Pictures")
-                                                        .toString());
-                                        if (driveAlreadyInRegister) {
-                                            checkBoxTreeItem2.setSelected(driveInfo.getSelected());
-                                            Messages.sprintf("driveAlreadyInRegister==== validfolderstream file: " + driveInfo.getSelected());
-                                        } else {
-                                            Messages.sprintf("drive WERE NOT InRegister==== validfolderstream file: " + driveInfo.getSelected());
-                                            checkBoxTreeItem2.setSelected(true);
-                                        }
-                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
-                                    }
-                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Videos"))) {
-                                        CheckBoxTreeItem<String> checkBoxTreeItem3 = createBranch(
-                                                Main.conf.getUserHome() + File.separator + "Videos");
-                                        checkBoxTreeItem3.setSelected(true);
-                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem3);
-                                    }
-                                } else {
-                                    CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(f.toString());
-                                    checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
-                                }
+//                                if (Main.conf.getUserHome().contains(f.toString())) {
+//                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Pictures"))) {
+//                                        CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(
+//                                                Main.conf.getUserHome() + File.separator + "Pictures");
+//                                        boolean driveAlreadyInRegister = drivesListHandler.isDriveAlreadyInRegister(
+//                                                Paths.get(Main.conf.getUserHome() + File.separator + "Pictures")
+//                                                        .toString());
+//                                        if (driveAlreadyInRegister) {
+//                                            checkBoxTreeItem2.setSelected(driveInfo.getSelected());
+//                                            Messages.sprintf("driveAlreadyInRegister==== validfolderstream file: " + driveInfo.getSelected());
+//                                        } else {
+//                                            Messages.sprintf("drive WERE NOT InRegister==== validfolderstream file: " + driveInfo.getSelected());
+//                                            checkBoxTreeItem2.setSelected(true);
+//                                        }
+//                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
+//                                    }
+//                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Videos"))) {
+//                                        CheckBoxTreeItem<String> checkBoxTreeItem3 = createBranch(
+//                                                Main.conf.getUserHome() + File.separator + "Videos");
+//                                        checkBoxTreeItem3.setSelected(true);
+//                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem3);
+//                                    }
+
+                                CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(f.toString());
+                                checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
                             }
                         }
                         rootItem.getChildren().add(checkBoxTreeItem);
@@ -214,7 +213,7 @@ public class ScanDrives {
                                 } else {
                                     sprintf("cb.selectedProperty path is: " + selected);
                                     if (Files.exists(selected)) {
-                                        if (!selectedFolderHasValue(model_Main.getSelectedFolders().getSelectedFolderScanner_obs(), selected)) {
+                                        if (!selectedFolderHasValue(selected)) {
                                             boolean hasMedia = FileUtils.getHasMedia(selected.toFile());
                                             model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, selected.toString(), hasMedia));
                                         }
@@ -242,9 +241,8 @@ public class ScanDrives {
 
                         }
 
-                        private boolean selectedFolderHasValue(
-                                ObservableList<SelectedFolder> selectedFolderScanner_list, Path path) {
-                            for (SelectedFolder sf : selectedFolderScanner_list) {
+                        private boolean selectedFolderHasValue(Path path) {
+                            for (SelectedFolder sf : model_Main.getSelectedFolders().getSelectedFolderScanner_obs()) {
                                 if (Paths.get(sf.getFolder()).equals(path)) {
                                     return true;
                                 }
