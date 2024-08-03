@@ -131,6 +131,7 @@ public class FolderScannerSQL {
             throw new RuntimeException(e);
         }
         //createFolderInfoDatabase
+
         createSelectedFoldersTable(connection);
 
         insertSelectedFolders_List_ToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
