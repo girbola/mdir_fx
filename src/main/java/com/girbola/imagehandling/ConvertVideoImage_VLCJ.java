@@ -89,6 +89,11 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 			return;
 		}
 
+		long videoLength = VideoVLCJThumb.getVideoLength(Paths.get(fileInfo.getOrgPath()));
+
+		Messages.sprintf("Video length: " + videoLength);
+
+
 		String mrl = "file:///" + FileUtils.fileSeparator_mrl(Paths.get(fileInfo.getOrgPath()));
 		Messages.sprintf("MRL for video path: " + mrl);
 		MediaPlayerFactory factory = new MediaPlayerFactory(VLC_ARGS);
