@@ -52,7 +52,7 @@ public class ConvertImage_Byte extends Task<Image> {
 
 	@Override
 	protected void failed() {
-		sprintf("image loading failed: " + fileName);
+		sprintf("ConvertImage_Byte image loading failed: " + fileName);
 		super.failed();
 	}
 

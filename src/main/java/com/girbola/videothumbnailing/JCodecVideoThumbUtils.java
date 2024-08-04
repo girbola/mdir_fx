@@ -2,6 +2,7 @@ package com.girbola.videothumbnailing;
 
 import com.girbola.Main;
 import com.girbola.imagehandling.jcodec.AWTUtil;
+import com.girbola.messages.Messages;
 import net.coobird.thumbnailator.Thumbnails;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.jcodec.api.FrameGrab;
@@ -24,7 +25,8 @@ public class JCodecVideoThumbUtils {
         try {
             return getList(new File(fileName));
         } catch (FFmpegFrameGrabber.Exception e) {
-            throw new RuntimeException(e);
+            Messages.sprintfError("FrameGrabber exception: " + e.getMessage());
+            return null;
         }
     }
 
@@ -100,7 +102,7 @@ public class JCodecVideoThumbUtils {
         return null;
     }
 
-    private static List<Double> grabListOfTimeLine(double duration) {
+    public static List<Double> grabListOfTimeLine(double duration) {
         List<Double> list = new ArrayList<>();
         if (duration <= 5) {
             list.add(0.0);

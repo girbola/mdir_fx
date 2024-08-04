@@ -17,12 +17,12 @@ public class VideoVLCJThumb {
         mediaPlayer.media().prepare(path.toString());
 
         // Get video length (in milliseconds)
-        long videoLength = mediaPlayer.media().info().duration();
+        long videoLength = mediaPlayer.status().length();
 
         // Convert milliseconds to seconds
         long videoLengthInSeconds = videoLength / 1000;
 
-        System.out.println("Video length: " + videoLengthInSeconds + " seconds");
+        System.out.println("Video length: " + videoLengthInSeconds + " seconds" + " videoLength: " + videoLength);
 
         // Release resources
         mediaPlayer.release();

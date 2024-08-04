@@ -50,13 +50,13 @@ public class ConvertImage extends Task<Image> {
 	@Override
 	protected void failed() {
 		super.failed();
-		sprintf("image loading failed: " + thumbImage);
+		sprintf("ConvertImage image loading failed: " + thumbImage);
 	}
 
 	@Override
 	protected void cancelled() {
 		super.cancelled();
-		sprintf("image loading cancelled: " + thumbImage);
+		sprintf("ConvertImage image loading cancelled: " + thumbImage);
 	}
 
 	@Override
