@@ -38,6 +38,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 
     @Override
     protected List<BufferedImage> call() throws Exception {
+        Messages.sprintf("Processing VideoThumbmaker: " + fileInfo.getOrgPath());
         List<BufferedImage> list = null;
         try {
             list = JCodecVideoThumbUtils.getList(new File(fileInfo.getOrgPath()));
@@ -49,7 +50,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
             cancelled();
             return null;
         }
-        System.out.println("list size is: " + list.size());
+        Messages.sprintf("list size is: " + list.size());
         return list;
     }
 

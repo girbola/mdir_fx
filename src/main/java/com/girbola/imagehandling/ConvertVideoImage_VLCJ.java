@@ -7,6 +7,7 @@
 package com.girbola.imagehandling;
 
 import com.girbola.Main;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
@@ -20,6 +21,8 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static com.girbola.messages.Messages.sprintf;
@@ -29,10 +32,10 @@ import static com.girbola.messages.Messages.sprintf;
  *
  * @author Marko Lokka
  */
-public class ConvertVideoImage_VLCJ extends Task<Image> {
+public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 
 	private final String ERROR = ConvertVideoImage_VLCJ.class.getSimpleName();
-	private final Path fileName;
+	private final FileInfo fileInfo;
 	private final double image_width;
 	private final ImageView imageView;
 	private Image image;
@@ -45,18 +48,19 @@ public class ConvertVideoImage_VLCJ extends Task<Image> {
 
 	/**
 	 *
-	 * @param aFileName
+	 * @param fileInfo
 	 * @param aImage_width
 	 * @param aImageView
 	 */
-	public ConvertVideoImage_VLCJ(Path aFileName, double aImage_width, ImageView aImageView) {
-		this.fileName = aFileName;
-		this.image_width = aImage_width;
+	public ConvertVideoImage_VLCJ(FileInfo fileInfo, ImageView aImageView, double aImage_width) {
+		this.fileInfo = fileInfo;
 		this.imageView = aImageView;
+		this.image_width = aImage_width;
+
 	}
 
 	@Override
-	protected Image call() throws Exception {
+	protected List<BufferedImage>  call() throws Exception {
 		sprintf("convertVideoToThumb TASK STARTED");
 		if (isCancelled()) {
 			return null;
@@ -85,7 +89,7 @@ public class ConvertVideoImage_VLCJ extends Task<Image> {
 			return;
 		}
 
-		String mrl = "file:///" + FileUtils.fileSeparator_mrl(fileName);
+		String mrl = "file:///" + FileUtils.fileSeparator_mrl(Paths.get(fileInfo.getOrgPath()));
 		Messages.sprintf("MRL for video path: " + mrl);
 		MediaPlayerFactory factory = new MediaPlayerFactory(VLC_ARGS);
 		MediaPlayer mediaPlayer = factory.mediaPlayers().newMediaPlayer();
@@ -132,12 +136,12 @@ public class ConvertVideoImage_VLCJ extends Task<Image> {
 
 	@Override
 	protected void failed() {
-		sprintf("image loading failed: " + fileName);
+		sprintf("image loading failed: " + fileInfo);
 	}
 
 	@Override
 	protected void cancelled() {
-		sprintf("image loading cancelled: " + fileName);
+		sprintf("image loading cancelled: " + fileInfo);
 	}
 
 	@Override

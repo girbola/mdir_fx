@@ -9,10 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.Main;
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.imagehandling.ConvertImage_Byte;
-import com.girbola.imagehandling.ConvertVideo_Byte;
-import com.girbola.imagehandling.ImageHandling;
-import com.girbola.imagehandling.VideoThumbMaker;
+import com.girbola.imagehandling.*;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
@@ -185,9 +182,15 @@ public class RenderVisibleNode {
 								case 1:
 									if (FileUtils.supportedVideo(file)) {
 //										Task<List<BufferedImage>> convertVideo_task = VideoThumnbnailator.getVideoThumbnails(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
-										Task<List<BufferedImage>> convertVideo_task = new VideoThumbMaker(fileInfo,
-												imageView, (GUIPrefs.thumb_x_MAX - 2));
-										needToConvert_Video_list.add(convertVideo_task);
+										Task<List<BufferedImage>> convertVideo_task = null;
+
+										if(FileUtils.getFileExtension(file).equals("mkv")) {
+											convertVideo_task = new ConvertVideoImage_VLCJ(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
+											needToConvert_Video_list.add(convertVideo_task);
+										} else {
+											convertVideo_task = new VideoThumbMaker(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
+											needToConvert_Video_list.add(convertVideo_task);
+										}
 									} else if (FileUtils.supportedImage(file)) {
 										if (FileUtils.isTiff(file.toFile())) {
 											Messages.sprintf(

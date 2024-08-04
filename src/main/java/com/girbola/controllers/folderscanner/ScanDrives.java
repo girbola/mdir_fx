@@ -104,36 +104,13 @@ public class ScanDrives {
                         Messages.sprintf("Iterating root drives: " + driveInfo.getDrivePath() + " drive serial: "
                                 + driveInfo.getIdentifier());
 
-//					for (i = 0; i < listOfRoots.length; i++) {
                         CheckBoxTreeItem<String> checkBoxTreeItem = createBranch(driveInfo.getDrivePath());
                         DirectoryStream<Path> stream = FileUtils.createDirectoryStream(Paths.get(driveInfo.getDrivePath()));
                         for (Path f : stream) {
                             if (ValidatePathUtils.validFolder(f)) {
                                 Messages.sprintf("==== validfolderstream file: " + f);
-//                                if (Main.conf.getUserHome().contains(f.toString())) {
-//                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Pictures"))) {
-//                                        CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(
-//                                                Main.conf.getUserHome() + File.separator + "Pictures");
-//                                        boolean driveAlreadyInRegister = drivesListHandler.isDriveAlreadyInRegister(
-//                                                Paths.get(Main.conf.getUserHome() + File.separator + "Pictures")
-//                                                        .toString());
-//                                        if (driveAlreadyInRegister) {
-//                                            checkBoxTreeItem2.setSelected(driveInfo.getSelected());
-//                                            Messages.sprintf("driveAlreadyInRegister==== validfolderstream file: " + driveInfo.getSelected());
-//                                        } else {
-//                                            Messages.sprintf("drive WERE NOT InRegister==== validfolderstream file: " + driveInfo.getSelected());
-//                                            checkBoxTreeItem2.setSelected(true);
-//                                        }
-//                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
-//                                    }
-//                                    if (Files.exists(Paths.get(Main.conf.getUserHome() + File.separator + "Videos"))) {
-//                                        CheckBoxTreeItem<String> checkBoxTreeItem3 = createBranch(
-//                                                Main.conf.getUserHome() + File.separator + "Videos");
-//                                        checkBoxTreeItem3.setSelected(true);
-//                                        checkBoxTreeItem.getChildren().add(checkBoxTreeItem3);
-//                                    }
 
-                                CheckBoxTreeItem<String> checkBoxTreeItem2 = createBranch(f.toString());
+                                CustomCheckBoxTreeItem<Path> checkBoxTreeItem2 = new CustomCheckBoxTreeItem<>(model_Main, f);
                                 checkBoxTreeItem.getChildren().add(checkBoxTreeItem2);
                             }
                         }

@@ -92,35 +92,13 @@ public class SelectedFoldersController {
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
         File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
         if (folder != null) {
-            addNewFolder(folder);
-        }
-    }
-
-    /**
-     * Adds a new folder to the list of selected folders.
-     *
-     * @param folder The folder to be added.
-     */
-    private void addNewFolder(File folder) {
-        Messages.sprintf("addNewFolder: " + folder);
-        if (folder == null) {
-            Messages.errorSmth(ERROR, "Something went wrong while loading folders", null, Misc.getLineNumber(), true);
-        }
-        List<SelectedFolder> existingFolders = model_main.getSelectedFolders().getSelectedFolderScanner_obs();
-        if (!SelectedFolderUtils.contains(existingFolders, folder)) {
-            if (conf.getWorkDir().contains(folder.toString())) {
+            if(Main.conf.getWorkDir().contains(folder.toString())) {
                 Messages.warningText(Main.bundle.getString("workDirConflict"));
             } else {
-                boolean folderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), folder.toPath());
-                if (!folderExists) {
-                    SelectedFolder selectedFolder = new SelectedFolder(true, true, folder.toString(), FileUtils.getHasMedia(folder));
-                    Messages.sprintf("PATH: " + selectedFolder.getFolder() + " Media is selected? " + selectedFolder.isMedia());
-                    existingFolders.add(selectedFolder);
-                }
+                model_main.getSelectedFolders().add(new SelectedFolder(true, true,folder.getAbsolutePath(), FileUtils.getHasMedia(folder)));
             }
         }
     }
-
 
     public void setDeleteKeyPressed() {
         selectedFolder_TableView.setOnKeyPressed((KeyEvent event) -> {
