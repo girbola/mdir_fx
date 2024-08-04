@@ -55,7 +55,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 			"--no-audio", /* we don't want audio (decoding) */
 			"--no-snapshot-preview", /* no blending in dummy vout */
 	};
-	private static final float VLC_THUMBNAIL_POSITION = 30.0f / 100.0f;
+	//private static final float VLC_THUMBNAIL_POSITION = 30.0f / 100.0f;
 
 	/**
 	 *
@@ -101,10 +101,6 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 
 		List<BufferedImage> bufferedImageList = new ArrayList<>();
 
-		long videoLength = VideoVLCJThumb.getVideoLength(Paths.get(fileInfo.getOrgPath()));
-
-		Messages.sprintf("Video length: " + videoLength);
-
 		String mrl = "file:///" + FileUtils.fileSeparator_mrl(Paths.get(fileInfo.getOrgPath()));
 		Messages.sprintf("MRL for video path: " + mrl);
 		MediaPlayerFactory factory = new MediaPlayerFactory(VLC_ARGS);
@@ -114,7 +110,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 		mediaPlayer.events().addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
 			@Override
 			public void positionChanged(MediaPlayer mediaPlayer, float newPosition) {
-				if (newPosition >= VLC_THUMBNAIL_POSITION * 0.9f) {
+				if (newPosition >= 0.9f) {
 					/* 90% margin */
 					inPositionLatch.countDown();
 					Messages.sprintf("inPositionLatch count: " + newPosition);
