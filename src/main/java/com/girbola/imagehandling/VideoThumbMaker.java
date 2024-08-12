@@ -16,7 +16,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
+//import org.bytedeco.javacv.FFmpegFrameGrabber;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -87,10 +87,11 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         imageView.setImage(videoPreview.getImage(0));
         imageView.setUserData(list);
+
         rootPane.setOnMouseEntered(event -> {
             System.out.println("m e");
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-                Image image = SwingFXUtils.toFXImage(videoPreview.showNextImage(), null);
+                Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
                 Platform.runLater(() -> imageView.setImage(image));
             }));
             timeLine.setCycleCount(6);
@@ -104,11 +105,11 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
         });
     }
 
-    private FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
-        FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
-        Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
-        return frameGrabber;
-    }
+//    private FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
+//        FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
+//        Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
+//        return frameGrabber;
+//    }
 
     @Override
     protected void cancelled() {

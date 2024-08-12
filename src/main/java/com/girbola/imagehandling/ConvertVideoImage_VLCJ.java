@@ -29,7 +29,6 @@ import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 
 import java.awt.image.BufferedImage;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +163,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 			rootPane.setOnMouseEntered(event -> {
 				System.out.println("m e");
 				timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-					Image image = SwingFXUtils.toFXImage(videoPreview.showNextImage(), null);
+					Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
 					Platform.runLater(() -> imageView.setImage(image));
 				}));
 				timeLine.setCycleCount(6);

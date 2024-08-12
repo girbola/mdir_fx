@@ -121,6 +121,24 @@ public class ImageUtils {
         return "" + hash;
     }
 
+    public static boolean compareImages(BufferedImage image1, BufferedImage image2) {
+        // Check if the images have the same dimensions
+        if (image1.getWidth() != image2.getWidth() || image1.getHeight() != image2.getHeight()) {
+            return false;
+        }
+
+        // Compare the pixel values of the images
+        for (int x = 0; x < image1.getWidth(); x++) {
+            for (int y = 0; y < image1.getHeight(); y++) {
+                if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     private static String getAverageHash(BufferedImage img) {
         int width = 8;
         int height = 8;

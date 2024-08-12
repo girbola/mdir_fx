@@ -111,7 +111,7 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
 			@Override
 			public void handle(MouseEvent event) {
 				timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-					Image image = SwingFXUtils.toFXImage(videoPreview.showNextImage(), null);
+					Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {

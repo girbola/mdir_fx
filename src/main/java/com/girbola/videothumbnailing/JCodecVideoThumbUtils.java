@@ -4,7 +4,7 @@ import com.girbola.Main;
 import com.girbola.imagehandling.jcodec.AWTUtil;
 import com.girbola.messages.Messages;
 import net.coobird.thumbnailator.Thumbnails;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
+//import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.*;
 import org.jcodec.common.io.NIOUtils;
@@ -24,7 +24,7 @@ public class JCodecVideoThumbUtils {
     public static List<BufferedImage> getList(String fileName) {
         try {
             return getList(new File(fileName));
-        } catch (FFmpegFrameGrabber.Exception e) {
+        } catch (Exception e) {
             Messages.sprintfError("FrameGrabber exception: " + e.getMessage());
             return null;
         }
@@ -46,7 +46,7 @@ public class JCodecVideoThumbUtils {
         }
     }
 
-    public static List<BufferedImage> getList(File file) throws FFmpegFrameGrabber.Exception {
+    public static List<BufferedImage> getList(File file) {
         List<BufferedImage> list = new ArrayList<>();
         double duration = getVideoLenght(file);
         log.info("DURATIOOOON: " + duration);
@@ -62,7 +62,7 @@ public class JCodecVideoThumbUtils {
         return list;
     }
 
-    private static List<BufferedImage> grabBufferedImageList(File file, List<Double> list) throws FFmpegFrameGrabber.Exception {
+    private static List<BufferedImage> grabBufferedImageList(File file, List<Double> list) {
         List<BufferedImage> buff_list = new ArrayList<>();
         FrameGrab grab = null;
         try {
@@ -85,22 +85,22 @@ public class JCodecVideoThumbUtils {
             }
         } catch (Exception e) {
 
-            FFmpegFrameGrabber ffMpegVideo = createVideoThumb(file.toString());
-            int lengthInFrames = ffMpegVideo.getLengthInFrames();
-            log.info("===lengthInFrames: " + lengthInFrames);
+//            FFmpegFrameGrabber ffMpegVideo = createVideoThumb(file.toString());
+//            int lengthInFrames = ffMpegVideo.getLengthInFrames();
+//            log.info("===lengthInFrames: " + lengthInFrames);
 
             e.printStackTrace();
         }
         return buff_list;
     }
 
-    private static FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
-        FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
-
-        int lengthInFrames = frameGrabber.getLengthInFrames();
-        log.info("=======lengthInFrames" + lengthInFrames);
-        return null;
-    }
+//    private static FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
+//        FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
+//
+//        int lengthInFrames = frameGrabber.getLengthInFrames();
+//        log.info("=======lengthInFrames" + lengthInFrames);
+//        return null;
+//    }
 
     public static List<Double> grabListOfTimeLine(double duration) {
         List<Double> list = new ArrayList<>();

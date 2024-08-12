@@ -324,10 +324,6 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    /*
-     * ThumbInfo
-     */
-
     private static boolean addToThumbInfoDB(Connection connection, PreparedStatement pstmt, ThumbInfo thumbInfo) {
         try {
             pstmt.setInt(1, thumbInfo.getId());
@@ -339,12 +335,12 @@ public class SQL_Utils extends FolderInfo_SQL {
             pstmt.setDouble(7, thumbInfo.getOrientation());
 
             final int tsize = thumbInfo.getThumbs().size();
-            int c = 8;
+            int pstmtCounter = 8;
             for (int i = 0; i < (tsize); i++) {
                 pstmt.setBytes((i + 8), thumbInfo.getThumbs().get(i));
-                c++;
+                pstmtCounter++;
             }
-            for (int i = c; i < (13); i++) {
+            for (int i = pstmtCounter; i < (13); i++) {
                 pstmt.setBytes((i), null);
             }
 
@@ -363,16 +359,27 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     // @formatter:off
 	public static boolean createThumbInfoTable(Connection connection) {
-		if (connection == null) {
+        boolean dbConnected = SQL_Utils.isDbConnected(connection);
+		if (!dbConnected) {
+            Messages.sprintf("Not connected to database!");
 			return false;
 		}
 		try {
 			Statement stmt = connection.createStatement();
 			connection.setAutoCommit(false);
-			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.THUMBINFO.getType() + " (id INTEGER PRIMARY KEY,"
-					+ " filepath STRING UNIQUE NOT NULL," + " thumb_width  DOUBLE," + " thumb_height DOUBLE,"
-					+ " thumb_fast_width  DOUBLE," + " thumb_fast_height DOUBLE," + " orientation INTEGER,"
-					+ " image_0 BLOB NULL," + " image_1  BLOB NULL," + " image_2 BLOB NULL," + " image_3  BLOB NULL,"
+			String sql = "CREATE TABLE IF NOT EXISTS "
+                    + SQL_Enums.THUMBINFO.getType()
+                    + " (id INTEGER PRIMARY KEY,"
+					+ " filepath STRING UNIQUE NOT NULL,"
+                    + " thumb_width  DOUBLE,"
+                    + " thumb_height DOUBLE,"
+					+ " thumb_fast_width  DOUBLE,"
+                    + " thumb_fast_height DOUBLE,"
+                    + " orientation INTEGER,"
+					+ " image_0 BLOB NULL,"
+                    + " image_1  BLOB NULL,"
+                    + " image_2 BLOB NULL,"
+                    + " image_3  BLOB NULL,"
 					+ " image_4  BLOB NULL)";
 
 			stmt.execute(sql);
@@ -381,35 +388,37 @@ public class SQL_Utils extends FolderInfo_SQL {
 			stmt.close();
 			return true;
 		} catch (Exception ex) {
+            Messages.sprintfError("Not working: " + ex.getMessage());
 			return false;
 		}
 	}
 
 	// @formatter:on
-    public static boolean insertThumbInfo(Connection connection, int id, ThumbInfo thumbInfo) {
-        createThumbInfoTable(connection);
-        if (!isDbConnected(connection)) {
-            return false;
-        }
-
-        try {
-            connection.setAutoCommit(false);
-            PreparedStatement pstmt = connection.prepareStatement(thumbInfoInsert);
-            addToThumbInfoDB(connection, pstmt, thumbInfo);
-            pstmt.executeBatch();
-            connection.commit();
-            pstmt.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    public static boolean insertThumbInfo(Connection connection, int id, ThumbInfo thumbInfo) {
+//        createThumbInfoTable(connection);
+//        if (!isDbConnected(connection)) {
+//            Messages.sprintf("Connection is not connected");
+//            return false;
+//        }
+//
+//        try {
+//            connection.setAutoCommit(false);
+//            PreparedStatement pstmt = connection.prepareStatement(thumbInfoInsert);
+//            addToThumbInfoDB(connection, pstmt, thumbInfo);
+//            pstmt.executeBatch();
+//            connection.commit();
+//            pstmt.close();
+//            return true;
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     public static boolean insertThumbInfoListToDatabase(Connection connection, List<ThumbInfo> thumbInfoList) {
-        createThumbInfoTable(connection);
+        boolean thumbInfoCreated = createThumbInfoTable(connection);
 
-        if (!isDbConnected(connection)) {
+        if (!thumbInfoCreated) {
             Messages.sprintf("insertThumbInfoListToDatabase NOT connected");
             return false;
         }
@@ -422,8 +431,8 @@ public class SQL_Utils extends FolderInfo_SQL {
                 addToThumbInfoDB(connection, pstmt, thumbInfo);
             }
             pstmt.executeBatch();
-            connection.commit();
             pstmt.close();
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

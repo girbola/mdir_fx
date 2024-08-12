@@ -31,7 +31,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
@@ -41,6 +44,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
+import net.coobird.thumbnailator.Thumbnails;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -50,11 +54,13 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -66,192 +72,191 @@ import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.*;
 
 /**
- *
  * @author Marko Lokka
  */
 public class Model_datefix extends DateFixerModel {
-	private final String ERROR = Model_datefix.class.getSimpleName();
-	private Model_main model_Main;
+    private final String ERROR = Model_datefix.class.getSimpleName();
+    private Model_main model_Main;
 
-	private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
+    private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
 
-	private VBox infoTables_container;
-	private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
-	private BooleanProperty changes_made = new SimpleBooleanProperty(false);
-	
-	public BooleanProperty getChanges_made() {
-		return changes_made;
-	}
+    private VBox infoTables_container;
+    private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
+    private BooleanProperty changes_made = new SimpleBooleanProperty(false);
 
-	public void setChanges_made(boolean changes_made) {
-		this.changes_made.set(changes_made);
-	}
+    public BooleanProperty getChanges_made() {
+        return changes_made;
+    }
 
-	private BooleanProperty ignored = new SimpleBooleanProperty(false);
-	private BooleanProperty copied = new SimpleBooleanProperty(false);
-	private BooleanProperty events = new SimpleBooleanProperty(true);
-	private BooleanProperty locations = new SimpleBooleanProperty(true);
+    public void setChanges_made(boolean changes_made) {
+        this.changes_made.set(changes_made);
+    }
 
-	private AtomicBoolean content_changed = new AtomicBoolean(false);
-	private ObservableHandler observableHandler = new ObservableHandler();
+    private BooleanProperty ignored = new SimpleBooleanProperty(false);
+    private BooleanProperty copied = new SimpleBooleanProperty(false);
+    private BooleanProperty events = new SimpleBooleanProperty(true);
+    private BooleanProperty locations = new SimpleBooleanProperty(true);
 
-	private AnchorPane anchorPane;
-	private FolderInfo folderInfo_full;
-	private FolderInfo folderInfo_filtered;
+    private AtomicBoolean content_changed = new AtomicBoolean(false);
+    private ObservableHandler observableHandler = new ObservableHandler();
 
-	private TilePane tilePane;
+    private AnchorPane anchorPane;
+    private FolderInfo folderInfo_full;
+    private FolderInfo folderInfo_filtered;
 
-	public TilePane getTilePane() {
-		return tilePane;
-	}
+    private TilePane tilePane;
 
-	public void setTilePane(TilePane tilePane) {
-		this.tilePane = tilePane;
-	}
+    public TilePane getTilePane() {
+        return tilePane;
+    }
 
-	//private GridPane gridPane;
-	private TableView<EXIF_Data_Selector> cameras_TableView;
-	private TableView<EXIF_Data_Selector> dates_TableView;
-	private TableView<EXIF_Data_Selector> events_TableView;
-	private TableView<EXIF_Data_Selector> locations_TableView;
+    public void setTilePane(TilePane tilePane) {
+        this.tilePane = tilePane;
+    }
 
-	private VBox rightInfoPanel;
-	private TableView<MetaData> metaDataTableView;
-	private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
+    //private GridPane gridPane;
+    private TableView<EXIF_Data_Selector> cameras_TableView;
+    private TableView<EXIF_Data_Selector> dates_TableView;
+    private TableView<EXIF_Data_Selector> events_TableView;
+    private TableView<EXIF_Data_Selector> locations_TableView;
 
-	private ObservableList<Node> allNodes = FXCollections.observableArrayList();
-	private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
-	private CssStylesController cssStyles = new CssStylesController();
-	private DateFix_Utils dateFix_Utils = new DateFix_Utils();
+    private VBox rightInfoPanel;
+    private TableView<MetaData> metaDataTableView;
+    private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
-	private Path currentFolderPath;
-	private QuickPick_Navigator quickPick_Navigator;
-	private ScrollPane scrollPane;
-	private SelectionModel selectionModel = new SelectionModel();
-	private TilePane quickPick_tilePane;
-	private int imagesPerLine;
+    private ObservableList<Node> allNodes = FXCollections.observableArrayList();
+    private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
+    private CssStylesController cssStyles = new CssStylesController();
+    private DateFix_Utils dateFix_Utils = new DateFix_Utils();
 
-	private WorkDirHandler workDirHandler;
+    private Path currentFolderPath;
+    private QuickPick_Navigator quickPick_Navigator;
+    private ScrollPane scrollPane;
+    private SelectionModel selectionModel = new SelectionModel();
+    private TilePane quickPick_tilePane;
+    private int imagesPerLine;
 
-	private RenderVisibleNode renderVisibleNode = null;
-	private Connection connection;
+    private WorkDirHandler workDirHandler;
 
-	public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
-		this.currentFolderPath = aCurrentFolderPath;
-		this.model_Main = model_Main;
-		this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
-	}
+    private RenderVisibleNode renderVisibleNode = null;
+    private Connection connection;
 
-	public boolean getRightInfo_visible() {
-		return rightInfo_visible.get();
-	}
+    public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
+        this.currentFolderPath = aCurrentFolderPath;
+        this.model_Main = model_Main;
+        this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
+    }
 
-	public void setRightInfo_visible(boolean value) {
-		this.rightInfo_visible.set(value);
-	}
+    public boolean getRightInfo_visible() {
+        return rightInfo_visible.get();
+    }
 
-	public AtomicBoolean getContent_changed() {
-		return content_changed;
-	}
+    public void setRightInfo_visible(boolean value) {
+        this.rightInfo_visible.set(value);
+    }
 
-	public void setContent_changed(AtomicBoolean content_changed) {
-		this.content_changed = content_changed;
-	}
+    public AtomicBoolean getContent_changed() {
+        return content_changed;
+    }
 
-	private ObservableList<String> workDir_obs = FXCollections.observableArrayList();
+    public void setContent_changed(AtomicBoolean content_changed) {
+        this.content_changed = content_changed;
+    }
 
-	/**
-	 * @return the workDir_obs
-	 */
-	public final ObservableList<String> getWorkDir_obs() {
-		return workDir_obs;
-	}
+    private ObservableList<String> workDir_obs = FXCollections.observableArrayList();
 
-	public DateFix_Utils getDateFix_Utils() {
-		return dateFix_Utils;
-	}
+    /**
+     * @return the workDir_obs
+     */
+    public final ObservableList<String> getWorkDir_obs() {
+        return workDir_obs;
+    }
 
-	public final ObservableList<Node> getCurrentNodes() {
-		return currentNodes;
-	}
+    public DateFix_Utils getDateFix_Utils() {
+        return dateFix_Utils;
+    }
 
-	public final void setCurrentNodes(ObservableList<Node> currentNodes) {
-		this.currentNodes = currentNodes;
-	}
+    public final ObservableList<Node> getCurrentNodes() {
+        return currentNodes;
+    }
 
-	public void instantiateRenderVisibleNodes() {
-		if (renderVisibleNode == null) {
-			renderVisibleNode = new RenderVisibleNode(scrollPane, currentFolderPath, this.connection);
-		}
-	}
+    public final void setCurrentNodes(ObservableList<Node> currentNodes) {
+        this.currentNodes = currentNodes;
+    }
 
-	public RenderVisibleNode getRenderVisibleNode() {
-		return renderVisibleNode;
-	}
+    public void instantiateRenderVisibleNodes() {
+        if (renderVisibleNode == null) {
+            renderVisibleNode = new RenderVisibleNode(scrollPane, currentFolderPath, this.connection);
+        }
+    }
 
-	public TableView<EXIF_Data_Selector> getCameras_TableView() {
-		return cameras_TableView;
-	}
+    public RenderVisibleNode getRenderVisibleNode() {
+        return renderVisibleNode;
+    }
 
-	public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) {
-		this.cameras_TableView = cameras_TableView;
-	}
+    public TableView<EXIF_Data_Selector> getCameras_TableView() {
+        return cameras_TableView;
+    }
 
-	public TableView<EXIF_Data_Selector> getDates_TableView() {
-		return dates_TableView;
-	}
+    public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) {
+        this.cameras_TableView = cameras_TableView;
+    }
 
-	public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) {
-		this.dates_TableView = dates_TableView;
-	}
+    public TableView<EXIF_Data_Selector> getDates_TableView() {
+        return dates_TableView;
+    }
 
-	public int getImagesPerLine() {
-		return imagesPerLine;
-	}
+    public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) {
+        this.dates_TableView = dates_TableView;
+    }
 
-	public void setImagesPerLine(int imagesPerLine) {
-		this.imagesPerLine = imagesPerLine;
-	}
+    public int getImagesPerLine() {
+        return imagesPerLine;
+    }
 
-	public ObservableList<Node> getAllNodes() {
-		return allNodes;
-	}
+    public void setImagesPerLine(int imagesPerLine) {
+        this.imagesPerLine = imagesPerLine;
+    }
 
-	public void setAllNodes(ObservableList<Node> allNodes) {
-		this.allNodes = allNodes;
-	}
+    public ObservableList<Node> getAllNodes() {
+        return allNodes;
+    }
 
-	public QuickPick_Navigator getQuickPick_Navigator() {
-		return this.quickPick_Navigator;
-	}
+    public void setAllNodes(ObservableList<Node> allNodes) {
+        this.allNodes = allNodes;
+    }
 
-	public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) {
-		this.quickPick_Navigator = aQuickPick_Navigator;
-	}
+    public QuickPick_Navigator getQuickPick_Navigator() {
+        return this.quickPick_Navigator;
+    }
 
-	public AnchorPane getAnchorPane() {
-		return anchorPane;
-	}
+    public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) {
+        this.quickPick_Navigator = aQuickPick_Navigator;
+    }
 
-	public void setAnchorPane(AnchorPane anchorPane) {
-		this.anchorPane = anchorPane;
-	}
+    public AnchorPane getAnchorPane() {
+        return anchorPane;
+    }
 
-	public ScrollPane getScrollPane() {
-		return scrollPane;
-	}
+    public void setAnchorPane(AnchorPane anchorPane) {
+        this.anchorPane = anchorPane;
+    }
 
-	public void setScrollPane(ScrollPane scrollPane) {
-		this.scrollPane = scrollPane;
-	}
+    public ScrollPane getScrollPane() {
+        return scrollPane;
+    }
 
-	public TilePane getQuickPick_tilePane() {
-		return quickPick_tilePane;
-	}
+    public void setScrollPane(ScrollPane scrollPane) {
+        this.scrollPane = scrollPane;
+    }
 
-	public void setQuickPick_tilePane(TilePane quickPick_tilePane) {
-		this.quickPick_tilePane = quickPick_tilePane;
-	}
+    public TilePane getQuickPick_tilePane() {
+        return quickPick_tilePane;
+    }
+
+    public void setQuickPick_tilePane(TilePane quickPick_tilePane) {
+        this.quickPick_tilePane = quickPick_tilePane;
+    }
 
 //	public GridPane getGridPane() {
 //		return gridPane;
@@ -261,644 +266,687 @@ public class Model_datefix extends DateFixerModel {
 //		this.gridPane = gridPane;
 //	}
 
-	public FolderInfo getFolderInfo_full() {
-		return folderInfo_full;
-	}
+    public FolderInfo getFolderInfo_full() {
+        return folderInfo_full;
+    }
 
-	public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) {
-		this.folderInfo_full = aCurrentFolderInfo;
-	}
+    public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) {
+        this.folderInfo_full = aCurrentFolderInfo;
+    }
 
-	public void setCurrentFolderPath(Path currentFilePath) {
-		this.currentFolderPath = currentFilePath;
-	}
+    public void setCurrentFolderPath(Path currentFilePath) {
+        this.currentFolderPath = currentFilePath;
+    }
 
-	public Path getCurrentFolderPath() {
-		return currentFolderPath;
-	}
+    public Path getCurrentFolderPath() {
+        return currentFolderPath;
+    }
 
-	public SelectionModel getSelectionModel() {
-		return this.selectionModel;
-	}
+    public SelectionModel getSelectionModel() {
+        return this.selectionModel;
+    }
 
-	public FolderInfo getFolderInfo_filtered() {
-		return folderInfo_filtered;
-	}
+    public FolderInfo getFolderInfo_filtered() {
+        return folderInfo_filtered;
+    }
 
-	public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) {
-		this.folderInfo_filtered = folderInfo_filtered;
-	}
+    public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) {
+        this.folderInfo_filtered = folderInfo_filtered;
+    }
 
-	/**
-	 * @return the observableHandler
-	 */
-	public final ObservableHandler getObservableHandler() {
-		return observableHandler;
-	}
-	//
-	// /**
-	// * @return the changes
-	// */
-	// public final SimpleBooleanProperty getChanges() {
-	// return changes;
-	// }
+    /**
+     * @return the observableHandler
+     */
+    public final ObservableHandler getObservableHandler() {
+        return observableHandler;
+    }
+    //
+    // /**
+    // * @return the changes
+    // */
+    // public final SimpleBooleanProperty getChanges() {
+    // return changes;
+    // }
 
-	public TableView<EXIF_Data_Selector> getEvents_TableView() {
-		return events_TableView;
-	}
+    public TableView<EXIF_Data_Selector> getEvents_TableView() {
+        return events_TableView;
+    }
 
-	public TableView<EXIF_Data_Selector> getLocations_TableView() {
-		return locations_TableView;
-	}
+    public TableView<EXIF_Data_Selector> getLocations_TableView() {
+        return locations_TableView;
+    }
 
-	public void setEvents_TableView(TableView<EXIF_Data_Selector> table) {
-		this.events_TableView = table;
-	}
+    public void setEvents_TableView(TableView<EXIF_Data_Selector> table) {
+        this.events_TableView = table;
+    }
 
-	public void setLocations_TableView(TableView<EXIF_Data_Selector> table) {
-		this.locations_TableView = table;
-	}
+    public void setLocations_TableView(TableView<EXIF_Data_Selector> table) {
+        this.locations_TableView = table;
+    }
 
-	public void setWorkDir_Handler(WorkDirHandler workDirHandler) {
-		this.workDirHandler = workDirHandler;
-	}
+    public void setWorkDir_Handler(WorkDirHandler workDirHandler) {
+        this.workDirHandler = workDirHandler;
+    }
 
-	public WorkDirHandler getWorkDir_Handler() {
-		return workDirHandler;
-	}
+    public WorkDirHandler getWorkDir_Handler() {
+        return workDirHandler;
+    }
 
-	public void setInfoTables_container(VBox infoTables_container) {
-		this.infoTables_container = infoTables_container;
-	}
+    public void setInfoTables_container(VBox infoTables_container) {
+        this.infoTables_container = infoTables_container;
+    }
 
-	/**
-	 * @return the infoTables_container
-	 */
-	public VBox getInfoTables_container() {
-		return infoTables_container;
-	}
+    /**
+     * @return the infoTables_container
+     */
+    public VBox getInfoTables_container() {
+        return infoTables_container;
+    }
 
-	/**
-	 * @return the rightInfoPanel
-	 */
-	public VBox getRightInfoPanel() {
-		return rightInfoPanel;
-	}
+    /**
+     * @return the rightInfoPanel
+     */
+    public VBox getRightInfoPanel() {
+        return rightInfoPanel;
+    }
 
-	/**
-	 * @param rightInfoPanel the rightInfoPanel to set
-	 */
-	public void setRightInfoPanel(VBox rightInfoPanel) {
-		this.rightInfoPanel = rightInfoPanel;
-	}
+    /**
+     * @param rightInfoPanel the rightInfoPanel to set
+     */
+    public void setRightInfoPanel(VBox rightInfoPanel) {
+        this.rightInfoPanel = rightInfoPanel;
+    }
 
-	public TableView<MetaData> getMetaDataTableView() {
-		return this.metaDataTableView;
-	}
+    public TableView<MetaData> getMetaDataTableView() {
+        return this.metaDataTableView;
+    }
 
-	public TextField getTextField(Node node) {
-		if (node instanceof VBox) {
-			if (node.getId().equals("imageFrame")) {
-				for (Node node2 : ((VBox) node).getChildren()) {
-					sprintf("Node2 : " + node2);
-					if (node2 instanceof HBox) {
-						for (Node node3 : ((HBox) node2).getChildren()) {
-							sprintf("TextField: " + node3);
-							if (node3 instanceof TextField) {
-								return (TextField) node3;
-							}
-						}
-					}
-				}
-			}
-		}
-		return null;
-	}
+    public TextField getTextField(Node node) {
+        if (node instanceof VBox) {
+            if (node.getId().equals("imageFrame")) {
+                for (Node node2 : ((VBox) node).getChildren()) {
+                    sprintf("Node2 : " + node2);
+                    if (node2 instanceof HBox) {
+                        for (Node node3 : ((HBox) node2).getChildren()) {
+                            sprintf("TextField: " + node3);
+                            if (node3 instanceof TextField) {
+                                return (TextField) node3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
-	public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
-		this.metaDataTableView = metadataTableView;
-	}
+    public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
+        this.metaDataTableView = metadataTableView;
+    }
 
-	public ObservableList<MetaData> getMetaDataTableView_obs() {
-		return this.metaDataTableView_obs;
-	}
+    public ObservableList<MetaData> getMetaDataTableView_obs() {
+        return this.metaDataTableView_obs;
+    }
 
-	public void updateCameraInfos(List<FileInfo> fileInfo_List) {
-		getCameras_TableView().getItems().clear();
-		getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(),
-				Field.CAMERA.getType());
+    public void updateCameraInfos(List<FileInfo> fileInfo_List) {
+        getCameras_TableView().getItems().clear();
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(),
+                Field.CAMERA.getType());
 
-	}
+    }
 
-	public void updateDateInfos(List<FileInfo> fileInfo_List) {
-		getDates_TableView().getItems().clear();
-		getDateFix_Utils().createDates_list(fileInfo_List);
-	}
+    public void updateDateInfos(List<FileInfo> fileInfo_List) {
+        getDates_TableView().getItems().clear();
+        getDateFix_Utils().createDates_list(fileInfo_List);
+    }
 
-	public void updateLocationInfos(List<FileInfo> fileInfo_List) {
-		getLocations_TableView().getItems().clear();
-		getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(),
-				Field.LOCATION.getType());
+    public void updateLocationInfos(List<FileInfo> fileInfo_List) {
+        getLocations_TableView().getItems().clear();
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(),
+                Field.LOCATION.getType());
 
-	}
+    }
 
-	public void updateEventsInfos(List<FileInfo> fileInfo_List) {
-		getEvents_TableView().getItems().clear();
-		getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(),
-				Field.EVENT.getType());
-	}
+    public void updateEventsInfos(List<FileInfo> fileInfo_List) {
+        getEvents_TableView().getItems().clear();
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(),
+                Field.EVENT.getType());
+    }
 
-	public void updateAllInfos(List<FileInfo> fileInfo_List) {
-		getCameras_TableView().getItems().clear();
-		getDates_TableView().getItems().clear();
-		getEvents_TableView().getItems().clear();
-		getLocations_TableView().getItems().clear();
+    public void updateAllInfos(List<FileInfo> fileInfo_List) {
+        getCameras_TableView().getItems().clear();
+        getDates_TableView().getItems().clear();
+        getEvents_TableView().getItems().clear();
+        getLocations_TableView().getItems().clear();
 
-		updateCameraInfos(fileInfo_List);
-		updateDateInfos(fileInfo_List);
-		updateEventsInfos(fileInfo_List);
-		updateLocationInfos(fileInfo_List);
-	}
+        updateCameraInfos(fileInfo_List);
+        updateDateInfos(fileInfo_List);
+        updateEventsInfos(fileInfo_List);
+        updateLocationInfos(fileInfo_List);
+    }
 
-	public void updateAllInfos(TilePane gridPane) {
-		getCameras_TableView().getItems().clear();
-		getDates_TableView().getItems().clear();
-		getEvents_TableView().getItems().clear();
-		getLocations_TableView().getItems().clear();
+    public void updateAllInfos(TilePane gridPane) {
+        getCameras_TableView().getItems().clear();
+        getDates_TableView().getItems().clear();
+        getEvents_TableView().getItems().clear();
+        getLocations_TableView().getItems().clear();
 
-		updateCameraInfo(tilePane);
-		updateDatesInfos(tilePane);
-		updateEventsInfos(tilePane);
-		updateLocationsInfos(tilePane);
-	}
+        updateCameraInfo(tilePane);
+        updateDatesInfos(tilePane);
+        updateEventsInfos(tilePane);
+        updateLocationsInfos(tilePane);
+    }
 
-	public void updateCameraInfo(TilePane tilePane) {
+    public void updateCameraInfo(TilePane tilePane) {
 
-		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : tilePane.getChildren()) {
-			if (node instanceof VBox) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo != null) {
-					fileInfo_list.add(fileInfo);
-				}
-			}
-		}
-		if (getCameras_TableView() == null) {
-			Messages.sprintfError("Cameras TableView were null!!!!");
-		} else {
-			dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(),
-					Field.CAMERA.getType());
-		}
-	}
+        List<FileInfo> fileInfo_list = new ArrayList<>();
+        for (Node node : tilePane.getChildren()) {
+            if (node instanceof VBox) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                if (fileInfo != null) {
+                    fileInfo_list.add(fileInfo);
+                }
+            }
+        }
+        if (getCameras_TableView() == null) {
+            Messages.sprintfError("Cameras TableView were null!!!!");
+        } else {
+            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(),
+                    Field.CAMERA.getType());
+        }
+    }
 
-	public void updateEventsInfos(TilePane tilePane) {
-		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : tilePane.getChildren()) {
-			if (node instanceof VBox) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo != null) {
-					fileInfo_list.add(fileInfo);
-				}
-			}
-		}
-		dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(),
-				Field.EVENT.getType());
-	}
+    public void updateEventsInfos(TilePane tilePane) {
+        List<FileInfo> fileInfo_list = new ArrayList<>();
+        for (Node node : tilePane.getChildren()) {
+            if (node instanceof VBox) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                if (fileInfo != null) {
+                    fileInfo_list.add(fileInfo);
+                }
+            }
+        }
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(),
+                Field.EVENT.getType());
+    }
 
-	public void updateLocationsInfos(TilePane tilePane) {
-		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : tilePane.getChildren()) {
-			if (node instanceof VBox) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo != null) {
-					fileInfo_list.add(fileInfo);
-				}
-			}
-		}
-		dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(),
-				Field.LOCATION.getType());
-	}
+    public void updateLocationsInfos(TilePane tilePane) {
+        List<FileInfo> fileInfo_list = new ArrayList<>();
+        for (Node node : tilePane.getChildren()) {
+            if (node instanceof VBox) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                if (fileInfo != null) {
+                    fileInfo_list.add(fileInfo);
+                }
+            }
+        }
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(),
+                Field.LOCATION.getType());
+    }
 
-	public void updateDatesInfos(TilePane tilePane) {
-		List<FileInfo> fileInfo_list = new ArrayList<>();
-		for (Node node : tilePane.getChildren()) {
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				if (fileInfo != null) {
-					fileInfo_list.add(fileInfo);
-				} else {
-					Messages.errorSmth(ERROR, "fileinfo were null!", null, Misc.getLineNumber(), true);
-				}
-			}
-		}
-		// wef;
-		dateFix_Utils.createDates_list(fileInfo_list);
-	}
+    public void updateDatesInfos(TilePane tilePane) {
+        List<FileInfo> fileInfo_list = new ArrayList<>();
+        for (Node node : tilePane.getChildren()) {
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                if (fileInfo != null) {
+                    fileInfo_list.add(fileInfo);
+                } else {
+                    Messages.errorSmth(ERROR, "fileinfo were null!", null, Misc.getLineNumber(), true);
+                }
+            }
+        }
+        // wef;
+        dateFix_Utils.createDates_list(fileInfo_list);
+    }
 
-	public void acceptEverything(TilePane tilePane) {
-		boolean changed = false;
-		// CssStylesController css = new CssStylesController();
-		Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
-				Main.scene_Switcher.getScene_dateFixer().getWindow(),
-				bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+    public void acceptEverything(TilePane tilePane) {
+        boolean changed = false;
+        // CssStylesController css = new CssStylesController();
+        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
+                Main.scene_Switcher.getScene_dateFixer().getWindow(),
+                bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 
-		Optional<ButtonType> result = changesDialog.showAndWait();
-		if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-			for (Node node : tilePane.getChildren()) {
-				TextField tf = getTextField(node);
-				if (tf != null) {
-					if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
-						FileInfo fileInfo = (FileInfo) node.getUserData();
-						if (fileInfo != null) {
-							if (!fileInfo.isIgnored()) {
-								fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
-										simpleDates.getSdf_ymd_hms_minusDots_default()));
-								fileInfo.setGood(true);
-								fileInfo.setSuggested(false);
-								fileInfo.setBad(false);
-								fileInfo.setConfirmed(true);
-								node.setStyle(CssStylesController.getGood_style());
-								changed = true;
-							}
-						}
-					}
-				}
-			}
-			if (changed) {
-				// TODO Korjaa apply_btn;
-				FolderInfo_Utils.calculateFileInfoStatuses(getFolderInfo_full());
-				if (model_Main.tables() == null) {
-					Main.setProcessCancelled(true);
-					errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-				}
-				model_Main.tables().refreshAllTables();
-				updateAllInfos(getFolderInfo_full().getFileInfoList());
+        Optional<ButtonType> result = changesDialog.showAndWait();
+        if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+            for (Node node : tilePane.getChildren()) {
+                TextField tf = getTextField(node);
+                if (tf != null) {
+                    if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
+                        FileInfo fileInfo = (FileInfo) node.getUserData();
+                        if (fileInfo != null) {
+                            if (!fileInfo.isIgnored()) {
+                                fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
+                                        simpleDates.getSdf_ymd_hms_minusDots_default()));
+                                fileInfo.setGood(true);
+                                fileInfo.setSuggested(false);
+                                fileInfo.setBad(false);
+                                fileInfo.setConfirmed(true);
+                                node.setStyle(CssStylesController.getGood_style());
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (changed) {
+                // TODO Korjaa apply_btn;
+                FolderInfo_Utils.calculateFileInfoStatuses(getFolderInfo_full());
+                if (model_Main.tables() == null) {
+                    Main.setProcessCancelled(true);
+                    errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+                }
+                model_Main.tables().refreshAllTables();
+                updateAllInfos(getFolderInfo_full().getFileInfoList());
 
-				getFolderInfo_full().setChanged(true);
-				setDateTime(getFolderInfo_full().getMinDate(), true);
-				setDateTime(getFolderInfo_full().getMaxDate(), false);
-			}
-			getSelectionModel().clearAll();
-		}
-		/*
-		
-		*/
-	}
+                getFolderInfo_full().setChanged(true);
+                setDateTime(getFolderInfo_full().getMinDate(), true);
+                setDateTime(getFolderInfo_full().getMaxDate(), false);
+            }
+            getSelectionModel().clearAll();
+        }
+        /*
 
-	public void dateFromFileName() {
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
-				TextField tf = getTextField(node);
-				if (date != 0) {
-					if (tf != null) {
-						tf.setText("" + DateUtils.longToLocalDateTime(date)
-								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						tf.setStyle(CssStylesController.getGood_style());
-					}
-				} else {
-					tf.setStyle(CssStylesController.getBad_style());
-				}
-			}
-		}
-	}
+         */
+    }
 
-	public void restoreSelectedExifDateInfos() {
+    public void dateFromFileName() {
+        if (getSelectionModel().getSelectionList().isEmpty()) {
+            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            return;
+        }
+        for (Node node : getSelectionModel().getSelectionList()) {
+            FileInfo fileInfo = (FileInfo) node.getUserData();
+            if (fileInfo != null) {
+                long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
+                TextField tf = getTextField(node);
+                if (date != 0) {
+                    if (tf != null) {
+                        tf.setText("" + DateUtils.longToLocalDateTime(date)
+                                .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                        tf.setStyle(CssStylesController.getGood_style());
+                    }
+                } else {
+                    tf.setStyle(CssStylesController.getBad_style());
+                }
+            }
+        }
+    }
 
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				File file = new File(fileInfo.getOrgPath());
-				try {
-					fileInfo = FileInfoUtils.createFileInfo(file.toPath());
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+    public void restoreSelectedExifDateInfos() {
+
+        if (getSelectionModel().getSelectionList().isEmpty()) {
+            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            return;
+        }
+        for (Node node : getSelectionModel().getSelectionList()) {
+            sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+            FileInfo fileInfo = (FileInfo) node.getUserData();
+            if (fileInfo != null) {
+                File file = new File(fileInfo.getOrgPath());
+                try {
+                    fileInfo = FileInfoUtils.createFileInfo(file.toPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 //				long date = DateTaken.getCreationDate(file.toPath());
 
-				// sdv;
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(fileInfo.getDate())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                // sdv;
+                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(fileInfo.getDate())
+                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 
-				TextField tf = getTextField(node);
-				if (fileInfo.getDate() != 0) {
-					if (tf != null) {
-						tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
-								.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-						tf.setStyle(CssStylesController.getGood_style());
-					}
-				} else {
-					// tf.setText("" +
-					// DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					tf.setStyle(CssStylesController.getBad_style());
-				}
-			}
-		}
-	}
+                TextField tf = getTextField(node);
+                if (fileInfo.getDate() != 0) {
+                    if (tf != null) {
+                        tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
+                                .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                        tf.setStyle(CssStylesController.getGood_style());
+                    }
+                } else {
+                    // tf.setText("" +
+                    // DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                    tf.setStyle(CssStylesController.getBad_style());
+                }
+            }
+        }
+    }
 
-	public void restoreLastModified() {
-		sprintf("lastModified_date_btn pressed");
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				File file = new File(fileInfo.getOrgPath());
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-				TextField tf = getTextField(node);
-				if (tf != null) {
-					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
-							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-					tf.setStyle(CssStylesController.getModified_style());
-				}
-			}
-		}
-	}
+    public void restoreLastModified() {
+        sprintf("lastModified_date_btn pressed");
+        if (getSelectionModel().getSelectionList().isEmpty()) {
+            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            return;
+        }
+        for (Node node : getSelectionModel().getSelectionList()) {
+            sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+            FileInfo fileInfo = (FileInfo) node.getUserData();
+            if (fileInfo != null) {
+                File file = new File(fileInfo.getOrgPath());
+                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
+                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                TextField tf = getTextField(node);
+                if (tf != null) {
+                    tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
+                            .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                    tf.setStyle(CssStylesController.getModified_style());
+                }
+            }
+        }
+    }
 
-	public void renameFileNameWithDate() {
-		sprintf("touchFileNameWithDate pressed");
-		if (getSelectionModel().getSelectionList().isEmpty()) {
-			warningText(Main.bundle.getString("youHaventSelectedMedia"));
-			return;
-		}
-		for (Node node : getSelectionModel().getSelectionList()) {
-			sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-			FileInfo fileInfo = (FileInfo) node.getUserData();
-			if (fileInfo != null) {
-				TextField tf = getTextField(node);
-				Path sourceFile = Paths.get(fileInfo.getOrgPath());
-				Path textFieldMergedFileName = Paths.get(sourceFile.getRoot().toString() + tf);
+    public void renameFileNameWithDate() {
+        sprintf("touchFileNameWithDate pressed");
+        if (getSelectionModel().getSelectionList().isEmpty()) {
+            warningText(Main.bundle.getString("youHaventSelectedMedia"));
+            return;
+        }
+        for (Node node : getSelectionModel().getSelectionList()) {
+            sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+            FileInfo fileInfo = (FileInfo) node.getUserData();
+            if (fileInfo != null) {
+                TextField tf = getTextField(node);
+                Path sourceFile = Paths.get(fileInfo.getOrgPath());
+                Path textFieldMergedFileName = Paths.get(sourceFile.getRoot().toString() + tf);
 
-				sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(sourceFile.toFile().lastModified())
-						.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(sourceFile.toFile().lastModified())
+                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 
-				try {
-					Path newPath = FileUtils.renameFile(sourceFile, textFieldMergedFileName);
-					if (newPath != null) {
-						FileUtils.moveFile(fileInfo, sourceFile, newPath);
+                try {
+                    Path newPath = FileUtils.renameFile(sourceFile, textFieldMergedFileName);
+                    if (newPath != null) {
+                        FileUtils.moveFile(fileInfo, sourceFile, newPath);
 
-						fileInfo.setOrgPath(textFieldMergedFileName.toString());
-						tf.setText("" + textFieldMergedFileName.getFileName());
-					} else {
-						sprintfError("Cannot rename file: " + textFieldMergedFileName + " target: " + sourceFile );
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+                        fileInfo.setOrgPath(textFieldMergedFileName.toString());
+                        tf.setText("" + textFieldMergedFileName.getFileName());
+                    } else {
+                        sprintfError("Cannot rename file: " + textFieldMergedFileName + " target: " + sourceFile);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 //				if (tf != null) {
 //					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
 //							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 //					tf.setStyle(CssStylesController.getModified_style());
 //				}
-			} else {
-				sprintf("FileInfo were getUserData were null");
-			}
-		}
-	}
+            } else {
+                sprintf("FileInfo were getUserData were null");
+            }
+        }
+    }
 
-	public void exitDateFixerWindow(TilePane tilePane, Window owner, WindowEvent event) {
-		Messages.sprintf("exitDateFixerWindow");
-		model_Main.getMonitorExternalDriveConnectivity().cancel();
+    public void exitDateFixerWindow(TilePane tilePane, Window owner, WindowEvent event) {
+        Messages.sprintf("exitDateFixerWindow");
+        model_Main.getMonitorExternalDriveConnectivity().cancel();
 
-		int badDates = checkIfRedDates(tilePane);
-		if (badDates != 0) {
-			Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
-					bundle.getString("badFilesFoundWantToClose"));
+        int badDates = checkIfRedDates(tilePane);
+        if (badDates != 0) {
+            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
+                    bundle.getString("badFilesFoundWantToClose"));
 
-			Messages.sprintf("2changesDialog width: " + dialog.getWidth());
-			Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
-			
-			Optional<ButtonType> result = dialog.showAndWait();
-			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-				saveThumbs(tilePane);
-				event.consume();
+            Messages.sprintf("2changesDialog width: " + dialog.getWidth());
+            //Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
 
-			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-				event.consume();
-				return;
-			}
-		}
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+                Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+                stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 
-		if (Main.conf.isSavingThumb()) {
-			saveThumbs(tilePane);
-			Messages.sprintf("thumbs were saved");
-		}
+                if (Main.conf.isSavingThumb()) {
 
-		if (changes_made.get()) {
-			Messages.sprintf("changes made");
-			Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
-			
-			Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
-			
-			Iterator<ButtonType> iterator = changesDialog.getDialogPane().getButtonTypes().iterator();
-			while(iterator.hasNext()) {
-				ButtonType next = iterator.next();
-				Messages.sprintf("NEEEXT; " + next.getText());
-			}
-			Optional<ButtonType> result = changesDialog.showAndWait();
-			if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-				acceptEverything(tilePane);
-				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getMonitorExternalDriveConnectivity().restart();
-				Platform.runLater(() -> {
-					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
-				});
+                    Task<List<ThumbInfo>> task = new Task<>() {
+                        @Override
+                        protected List<ThumbInfo> call() throws Exception {
+                            List<ThumbInfo> thumbInfos = saveThumbs(tilePane);
+                            return thumbInfos;
+                        }
+                    };
+                    task.setOnSucceeded(workerStateEvent -> {
+                        List<ThumbInfo> thumbInfos = null;
+                        try {
+                            thumbInfos = task.get();
+                        } catch (InterruptedException | ExecutionException e) {
+                            Messages.sprintfError("Cannot handle thumbinfos");
+                            throw new RuntimeException(e);
+                        }
 
-				event.consume();
+                        Messages.sprintf("Thumbinfo list size is: " + thumbInfos.size());
+                        connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
+                        SQL_Utils.insertThumbInfoListToDatabase(connection, thumbInfos);
+                        try {
+                            connection.commit();
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        } finally {
+                            SQL_Utils.closeConnection(connection);
+                            event.consume();
+                        }
+
+                    });
+                    task.setOnFailed(workerStateEvent -> {
+                        event.consume();
+                        Messages.sprintf("saveThumb were failed");
+                    });
+                    task.setOnCancelled(workerStateEvent -> {
+                        event.consume();
+                        Messages.sprintf("saveThumb were cancelled");
+                    });
+
+                    Thread thread = new Thread(task);
+                    thread.start();
+                }
+
+            } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+                event.consume();
+                return;
+            }
+        }
+
+        if (changes_made.get()) {
+            Messages.sprintf("changes made");
+            Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("changesMade"));
+
+            Messages.sprintf("changesDialog width: " + changesDialog.getWidth());
+
+            Iterator<ButtonType> iterator = changesDialog.getDialogPane().getButtonTypes().iterator();
+            while (iterator.hasNext()) {
+                ButtonType next = iterator.next();
+                Messages.sprintf("NEEEXT; " + next.getText());
+            }
+            Optional<ButtonType> result = changesDialog.showAndWait();
+            if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+                acceptEverything(tilePane);
+                Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+                stage.setScene(Main.scene_Switcher.getScene_dateFixer());
+                Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                model_Main.getMonitorExternalDriveConnectivity().restart();
+                Platform.runLater(() -> {
+                    Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+                });
+
+                event.consume();
 //				return;
-			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+            } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
 //				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
 //				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
 //				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				Messages.sprintf("No PRESSED: NO changes saved");
+                Messages.sprintf("No PRESSED: NO changes saved");
 
-				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-				model_Main.getMonitorExternalDriveConnectivity().restart();
-				Platform.runLater(() -> {
-					Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-					Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
-				});
-				event.consume();
-			} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-				Messages.sprintf("Cancel pressed!");
-				event.consume();
-				return;
-			}
-		} else {
-			Messages.sprintf("No changes made");
-			Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
-			Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-			event.consume();
-		}
-		getSelectionModel().clearAll();
-		selector_exec.shutdownNow();
-		Platform.runLater(() -> {
-			Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
-			Messages.sprintf("Changing back to main");
-		});
+                Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                model_Main.getMonitorExternalDriveConnectivity().restart();
+                Platform.runLater(() -> {
+                    Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+                });
+                event.consume();
+            } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+                Messages.sprintf("Cancel pressed!");
+                event.consume();
+                return;
+            }
+        } else {
+            Messages.sprintf("No changes made");
+            Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
+            Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+            event.consume();
+        }
+        getSelectionModel().clearAll();
+        selector_exec.shutdownNow();
+        Platform.runLater(() -> {
+            Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+            Messages.sprintf("Changing back to main");
+        });
 
-	}
+    }
 
-	public void saveThumbs(TilePane tilePane) {
-		if (!Main.conf.isSavingThumb()) {
-			Messages.sprintf("isSavingThumb() were turned off");
-			return;
-		}
-		Main.setProcessCancelled(true);
-		getRenderVisibleNode().stopTimeLine();
-		ConcurrencyUtils.stopExecThreadNow();
-		List<ThumbInfo> thumbInfo_list = new ArrayList<>();
-		for (Node n : tilePane.getChildren()) {
-			if (n instanceof VBox) {
-				for (Node vbox : ((VBox) n).getChildren()) {
-					if (vbox instanceof StackPane) {
-						ImageView iv = (ImageView) vbox.lookup("#imageView");
-						if (iv.getImage() != null) {
-							FileInfo fi = (FileInfo) n.getUserData();
-							if (FileUtils.supportedVideo(Paths.get(fi.getOrgPath()))) {
-								if (iv.getUserData() instanceof List<?>) {
-									Messages.sprintf("iv.getUserData() was instanceof List<?> ? is BufferedImage");
-									ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(thumbInfo_list,
-											fi.getFileInfo_id());
-									if (thumbInfo == null) {
-										thumbInfo = new ThumbInfo(fi.getOrgPath(), fi.getFileInfo_id());
-									}
-									List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
-									Messages.sprintf("buffList size is: " + buffList);
-									if (buffList != null) {
-										for (BufferedImage bufImage : buffList) {
-											try {
-												ByteArrayOutputStream baos = new ByteArrayOutputStream();
-												ImageIO.write(bufImage, "jpg", baos);
-												baos.flush();
-												byte[] imageInByte = baos.toByteArray();
-												baos.close();
-												thumbInfo.getThumbs().add(imageInByte);
-											} catch (Exception e) {
-												e.printStackTrace();
-											}
-										}
-									} else {
-										Messages.sprintfError("BufferedImage list were empty! " + fi.getOrgPath());
-									}
-								}
-							} else {
-								Messages.sprintf("Picture: " + fi.getOrgPath());
-								ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(thumbInfo_list,
-										fi.getFileInfo_id());
-								if (thumbInfo == null) {
-									thumbInfo = new ThumbInfo(fi.getOrgPath(), fi.getFileInfo_id());
-								}
-								if (thumbInfo.getThumbs().isEmpty()) {
-									WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
-									thumbInfo.setThumb_fast_width(writableImage.getWidth());
-									thumbInfo.setThumb_fast_height(writableImage.getHeight());
-									ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+    public List<ThumbInfo> saveThumbs(TilePane tilePane) {
+        if (!Main.conf.isSavingThumb()) {
+            Messages.sprintf("isSavingThumb() were turned off");
+            return null;
+        }
 
-									try {
-										ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png",
-												byteArrayOS);
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
+        Main.setProcessCancelled(true);
+        getRenderVisibleNode().stopTimeLine();
+        ConcurrencyUtils.stopExecThreadNow();
+        List<ThumbInfo> thumbInfo_list = new ArrayList<>();
+        for (Node n : tilePane.getChildren()) {
+            if (n instanceof VBox) {
+                for (Node vbox : ((VBox) n).getChildren()) {
+                    if (vbox instanceof StackPane) {
+                        ImageView iv = (ImageView) vbox.lookup("#imageView");
+                        if (iv.getImage() != null) {
+                            FileInfo fileInfo = (FileInfo) n.getUserData();
+
+                            if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+
+                                if (iv.getUserData() instanceof List<?>) {
+                                    Messages.sprintf("iv.getUserData() was instanceof List<?>");
+                                    ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
+                                            fileInfo.getFileInfo_id());
+
+                                    List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
+                                    Messages.sprintf("buffList size is: " + buffList.size());
+
+                                    //ThumbInfo thumbInfoLoaded = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
+                                    int counter = 0;
+                                    for (BufferedImage bufImage : buffList) {
+                                        if (bufImage == null) {
+                                            continue;
+                                        }
+                                        Messages.sprintf("WIDTH: " + bufImage.getWidth() + " BUFFFFFF " + bufImage.toString());
+
+                                        try {
+                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                            ImageIO.write(bufImage, "jpg", baos);
+                                            baos.flush();
+                                            byte[] imageInByte = baos.toByteArray();
+                                            baos.close();
+                                            thumbInfo.setThumb_width(bufImage.getWidth());
+                                            thumbInfo.setThumb_height(bufImage.getHeight());
+
+                                            thumbInfo.getThumbs().add(counter, imageInByte);
+//
+//                                                if (thumbInfoLoaded.getThumbs().get(counter) != imageInByte) {
+//                                                    thumbInfo.getThumbs().add(counter, imageInByte);
+//                                                }
+                                        } catch (Exception e) {
+                                            Messages.sprintfError("Something went wrong with converting Bufferedimage to byte array: " + e.getMessage());
+                                        }
+                                    }
+                                    thumbInfo_list.add(thumbInfo);
+                                }
+                            } else {
+                                Messages.sprintf("Picture: " + fileInfo.getOrgPath());
+                                ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
+                                        fileInfo.getFileInfo_id());
+                                if (!thumbInfo.getThumbs().isEmpty()) {
+                                    WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
+                                    thumbInfo.setThumb_fast_width(writableImage.getWidth());
+                                    thumbInfo.setThumb_fast_height(writableImage.getHeight());
+                                    ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+
+                                    try {
+                                        ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png",
+                                                byteArrayOS);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                     byte[] imageByteArray = byteArrayOS.toByteArray();
-									try {
-										byteArrayOS.close();
-									} catch (IOException ex) {
-										Logger.getLogger(DateFixer.class.getName()).log(Level.SEVERE, null, ex);
-									}
-									thumbInfo.getThumbs().add(imageByteArray);
-									thumbInfo_list.add(thumbInfo);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+                                    try {
+                                        byteArrayOS.close();
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Model_datefix.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    thumbInfo.getThumbs().add(imageByteArray);
+                                    thumbInfo_list.add(thumbInfo);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return thumbInfo_list;
+    }
 
-		Messages.sprintf("Thumbinfo list size is: " + thumbInfo_list.size());
-		SQL_Utils.insertThumbInfoListToDatabase(connection, thumbInfo_list);
-		SQL_Utils.closeConnection(connection);
+    public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
+        ArrayList<FileInfo> arrayList = new ArrayList<>();
+        for (Node node : filterlist) {
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                arrayList.add(fileInfo);
+            }
+        }
+        return null;
+    }
 
-	}
+    public BooleanProperty ignored_property() {
+        return this.ignored;
+    }
 
-	public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
-		ArrayList<FileInfo> arrayList = new ArrayList<>();
-		for (Node node : filterlist) {
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				arrayList.add(fileInfo);
-			}
-		}
-		return null;
-	}
+    public BooleanProperty events_property() {
+        return this.events;
+    }
 
-	public BooleanProperty ignored_property() {
-		return this.ignored;
-	}
+    public BooleanProperty copied_property() {
+        return this.copied;
+    }
 
-	public BooleanProperty events_property() {
-		return this.events;
-	}
+    public BooleanProperty locations_property() {
+        return this.locations;
+    }
 
-	public BooleanProperty copied_property() {
-		return this.copied;
-	}
+    public boolean getIgnored() {
+        return this.ignored.get();
+    }
 
-	public BooleanProperty locations_property() {
-		return this.locations;
-	}
+    public boolean getEvents() {
+        return this.events.get();
+    }
 
-	public boolean getIgnored() {
-		return this.ignored.get();
-	}
+    public boolean getCopied() {
+        return this.copied.get();
+    }
 
-	public boolean getEvents() {
-		return this.events.get();
-	}
+    public boolean getLocations() {
+        return this.locations.get();
+    }
 
-	public boolean getCopied() {
-		return this.copied.get();
-	}
-
-	public boolean getLocations() {
-		return this.locations.get();
-	}
-
-	public boolean fileInfoisShowing_(FileInfo fileInfo) {
-		boolean hide = false;
-		if (!copied.get()) {
-			if (fileInfo.isCopied()) {
-				hide = false;
-			}
-		}
-		if (!ignored.get()) {
-			if (fileInfo.isIgnored()) {
-				hide = false;
-			}
-		}
+    public boolean fileInfoisShowing_(FileInfo fileInfo) {
+        boolean hide = false;
+        if (!copied.get()) {
+            if (fileInfo.isCopied()) {
+                hide = false;
+            }
+        }
+        if (!ignored.get()) {
+            if (fileInfo.isIgnored()) {
+                hide = false;
+            }
+        }
 //		if (!events.get()) {
 //			if (fileInfo.getEvent().length() >= 1) {
 //				hide = true;
@@ -910,128 +958,124 @@ public class Model_datefix extends DateFixerModel {
 //			}
 //		}
 
-		return hide;
+        return hide;
 
-	}
+    }
 
-	/**
-	 * Collects everything into ObservableList<Node> observable
-	 * 
-	 * @param obs
-	 * @return ObservableList<Node>
-	 */
+    /**
+     * Collects everything into ObservableList<Node> observable
+     *
+     * @param obs
+     * @return ObservableList<Node>
+     */
 
-	public ObservableList<Node> filterAllNodesList(ObservableList<Node> obs) {
-		ObservableList<Node> observable = FXCollections.observableArrayList();
-		for (Node node : obs) {
-			FileInfo fileInfo = (FileInfo) node.getUserData();
+    public ObservableList<Node> filterAllNodesList(ObservableList<Node> obs) {
+        ObservableList<Node> observable = FXCollections.observableArrayList();
+        for (Node node : obs) {
+            FileInfo fileInfo = (FileInfo) node.getUserData();
 
-			if (!copied.get()) {
-				if (!fileInfo.isIgnored()) {
-					observable.add(node);
-				}
-			} else {
-				if (fileInfo.isCopied()) {
-					observable.remove(node);
-				}
-			}
+            if (!copied.get()) {
+                if (!fileInfo.isIgnored()) {
+                    observable.add(node);
+                }
+            } else {
+                if (fileInfo.isCopied()) {
+                    observable.remove(node);
+                }
+            }
 
-		}
-		return observable;
-	}
+        }
+        return observable;
+    }
 
-	public void checkIfDupsNodesExists(CountDownLatch latch) {
-		List<Node> remove_nodeList = new ArrayList<>();
-		final int start = getAllNodes().size();
+    public void checkIfDupsNodesExists(CountDownLatch latch) {
+        List<Node> remove_nodeList = new ArrayList<>();
+        final int start = getAllNodes().size();
 
-		Iterator<Node> it = getAllNodes().iterator();
-		while (it.hasNext()) {
-			Node node = it.next();
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
-				// Messages.sprintf("Finding dups: " + fileInfo.getOrgPath());
-				findDups(node, fileInfo, allNodes, remove_nodeList);
-			}
-		}
-		getAllNodes().removeAll(remove_nodeList);
-		latch.countDown();
-		Messages.sprintf("Files before dupcheck: " + start + " and after dup check it is now: " + getAllNodes().size());
+        Iterator<Node> it = getAllNodes().iterator();
+        while (it.hasNext()) {
+            Node node = it.next();
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                // Messages.sprintf("Finding dups: " + fileInfo.getOrgPath());
+                findDups(node, fileInfo, allNodes, remove_nodeList);
+            }
+        }
+        getAllNodes().removeAll(remove_nodeList);
+        latch.countDown();
+        Messages.sprintf("Files before dupcheck: " + start + " and after dup check it is now: " + getAllNodes().size());
 
-	}
+    }
 
-	private void findDups(Node node_ToFind, FileInfo fileInfo_toFind, ObservableList<Node> allNodes,
-			List<Node> remove_nodeList) {
-		boolean pass = false;
-		Iterator<Node> it = allNodes.iterator();
-		while (it.hasNext()) {
-			Node node = it.next();
-			if (node instanceof VBox && node.getId().equals("imageFrame")) {
-				FileInfo fileInfo = (FileInfo) node.getUserData();
+    private void findDups(Node node_ToFind, FileInfo fileInfo_toFind, ObservableList<Node> allNodes,
+                          List<Node> remove_nodeList) {
+        boolean pass = false;
+        Iterator<Node> it = allNodes.iterator();
+        while (it.hasNext()) {
+            Node node = it.next();
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
 
-				if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-					if (pass) {
-						if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-							Messages.sprintf("Node removed: " + fileInfo.getOrgPath() + " to find: "
-									+ fileInfo_toFind.getOrgPath());
-							remove_nodeList.add(node);
-						}
-					} else {
-						pass = true;
-					}
-				}
-			}
-		}
-	}
+                if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
+                    if (pass) {
+                        if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
+                            Messages.sprintf("Node removed: " + fileInfo.getOrgPath() + " to find: "
+                                    + fileInfo_toFind.getOrgPath());
+                            remove_nodeList.add(node);
+                        }
+                    } else {
+                        pass = true;
+                    }
+                }
+            }
+        }
+    }
 
-	public void deselectAllExifDataSelectors() {
-		for (EXIF_Data_Selector eds : getCameras_TableView().getItems()) {
-			eds.setIsShowing(false);
-		}
-		for (EXIF_Data_Selector eds : getDates_TableView().getItems()) {
-			eds.setIsShowing(false);
-		}
-		for (EXIF_Data_Selector eds : getEvents_TableView().getItems()) {
-			eds.setIsShowing(false);
-		}
-		for (EXIF_Data_Selector eds : getLocations_TableView().getItems()) {
-			eds.setIsShowing(false);
-		}
-	}
+    public void deselectAllExifDataSelectors() {
+        for (EXIF_Data_Selector eds : getCameras_TableView().getItems()) {
+            eds.setIsShowing(false);
+        }
+        for (EXIF_Data_Selector eds : getDates_TableView().getItems()) {
+            eds.setIsShowing(false);
+        }
+        for (EXIF_Data_Selector eds : getEvents_TableView().getItems()) {
+            eds.setIsShowing(false);
+        }
+        for (EXIF_Data_Selector eds : getLocations_TableView().getItems()) {
+            eds.setIsShowing(false);
+        }
+    }
 
-	/**
-	 * @return the selector_exec
-	 */
-	public final ScheduledExecutorService getSelector_exec() {
-		if (selector_exec.isShutdown() || selector_exec.isTerminated()) {
-			selector_exec = Executors.newScheduledThreadPool(1);
-		}
-		return selector_exec;
-	}
+    /**
+     * @return the selector_exec
+     */
+    public final ScheduledExecutorService getSelector_exec() {
+        if (selector_exec.isShutdown() || selector_exec.isTerminated()) {
+            selector_exec = Executors.newScheduledThreadPool(1);
+        }
+        return selector_exec;
+    }
 
-	public Connection getConnection() {
-		return connection;
-	}
-
-	private int checkIfRedDates(TilePane tilePane) {
-		int counter = 0;
-		for (Node n : tilePane.getChildren()) {
-			if (n instanceof VBox) {
-				if (n.getId().contains("imageFrame")) {
-					for (Node vbox : ((VBox) n).getChildren()) {
-						if (vbox instanceof HBox) {
-							for (Node hbox : ((HBox) vbox).getChildren()) {
-								if (hbox instanceof TextField) {
-									if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
-										counter++;
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-		return counter;
-	}
+    private int checkIfRedDates(TilePane tilePane) {
+        int counter = 0;
+        for (Node n : tilePane.getChildren()) {
+            if (n instanceof VBox) {
+                if (n.getId().contains("imageFrame")) {
+                    for (Node vbox : ((VBox) n).getChildren()) {
+                        if (vbox instanceof HBox) {
+                            for (Node hbox : ((HBox) vbox).getChildren()) {
+                                if (hbox instanceof TextField) {
+                                    if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
+                                        counter++;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return counter;
+    }
 
 }
