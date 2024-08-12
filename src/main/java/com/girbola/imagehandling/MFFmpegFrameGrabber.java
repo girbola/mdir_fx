@@ -1,6 +1,5 @@
 package com.girbola.imagehandling;
 
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.ImageUtils;
@@ -16,13 +15,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
+import net.coobird.thumbnailator.Thumbnails;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -54,18 +52,8 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
                 return null;
             }
 
-            int totalFrames = frameGrabber.getLengthInFrames();
             long totalLength = frameGrabber.getLengthInTime();
             List<Double> doubles = grabListOfTimeLine(totalLength);
-
-            Messages.sprintf("LOOOONG totltaLength: " + totalLength);
-
-            int frameStep = (int) Math.floor((double) totalFrames / (thumbnailCount + 1));
-            Messages.sprintf("========totalFrames= " + totalFrames + " frameStep: " + frameStep);
-//            if (frameStep > 5) {
-//                thumbnailCount = 1;
-//                frameStep = totalFrames / (thumbnailCount + 1);
-//            }
 
             List<BufferedImage> list = new ArrayList<>();
             for (int i = 0; i < thumbnailCount; i++) {
@@ -74,12 +62,16 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
                 frameGrabber.setFormat("jpg");
                 Frame frame = frameGrabber.grabImage();
                 Java2DFrameConverter converter = new Java2DFrameConverter();
-                BufferedImage bufferedImage = converter.getBufferedImage(frame);
 
-                if (bufferedImage != null) {
-                    list.add(bufferedImage);
+                BufferedImage bufferedImage = converter.getBufferedImage(frame);
+                BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 640);
+                if (bufferedImage1 != null) {
+                    list.add(bufferedImage1);
+                    bufferedImage = null;
+                    bufferedImage1 = null;
                 } else {
                     Messages.sprintfError("Cannot grab bufferedImage: " + path + " frame number: " + frameNumber);
+                    break;
                 }
             }
 
@@ -149,6 +141,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                 Messages.sprintf(" Showing video: " + timeLine.getCycleCount() + " File: " + fileInfo.getOrgPath() + videoPreview.getIndex());
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
+                Messages.sprintf("image.getWidth()::: " + image.getWidth());
                 Platform.runLater(() -> {
                     imageView.setImage(image);
                 });

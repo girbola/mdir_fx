@@ -491,6 +491,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 			return null;
 		}
 		if (!isDbConnected(connection)) {
+            Messages.sprintfError("No connection for thumbinfo ID: " + thumbInfo_ID);
 			return null;
 		}
 		ThumbInfo thumbInfo = null;

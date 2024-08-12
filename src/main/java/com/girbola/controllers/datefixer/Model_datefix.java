@@ -821,7 +821,6 @@ public class Model_datefix extends DateFixerModel {
                             FileInfo fileInfo = (FileInfo) n.getUserData();
 
                             if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-
                                 if (iv.getUserData() instanceof List<?>) {
                                     Messages.sprintf("iv.getUserData() was instanceof List<?>");
                                     ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
@@ -830,13 +829,11 @@ public class Model_datefix extends DateFixerModel {
                                     List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
                                     Messages.sprintf("buffList size is: " + buffList.size());
 
-                                    //ThumbInfo thumbInfoLoaded = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
                                     int counter = 0;
                                     for (BufferedImage bufImage : buffList) {
                                         if (bufImage == null) {
                                             continue;
                                         }
-                                        Messages.sprintf("WIDTH: " + bufImage.getWidth() + " BUFFFFFF " + bufImage.toString());
 
                                         try {
                                             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -846,12 +843,7 @@ public class Model_datefix extends DateFixerModel {
                                             baos.close();
                                             thumbInfo.setThumb_width(bufImage.getWidth());
                                             thumbInfo.setThumb_height(bufImage.getHeight());
-
                                             thumbInfo.getThumbs().add(counter, imageInByte);
-//
-//                                                if (thumbInfoLoaded.getThumbs().get(counter) != imageInByte) {
-//                                                    thumbInfo.getThumbs().add(counter, imageInByte);
-//                                                }
                                         } catch (Exception e) {
                                             Messages.sprintfError("Something went wrong with converting Bufferedimage to byte array: " + e.getMessage());
                                         }

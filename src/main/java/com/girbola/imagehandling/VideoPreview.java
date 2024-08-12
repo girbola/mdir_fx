@@ -20,10 +20,6 @@ public class VideoPreview {
     public VideoPreview(List<BufferedImage> buff_list, ImageView iv) {
         this.buff_list = buff_list;
         this.iv = iv;
-        for (int i = 0; i < buff_list.size(); i++) {
-            BufferedImage buff = buff_list.get(i);
-            Messages.sprintf("------Buff: " + buff);
-        }
     }
 
     public int getIndex() {
@@ -32,13 +28,9 @@ public class VideoPreview {
 
     public BufferedImage showNextBufferedImage() {
         index.getAndIncrement();
-        Messages.sprintf("showNextBufferedImage index: " + index.get());
         if (index.get() > (buff_list.size() - 1)) {
-            Messages.sprintf("INNNN is greater that buff_list.sze(): " + index.get());
             index.set(0);
         }
-        BufferedImage buff = buff_list.get(index.get());
-        Messages.sprintf("buff: " + buff);
         return buff_list.get(index.get());
     }
 

@@ -171,4 +171,37 @@ public class ImageUtils {
         g2d.dispose();
         return resized;
     }
+
+    private static BufferedImage scaleBufferedImage(BufferedImage image, int desiredWidth, int desiredHeight) {
+        BufferedImage scaledImage = new BufferedImage(desiredWidth, desiredHeight, BufferedImage.TYPE_INT_RGB);
+        scaledImage.getGraphics().drawImage(image.getScaledInstance(desiredWidth, desiredHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        return scaledImage;
+    }
+
+
+    public static BufferedImage scaleImageWithAspectRatio(BufferedImage originalImage, int maxWidth) {
+        int originalWidth = originalImage.getWidth();
+        int originalHeight = originalImage.getHeight();
+
+        // Calculate the new dimensions while maintaining the aspect ratio
+        int newWidth, newHeight;
+        if (originalWidth > originalHeight) {
+            newWidth = maxWidth;
+            newHeight = (int) (((double) maxWidth / originalWidth) * originalHeight);
+        } else {
+            newHeight = maxWidth;
+            newWidth = (int) (((double) maxWidth / originalHeight) * originalWidth);
+        }
+
+        // Create a new BufferedImage with the calculated dimensions
+        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+
+        // Scale the original image to the new dimensions
+        Graphics2D g2d = scaledImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.drawImage(originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH), 0, 0, null);
+        g2d.dispose();
+
+        return scaledImage;
+    }
 }
