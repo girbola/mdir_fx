@@ -3,6 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ContextMenu?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
@@ -223,6 +224,13 @@
                      <padding>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </padding>
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#openFolderInSystemFileManager" text="Open file in filemanager" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
             		</TableView>
                   <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER">
                      <children>

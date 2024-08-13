@@ -43,18 +43,27 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.Callback;
 import javafx.util.converter.NumberStringConverter;
 
+import java.awt.*;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Optional;
@@ -444,6 +453,18 @@ public class TableController {
     }
 
     @FXML
+    private void openFolderInSystemFileManager(ActionEvent event) {
+        Messages.sprintf("openFolderInSystemFileManager Event: " + event.getSource());
+        FolderInfo folderInfo = table.getSelectionModel().getSelectedItem();
+        Path path = Paths.get(folderInfo.getFolderPath());
+        try {
+            Desktop.getDesktop().open(path.toFile());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @FXML
     private void select_good_btn_action(ActionEvent event) {
         model_main.buttons().select_good_Table(table);
     }
@@ -628,6 +649,20 @@ public class TableController {
                 }
             }
         });
+//        table.setRowFactory(
+//                new Callback<TableView<FolderInfo>, TableRow<FolderInfo>>() {
+//                    @Override
+//                    public TableRow<FolderInfo> call(TableView<FolderInfo> tableView) {
+//
+//                        return null;
+//                    }
+//                });
+//        table.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+//            if (event.getButton() == MouseButton.SECONDARY) {
+//                ContextMenu contextMenu = new ContextMenu();
+//                Messages.sprintf("event.getTarget(): " +event.getTarget());
+//            }
+//        });
     }
 
 }
