@@ -681,3 +681,16 @@
 #selectTimeButton {
     -fx-background-color: transparent;
 }
+
+.dateFixerContextMenu {
+    -fx-font-smoothing-type: lcd;
+    -fx-font-size: 1.5em;
+    -fx-padding: 5px;
+}
+
+.context-menu {
+    -fx-background-color: #cd9c15;
+    -fx-text-fill: black;
+    -fx-font-smoothing-type: lcd;
+    -fx-padding: 5px;
+}

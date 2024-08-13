@@ -35,7 +35,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -44,6 +50,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -379,7 +388,7 @@ public class DateFixerController {
         model_datefix.getSelectionModel().clearAll();
         model_datefix.deselectAllExifDataSelectors();
 
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix,null);
+        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
 
     }
 
@@ -617,21 +626,32 @@ public class DateFixerController {
         df_tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 ContextMenu contextMenu = new ContextMenu();
-        MenuItem pickDateTime_Start = new MenuItem("Pick date&time start");
-        MenuItem pickDateTime_End = new MenuItem("Pick date&time end");
+                MenuItem pickDateTime_Start = new MenuItem(Main.bundle.getString("pickdateAndTimeStart"));
+                pickDateTime_Start.getStyleClass().add("dateFixerContextMenu");
+                MenuItem pickDateTime_End = new MenuItem(Main.bundle.getString("pickdateAndTimeEnd"));
+                pickDateTime_End.getStyleClass().add("dateFixerContextMenu");
+                MenuItem openFileLocation = new MenuItem(Main.bundle.getString("openFileLocation"));
+                openFileLocation.getStyleClass().add("dateFixerContextMenu");
 
-        Platform.runLater(() -> {
-            // TODO BUGI!!!!
-            contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
-            model_datefix.updateAllInfos(model_datefix.getTilePane());
-        });
+                Platform.runLater(() -> {
+                    contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End, openFileLocation);
+                    model_datefix.updateAllInfos(model_datefix.getTilePane());
+                });
+
                 if (event.getTarget() instanceof VBox vbox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
                     FileInfo fileInfo = (FileInfo) vbox.getUserData();
-                    Messages.sprintf("Doddiii: " + fileInfo.getOrgPath());
                     pickDateTime_Start.setOnAction(event2 -> model_datefix.setDateTime(
                             Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true));
                     pickDateTime_End.setOnAction(event2 -> model_datefix.setDateTime(
                             Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false));
+                    openFileLocation.setOnAction(event2 -> {
+                        Path path = Paths.get(fileInfo.getOrgPath()).getParent();
+                        try {
+                            Desktop.getDesktop().open(path.toFile());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
                     Platform.runLater(() -> {
                         contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
                     });
