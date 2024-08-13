@@ -626,12 +626,9 @@ public class DateFixerController {
         df_tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 ContextMenu contextMenu = new ContextMenu();
-                MenuItem pickDateTime_Start = new MenuItem(Main.bundle.getString("pickdateAndTimeStart"));
-                pickDateTime_Start.getStyleClass().add("dateFixerContextMenu");
-                MenuItem pickDateTime_End = new MenuItem(Main.bundle.getString("pickdateAndTimeEnd"));
-                pickDateTime_End.getStyleClass().add("dateFixerContextMenu");
-                MenuItem openFileLocation = new MenuItem(Main.bundle.getString("openFileLocation"));
-                openFileLocation.getStyleClass().add("dateFixerContextMenu");
+                MenuItem pickDateTime_Start = createMenuItem(Main.bundle.getString("pickdateAndTimeStart"));
+                MenuItem pickDateTime_End = createMenuItem(Main.bundle.getString("pickdateAndTimeEnd"));
+                MenuItem openFileLocation = createMenuItem(Main.bundle.getString("openFileLocation"));
 
                 Platform.runLater(() -> {
                     contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End, openFileLocation);
@@ -660,6 +657,12 @@ public class DateFixerController {
                 event.consume();
             }
         });
+    }
+
+    private MenuItem createMenuItem(String bundleText) {
+        MenuItem menuItem = new MenuItem(bundleText);
+        menuItem.getStyleClass().add("dateFixerContextMenu");
+        return menuItem;
     }
 
     // @formatter:off
