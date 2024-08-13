@@ -134,7 +134,7 @@ public class DateFixer extends Task<Void> {
         });
         dateFixPopulateGridPane_task.setOnSucceeded(event -> {
             sprintf("dateFixPopulateGridPane.setOnSucceeded");
-                LoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
+                DateFixLoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
         });
         dateFixPopulateGridPane_task.setOnFailed(event -> {
                 sprintf("dateFixPopulateGridPane.setOnFailed");

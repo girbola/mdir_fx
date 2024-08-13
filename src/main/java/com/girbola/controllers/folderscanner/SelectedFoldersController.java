@@ -8,18 +8,10 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.Populate;
-import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.filelisting.GetAllMediaFiles;
-import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.FolderScannerSQL;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,15 +23,9 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {

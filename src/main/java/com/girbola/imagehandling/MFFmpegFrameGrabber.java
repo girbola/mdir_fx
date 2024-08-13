@@ -65,7 +65,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
                 BufferedImage bufferedImage = converter.getBufferedImage(frame);
                 if (bufferedImage != null) {
-                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 640);
+                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 320);
                     list.add(bufferedImage1);
                     bufferedImage = null;
                     bufferedImage1 = null;

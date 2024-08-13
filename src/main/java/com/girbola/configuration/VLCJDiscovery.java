@@ -71,14 +71,14 @@ public class VLCJDiscovery {
 		}
 		Info info = Info.getInstance();
 
-//		Messages.sprintf("vlcj             : %s%n", info.vlcjVersion() != null ? info.vlcjVersion() : "<version not available>");
-//		Messages.sprintf("os               : %s%n", (info.os()));
-//		Messages.sprintf("java             : %s%n", (info.javaVersion()));
-//		Messages.sprintf("java.home        : %s%n", (info.javaHome()));
-//		Messages.sprintf("jna.library.path : %s%n", (info.jnaLibraryPath()));
-//		Messages.sprintf("java.library.path: %s%n", (info.javaLibraryPath()));
-//		Messages.sprintf("PATH             : %s%n", (info.path()));
-//		Messages.sprintf("VLC_PLUGIN_PATH  : %s%n", (info.pluginPath()));
+		Messages.sprintf("vlcj             : %s%n", info.vlcjVersion() != null ? info.vlcjVersion() : "<version not available>");
+		Messages.sprintf("os               : %s%n", (info.os()));
+		Messages.sprintf("java             : %s%n", (info.javaVersion()));
+		Messages.sprintf("java.home        : %s%n", (info.javaHome()));
+		Messages.sprintf("jna.library.path : %s%n", (info.jnaLibraryPath()));
+		Messages.sprintf("java.library.path: %s%n", (info.javaLibraryPath()));
+		Messages.sprintf("PATH             : %s%n", (info.path()));
+		Messages.sprintf("VLC_PLUGIN_PATH  : %s%n", (info.pluginPath()));
 
 		if (RuntimeUtil.isNix()) {
 			Messages.sprintf(" LD_LIBRARY_PATH  : %s%n", (info.ldLibraryPath()));

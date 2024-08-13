@@ -759,9 +759,6 @@ public class Model_datefix extends DateFixerModel {
                 event.consume();
 //				return;
             } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-//				Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-//				stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-//				Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
                 Messages.sprintf("No PRESSED: NO changes saved");
 
                 Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
@@ -780,6 +777,7 @@ public class Model_datefix extends DateFixerModel {
             Messages.sprintf("No changes made");
             Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
             Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+
             event.consume();
         }
         getSelectionModel().clearAll();

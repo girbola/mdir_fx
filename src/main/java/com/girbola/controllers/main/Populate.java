@@ -59,8 +59,6 @@ public class Populate {
             sprintf("getSelection_FolderScanner list were empty");
             return;
         }
-/*        model_main.tables().getSortIt_table().getItems().clear();
-        model_main.tables().getSorted_table().getItems().clear();*/
 
         /*
          * Load from selectedFolder list Sort to tables Calculate tables content
@@ -113,24 +111,24 @@ public class Populate {
 
             Collections.sort(fileList);
 
-            Task<Integer> sorter = new Sorter(model_main, fileList);
-            loadingProcess_task.setTask(sorter);
-            sorter.setOnSucceeded(sorterSuccess -> {
-                Task<Void> calculateFolderContent = loadContentToContainer(loadingProcess_task, sorter);
+            Task<Integer> sorterTask = new Sorter(model_main, fileList);
+            loadingProcess_task.setTask(sorterTask);
+            sorterTask.setOnSucceeded(sorterSuccess -> {
+                Task<Void> calculateFolderContent = loadContentToContainer(loadingProcess_task, sorterTask);
                 exec[getExecCounter()].submit(calculateFolderContent);
             });
-            sorter.setOnCancelled(sorterCancelled -> {
-                sprintf("sorter.setOnCancelled");
+            sorterTask.setOnCancelled(sorterCancelled -> {
+                loadingProcess_task.setMessage("CANCELLED...");
+                sprintf("sorterTask.setOnCancelled");
                 loadingProcess_task.closeStage();
             });
-            sorter.setOnFailed(sorterFailed -> {
+            sorterTask.setOnFailed(sorterFailed -> {
                 loadingProcess_task.setMessage("FAILED...");
-                sprintf("sorter.setOnFailed");
+                sprintf("sorterTask.setOnFailed");
                 loadingProcess_task.closeStage();
             });
 
-//            exec[getExecCounter()].execute(sorter);
-            Thread sorter_th = new Thread(sorter, "sorter_th");
+            Thread sorter_th = new Thread(sorterTask, "sorter_th");
             sprintf("sorter_th: " + sorter_th.getName());
             sorter_th.start();
         });

@@ -101,13 +101,6 @@ public class AddContentToDateFixContainer extends Task<Integer> {
 
     }
 
-    private FileInfo getFileInfo(StackPane sp) {
-        if (sp.getUserData() != null) {
-            return (FileInfo) sp.getUserData();
-        }
-        return null;
-    }
-
     @Override
     protected void failed() {
         super.failed();
@@ -121,34 +114,6 @@ public class AddContentToDateFixContainer extends Task<Integer> {
     @Override
     protected void succeeded() {
         super.succeeded();
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem pickDateTime_Start = new MenuItem("Pick date&time start");
-        MenuItem pickDateTime_End = new MenuItem("Pick date&time end");
-
-        Platform.runLater(() -> {
-            // TODO BUGI!!!!
-            contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End);
-//				model_datefix.getScrollPane().setVvalue(-1);
-//				model_datefix.getScrollPane().setVvalue(0);
-
-            model_datefix.updateAllInfos(model_datefix.getTilePane());
-            loadingProcess_Task.closeStage();
-        });
         loadingProcess_Task.closeStage();
-
-        tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                if (event.getTarget() instanceof VBox vbox && ((Node) event.getTarget()).getId().equals("imageFrame")) {
-                    FileInfo fileInfo = (FileInfo) vbox.getUserData();
-                    pickDateTime_Start.setOnAction(event2 -> model_datefix.setDateTime(
-                            Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true));
-                    pickDateTime_End.setOnAction(event2 -> model_datefix.setDateTime(
-                            Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false));
-                    contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
-                }
-            } else {
-                event.consume();
-            }
-        });
     }
 }

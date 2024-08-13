@@ -7,6 +7,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.filelisting.SubFolders;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -39,18 +40,21 @@ public class SubList extends Task<List<Path>> {
 
 	private static void calculate(Path p) throws IOException {
 		sprintf("SubList - calculate: " + p);
-		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
-		if(ds == null) {
-			Messages.sprintfError("Calculate has failed. Cannot read folder: " + p);
-		}
-		for (Path path : ds) {
+		SubFolders subFolders = new SubFolders();
+		List<Path> list = SubFolders.subFolders(p);
+
+//		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
+//		if(ds == null) {
+//			Messages.sprintfError("Calculate has failed. Cannot read folder: " + p);
+//		}
+		for (Path path : list) {
 			if(Main.getProcessCancelled()) {
 				break;
 			}
 			if (ValidatePathUtils.validFolder(path)) {
 				sprintf("----calculating: " + path);
-				if (!list.contains(path)) {
-					list.add(path);
+				if (!SubList.list.contains(path)) {
+					SubList.list.add(path);
 					calculate(path);
 				}
 			}
@@ -60,6 +64,7 @@ public class SubList extends Task<List<Path>> {
 	@Override
 	protected List<Path> call() throws Exception {
 		for (Path p : selectedFolderScanner_list) {
+			Messages.sprintf("PATHHHTHTH: " + p.toString());
 			if(Main.getProcessCancelled()) {
 				break;
 			}
