@@ -15,7 +15,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import net.coobird.thumbnailator.Thumbnails;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -26,6 +25,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.girbola.videothumbnailing.JCodecVideoThumbUtils.grabListOfTimeLine;
 
@@ -42,7 +42,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
     }
 
     public List<BufferedImage> frameGrabber(Path path) {
-        final int thumbnailCount = 5; // Number of thumbnails to generate
+        //final int thumbnailCount = 5; // Number of thumbnails to generate
 
         try (FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(path.toFile())) {
             try {
@@ -56,16 +56,16 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             List<Double> doubles = grabListOfTimeLine(totalLength);
 
             List<BufferedImage> list = new ArrayList<>();
-            for (int i = 0; i < thumbnailCount; i++) {
-                long frameNumber = (long) Math.floor(doubles.get(i));
+            for (Double timeStamp : doubles) {
+                long frameNumber = (long) Math.floor(timeStamp);
                 frameGrabber.setTimestamp(frameNumber);
                 frameGrabber.setFormat("jpg");
                 Frame frame = frameGrabber.grabImage();
                 Java2DFrameConverter converter = new Java2DFrameConverter();
 
                 BufferedImage bufferedImage = converter.getBufferedImage(frame);
-                BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 640);
-                if (bufferedImage1 != null) {
+                if (bufferedImage != null) {
+                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 640);
                     list.add(bufferedImage1);
                     bufferedImage = null;
                     bufferedImage1 = null;
@@ -79,7 +79,8 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             frameGrabber.release();
 
             return list;
-        } catch (IOException e) {
+        } catch (
+                IOException e) {
             Messages.sprintf("Problem to grab thumbnails from video. MESSAGE: " + e.getMessage());
             return null;
         }

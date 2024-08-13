@@ -14,8 +14,8 @@ public class JCodecVideoThumbMakerTest {
 //        //grabber.start();
 //
 //
-//        System.out.println("getFormat: " + grabber.getImageWidth());
-//        System.out.println("2AERAERAGERA: " + grabber.toString());
+//        Messages.sprintf("getFormat: " + grabber.getImageWidth());
+//        Messages.sprintf("2AERAERAGERA: " + grabber.toString());
         //grabber.stop();
 
     }

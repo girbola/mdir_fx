@@ -99,7 +99,7 @@ public class VLCPlayerController {
         mediaPlayer.videoSurface().set(new JavaFxVideoSurface());
 
         volume_slider.valueProperty().addListener((observable, oldValue, newValue) -> {
-            System.out.println("volumeee: " + newValue);
+            Messages.sprintf("volumeee: " + newValue);
             Platform.runLater(() -> {
                 mediaPlayer.audio().setVolume(newValue.intValue());
             });
@@ -240,7 +240,7 @@ public class VLCPlayerController {
 
         @Override
         public void timeChanged(MediaPlayer mp, long l) {
-            // System.out.println("Time now is: " +
+            // Messages.sprintf("Time now is: " +
             // hhmmss_dots.format(mediaPlayer.status().time()) + " Long is: " + l);
         }
 
@@ -356,7 +356,7 @@ public class VLCPlayerController {
 
         @Override
         public void volumeChanged(MediaPlayer mediaPlayer, float volume) {
-            System.out.println("volume: " + volume);
+            Messages.sprintf("volume: " + volume);
         }
 
         @Override

@@ -1,5 +1,7 @@
 package com.girbola.controllers.datefixer.utils;
 
+import com.girbola.messages.Messages;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 public class DateFixCommonUtils {
 
     public static ArrayList<LocalDateTime> createDateList_logic(int files, LocalDateTime start, LocalDateTime end) {
-        System.out.println("createDateList_logic");
+        Messages.sprintf("createDateList_logic");
 
         Duration duration = Duration.between(start, end);
 

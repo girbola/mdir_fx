@@ -198,11 +198,11 @@ public class Conversion {
 			number.append(value);
 			for (int i = 1; i < digits; i++) {
 				if (i == digits) {
-					System.out.println("number is: " + number);
+					Messages.sprintf("number is: " + number);
 					return number.toString();
 				} else {
 					number.insert(0, "0");
-					System.out.println("inserting number: " + number);
+					Messages.sprintf("inserting number: " + number);
 				}
 			}
 			return number.toString();

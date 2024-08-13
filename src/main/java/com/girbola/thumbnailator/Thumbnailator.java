@@ -52,7 +52,7 @@ public class Thumbnailator {
 		long start = System.currentTimeMillis();
 		try {
 			Thumbnails.of(source).width(width).keepAspectRatio(true).rotate(rotate).toFile(destination.toFile());
-			System.out.println("thumbnails done: " + (System.currentTimeMillis() - start) + " ms ");
+			Messages.sprintf("thumbnails done: " + (System.currentTimeMillis() - start) + " ms ");
 			if (Files.exists(destination)) {
 				return true;
 			} else {

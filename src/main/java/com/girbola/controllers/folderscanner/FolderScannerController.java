@@ -10,6 +10,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.messages.Messages;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -78,7 +79,7 @@ public class FolderScannerController {
         for (TreeItem<File> fil : drives_rootItem.getChildren()) {
             if (!fil.getChildren().isEmpty()) {
                 for (TreeItem<File> c_fil : fil.getChildren()) {
-                    System.out.println("c_fil.getValue(); " + c_fil);
+                    Messages.sprintf("c_fil.getValue(); " + c_fil);
                 }
             }
         }

@@ -696,34 +696,23 @@ public class Model_datefix extends DateFixerModel {
 
                 if (Main.conf.isSavingThumb()) {
 
-                    Task<List<ThumbInfo>> task = new Task<>() {
-                        @Override
-                        protected List<ThumbInfo> call() throws Exception {
-                            List<ThumbInfo> thumbInfos = saveThumbs(tilePane);
-                            return thumbInfos;
-                        }
-                    };
+//                    Task<List<ThumbInfo>> task = new Task<>() {
+//                        @Override
+//                        protected List<ThumbInfo> call() throws Exception {
+//                            List<ThumbInfo> thumbInfos = saveThumbs(tilePane);
+//                            return thumbInfos;
+//                        }
+//                    };
+                    Main.setProcessCancelled(true);
+                    getRenderVisibleNode().stopTimeLine();
+                    ConcurrencyUtils.stopExecThreadNow();
+
+                    Task<List<ThumbInfo>> task = new SaveThumbInfos(connection, currentFolderPath, tilePane);
+
                     task.setOnSucceeded(workerStateEvent -> {
-                        List<ThumbInfo> thumbInfos = null;
-                        try {
-                            thumbInfos = task.get();
-                        } catch (InterruptedException | ExecutionException e) {
-                            Messages.sprintfError("Cannot handle thumbinfos");
-                            throw new RuntimeException(e);
-                        }
+                        Messages.sprintf("saveThumb were succeeded: " + workerStateEvent.getSource().getMessage());
 
-                        Messages.sprintf("Thumbinfo list size is: " + thumbInfos.size());
-                        connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
-                        SQL_Utils.insertThumbInfoListToDatabase(connection, thumbInfos);
-                        try {
-                            connection.commit();
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        } finally {
-                            SQL_Utils.closeConnection(connection);
-                            event.consume();
-                        }
-
+                        event.consume();
                     });
                     task.setOnFailed(workerStateEvent -> {
                         event.consume();
@@ -800,88 +789,6 @@ public class Model_datefix extends DateFixerModel {
             Messages.sprintf("Changing back to main");
         });
 
-    }
-
-    public List<ThumbInfo> saveThumbs(TilePane tilePane) {
-        if (!Main.conf.isSavingThumb()) {
-            Messages.sprintf("isSavingThumb() were turned off");
-            return null;
-        }
-
-        Main.setProcessCancelled(true);
-        getRenderVisibleNode().stopTimeLine();
-        ConcurrencyUtils.stopExecThreadNow();
-        List<ThumbInfo> thumbInfo_list = new ArrayList<>();
-        for (Node n : tilePane.getChildren()) {
-            if (n instanceof VBox) {
-                for (Node vbox : ((VBox) n).getChildren()) {
-                    if (vbox instanceof StackPane) {
-                        ImageView iv = (ImageView) vbox.lookup("#imageView");
-                        if (iv.getImage() != null) {
-                            FileInfo fileInfo = (FileInfo) n.getUserData();
-
-                            if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                                if (iv.getUserData() instanceof List<?>) {
-                                    Messages.sprintf("iv.getUserData() was instanceof List<?>");
-                                    ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
-                                            fileInfo.getFileInfo_id());
-
-                                    List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
-                                    Messages.sprintf("buffList size is: " + buffList.size());
-
-                                    int counter = 0;
-                                    for (BufferedImage bufImage : buffList) {
-                                        if (bufImage == null) {
-                                            continue;
-                                        }
-
-                                        try {
-                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                            ImageIO.write(bufImage, "jpg", baos);
-                                            baos.flush();
-                                            byte[] imageInByte = baos.toByteArray();
-                                            baos.close();
-                                            thumbInfo.setThumb_width(bufImage.getWidth());
-                                            thumbInfo.setThumb_height(bufImage.getHeight());
-                                            thumbInfo.getThumbs().add(counter, imageInByte);
-                                        } catch (Exception e) {
-                                            Messages.sprintfError("Something went wrong with converting Bufferedimage to byte array: " + e.getMessage());
-                                        }
-                                    }
-                                    thumbInfo_list.add(thumbInfo);
-                                }
-                            } else {
-                                Messages.sprintf("Picture: " + fileInfo.getOrgPath());
-                                ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
-                                        fileInfo.getFileInfo_id());
-                                if (!thumbInfo.getThumbs().isEmpty()) {
-                                    WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
-                                    thumbInfo.setThumb_fast_width(writableImage.getWidth());
-                                    thumbInfo.setThumb_fast_height(writableImage.getHeight());
-                                    ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-
-                                    try {
-                                        ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png",
-                                                byteArrayOS);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    byte[] imageByteArray = byteArrayOS.toByteArray();
-                                    try {
-                                        byteArrayOS.close();
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(Model_datefix.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    thumbInfo.getThumbs().add(imageByteArray);
-                                    thumbInfo_list.add(thumbInfo);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return thumbInfo_list;
     }
 
     public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {

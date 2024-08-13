@@ -286,7 +286,7 @@ public class Collect_DialogController {
 
 //		.addListener(((options, oldValue, newValue) -> {
 //			FileInfo f = (FileInfo) newValue.getFileInfo();
-//			System.out.println(f.getOrgPath());
+//			Messages.sprintf(f.getOrgPath());
 //		}));
 		location_cmb.setItems(model_CollectDialog.obs_Location);
 //		event_cmb.set

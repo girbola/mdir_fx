@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.folderscanner;
 
+import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -42,7 +43,7 @@ public class CreateTitledPane extends Task<Void> {
     @Override
     protected Void call() throws Exception {
 
-        System.out.println("Processing rootfolder_obs: " + path);
+        Messages.sprintf("Processing rootfolder_obs: " + path);
         if (!titledPaneExists(analyzeList_vbox, path)) {
             TitledPane titledPane = new TitledPane(path.toString(), createTreeTableView(path));
             titledPane.setId("titledPane");
@@ -50,7 +51,7 @@ public class CreateTitledPane extends Task<Void> {
                 try {
                     analyzeList_vbox.getChildren().add(titledPane);
                 } catch (Exception ex) {
-                    System.out.println("ex: " + ex.getMessage());
+                    Messages.sprintf("ex: " + ex.getMessage());
                 }
             });
         }

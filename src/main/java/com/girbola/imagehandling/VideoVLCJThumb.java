@@ -1,5 +1,6 @@
 package com.girbola.imagehandling;
 
+import com.girbola.messages.Messages;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 
@@ -22,7 +23,7 @@ public class VideoVLCJThumb {
         // Convert milliseconds to seconds
         long videoLengthInSeconds = videoLength / 1000;
 
-        System.out.println("Video length: " + videoLengthInSeconds + " seconds" + " videoLength: " + videoLength);
+        Messages.sprintf("Video length: " + videoLengthInSeconds + " seconds" + " videoLength: " + videoLength);
 
         // Release resources
         mediaPlayer.release();

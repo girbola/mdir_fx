@@ -298,7 +298,7 @@ public class Tables {
 	public boolean checkIfExist(TableView<FolderInfo> tableTarget, String f) {
 		for (FolderInfo folder : tableTarget.getItems()) {
 			if (folder.getFolderPath().equals(f)) {
-				// System.out.println("folder listing: " + folder);
+				// Messages.sprintf("folder listing: " + folder);
 				return true;
 				
 			}

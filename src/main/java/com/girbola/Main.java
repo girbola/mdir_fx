@@ -114,8 +114,8 @@ public class Main extends Application {
                 conf.createProgramPaths();
                 conf.loadConfig();
                 Messages.sprintf("CONFIG contains: " + conf.toString());
-                System.out.println("Java version: " + System.getProperty("java.version"));
-                System.out.println("JavaFX version: " + System.getProperty("javafx.version"));
+                Messages.sprintf("Java version: " + System.getProperty("java.version"));
+                Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
 
                 Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
                         + conf.getWorkDir());
@@ -182,7 +182,7 @@ public class Main extends Application {
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
-Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
+
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "
                         + conf.getConfiguration_db_fileName());
@@ -221,7 +221,7 @@ Messages.sprintf("CAEONRGOAERGNAERg: " + conf.toString());
 
                     getMain_stage().maximizedProperty().addListener((ov, t, t1) -> {
 //									model_main.tables().getHideButtons().updateVisibleTableWidths();
-                        System.out.println("model_main.tables().getHideButtons().updateTableVisible();: "
+                        Messages.sprintf("model_main.tables().getHideButtons().updateTableVisible();: "
                                 + t1.booleanValue());
                     });
 

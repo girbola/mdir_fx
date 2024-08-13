@@ -1,6 +1,7 @@
 package com.girbola.vlcj;
 
 
+import com.girbola.messages.Messages;
 import uk.co.caprica.vlcj.factory.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.base.MediaPlayer;
 import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
@@ -50,7 +51,7 @@ public class VLCJThumbTest {
 
             @Override
             public void snapshotTaken(MediaPlayer mediaPlayer, String filename) {
-                System.out.println("snapshotTaken(filename=" + filename + ")");
+                Messages.sprintf("snapshotTaken(filename=" + filename + ")");
                 snapshotTakenLatch.countDown();
             }
         });

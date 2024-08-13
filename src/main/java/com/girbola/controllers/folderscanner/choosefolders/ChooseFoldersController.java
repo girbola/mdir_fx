@@ -9,6 +9,7 @@ package com.girbola.controllers.folderscanner.choosefolders;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.filelisting.ValidatePathUtils;
+import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -126,7 +127,7 @@ public class ChooseFoldersController {
 					DosFileAttributes dfa = Files.readAttributes(path, DosFileAttributes.class);
 					if (!Files.isHidden(path) && Files.isReadable(path) && !dfa.isSystem()
 							&& !ValidatePathUtils.isInSkippedFolderList(path)) {
-						System.out.println("Gonna create new subDir treeview");
+						Messages.sprintf("Gonna create new subDir treeview");
 						CheckBoxTreeItem<Path> subDirectory = createCheckBoxTreeItem(path);
 						getSubLeafs(path, subDirectory);
 						dirs.add(subDirectory);

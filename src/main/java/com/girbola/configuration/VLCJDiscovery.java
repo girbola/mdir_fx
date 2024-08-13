@@ -30,19 +30,19 @@ public class VLCJDiscovery {
 		NativeDiscovery dis = new NativeDiscovery() {
 			@Override
 			protected void onFound(String path, NativeDiscoveryStrategy strategy) {
-				System.out.println("Found; " + " path: " + path + " strategy: " + strategy);
+				Messages.sprintf("Found; " + " path: " + path + " strategy: " + strategy);
 			}
 			@Override
 			protected void onNotFound() {
-				System.out.println("Native not found");
+				Messages.sprintf("Native not found");
 			}
 		};
 		/*	if (path != null) {
-				System.out.println("Path were not null");
+				Messages.sprintf("Path were not null");
 				if (Files.exists(path)) {
-					System.out.println("Path were existed");
+					Messages.sprintf("Path were existed");
 					NativeLibrary.addSearchPath("libvlc", Main.conf.getVlcPath());
-					System.out.println("addSearchPath done");
+					Messages.sprintf("addSearchPath done");
 				}
 			} else {
 				String discoPath = dis.discoveredPath();
@@ -53,7 +53,7 @@ public class VLCJDiscovery {
 		boolean found = dis.discover(); //new NativeDiscovery().discover();
 		Messages.sprintf("Found?: " + found);
 		if (found) {
-			System.out.println("VLC found? " + found + " discoveredPath: " + dis.discoveredPath());
+			Messages.sprintf("VLC found? " + found + " discoveredPath: " + dis.discoveredPath());
 			Main.conf.setVlcPath(dis.discoveredPath());
 //			checkVlcPlayerVersion();
 			return true;
@@ -71,14 +71,14 @@ public class VLCJDiscovery {
 		}
 		Info info = Info.getInstance();
 
-		Messages.sprintf("vlcj             : %s%n", info.vlcjVersion() != null ? info.vlcjVersion() : "<version not available>");
-		Messages.sprintf("os               : %s%n", (info.os()));
-		Messages.sprintf("java             : %s%n", (info.javaVersion()));
-		Messages.sprintf("java.home        : %s%n", (info.javaHome()));
-		Messages.sprintf("jna.library.path : %s%n", (info.jnaLibraryPath()));
-		Messages.sprintf("java.library.path: %s%n", (info.javaLibraryPath()));
-		Messages.sprintf("PATH             : %s%n", (info.path()));
-		Messages.sprintf("VLC_PLUGIN_PATH  : %s%n", (info.pluginPath()));
+//		Messages.sprintf("vlcj             : %s%n", info.vlcjVersion() != null ? info.vlcjVersion() : "<version not available>");
+//		Messages.sprintf("os               : %s%n", (info.os()));
+//		Messages.sprintf("java             : %s%n", (info.javaVersion()));
+//		Messages.sprintf("java.home        : %s%n", (info.javaHome()));
+//		Messages.sprintf("jna.library.path : %s%n", (info.jnaLibraryPath()));
+//		Messages.sprintf("java.library.path: %s%n", (info.javaLibraryPath()));
+//		Messages.sprintf("PATH             : %s%n", (info.path()));
+//		Messages.sprintf("VLC_PLUGIN_PATH  : %s%n", (info.pluginPath()));
 
 		if (RuntimeUtil.isNix()) {
 			Messages.sprintf(" LD_LIBRARY_PATH  : %s%n", (info.ldLibraryPath()));

@@ -49,10 +49,10 @@ public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
 
         if (selected) {
             // Perform some action when selected
-            System.out.println("Selected: " + path.toFile().getAbsolutePath());
+            Messages.sprintf("Selected: " + path.toFile().getAbsolutePath());
         } else {
             // Perform some action when deselected
-            System.out.println("Deselected: " + path.toFile().getAbsolutePath());
+            Messages.sprintf("Deselected: " + path.toFile().getAbsolutePath());
         }
     }
 }

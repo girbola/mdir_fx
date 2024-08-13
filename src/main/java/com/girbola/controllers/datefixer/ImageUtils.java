@@ -67,7 +67,7 @@ public class ImageUtils {
 
 			stage.show();
 		} catch (IOException e) {
-			System.out.println(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
+			Messages.sprintf(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
 			// Messages.errorSmth(ERROR + " e: " + e.getMessage(), Misc_GUI.getLineNumber(),
 			// true);
 		}
@@ -96,7 +96,7 @@ public class ImageUtils {
 
 			stage.show();
 		} catch (IOException e) {
-			System.out.println(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
+			Messages.sprintf(ERROR + " e: " + e.getMessage() + " line: " + Misc.getLineNumber());
 			// Messages.errorSmth(ERROR + " e: " + e.getMessage(), Misc_GUI.getLineNumber(),
 			// true);
 		}
@@ -130,7 +130,7 @@ public class ImageUtils {
 					@Override
 					public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue,
 							Boolean newValue) {
-						System.out.println("focus? " + newValue);
+						Messages.sprintf("focus? " + newValue);
 						if (!newValue) {
 							vlcPlayerController.stop();
 							stage.close();

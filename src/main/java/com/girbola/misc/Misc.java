@@ -106,14 +106,14 @@ public class Misc {
 	 * @throws IOException
 	 */
 	public static void saveObject(Object obj, File folder) throws IOException {
-		System.out.println("foldername is: " + folder);
+		Messages.sprintf("foldername is: " + folder);
 		try {
 			FileOutputStream fileOut = new FileOutputStream(folder);
 			ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
 			objectOut.writeObject(obj);
 			objectOut.close();
 
-			System.out.println("The Object  was succesfully written to a file");
+			Messages.sprintf("The Object  was succesfully written to a file");
 		} catch (Exception ex) {
 			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
 		}

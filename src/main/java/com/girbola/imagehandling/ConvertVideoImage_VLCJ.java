@@ -161,7 +161,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 			imageView.setImage(videoPreview.getImage(0));
 			imageView.setUserData(bufferedImageList);
 			rootPane.setOnMouseEntered(event -> {
-				System.out.println("m e");
+				Messages.sprintf("m e");
 				timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
 					Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
 					Platform.runLater(() -> imageView.setImage(image));

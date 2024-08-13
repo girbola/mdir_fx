@@ -64,7 +64,7 @@ public class Configuration extends Configuration_defaults {
 	}
 
 	public Configuration() {
-		sprintf("Configuration instantiated...");
+		System.out.println("Configuration instantiated...");
 	}
 
 	public void loadConfig() {
@@ -144,8 +144,7 @@ public class Configuration extends Configuration_defaults {
 		Messages.sprintf("loadConfig_GUI Started: " + Main.conf.getAppDataPath());
 		Connection connection = null;
 		boolean createDatabase = false;
-		Path configFile = Paths
-				.get(Main.conf.getAppDataPath() + File.separator);
+		Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator);
 		configFile.toFile().setWritable(true);
 		configFile.toFile().setReadable(true);
 		

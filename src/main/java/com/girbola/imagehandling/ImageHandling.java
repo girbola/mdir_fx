@@ -202,7 +202,7 @@ public class ImageHandling {
 				try {
 					is = ImageIO.createImageInputStream(path.toFile());
 					if (is == null || is.length() == 0) {
-						System.out.println("Image is null");
+						Messages.sprintf("Image is null");
 					}
 
 					Iterator<ImageReader> iterator = ImageIO.getImageReaders(is);
@@ -243,12 +243,12 @@ public class ImageHandling {
 		int ww = bufferedImage_src.getWidth();
 		int hh = bufferedImage_src.getHeight();
 		int[] ys = new int[wanted_HEIGHT];
-		System.out.println("YS is: " + ys);
+		Messages.sprintf("YS is: " + ys);
 		for (y = 0; y < wanted_HEIGHT; y++) {
 			// y 1 hh 3168 ys[y] wanted_HEIGHT 7542
 			// 1 * 3168 / 7542
 			ys[y] = y * hh / wanted_HEIGHT;
-			// System.out.println(" y " + y + " hh " + hh + " wanted_HEIGHT " +
+			// Messages.sprintf(" y " + y + " hh " + hh + " wanted_HEIGHT " +
 			// wanted_HEIGHT + " ys[y] " + ys[y]);
 		}
 		for (x = 0; x < wanted_WIDTH; x++) {

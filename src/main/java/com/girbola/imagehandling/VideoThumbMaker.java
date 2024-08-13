@@ -89,7 +89,7 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
         imageView.setUserData(list);
 
         rootPane.setOnMouseEntered(event -> {
-            System.out.println("m e");
+            Messages.sprintf("m e");
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
                 Platform.runLater(() -> imageView.setImage(image));
