@@ -653,8 +653,6 @@ public class DateFixerController {
                         contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
                     });
                 }
-            } else {
-                event.consume();
             }
         });
     }

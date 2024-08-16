@@ -115,7 +115,7 @@ public class RenderVisibleNode {
             }
         }
 
-        checkVisible(scrollPane);
+        checkVisible();
 
         if (!map.isEmpty()) {
             exec_multi = Executors.newCachedThreadPool(r -> {
@@ -150,7 +150,7 @@ public class RenderVisibleNode {
                         if (imageView.getImage() == null) {
                             if (FileUtils.supportedMediaFormat(file.toFile())) {
                                 ThumbInfo thumbInfo = SQL_Utils.loadThumbInfo(connection, fileInfo.getFileInfo_id());
-                                int value = handle_thumb(fileInfo, thumbInfo, Main.conf.isBetterQualityThumbs());
+                                int value = handle_thumb(fileInfo, thumbInfo);
                                 /*
                                  * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.
                                  * Create
@@ -262,10 +262,9 @@ public class RenderVisibleNode {
      *
      * @param fileInfo
      * @param thumbInfo
-     * @param betterQuality
      * @return
      */
-    private int handle_thumb(FileInfo fileInfo, ThumbInfo thumbInfo, boolean betterQuality) {
+    private int handle_thumb(FileInfo fileInfo, ThumbInfo thumbInfo) {
         if (thumbInfo == null) {
             Messages.sprintf("thumbsInfo were null! " + fileInfo.getOrgPath());
             return 1;
@@ -286,8 +285,8 @@ public class RenderVisibleNode {
             return 0;
         }
     }
+    private synchronized void checkVisible() {
 
-    private void checkVisible(ScrollPane scrollPane) {
         map.clear();
         Bounds paneBounds = scrollPane.localToScene(scrollPane.getBoundsInParent());
         sprintf("Scrollpane id is: " + scrollPane.getContent());
