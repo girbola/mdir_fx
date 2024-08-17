@@ -36,8 +36,7 @@ public class DateFix_Utils {
 		return cameras_obs;
 	}
 
-	@Deprecated
-	public void updateCamera_list_(List<FileInfo> fileInfo_list) {
+	public void updateCamera_list(List<FileInfo> fileInfo_list) {
 		List<Map<String, Integer>> list_map = new ArrayList<>();
 		List<String> camera_list = new ArrayList<>();
 
@@ -78,8 +77,7 @@ public class DateFix_Utils {
 		}
 	}
 
-	@Deprecated
-	public void createCamera_list_(List<FileInfo> fileInfo_list) {
+	public void createCamera_list(List<FileInfo> fileInfo_list) {
 		List<Map<String, Integer>> list_map = new ArrayList<>();
 		List<String> camera_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
@@ -271,8 +269,7 @@ public class DateFix_Utils {
 		}
 	}
 
-	@Deprecated
-	public void createEvent_list_(List<FileInfo> fileInfo_list) {
+	public void createEvent_list(List<FileInfo> fileInfo_list) {
 		List<Map<String, Integer>> list_map = new ArrayList<>();
 
 		List<String> events_list = new ArrayList<>();
@@ -305,8 +302,7 @@ public class DateFix_Utils {
 
 	}
 
-	@Deprecated
-	public void createLocation_list_(List<FileInfo> fileInfo_list) {
+	public void createLocation_list(List<FileInfo> fileInfo_list) {
 		List<Map<String, Integer>> list_map = new ArrayList<>();
 		List<String> locations_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {

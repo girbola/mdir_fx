@@ -1,79 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
-	<children>
-      <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <content>
-            <VBox fx:id="selector_root" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" spacing="1.0">
-               <children>
-                  <TitledPane fx:id="dates_titledPane" text="%dates" VBox.vgrow="NEVER">
-                     <content>
-            								<TableView fx:id="dates_tableView" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="200.0" styleClass="metadataTable">
-            									<columns>
-            										<TableColumn fx:id="dates_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
-            										<TableColumn fx:id="dates_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%dates" />
-            										<TableColumn fx:id="dates_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
-            									</columns>
-            									<columnResizePolicy>
-            										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-            									</columnResizePolicy>
-                           <padding>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </padding>
-            								</TableView>
-                     </content>
-                  </TitledPane>
-                  <TitledPane fx:id="cameras_titledPane" text="%cameras" VBox.vgrow="NEVER">
-                     <content>
-            								<TableView fx:id="cameras_tableView" prefHeight="200.0" styleClass="metadataTable">
-            									<columns>
-            										<TableColumn fx:id="cameras_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
-            										<TableColumn fx:id="cameras_col" editable="false" maxWidth="200.0" minWidth="120.0" prefWidth="120.0" text="%cameras" />
-            										<TableColumn fx:id="cameras_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="%photos" />
-            									</columns>
-            									<columnResizePolicy>
-            										<TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-            									</columnResizePolicy>
-            								</TableView>
-                     </content>
-                  </TitledPane>
-                  <TitledPane fx:id="events_titledPane" text="%events" VBox.vgrow="NEVER">
-                     <content>
-                        <TableView fx:id="events_tableView" prefHeight="200.0" styleClass="metadataTable">
-                           <columns>
-                              <TableColumn fx:id="events_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
-                              <TableColumn fx:id="events_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%events" />
-                              <TableColumn fx:id="events_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </content>
-                  </TitledPane>
-                  <TitledPane fx:id="locations_titledPane" text="%location" VBox.vgrow="NEVER">
-                     <content>
-                        <TableView fx:id="locations_tableView" prefHeight="200.0" styleClass="metadataTable">
-                           <columns>
-                              <TableColumn fx:id="locations_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
-                              <TableColumn fx:id="locations_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%location" />
-                              <TableColumn fx:id="locations_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
-                           </columns>
-                           <columnResizePolicy>
-                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                           </columnResizePolicy>
-                        </TableView>
-                     </content>
-                  </TitledPane>
-               </children>
-               <padding>
-                  <Insets left="2.0" right="4.0" />
-               </padding>
-            </VBox>
-         </content>
-      </ScrollPane>
-	</children>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
+    <children>
+        <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <content>
+                <VBox fx:id="selector_root" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" spacing="1.0">
+                    <children>
+                        <TitledPane fx:id="dates_titledPane" text="%dates" VBox.vgrow="NEVER">
+                            <content>
+                                <TableView fx:id="dates_tableView" styleClass="metadataTable">
+                                    <columns>
+                                        <TableColumn fx:id="dates_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
+                                        <TableColumn fx:id="dates_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%dates" />
+                                        <TableColumn fx:id="dates_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                    <padding>
+                                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                    </padding>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane fx:id="cameras_titledPane" text="%cameras" VBox.vgrow="NEVER">
+                            <content>
+                                <TableView fx:id="cameras_tableView" styleClass="metadataTable">
+                                    <columns>
+                                        <TableColumn fx:id="cameras_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
+                                        <TableColumn fx:id="cameras_col" editable="false" maxWidth="200.0" minWidth="120.0" prefWidth="120.0" text="%cameras" />
+                                        <TableColumn fx:id="cameras_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="%photos" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane fx:id="events_titledPane" text="%events" VBox.vgrow="NEVER">
+                            <content>
+                                <TableView fx:id="events_tableView" styleClass="metadataTable">
+                                    <columns>
+                                        <TableColumn fx:id="events_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
+                                        <TableColumn fx:id="events_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%events" />
+                                        <TableColumn fx:id="events_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                        <TitledPane fx:id="locations_titledPane" text="%location" VBox.vgrow="NEVER">
+                            <content>
+                                <TableView fx:id="locations_tableView" styleClass="metadataTable">
+                                    <columns>
+                                        <TableColumn fx:id="locations_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
+                                        <TableColumn fx:id="locations_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%location" />
+                                        <TableColumn fx:id="locations_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </content>
+                        </TitledPane>
+                    </children>
+                    <padding>
+                        <Insets left="2.0" right="4.0" />
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
 </AnchorPane>

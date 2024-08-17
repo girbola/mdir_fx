@@ -75,7 +75,6 @@ public class AddContentToDateFixContainer extends Task<Integer> {
         return null;
     }
 
-
     private void createNode(Node node) {
         StackPane sp = (StackPane) node.lookup("#stackPane");
         Label old_text = (Label) sp.lookup("#imageNumber");

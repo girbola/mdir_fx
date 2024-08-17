@@ -62,10 +62,11 @@ public class DateFixer extends Task<Void> {
             try {
                 parent = loader.load();
             } catch (IOException ex) {
+                Messages.sprintfError("Cannot open DateFix windows");
                 ex.printStackTrace();
             }
 
-            dateFixerController = (DateFixerController) loader.getController();
+            dateFixerController = loader.getController();
             Scene scene_dateFixer = new Scene(parent, (conf.getScreenBounds().getWidth()),
                     (conf.getScreenBounds().getHeight() - 50));
             dateFixerController.init(model_datefix, model_main, currentPath, folderInfo, isImported);

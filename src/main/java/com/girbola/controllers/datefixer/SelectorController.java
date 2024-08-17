@@ -77,14 +77,15 @@ public class SelectorController {
 		Messages.sprintf("Folderinfo path name is: " + this.folderInfo.getFolderPath());
 
 		workDir_Loader = new WorkDir_Loader(Paths.get(folderInfo.getFolderPath()));
-		//df_gridPane.setGridLinesVisible(true);
+
 		model_datefix.setDates_TableView(dates_tableView);
 		model_datefix.setCameras_TableView(cameras_tableView);
 		model_datefix.setEvents_TableView(events_tableView);
 		model_datefix.setLocations_TableView(locations_tableView);
 
-		// model_datefix.getDateFix_Utils().createDates_list(model_datefix.getFolderInfo_full().getFileInfoList());
+		model_datefix.getDateFix_Utils().createDates_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		dates_tableView.setItems(model_datefix.getDateFix_Utils().getDate_obs());
+		Messages.sprintf("model_datefix.getDateFix_Utils().getDate_obs():  " + model_datefix.getDateFix_Utils().getDate_obs().size());
 		dates_checkBox_hide_col.setCellFactory(checkbox_DATES_CellFactory);
 		dates_checkBox_hide_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
@@ -108,7 +109,8 @@ public class SelectorController {
 								TimeUnit.MILLISECONDS);
 					}
 				});
-		// model_datefix.getDateFix_Utils().createCamera_list(model_datefix.getFolderInfo_full().getFileInfoList());
+
+		model_datefix.getDateFix_Utils().createCamera_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		cameras_tableView.setItems(model_datefix.getDateFix_Utils().getCameras_obs());
 		cameras_tableView.getSelectionModel().selectedItemProperty()
 				.addListener(new ChangeListener<EXIF_Data_Selector>() {
@@ -134,7 +136,7 @@ public class SelectorController {
 		cameras_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		cameras_tableView.setRowFactory(new TableRowSelector(cameras_tableView, model_datefix.getScrollPane()));
 
-		// model_datefix.getDateFix_Utils().createEvent_list(model_datefix.getFolderInfo_full().getFileInfoList());
+		model_datefix.getDateFix_Utils().createEvent_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		events_tableView.setItems(model_datefix.getDateFix_Utils().getEvents_obs());
 		events_checkBox_hide_col.setCellFactory(checkbox_EVENTS_CellFactory);
 		events_checkBox_hide_col.setCellValueFactory(
@@ -149,7 +151,7 @@ public class SelectorController {
 		events_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		events_tableView.setRowFactory(new TableRowSelector(events_tableView, model_datefix.getScrollPane()));
 
-		// model_datefix.getDateFix_Utils().createLocation_list(model_datefix.getFolderInfo_full().getFileInfoList());
+		model_datefix.getDateFix_Utils().createLocation_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		locations_tableView.setItems(model_datefix.getDateFix_Utils().getLocations_obs());
 		locations_checkBox_hide_col.setCellFactory(checkbox_LOCATIONS_CellFactory);
 		locations_checkBox_hide_col.setCellValueFactory(
@@ -163,6 +165,7 @@ public class SelectorController {
 						cellData.getValue().getCount()));
 		locations_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		locations_tableView.setRowFactory(new TableRowSelector(locations_tableView, model_datefix.getScrollPane()));
+
 		selector_root.heightProperty().addListener(new ChangeListener<Number>() {
 			@Override
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -171,8 +174,6 @@ public class SelectorController {
 		});
 		cameras_titledPane.heightProperty().addListener((ChangeListener<Number>) (observable, oldValue, newValue) -> Messages.sprintf("cameras_titledPane height has changed to: " + newValue + " root height is : "
 				+ selector_root.getHeight()));
-//		cameras_tableView.heightProperty().addListener(listener);
-//
 
 	}
 
@@ -183,37 +184,6 @@ public class SelectorController {
 			}
 		}
 		return false;
-	}
-
-	private void hideTableViewHeader(TableView<EXIF_Data_Selector> table) {
-		table.widthProperty().addListener((ChangeListener<Number>) (ov, t, t1) -> {
-			// Get the table header
-			Pane header = (Pane) table.lookup("TableHeaderRow");
-			if (header != null && header.isVisible()) {
-				header.setMaxHeight(0);
-				header.setMinHeight(0);
-				header.setPrefHeight(0);
-				header.setVisible(false);
-				header.setManaged(false);
-			}
-		});
-	}
-
-	@Deprecated
-	private void refreshTable_(TableView<?> table) {
-		if (table == null) {
-			return;
-		}
-		if (table.getColumns().get(0) != null) {
-			Platform.runLater(new Runnable() {
-				@Override
-				public void run() {
-					table.getColumns().get(0).setVisible(false);
-					table.getColumns().get(0).setVisible(true);
-					table.refresh();
-				}
-			});
-		}
 	}
 
 	public ScrollPane getInfoTables_container() {
