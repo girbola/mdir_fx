@@ -225,7 +225,7 @@ public class RenderVisibleNode {
                 }
                 exec_multi.shutdown();
                 try {
-                    exec_multi.awaitTermination(byte_List.size() * 100, TimeUnit.SECONDS);
+                    exec_multi.awaitTermination(byte_List.size() * 100L, TimeUnit.SECONDS);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
                 }

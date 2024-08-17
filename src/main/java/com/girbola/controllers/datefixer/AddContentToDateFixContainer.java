@@ -51,14 +51,6 @@ public class AddContentToDateFixContainer extends Task<Integer> {
         this.list = aList;
         this.size = aList.size();
         this.loadingProcess_Task = loading_Process_Task;
-//		//model_datefix.getGridPane().getChildren().clear();
-//		sprintf("total nodes: " + model_datefix.getAllNodes().size() + " aGridPane list size is after clearing: "
-//				+ list.size());
-//
-//		model_datefix.getGridPane().getRowConstraints().removeAll(model_datefix.getGridPane().getRowConstraints());
-//		model_datefix.getGridPane().getColumnConstraints()
-//				.removeAll(model_datefix.getGridPane().getColumnConstraints());
-//		setGridPane_Constraints();
         loading_Process_Task.setMessage("Adding images");
     }
 

@@ -13,13 +13,12 @@ public class DateFixLoadingProcessLoader {
         if(loadingProcessTask == null) {
             loadingProcessTask = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         }
+
         LoadingProcessTask finalLoadingProcessTask = loadingProcessTask;
 
-        Task<Integer> addContentToDateFixContainer = new AddContentToDateFixContainer(model_datefix,
-                model_datefix.getAllNodes(), loadingProcessTask, model_datefix.getTilePane());
+        Task<Integer> addContentToDateFixContainer = new AddContentToDateFixContainer(model_datefix, model_datefix.getAllNodes(), loadingProcessTask, model_datefix.getTilePane());
 
         loadingProcessTask.setTask(addContentToDateFixContainer);
-
 
         addContentToDateFixContainer.setOnSucceeded(succeed -> {
             Messages.sprintf("addContentToDateFixContainer succeeded!");
