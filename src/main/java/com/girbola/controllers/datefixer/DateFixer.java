@@ -12,6 +12,7 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.ErrorGUI;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
@@ -62,7 +63,8 @@ public class DateFixer extends Task<Void> {
             try {
                 parent = loader.load();
             } catch (IOException ex) {
-                Messages.sprintfError("Cannot open DateFix windows");
+                Messages.sprintfError("Cannot open DateFix window.");
+                ErrorGUI.errorGUI("Cannot open DateFix window.", false);
                 ex.printStackTrace();
             }
 

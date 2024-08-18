@@ -91,4 +91,12 @@ public class ConcurrencyUtils {
         return exec[execCounter.get()];
     }
 
+    public static void stopAllExecThreadNow() {
+        for(int i = 0; i < execCounter.get(); i++) {
+            if(!exec[execCounter.get()].isShutdown() || !exec[execCounter.get()].isTerminated()) {
+                exec[execCounter.get()].shutdownNow();
+                Messages.sprintf("Killing executor service tasks");
+            }
+        }
+    }
 }

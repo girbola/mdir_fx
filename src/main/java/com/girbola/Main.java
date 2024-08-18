@@ -30,6 +30,7 @@ import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.ErrorGUI;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderScannerSQL;
@@ -178,6 +179,11 @@ public class Main extends Application {
             conf.loadConfig_GUI();
 
             FolderScannerSQL.loadSelectedFolders(model_main);
+
+            ErrorGUI.errorGUI("DEBUGGING DIALOG Cannot open DateFix window.", false);
+            Platform.exit();
+            System.exit(1);
+            //Messages.errorSmth(ERROR, "Message is for testing", null, Misc.getLineNumber(), false);
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());

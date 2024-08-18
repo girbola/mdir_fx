@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.misc;
 
+import com.girbola.concurrency.ConcurrencyUtils;
 import javafx.application.Platform;
 
 import static com.girbola.messages.Messages.sprintf;
@@ -20,6 +21,7 @@ public class Misc_GUI {
     public static void fastExit() {
         sprintf("exitProgram " + getLineNumber());
         sprintf("DELETING RUNNING DAT FILE DEMOOOOOOOOOOOOOOOOOOO FIX THIS BEFORE RELEASE" + getLineNumber());
+        ConcurrencyUtils.stopAllExecThreadNow();
         Platform.exit();
         // main_stage.close();
         System.exit(0);

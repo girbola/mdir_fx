@@ -10,8 +10,8 @@
 .root {
 	-fx-base: #1d1d1d;
 	-fx-primary: -fx-base;
-	-fx-dark-border-color: darkgrey;
-	-fx-mid-border-color: grey;
+	-fx-dark-border-color: #9a9a9a;
+	-fx-mid-border-color: #d1d1d1;
 	-fx-light-border-color: white;
 
 	/* Button basic colors */
@@ -57,16 +57,15 @@
 }
 
 .button {
-	-fx-background-color: grey, transparent, transparent,
-		linear-gradient(-fx-primary 0%, -fx-primary 38%, -fx-primary 61%, -fx-primary 100%);
+	-fx-background-color: darkgrey;
 	-fx-background-radius: 5px;
 
 	-fx-font-family: 'Segoe UI Light';
-	-fx-font-size: 0.625em;
+	-fx-font-size: 1.125em;
 	-fx-text-fill: white;
 	-fx-border-color: -fx-button-border;
 	-fx-border-radius: 5px;
-	/*-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+
 }
 
 .cancelLoading {

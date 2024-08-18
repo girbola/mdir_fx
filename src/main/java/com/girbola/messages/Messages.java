@@ -9,9 +9,11 @@ package com.girbola.messages;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.messages.html.HTMLClass;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -38,6 +40,13 @@ import static com.girbola.controllers.misc.Misc_GUI.fastExit;
  * @author Marko
  */
 public class Messages {
+
+	private static Alert alert;
+	private static Optional<ButtonType> result;
+	private static Stage errorStage;
+	private static String previousMessage;
+	private static TextArea errorTextField;
+	private static TextArea textArea_alert;
 
 //    final private static int dialog_x = 500;
 //    final private static int dialog_y = 300;
@@ -87,7 +96,7 @@ public class Messages {
 		}
 	}
 
-	private static Alert createAlert(AlertType alertType) {
+	public static Alert createAlert(AlertType alertType) {
 		Alert alert = new Alert(alertType);
 		DialogPane dialogPane = alert.getDialogPane();
 		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGS.getType()).toExternalForm());
@@ -95,56 +104,6 @@ public class Messages {
 		return alert;
 	}
 
-	private static Stage errorStage;
-	private static TextArea errorTextField;
-
-	public static void errorSmth_stage(String className, String message, Exception exception, int line, boolean exit) {
-		if (exit) {
-			Main.setProcessCancelled(true);
-		}
-		if (errorStage == null) {
-			errorStage = new Stage();
-			BorderPane bp = new BorderPane();
-
-			errorTextField = new TextArea();
-			errorTextField.setEditable(false);
-
-			bp.setCenter(errorTextField);
-
-			Button button = new Button("Close");
-			button.setOnAction(new EventHandler<ActionEvent>() {
-				@Override
-				public void handle(ActionEvent event) {
-					errorStage.hide();
-				}
-			});
-
-			bp.setBottom(button);
-			Scene scene = new Scene(bp);
-			errorStage.setScene(scene);
-			errorStage.show();
-
-//			errorStage
-		}
-		if (errorStage.isShowing()) {
-			if (exit) {
-				errorStage.showAndWait();
-			}
-			errorTextField.appendText("isShowing\n" + message);
-		} else {
-			errorTextField.appendText("\nnot showing" + message);
-			if (exit) {
-				errorStage.showAndWait();
-			} else {
-				errorStage.show();
-			}
-		}
-	}
-
-	private static Alert alert;
-	private static TextArea textArea_alert;
-	private static Optional<ButtonType> result;
-	private static String previousMessage;
 
 	/**
 	 * @param className Class name helps to find right class faster.
@@ -157,6 +116,7 @@ public class Messages {
 		Messages.sprintf("errorSmth triggered. " + " message: " + message + " className= " + className + " at line: " + line);
 		if (exit) {
 			Main.setProcessCancelled(true);
+			ConcurrencyUtils.stopAllExecThreadNow();
 			// sit näytetään showAndWait muuten jokin toinen dialigi tyyli
 		}
 //TODO TÄMÄ TÄYTYY VAIHTAA Dialogiksi mutta stagea käyttäen
@@ -237,7 +197,7 @@ public class Messages {
 
 		Optional<ButtonType> result = dialog.showAndWait();
 		sprintf("Buttpntype is = " + result);
-		if ((result.isPresent()) && (result.get().getText().equals("CLOSE"))) {
+		if ((result.isPresent()) && (result.get().getText().equals("OK"))) {
 
 			sprintf("Ok pressed at errortext");
 			if (exit) {

@@ -977,7 +977,7 @@ public class DateFixerController {
 			rightInfoPanel_scrollPane.setMinWidth(0);
 			rightInfoPanel_scrollPane.setPrefWidth(0);
 			rightInfoPanel_scrollPane.setMaxWidth(0);
-			rightInfoPanel.setVisible(false);
+	    	rightInfoPanel.setVisible(false);
 			rightInfoPanel.setMinWidth(-100);
 			rightInfoPanel.setMaxWidth(-100);
 			rightInfoPanel.setPrefWidth(-100);
@@ -1011,7 +1011,8 @@ public class DateFixerController {
         });
         Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
         operateFiles_th.setDaemon(true);
-        operateFiles_th.start();}
+        operateFiles_th.start();
+   }
 
 
 }

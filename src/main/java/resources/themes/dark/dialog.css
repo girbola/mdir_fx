@@ -46,6 +46,12 @@
     -fx-text-fill: white;
 }
 .text-area{
-	   /*-fx-font-size: 12.0px; */
-    -fx-text-fill: black;
+    /*-fx-font-size: 12.0px;*/
+    -fx-text-fill: yellow;
+}
+.button {
+    -fx-font-size: 18px;
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-padding: 10px 20px;
 }
