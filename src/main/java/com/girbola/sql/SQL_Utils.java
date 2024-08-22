@@ -256,6 +256,10 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 
     public static List<FolderInfos> loadFolderInfosToTables(Connection connection, Model_main model_Main) {
+        if(Main.getProcessCancelled()) {
+            return null;
+        }
+
         if (!isDbConnected(connection)) {
             Messages.sprintf("Connected!");
         }
@@ -267,6 +271,9 @@ public class SQL_Utils extends FolderInfo_SQL {
             List<FolderInfos> arrayList = new ArrayList<>();
 
             while (rs.next()) {
+                if(Main.getProcessCancelled()) {
+                    return null;
+                }
                 String path = rs.getString("path");
                 String tableType = rs.getString("tableType");
                 String justFolderName = rs.getString("justFolderName");

@@ -24,7 +24,6 @@ public class Misc_GUI {
         ConcurrencyUtils.stopAllExecThreadNow();
         Platform.exit();
         // main_stage.close();
-        System.exit(0);
 
     }
 }

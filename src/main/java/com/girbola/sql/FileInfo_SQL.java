@@ -275,6 +275,9 @@ public class FileInfo_SQL {
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
+                if(Main.getProcessCancelled()) {
+                    return null;
+                }
 				FileInfo finfo = loadFileInfo(rs);
                 Messages.sprintf("fileinfo Loadedddd: " + finfo.getOrgPath());
 				list.add(finfo);

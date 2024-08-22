@@ -180,9 +180,8 @@ public class Main extends Application {
 
             FolderScannerSQL.loadSelectedFolders(model_main);
 
-            ErrorGUI.errorGUI("DEBUGGING DIALOG Cannot open DateFix window.", false);
-            Platform.exit();
-            System.exit(1);
+            ErrorGUI.errorGUI("DEBUGGING DIALOG Cannot open DateFix window.", true);
+
             //Messages.errorSmth(ERROR, "Message is for testing", null, Misc.getLineNumber(), false);
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
@@ -235,22 +234,27 @@ public class Main extends Application {
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
                 });
                 load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
-                    try {
-                        if (load_FileInfosBackToTableViews.get() == false) {
-                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
+                    Platform.runLater(() -> {
+
+                        try {
+                            if (!load_FileInfosBackToTableViews.get()) {
+                                Messages.sprintfError("Loading FileInfos were failed");
+                                Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
+                                        Misc.getLineNumber(), true);
+                            }
+                        } catch (InterruptedException | ExecutionException ex) {
+                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
                                     Misc.getLineNumber(), true);
                         }
-                    } catch (InterruptedException | ExecutionException ex) {
-                        Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
-                                Misc.getLineNumber(), true);
-                    }
-                    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent event12) {
-                            model_main.exitProgram_NOSAVE();
-                        }
+                        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                            @Override
+                            public void handle(WindowEvent event12) {
+                                model_main.exitProgram_NOSAVE();
+                            }
+                        });
+                        lpt.closeStage();
+
                     });
-                    lpt.closeStage();
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
@@ -363,7 +367,11 @@ public class Main extends Application {
     @Override
     public void stop() throws Exception {
         super.stop();
+        Main.setProcessCancelled(true);
+        System.out.println("Stopping app");
         model_main.getMonitorExternalDriveConnectivity().cancel();
+        ConcurrencyUtils.stopAllExecThreadNow();
+        System.out.println("Threads are ended. Exiting...");
     }
 
     public static void centerWindowDialog(Stage stage) {

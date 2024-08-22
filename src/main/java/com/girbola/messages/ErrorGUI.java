@@ -33,22 +33,16 @@ public class ErrorGUI {
         }
         if (alert == null) {
             alert = new Alert(Alert.AlertType.ERROR);
-//            dialogPane = alert.getDialogPane();
-//            dialogPane.setHeaderText("");
-//            dialogPane.setContentText(message);
             alert.getDialogPane().getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 
-            alert.setOnCloseRequest(new EventHandler<DialogEvent>() {
-                @Override
-                public void handle(DialogEvent event) {
+            alert.setOnCloseRequest((e) -> {
+                if(!exit) {
                     alert.hide();
+                } else {
+                    fastExit();
                 }
             });
 
-//            alert.getButtonTypes().clear();
-//            alert.getButtonTypes().add(ButtonType.OK);
-//            alert.getDialogPane().getButtonTypes().add(ButtonType.OK);
-            //        dialogPane.getStyleClass().add("alertDiag");
         }
 
         ErrorMessage errorMessage = createErrorMessage(message);
@@ -80,11 +74,10 @@ public class ErrorGUI {
         if (message.length() >= 15) {
             group = message.substring(0, 15);
             if (!errorMessageGroupExists(group)) {
-                Messages.sprintf("errormessage group did exixts");
-                return new ErrorMessage(group, message);
+                Messages.sprintf("errormessage group did exits");
             }
         }
-        return null;
+        return new ErrorMessage(group, message);
     }
 
     private static boolean errorMessageGroupExists(String group) {
