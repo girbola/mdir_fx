@@ -2,20 +2,18 @@ package com.girbola;
 
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.sql.*;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.FolderInfos;
+import com.girbola.sql.SQL_Utils;
 import javafx.concurrent.Task;
 
 import java.io.File;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Load_FileInfosBackToTableViews extends Task<Boolean> {

@@ -2,19 +2,15 @@ package com.girbola.messages;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static com.girbola.Main.conf;
 import static com.girbola.controllers.misc.Misc_GUI.fastExit;
