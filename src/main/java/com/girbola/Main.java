@@ -31,7 +31,6 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.messages.AlertDialog;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderScannerSQL;
 import com.girbola.sql.SQL_Utils;

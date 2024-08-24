@@ -19,7 +19,6 @@ public class AlertDialogController {
     //@formatter:off
     @FXML private AnchorPane anchorPane;
     @FXML private Button alertOkButton;
-    @FXML private ImageView headerImage;
     @FXML private Label headerText;
     @FXML private TextArea textContent;
     //@formatter:on
