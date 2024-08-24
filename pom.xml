@@ -45,8 +45,8 @@
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <lombok.version>1.18.32</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <oshi-core.version>6.4.4</oshi-core.version>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>

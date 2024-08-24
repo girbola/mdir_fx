@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.alertdialog.AlertDialogController">
+   <children>
+      <VBox AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0">
+               <children>
+                  <GridPane gridLinesVisible="true" HBox.hgrow="ALWAYS">
+                     <columnConstraints>
+                        <ColumnConstraints halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
+                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label fx:id="headerText" text="Label" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                           <font>
+                              <Font size="21.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets right="10.0" />
+                           </GridPane.margin>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </Label>
+                        <FontIcon fx:id="bugIcon" iconColor="#b50909" iconLiteral="bi-bug" iconSize="35" selectionFill="#c31111" GridPane.columnIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </HBox>
+            <HBox layoutX="10.0" layoutY="10.0" prefHeight="250.0">
+               <children>
+                  <TextArea fx:id="textContent" text="Tyhjää" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="110.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="alertOkButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#alertOkButtonAction" prefHeight="50.0" prefWidth="50.0" styleClass="alertDialogButton" text="OK" HBox.hgrow="NEVER">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                     <graphic>
+                        <FontIcon iconLiteral="bi-check-circle" iconSize="25" />
+                     </graphic>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" right="10.0" top="10.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

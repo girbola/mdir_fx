@@ -30,8 +30,8 @@ import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.ErrorGUI;
 import com.girbola.messages.Messages;
+import com.girbola.messages.AlertDialog;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderScannerSQL;
 import com.girbola.sql.SQL_Utils;
@@ -125,7 +125,6 @@ public class Main extends Application {
 
                 Parent parent = null;
                 try {
-                    ResourceBundle bundle2 = bundle;
                     main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
                     parent = main_loader.load();
                 } catch (Exception ex) {
@@ -175,14 +174,12 @@ public class Main extends Application {
             } else {
                 Messages.sprintfError("Valid OS NOT found");
             }
+            //AlertDialog.alertDialog("This is a test dialog of header","This is a test dialog of content",primaryStage, true);
+            //Messages.errorSmth(ERROR, "This is TEH error text", null, Misc.getLineNumber(), true);
 
             conf.loadConfig_GUI();
 
             FolderScannerSQL.loadSelectedFolders(model_main);
-
-            ErrorGUI.errorGUI("DEBUGGING DIALOG Cannot open DateFix window.", true);
-
-            //Messages.errorSmth(ERROR, "Message is for testing", null, Misc.getLineNumber(), false);
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
                     conf.getConfiguration_db_fileName());
@@ -229,6 +226,7 @@ public class Main extends Application {
                         Messages.sprintf("model_main.tables().getHideButtons().updateTableVisible();: "
                                 + t1.booleanValue());
                     });
+
 
 //							conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
