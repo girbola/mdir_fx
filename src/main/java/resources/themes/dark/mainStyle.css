@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 .root {
 	-fx-base: #807c7ca4;
 	-fx-dark-border-color: derive(-fx-base, 80%);
@@ -22,9 +24,10 @@
 	-fx-dark-text-color: black;
 	-fx-mid-text-color: #292929;
 	-fx-light-text-color: rgb(228, 225, 225);
-	-fx-font-family: 'Gaduci';
+	-fx-font-family: "Inter", sans-serif;
+	-fx-effect: dropshadow( one-pass-box , black , 8 , 0.0 , 0 , 0.3 );
 
-	-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
+	/*-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);*/
 	-fx-font-weight: 900;
 	-fx-font-smoothing-type: lcd;
 	/*    -fx-background-color: -fx-base; */
@@ -91,6 +94,38 @@
 	-fx-opacity: 0.9;
 	-fx-font-smoothing-type: lcd;
 }
+.flow-pane {
+	-fx-padding: 1px 3px 1px 0px;
+	-fx-background-color: transparent;
+}
+.menu-button {
+	-fx-padding: 0;
+}
+.menu-item {
+	-fx-font-size: 1em;
+}
+.menu-button .label {
+	-fx-text-fill: white;
+	-fx-font-size: 1.2em;
+	-fx-effect: dropshadow( one-pass-box , black , 8 , 0.0 , 0 , 0.3 );
+}
+.menu-button:showing {
+	-fx-background-color: rgba(255, 165, 3, 0.58);
+}
+.menu-button-action {
+	-fx-background-color: rgba(255, 165, 3, 0.58);
+}
+.menu-item-action {
+	-fx-background-color: rgba(255, 165, 3, 0.47);
+}
+
+.menu-button-reload {
+	-fx-background-color: rgba(47, 83, 46, 0.58);
+}
+.menu-item-reload {
+	-fx-background-color: rgba(47, 83, 46, 0.47);
+}
+
 
 .menu:showing {
 	-fx-background-color: red;
@@ -113,7 +148,20 @@
     -fx-faint-focus-color: transparent;
     -fx-text-fill: white;
 }
+.selectCircleButton {
+	-fx-border-radius: 100;
+	-fx-background-radius: 100;
+	-fx-background-color: transparent;
+	-fx-padding: 0;
+	-fx-margin: 0;
+}
+.selectSquareButton {
 
+	-fx-background-radius: 3;
+	-fx-background-color: transparent;
+	-fx-padding: 0;
+	-fx-margin: 0;
+}
 .sortit_table_vbox, .sorted_table_vbox {
 	-fx-border-color: derive(-fx-base, 15%);
 	-fx-padding: 3;
@@ -142,12 +190,16 @@
 	-fx-background-color: transparent;
 }
 .table-view .column-header .label {
-	-fx-font-size: 0.75em;
-	-fx-font-family: 'Gaduci';
+	-fx-font-size: 0.9em;
+	/*-fx-font-family: 'Inter';*/
+	-fx-font-family: "Inter", sans-serif;
+	-fx-font-style: normal;
+	-fx-font-weight: 500;
 	-fx-text-fill: -fx-light-text-color;
 	-fx-alignment: center-left;
 	-fx-opacity: 1;
 	-fx-padding: 0 0 0 0.0625em;
+	-fx-effect: dropshadow( one-pass-box , black , 8 , 0.0 , 0 , 0.3 );
 }
 .table-view .column-header,
 .table-view .filler {

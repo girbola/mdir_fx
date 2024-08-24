@@ -18,6 +18,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
 <VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" stylesheets="@../../../../resources/themes/dark/mainStyle.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
@@ -47,121 +48,97 @@
          <children>
             <VBox layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
-            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
+            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" maxHeight="1.7976931348623157E308" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
             			<children>
-                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="1.0" vgap="1.0" HBox.hgrow="NEVER">
+                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="30.0" maxWidth="360.0" minHeight="30.0" minWidth="360.0" prefHeight="30.0" prefWidth="360.0" prefWrapLength="0.0" styleClass="flow-pane" vgap="1.0" HBox.hgrow="NEVER">
                            <children>
-                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%reload">
+                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
                                 <items>
-                                  <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" text="%reloadAll" />
-                                  <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" text="%checkChanges" />
+                                  <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" styleClass="menu-button-reload" text="%reloadAll" />
+                                  <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" styleClass="menu-button-reload" text="%checkChanges" />
                                 </items>
                                  <font>
                                     <Font size="11.0" />
                                  </font>
                               </MenuButton>
-                  				<Button fx:id="updateFolderInfo_btn" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/reload.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
-                  					<padding>
-                  						<Insets bottom="1.0" top="1.0" />
-                  					</padding>
-                                 <tooltip>
-                                    <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
-                                 </tooltip>
-                  				</Button>
-                              <MenuButton mnemonicParsing="false" text="%action">
+                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-action" text="%action" textFill="WHITE">
                                 <items>
-                                  <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected to dest" />
-                                  <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%add" />
-                                    <MenuItem fx:id="mergeMove_MenuItem" mnemonicParsing="false" onAction="#mergeMove_btn_action" text="Merge Folders" />
-                                    <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" text="Reset folderinfos" />
-                                    <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" text="Collect similar dates" />
-                                    <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" text="Select Diff Dates" />
+                                  <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" styleClass="menu-button-action" text="Copy selected to dest" />
+                                  <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" styleClass="menu-button-action" text="%add" />
+                                    <MenuItem fx:id="mergeMove_MenuItem" mnemonicParsing="false" onAction="#mergeMove_btn_action" styleClass="menu-button-action" text="Merge Folders" />
+                                    <MenuItem mnemonicParsing="false" onAction="#resetSelectedFileInfos_btn_action" styleClass="menu-button-action" text="Reset folderinfos" />
+                                    <MenuItem mnemonicParsing="false" onAction="#collectSimilarDates_btn_action" styleClass="menu-button-action" text="Collect similar dates" />
+                                    <MenuItem fx:id="select_dateDifference_btn" mnemonicParsing="false" onAction="#select_dateDifference_btn_action" styleClass="menu-button-action" text="Select Diff Dates" />
                                 </items>
                                  <font>
-                                    <Font size="10.0" />
+                                    <Font size="11.0" />
                                  </font>
                               </MenuButton>
-                  				<Button fx:id="select_all_btn" mnemonicParsing="false" onAction="#select_all_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/selectAll.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
+                  				<Button fx:id="select_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_all_btn_action" styleClass="selectSquareButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="select_all_btn_tooltip" text="%selectAllTableTooltip" />
                                  </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="#cddeff" iconLiteral="bi-square-fill" iconSize="18" />
+                                 </graphic>
                   				</Button>
-                  				<Button fx:id="select_invert_btn" mnemonicParsing="false" onAction="#select_invert_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/selectInvert.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
+                  				<Button fx:id="select_invert_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_invert_btn_action" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="select_invert_btn_tooltip" text="%selectInvertTableTooltip" />
                                  </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="#4d4d4d" iconLiteral="bi-slash-circle-fill" iconSize="18" />
+                                 </graphic>
                   				</Button>
-                  				<Button fx:id="select_none_btn" mnemonicParsing="false" onAction="#select_none_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/selectNone.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
+                  				<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_none_btn_action" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="select_none_btn_tooltip" text="%selectNoneTableTooltip" />
                                  </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="bi-circle" iconSize="18" />
+                                 </graphic>
                   				</Button>
-                  				<Button fx:id="select_bad_btn" mnemonicParsing="false" onAction="#select_bad_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/selectBad.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
+                  				<Button fx:id="select_bad_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_bad_btn_action" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="select_bad_btn_tooltip" text="%selectBadTableTooltip" />
                                  </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="#b51515" iconLiteral="bi-circle-fill" iconSize="18" />
+                                 </graphic>
                   				</Button>
-                  				<Button fx:id="select_good_btn" mnemonicParsing="false" onAction="#select_good_btn_action" prefWidth="35.0">
-                  					<graphic>
-                  						<ImageView fitHeight="23.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
-                  							<image>
-                  								<Image url="@../../../../resources/img/selectGood.png" />
-                  							</image>
-                  						</ImageView>
-                  					</graphic>
+                  				<Button fx:id="select_good_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_good_btn_action" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="select_good_btn_tooltip" text="%selectGoodTableTooltip" />
                                  </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="#318047" iconLiteral="bi-circle-fill" iconSize="18" />
+                                 </graphic>
+                  				</Button>
+                  				<Button fx:id="updateFolderInfo_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action">
+                  					<padding>
+                  						<Insets bottom="1.0" top="1.0" />
+                  					</padding>
+                                 <tooltip>
+                                    <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
+                                 </tooltip>
+                                 <graphic>
+                                    <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-clockwise" iconSize="18" />
+                                 </graphic>
                   				</Button>
                            </children>
                            <padding>
@@ -171,12 +148,12 @@
                               <Insets />
                            </HBox.margin>
                         </FlowPane>
-                        <HBox fillHeight="false" HBox.hgrow="ALWAYS">
+                        <HBox alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets bottom="1.0" top="1.0" />
                            </HBox.margin>
                            <children>
-                  				<TextField fx:id="tableDescription_tf" editable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip" HBox.hgrow="NEVER">
+                  				<TextField fx:id="tableDescription_tf" editable="false" focusTraversable="false" styleClass="textfield-info" text="tableDescription_tf_tooltip" HBox.hgrow="NEVER">
                                  <tooltip>
                                     <Tooltip fx:id="tableDescription_tf_tooltip">
                                        <font>
