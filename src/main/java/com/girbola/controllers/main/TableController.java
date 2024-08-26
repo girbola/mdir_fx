@@ -125,7 +125,7 @@ public class TableController {
 	@FXML private TableColumn<FolderInfo, String> maxDates_col;
 	@FXML private TableColumn<FolderInfo, String> minDate_col;
 	@FXML private TableView<FolderInfo> table;
-	@FXML private TextField tableDescription_tf;
+	@FXML private Label tableDescription_tf;
 	@FXML private Tooltip addToBatch_tooltip;
 	@FXML private Tooltip collectSimilarDates_btn_tooltip;
 	@FXML private Tooltip copySelected_btn_tooltip;
