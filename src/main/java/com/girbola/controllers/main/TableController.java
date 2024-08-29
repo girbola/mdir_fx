@@ -76,7 +76,6 @@ public class TableController {
 
     private final String ERROR = TableController.class.getSimpleName();
 
-    private Image show_im;
     private Model_CollectDialog model_CollectDialog;
     private Model_main model_main;
     private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
@@ -98,9 +97,9 @@ public class TableController {
 	@FXML private FlowPane topMenuButtonFlowPane;
 	@FXML private HBox buttons_hbox;
 	@FXML private HBox showHideButton_hbox;
-	@FXML private HBox tableInformation_hbox;
-	@FXML private HBox tables_parent;
-	@FXML private ImageView hide_btn_iv;
+//	@FXML private HBox tableInformation_hbox;
+//	@FXML private HBox tables_parent;
+//	@FXML private ImageView hide_btn_iv;
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesTotal_lbl;
 	@FXML private MenuItem checkChanges_mi;
@@ -141,7 +140,6 @@ public class TableController {
 	@FXML private VBox group;
 	@FXML private VBox table_Vbox;
 	@FXML public Button hide_btn;
-    @FXML public Button showHideButtonRoot;
     @FXML private AnchorPane hideablePane;
     @FXML private Label allFilesSize_lbl;
 	// @formatter:on
@@ -353,14 +351,14 @@ public class TableController {
     }
 
     public void setShowHideTableButtonIcons(Button button, boolean show) {
-        ImageView iv = (ImageView) button.getGraphic();
+
         if (show) {
             Platform.runLater(() -> {
-                iv.setRotate(0);
+                button.setRotate(0);
             });
         } else {
             Platform.runLater(() -> {
-                iv.setRotate(-180);
+                button.setRotate(-180);
             });
         }
     }
@@ -489,19 +487,12 @@ public class TableController {
     }
 
 
-    public void init(Model_main aModel_main, String tableName, String tableType, Button showHideButtonRoot) {
+    public void init(Model_main aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
 
         this.tableType = tableType;
 
-        this.showHideButtonRoot = showHideButtonRoot;
-        showHideButtonRoot.setOnAction(event -> {
-            Messages.sprintf("YEEEEIEEE: " + tableType);
-            setShowHideTableButtonIcons(showHideButtonRoot, model_main.tables().getTableByType(tableType).isVisible());
-        });
-
-        show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
 
         Platform.runLater(() -> {

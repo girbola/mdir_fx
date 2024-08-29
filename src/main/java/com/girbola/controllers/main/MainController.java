@@ -46,9 +46,6 @@ public class MainController {
 	@FXML private AnchorPane tables_rootPane;
 	@FXML private HBox tables_hbox;
 	@FXML private VBox main_vbox;
-    @FXML Button asitisTopButton;
-    @FXML Button sortedTopButton;
-    @FXML Button sortitTopButton;
     @FXML MenuBarController menuBar_topController;
     @FXML TabPane tablesTabPane;
 	//@formatter:on
@@ -85,9 +82,9 @@ public class MainController {
 
     private void initControllers() {
         menuBar_topController.init(model_main);
-        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType(), sortitTopButton);
-        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType(), sortedTopButton);
-        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType(), asitisTopButton);
+        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
+        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
+        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
 
         sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
         sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);
