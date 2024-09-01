@@ -45,7 +45,7 @@
 .button,
 .toggle-button {
     -fx-background-color: -fx-base, transparent, transparent,
-        linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
+        linear-gradient(to bottom, derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
     -fx-font-family: 'Gaduci';
     -fx-font-size: 0.625em;
@@ -270,10 +270,9 @@
 .metadataTable .scroll-bar:horizontal .track,
 .metadataTable .scroll-bar:vertical .track {
     -fx-background-color: transparent;
-    -fx-background-radius: 0em;
     -fx-background-radius: 0;
     -fx-border-color: transparent;
-    -fx-border-radius: 0em;
+    -fx-border-radius: 0;
 }
 
 .metadataTable .scroll-bar .increment-arrow,

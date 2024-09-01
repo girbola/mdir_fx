@@ -142,4 +142,25 @@ public class Misc {
 		
 		return obj;
 	}
+
+	public  static void openFileBrowser(Path path) {
+		String os = System.getProperty("os.name").toLowerCase();
+
+		try {
+			if (os.contains("win")) {
+				// Windows
+				new ProcessBuilder("explorer.exe", "/select,", path.toString()).start();
+			} else if (os.contains("mac")) {
+				// macOS
+				new ProcessBuilder("open", "-R", path.toString()).start();
+			} else if (os.contains("nix") || os.contains("nux")) {
+				// Linux
+				new ProcessBuilder("xdg-open", path.toString()).start();
+			} else {
+				Messages.sprintfError("Unsupported operating system.");
+			}
+		} catch (IOException e) {
+			Messages.sprintfError("Cannot open current file in operating file browser. " + path);
+		}
+	}
 }

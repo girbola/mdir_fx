@@ -19,7 +19,7 @@
 
 <VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
-      <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT" fillHeight="false" VBox.vgrow="NEVER">
+      <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
          <children>
 				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" styleClass="showAndHide" HBox.hgrow="NEVER">
 					<padding>
@@ -44,9 +44,9 @@
          <children>
             <VBox layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
-            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" maxHeight="1.7976931348623157E308" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
+            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" spacing="1.0" styleClass="topButtons" VBox.vgrow="SOMETIMES">
             			<children>
-                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="30.0" maxWidth="360.0" minHeight="30.0" minWidth="360.0" prefHeight="30.0" prefWidth="360.0" prefWrapLength="0.0" styleClass="flow-pane" vgap="1.0" HBox.hgrow="NEVER">
+                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="35.0" maxWidth="420.0" minHeight="35.0" minWidth="420.0" prefHeight="35.0" prefWidth="420.0" prefWrapLength="0.0" styleClass="flow-pane" vgap="1.0" HBox.hgrow="NEVER">
                            <children>
                   				<Button fx:id="updateFolderInfo_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" styleClass="selectSquareButton">
                   					<padding>
@@ -56,10 +56,13 @@
                                     <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
                                  </tooltip>
                                  <graphic>
-                                    <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-clockwise" iconSize="18" />
+                                    <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-clockwise" iconSize="22" />
                                  </graphic>
                   				</Button>
-                              <Separator fx:id="buttons_separator1" layoutX="249.0" layoutY="12.0" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator" />
+                              <Separator fx:id="buttons_separator1" layoutX="249.0" layoutY="12.0" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
+                                 <FlowPane.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </FlowPane.margin></Separator>
                               <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
                                 <items>
                                   <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" styleClass="menu-button-reload" text="%reloadAll" />
@@ -153,7 +156,7 @@
                   				</Button>
                            </children>
                            <padding>
-                              <Insets bottom="1.0" left="2.0" top="1.0" />
+                              <Insets bottom="1.0" left="4.0" top="1.0" />
                            </padding>
                            <HBox.margin>
                               <Insets />
@@ -164,7 +167,7 @@
                               <Insets bottom="1.0" top="1.0" />
                            </HBox.margin>
                            <children>
-                              <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf">
+                              <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf" HBox.hgrow="ALWAYS">
                                  <tooltip>
                                     <Tooltip fx:id="tableDescription_tf_tooltip">
                                        <font>
@@ -216,6 +219,9 @@
                           </items>
                         </ContextMenu>
                      </contextMenu>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
             		</TableView>
                   <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="tableBottomButtons" VBox.vgrow="NEVER">
                      <children>

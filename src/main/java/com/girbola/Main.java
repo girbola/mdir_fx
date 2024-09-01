@@ -48,6 +48,7 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import org.kordamp.bootstrapfx.BootstrapFX;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -133,9 +134,12 @@ public class Main extends Application {
                 }
 
                 primaryScene = new Scene(parent);
-
+//                primaryScene.getStylesheets()
+//                        .add(Main.class.getResource(conf.getThemePath() + "javafx-dark-theme.css").toExternalForm());
                 primaryScene.getStylesheets()
                         .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+//                primaryScene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
+
 
                 Messages.sprintf("theme path is: " + conf.getThemePath());
                 MainController mainController = (MainController) main_loader.getController();

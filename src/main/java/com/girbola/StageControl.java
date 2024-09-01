@@ -3,7 +3,10 @@ package com.girbola;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
+import javafx.scene.control.ScrollBar;
+import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
@@ -34,27 +37,36 @@ public class StageControl extends Stage {
 
         primaryStage.setOnCloseRequest(modelMain.dontExit);
 
-
         primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartPosX((double) newValue);
-                //Messages.sprintf("windowstartposX: " + newValue);
+//                Messages.sprintf("windowstartposX: " + newValue);
             }
         });
 
         primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartPosY((double) newValue);
-                //Messages.sprintf("windowstartposY: " + newValue);
+//                Messages.sprintf("windowstartposY: " + newValue);
             }
         });
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-                Main.conf.setWindowStartWidth((double) newValue);
+//                Main.conf.setWindowStartWidth((double) newValue);
 
                 int visibles = modelMain.tables().showAndHideTables.getVisibles();
 
-                modelMain.tables().getTables_rootPane().setPrefWidth((Double) newValue);
+                if((double) newValue > (double) oldValue && modelMain.tables().isMaxWidthReached()) {
+                    Messages.sprintf("Max reached: newValue: " + newValue + " oldValue: " + oldValue);
+                    Platform.runLater(()-> {
+                        primaryStage.setWidth(modelMain.tables().getMaxReachedWidth());
+                    });
+                    return;
+                }
+//                if (visibles >= 3) {
+//                    return;
+//                }
+                modelMain.tables().getTables_rootPane().setPrefWidth((double) newValue);
 
                 double sortedWidth = 0;
                 double sortItWidth = 0;
@@ -62,11 +74,11 @@ public class StageControl extends Stage {
                 double hiddenWidths = ((3 - visibles) * 50);
                 double bounds = modelMain.tables().getTables_rootPane().getLayoutBounds().getWidth();
                 //double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-75);
-                double divider = Math.floor(bounds / (double) visibles);
+                double divider = Math.floor((double) newValue / (double) visibles);
                 divider -= hiddenWidths;
 
                 //divider -= (hiddenWidths*3);
-                Messages.sprintf("bounds width: " + bounds +  " hiddenWidths: " + hiddenWidths + " divider: " + divider);
+                Messages.sprintf("bounds width: " + bounds + " hiddenWidths: " + hiddenWidths + " divider: " + divider);
 
                 if (modelMain.tables().getSorted_table().isVisible()) {
                     TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), divider);
@@ -102,9 +114,7 @@ public class StageControl extends Stage {
                         " sortit: " + sortItWidth +
                         " asitis: " + asitisWidth +
                         " divider: " + divider +
-                        " hiddenWidths: " + hiddenWidths +
-                        " modelMain.tables().getSorted_table().getParent(); " +
-                        modelMain.tables().getSorted_table().getParent().getParent().getParent().getId());
+                        " hiddenWidths: " + hiddenWidths);
             }
         });
 

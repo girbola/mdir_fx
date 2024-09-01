@@ -66,6 +66,7 @@ import java.util.logging.Logger;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
+import static com.girbola.misc.Misc.openFileBrowser;
 
 public class DateFixerController {
 
@@ -642,12 +643,20 @@ public class DateFixerController {
                     pickDateTime_End.setOnAction(event2 -> model_datefix.setDateTime(
                             Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), false));
                     openFileLocation.setOnAction(event2 -> {
-                        Path path = Paths.get(fileInfo.getOrgPath()).getParent();
-                        try {
-                            Desktop.getDesktop().open(path.toFile());
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+                        Path path = Paths.get(fileInfo.getOrgPath());
+                        openFileBrowser(path);
+//                        try {
+//                            Runtime.getRuntime().exec("explorer.exe  /select," + path.toFile());
+//                        } catch (Exception ex) {
+//                            System.out.println("Error - " + ex);
+//                        }
+
+//                        try {
+//
+//                            Desktop.getDesktop().open(path.toFile());
+//                        } catch (IOException e) {
+//                            throw new RuntimeException(e);
+//                        }
                     });
                     Platform.runLater(() -> {
                         contextMenu.show(vbox, event.getScreenX(), event.getScreenY());

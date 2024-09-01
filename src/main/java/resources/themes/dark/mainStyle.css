@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .root {
-    -fx-base: rgba(92, 88, 88, 0.64);
-    -fx-mid-base: rgba(161, 156, 156, 0.64);
+    -fx-base: rgb(43, 45, 48);
+    -fx-mid-base: rgb(30, 31, 34);
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
     /*-fx-light-border-color: white;*/
@@ -36,8 +36,11 @@
     /*  -fx-border-color:  -fx-dark-border-color; */
 }
 
+#main_vbox {
+    -fx-background-color: -fx-base;
+}
+
 .text {
-    -fx-smooth: lcd;
     -fx-font-size: 1.2em;
     -fx-font-family: "Inter", sans-serif;
 }
@@ -89,14 +92,13 @@
 }
 
 .menu-bar {
-    -fx-font-size: 0.9em;
     -fx-effect: null;
-    -fx-font-weight: 200;
     -fx-padding: 0 1 0 1;
+    -fx-background-color: -fx-base;
 }
 
 .menu-bar .label {
-    -fx-font-size: 0, 9em;
+    -fx-font-size: 0.9em;
     -fx-effect: null;
     -fx-font-weight: 200;
     -fx-padding: 0 1 0 1;
@@ -172,25 +174,49 @@
     -fx-background-color: rgb(53, 80, 145);
 }
 
+.tab-pane:left .tab-header-area .tab-header-background {
+    -fx-background-color: -fx-base;
+}
+
 .tab {
-    /*-fx-background-color: whitesmoke;*/
+    /*-fx-background-color: derive(-fx-mid-base, 20%);*/
+    -fx-padding: 10;
+}
+
+.tab-pane:left .tab-header-area .tab:left {
+    -fx-background-color: transparent;
+}
+
+.tab-pane:left .tab-header-area .tab:left:selected, .tab .tab-label:selected {
+    -fx-background-color: transparent;
+}
+
+/*tab-panes buttons hover*/
+tab-pane:left > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: red;
+}
+
+.tab-pane:left .tab-header-area .tab:left:hover {
+    -fx-background-color: derive(-fx-base, 20%);
 }
 
 .tab .tab-label {
-    /*     -fx-skin: "com.sun.javafx.scene.control.skin.LabelSkin"; */
-    /*-fx-alignment: CENTER;*/
-    /*-fx-font-size: 1em; /* all the same except this newly added one */
-    /*-fx-text-fill: grey;*/
+    -fx-alignment: center;
+    -fx-font-size: 13px; /* all the same except this newly added one */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+
 }
 
-.tab .tab-label:focus {
-    /*-fx-background-color: yellow;*/
+.tab .tab-label:hover {
+    -fx-background-color: derive(-fx-base, 20%);
 }
 
 .tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
-    /*-fx-focus-color: red;*/
-    /*-fx-faint-focus-color: transparent;*/
-    /*-fx-text-fill: white;*/
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
 }
 
 .selectCircleButton {
@@ -243,7 +269,7 @@
     /*-fx-font-family: 'Inter';*/
     /*-fx-font-family: "Gaduci", sans-serif;*/
     /*-fx-font-style: normal;*/
-    -fx-font-weight: 50;
+    -fx-font-weight: normal;
     -fx-font-size: 9px;
     -fx-text-fill: -fx-light-text-color;
     -fx-alignment: center-left;
@@ -253,18 +279,36 @@
 }
 
 .table-view .table-cell {
-    -fx-font-size: 1.8em;
+    -fx-font-size: 1.4em;
     /*-fx-background-color: #595959;*/
-    -fx-background-color: #b5b5b5;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(one-pass-box, black, 1, 0.0, 0, 0.1);
+    /*-fx-background-color: #b5b5b5;*/
+    -fx-background-color: -fx-mid-base;
+    -fx-text-fill: white;
+    /*-fx-effect: dropshadow(one-pass-box, black, 1, 0.0, 0, 0.1);*/
     /*-fx-background-color: linear-gradient(-fx-mid-base 0%, -fx-mid-base 38%, -fx-mid-base 61%, -fx-mid-base 100%);*/
 }
 
-.table-view .column-header,
-.table-view .filler {
+.table-view .column-header {
     -fx-size: 0.75em;
     -fx-border-width: 0 0 1 0;
+    -fx-background-color: -fx-base;
+    /*-fx-background-color: transparent;*/
+    /*-fx-border-color: transparent, transparent, transparent, transparent;*/
+}
+
+.table-view .column-header:hover {
+    -fx-size: 0.75em;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: derive(-fx-base, 3%);
+    /*-fx-background-color: transparent;*/
+    /*-fx-border-color: transparent, transparent, transparent, transparent;*/
+}
+
+.table-view .column-header,
+.table-view .filler:hover {
+    -fx-size: 0.75em;
+    -fx-border-width: 0 0 1 0;
+    -fx-background-color: -fx-mid-base;
     /*-fx-background-color: transparent;*/
     /*-fx-border-color: transparent, transparent, transparent, transparent;*/
 }
@@ -273,7 +317,7 @@
     -fx-padding: 0;
     -fx-margin: 0;
     /*-fx-background-color: transparent;*/
-    -fx-border-color: #09da09;
+    /*-fx-border-color: #09da09;*/
 }
 
 .table-view:focused .table-row-cell:filled:focused:selected {
@@ -364,7 +408,7 @@
 }
 
 .topButtons {
-    -fx-background-color: -fx-base;
+    -fx-background-color: derive(-fx-mid-base,20%);
 }
 
 .bottomBar {
@@ -394,15 +438,23 @@
 }
 
 .view_btn {
-    -fx-background-color: -fx-base, transparent, transparent,
-    linear-gradient(derive(#353945, 40%), derive(#8db5f2, 30%), derive(#30607a, 30%), derive(#44aec6, 40%));
+    -fx-background-color:
+            -fx-base,
+            transparent,
+            transparent,
+            linear-gradient(to bottom,
+            derive(#353945, 40%),
+            derive(#8db5f2, 30%),
+            derive(#30607a, 30%),
+            derive(#44aec6, 40%)
+            );
     /*-fx-effect: dropshadow(three-pass-box, rgba(254, 255, 172, 0.911), 1, 0, 0, 1);*/
     /* -fx-background-color: green; */
     /*-fx-background-color: #dca3a3, transparent, transparent,*/
     /*linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%),*/
-derive(-fx-base, 40 %));
-    -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
-    -fx-border-color: transparent;
+/*derive(-fx-base, 40%));*/
+/*    -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);*/
+/*    -fx-border-color: transparent;*/
 
 }
 

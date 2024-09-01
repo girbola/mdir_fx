@@ -68,6 +68,18 @@ public class Tables {
 	
 	boolean isSameTable = false;
 
+	private boolean maxWidthReached = false;
+
+	public double getMaxReachedWidth() {
+		return maxReachedWidth;
+	}
+
+	public void setMaxReachedWidth(double maxReachedWidth) {
+		this.maxReachedWidth = maxReachedWidth;
+	}
+
+	private double maxReachedWidth = -1;
+
 	public AnchorPane getTables_rootPane() {
 		return this.tables_rootPane;
 	}
@@ -569,4 +581,15 @@ public class Tables {
 		return null;
 	}
 
+	public boolean isMaxWidthReached() {
+		return maxWidthReached;
+	}
+
+	public void setMaxWidthReached(boolean maxWidthReached) {
+		this.maxWidthReached = maxWidthReached;
+	}
+
+
+//    public void setMaxWidthReached(boolean b) {
+//    }
 }

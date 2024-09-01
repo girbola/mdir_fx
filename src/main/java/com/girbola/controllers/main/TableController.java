@@ -39,6 +39,8 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,8 +49,11 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TableColumn.SortType;
+import javafx.scene.control.skin.TableViewSkin;
+import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -57,6 +62,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.converter.NumberStringConverter;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.awt.*;
 import java.io.IOException;
@@ -65,6 +71,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.Main.bundle;
@@ -78,9 +85,9 @@ public class TableController {
 
     private Model_CollectDialog model_CollectDialog;
     private Model_main model_main;
-    private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
-    private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
+    private final ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
+    private final SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
+    private final SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
     private String tableType;
     private Window owner;
 
@@ -239,7 +246,7 @@ public class TableController {
             stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
             scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-            MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
+            MergeDialogController mergeDialogController = loader.getController();
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
 
@@ -260,7 +267,7 @@ public class TableController {
             Scene scene = new Scene(parent);
             model_CollectDialog = new Model_CollectDialog();
 
-            Collect_DialogController controller = (Collect_DialogController) loader.getController();
+            Collect_DialogController controller = loader.getController();
             controller.init(model_main, model_CollectDialog, table, tableType);
             stage.setScene(scene);
             stage.showAndWait();
@@ -398,7 +405,7 @@ public class TableController {
         tableInformation_flowpane.getStyleClass().add("notOk");
 
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
-        if(!table.isVisible()) {
+        if (!table.isVisible()) {
             table_Vbox.setPrefWidth(35);
             table_Vbox.setMinWidth(35);
             table_Vbox.setMaxWidth(35);
@@ -493,6 +500,7 @@ public class TableController {
 
         this.tableType = tableType;
 
+
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
 
         Platform.runLater(() -> {
@@ -545,7 +553,7 @@ public class TableController {
 
         justFolderName_col.setOnEditCommit(event -> {
             Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
-            FolderInfo folderInfo = (FolderInfo) event.getRowValue();
+            FolderInfo folderInfo = event.getRowValue();
             if (event.getNewValue().isEmpty()) {
                 folderInfo.setJustFolderName(Paths.get(folderInfo.getFolderPath()).getFileName().toString());
             } else if (!folderInfo.getJustFolderName().equals(event.getNewValue()) && !event.getNewValue().isEmpty()) {
@@ -579,7 +587,7 @@ public class TableController {
                 if (value == null || empty) {
                     setText("");
                 } else {
-                    setText("" + (Conversion.convertToSmallerConversion(value)));
+                    setText(Conversion.convertToSmallerConversion(value));
                 }
             }
         });
@@ -638,18 +646,93 @@ public class TableController {
                 }
             }
         });
-//        table.setRowFactory(
-//                new Callback<TableView<FolderInfo>, TableRow<FolderInfo>>() {
-//                    @Override
-//                    public TableRow<FolderInfo> call(TableView<FolderInfo> tableView) {
-//
-//                        return null;
+        table.widthProperty().addListener((observableValue, number, t1) -> {
+            Messages.sprintf("table width is: " + t1);
+
+            ScrollBar horizontalScrollBarFromTableView = getHorizontalScrollBarFromTableView(table);
+            Bounds nodeBounds = table.localToScene(table.getLayoutBounds());
+            Messages.sprintf("NODEBOUDNS: " + nodeBounds.toString());
+            if (horizontalScrollBarFromTableView != null) {
+                if(!horizontalScrollBarFromTableView.isVisible()) {
+                    model_main.tables().setMaxWidthReached(false);
+
+                    Messages.sprintf("horizontalScrollBarFromTableView.isVisible(); " + horizontalScrollBarFromTableView.isVisible() + " width: " + t1 + " table max width: " + table.getMaxWidth());
+                } else {
+                    model_main.tables().setMaxWidthReached(true);
+//                    model_main.tables().setMaxReachedWidth((double) t1);
+                }
+            }
+        });
+
+    }
+
+    private ScrollBar getHorizontalScrollBarFromTableView(TableView<?> tableView) {
+        if (tableView.getSkin() instanceof TableViewSkin<?> skin) {
+            VirtualFlow<?> virtualFlow = (VirtualFlow<?>) skin.getChildren().get(1); // VirtualFlow is usually the second child
+            ScrollBar scrollBar = (ScrollBar) virtualFlow.lookup(".scroll-bar:horizontal");
+            if (scrollBar != null) {
+                return scrollBar;
+            }
+
+        }
+        return null;
+    }
+
+    private ScrollPane getScrollPaneFromTableView() {
+        if (table.getSkin() instanceof TableViewSkin<?> skin) {
+            return (ScrollPane) skin.getChildren().stream()
+                    .filter(node -> node instanceof ScrollPane)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
+    private ScrollPane findScrollPaneInTableView(TableView<?> tableView) {
+        if (tableView.getSkin() instanceof TableViewSkin<?> skin) {
+            for (Node child : skin.getChildren()) {
+                if (child instanceof ScrollPane) {
+                    return (ScrollPane) child;
+                }
+            }
+        }
+        return null;
+    }
+    private void checkScrollBarVisibility() {
+        ScrollPane scrollPane = getScrollPaneFromTableView();
+        if (scrollPane != null) {
+            // Check horizontal scrollbar
+            ScrollBar horizontalScrollBar = (ScrollBar) scrollPane.lookup(".scroll-bar:horizontal");
+            if (horizontalScrollBar != null) {
+                System.out.println("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
+            }
+        } else {
+            Messages.sprintf("scrollPane is null");
+        }
+//        Platform.runLater(() -> {
+//            ScrollBar horizontalBar = null;
+//            ScrollPane tableViewScrollPane = (javafx.scene.control.ScrollPane) table.lookup(".scroll-pane");
+//            if (tableViewScrollPane != null) {
+//                Messages.sprintf("This worokrokaeorkgoaekthoaeth? " + tableViewScrollPane);
+//                // Check horizontal scrollbar
+//                var horizontalScrollBar = (javafx.scene.control.ScrollBar) tableViewScrollPane.lookup(".scroll-bar:horizontal");
+//                if (horizontalScrollBar != null) {
+//                    System.out.println("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
+//                }
+//            }
+//            for (Node node : table.lookupAll(".scroll-bar:horizontal")) {
+//                if (node instanceof ScrollBar bar) {
+//                    Messages.sprintf("WHAT IS THIS: " + node);
+//                    if (bar.getOrientation().equals(Orientation.HORIZONTAL)) {
+//                        horizontalBar = bar;
 //                    }
-//                });
-//        table.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-//            if (event.getButton() == MouseButton.SECONDARY) {
-//                ContextMenu contextMenu = new ContextMenu();
-//                Messages.sprintf("event.getTarget(): " +event.getTarget());
+//
+//                }
+//            }
+//            if (horizontalBar != null) {
+//                horizontalBar.visibleProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                            Messages.sprintf("horizontalBar is visible? " + newValue);
+//                        }
+//                );
 //            }
 //        });
     }
