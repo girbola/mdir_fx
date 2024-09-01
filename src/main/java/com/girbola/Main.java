@@ -44,6 +44,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -132,7 +133,7 @@ public class Main extends Application {
                     Messages.sprintf("error loading parent= " + ex.getMessage());
                     cancel();
                 }
-
+                primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/resources/img/mdir_m2_icon.png")));
                 primaryScene = new Scene(parent);
 //                primaryScene.getStylesheets()
 //                        .add(Main.class.getResource(conf.getThemePath() + "javafx-dark-theme.css").toExternalForm());

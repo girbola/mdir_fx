@@ -1,7 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
 .root {
-    -fx-base: #807c7ca4;
+    -fx-base:  rgb(43, 45, 48);
+    -fx-mid-base: rgb(30, 31, 34);
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
+
     -fx-light-border-color: white;
 
     /* Button basic colors */
@@ -22,7 +26,7 @@
     -fx-dark-text-color: black;
     -fx-mid-text-color: #292929;
     -fx-light-text-color: rgb(228, 225, 225);
-    -fx-font-family: 'Gaduci';
+    /*-fx-font-family: 'Gaduci';*/
 
     -fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
     -fx-font-weight: 900;
@@ -32,6 +36,10 @@
     /*  -fx-border-color:  -fx-dark-border-color; */
 }
 
+.text {
+    -fx-font-size: 0.9em;
+    -fx-font-family: "Inter", sans-serif;
+}
 #actionButtons {
     -fx-pref-height: 30px;
     -fx-text-alignment: center;
@@ -47,7 +55,7 @@
     -fx-background-color: -fx-base, transparent, transparent,
         linear-gradient(to bottom, derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
-    -fx-font-family: 'Gaduci';
+    /*-fx-font-family: 'Gaduci';*/
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
 }
@@ -76,7 +84,7 @@
     -fx-background-insets: 1, 2, 1, 2;
     -fx-background-radius: 4;
     -fx-padding: 6;
-    -fx-font-family: 'Gaduci';
+    /* -fx-font-family: 'Gaduci'; */
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
@@ -124,7 +132,7 @@
 
 .imageFrame {
     -fx-border-color: -fx-mid-border-color;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-background-color: -fx-base;
 }
 
@@ -143,7 +151,7 @@
     -fx-background-color: linear-gradient(to bottom, blue, white);
     -fx-background-radius: 0 0 0 0;
     -fx-border-color: #555555;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
 }
@@ -152,7 +160,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, red, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -162,7 +170,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, cyan, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -172,7 +180,7 @@
     /*-fx-background-color: transparent;*/
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     /*-fx-padding: 0 1 0 1;*/
@@ -181,7 +189,7 @@
 .jump_Button_video {
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 }
@@ -189,7 +197,7 @@
 .jump_Button_good {
     -fx-background-color: linear-gradient(to bottom, green, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 }
@@ -233,7 +241,7 @@
     -fx-background-insets: 1, 2, 1, 2;
     -fx-background-radius: 4;
     /*-fx-padding: 6;*/
-    -fx-font-family: 'Gaduci';
+    /* -fx-font-family: 'Gaduci'; */
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
@@ -299,7 +307,7 @@
 
 .rootPath {
     -fx-background-color: derive(-fx-base, 50%);
-    -fx-font-family: 'Gaduci';
+    /* -fx-font-family: 'Gaduci'; */
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
 }
@@ -475,7 +483,7 @@
 .switchButton:focused {
     -fx-background-radius: 40px;
     -fx-border-radius: 40px;
-    -fx-background-insets: 0.0625em;;
+    -fx-background-insets: 0.0625em;
 
     -fx-background-color: -fx-base, transparent, transparent,
         linear-gradient(orange 0%, white 25%, white 75%, whitesmoke 100%);
@@ -530,7 +538,7 @@
 .tab-pane .tab:selected {
     -fx-alignment: center;
     -fx-background-color: grey, transparent, derive(orange, 60%);
-    -fx-font-family: 'Gaduci';
+    /* -fx-font-family: 'Gaduci'; */
     -fx-font-size: 0.625em;
     -fx-font-weight: bold;
     -fx-insets: 0;
@@ -555,7 +563,7 @@
 
 .tab .tab-label {
     -fx-alignment: center;
-    -fx-font-family: 'Gaduci';
+    /*-fx-font-family: 'Gaduci';*/
     -fx-font-size: 0.625em;
     /*-fx-font-weight: none;*/
     -fx-insets: 5;
@@ -599,7 +607,7 @@
 
 .table-view .column-header .label {
     -fx-font-size: 9px;
-    -fx-font-family: 'Gaduci';
+    /*-fx-font-family: 'Gaduci';*/
     -fx-text-fill: -fx-light-text-color;
     -fx-alignment: center-left;
 }

@@ -125,12 +125,10 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             return;
         }
 
-
-        Label label = new Label("Video");
-        label.setStyle("-fx-text-fill: orange;");
-        label.setMouseTransparent(true);
-        StackPane.setAlignment(label, Pos.TOP_CENTER);
-        pane.getChildren().add(label);
+        Label videoLabel = new Label("Video");
+        videoLabel.setMouseTransparent(true);
+        StackPane.setAlignment(videoLabel, Pos.TOP_CENTER);
+        pane.getChildren().add(videoLabel);
 
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         Platform.runLater(() -> {
