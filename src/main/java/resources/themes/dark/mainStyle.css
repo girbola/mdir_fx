@@ -74,11 +74,9 @@
 }
 
 .hideablePane {
-    -fx-border-color: -fx-light-border-color;
     -fx-effect: dropshadow(one-pass-box, #333030, 5, 0.0, 0, 1);
-
+    -fx-border-color: none;
     /*-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);*/
-
 }
 
 .table_parent {
@@ -463,49 +461,38 @@ tab-pane:left > .tab-header-area > .headers-region > .tab:selected .focus-indica
 }
 
 .main {
-    /*-fx-background-color: -fx-base;*/
+    -fx-background-color: -fx-base;
 }
 
 .showAndHide {
-    /*-fx-background-color: rgb(199, 193, 193);*/
+    -fx-background-color: transparent;
 }
 
 .showAndHide:hover {
-    /*-fx-background-color: rgb(221, 180, 180);*/
-}
-
-.tableCellStatus {
-    /*-fx-background-color: #383d59;*/
+    -fx-background-color: derive(-fx-base, 13%);
 }
 
 .tableCellStatus_DONE {
-    /*-fx-background-color: #def880;*/
+    -fx-background-color: #def880;
 }
 
 .tableCellStatus_READY {
-    /*-fx-background-color: #99aabf;*/
+    -fx-background-color: #99aabf;
 }
 
 .tableCellStatus_ADD {
-    /*-fx-background-color: #20c7d3;*/
+    -fx-background-color: #20c7d3;
 }
 
 .tableCellStatus_BAD {
-    /*-fx-background-color: #f29f8d;*/
-}
-
-.transparent_btn {
-    /*-fx-background-color: transparent;*/
-}
-
-.transparent_btn:hover {
-    /*-fx-background-color: transparent;*/
-    /*-fx-border-color: grey;*/
+    -fx-background-color: #f29f8d;
 }
 
 .tooltip {
-    /*-fx-font-size: 0.8125em;*/
-    /*-fx-background-radius: 2 2 2 2;*/
+    -fx-font-size: 18px;
+    -fx-background-radius: 10;
+    -fx-border-color: orange;
+    -fx-border-radius: 10;
 }
 
 .alertDialogButton {

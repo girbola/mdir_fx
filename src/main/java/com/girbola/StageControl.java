@@ -4,9 +4,6 @@ import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
-import javafx.geometry.Bounds;
-import javafx.scene.control.ScrollBar;
-import javafx.scene.control.ScrollPane;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
@@ -52,17 +49,9 @@ public class StageControl extends Stage {
         });
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-//                Main.conf.setWindowStartWidth((double) newValue);
 
                 int visibles = modelMain.tables().showAndHideTables.getVisibles();
 
-                if((double) newValue > (double) oldValue && modelMain.tables().isMaxWidthReached()) {
-                    Messages.sprintf("Max reached: newValue: " + newValue + " oldValue: " + oldValue);
-                    Platform.runLater(()-> {
-                        primaryStage.setWidth(modelMain.tables().getMaxReachedWidth());
-                    });
-                    return;
-                }
 //                if (visibles >= 3) {
 //                    return;
 //                }
@@ -72,13 +61,9 @@ public class StageControl extends Stage {
                 double sortItWidth = 0;
                 double asitisWidth = 0;
                 double hiddenWidths = ((3 - visibles) * 50);
-                double bounds = modelMain.tables().getTables_rootPane().getLayoutBounds().getWidth();
-                //double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-75);
+
                 double divider = Math.floor((double) newValue / (double) visibles);
                 divider -= hiddenWidths;
-
-                //divider -= (hiddenWidths*3);
-                Messages.sprintf("bounds width: " + bounds + " hiddenWidths: " + hiddenWidths + " divider: " + divider);
 
                 if (modelMain.tables().getSorted_table().isVisible()) {
                     TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), divider);
