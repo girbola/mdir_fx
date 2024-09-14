@@ -65,7 +65,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectAll.png" />
+                                                                <Image url="@../../../../../resources/img/selectAll.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -77,7 +77,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectNone.png" />
+                                                                <Image url="@../../../../../resources/img/selectNone.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -89,7 +89,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectInvert.png" />
+                                                                <Image url="@../../../../../resources/img/selectInvert.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -101,7 +101,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectGood.png" />
+                                                                <Image url="@../../../../../resources/img/selectGood.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -113,7 +113,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectBad.png" />
+                                                                <Image url="@../../../../../resources/img/selectBad.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -125,7 +125,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectAllModified.png" />
+                                                                <Image url="@../../../../../resources/img/selectAllModified.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -137,7 +137,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/selectAcceptable.png" />
+                                                                <Image url="@../../../../../resources/img/selectAcceptable.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -225,7 +225,7 @@
                                                     <graphic>
                                                         <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/hideTable.png" />
+                                                                <Image url="@../../../../../resources/img/hideTable.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>
@@ -416,12 +416,12 @@
                                           <Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
                                           <CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
                                           <CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
-                                          <Button id="showHideMediaBasedOnSelectionButton" fx:id="cameras_hide_Deselected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#cameras_hide_Deselected_btn_action" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                          <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_only_selected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_only_selected_btn_action" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                               <graphic>
                                                   <FontIcon iconLiteral="bi-eye-slash" iconSize="20" />
                                               </graphic>
                                           </Button>
-                                          <Button id="showHideMediaBasedOnSelectionButton" fx:id="cameras_show_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#cameras_show_all_btn_action" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                          <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_all_btn_action" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                               <graphic>
                                                   <FontIcon iconLiteral="bi-eye" iconSize="20" />
                                               </graphic>
@@ -618,7 +618,7 @@
                                                     <graphic>
                                                         <ImageView id="showAndHideButton" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
                                                             <image>
-                                                                <Image url="@../../../../resources/img/hideTable.png" />
+                                                                <Image url="@../../../../../resources/img/hideTable.png" />
                                                             </image>
                                                         </ImageView>
                                                     </graphic>

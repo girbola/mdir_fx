@@ -36,20 +36,22 @@ public class StageControl extends Stage {
 
         primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-                Main.conf.setWindowStartPosX((double) newValue);
-//                Messages.sprintf("windowstartposX: " + newValue);
+                Platform.runLater(() -> {
+                    Main.conf.setWindowStartPosX((double) newValue);
+                });
             }
         });
 
         primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-                Main.conf.setWindowStartPosY((double) newValue);
-//                Messages.sprintf("windowstartposY: " + newValue);
+                Platform.runLater(() -> {
+                    Main.conf.setWindowStartPosY((double) newValue);
+                });
             }
         });
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-
+                Main.conf.setWindowStartWidth((double) newValue);
                 int visibles = modelMain.tables().showAndHideTables.getVisibles();
 
 //                if (visibles >= 3) {
@@ -106,17 +108,18 @@ public class StageControl extends Stage {
         primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartHeight((double) newValue);
-                Messages.sprintf("setWindowStartHeight: " + newValue);
             }
         });
     }
 
     public void setStageBoundarys() {
-        primaryStage.setX(Main.conf.getWindowStartPosX());
-        primaryStage.setY(Main.conf.getWindowStartPosY());
-        primaryStage.setWidth(Main.conf.getWindowStartWidth());
-        primaryStage.setHeight(Main.conf.getWindowStartHeight());
-        Messages.sprintf("AEORGAEOTJHAETh:" + Main.conf.toString());
+        Messages.sprintf("setStageBoundarys started");
+        Platform.runLater(() -> {
+            primaryStage.setX(Main.conf.getWindowStartPosX());
+            primaryStage.setY(Main.conf.getWindowStartPosY());
+            primaryStage.setWidth(Main.conf.getWindowStartWidth());
+            primaryStage.setHeight(Main.conf.getWindowStartHeight());
+        });
     }
 
     public int calculateVisibles(Model_main modelMain) {

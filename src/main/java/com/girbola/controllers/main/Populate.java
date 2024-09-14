@@ -48,7 +48,7 @@ public class Populate {
 
     public Populate(Model_main model) {
         this.model_main = model;
-        Messages.sprintf("Populate starting");
+        Messages.sprintf("Populate initialized");
     }
 
     public void populateTables_FolderScanner_list(Window owner) {

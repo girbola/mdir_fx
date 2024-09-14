@@ -24,6 +24,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -35,13 +36,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -50,9 +45,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -76,10 +68,12 @@ public class DateFixerController {
     private QuickPick_Navigator quickPick_Navigator;
     private Model_datefix model_datefix;
     private Model_main model_main;
+// showOnlySelectedBtn
+    // showOnlySelectedBtn_Action
 
     //@formatter:off
-	@FXML private Button cameras_hide_Deselected_btn;
-	@FXML private Button cameras_show_all_btn;
+	@FXML private Button show_only_selected_btn;
+	@FXML private Button show_all_btn;
 	@FXML private MenuButton move_menuBtn;
 	@FXML private TableView<MetaData> metaDataTableView;
 	@FXML private CheckBox ignored_chk;
@@ -177,25 +171,6 @@ public class DateFixerController {
                                 .filter(number -> number >= 0 && startFrom <= number && endTo >= number)
                                 .forEach(number -> model_datefix.getSelectionModel().addOnly(vbox)))
                 );
-//
-//        try {
-//            sprintf("startFromNumber_tf.getText(): " + startFromNumber_tf.getText());
-//            int start = Integer.parseInt(startFromNumber_tf.getText());
-//
-//            sprintf("Start will be: " + start);
-//            startFromNumber_tf.getStyleClass().remove("notValidNumber");
-//        } catch (Exception e) {
-//            startFromNumber_tf.getStyleClass().add("notValidNumber");
-//        }
-//
-//        try {
-//            sprintf("endToNumber_tf.getText(): " + endToNumber_tf.getText());
-//            int end = Integer.parseInt(endToNumber_tf.getText());
-//            endToNumber_tf.getStyleClass().remove("notValidNumber");
-//            sprintf("End will be: " + end);
-//        } catch (Exception e) {
-//            endToNumber_tf.getStyleClass().add("notValidNumber");
-//        }
     }
 
     private int getInteger(String value) {
@@ -211,7 +186,8 @@ public class DateFixerController {
     @FXML
     private void fileName_mi_action(ActionEvent event) {
         sortNodes();
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
     }
 
     private void sortNodes() {
@@ -233,7 +209,7 @@ public class DateFixerController {
             FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
             return Long.compare(fileInfo1.getDate(), fileInfo2.getDate());
         });
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
     }
 
     @FXML
@@ -371,25 +347,31 @@ public class DateFixerController {
     }
 
     @FXML
-    private void cameras_hide_Deselected_btn_action(ActionEvent event) {
-        sprintf("cameras_hide_Deselected_btn_action");
+    private void show_only_selected_btn_action(ActionEvent event) {
+        sprintf("showOnlySelectedBtn action");
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
-        sprintf("cameras_hide_Deselected_btn_action starting");
+        sprintf("show_only_selected_btn_action starting");
 
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+        ObservableList<Node> selectionList = model_datefix.getSelectionModel().getSelectionList();
+
+        ObservableList<Node> nodesToShow = FXCollections.observableList(model_datefix.getAllNodes());
+        nodesToShow.removeAll(selectionList);
+        Messages.sprintf("Selected nodes to show: " + nodesToShow.size());
+
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
     }
 
     @FXML
-    private void cameras_show_all_btn_action(ActionEvent event) {
-        sprintf("cameras_show_all_btn_action");
+    private void show_all_btn_action(ActionEvent event) {
+        sprintf("show_all_btn_action");
         model_datefix.getSelectionModel().clearAll();
         model_datefix.deselectAllExifDataSelectors();
 
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
     }
 
@@ -553,7 +535,7 @@ public class DateFixerController {
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
             }
         });
 
@@ -581,7 +563,8 @@ public class DateFixerController {
 
         quickPick_Navigator = new QuickPick_Navigator(model_datefix, df_scrollPane, df_tilePane, quickPick_tilePane);
         model_datefix.setQuickPick_Navigator(quickPick_Navigator);
-        model_datefix.instantiateRenderVisibleNodes();
+
+
 
         Main.scene_Switcher.getWindow().setOnCloseRequest(e -> {
             sprintf("Close request pressed");
@@ -664,6 +647,7 @@ public class DateFixerController {
                 }
             }
         });
+        model_datefix.instantiateRenderVisibleNodes();
     }
 
     private MenuItem createMenuItem(String bundleText) {
@@ -915,7 +899,7 @@ public class DateFixerController {
                 model_datefix.getTilePane().getChildren().removeAll(toRemove);
                 model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
 
-                DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
             }
         } else if (result.get().getButtonData().equals(ButtonData.NO)) {

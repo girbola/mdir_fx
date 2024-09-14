@@ -24,6 +24,7 @@ package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
+import com.girbola.configuration.ConfigurationUtils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
@@ -38,6 +39,8 @@ import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -49,13 +52,13 @@ import javafx.scene.robot.Robot;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.kordamp.bootstrapfx.BootstrapFX;
 
+import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.girbola.messages.Messages.sprintf;
@@ -114,7 +117,7 @@ public class Main extends Application {
                 setChanged(false);
                 conf.setModel(model_main);
                 conf.createProgramPaths();
-                conf.loadConfig();
+                ConfigurationUtils.loadConfig();
                 Messages.sprintf("CONFIG contains: " + conf.toString());
                 Messages.sprintf("Java version: " + System.getProperty("java.version"));
                 Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
@@ -133,16 +136,24 @@ public class Main extends Application {
                     Messages.sprintf("error loading parent= " + ex.getMessage());
                     cancel();
                 }
-                primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("/resources/img/mdir_m2_icon.png")));
+                primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));
                 primaryScene = new Scene(parent);
+
+                if (conf.getThemePath() == null) {
+                    Messages.sprintf("conf.getThemePath() == null");
+                }
+
 //                primaryScene.getStylesheets()
 //                        .add(Main.class.getResource(conf.getThemePath() + "javafx-dark-theme.css").toExternalForm());
-                primaryScene.getStylesheets()
-                        .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+                primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 //                primaryScene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
-
-                Messages.sprintf("theme path is: " + conf.getThemePath());
+                primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                        Messages.sprintf("wdth: " + t1);
+                    }
+                });
                 MainController mainController = (MainController) main_loader.getController();
                 mainController.initialize(model_main);
 
@@ -158,10 +169,23 @@ public class Main extends Application {
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
                 lpt = new LoadingProcessTask(scene_Switcher.getWindow());
+
                 Platform.runLater(() -> {
                     lpt.setTask(mainTask);
 //					lpt.showLoadStage();
                 });
+//                primaryStage.showingProperty().addListener(new ChangeListener<Boolean>() {
+//                    @Override
+//                    public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
+//                        if (t1) {
+//                            Messages.warningText("Is showing!");
+//                            Platform.runLater(() -> {
+//                                primaryStage.setWidth(primaryStage.getWidth() + 1);
+//                                primaryStage.setWidth(primaryStage.getWidth() - 1);
+//                            });
+//                        }
+//                    }
+//                });
 //				ScenicView.show(parent);
                 return null;
             }
@@ -169,8 +193,6 @@ public class Main extends Application {
 
         mainTask.setOnSucceeded(event -> {
             Messages.sprintf("main succeeded");
-//				scene_Switcher.setWindow(primaryStage);
-//				scene_Switcher.setScene_main(primaryScene);
 
             boolean isValidOS = Misc.checkOS();
             if (isValidOS) {
@@ -178,10 +200,8 @@ public class Main extends Application {
             } else {
                 Messages.sprintfError("Valid OS NOT found");
             }
-            //AlertDialog.alertDialog("This is a test dialog of header","This is a test dialog of content",primaryStage, true);
-            //Messages.errorSmth(ERROR, "This is TEH error text", null, Misc.getLineNumber(), true);
 
-            conf.loadConfig_GUI();
+            ConfigurationUtils.loadConfig_GUI(model_main);
 
             FolderScannerSQL.loadSelectedFolders(model_main);
 
@@ -228,7 +248,7 @@ public class Main extends Application {
                     getMain_stage().maximizedProperty().addListener((ov, t, t1) -> {
 //									model_main.tables().getHideButtons().updateVisibleTableWidths();
                         Messages.sprintf("model_main.tables().getHideButtons().updateTableVisible();: "
-                                + t1.booleanValue());
+                                + t1);
                     });
 
 
@@ -236,27 +256,38 @@ public class Main extends Application {
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
                 });
                 load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
-                    Platform.runLater(() -> {
 
-                        try {
-                            if (!load_FileInfosBackToTableViews.get()) {
-                                Messages.sprintfError("Loading FileInfos were failed");
-                                Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
-                                        Misc.getLineNumber(), true);
-                            }
-                        } catch (InterruptedException | ExecutionException ex) {
-                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
-                                    Misc.getLineNumber(), true);
+                    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+                        @Override
+                        public void handle(WindowEvent event12) {
+                            model_main.exitProgram_NOSAVE();
                         }
-                        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                            @Override
-                            public void handle(WindowEvent event12) {
-                                model_main.exitProgram_NOSAVE();
-                            }
-                        });
-                        lpt.closeStage();
-
                     });
+                    Platform.runLater(() -> {
+                        lpt.closeStage();
+                    });
+
+//                    Platform.runLater(() -> {
+//
+//                        try {
+//                            if (!load_FileInfosBackToTableViews.get()) {
+//                                Messages.sprintfError("Loading FileInfos were failed");
+//                                Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
+//                                        Misc.getLineNumber(), true);
+//                            }
+//                        } catch (InterruptedException | ExecutionException ex) {
+//                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
+//                                    Misc.getLineNumber(), true);
+//                        }
+//                        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//                            @Override
+//                            public void handle(WindowEvent event12) {
+//                                model_main.exitProgram_NOSAVE();
+//                            }
+//                        });
+//                        lpt.closeStage();
+//
+//                    });
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
@@ -288,19 +319,9 @@ public class Main extends Application {
         });
 
         Thread mainTask_th = new Thread(mainTask, "mainTask_th");
-        mainTask_th.run();
+        mainTask_th.setDaemon(true);
+        mainTask_th.start();
 
-    }
-
-    private Point2D defineScreenWithMouseCursor() {
-        Robot r = new Robot();
-        Point2D d = r.getMousePosition();
-        return d;
-
-    }
-
-    public static AtomicBoolean processCancelled_property() {
-        return processCancelled;
     }
 
     public static boolean getProcessCancelled() {
@@ -377,15 +398,17 @@ public class Main extends Application {
     }
 
     public static void centerWindowDialog(Stage stage) {
-        stage.setOnShowing(ev -> {
-            Platform.runLater(() -> {
-                stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
-                        - (stage.getWidth() / 2));
-                stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)
-                        - stage.getHeight() / 2));
+        Messages.sprintf("centerWindowDialog...");
+        if (Main.conf.getWindowStartPosX() > 0) {
+            stage.setOnShowing(ev -> {
+                Platform.runLater(() -> {
+                    stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
+                            - (stage.getWidth() / 2));
+                    stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)
+                            - stage.getHeight() / 2));
+                });
             });
-        });
-
+        }
     }
 
 }

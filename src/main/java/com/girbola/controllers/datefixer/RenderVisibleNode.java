@@ -75,28 +75,21 @@ public class RenderVisibleNode {
             if (timeline != null) {
                 timeline.stop();
             }
-            timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
+            timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), e -> renderVisibleNodes()));
             sprintf("1time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
             timeline.play();
             map.clear();
         });
-        scrollPane.viewportBoundsProperty().addListener(new ChangeListener<Bounds>() {
-            @Override
-            public void changed(ObservableValue<? extends Bounds> observable, Bounds oldValue, Bounds newValue) {
 
-                if (timeline != null) {
-                    timeline.stop();
-                }
-                timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
-                sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: "
-                        + scrollPane.getVmax());
-                timeline.play();
-                map.clear();
+        scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
+            if (timeline != null) {
+                timeline.stop();
             }
+            timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
+            Messages.sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
+            timeline.play();
+            map.clear();
         });
-
-//		scrollPane.setVvalue(-10);
-//		scrollPane.setVvalue(0);
 
     }
 
@@ -142,6 +135,7 @@ public class RenderVisibleNode {
                 if (fileInfo == null) {
                     Main.setProcessCancelled(true);
                     Messages.errorSmth(ERROR, "fileInfo were null!!!", null, Misc.getLineNumber(), true);
+                    break;
                 }
 
                 if (imageView != null) {
@@ -179,33 +173,23 @@ public class RenderVisibleNode {
                                         break;
                                     case 1:
                                         if (FileUtils.supportedVideo(file)) {
-                                            Task<List<BufferedImage>> convertVideo_task = null;
-                                            convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
-                                            //convertVideo_task = new VideoThumbMaker(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
+                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
                                             needToConvert_Video_list.add(convertVideo_task);
                                         } else if (FileUtils.supportedImage(file)) {
                                             if (FileUtils.isTiff(file.toFile())) {
-                                                Messages.sprintf(
-                                                        "Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
-//											Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
-//													imageView);
-                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo,
-                                                        GUIPrefs.thumb_x_MAX, imageView);
+                                                Messages.sprintf("Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
+                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             } else {
-                                                Messages.sprintf(
-                                                        "2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
-                                                        imageView);
+                                                Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
+                                                Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             }
                                         } else if (FileUtils.supportedRaw(file)) {
-                                            Messages.sprintf(
-                                                    "3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX,
-                                                    imageView);
+                                            Messages.sprintf("3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
+                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
                                             imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                             needToConvert_Image_list.add(imageThumb);
                                         }
@@ -285,6 +269,7 @@ public class RenderVisibleNode {
             return 0;
         }
     }
+
     private synchronized void checkVisible() {
 
         map.clear();

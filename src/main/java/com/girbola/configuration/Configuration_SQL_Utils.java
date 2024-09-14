@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -38,7 +39,7 @@ public class Configuration_SQL_Utils {
     public static final String tableShow_asItIs = "tableShow_asItIs";
     public static final String tableShow_sortIt = "tableShow_sortIt";
     public static final String tableShow_sorted = "tableShow_sorted";
-    public static final String themePath = "themePath";
+    public static final String currentTheme = "currentTheme";
     public static final String vlcPath = "vlcPath";
     public static final String vlcSupport = "vlcSupport";
     public static final String windowStartHeigth = "windowStartHeigth";
@@ -112,7 +113,7 @@ public class Configuration_SQL_Utils {
 		    	    + showFullPath + " BOOLEAN,"
 		    	    + showHints + " BOOLEAN,"
 		    	    + showTooltips + " BOOLEAN,"
-		    	    + themePath + " STRING,"
+		    	    + currentTheme + " STRING,"
 		    	    + vlcPath + " STRING,"
 		    	    + vlcSupport + " BOOLEAN,"
 		    	    + saveDataToHD + " STRING,"
@@ -171,7 +172,7 @@ public class Configuration_SQL_Utils {
                 "showFullPath, " +
                 "showHints, " +
                 "showTooltips, " +
-                "themePath, " +
+                "currentTheme, " +
                 "vlcPath, " +
                 "vlcSupport, " +
                 "saveDataToHD, " +
@@ -199,7 +200,8 @@ public class Configuration_SQL_Utils {
                 configuration.setShowFullPath(Boolean.parseBoolean(rs.getString(showFullPath)));
                 configuration.setShowHints(Boolean.parseBoolean(rs.getString(showHints)));
                 configuration.setShowTooltips(Boolean.parseBoolean(rs.getString(showTooltips)));
-                configuration.setThemePath(rs.getString(themePath));
+                configuration.setCurrentTheme(rs.getString(currentTheme)); // e.x. dark
+                configuration.setThemePath("/" + configuration.getCurrentTheme() + "/");
                 configuration.setVlcPath(rs.getString(vlcPath));
                 configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(vlcSupport)));
                 configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(saveDataToHD)));
@@ -235,12 +237,11 @@ public class Configuration_SQL_Utils {
             }
             connection.commit();
             connection.close();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
         }
-        System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir());
-        return false;
     }
 
     /**
@@ -358,7 +359,7 @@ public class Configuration_SQL_Utils {
                             + "'" + showFullPath + "', "
                             + "'" + showHints + "', "
                             + "'" + showTooltips + "', "
-                            + "'" + themePath + "', "
+                            + "'" + currentTheme + "', "
                             + "'" + vlcPath + "', "
                             + "'" + vlcSupport + "', "
                             + "'" + saveDataToHD + "', "
@@ -384,7 +385,7 @@ public class Configuration_SQL_Utils {
                     pstmt.setBoolean(5, configuration.isShowFullPath());
                     pstmt.setBoolean(6, configuration.isShowHints());
                     pstmt.setBoolean(7, configuration.isShowTooltips());
-                    pstmt.setString(8, configuration.getThemePath());
+                    pstmt.setString(8, configuration.getCurrentTheme());
                     pstmt.setString(9, configuration.getVlcPath());
                     pstmt.setBoolean(10, configuration.isVlcSupport());
                     pstmt.setBoolean(11, configuration.isSaveDataToHD());

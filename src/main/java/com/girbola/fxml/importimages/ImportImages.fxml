@@ -130,7 +130,7 @@
                                              <children>
                                                 <ImageView fitHeight="66.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../../../resources/img/brokenImage.png" />
+                                                      <Image url="@../../../../../resources/img/brokenImage.png" />
                                                    </image>
                                                 </ImageView>
                                                 <Label alignment="BOTTOM_CENTER" text="jpg" textAlignment="CENTER" StackPane.alignment="BOTTOM_RIGHT" />
@@ -144,7 +144,7 @@
                                              <children>
                                                 <ImageView fitHeight="66.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../../../resources/img/brokenImage.png" />
+                                                      <Image url="@../../../../../resources/img/brokenImage.png" />
                                                    </image>
                                                 </ImageView>
                                                 <Label alignment="BOTTOM_CENTER" text="jpg" textAlignment="CENTER" StackPane.alignment="BOTTOM_RIGHT" />
@@ -158,7 +158,7 @@
                                              <children>
                                                 <ImageView fitHeight="66.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../../../resources/img/brokenImage.png" />
+                                                      <Image url="@../../../../../resources/img/brokenImage.png" />
                                                    </image>
                                                 </ImageView>
                                                 <Label alignment="BOTTOM_CENTER" text="jpg" textAlignment="CENTER" StackPane.alignment="BOTTOM_RIGHT" />
@@ -172,7 +172,7 @@
                                              <children>
                                                 <ImageView fitHeight="66.0" fitWidth="66.0" pickOnBounds="true" preserveRatio="true">
                                                    <image>
-                                                      <Image url="@../../../../resources/img/brokenImage.png" />
+                                                      <Image url="@../../../../../resources/img/brokenImage.png" />
                                                    </image>
                                                 </ImageView>
                                                 <Label alignment="BOTTOM_CENTER" text="jpg" textAlignment="CENTER" StackPane.alignment="BOTTOM_RIGHT" />

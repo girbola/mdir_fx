@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 .root {
-    -fx-base: rgb(43, 45, 48);
+    -fx-base: #272727;
     -fx-mid-base: rgb(30, 31, 34);
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
@@ -46,7 +46,10 @@
 }
 
 .button {
-    -fx-background-color: -fx-base, transparent, transparent,
+    -fx-background-color:
+            -fx-base,
+            transparent,
+            transparent,
     linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
     /*!*-fx-font-family: 'Gaduci';*!*/
@@ -80,7 +83,8 @@
 }
 
 .table_parent {
-    -fx-background-color: linear-gradient(to bottom, #595555, -fx-base);
+    /*-fx-background-color: linear-gradient(to bottom, #595555, -fx-base);*/
+    -fx-background-color: red;
 }
 
 .main_rootPane {
@@ -238,7 +242,7 @@ tab-pane:left > .tab-header-area > .headers-region > .tab:selected .focus-indica
 }
 
 .table-view {
-    -fx-background-color: #272727;
+    -fx-background-color: -fx-base;
     -fx-background-radius: 0.125em;
     -fx-padding: 0.0625em;
 
@@ -337,6 +341,11 @@ tab-pane:left > .tab-header-area > .headers-region > .tab:selected .focus-indica
 .scroll-bar:vertical .thumb {
     /*-fx-background-color: derive(darkgray, 20%);*/
     /*-fx-background-radius: 0.2em;*/
+}
+
+/*Hides tableview empty space with tableview content color*/
+.scroll-pane .viewport {
+    -fx-background-color: -fx-base;
 }
 
 .media-column > .label .text {

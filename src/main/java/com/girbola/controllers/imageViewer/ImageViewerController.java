@@ -9,6 +9,7 @@ package com.girbola.controllers.imageViewer;
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -333,10 +334,10 @@ public class ImageViewerController {
 	}
 
 	private void zoomIn() {
-		if ((stage.getWidth() + zoomPos_x) >= (conf.getScreenBounds().getWidth() - 10)) {
+		if ((stage.getWidth() + zoomPos_x) >= (Misc.getScreenBounds().getWidth() - 10)) {
 			return;
 		}
-		if ((stage.getHeight() + zoomPos_x) >= (conf.getScreenBounds().getHeight() - 10)) {
+		if ((stage.getHeight() + zoomPos_x) >= (Misc.getScreenBounds().getHeight() - 10)) {
 			return;
 		}
 		stage.setWidth(stage.getWidth() + zoomPos_x);

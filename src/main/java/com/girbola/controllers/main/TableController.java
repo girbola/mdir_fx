@@ -235,7 +235,7 @@ public class TableController {
 
             Main.centerWindowDialog(stage);
 
-            stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
+            stage.setMaxWidth(Misc.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
             scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
             MergeDialogController mergeDialogController = loader.getController();
@@ -385,7 +385,7 @@ public class TableController {
 
     @FXML
     private void hide_btn_action(ActionEvent event) {
-
+        Messages.sprintf("hide_btn_action pressed");
         int visibles = TableUtils.getVisibleTables(model_main);
         if (visibles <= 1 && table.isVisible()) {
             return;

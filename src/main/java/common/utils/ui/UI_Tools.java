@@ -7,6 +7,7 @@
 package common.utils.ui;
 
 import com.girbola.configuration.GUIPrefs;
+import com.girbola.messages.Messages;
 import javafx.geometry.Bounds;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -32,6 +33,7 @@ public class UI_Tools {
 	final private static String ERROR = UI_Tools.class.getSimpleName();
 
 	public static Bounds getNodeLayoutBounds(Node node) {
+		Messages.sprintf("getNodeLayoutBounds started");
 		return node.getLayoutBounds();
 	}
 

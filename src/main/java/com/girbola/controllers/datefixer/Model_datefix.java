@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.DateFix_Utils.Field;
@@ -14,13 +15,11 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.utils.FileInfoUtils;
-import com.girbola.thumbinfo.ThumbInfo;
-import com.girbola.utils.ThumbInfo_Utils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+import com.girbola.thumbinfo.ThumbInfo;
+import com.girbola.utils.FileInfoUtils;
 import com.girbola.workdir.WorkDirHandler;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
@@ -32,40 +31,28 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.event.EventHandler;
 import javafx.scene.Node;
-import javafx.scene.SnapshotParameters;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
-import javafx.scene.image.WritableImage;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.stage.WindowEvent;
-import net.coobird.thumbnailator.Thumbnails;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.simpleDates;
@@ -82,20 +69,12 @@ public class Model_datefix extends DateFixerModel {
 
     private VBox infoTables_container;
     private ObservableList<MetaData> metaDataTableView_obs = FXCollections.observableArrayList();
-    private BooleanProperty changes_made = new SimpleBooleanProperty(false);
 
-    public BooleanProperty getChanges_made() {
-        return changes_made;
-    }
-
-    public void setChanges_made(boolean changes_made) {
-        this.changes_made.set(changes_made);
-    }
-
-    private BooleanProperty ignored = new SimpleBooleanProperty(false);
-    private BooleanProperty copied = new SimpleBooleanProperty(false);
-    private BooleanProperty events = new SimpleBooleanProperty(true);
-    private BooleanProperty locations = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty changes_made = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty ignored = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty copied = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty events = new SimpleBooleanProperty(true);
+    private SimpleBooleanProperty locations = new SimpleBooleanProperty(true);
 
     private AtomicBoolean content_changed = new AtomicBoolean(false);
     private ObservableHandler observableHandler = new ObservableHandler();
@@ -105,14 +84,6 @@ public class Model_datefix extends DateFixerModel {
     private FolderInfo folderInfo_filtered;
 
     private TilePane tilePane;
-
-    public TilePane getTilePane() {
-        return tilePane;
-    }
-
-    public void setTilePane(TilePane tilePane) {
-        this.tilePane = tilePane;
-    }
 
     //private GridPane gridPane;
     private TableView<EXIF_Data_Selector> cameras_TableView;
@@ -124,8 +95,6 @@ public class Model_datefix extends DateFixerModel {
     private TableView<MetaData> metaDataTableView;
     private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
-    private ObservableList<Node> allNodes = FXCollections.observableArrayList();
-    private ObservableList<Node> currentNodes = FXCollections.observableArrayList();
     private CssStylesController cssStyles = new CssStylesController();
     private DateFix_Utils dateFix_Utils = new DateFix_Utils();
 
@@ -140,6 +109,7 @@ public class Model_datefix extends DateFixerModel {
 
     private RenderVisibleNode renderVisibleNode = null;
     private Connection connection;
+    private ObservableList<Node> allNodes = FXCollections.observableArrayList();
 
     public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
@@ -147,219 +117,13 @@ public class Model_datefix extends DateFixerModel {
         this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
     }
 
-    public boolean getRightInfo_visible() {
-        return rightInfo_visible.get();
-    }
-
-    public void setRightInfo_visible(boolean value) {
-        this.rightInfo_visible.set(value);
-    }
-
-    public AtomicBoolean getContent_changed() {
-        return content_changed;
-    }
-
-    public void setContent_changed(AtomicBoolean content_changed) {
-        this.content_changed = content_changed;
-    }
-
-    private ObservableList<String> workDir_obs = FXCollections.observableArrayList();
-
-    /**
-     * @return the workDir_obs
-     */
-    public final ObservableList<String> getWorkDir_obs() {
-        return workDir_obs;
-    }
-
-    public DateFix_Utils getDateFix_Utils() {
-        return dateFix_Utils;
-    }
-
-    public final ObservableList<Node> getCurrentNodes() {
-        return currentNodes;
-    }
-
-    public final void setCurrentNodes(ObservableList<Node> currentNodes) {
-        this.currentNodes = currentNodes;
-    }
-
     public void instantiateRenderVisibleNodes() {
         if (renderVisibleNode == null) {
             renderVisibleNode = new RenderVisibleNode(scrollPane, currentFolderPath, this.connection);
         }
     }
-
-    public RenderVisibleNode getRenderVisibleNode() {
-        return renderVisibleNode;
-    }
-
-    public TableView<EXIF_Data_Selector> getCameras_TableView() {
-        return cameras_TableView;
-    }
-
-    public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) {
-        this.cameras_TableView = cameras_TableView;
-    }
-
-    public TableView<EXIF_Data_Selector> getDates_TableView() {
-        return dates_TableView;
-    }
-
-    public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) {
-        this.dates_TableView = dates_TableView;
-    }
-
-    public int getImagesPerLine() {
-        return imagesPerLine;
-    }
-
-    public void setImagesPerLine(int imagesPerLine) {
-        this.imagesPerLine = imagesPerLine;
-    }
-
-    public ObservableList<Node> getAllNodes() {
-        return allNodes;
-    }
-
-    public void setAllNodes(ObservableList<Node> allNodes) {
-        this.allNodes = allNodes;
-    }
-
-    public QuickPick_Navigator getQuickPick_Navigator() {
-        return this.quickPick_Navigator;
-    }
-
-    public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) {
-        this.quickPick_Navigator = aQuickPick_Navigator;
-    }
-
-    public AnchorPane getAnchorPane() {
-        return anchorPane;
-    }
-
-    public void setAnchorPane(AnchorPane anchorPane) {
-        this.anchorPane = anchorPane;
-    }
-
-    public ScrollPane getScrollPane() {
-        return scrollPane;
-    }
-
-    public void setScrollPane(ScrollPane scrollPane) {
-        this.scrollPane = scrollPane;
-    }
-
-    public TilePane getQuickPick_tilePane() {
-        return quickPick_tilePane;
-    }
-
-    public void setQuickPick_tilePane(TilePane quickPick_tilePane) {
-        this.quickPick_tilePane = quickPick_tilePane;
-    }
-
-//	public GridPane getGridPane() {
-//		return gridPane;
-//	}
-//
-//	public void setGridPane(GridPane gridPane) {
-//		this.gridPane = gridPane;
-//	}
-
-    public FolderInfo getFolderInfo_full() {
-        return folderInfo_full;
-    }
-
-    public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) {
-        this.folderInfo_full = aCurrentFolderInfo;
-    }
-
-    public void setCurrentFolderPath(Path currentFilePath) {
-        this.currentFolderPath = currentFilePath;
-    }
-
-    public Path getCurrentFolderPath() {
-        return currentFolderPath;
-    }
-
-    public SelectionModel getSelectionModel() {
-        return this.selectionModel;
-    }
-
-    public FolderInfo getFolderInfo_filtered() {
-        return folderInfo_filtered;
-    }
-
-    public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) {
-        this.folderInfo_filtered = folderInfo_filtered;
-    }
-
-    /**
-     * @return the observableHandler
-     */
-    public final ObservableHandler getObservableHandler() {
-        return observableHandler;
-    }
-    //
-    // /**
-    // * @return the changes
-    // */
-    // public final SimpleBooleanProperty getChanges() {
-    // return changes;
-    // }
-
-    public TableView<EXIF_Data_Selector> getEvents_TableView() {
-        return events_TableView;
-    }
-
-    public TableView<EXIF_Data_Selector> getLocations_TableView() {
-        return locations_TableView;
-    }
-
-    public void setEvents_TableView(TableView<EXIF_Data_Selector> table) {
-        this.events_TableView = table;
-    }
-
-    public void setLocations_TableView(TableView<EXIF_Data_Selector> table) {
-        this.locations_TableView = table;
-    }
-
-    public void setWorkDir_Handler(WorkDirHandler workDirHandler) {
-        this.workDirHandler = workDirHandler;
-    }
-
-    public WorkDirHandler getWorkDir_Handler() {
-        return workDirHandler;
-    }
-
-    public void setInfoTables_container(VBox infoTables_container) {
-        this.infoTables_container = infoTables_container;
-    }
-
-    /**
-     * @return the infoTables_container
-     */
-    public VBox getInfoTables_container() {
-        return infoTables_container;
-    }
-
-    /**
-     * @return the rightInfoPanel
-     */
-    public VBox getRightInfoPanel() {
-        return rightInfoPanel;
-    }
-
-    /**
-     * @param rightInfoPanel the rightInfoPanel to set
-     */
-    public void setRightInfoPanel(VBox rightInfoPanel) {
-        this.rightInfoPanel = rightInfoPanel;
-    }
-
-    public TableView<MetaData> getMetaDataTableView() {
-        return this.metaDataTableView;
-    }
+    //@formatter:off
+    private ObservableList<String> workDir_obs = FXCollections.observableArrayList();
 
     public TextField getTextField(Node node) {
         if (node instanceof VBox) {
@@ -379,16 +143,7 @@ public class Model_datefix extends DateFixerModel {
         }
         return null;
     }
-
-    public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
-        this.metaDataTableView = metadataTableView;
-    }
-
-    public ObservableList<MetaData> getMetaDataTableView_obs() {
-        return this.metaDataTableView_obs;
-    }
-
-    public void updateCameraInfos(List<FileInfo> fileInfo_List) {
+public void updateCameraInfos(List<FileInfo> fileInfo_List) {
         getCameras_TableView().getItems().clear();
         getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(),
                 Field.CAMERA.getType());
@@ -696,13 +451,6 @@ public class Model_datefix extends DateFixerModel {
 
                 if (Main.conf.isSavingThumb()) {
 
-//                    Task<List<ThumbInfo>> task = new Task<>() {
-//                        @Override
-//                        protected List<ThumbInfo> call() throws Exception {
-//                            List<ThumbInfo> thumbInfos = saveThumbs(tilePane);
-//                            return thumbInfos;
-//                        }
-//                    };
                     Main.setProcessCancelled(true);
                     getRenderVisibleNode().stopTimeLine();
                     ConcurrencyUtils.stopExecThreadNow();
@@ -885,49 +633,6 @@ public class Model_datefix extends DateFixerModel {
         return observable;
     }
 
-    public void checkIfDupsNodesExists(CountDownLatch latch) {
-        List<Node> remove_nodeList = new ArrayList<>();
-        final int start = getAllNodes().size();
-
-        Iterator<Node> it = getAllNodes().iterator();
-        while (it.hasNext()) {
-            Node node = it.next();
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                FileInfo fileInfo = (FileInfo) node.getUserData();
-                // Messages.sprintf("Finding dups: " + fileInfo.getOrgPath());
-                findDups(node, fileInfo, allNodes, remove_nodeList);
-            }
-        }
-        getAllNodes().removeAll(remove_nodeList);
-        latch.countDown();
-        Messages.sprintf("Files before dupcheck: " + start + " and after dup check it is now: " + getAllNodes().size());
-
-    }
-
-    private void findDups(Node node_ToFind, FileInfo fileInfo_toFind, ObservableList<Node> allNodes,
-                          List<Node> remove_nodeList) {
-        boolean pass = false;
-        Iterator<Node> it = allNodes.iterator();
-        while (it.hasNext()) {
-            Node node = it.next();
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                FileInfo fileInfo = (FileInfo) node.getUserData();
-
-                if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-                    if (pass) {
-                        if (fileInfo.getOrgPath().equals(fileInfo_toFind.getOrgPath())) {
-                            Messages.sprintf("Node removed: " + fileInfo.getOrgPath() + " to find: "
-                                    + fileInfo_toFind.getOrgPath());
-                            remove_nodeList.add(node);
-                        }
-                    } else {
-                        pass = true;
-                    }
-                }
-            }
-        }
-    }
-
     public void deselectAllExifDataSelectors() {
         for (EXIF_Data_Selector eds : getCameras_TableView().getItems()) {
             eds.setIsShowing(false);
@@ -974,5 +679,54 @@ public class Model_datefix extends DateFixerModel {
         }
         return counter;
     }
+
+    public AnchorPane getAnchorPane() { return anchorPane; }
+    public AtomicBoolean getContent_changed() { return content_changed; }
+    public boolean getRightInfo_visible() { return rightInfo_visible.get(); }
+    public BooleanProperty getChanges_made() { return changes_made; }
+    public DateFix_Utils getDateFix_Utils() { return dateFix_Utils; }
+    public final ObservableHandler getObservableHandler() { return observableHandler; }
+    public final ObservableList<String> getWorkDir_obs() { return workDir_obs; }
+    public FolderInfo getFolderInfo_filtered() { return folderInfo_filtered; }
+    public FolderInfo getFolderInfo_full() { return folderInfo_full; }
+    public int getImagesPerLine() { return imagesPerLine; }
+    public ObservableList<MetaData> getMetaDataTableView_obs() { return this.metaDataTableView_obs; }
+    public ObservableList<Node> getAllNodes() { return allNodes; }
+    public Path getCurrentFolderPath() { return currentFolderPath; }
+    public QuickPick_Navigator getQuickPick_Navigator() { return this.quickPick_Navigator; }
+    public RenderVisibleNode getRenderVisibleNode() { return renderVisibleNode; }
+    public ScrollPane getScrollPane() { return scrollPane; }
+    public SelectionModel getSelectionModel() { return this.selectionModel; }
+    public TableView<EXIF_Data_Selector> getCameras_TableView() { return cameras_TableView; }
+    public TableView<EXIF_Data_Selector> getDates_TableView() { return dates_TableView; }
+    public TableView<EXIF_Data_Selector> getEvents_TableView() { return events_TableView; }
+    public TableView<EXIF_Data_Selector> getLocations_TableView() { return locations_TableView; }
+    public TableView<MetaData> getMetaDataTableView() { return this.metaDataTableView; }
+    public TilePane getQuickPick_tilePane() { return quickPick_tilePane; }
+    public TilePane getTilePane() { return tilePane; }
+    public VBox getInfoTables_container() { return infoTables_container; }
+    public VBox getRightInfoPanel() { return rightInfoPanel; }
+    public void setAllNodes(ObservableList<Node> allNodes) { this.allNodes = allNodes; }
+    public void setAnchorPane(AnchorPane anchorPane) { this.anchorPane = anchorPane; }
+    public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) { this.cameras_TableView = cameras_TableView; }
+    public void setChanges_made(boolean changes_made) { this.changes_made.set(changes_made); }
+    public void setContent_changed(AtomicBoolean content_changed) { this.content_changed = content_changed; }
+    public void setCurrentFolderPath(Path currentFilePath) { this.currentFolderPath = currentFilePath; }
+    public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) { this.dates_TableView = dates_TableView; }
+    public void setEvents_TableView(TableView<EXIF_Data_Selector> table) { this.events_TableView = table; }
+    public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) { this.folderInfo_filtered = folderInfo_filtered; }
+    public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) { this.folderInfo_full = aCurrentFolderInfo; }
+    public void setImagesPerLine(int imagesPerLine) { this.imagesPerLine = imagesPerLine; }
+    public void setInfoTables_container(VBox infoTables_container) { this.infoTables_container = infoTables_container; }
+    public void setLocations_TableView(TableView<EXIF_Data_Selector> table) { this.locations_TableView = table; }
+    public void setMetaDataTableView(TableView<MetaData> metadataTableView) { this.metaDataTableView = metadataTableView; }
+    public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) { this.quickPick_Navigator = aQuickPick_Navigator; }
+    public void setQuickPick_tilePane(TilePane quickPick_tilePane) { this.quickPick_tilePane = quickPick_tilePane; }
+    public void setRightInfo_visible(boolean value) { this.rightInfo_visible.set(value); }
+    public void setRightInfoPanel(VBox rightInfoPanel) { this.rightInfoPanel = rightInfoPanel; }
+    public void setScrollPane(ScrollPane scrollPane) { this.scrollPane = scrollPane; }
+    public void setTilePane(TilePane tilePane) { this.tilePane = tilePane; }
+    public void setWorkDir_Handler(WorkDirHandler workDirHandler) { this.workDirHandler = workDirHandler; }
+    public WorkDirHandler getWorkDir_Handler() { return workDirHandler; }
 
 }

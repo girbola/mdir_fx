@@ -76,6 +76,7 @@ public class Tables {
     @Setter
     private TableStatistic sorted_TableStatistic;
     @Getter
+    @Setter
     private TableStatistic asitis_TableStatistic;
 
     boolean isSameTable = false;

@@ -158,7 +158,6 @@ public class FileInfo_SQL {
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
         String orgPath = rs.getString("orgPath");
-        Messages.sprintf("loadFileInfo orgPath: " + orgPath);
         String workDir = rs.getString("workDir");
         String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
         String destPath = rs.getString("destination_Path");
@@ -260,7 +259,6 @@ public class FileInfo_SQL {
                     return null;
                 }
 				FileInfo finfo = loadFileInfo(rs);
-                Messages.sprintf("fileinfo Loadedddd: " + finfo.getOrgPath());
 				list.add(finfo);
 			}
 		} catch (Exception e) {

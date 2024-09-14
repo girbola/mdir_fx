@@ -9,6 +9,9 @@ package com.girbola.misc;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
+import javafx.collections.ObservableList;
+import javafx.geometry.Rectangle2D;
+import javafx.stage.Screen;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -162,5 +165,14 @@ public class Misc {
 		} catch (IOException e) {
 			Messages.sprintfError("Cannot open current file in operating file browser. " + path);
 		}
+	}
+
+	public static Rectangle2D getScreenBounds() {
+		Messages.sprintf("getScreenBounds started");
+		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(
+				Main.scene_Switcher.getScene_main().getX(), Main.scene_Switcher.getScene_main().getY(),
+				Main.scene_Switcher.getScene_main().getWidth(), Main.scene_Switcher.getScene_main().getHeight());
+		return screensForRectangle.get(0).getBounds();
+//			return Screen.getPrimary().getBounds();
 	}
 }

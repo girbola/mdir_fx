@@ -67,6 +67,7 @@ public class SceneSwitcher {
 	}
 
 	public void setWindow_loadingprogress(Stage window_loadingprogress) {
+		Messages.sprintf("setWindow_loadingprogress");
 		this.window_loadingprogress = window_loadingprogress;
 	}
 

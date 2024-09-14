@@ -3,6 +3,7 @@ package com.girbola.controllers.importimages;
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import common.utils.ui.UI_Tools;
 import javafx.scene.control.ScrollPane;
 
@@ -45,18 +46,18 @@ public class RowMaxCounter {
 		 * 1326) - (100 * 13 = 1300) = 26 26 / (imagesPerLine - 2)
 		 */
 		double scrollBar_width = UI_Tools.getScrollBarWidth(scrollPane);
-		double screenWidth = Main.conf.getScreenBounds().getWidth();
+		double screenWidth = Misc.getScreenBounds().getWidth();
 		double width = model_importImages.getGUIUtils().getWidth();
 		Messages.sprintf("scrp: " + scrollBar_width + " screen_w: " + screenWidth + " width: " + width);
-		imagesPerLine = (int) Math.floor((Main.conf.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane)) / model_importImages.getGUIUtils().getWidth());
+		imagesPerLine = (int) Math.floor((Misc.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane)) / model_importImages.getGUIUtils().getWidth());
 		Messages.sprintf("possibleImages: " + imagesPerLine);
-		double possibleGap = ((Main.conf.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane))) - 
+		double possibleGap = ((Misc.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane))) -
 				((double) model_importImages.getGUIUtils().getWidth() * (double) imagesPerLine);
 
 		Messages.sprintf("possibleGap: " + possibleGap + " CHECK: " + ((double) model_importImages.getGUIUtils().getWidth()));
 		if (possibleGap < 1) {
 			imagesPerLine--;
-			possibleGap = (Main.conf.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane) * (imagesPerLine));
+			possibleGap = (Misc.getScreenBounds().getWidth() - UI_Tools.getScrollBarWidth(scrollPane) * (imagesPerLine));
 			Messages.sprintf("Possible gap were < 1 and it was changed to: " + possibleGap);
 			setGap(possibleGap);
 		}

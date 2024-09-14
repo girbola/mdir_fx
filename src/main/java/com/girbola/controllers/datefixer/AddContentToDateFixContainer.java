@@ -6,20 +6,14 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -68,28 +62,28 @@ public class AddContentToDateFixContainer extends Task<Integer> {
 
         for (Node node : list) {
             if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                createNode(node);
+                Messages.sprintf("ImageFrameeeeee: " + node.getId());
+                changeImageNumberOfNode(node);
                 // loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
             }
         }
         return null;
     }
 
-    private void createNode(Node node) {
-        StackPane sp = (StackPane) node.lookup("#stackPane");
-        Label old_text = (Label) sp.lookup("#imageNumber");
-        if (old_text == null) {
-            Label imageNumber = createText(counter.get());
-            sp.getChildren().add(imageNumber);
-            StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
-        } else {
-            old_text.setText("" + counter.get());
-        }
-
-        model_datefix.getTilePane().getChildren().add(node);
-
+    private void changeImageNumberOfNode(Node node) {
+        Platform.runLater(() -> {
+            StackPane sp = (StackPane) node.lookup("#stackPane");
+            Label old_text = (Label) sp.lookup("#imageNumber");
+            if (old_text == null) {
+                Label imageNumber = createText(counter.get());
+                sp.getChildren().add(imageNumber);
+                StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
+            } else {
+                old_text.setText("" + counter.get());
+            }
+            //model_datefix.getTilePane().getChildren().add(node);
+        });
         counter.incrementAndGet();
-
     }
 
     @Override

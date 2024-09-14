@@ -24,14 +24,11 @@ public class RefreshTableContent extends Task<Void> {
             return null;
         }
         if (table.getColumns().get(0) != null) {
-            if(table.getId().equals(TableType.SORTIT.getType())) {
-                Messages.sprintf("Something is gonna fail soon");
-            }
+
             Iterator<FolderInfo> tableIT = table.getItems().iterator();
             while(tableIT.hasNext()) {
                 FolderInfo folderInfo = tableIT.next();
 
-                Messages.sprintf(folderInfo.getFolderPath() + " tableIT folderInfo.getFileInfoList().size(): " + folderInfo.getFileInfoList().size());
                 if(folderInfo.getFileInfoList().isEmpty()) {
                     Messages.sprintf("tableIT had empty folder. Removing...");
                     tableIT.remove();

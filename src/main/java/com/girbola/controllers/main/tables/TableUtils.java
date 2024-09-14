@@ -326,15 +326,20 @@ public class TableUtils {
 
     public static void setHandleDividingTableWidthEqually(TableView<FolderInfo> table, double divider) {
         Messages.sprintf("Divider is: " + divider);
-        table.setPrefWidth(divider);
-        table.setMinWidth(divider);
-        table.setMaxWidth(divider);
+        Platform.runLater(() -> {
+            table.setPrefWidth(divider);
+            table.setMinWidth(divider);
+            table.setMaxWidth(divider);
+        });
     }
 
     public static void setWidth(HBox hBox, double width) {
-        hBox.setPrefWidth(width);
-        hBox.setMinWidth(width);
-        hBox.setMaxWidth(width);
+        Messages.sprintf("Setting width started");
+        Platform.runLater(() -> {
+            hBox.setPrefWidth(width);
+            hBox.setMinWidth(width);
+            hBox.setMaxWidth(width);
+        });
     }
 
 

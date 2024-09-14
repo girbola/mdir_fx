@@ -24,7 +24,10 @@
                                     <children>
                                         <VBox styleClass="listRoots" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <Label text="%drives" />
+                                                <Label text="%drives">
+                                       <padding>
+                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                       </padding></Label>
                                                 <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3" VBox.vgrow="ALWAYS">
                                                     <content>
                                                         <TreeView fx:id="drives_treeView" minWidth="150.0" styleClass="listRoots" />

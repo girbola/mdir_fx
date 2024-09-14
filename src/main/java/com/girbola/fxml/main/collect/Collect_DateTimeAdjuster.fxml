@@ -47,7 +47,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -59,7 +59,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -80,7 +80,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -92,7 +92,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -113,7 +113,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -125,7 +125,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -158,7 +158,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -170,7 +170,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -191,7 +191,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -203,7 +203,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -224,7 +224,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_up.png" />
                                  </image>
                                  <viewport>
                                     <Rectangle2D />
@@ -236,7 +236,7 @@
                            <graphic>
                               <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                    <Image url="@../../../../../../resources/img/arrow_down.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -261,7 +261,7 @@
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../resources/img/cloneDown.png" />
+                        <Image url="@../../../../../../resources/img/cloneDown.png" />
                      </image>
                   </ImageView>
                </graphic></Button>
@@ -269,7 +269,7 @@
                <graphic>
                   <ImageView fitHeight="17.0" fitWidth="17.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../../../../../resources/img/cloneUp.png" />
+                        <Image url="@../../../../../../resources/img/cloneUp.png" />
                         
                      </image>
                   </ImageView>
