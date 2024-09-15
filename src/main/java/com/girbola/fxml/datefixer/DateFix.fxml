@@ -222,13 +222,9 @@
                                         <HBox maxHeight="30.0" minHeight="30.0" prefHeight="30.0" VBox.vgrow="NEVER">
                                             <children>
                                                 <Button id="showAndHideButton" fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action" prefHeight="26.0" prefWidth="26.0">
-                                                    <graphic>
-                                                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="270.0">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/hideTable.png" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
+                                       <graphic>
+                                          <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-down" iconSize="22" />
+                                       </graphic>
                                                 </Button>
                                                 <HBox alignment="CENTER" fillHeight="false" nodeOrientation="LEFT_TO_RIGHT" spacing="4.0" HBox.hgrow="NEVER">
                                                     <children>
@@ -615,13 +611,9 @@
                                         <VBox alignment="BOTTOM_RIGHT" fillWidth="false" maxWidth="-Infinity" spacing="2.0" HBox.hgrow="ALWAYS">
                                             <children>
                                                 <Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" prefHeight="26.0" prefWidth="26.0" VBox.vgrow="NEVER">
-                                                    <graphic>
-                                                        <ImageView id="showAndHideButton" fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" rotate="90.0">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/hideTable.png" />
-                                                            </image>
-                                                        </ImageView>
-                                                    </graphic>
+                                       <graphic>
+                                          <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-up" iconSize="22" />
+                                       </graphic>
                                                 </Button>
                                             </children>
                                             <padding>
@@ -633,7 +625,6 @@
                                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                                     </padding>
                                 </HBox>
-                                <Label text="Label" />
                             </children>
                         </HBox>
                     </children>

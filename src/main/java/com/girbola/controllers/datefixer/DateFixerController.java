@@ -355,12 +355,6 @@ public class DateFixerController {
         }
         sprintf("show_only_selected_btn_action starting");
 
-        ObservableList<Node> selectionList = model_datefix.getSelectionModel().getSelectionList();
-
-        ObservableList<Node> nodesToShow = FXCollections.observableList(model_datefix.getAllNodes());
-        nodesToShow.removeAll(selectionList);
-        Messages.sprintf("Selected nodes to show: " + nodesToShow.size());
-
         DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
     }

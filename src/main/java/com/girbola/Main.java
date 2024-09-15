@@ -53,6 +53,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.awt.*;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -121,7 +122,14 @@ public class Main extends Application {
                 Messages.sprintf("CONFIG contains: " + conf.toString());
                 Messages.sprintf("Java version: " + System.getProperty("java.version"));
                 Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
+                GraphicsEnvironment ge = GraphicsEnvironment
+                        .getLocalGraphicsEnvironment();
 
+                Font[] allFonts = ge.getAllFonts();
+
+                for (Font font : allFonts) {
+                    System.out.println("Font name: " + font.getFontName(Locale.getDefault()));
+                }
                 Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
                         + conf.getWorkDir());
 
@@ -156,16 +164,11 @@ public class Main extends Application {
                 });
                 MainController mainController = (MainController) main_loader.getController();
                 mainController.initialize(model_main);
-
-                scene_Switcher.setWindow(primaryStage);
-                scene_Switcher.setScene_main(primaryScene);
-
                 Platform.runLater(() -> {
+                    scene_Switcher.setWindow(primaryStage);
+                    scene_Switcher.setScene_main(primaryScene);
                     primaryStage.setScene(primaryScene);
-
-//						defineScreenBounds(primaryStage);
                     primaryStage.show();
-
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
                 lpt = new LoadingProcessTask(scene_Switcher.getWindow());
@@ -296,6 +299,7 @@ public class Main extends Application {
 
                 lpt.setTask(load_FileInfosBackToTableViews);
                 Thread load = new Thread(load_FileInfosBackToTableViews, "Main thread");
+                load.setDaemon(true);
                 load.start();
             } else {
                 lpt.closeStage();
@@ -363,20 +367,6 @@ public class Main extends Application {
                 getMain_stage().setTitle(conf.getProgramName());
             });
         }
-    }
-
-    public Screen getScreen() {
-        Robot r = new Robot();
-        Point2D d = r.getMousePosition();
-        for (Screen sc : Screen.getScreens()) {
-            double minX = sc.getVisualBounds().getMinX();
-            double maxX = sc.getVisualBounds().getMaxX();
-            if (d.getX() >= minX && d.getX() <= maxX) {
-                return sc;
-            }
-
-        }
-        return Screen.getPrimary();
     }
 
     public static Stage getMain_stage() {

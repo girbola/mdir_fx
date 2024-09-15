@@ -16,8 +16,10 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
@@ -27,6 +29,7 @@ import javafx.stage.Stage;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -120,27 +123,40 @@ public class DateFixer extends Task<Void> {
     protected void succeeded() {
         sprintf("dateFixLoader.setOnSucceeded");
 
-//        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-//
-//        Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
-//                model_datefix, model_datefix.getTilePane(), loadingProcess_task);
-//        dateFixPopulateGridPane_task.setOnCancelled(event -> {
-//            sprintf("dateFixPopulateGridPane.setOnCancelled");
-//            loadingProcess_task.closeStage();
-//        });
-//        dateFixPopulateGridPane_task.setOnSucceeded(event -> {
-//            sprintf("dateFixPopulateGridPane.setOnSucceeded");
+        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
+
+        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
+                model_datefix, model_datefix.getTilePane(), loadingProcess_task);
+        dateFixPopulateTask.setOnCancelled(event -> {
+            sprintf("dateFixPopulateGridPane.setOnCancelled");
+            loadingProcess_task.closeStage();
+        });
+        dateFixPopulateTask.setOnSucceeded(event -> {
+            sprintf("dateFixPopulateGridPane.setOnSucceeded");
+
+            try {
+                ObservableList<Node> nodes = dateFixPopulateTask.get();
+                Platform.runLater(() -> {
+                    model_datefix.getTilePane().getChildren().addAll(nodes);
+                    loadingProcess_task.closeStage();
+                });
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
 //            model_datefix.getTilePane().getChildren().addAll(model_datefix.getAllNodes());
-//            //DateFixLoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
-//            DateFixLoadingProcessLoader.renumberTheFrames(model_datefix, loadingProcess_task);
-//        });
-//        dateFixPopulateGridPane_task.setOnFailed(event -> {
-//            sprintf("dateFixPopulateGridPane.setOnFailed");
-//            loadingProcess_task.closeStage();
-//        });
-//
-//        loadingProcess_task.setTask(dateFixPopulateGridPane_task);
-//        Thread dateFixPopulateGridPane_th = new Thread(dateFixPopulateGridPane_task, "dateFixPopulateGridPane_th");
-//        dateFixPopulateGridPane_th.run();
+            //DateFixLoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
+//            DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, loadingProcess_task);
+        });
+        dateFixPopulateTask.setOnFailed(event -> {
+            sprintf("dateFixPopulateGridPane.setOnFailed");
+            loadingProcess_task.closeStage();
+        });
+
+        loadingProcess_task.setTask(dateFixPopulateTask);
+        Thread dateFixPopulateGridPane_th = new Thread(dateFixPopulateTask, "dateFixPopulateTask_thread");
+        dateFixPopulateGridPane_th.start();
     }
 }

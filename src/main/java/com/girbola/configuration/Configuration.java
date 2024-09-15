@@ -9,23 +9,12 @@ package com.girbola.configuration;
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.collections.ObservableList;
-import javafx.geometry.Rectangle2D;
-import javafx.stage.Screen;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static com.girbola.Main.conf;
 
 /**
  * @author Marko Lokka
@@ -38,34 +27,10 @@ public class Configuration extends Configuration_defaults {
 
     private final String programName = "MDir - Image and Video Organizer";
 
-    protected SimpleDoubleProperty imageViewXProperty = new SimpleDoubleProperty(0);
-    protected SimpleDoubleProperty imageViewYProperty = new SimpleDoubleProperty(0);
-
-    public double getImageViewXPosition() {
-        return imageViewXProperty.get();
-    }
-
-    public void setImageViewXProperty(double value) {
-        this.imageViewXProperty.set(value);
-    }
-
-    public double getImageViewYPosition() {
-        return imageViewYProperty.get();
-    }
-
-    public void setImageViewYProperty(double value) {
-        this.imageViewYProperty.set(value);
-    }
 
     public String getProgramName() { return programName; }
 
     public Configuration() { Messages.sprintf("Configuration instantiated..."); }
-
-
-
-
-
-
 
     public boolean loadConfig_SQL() throws SQLException {
         Messages.sprintf("Loading SQL config: " + Main.conf.getWorkDir());

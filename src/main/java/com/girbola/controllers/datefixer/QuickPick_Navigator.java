@@ -149,19 +149,19 @@ public class QuickPick_Navigator {
 		//        sprintf("getJumpButtonState started");
 		for (String s : list) {
 			sprintf("List of jumpButtonState: " + s);
-			if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType())) {
-				return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
+			if (s.equals(DateStatusEnum.DATE_BAD.getType())) {
+				return DateStatusEnum.DATE_BAD.getType();
 			} else {
-				if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType())) {
-					return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
+				if (s.equals(DateStatusEnum.DATE_SUGGESTED.getType())) {
+					return DateStatusEnum.DATE_SUGGESTED.getType();
 				} else {
-					if (s.equals(DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType())) {
-						return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
+					if (s.equals(DateStatusEnum.DATE_VIDEO.getType())) {
+						return DateStatusEnum.DATE_VIDEO.getType();
 					}
 				}
 			}
 		}
-		return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
+		return DateStatusEnum.DATE_GOOD.getType();
 	}
 
 	/**
@@ -171,13 +171,13 @@ public class QuickPick_Navigator {
 	 */
 	public String getStatus(FileInfo fileInfo) {
 		if (fileInfo.isBad()) {
-			return DateFixPopulateQuickPick.DATE_STATUS.DATE_BAD.getType();
+			return DateStatusEnum.DATE_BAD.getType();
 		} else if (fileInfo.isGood()) {
-			return DateFixPopulateQuickPick.DATE_STATUS.DATE_GOOD.getType();
+			return DateStatusEnum.DATE_GOOD.getType();
 		} else if (fileInfo.isSuggested()) {
-			return DateFixPopulateQuickPick.DATE_STATUS.DATE_SUGGESTED.getType();
+			return DateStatusEnum.DATE_SUGGESTED.getType();
 		} else if (fileInfo.isVideo()) {
-			return DateFixPopulateQuickPick.DATE_STATUS.DATE_VIDEO.getType();
+			return DateStatusEnum.DATE_VIDEO.getType();
 		}
 		return null;
 	}

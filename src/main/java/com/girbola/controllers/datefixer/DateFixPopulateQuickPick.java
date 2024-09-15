@@ -18,6 +18,7 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -46,6 +47,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -59,7 +61,7 @@ import static com.girbola.misc.Misc.getLineNumber;
 /**
  * @author Marko Lokka
  */
-public class DateFixPopulateQuickPick extends Task<Void> {
+public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
     private final static String ERROR = DateFixPopulateQuickPick.class.getSimpleName();
 
@@ -94,8 +96,8 @@ public class DateFixPopulateQuickPick extends Task<Void> {
     }
 
     @Override
-    protected Void call() throws Exception {
-
+    protected ObservableList<Node> call() throws Exception {
+        ObservableList<Node> nodes = FXCollections.observableArrayList();
         for (FileInfo fi : folderInfo.getFileInfoList()) {
             if (Main.getProcessCancelled()) {
                 cancel();
@@ -131,33 +133,34 @@ public class DateFixPopulateQuickPick extends Task<Void> {
                                 }
                             });
                         }
-                        model_dateFix.getAllNodes().add(frame);
+
+                        nodes.add(frame);
+//                            model_dateFix.getTilePane().getChildren().add(frame);
                         counter.incrementAndGet();
                     }
                 }
             }
         }
-        return null;
+        return nodes;
     };
 
-    @Override
-    protected void succeeded() {
-        super.succeeded();
-        loadingProcess_task.closeStage();
-//		model_dateFix.setAllNodes(nodes);
-    }
-
-    @Override
-    protected void cancelled() {
-        super.cancelled();
-        loadingProcess_task.closeStage();
-    }
-
-    @Override
-    protected void failed() {
-        super.failed();
-        loadingProcess_task.closeStage();
-    }
+//    @Override
+//    protected void succeeded() {
+//        super.succeeded();
+//        loadingProcess_task.closeStage();
+//    }
+//
+//    @Override
+//    protected void cancelled() {
+//        super.cancelled();
+//        loadingProcess_task.closeStage();
+//    }
+//
+//    @Override
+//    protected void failed() {
+//        super.failed();
+//        loadingProcess_task.closeStage();
+//    }
 
     private VBox addRunningNumberOnFrame(FileInfo fileInfo, int index) {
         VBox frame_vbox = new VBox();
@@ -190,10 +193,6 @@ public class DateFixPopulateQuickPick extends Task<Void> {
 
         Button accept = createAcceptButton(fileInfo, fileDate_tf, index);
         bottom.setAlignment(Pos.CENTER);
-
-        if (!fileInfo.getLocation().isEmpty() || !fileInfo.getEvent().isEmpty()) {
-            frame_vbox.setStyle("-fx-background-color: red;");
-        }
 
         stackPane.getChildren().add(iv);
         bottom.getChildren().addAll(accept, fileDate_tf);
@@ -450,23 +449,6 @@ public class DateFixPopulateQuickPick extends Task<Void> {
                 }
             }
         });
-    }
-
-    private ObservableList<Node> nodes = FXCollections.observableArrayList();
-
-    enum DATE_STATUS {
-
-        DATE_BAD("bad"), DATE_GOOD("good"), DATE_SUGGESTED("suggested"), DATE_VIDEO("video");
-
-        private String type;
-
-        DATE_STATUS(String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return this.type;
-        }
     }
 
 

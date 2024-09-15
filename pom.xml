@@ -10,17 +10,17 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <distribution>repo</distribution>
         </license>
         <license>
             <name>GNU General Public License (GPL) version 2, or any later version</name>
-            <url>http://www.gnu.org/licenses/</url>
+            <url>https://www.gnu.org/licenses/</url>
             <distribution>repo</distribution>
         </license>
         <license>
             <name>GPLv2 with Classpath exception</name>
-            <url>http://www.gnu.org/software/
+            <url>https://www.gnu.org/software/
                 classpath/license.html
             </url>
             <distribution>repo</distribution>
@@ -39,14 +39,14 @@
         <imageio-tiff.version>3.8.3</imageio-tiff.version>
         <javacv-platform.version>1.5.10</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <javafx.version>22.0.1</javafx.version>
+        <javafx.version>22.0.2</javafx.version>
         <jaxb-api.version>2.3.1</jaxb-api.version>
         <jcodec.version>0.2.5</jcodec.version>
         <junit-jupiter.version>5.5.2</junit-jupiter.version>
         <lombok.version>1.18.32</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>22</maven.compiler.source>
+        <maven.compiler.target>22</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <oshi-core.version>6.4.4</oshi-core.version>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
@@ -227,6 +227,9 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
+                <configuration>
+                    <mainClass>MDir_FX</mainClass>
+                </configuration>
                 <executions>
                     <execution>
                         <!-- Default configuration for running with: mvn clean javafx:run -->

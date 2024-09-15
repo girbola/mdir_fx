@@ -27,7 +27,7 @@ import static com.girbola.messages.Messages.sprintf;
  * @author Marko Lokka
  */
 public class Configuration_defaults extends
-		Configuration_GetsSets {
+		ConfigurationWindow {
 
 	private final String ERROR = Configuration_defaults.class.getSimpleName();
 

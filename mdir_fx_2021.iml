@@ -4,6 +4,7 @@
     <content url="file://$MODULE_DIR$" dumb="true">
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/bundle" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/fonts" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/img" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/themes" type="java-resource" />
     </content>

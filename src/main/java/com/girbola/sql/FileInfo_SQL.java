@@ -97,8 +97,6 @@ public class FileInfo_SQL {
 
             PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
             for (FileInfo fileInfo : list) {
-
-                Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
                 addToFileInfoDB(connection, pstmt, fileInfo);
             }
             pstmt.executeBatch();
