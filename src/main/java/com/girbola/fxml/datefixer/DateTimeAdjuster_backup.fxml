@@ -293,7 +293,6 @@
                <tooltip>
                   <Tooltip text="%applyDateAndTimeTooltip" />
                </tooltip></Button>
-            <Button fx:id="markFilesAccordingTheDateScale_btn" mnemonicParsing="false" onAction="#markFilesAccordingTheDateScale_btn_action" text="Mark files" GridPane.columnIndex="2" GridPane.rowIndex="3" />
             <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#findExistsPath_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="5" GridPane.rowIndex="3" />
          </children>
       </GridPane>

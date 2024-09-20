@@ -20,141 +20,141 @@ import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
 /**
- *
  * @author Marko Lokka
  */
 public class SelectionModel {
 
-	final private String style_deselected = "-fx-border-color: white;" + "-fx-border-radius: 1 1 1 1;"
-			+ "-fx-border-style: none;" + "-fx-border-width: 2px;";
-	//final private String style_removed = "-fx-border-color: red;" + "-fx-border-width: 2px;";
-	final private String style_selected = "-fx-border-color: red;" + "-fx-border-width: 2px;";
+    final private String style_deselected =
+            "-fx-border-color: white;" +
+//                    "-fx-border-radius: 1 1 1 1;" +
+                    "-fx-border-style: none;" +
+                    "-fx-border-width: 0px;";
 
-	private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
+    final private String style_selected =
+            "-fx-border-color: #ba1d1d;" +
+                    "-fx-border-width: 2px;";
 
-	private ObservableList<Node> selectionList = FXCollections.observableArrayList();
+    private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
 
-	public SelectionModel() {
-		this.selectionList.addListener((ListChangeListener<Node>) c -> Platform.runLater(() -> {
+    private ObservableList<Node> selectionList = FXCollections.observableArrayList();
+
+    public SelectionModel() {
+        this.selectionList.addListener((ListChangeListener<Node>) c -> Platform.runLater(() -> {
             selectedIndicator_property.set(selectionList.size());
         }));
-	}
+    }
 
-	public synchronized void addAll(Node node) {
-		// sprintf("addAll: " + node);
-		if (!contains(node)) {
-			node.setStyle(style_selected);
-			this.selectionList.add(node);
-		}
-	}
+    public synchronized void addAll(Node node) {
+        if (!contains(node)) {
+            node.setStyle(style_selected);
+            this.selectionList.add(node);
+        }
+    }
 
-	/**
-	 * Returns true if node is already selected. Otherwise returns false as node is
-	 * deselected
-	 * 
-	 * @param node
-	 * @return
-	 */
-	public synchronized boolean addWithToggle(Node node) {
-		if (!contains(node)) {
-			Platform.runLater(() -> {
-				node.setStyle(style_selected);
-				this.selectionList.add(node);
-			});
-			return false;
-			// }
-		} else {
-			Platform.runLater(() -> {
-				remove(node);
-			});
-			return true;
-		}
+    /**
+     * Returns true if node is already selected. Otherwise returns false as node is
+     * deselected
+     *
+     * @param node
+     * @return
+     */
+    public synchronized boolean addWithToggle(Node node) {
 
-	}
+        if (!contains(node)) {
+            Platform.runLater(() -> {
+                node.setStyle(style_selected);
+                this.selectionList.add(node);
+            });
+            return false;
+        } else {
+            Platform.runLater(() -> {
+                remove(node);
+            });
+            return true;
+        }
 
-	/**
-	 * 
-	 * @param node
-	 */
-	public synchronized void addOnly(Node node) {
-		if (!contains(node)) {
-			node.setStyle(style_selected);
-			this.selectionList.add(node);
-		}
-	}
+    }
 
-	/**
-	 * 
-	 */
-	public synchronized void clearAll() {
-		sprintf("clearing all");
+    public synchronized void addOnly(Node node) {
+        if (!contains(node)) {
+            Platform.runLater(() -> {
+                node.setStyle(style_selected);
+                this.selectionList.add(node);
+            });
+        }
+    }
 
-		while (!this.selectionList.isEmpty()) {
-			remove(this.selectionList.iterator().next());
-		}
+    public synchronized void clearAll() {
+        sprintf("clearing all");
+        Iterator<Node> selectedIt = this.selectionList.iterator();
 
-	}
+        while (selectedIt.hasNext()) {
+            remove(selectedIt.next());
+        }
 
-	public synchronized boolean contains(Node node) {
-		return this.selectionList.contains(node);
-	}
+    }
 
-	public void log() {
-		sprintf("Items in model: " + Arrays.asList(selectionList.toArray()));
-	}
+    public synchronized boolean contains(Node node) {
+        for (Node n : this.selectionList) {
+            if (n.getId().equals(node.getId())) {
+                return true;
+            }
+        }
+        return false;
 
-	public synchronized void remove(Node node) {
-		if (contains(node)) {
-			node.getStyleClass().remove(style_selected);
-			node.setStyle(style_deselected);
-			this.selectionList.remove(node);
+    }
 
-		}
-	}
+    public synchronized void remove(Node node) {
+        if (contains(node)) {
+            node.setStyle(style_deselected);
+            this.selectionList.remove(node);
+        }
+    }
 
-	public synchronized void invertSelection(Pane pane) {
-		if (pane == null || !pane.isVisible()) {
-			return;
-		}
-		List<Node> list = new ArrayList<>();
+    public synchronized void invertSelection(Pane pane) {
+        if (pane == null || !pane.isVisible()) {
+            return;
+        }
+        List<Node> list = new ArrayList<>();
 
-		if (pane instanceof GridPane) {
-			for (Node grid : pane.getChildren()) {
-				// if (grid instanceof VBox) {
-				if (!contains(grid)) {
-					list.add(grid);
-					// }
-				}
-			}
-		}
+        if (pane instanceof GridPane) {
+            for (Node grid : pane.getChildren()) {
+                // if (grid instanceof VBox) {
+                if (!contains(grid)) {
+                    list.add(grid);
+                    // }
+                }
+            }
+        }
 
-		if (list.isEmpty()) {
-			Messages.sprintf("list was empty at selectionModel lineb " + selectionList.size());
-			return;
-		}
-		clearAll();
-		list.forEach((n) -> {
-			addWithToggle(n);
-		});
-		list.clear();
+        if (list.isEmpty()) {
+            Messages.sprintf("list was empty at selectionModel lineb " + selectionList.size());
+            return;
+        }
+        clearAll();
+        list.forEach((n) -> {
+            addWithToggle(n);
+        });
+        list.clear();
 
-	}
+    }
 
-	public ObservableList<Node> getSelectionList() {
-		return this.selectionList;
-	}
+    public ObservableList<Node> getSelectionList() {
+        return this.selectionList;
+    }
 
-	public SimpleIntegerProperty getSelectedIndicator_property() {
-		return this.selectedIndicator_property;
-	}
+    public SimpleIntegerProperty getSelectedIndicator_property() {
+        return this.selectedIndicator_property;
+    }
 
-	public synchronized void setSelected(SimpleIntegerProperty selected) {
-		this.selectedIndicator_property = selected;
-	}
+    public synchronized void setSelected(SimpleIntegerProperty selected) {
+        this.selectedIndicator_property = selected;
+    }
 
 }

@@ -143,7 +143,8 @@ public class FileOperationsController {
 	}
 
    @FXML private void mixDates_btn_action(ActionEvent event) {
-	}
+	   Messages.warningText("mixDates_btn_action NOT READY YET");
+   }
 
    @FXML private void move_comboBox_action(ActionEvent event) {
 		sprintf("move_comboBox_action is under constructor");
@@ -178,7 +179,6 @@ public class FileOperationsController {
 					newDestinationFolder.getFolderInfo().getFileInfoList().add(fileInfo);
 
 					// Remove fileInfo from source
-//					model_datefix.getFolderInfo_full().getFileInfoList().remove(fileInfo);
 					model_datefix.getFolderInfo_full().setChanged(true);
 				}
 			}
@@ -197,7 +197,7 @@ public class FileOperationsController {
 			found = false;
 			Path rootPath = Paths.get(fileInfo.getOrgPath()).getParent();
 			for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
-				if (entry.getKey() == rootPath.toString()) {
+				if (entry.getKey().equals(rootPath.toString())) {
 					entry.getValue().add(fileInfo);
 					found = true;
 				}

@@ -37,15 +37,14 @@ public class AskEventDialogController {
 	private Model_main model_main;
 	private Model_datefix model_dateFix;
 
-   @FXML private Label event_lbl;
+   @FXML private Button apply_and_copy_btn;
+   @FXML private Button apply_btn;
+   @FXML private Button cancel_btn;
    @FXML private ComboBox<String> event_cmb;
-   @FXML private Label location_lbl;
    @FXML private ComboBox<String> location_cmb;
    @FXML private ComboBox<String> user_cmb;
-
-   @FXML private Button apply_btn;
-   @FXML private Button apply_and_copy_btn;
-   @FXML private Button cancel_btn;
+   @FXML private Label event_lbl;
+   @FXML private Label location_lbl;
 
 	private List<FileInfo> applyChanges(String workDir) {
 		List<FileInfo> list = new ArrayList<>();

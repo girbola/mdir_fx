@@ -7,8 +7,8 @@
 package com.girbola.configuration;
 
 /**
- *
- * @author Marko Lokka
+ * The GUIPrefs class holds static configuration values for the graphical user interface.
+ * These values are used to define sizes and dimensions for various GUI components such as buttons, frames, and thumbnails.
  */
 public class GUIPrefs {
 
@@ -17,10 +17,20 @@ public class GUIPrefs {
 
     public static double FOLDER_SIZE = 40;
 
-//    public static int imageFrameSize_MAX = 173;
-    public static int imageFrame_x = 185;
-    public static int imageFrame_y = 225;
-    public static double thumb_x_MAX = 150;
-    public static double thumb_y_MAX = 112;
+
+    /**
+     * The horizontal position of the image frame in the graphical user interface.
+     * This value is used to set or adjust the X-coordinate of the image frame.
+     * Ratio is 0,75
+     */
+    public static int imageFrame_x = 187;
+    public static int imageFrame_y = 250;
+
+    /**
+     * The maximum width allowed for a thumbnail image in the graphical user interface.
+     * Ratio is 0,565
+     */
+    public static double thumb_x_MAX = 200;
+    public static double thumb_y_MAX = 113;
 
 }

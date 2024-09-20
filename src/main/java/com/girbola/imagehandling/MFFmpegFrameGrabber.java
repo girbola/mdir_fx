@@ -89,7 +89,6 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
     @Override
     protected List<BufferedImage> call() throws Exception {
-        Messages.sprintf("Processing VideoThumbmaker: " + fileInfo.getOrgPath());
         List<BufferedImage> list = null;
         try {
             list = frameGrabber(Paths.get(fileInfo.getOrgPath()));
@@ -111,8 +110,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
                 return;
             }
         } catch (Exception e) {
-            super.cancel();
-            Messages.sprintfError("buffered failed: " + e);
+            Messages.sprintfError("buffered failed: " + e.getMessage());
             return;
         }
 
@@ -138,9 +136,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
         rootPane.setOnMouseEntered(event -> {
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-                Messages.sprintf(" Showing video: " + timeLine.getCycleCount() + " File: " + fileInfo.getOrgPath() + videoPreview.getIndex());
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
-                Messages.sprintf("image.getWidth()::: " + image.getWidth());
                 Platform.runLater(() -> {
                     imageView.setImage(image);
                 });

@@ -131,6 +131,7 @@ public class CloserLookController {
 		StackPane stackPane = new StackPane();
 		stackPane.setAlignment(Pos.CENTER);
 		stackPane.setId("imageFrame");
+		stackPane.getStyleClass().add("imageFrame");
 		stackPane.setUserData(fileInfo);
 		stackPane.setMaxSize(Math.floor(width / 3), Math.floor(height / 3));
 		stackPane.setMinSize(Math.floor(width / 3), Math.floor(height / 3));

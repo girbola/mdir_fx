@@ -11,6 +11,7 @@ import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -19,6 +20,8 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.createImageNumberLbl;
 
 public class AddContentToDateFixContainer extends Task<Integer> {
 
@@ -48,13 +51,7 @@ public class AddContentToDateFixContainer extends Task<Integer> {
         loading_Process_Task.setMessage("Adding images");
     }
 
-    private Label createText(int i) {
-        Label label = new Label("" + i);
-        label.getStyleClass().add("imageNumber");
-        label.setId("imageNumber");
-        label.setMouseTransparent(true);
-        return label;
-    }
+
 
     // private AtomicInteger counter = new AtomicInteger(list.size());
     @Override
@@ -75,7 +72,8 @@ public class AddContentToDateFixContainer extends Task<Integer> {
             StackPane sp = (StackPane) node.lookup("#stackPane");
             Label old_text = (Label) sp.lookup("#imageNumber");
             if (old_text == null) {
-                Label imageNumber = createText(counter.get());
+                Messages.sprintf("oldText were null!!");
+                Label imageNumber = createImageNumberLbl(counter.get());
                 sp.getChildren().add(imageNumber);
                 StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
             } else {

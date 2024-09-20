@@ -117,13 +117,13 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
             for (FileInfo fi : entry.getValue()) {
                 Group group = model_importImages.getGUIUtils().createGroup(fi, index.get());
                 StackPane stackPane = model_importImages.getGUIUtils().createStackPane(fi, index.get());
-                Label text = new Label(fi.getOrgPath().substring(fi.getOrgPath().lastIndexOf(".") + 1));
+                Label fileNameLbl = new Label(fi.getOrgPath().substring(fi.getOrgPath().lastIndexOf(".") + 1));
                 ImageView imageView = model_importImages.getGUIUtils().createImageView(fi, index.get());
 
                 StackPane.setAlignment(imageView, Pos.CENTER);
-                StackPane.setAlignment(text, Pos.BOTTOM_RIGHT);
+                StackPane.setAlignment(fileNameLbl, Pos.BOTTOM_RIGHT);
 
-                stackPane.getChildren().addAll(imageView, text);
+                stackPane.getChildren().addAll(imageView, fileNameLbl);
                 group.getChildren().add(stackPane);
 
                 tilePane.getChildren().add(group);

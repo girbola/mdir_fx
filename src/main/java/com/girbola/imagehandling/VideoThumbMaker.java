@@ -78,11 +78,11 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
             return;
         }
 
-        Label label = new Label("Video");
-        label.setStyle("-fx-text-fill: orange;");
-        label.setMouseTransparent(true);
-        StackPane.setAlignment(label, Pos.TOP_CENTER);
-        pane.getChildren().add(label);
+        Label videoTextLabel = new Label("Video");
+        videoTextLabel.setMouseTransparent(true);
+        videoTextLabel.getStyleClass().add("videoTextLabel");
+        StackPane.setAlignment(videoTextLabel, Pos.TOP_CENTER);
+        pane.getChildren().add(videoTextLabel);
 
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         imageView.setImage(videoPreview.getImage(0));

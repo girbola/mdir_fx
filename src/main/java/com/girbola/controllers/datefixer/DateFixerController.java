@@ -141,46 +141,11 @@ public class DateFixerController {
 	@FXML private MenuItem fileName_mi;
 
 	@FXML private Button selectRangeOfNumbers_btn;
-	@FXML private TextField startFromNumber_tf;
-	@FXML private TextField endToNumber_tf;
 	//@formatter:on
 
     @FXML
     private void listFileInfo_btn_action(ActionEvent event) {
         warningText("listFileInfo_btn_action Not ready yet!");
-    }
-
-    @FXML
-    private void selectRangeOfNumbers_btn_action(ActionEvent event) {
-
-        int startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
-        int endTo = Integer.parseInt(endToNumber_tf.getText().trim());
-
-        model_datefix.getSelectionModel().clearAll();
-        model_datefix.getTilePane().getChildren().stream()
-                .filter(node -> node instanceof VBox)
-                .map(node -> (VBox) node)
-                .filter(vbox -> vbox.getId().equals("imageFrame"))
-                .forEach(vbox -> vbox.getChildren().stream()
-                        .filter(hbox -> hbox instanceof StackPane)
-                        .forEach(hbox -> ((StackPane) hbox).getChildren().stream()
-                                .filter(stp -> stp instanceof Label)
-                                .map(stp -> (Label) stp)
-                                .map(Label::getText)
-                                .map(this::getInteger)
-                                .filter(number -> number >= 0 && startFrom <= number && endTo >= number)
-                                .forEach(number -> model_datefix.getSelectionModel().addOnly(vbox)))
-                );
-    }
-
-    private int getInteger(String value) {
-
-        try {
-            return Integer.parseInt(value);
-        } catch (Exception e) {
-            return -1;
-        }
-
     }
 
     @FXML
@@ -517,9 +482,12 @@ public class DateFixerController {
         this.model_datefix.setScrollPane(df_scrollPane);
         this.model_datefix.setQuickPick_tilePane(quickPick_tilePane);
         this.model_datefix.setAnchorPane(df_anchorPane);
+
         if (isImported) {
             applyChanges_btn.setDefaultButton(true);
         }
+
+        df_tilePane.getChildren().clear();
 
         ignored_chk.selectedProperty().bindBidirectional(this.model_datefix.ignored_property());
 
@@ -536,6 +504,9 @@ public class DateFixerController {
         this.model_datefix.setRightInfoPanel(rightInfoPanel);
 
         df_tilePane.setId("dateFixer");
+        df_tilePane.setHgap(3);
+        df_tilePane.setVgap(3);
+
         df_tilePane.getChildren().clear();
 
         filePath_tf.setText(this.model_datefix.getCurrentFolderPath().toString());
@@ -585,22 +556,7 @@ public class DateFixerController {
         selectorController.getInfoTables_container().setMaxWidth(250);
         selectorController.getInfoTables_container().setPrefWidth(250);
 
-        startFromNumber_tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
-        endToNumber_tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    endToNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
-                }
-            }
-        });
+
         df_tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 ContextMenu contextMenu = new ContextMenu();

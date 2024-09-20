@@ -2,6 +2,7 @@ package com.girbola.controllers.importimages;
 
 import com.girbola.configuration.GUIPrefs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -101,6 +102,7 @@ public class GUIUtils {
 	}
 
 	public StackPane createStackPane(FileInfo fi, int index) {
+		Messages.sprintf("Creatubg StackPane fi: " + fi.getOrgPath());
 		StackPane stackPane = new StackPane();
 //		stackPane.setMouseTransparent(true);
 		stackPane.setUserData(fi);
