@@ -11,7 +11,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.girbola.Main;
-import com.girbola.configuration.GUIPrefs;
+import com.girbola.configuration.GuiImageFrame;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -27,6 +27,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -92,6 +93,9 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         sprintf("FolderInfo.getMinDate(): " + this.folderInfo.getMinDate());
         aModel_datefix.setDateTime(this.folderInfo.getMinDate(), true);
         aModel_datefix.setDateTime(this.folderInfo.getMaxDate(), false);
+        tilePane.setHgap(8);
+        tilePane.setVgap(8);
+
 
     }
 
@@ -110,10 +114,10 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
                     frame = null;
                     if (fi.isImage() || fi.isRaw()) {
-                        frame = addRunningNumberOnFrame(fi, counter.get());
+                        frame = createImageFrame(fi, counter.get());
                         setSelectedImageRoutine(fi, frame);
                     } else if (fi.isVideo()) {
-                        frame = addRunningNumberOnFrame(fi, counter.get());
+                        frame = createImageFrame(fi, counter.get());
                         setSelectedVideoRoutine(fi, frame);
                     }
                     if (frame != null) {
@@ -146,130 +150,50 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
     ;
 
-//    @Override
-//    protected void succeeded() {
-//        super.succeeded();
-//        loadingProcess_task.closeStage();
-//    }
-//
-//    @Override
-//    protected void cancelled() {
-//        super.cancelled();
-//        loadingProcess_task.closeStage();
-//    }
-//
-//    @Override
-//    protected void failed() {
-//        super.failed();
-//        loadingProcess_task.closeStage();
-//    }
+    private VBox createImageFrame(FileInfo fileInfo, int index) {
+        VBox frame_vbox = DateFixGuiUtils.createImageFrame("imageFrame", GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
+        frame_vbox.setAlignment(Pos.CENTER);
+        frame_vbox.setFillWidth(true);
 
-    private VBox addRunningNumberOnFrame(FileInfo fileInfo, int index) {
-        VBox frame_vbox = DateFixGuiUtils.createImageFrame("imageFrame", GUIPrefs.imageFrame_x, GUIPrefs.imageFrame_y);
+        GridPane topContainer = DateFixGuiUtils.createTopGridPane();
 
-        StackPane stackPane = DateFixGuiUtils.createImageFrameStackPane(index);
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
+        imageFrameNumber.setAlignment(Pos.TOP_RIGHT);
 
-        ImageView iv = createImageView(fileInfo, index);
+        topContainer.add(imageFrameNumber, 3, 0);
 
-        StackPane.setAlignment(iv, Pos.CENTER);
+        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer(fileInfo, "imageViewContainer", GuiImageFrame.imageFrame_y);
+        ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (GuiImageFrame.thumb_x_MAX), GuiImageFrame.thumb_y_MAX);
+        imageViewContainer.getChildren().add(iv);
 
-        StackPane.setAlignment(imageFrameNumber, Pos.TOP_RIGHT);
+        VBox bottomContainer = DateFixGuiUtils.createBottomContainer("bottomContainer");
 
-        TextField fileName_ta = createFileName_tf(Paths.get(fileInfo.getOrgPath()), index);
-        TextField fileDate_tf = createFileDate_tf(fileInfo, index);
+        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer("bottom");
 
-        VBox.setVgrow(stackPane, Priority.ALWAYS);
-        VBox.setVgrow(fileName_ta, Priority.NEVER);
-        VBox.setVgrow(fileDate_tf, Priority.NEVER);
+        Label fileName_tf = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()), "fileName_ta");
+        TextField fileDate_tf = DateFixGuiUtils.createFileDate_tf(fileInfo, "fileDate_tf");
 
-        HBox bottom = new HBox();
-        bottom.setId("bottom");
+        Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, fileDate_tf);
+        buttonDateTimeContainer.getChildren().addAll(accept, fileDate_tf);
+        bottomContainer.getChildren().addAll(fileName_tf, buttonDateTimeContainer);
 
-        HBox.setHgrow(bottom, Priority.ALWAYS);
         HBox.setHgrow(fileDate_tf, Priority.ALWAYS);
+        VBox.setVgrow(bottomContainer, Priority.NEVER);
+        VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
+        VBox.setVgrow(iv, Priority.NEVER);
+        VBox.setVgrow(topContainer, Priority.NEVER);
 
-        Button accept = createAcceptButton(fileInfo, fileDate_tf, index);
-        bottom.setAlignment(Pos.CENTER);
-
-        stackPane.getChildren().addAll(imageFrameNumber, iv);
-        bottom.getChildren().addAll(accept, fileDate_tf);
-        frame_vbox.getChildren().addAll(stackPane, fileName_ta, bottom);
+        frame_vbox.getChildren().addAll(topContainer, imageViewContainer, bottomContainer);
 
         return frame_vbox;
     }
 
-    private Button createAcceptButton(FileInfo fi, TextField tf, int i) {
-        Button button = new Button();
-        ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GUIPrefs.BUTTON_WIDTH));
-        button.setGraphic(imageView);
-        button.setId("accept");
-        if (!fi.isGood()) {
-            button.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    String date = tf.getText();
-                    tf.setText("" + date);
-                    tf.setStyle(CssStylesController.getModified_style());
-                    sprintf("Accepted: " + fi.getDate() + " path:  " + fi.getOrgPath() + " time: " + model_dateFix.getStart_time().getTime());
-                }
-            });
-        } else {
-            button.setDisable(true);
-        }
-        return button;
-    }
-
-    private ImageView createImageView(FileInfo fi, int i) {
-        ImageView iv = new ImageView();
-        iv.setFitWidth(GUIPrefs.thumb_x_MAX - 2);
-        iv.setFitHeight(GUIPrefs.thumb_y_MAX - 2);
-        iv.maxWidth(GUIPrefs.thumb_x_MAX - 2);
-        iv.maxHeight(GUIPrefs.thumb_y_MAX - 2);
-        iv.setPreserveRatio(true);
-        iv.setMouseTransparent(true);
-        // iv.setRotate(rotate(fi.getOrientation()));
-        iv.setId("imageView");
-        return iv;
-    }
-
-
-    private TextField createFileName_tf(Path path, int index) {
-        TextField textField = new TextField();
-        textField.getStyleClass().add("fileName_ta");
-        textField.setEditable(false);
-        textField.setFocusTraversable(false);
-        textField.setId("fileName");
-        textField.setMaxHeight(25);
-        textField.setMinHeight(25);
-        textField.setPrefHeight(25);
-        // textField.setUserData(path);
-        textField.setText(path.getFileName().toString());
-        return textField;
-    }
-
-    private TextField createFileDate_tf(FileInfo fileInfo, int index) {
-        TextField textField = new TextField(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
-        textField.getStyleClass().add("fileDate_tf");
-        textField.setEditable(false);
-        textField.setFocusTraversable(false);
-        textField.setId("fileDate");
-        textField.setMaxHeight(25);
-        textField.setMinHeight(25);
-        textField.setPrefHeight(25);
-        if (fileInfo.isBad()) {
-            textField.setStyle(CssStylesController.getBad_style());
-        } else if (fileInfo.isGood()) {
-            textField.setStyle(CssStylesController.getGood_style());
-        } else if (fileInfo.isConfirmed()) {
-            textField.setStyle(CssStylesController.getConfirmed_style());
-        } else if (fileInfo.isVideo()) {
-            textField.setStyle(CssStylesController.getVideo_style());
-        } else if (fileInfo.isSuggested()) {
-            textField.setStyle(CssStylesController.getSuggested_style());
-        }
-
-        return textField;
+    private Node createSpacer() {
+        final Region spacer = new Region();
+        // Make it always grow or shrink according to the available space
+        VBox.setVgrow(spacer, Priority.ALWAYS);
+        spacer.setStyle("-fx-background-color: orange;");
+        return spacer;
     }
 
     private List<FileInfo> getFileList(ObservableList<Node> children) {
@@ -339,7 +263,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     private void setSelectedVideoRoutine(FileInfo fileInfo, VBox frame) {
         frame.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
-                if(event.getClickCount() == 1) {
+                if (event.getClickCount() == 1) {
                     handleImageFrameSelected(event, fileInfo);
                 }
                 if (event.getClickCount() == 2) {

@@ -13,6 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.nio.file.Path;
+import java.util.concurrent.ExecutionException;
 
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
@@ -28,7 +29,6 @@ public class ConvertImage extends Task<Image> {
 	private final Path thumbImage;
 	private final double image_width;
 	private final ImageView imageView;
-	private Image image;
 
 	public ConvertImage(Path thumbImage, double image_width, ImageView imageView) {
 		this.thumbImage = thumbImage;
@@ -39,12 +39,12 @@ public class ConvertImage extends Task<Image> {
 	@Override
 	protected Image call() throws Exception {
 		try {
-			image = new Image(thumbImage.toUri().toString(), image_width, 0, true, true, false);
+			return new Image(thumbImage.toUri().toString(), image_width, 0, true, true, false);
 		} catch (Exception ex) {
 			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), false);
 			return null;
 		}
-		return null;
+
 	}
 
 	@Override
@@ -62,13 +62,17 @@ public class ConvertImage extends Task<Image> {
 	@Override
 	protected void succeeded() {
 		super.succeeded();
-		if (image != null) {
+
 			if (imageView != null) {
-				imageView.setImage(image);
-			}
-		} else {
-			Messages.errorSmth(ERROR, "Problem with adding image to ImageView", null, getLineNumber(), true);
-		}
+                try {
+                    imageView.setImage(get());
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                } catch (ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
 
 	}
 

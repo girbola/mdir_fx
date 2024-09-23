@@ -21,6 +21,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -585,7 +586,78 @@
                             <children>
                                 <ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <content>
-                                        <TilePane fx:id="df_tilePane" styleClass="imagesContainer" />
+                                        <TilePane fx:id="df_tilePane" styleClass="imagesContainer" tileAlignment="TOP_LEFT">
+                                 <children>
+                                    <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" maxWidth="187.0" minHeight="250.0" minWidth="187.0" prefHeight="250.0" prefWidth="187.0" style="-fx-border-color: red;" styleClass="imageFrame" TilePane.alignment="CENTER">
+                                       <children>
+                                          <HBox fillHeight="false" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <GridPane gridLinesVisible="true" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" styleClass="imageFrameTop">
+                                                  <columnConstraints>
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="40.0" prefWidth="40.0" />
+                                                  </columnConstraints>
+                                                  <rowConstraints>
+                                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                    <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                  </rowConstraints>
+                                                   <children>
+                                                      <Label alignment="TOP_LEFT" text="99999" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                                      <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="CENTER" fillHeight="false" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <ImageView fitHeight="137.0" fitWidth="157.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER" />
+                                             </children>
+                                          </HBox>
+                                          <HBox alignment="BOTTOM_CENTER" fillHeight="false" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Button" HBox.hgrow="NEVER" />
+                                                <TextField HBox.hgrow="NEVER" />
+                                             </children>
+                                          </HBox>
+                                       </children>
+                                    </VBox>
+                                    <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" minHeight="250.0" prefHeight="250.0" TilePane.alignment="CENTER">
+                                       <children>
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Button" />
+                                             </children>
+                                          </GridPane>
+                                          <Region />
+                                          <HBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Button" HBox.hgrow="NEVER" />
+                                             </children>
+                                          </HBox>
+                                          <Region />
+                                          <GridPane>
+                                             <columnConstraints>
+                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                             </columnConstraints>
+                                             <rowConstraints>
+                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                                             </rowConstraints>
+                                             <children>
+                                                <Button mnemonicParsing="false" text="Button" />
+                                             </children>
+                                          </GridPane>
+                                       </children>
+                                    </VBox>
+                                 </children></TilePane>
                                     </content>
                                 </ScrollPane>
                             </children>

@@ -483,6 +483,8 @@ public class DateFixerController {
         this.model_datefix.setQuickPick_tilePane(quickPick_tilePane);
         this.model_datefix.setAnchorPane(df_anchorPane);
 
+
+
         if (isImported) {
             applyChanges_btn.setDefaultButton(true);
         }

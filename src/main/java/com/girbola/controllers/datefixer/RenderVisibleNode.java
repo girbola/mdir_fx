@@ -7,7 +7,7 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.configuration.GUIPrefs;
+import com.girbola.configuration.GuiImageFrame;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.imagehandling.*;
 import com.girbola.messages.Messages;
@@ -18,8 +18,6 @@ import com.girbola.thumbinfo.ThumbInfo;
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -27,6 +25,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -153,43 +152,43 @@ public class RenderVisibleNode {
                                     case 0:
                                         if (FileUtils.supportedImage(file)) {
                                             Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
 
                                         }
                                         if (FileUtils.supportedRaw(file)) {
                                             Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
 
                                         } else if (FileUtils.supportedVideo(file)) {
                                             Task<List<BufferedImage>> convertByte_thumb_fast = new ConvertVideo_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GUIPrefs.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
                                         }
                                         break;
                                     case 1:
                                         if (FileUtils.supportedVideo(file)) {
-                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (GUIPrefs.thumb_x_MAX - 2));
+                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (GuiImageFrame.thumb_x_MAX - 2));
                                             needToConvert_Video_list.add(convertVideo_task);
                                         } else if (FileUtils.supportedImage(file)) {
                                             if (FileUtils.isTiff(file.toFile())) {
                                                 Messages.sprintf("Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             } else {
                                                 Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = handleImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+                                                Task<Image> imageThumb = handleImageThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             }
                                         } else if (FileUtils.supportedRaw(file)) {
                                             Messages.sprintf("3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, GUIPrefs.thumb_x_MAX, imageView);
+                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
                                             imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                             needToConvert_Image_list.add(imageThumb);
                                         }
@@ -280,14 +279,14 @@ public class RenderVisibleNode {
 
         if (mainNode instanceof TilePane && mainNode.getId().equals("dateFixer")) {
             Messages.sprintf("datefixer");
-            for (Node gridPane : ((TilePane) mainNode).getChildren()) {
-                if (gridPane instanceof VBox && gridPane.getId().equals("imageFrame")) {
-                    Bounds nodeBounds = gridPane.localToScene(gridPane.getBoundsInLocal());
+            for (Node tilePane : ((TilePane) mainNode).getChildren()) {
+                if (tilePane instanceof VBox && tilePane.getId().equals("imageFrame")) {
+                    Bounds nodeBounds = tilePane.localToScene(tilePane.getBoundsInLocal());
                     if (paneBounds.intersects(nodeBounds)) {
-                        for (Node imageFrame_vbox : ((VBox) gridPane).getChildren()) {
-                            if (imageFrame_vbox instanceof StackPane) {
+                        for (Node imageFrame_vbox : ((VBox) tilePane).getChildren()) {
+                            if (imageFrame_vbox instanceof HBox && imageFrame_vbox.getId().equals("imageViewContainer")) {
                                 ImageView iv = (ImageView) imageFrame_vbox.lookup("#imageView");
-                                map.put(iv, (FileInfo) gridPane.getUserData());
+                                map.put(iv, (FileInfo) tilePane.getUserData());
                             }
                         }
                     }

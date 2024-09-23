@@ -1,10 +1,24 @@
 package com.girbola.controllers.datefixer.utils;
 
+import com.girbola.configuration.GuiImageFrame;
+import com.girbola.controllers.datefixer.CssStylesController;
+import com.girbola.controllers.datefixer.GUI_Methods;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+
+import java.nio.file.Path;
+
+import static com.girbola.Main.simpleDates;
+import static com.girbola.messages.Messages.sprintf;
 
 public class DateFixGuiUtils {
 
@@ -23,6 +37,7 @@ public class DateFixGuiUtils {
         frame_vbox.setPrefSize(imageFrameX, imageFrameY);
         frame_vbox.setMinSize(imageFrameX, imageFrameY);
         frame_vbox.setMaxSize(imageFrameX, imageFrameY);
+        frame_vbox.setFillWidth(true);
         frame_vbox.getStyleClass().add(name);
         return frame_vbox;
     }
@@ -35,5 +50,181 @@ public class DateFixGuiUtils {
         stackPane.getStyleClass().add("imageFrameStackPane");
         stackPane.setMouseTransparent(true);
         return stackPane;
+    }
+
+    public static ImageView createImageView(FileInfo fi, double imageFrameX, double imageFrameY) {
+        ImageView iv = new ImageView();
+        iv.setFitWidth(imageFrameX - 5);
+        iv.setFitHeight(imageFrameY - 5);
+//        iv.maxWidth(imageFrameX - 5);
+//        iv.maxHeight(imageFrameY - 5);
+        iv.setPreserveRatio(true);
+        iv.setMouseTransparent(true);
+
+        if (iv.getFitWidth() >= GuiImageFrame.imageFrame_x) {
+            iv.setFitWidth(GuiImageFrame.imageFrame_x - 50);
+        }
+        if (iv.getFitHeight() >= GuiImageFrame.imageFrame_y) {
+            iv.setFitHeight(GuiImageFrame.imageFrame_y - 50);
+        }
+
+        Messages.sprintf("FileInfo: " + fi.getOrgPath() + " IMAGEVIEW: " + iv.getFitWidth() + " " + iv.getFitHeight());
+        // iv.setRotate(rotate(fi.getOrientation()));
+        iv.setId("imageView");
+        return iv;
+    }
+
+
+    public static Label createFileName_tf(Path path, String name) {
+        Label fileNameLabel = new Label();
+        fileNameLabel.getStyleClass().add(name);
+
+        fileNameLabel.setFocusTraversable(false);
+        fileNameLabel.setId("fileName");
+        fileNameLabel.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        fileNameLabel.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        fileNameLabel.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        fileNameLabel.setMaxHeight(25);
+        fileNameLabel.setMinHeight(25);
+        fileNameLabel.setPrefHeight(25);
+
+        // textField.setUserData(path);
+        fileNameLabel.setText(path.getFileName().toString());
+        return fileNameLabel;
+    }
+
+    public static TextField createFileDate_tf(FileInfo fileInfo, String name) {
+        TextField textField = new TextField(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
+        textField.getStyleClass().add(name);
+        textField.setEditable(false);
+        textField.setFocusTraversable(false);
+        textField.setId("fileDate");
+        textField.setMaxHeight(25);
+        textField.setMinHeight(25);
+        textField.setPrefHeight(25);
+
+        if (fileInfo.isBad()) {
+            textField.setStyle(CssStylesController.getBad_style());
+        } else if (fileInfo.isGood()) {
+            textField.setStyle(CssStylesController.getGood_style());
+        } else if (fileInfo.isConfirmed()) {
+            textField.setStyle(CssStylesController.getConfirmed_style());
+        } else if (fileInfo.isVideo()) {
+            textField.setStyle(CssStylesController.getVideo_style());
+        } else if (fileInfo.isSuggested()) {
+            textField.setStyle(CssStylesController.getSuggested_style());
+        }
+        return textField;
+    }
+
+    public static Button createAcceptButton(FileInfo fi, TextField tf) {
+        Button button = new Button();
+        ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
+        button.setGraphic(imageView);
+        button.setId("accept");
+        if (!fi.isGood()) {
+            button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    String date = tf.getText();
+                    tf.setText(date);
+                    tf.setStyle(CssStylesController.getModified_style());
+                }
+            });
+        } else {
+            button.setDisable(true);
+        }
+        return button;
+    }
+
+
+    public static void setGridPaneColumnWidth(ColumnConstraints column, double width) {
+        column.setMinWidth(width);
+        column.setMaxWidth(width);
+        column.setPrefWidth(width);
+    }
+
+    public static GridPane createTopGridPane() {
+        GridPane topContainer = new GridPane();
+        topContainer.setMouseTransparent(true);
+        topContainer.setAlignment(Pos.TOP_LEFT);
+        topContainer.setMinWidth(GuiImageFrame.imageFrame_x);
+        topContainer.setMaxWidth(GuiImageFrame.imageFrame_x);
+        topContainer.setPrefWidth(GuiImageFrame.imageFrame_x);
+
+        topContainer.setMinHeight(Region.USE_COMPUTED_SIZE);
+        topContainer.setMaxHeight(Region.USE_COMPUTED_SIZE);
+        topContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
+
+        topContainer.getStyleClass().add("imageFrameTop");
+
+        ColumnConstraints cc1 = new ColumnConstraints();
+        cc1.setPercentWidth(25);
+        ColumnConstraints cc2 = new ColumnConstraints();
+        cc2.setPercentWidth(25);
+        ColumnConstraints cc3 = new ColumnConstraints();
+        cc3.setPercentWidth(25);
+        ColumnConstraints cc4 = new ColumnConstraints();
+        cc4.setPercentWidth(25);
+        cc4.setHalignment(HPos.CENTER);
+
+        topContainer.getColumnConstraints().addAll(cc1, cc2, cc3, cc4);
+
+        RowConstraints r1 = new RowConstraints(10);
+        RowConstraints r2 = new RowConstraints(10);
+
+        topContainer.getRowConstraints().addAll(r1, r2);
+
+        return topContainer;
+    }
+
+    public static HBox createImageViewContainer(FileInfo fileInfo, String name, int imageFrame_y) {
+        HBox imageViewContainer = new HBox();
+        imageViewContainer.setMouseTransparent(true);
+        imageViewContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        imageViewContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        imageViewContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+        imageViewContainer.setMinHeight(175);
+        imageViewContainer.setMaxHeight(175);
+        imageViewContainer.setPrefHeight(175);
+
+
+        imageViewContainer.setAlignment(Pos.CENTER);
+        imageViewContainer.setFillHeight(true);
+        imageViewContainer.setId(name);
+
+        VBox.setVgrow(imageViewContainer, Priority.ALWAYS);
+
+        return imageViewContainer;
+    }
+
+    public static VBox createBottomContainer(String name) {
+        VBox bottomContainer = new VBox();
+        bottomContainer.getStyleClass().add(name);
+        bottomContainer.setFillWidth(true);
+        bottomContainer.setAlignment(Pos.CENTER);
+
+        bottomContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        bottomContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        bottomContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        bottomContainer.setMinWidth(GuiImageFrame.imageFrame_x-2);
+        bottomContainer.setMaxWidth(GuiImageFrame.imageFrame_x-2);
+        bottomContainer.setPrefWidth(GuiImageFrame.imageFrame_x-2);
+        return bottomContainer;
+    }
+
+    public static HBox createButtonDateTimeContainer(String name) {
+        HBox buttonDateTimeContainer = new HBox();
+        buttonDateTimeContainer.setId(name);
+        buttonDateTimeContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setMinWidth(GuiImageFrame.imageFrame_x - 2);
+        buttonDateTimeContainer.setMaxWidth(GuiImageFrame.imageFrame_x - 2);
+        buttonDateTimeContainer.setPrefWidth(GuiImageFrame.imageFrame_x - 2);
+        buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
+
+        return buttonDateTimeContainer;
     }
 }

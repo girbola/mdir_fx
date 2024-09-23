@@ -82,10 +82,10 @@
 }
 
 .imageFrame {
-    -fx-background-color: black;
+    -fx-background-color: #1e1e1e;
     -fx-border-insets: 0 0 0 0;
     -fx-border-color: orange red white cyan;
-    -fx-padding: 15px;
+    /*-fx-padding: 15px;*/
 }
 
 .imageFrameSelected {
@@ -115,8 +115,7 @@
 
 .date-picker .text-field,
 .fileDate_tf {
-    -fx-font-size: 0.625em;
-    -fx-font-smoothing-type: lcd;
+    -fx-font-size: 0.8em;
     -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
     /*-fx-border-color: -fx-light-text-color;*/
     -fx-border-radius: 3;
@@ -130,8 +129,8 @@
 .fileName_ta {
     -fx-background-color: transparent;
     /*-fx-border-color: transparent;*/
-    -fx-font-size: 0.625em;
-    -fx-font-smoothing-type: lcd;
+    -fx-font-size: 0.8em;
+    /*-fx-font-smoothing-type: lcd;*/
     -fx-text-fill: white;
 }
 
@@ -146,7 +145,10 @@
 .grid-pane {
 
 }
-
+.imageFrameTop Line {
+    -fx-background-color: orange;
+    -fx-stroke: red;
+}
 .imagesContainer {
     -fx-border-color: transparent;
     -fx-border-style: none;

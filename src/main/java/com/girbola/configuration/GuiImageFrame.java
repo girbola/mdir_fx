@@ -10,7 +10,7 @@ package com.girbola.configuration;
  * The GUIPrefs class holds static configuration values for the graphical user interface.
  * These values are used to define sizes and dimensions for various GUI components such as buttons, frames, and thumbnails.
  */
-public class GUIPrefs {
+public class GuiImageFrame {
 
     public final static double ARROW_BUTTON_SIZE = 13;
     public final static int BUTTON_WIDTH = 20;

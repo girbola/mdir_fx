@@ -1,6 +1,6 @@
 package com.girbola.controllers.importimages;
 
-import com.girbola.configuration.GUIPrefs;
+import com.girbola.configuration.GuiImageFrame;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.beans.property.BooleanProperty;
@@ -27,8 +27,8 @@ import static com.girbola.rotate.Rotate.rotate;
 
 public class GUIUtils {
 	private Model_importImages model_importImages;
-	private double width = (GUIPrefs.thumb_x_MAX + 2);
-	private double height = (GUIPrefs.thumb_x_MAX + 2);
+	private double width = (GuiImageFrame.thumb_x_MAX + 2);
+	private double height = (GuiImageFrame.thumb_x_MAX + 2);
 
 	public double getWidth() {
 		return width;
@@ -101,7 +101,7 @@ public class GUIUtils {
 
 	}
 
-	public StackPane createStackPane(FileInfo fi, int index) {
+	public StackPane createStackPane(FileInfo fi,double width, double height) {
 		Messages.sprintf("Creatubg StackPane fi: " + fi.getOrgPath());
 		StackPane stackPane = new StackPane();
 //		stackPane.setMouseTransparent(true);
