@@ -95,7 +95,6 @@ public class Model_datefix extends DateFixerModel {
     private TableView<MetaData> metaDataTableView;
     private SimpleBooleanProperty rightInfo_visible = new SimpleBooleanProperty(false);
 
-    private CssStylesController cssStyles = new CssStylesController();
     private DateFix_Utils dateFix_Utils = new DateFix_Utils();
 
     private Path currentFolderPath;
@@ -267,7 +266,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
             for (Node node : tilePane.getChildren()) {
                 TextField tf = getTextField(node);
                 if (tf != null) {
-                    if (!tf.getStyle().equals(CssStylesController.getBad_style())) {
+                    if (!tf.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
                         FileInfo fileInfo = (FileInfo) node.getUserData();
                         if (fileInfo != null) {
                             if (!fileInfo.isIgnored()) {
@@ -277,7 +276,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                                 fileInfo.setSuggested(false);
                                 fileInfo.setBad(false);
                                 fileInfo.setConfirmed(true);
-                                node.setStyle(CssStylesController.getGood_style());
+                                node.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                                 changed = true;
                             }
                         }
@@ -298,7 +297,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                 setDateTime(getFolderInfo_full().getMinDate(), true);
                 setDateTime(getFolderInfo_full().getMaxDate(), false);
             }
-            getSelectionModel().clearAll();
+            getSelectionModel().clearAll(tilePane);
         }
         /*
 
@@ -319,10 +318,10 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                     if (tf != null) {
                         tf.setText("" + DateUtils.longToLocalDateTime(date)
                                 .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                        tf.setStyle(CssStylesController.getGood_style());
+                        tf.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                     }
                 } else {
-                    tf.setStyle(CssStylesController.getBad_style());
+                    tf.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
                 }
             }
         }
@@ -356,12 +355,12 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                     if (tf != null) {
                         tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
                                 .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                        tf.setStyle(CssStylesController.getGood_style());
+                        tf.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                     }
                 } else {
                     // tf.setText("" +
                     // DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                    tf.setStyle(CssStylesController.getBad_style());
+                    tf.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
                 }
             }
         }
@@ -384,7 +383,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                 if (tf != null) {
                     tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
                             .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                    tf.setStyle(CssStylesController.getModified_style());
+                    tf.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
                 }
             }
         }
@@ -424,7 +423,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
 //				if (tf != null) {
 //					tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
 //							.format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-//					tf.setStyle(CssStylesController.getModified_style());
+//					tf.setStyle(CssStylesController.MODIFIED_STYLE.getStyle());
 //				}
             } else {
                 sprintf("FileInfo were getUserData were null");
@@ -528,7 +527,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
 
             event.consume();
         }
-        getSelectionModel().clearAll();
+        getSelectionModel().clearAll(tilePane);
         selector_exec.shutdownNow();
         Platform.runLater(() -> {
             Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
@@ -667,7 +666,7 @@ public void updateCameraInfos(List<FileInfo> fileInfo_List) {
                         if (vbox instanceof HBox) {
                             for (Node hbox : ((HBox) vbox).getChildren()) {
                                 if (hbox instanceof TextField) {
-                                    if (hbox.getStyle().equals(CssStylesController.getBad_style())) {
+                                    if (hbox.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
                                         counter++;
                                     }
                                 }

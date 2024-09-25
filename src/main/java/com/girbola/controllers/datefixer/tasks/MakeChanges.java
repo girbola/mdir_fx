@@ -1,7 +1,7 @@
 package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.CssStylesController;
+import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
 import com.girbola.messages.Messages;
@@ -101,7 +101,7 @@ public class MakeChanges extends Task<Integer> {
                         try {
                             TextField tf = (TextField) nodeHBox;
                             tf.setText(it2.next());
-                            tf.setStyle(CssStylesController.getModified_style());
+                            tf.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
                         } catch (Exception ex) {
                             errorSmth(ERROR, "Cannot make textfield changes. " + (it == null ? true : false), ex, Misc.getLineNumber(), true);
                         }

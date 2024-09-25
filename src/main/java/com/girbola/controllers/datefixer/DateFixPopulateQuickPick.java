@@ -25,9 +25,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -84,9 +82,9 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
         this.scene = scene;
         this.model_dateFix = aModel_datefix;
-        this.model_dateFix.getSelectionModel().clearAll();
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();
         this.tilePane = aTilePane;
+        this.model_dateFix.getSelectionModel().clearAll(tilePane);
         this.folderInfo = aModel_datefix.getFolderInfo_full();
         this.scrollPane = aModel_datefix.getScrollPane();
         this.loadingProcess_task = loadingProcess_task;
@@ -118,7 +116,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
                         setSelectedImageRoutine(fi, frame);
                     } else if (fi.isVideo()) {
                         frame = createImageFrame(fi, counter.get());
-                        setSelectedVideoRoutine(fi, frame);
+                        //setSelectedVideoRoutine(fi, frame);
                     }
                     if (frame != null) {
                         frame.setUserData(fi);
@@ -246,6 +244,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     private TableView<MetaData> createTableView() {
         TableView<MetaData> table = new TableView<>();
         table.getStyleClass().add("metadataTable");
+
         TableColumn<MetaData, String> info_column = new TableColumn<>();
         info_column.setCellValueFactory((TableColumn.CellDataFeatures<MetaData, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getTag()));
 
@@ -297,31 +296,34 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
     private void handleImageFrameSelected(MouseEvent event, FileInfo fileInfo) {
         Messages.sprintf("Clicked setSelectedImageRoutine PRIMARY mouseclickcount = 1 " + event.getTarget().getClass().getName());
+        Platform.runLater(() -> {
 
-        if (event.getTarget() instanceof VBox selectedVBox) {
-            Messages.sprintf("selectedVBox.getId().equals: " + selectedVBox.getId());
-            model_dateFix.getRightInfoPanel().getChildren().clear();
-            model_dateFix.getMetaDataTableView_obs().clear();
+            // If this would be VBox it would give JavaFX Thread errors, so this is the way to avoid that issue. 2024-09-25
+            Node sourceNode = (Node) event.getTarget();
 
-            for (Node node : selectedVBox.getChildren()) {
-                if (node instanceof StackPane sp) {
-                    for (Node nodeImv : sp.getChildren()) {
-                        if (nodeImv instanceof ImageView imv) {
-                            processNode(selectedVBox, imv, fileInfo);
+            if (sourceNode instanceof VBox imageFrame && "imageFrame".equals(imageFrame.getId())) {
+                model_dateFix.getRightInfoPanel().getChildren().clear();
+                model_dateFix.getMetaDataTableView_obs().clear();
+                model_dateFix.getSelectionModel().addWithToggle(imageFrame);
+                for (Node node : imageFrame.getChildren()) {
+                    if (node instanceof HBox imageFrameContainer) {
+                        for (Node nodeImv : imageFrameContainer.getChildren()) {
+                            if (nodeImv instanceof ImageView imv) {
+                                loadMetadataToTable(imageFrame, imv, fileInfo);
+                            }
                         }
                     }
                 }
             }
-        }
+        });
     }
 
-    private void processNode(VBox selectedFrame, ImageView imv, FileInfo fileInfo) {
+    private void loadMetadataToTable(VBox selectedFrame, ImageView imv, FileInfo fileInfo) {
+        Messages.sprintf("loadMetadataToTable: " + fileInfo.getOrgPath());
         if (imv.getImage() == null) {
-            Messages.sprintf("Not able to select because imageview were null");
             return;
         }
 
-        boolean deselected = model_dateFix.getSelectionModel().addWithToggle(selectedFrame);
         if (!model_dateFix.getRightInfo_visible()) {
             return;
         }
@@ -329,19 +331,12 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         File file = new File(fileInfo.getOrgPath());
         model_dateFix.getMetaDataTableView_obs().add(new MetaData(Main.bundle.getString("filename"), file.toString()));
 
-        Metadata metaData;
         try {
-            metaData = ImageMetadataReader.readMetadata(file);
+            Metadata metaData = ImageMetadataReader.readMetadata(file);
+            updateUIWithMetadata(metaData);
         } catch (Exception e) {
-            deselected = false;
-            metaData = null;
+            Messages.sprintfError("Cannot read metadata for media: " + file);
         }
-
-        if (deselected || metaData == null) {
-            return;
-        }
-
-        updateUIWithMetadata(metaData);
     }
 
     private void updateUIWithMetadata(Metadata metaData) {

@@ -6,6 +6,8 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.configuration.GuiImageFrame;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
@@ -14,12 +16,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,10 +32,10 @@ import static com.girbola.messages.Messages.sprintf;
 public class SelectionModel {
 
     final private String style_deselected =
-            "-fx-border-color: white;" +
-//                    "-fx-border-radius: 1 1 1 1;" +
+            "-fx-border-color: cyan;" +
+                    "-fx-border-radius: 1 1 1 1;" +
                     "-fx-border-style: none;" +
-                    "-fx-border-width: 0px;";
+                    "-fx-border-width: 3px;";
 
     final private String style_selected =
             "-fx-border-color: #ba1d1d;" +
@@ -45,16 +46,18 @@ public class SelectionModel {
     private ObservableList<Node> selectionList = FXCollections.observableArrayList();
 
     public SelectionModel() {
-        this.selectionList.addListener((ListChangeListener<Node>) c -> Platform.runLater(() -> {
+        selectionList.addListener((ListChangeListener<Node>) c -> Platform.runLater(() -> {
             selectedIndicator_property.set(selectionList.size());
         }));
     }
 
     public synchronized void addAll(Node node) {
         if (!contains(node)) {
-            node.setStyle(style_selected);
-            this.selectionList.add(node);
+            Platform.runLater(() -> {
+                node.setStyle(style_selected);
+            });
         }
+        selectionList.add((VBox) node);
     }
 
     /**
@@ -66,16 +69,20 @@ public class SelectionModel {
      */
     public synchronized boolean addWithToggle(Node node) {
 
+        if(node.getId() == null || !node.getId().equals("imageFrame")) {
+            return false;
+        }
         if (!contains(node)) {
             Platform.runLater(() -> {
                 node.setStyle(style_selected);
-                this.selectionList.add(node);
             });
+            selectionList.add((VBox) node);
             return false;
         } else {
             Platform.runLater(() -> {
-                remove(node);
+                node.setStyle(style_deselected);
             });
+            selectionList.remove((VBox) node);
             return true;
         }
 
@@ -85,24 +92,30 @@ public class SelectionModel {
         if (!contains(node)) {
             Platform.runLater(() -> {
                 node.setStyle(style_selected);
-                this.selectionList.add(node);
+
             });
+
+            selectionList.add(node);
         }
     }
 
-    public synchronized void clearAll() {
+    public synchronized void clearAll(Pane parent) {
         sprintf("clearing all");
-        Iterator<Node> selectedIt = this.selectionList.iterator();
+        for(Node pane : parent.getChildren()) {
+            Platform.runLater(() -> {
+                remove(pane);
+            });
 
-        while (selectedIt.hasNext()) {
-            remove(selectedIt.next());
         }
 
     }
 
     public synchronized boolean contains(Node node) {
-        for (Node n : this.selectionList) {
-            if (n.getId().equals(node.getId())) {
+        FileInfo targetFileInfo = (FileInfo) node.getUserData();
+        for (Node n : selectionList) {
+
+            FileInfo sourceFileInfo = (FileInfo) n.getUserData();
+            if(sourceFileInfo.getFileInfo_id() == targetFileInfo.getFileInfo_id()) {
                 return true;
             }
         }
@@ -112,8 +125,10 @@ public class SelectionModel {
 
     public synchronized void remove(Node node) {
         if (contains(node)) {
-            node.setStyle(style_deselected);
-            this.selectionList.remove(node);
+            Platform.runLater(() -> {
+                node.setStyle(style_deselected);
+            });
+            selectionList.remove((VBox) node);
         }
     }
 
@@ -123,12 +138,11 @@ public class SelectionModel {
         }
         List<Node> list = new ArrayList<>();
 
-        if (pane instanceof GridPane) {
-            for (Node grid : pane.getChildren()) {
-                // if (grid instanceof VBox) {
-                if (!contains(grid)) {
-                    list.add(grid);
-                    // }
+        if (pane instanceof TilePane) {
+            for (Node node : pane.getChildren()) {
+                Messages.sprintf("TILE: " + node.getId());
+                if (!contains(node)) {
+                    list.add((VBox) node);
                 }
             }
         }
@@ -137,10 +151,10 @@ public class SelectionModel {
             Messages.sprintf("list was empty at selectionModel lineb " + selectionList.size());
             return;
         }
-        clearAll();
-        list.forEach((n) -> {
+        clearAll(pane);
+        for (Node n : list) {
             addWithToggle(n);
-        });
+        }
         list.clear();
 
     }

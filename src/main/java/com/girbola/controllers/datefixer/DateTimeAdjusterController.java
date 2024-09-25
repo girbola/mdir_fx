@@ -105,7 +105,7 @@ public class DateTimeAdjusterController {
         int startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
         int endTo = Integer.parseInt(endToNumber_tf.getText().trim());
 
-        model_datefix.getSelectionModel().clearAll();
+        model_datefix.getSelectionModel().clearAll(df_tilePane);
         for (Node node : model_datefix.getTilePane().getChildren()) {
             if (node instanceof VBox) {
                 VBox vbox = (VBox) node;
@@ -424,7 +424,7 @@ public class DateTimeAdjusterController {
 
         LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
-            model_datefix.getSelectionModel().clearAll();
+            model_datefix.getSelectionModel().clearAll(df_tilePane);
             lpt.closeStage();
             Messages.sprintf("changeDates were successfully done");
         });

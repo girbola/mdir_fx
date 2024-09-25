@@ -23,6 +23,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -77,9 +78,9 @@ public class DateFixer extends Task<Void> {
                 });
 
                 scene_dateFixer.setOnMouseClicked(event -> {
-                    if (event.getTarget() instanceof StackPane node) {
-                        if (node.getParent() instanceof VBox && node.lookupAll("#imageView") != null) {
-                            model_datefix.getSelectionModel().addWithToggle(node.getParent());
+                    if (event.getTarget() instanceof VBox node) {
+                        if (node.getParent() instanceof HBox && node.lookupAll("#imageView") != null) {
+                            model_datefix.getSelectionModel().addWithToggle(node);
                             if (event.getClickCount() == 2) {
                                 FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
                                 if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))

@@ -92,7 +92,7 @@ public class FileOperationsController {
 			stage.setOnHiding(new EventHandler<WindowEvent>() {
 				@Override
 				public void handle(WindowEvent event) {
-					model_datefix.getSelectionModel().clearAll();
+					model_datefix.getSelectionModel().clearAll(model_datefix.getTilePane());
 				}
 			});
 //			for (FileInfo fileInfo : model_main.getWorkDir_Handler().getWorkDir_List()) {

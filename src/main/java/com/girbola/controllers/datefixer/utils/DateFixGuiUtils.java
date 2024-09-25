@@ -1,24 +1,24 @@
 package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.configuration.GuiImageFrame;
-import com.girbola.controllers.datefixer.CssStylesController;
+import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.GUI_Methods;
+import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-
 import java.nio.file.Path;
 
 import static com.girbola.Main.simpleDates;
-import static com.girbola.messages.Messages.sprintf;
 
 public class DateFixGuiUtils {
 
@@ -56,8 +56,6 @@ public class DateFixGuiUtils {
         ImageView iv = new ImageView();
         iv.setFitWidth(imageFrameX - 5);
         iv.setFitHeight(imageFrameY - 5);
-//        iv.maxWidth(imageFrameX - 5);
-//        iv.maxHeight(imageFrameY - 5);
         iv.setPreserveRatio(true);
         iv.setMouseTransparent(true);
 
@@ -88,7 +86,6 @@ public class DateFixGuiUtils {
         fileNameLabel.setMinHeight(25);
         fileNameLabel.setPrefHeight(25);
 
-        // textField.setUserData(path);
         fileNameLabel.setText(path.getFileName().toString());
         return fileNameLabel;
     }
@@ -104,15 +101,15 @@ public class DateFixGuiUtils {
         textField.setPrefHeight(25);
 
         if (fileInfo.isBad()) {
-            textField.setStyle(CssStylesController.getBad_style());
+            textField.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
         } else if (fileInfo.isGood()) {
-            textField.setStyle(CssStylesController.getGood_style());
+            textField.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
         } else if (fileInfo.isConfirmed()) {
-            textField.setStyle(CssStylesController.getConfirmed_style());
+            textField.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
         } else if (fileInfo.isVideo()) {
-            textField.setStyle(CssStylesController.getVideo_style());
+            textField.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
         } else if (fileInfo.isSuggested()) {
-            textField.setStyle(CssStylesController.getSuggested_style());
+            textField.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
         }
         return textField;
     }
@@ -128,7 +125,7 @@ public class DateFixGuiUtils {
                 public void handle(ActionEvent event) {
                     String date = tf.getText();
                     tf.setText(date);
-                    tf.setStyle(CssStylesController.getModified_style());
+                    tf.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
                 }
             });
         } else {
@@ -201,6 +198,7 @@ public class DateFixGuiUtils {
 
     public static VBox createBottomContainer(String name) {
         VBox bottomContainer = new VBox();
+        bottomContainer.setId(name);
         bottomContainer.getStyleClass().add(name);
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
@@ -226,5 +224,44 @@ public class DateFixGuiUtils {
         buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
 
         return buttonDateTimeContainer;
+    }
+
+    public static boolean isImageFrame(Node node) {
+        return node instanceof VBox && "imageFrame".equals(node.getId());
+    }
+
+    public static void processImageFrame(VBox imageFrame, Model_datefix modelDatefix, String style) {
+        for (Node imageFrameNode : imageFrame.getChildren()) {
+            if (imageFrameNode instanceof VBox) {
+                Node fileDateField = imageFrameNode.lookup("#fileDate");
+                if (fileDateField instanceof TextField && style.equals(fileDateField.getStyle())) {
+                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                }
+            }
+        }
+    }
+
+    public static void selectImageFrame(Model_datefix modelDatefix, TilePane parent, String style) {
+        for (Node childNode : parent.getChildren()) {
+            if (isImageFrame(childNode)) {
+                VBox imageFrame = (VBox) childNode;
+                FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
+                if(fileInfo.isImage()) {
+                    processImageFrame(imageFrame, modelDatefix, style);
+                }
+            }
+        }
+    }
+
+    public static void selectVideoImageFrame(Model_datefix modelDatefix, TilePane parent, String style) {
+        for (Node childNode : parent.getChildren()) {
+            if (isImageFrame(childNode)) {
+                VBox imageFrame = (VBox) childNode;
+                FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
+                if(fileInfo.isVideo()) {
+                    processImageFrame(imageFrame, modelDatefix,style);
+                }
+            }
+        }
     }
 }

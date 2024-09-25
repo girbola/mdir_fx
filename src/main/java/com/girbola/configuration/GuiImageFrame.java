@@ -23,7 +23,7 @@ public class GuiImageFrame {
      * This value is used to set or adjust the X-coordinate of the image frame.
      * Ratio is 0,75
      */
-    public static int imageFrame_x = 187;
+    public static int imageFrame_x = 250;
     public static int imageFrame_y = 250;
 
     /**
