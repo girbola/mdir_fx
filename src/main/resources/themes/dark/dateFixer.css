@@ -4,7 +4,7 @@
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
 
-    -fx-light-border-color: white;
+    -fx-light-border-color: #e8e8e8;
 
     -fx-border-base: #b65858;
 
@@ -81,10 +81,15 @@
     -fx-border-width: 0.2em;
 }
 
+.fileExtension .text {
+    -fx-font-size: 1em;
+}
+
 .imageFrame {
-    -fx-background-color: #1e1e1e;
-    -fx-border-insets: 0 0 0 0;
-    -fx-border-color: orange red white cyan;
+    -fx-background-color: #202020;
+    -fx-border-insets: 1 1 1 1;
+    -fx-border-width: 1px;
+    -fx-border-color: derive(-fx-base, 10%);
     /*-fx-padding: 15px;*/
 }
 

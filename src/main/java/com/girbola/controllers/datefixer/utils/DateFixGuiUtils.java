@@ -30,15 +30,17 @@ public class DateFixGuiUtils {
         return label;
     }
 
-    public static VBox createImageFrame(String name, int imageFrameX, int imageFrameY) {
+    public static VBox createImageFrame(int imageFrameX, int imageFrameY) {
         VBox frame_vbox = new VBox();
         frame_vbox.setAlignment(Pos.TOP_CENTER);
-        frame_vbox.setId(name);
+        frame_vbox.setId("imageFrame");
+        frame_vbox.setAlignment(Pos.CENTER);
+        frame_vbox.setFillWidth(true);
         frame_vbox.setPrefSize(imageFrameX, imageFrameY);
         frame_vbox.setMinSize(imageFrameX, imageFrameY);
         frame_vbox.setMaxSize(imageFrameX, imageFrameY);
         frame_vbox.setFillWidth(true);
-        frame_vbox.getStyleClass().add(name);
+        frame_vbox.getStyleClass().add("imageFrame");
         return frame_vbox;
     }
 
@@ -52,22 +54,21 @@ public class DateFixGuiUtils {
         return stackPane;
     }
 
-    public static ImageView createImageView(FileInfo fi, double imageFrameX, double imageFrameY) {
+    public static ImageView createImageView(FileInfo fi, double thumb_x_MAX, double thumb_y_MAX) {
         ImageView iv = new ImageView();
-        iv.setFitWidth(imageFrameX - 5);
-        iv.setFitHeight(imageFrameY - 5);
+        iv.setFitWidth(thumb_x_MAX);
+        iv.setFitHeight(thumb_y_MAX);
         iv.setPreserveRatio(true);
         iv.setMouseTransparent(true);
 
-        if (iv.getFitWidth() >= GuiImageFrame.imageFrame_x) {
-            iv.setFitWidth(GuiImageFrame.imageFrame_x - 50);
-        }
-        if (iv.getFitHeight() >= GuiImageFrame.imageFrame_y) {
-            iv.setFitHeight(GuiImageFrame.imageFrame_y - 50);
-        }
+//        if (iv.getFitWidth() >= GuiImageFrame.thumb_x_MAX) {
+//            iv.setFitWidth(GuiImageFrame.thumb_x_MAX - 50);
+//        }
+//        if (iv.getFitHeight() >= GuiImageFrame.thumb_y_MAX) {
+//            iv.setFitHeight(GuiImageFrame.thumb_y_MAX - 50);
+//        }
 
         Messages.sprintf("FileInfo: " + fi.getOrgPath() + " IMAGEVIEW: " + iv.getFitWidth() + " " + iv.getFitHeight());
-        // iv.setRotate(rotate(fi.getOrientation()));
         iv.setId("imageView");
         return iv;
     }
@@ -143,29 +144,42 @@ public class DateFixGuiUtils {
 
     public static GridPane createTopGridPane() {
         GridPane topContainer = new GridPane();
-        topContainer.setMouseTransparent(true);
         topContainer.setAlignment(Pos.TOP_LEFT);
-        topContainer.setMinWidth(GuiImageFrame.imageFrame_x);
-        topContainer.setMaxWidth(GuiImageFrame.imageFrame_x);
-        topContainer.setPrefWidth(GuiImageFrame.imageFrame_x);
-
-        topContainer.setMinHeight(Region.USE_COMPUTED_SIZE);
-        topContainer.setMaxHeight(Region.USE_COMPUTED_SIZE);
-        topContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-
+        topContainer.setId("topContainer");
         topContainer.getStyleClass().add("imageFrameTop");
+        topContainer.setMouseTransparent(true);
+
+        topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, 25);
+        topContainer.setMinSize(Region.USE_COMPUTED_SIZE, 25);
+        topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, 25);
+
+//
+//        topContainer.setMaxWidth(GuiImageFrame.imageFrame_x);
+//        topContainer.setMinHeight(Region.USE_COMPUTED_SIZE);
+//        topContainer.setMinWidth(GuiImageFrame.imageFrame_x);
+//
+//        topContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
+//        topContainer.setPrefWidth(GuiImageFrame.imageFrame_x);
 
         ColumnConstraints cc1 = new ColumnConstraints();
-        cc1.setPercentWidth(25);
-        ColumnConstraints cc2 = new ColumnConstraints();
-        cc2.setPercentWidth(25);
-        ColumnConstraints cc3 = new ColumnConstraints();
-        cc3.setPercentWidth(25);
-        ColumnConstraints cc4 = new ColumnConstraints();
-        cc4.setPercentWidth(25);
-        cc4.setHalignment(HPos.CENTER);
+        cc1.setPercentWidth(20);
+        cc1.setHalignment(HPos.CENTER);
 
-        topContainer.getColumnConstraints().addAll(cc1, cc2, cc3, cc4);
+        ColumnConstraints cc2 = new ColumnConstraints();
+        cc2.setPercentWidth(20);
+
+        ColumnConstraints cc3 = new ColumnConstraints();
+        cc3.setPercentWidth(20);
+        cc3.setHalignment(HPos.CENTER);
+
+        ColumnConstraints cc4 = new ColumnConstraints();
+        cc4.setPercentWidth(20);
+
+        ColumnConstraints cc5 = new ColumnConstraints();
+        cc5.setPercentWidth(20);
+        cc5.setHalignment(HPos.CENTER);
+
+        topContainer.getColumnConstraints().addAll(cc1, cc2, cc3, cc4,cc5);
 
         RowConstraints r1 = new RowConstraints(10);
         RowConstraints r2 = new RowConstraints(10);
@@ -177,6 +191,8 @@ public class DateFixGuiUtils {
 
     public static HBox createImageViewContainer(FileInfo fileInfo, String name, int imageFrame_y) {
         HBox imageViewContainer = new HBox();
+        imageViewContainer.getStyleClass().add(name);
+        imageViewContainer.setId("imageViewContainer");
         imageViewContainer.setMouseTransparent(true);
         imageViewContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         imageViewContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -185,7 +201,6 @@ public class DateFixGuiUtils {
         imageViewContainer.setMinHeight(175);
         imageViewContainer.setMaxHeight(175);
         imageViewContainer.setPrefHeight(175);
-
 
         imageViewContainer.setAlignment(Pos.CENTER);
         imageViewContainer.setFillHeight(true);
@@ -203,12 +218,9 @@ public class DateFixGuiUtils {
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
 
-        bottomContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        bottomContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        bottomContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        bottomContainer.setMinWidth(GuiImageFrame.imageFrame_x-2);
-        bottomContainer.setMaxWidth(GuiImageFrame.imageFrame_x-2);
-        bottomContainer.setPrefWidth(GuiImageFrame.imageFrame_x-2);
+        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x-2, 40);
+        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x-2, 40);
+        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x-2, 40);
         return bottomContainer;
     }
 

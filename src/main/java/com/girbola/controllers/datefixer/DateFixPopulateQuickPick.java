@@ -18,6 +18,7 @@ import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -26,6 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -144,21 +146,26 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
             }
         }
         return nodes;
-    }
-
-    ;
+    };
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {
-        VBox frame_vbox = DateFixGuiUtils.createImageFrame("imageFrame", GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
-        frame_vbox.setAlignment(Pos.CENTER);
-        frame_vbox.setFillWidth(true);
+        VBox frame_vbox = DateFixGuiUtils.createImageFrame(GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
+
 
         GridPane topContainer = DateFixGuiUtils.createTopGridPane();
 
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
         imageFrameNumber.setAlignment(Pos.TOP_RIGHT);
 
-        topContainer.add(imageFrameNumber, 3, 0);
+        Label fileExtension = new Label(FileUtils.getExtension(Paths.get(fileInfo.getOrgPath())).toUpperCase());
+        fileExtension.getStyleClass().add("fileExtension");
+        fileExtension.setId("fileExtension");
+
+        topContainer.add(imageFrameNumber, 4, 0);
+        topContainer.add(fileExtension, 0, 0);
+
+        GridPane.setHalignment(imageFrameNumber, HPos.CENTER);
+        GridPane.setHalignment(fileExtension, HPos.CENTER);
 
         HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer(fileInfo, "imageViewContainer", GuiImageFrame.imageFrame_y);
         ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (GuiImageFrame.thumb_x_MAX), GuiImageFrame.thumb_y_MAX);

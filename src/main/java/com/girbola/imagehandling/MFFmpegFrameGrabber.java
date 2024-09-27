@@ -12,6 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -114,19 +116,13 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             return;
         }
 
-        StackPane pane = (StackPane) imageView.getParent();
+        HBox pane = (HBox) imageView.getParent();
         VBox rootPane = (VBox) pane.getParent();
 
         if (list == null || list.isEmpty()) {
             Messages.sprintfError("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
-            pane.getChildren().add(new Label("Video. NP"));
             return;
         }
-
-        Label videoLabel = new Label("Video");
-        videoLabel.setMouseTransparent(true);
-        StackPane.setAlignment(videoLabel, Pos.TOP_CENTER);
-        pane.getChildren().add(videoLabel);
 
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         Platform.runLater(() -> {

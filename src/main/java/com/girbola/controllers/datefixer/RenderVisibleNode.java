@@ -218,7 +218,7 @@ public class RenderVisibleNode {
                     + exec_single.isShutdown());
             for (Task<?> image_Task : needToConvert_Image_list) {
                 if (image_Task != null && !Main.getProcessCancelled()) {
-                    Messages.sprintf("Adding needToConvert_Image_list to exec to create a thumbnail");
+//                    Messages.sprintf("Adding needToConvert_Image_list to exec to create a thumbnail");
                     exec_single.submit(image_Task);
                 }
             }

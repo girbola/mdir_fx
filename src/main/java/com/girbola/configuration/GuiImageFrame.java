@@ -30,7 +30,7 @@ public class GuiImageFrame {
      * The maximum width allowed for a thumbnail image in the graphical user interface.
      * Ratio is 0,565
      */
-    public static double thumb_x_MAX = 200;
-    public static double thumb_y_MAX = 113;
+    public static double thumb_x_MAX = 150;
+    public static double thumb_y_MAX = 150;
 
 }
