@@ -28,7 +28,7 @@ public class ConfigurationUtils {
             if (!sqlDatabaseCreated) {
                 Messages.errorSmth(ERROR, "Could not be able to create configuration file", null, Misc.getLineNumber(),
                         true);
-                Messages.sprintf("Could not be able to create configuration file failed");
+                Messages.sprintfError("Could not be able to create configuration file failed");
             } else {
                 Messages.sprintf("Configuration databases were created successfully");
             }
@@ -37,7 +37,7 @@ public class ConfigurationUtils {
             try {
                 conf.loadConfig_SQL();
             } catch (SQLException e) {
-                e.printStackTrace();
+                Messages.sprintf("Configuration databases cannot be load: " + e.getMessage());
             }
         }
     }

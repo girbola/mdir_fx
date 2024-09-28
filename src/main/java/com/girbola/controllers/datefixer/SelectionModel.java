@@ -140,7 +140,6 @@ public class SelectionModel {
 
         if (pane instanceof TilePane) {
             for (Node node : pane.getChildren()) {
-                Messages.sprintf("TILE: " + node.getId());
                 if (!contains(node)) {
                     list.add((VBox) node);
                 }

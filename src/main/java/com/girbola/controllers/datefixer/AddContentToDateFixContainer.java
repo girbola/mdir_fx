@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
@@ -15,6 +16,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
@@ -52,35 +54,26 @@ public class AddContentToDateFixContainer extends Task<Integer> {
     }
 
 
-
     // private AtomicInteger counter = new AtomicInteger(list.size());
     @Override
     protected Integer call() throws Exception {
 
         for (Node node : list) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                Messages.sprintf("ImageFrameeeeee: " + node.getId());
-                changeImageNumberOfNode(node);
-                // loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
-            }
+            Messages.sprintf("ImageFrameeeeee: " + node.getId());
+            changeImageNumberOfNode(node);
         }
         return null;
     }
 
     private void changeImageNumberOfNode(Node node) {
-        Platform.runLater(() -> {
-            StackPane sp = (StackPane) node.lookup("#stackPane");
-            Label old_text = (Label) sp.lookup("#imageNumber");
-            if (old_text == null) {
-                Messages.sprintf("oldText were null!!");
-                Label imageNumber = createImageNumberLbl(counter.get());
-                sp.getChildren().add(imageNumber);
-                StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
-            } else {
-                old_text.setText("" + counter.get());
+        if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            VBox vbox = (VBox) node;
+            Label imageFrameImageNumber = DateFixGuiUtils.getImageFrameImageNumber(vbox);
+            if (imageFrameImageNumber != null) {
+                imageFrameImageNumber.setText("" + counter.get());
             }
-            //model_datefix.getTilePane().getChildren().add(node);
-        });
+        }
+
         counter.incrementAndGet();
     }
 

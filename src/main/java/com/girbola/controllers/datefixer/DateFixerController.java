@@ -56,8 +56,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.isImageFrame;
-import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.processImageFrame;
+import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.*;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static com.girbola.misc.Misc.openFileBrowser;
@@ -278,15 +277,16 @@ public class DateFixerController {
     private void setBadDate_btn_action(ActionEvent event) {
         sprintf("setBadDate_btn_action: ");
         for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                Node hboxi = node.lookup("#fileDate");
-                sprintf("hboxi: " + hboxi);
-                if (hboxi instanceof TextField) {
-                    FileInfo fileInfo = (FileInfo) node.getUserData();
-                    // model_datefix.getSelectionModel().add(node);
-                    FileInfoUtils.setBad(fileInfo);
-                    hboxi.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                    HBox bottom = DateFixGuiUtils.getBottomHBox(node);
+                    sprintf("hboxi: " + bottom);
+                    bottom.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                    Label fileDate = DateFixGuiUtils.getFileDateLabel(node);
+                    if (fileDate != null) {
+                        FileInfo fileInfo = (FileInfo) node.getUserData();
+                        FileInfoUtils.setBad(fileInfo);
                 }
+
             }
         }
     }
@@ -296,15 +296,9 @@ public class DateFixerController {
         sprintf("setModifiedDate_btn_action: ");
         for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
             if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                Node hboxi = node.lookup("#fileDate");
-                sprintf("hboxi: " + hboxi);
-                if (hboxi instanceof TextField) {
-                    FileInfo fileInfo = (FileInfo) node.getUserData();
-                    // model_datefix.getSelectionModel().add(node);
-                    TextField tf = (TextField) hboxi;
-                    // FileInfoUtils.setBad(fileInfo);(fileInfo);
-                    tf.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
-                }
+                HBox bottom = DateFixGuiUtils.getBottomHBox(node);
+                sprintf("hboxi: " + bottom);
+                bottom.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
             }
         }
     }
@@ -606,7 +600,7 @@ public class DateFixerController {
 
     // @formatter:off
 	/*
-	 * ========================================================= Selection buttons
+	 * ================================== Selection buttons
 	 */
 	// @formatter:on
     @FXML

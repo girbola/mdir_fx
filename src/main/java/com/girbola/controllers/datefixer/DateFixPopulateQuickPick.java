@@ -81,7 +81,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     private TilePane tilePane;
 
     public DateFixPopulateQuickPick(Scene scene, Model_datefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
-
         this.scene = scene;
         this.model_dateFix = aModel_datefix;
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();
@@ -95,7 +94,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         aModel_datefix.setDateTime(this.folderInfo.getMaxDate(), false);
         tilePane.setHgap(8);
         tilePane.setVgap(8);
-
 
     }
 
@@ -151,7 +149,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     private VBox createImageFrame(FileInfo fileInfo, int index) {
         VBox frame_vbox = DateFixGuiUtils.createImageFrame(GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
 
-
         GridPane topContainer = DateFixGuiUtils.createTopGridPane();
 
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
@@ -171,14 +168,14 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (GuiImageFrame.thumb_x_MAX), GuiImageFrame.thumb_y_MAX);
         imageViewContainer.getChildren().add(iv);
 
-        VBox bottomContainer = DateFixGuiUtils.createBottomContainer("bottomContainer");
+        VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
 
-        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer("bottom");
+        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer();
 
-        Label fileName_tf = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()), "fileName_ta");
-        TextField fileDate_tf = DateFixGuiUtils.createFileDate_tf(fileInfo, "fileDate_tf");
+        Label fileName_tf = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
+        Label fileDate_tf = DateFixGuiUtils.createFileDate_tf(fileInfo, buttonDateTimeContainer);
 
-        Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, fileDate_tf);
+        Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, buttonDateTimeContainer, fileDate_tf);
         buttonDateTimeContainer.getChildren().addAll(accept, fileDate_tf);
         bottomContainer.getChildren().addAll(fileName_tf, buttonDateTimeContainer);
 

@@ -619,10 +619,10 @@
                                                    </image></ImageView>
                                                             </children>
                                                         </HBox>
-                                                        <HBox alignment="BOTTOM_CENTER" fillHeight="false" VBox.vgrow="ALWAYS">
+                                                        <HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="bottom" VBox.vgrow="NEVER">
                                                             <children>
                                                                 <Button mnemonicParsing="false" text="Button" HBox.hgrow="NEVER" />
-                                                                <TextField HBox.hgrow="NEVER" />
+                                                <Label text="Label" HBox.hgrow="ALWAYS" />
                                                             </children>
                                                         </HBox>
                                                     </children>

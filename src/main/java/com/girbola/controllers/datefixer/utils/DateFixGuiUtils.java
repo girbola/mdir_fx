@@ -16,9 +16,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+
 import java.nio.file.Path;
 
 import static com.girbola.Main.simpleDates;
+import static com.girbola.messages.Messages.sprintf;
 
 public class DateFixGuiUtils {
 
@@ -74,48 +76,47 @@ public class DateFixGuiUtils {
     }
 
 
-    public static Label createFileName_tf(Path path, String name) {
+    public static Label createFileName_tf(Path path) {
         Label fileNameLabel = new Label();
-        fileNameLabel.getStyleClass().add(name);
+        fileNameLabel.getStyleClass().add("fileName_ta");
 
         fileNameLabel.setFocusTraversable(false);
         fileNameLabel.setId("fileName");
         fileNameLabel.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         fileNameLabel.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         fileNameLabel.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        fileNameLabel.setMaxHeight(25);
-        fileNameLabel.setMinHeight(25);
-        fileNameLabel.setPrefHeight(25);
+        fileNameLabel.setMaxHeight(23);
+        fileNameLabel.setMinHeight(23);
+        fileNameLabel.setPrefHeight(23);
 
         fileNameLabel.setText(path.getFileName().toString());
         return fileNameLabel;
     }
 
-    public static TextField createFileDate_tf(FileInfo fileInfo, String name) {
-        TextField textField = new TextField(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
-        textField.getStyleClass().add(name);
-        textField.setEditable(false);
-        textField.setFocusTraversable(false);
-        textField.setId("fileDate");
-        textField.setMaxHeight(25);
-        textField.setMinHeight(25);
-        textField.setPrefHeight(25);
+    public static Label createFileDate_tf(FileInfo fileInfo, HBox hbox) {
+        Label label = new Label(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
+        label.getStyleClass().add("fileDate_tf");
+        label.setFocusTraversable(false);
+        label.setId("fileDate");
+        label.setMaxHeight(23);
+        label.setMinHeight(23);
+        label.setPrefHeight(23);
 
         if (fileInfo.isBad()) {
-            textField.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+            hbox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
         } else if (fileInfo.isGood()) {
-            textField.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
+            hbox.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
         } else if (fileInfo.isConfirmed()) {
-            textField.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
+            hbox.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
         } else if (fileInfo.isVideo()) {
-            textField.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
+            hbox.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
         } else if (fileInfo.isSuggested()) {
-            textField.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
+            hbox.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
         }
-        return textField;
+        return label;
     }
 
-    public static Button createAcceptButton(FileInfo fi, TextField tf) {
+    public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
         Button button = new Button();
         ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
         button.setGraphic(imageView);
@@ -126,7 +127,7 @@ public class DateFixGuiUtils {
                 public void handle(ActionEvent event) {
                     String date = tf.getText();
                     tf.setText(date);
-                    tf.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                    hbox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
                 }
             });
         } else {
@@ -179,7 +180,7 @@ public class DateFixGuiUtils {
         cc5.setPercentWidth(20);
         cc5.setHalignment(HPos.CENTER);
 
-        topContainer.getColumnConstraints().addAll(cc1, cc2, cc3, cc4,cc5);
+        topContainer.getColumnConstraints().addAll(cc1, cc2, cc3, cc4, cc5);
 
         RowConstraints r1 = new RowConstraints(10);
         RowConstraints r2 = new RowConstraints(10);
@@ -211,29 +212,29 @@ public class DateFixGuiUtils {
         return imageViewContainer;
     }
 
-    public static VBox createBottomContainer(String name) {
+    public static VBox createBottomContainer() {
         VBox bottomContainer = new VBox();
-        bottomContainer.setId(name);
-        bottomContainer.getStyleClass().add(name);
+        bottomContainer.setId("bottomContainer");
+        bottomContainer.getStyleClass().add("bottomContainer");
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
 
-        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x-2, 40);
-        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x-2, 40);
-        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x-2, 40);
+        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x - 2, 40);
+        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x - 2, 40);
+        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x - 2, 40);
         return bottomContainer;
     }
 
-    public static HBox createButtonDateTimeContainer(String name) {
+    public static HBox createButtonDateTimeContainer() {
         HBox buttonDateTimeContainer = new HBox();
-        buttonDateTimeContainer.setId(name);
+        buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
+        buttonDateTimeContainer.setId("bottom");
         buttonDateTimeContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         buttonDateTimeContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         buttonDateTimeContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         buttonDateTimeContainer.setMinWidth(GuiImageFrame.imageFrame_x - 2);
         buttonDateTimeContainer.setMaxWidth(GuiImageFrame.imageFrame_x - 2);
         buttonDateTimeContainer.setPrefWidth(GuiImageFrame.imageFrame_x - 2);
-        buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
 
         return buttonDateTimeContainer;
     }
@@ -246,7 +247,7 @@ public class DateFixGuiUtils {
         for (Node imageFrameNode : imageFrame.getChildren()) {
             if (imageFrameNode instanceof VBox) {
                 Node fileDateField = imageFrameNode.lookup("#fileDate");
-                if (fileDateField instanceof TextField && style.equals(fileDateField.getStyle())) {
+                if (fileDateField instanceof Label && style.equals(fileDateField.getStyle())) {
                     modelDatefix.getSelectionModel().addWithToggle(imageFrame);
                 }
             }
@@ -258,7 +259,7 @@ public class DateFixGuiUtils {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;
                 FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
-                if(fileInfo.isImage()) {
+                if (fileInfo.isImage()) {
                     processImageFrame(imageFrame, modelDatefix, style);
                 }
             }
@@ -270,10 +271,67 @@ public class DateFixGuiUtils {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;
                 FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
-                if(fileInfo.isVideo()) {
-                    processImageFrame(imageFrame, modelDatefix,style);
+                if (fileInfo.isVideo()) {
+                    processImageFrame(imageFrame, modelDatefix, style);
                 }
             }
         }
+    }
+
+    public static HBox getBottomHBox(Node node) {
+
+        if (node instanceof VBox) {
+            if (node.getId().equals("imageFrame")) {
+                for (Node node2 : ((VBox) node).getChildren()) {
+                    sprintf("Node2 : " + node2);
+                    if (node2 instanceof HBox && node2.getId().equals("bottom")) {
+                        return (HBox) node2;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Label getFileDateLabel(Node node) {
+        if (node instanceof VBox) {
+            if (node.getId().equals("imageFrame")) {
+                for (Node node2 : ((VBox) node).getChildren()) {
+                    sprintf("Node2 : " + node2);
+                    if (node2 instanceof HBox) {
+                        for (Node node3 : ((HBox) node2).getChildren()) {
+                            sprintf("Label: " + node3);
+                            if (node3 instanceof Label) {
+                                return (Label) node3;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static GridPane getImageFrameGridPane(VBox vbox) {
+        for (Node node : vbox.getChildren()) {
+            if (node instanceof GridPane) {
+                return (GridPane) node;
+            }
+        }
+        return null;
+    }
+
+    public static Label getImageFrameImageNumber(VBox vbox) {
+        GridPane imageFrameGridPane = getImageFrameGridPane(vbox);
+        if (imageFrameGridPane == null) {
+            return null;
+        }
+
+        for (Node gridPaneChild : imageFrameGridPane.getChildren()) {
+            if (gridPaneChild instanceof Label && gridPaneChild.getId().equals("imageNumber")) {
+                return (Label) gridPaneChild;
+            }
+        }
+        return null;
     }
 }
