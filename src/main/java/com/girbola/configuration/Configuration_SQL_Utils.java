@@ -51,6 +51,42 @@ public class Configuration_SQL_Utils {
     final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType()
             + " (path STRING UNIQUE)";
 
+    /**
+     * Ensures that the 'currentTheme' column exists in the configuration table.
+     *
+     * @param connection the connection to the database.
+     * @throws Exception if any SQL error occurs.
+     */
+    private static void ensureCurrentThemeColumnExists(Connection connection) throws Exception {
+        String alterTableSQL = "ALTER TABLE configuration ADD COLUMN currentTheme TEXT";
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(alterTableSQL);
+        } catch (Exception e) {
+            // Assuming the column exists if an error is thrown.
+            // If the error is not related to the column already existing, further handling is required.
+        }
+    }
+
+    /**
+     * Updates the configuration in the database.
+     */
+    public synchronized static void update_Configuration() {
+        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+                Main.conf.getConfiguration_db_fileName());
+        try {
+            // Ensure the 'currentTheme' column exists.
+            ensureCurrentThemeColumnExists(connection);
+
+            connection.setAutoCommit(false);
+            insert_Configuration(connection, Main.conf);
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SQL_Utils.closeConnection(connection);
+    }
+
+
     private static boolean addTableColumn(Connection connection, PreparedStatement pstmt, TableColumn tc,
                                           String tableId) {
         try {
@@ -531,7 +567,7 @@ public class Configuration_SQL_Utils {
 	/**
      * Updates the configuration in the database.
      */
-    public synchronized static void update_Configuration() {
+   /* public synchronized static void update_Configuration() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
@@ -543,6 +579,6 @@ public class Configuration_SQL_Utils {
 			e.printStackTrace();
 		}
         SQL_Utils.closeConnection(connection);
-	}
+	} */
 
 }

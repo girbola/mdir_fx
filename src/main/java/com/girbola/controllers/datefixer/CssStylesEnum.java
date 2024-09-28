@@ -29,7 +29,7 @@ public enum CssStylesEnum {
     private static class Styles {
         private static final String BAD_BACKGROUND_COLOR = "-fx-background-color: derive(red, 50%)";
         private static final String CONFIRMED_BACKGROUND_COLOR = "-fx-background-color: derive(green, 50%)";
-        private static final String GOOD_BACKGROUND_COLOR = "-fx-background-color: derive(grey, 50%)";
+        private static final String GOOD_BACKGROUND_COLOR = "-fx-background-color: derive(-fx-base, 50%)";
         private static final String MODIFIED_BACKGROUND_COLOR = "-fx-background-color: derive(blue, 50%)";
         private static final String SUGGESTED_BACKGROUND_STYLE = "-fx-background-color: derive(pink, 50%); -fx-text-fill: black;";
         private static final String VIDEO_BACKGROUND_STYLE = "-fx-background-color: orange; -fx-text-fill: black;";

@@ -57,9 +57,7 @@ import java.awt.*;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.girbola.messages.Messages.sprintf;
@@ -100,6 +98,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        Properties properties = System.getProperties();
+for(Map.Entry<Object, Object> entry : properties.entrySet()) {
+    Messages.sprintf("properties: Key: " + entry.getKey() + " Value: " + entry.getValue());
+}
 
         stageControl = new StageControl(model_main, primaryStage);
 

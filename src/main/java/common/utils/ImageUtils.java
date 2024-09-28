@@ -3,6 +3,7 @@ package common.utils;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
+import com.girbola.configuration.GuiImageFrame;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.messages.Messages;
 
@@ -179,27 +180,35 @@ public class ImageUtils {
     }
 
 
-    public static BufferedImage scaleImageWithAspectRatio(BufferedImage originalImage, int maxWidth) {
+    public static BufferedImage scaleImageWithAspectRatio(BufferedImage originalImage) {
         int originalWidth = originalImage.getWidth();
         int originalHeight = originalImage.getHeight();
+        double ratio = 0;
 
         // Calculate the new dimensions while maintaining the aspect ratio
-        int newWidth, newHeight;
+        double newWidth = GuiImageFrame.thumb_x_MAX;
+        double newHeight = GuiImageFrame.thumb_y_MAX;
+
+        // Horizontal image
         if (originalWidth > originalHeight) {
-            newWidth = maxWidth;
-            newHeight = (int) (((double) maxWidth / originalWidth) * originalHeight);
-        } else {
-            newHeight = maxWidth;
-            newWidth = (int) (((double) maxWidth / originalHeight) * originalWidth);
+            newWidth = GuiImageFrame.thumb_x_MAX;
+            ratio = (double) originalHeight / originalWidth;
+            newHeight = (ratio * GuiImageFrame.thumb_y_MAX);
+        }
+        //Vertical image
+        else if (originalWidth < originalHeight) {
+            newHeight = GuiImageFrame.thumb_x_MAX;
+            ratio = (double) originalWidth / originalHeight;
+            newWidth = (ratio *  GuiImageFrame.thumb_y_MAX);
         }
 
         // Create a new BufferedImage with the calculated dimensions
-        BufferedImage scaledImage = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_RGB);
+        BufferedImage scaledImage = new BufferedImage((int) newWidth, (int) newHeight, BufferedImage.TYPE_INT_RGB);
 
         // Scale the original image to the new dimensions
         Graphics2D g2d = scaledImage.createGraphics();
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2d.drawImage(originalImage.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH), 0, 0, null);
+        g2d.drawImage(originalImage.getScaledInstance((int) newWidth, (int) newHeight, Image.SCALE_SMOOTH), 0, 0, null);
         g2d.dispose();
 
         return scaledImage;
