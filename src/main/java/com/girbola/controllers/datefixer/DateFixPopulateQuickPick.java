@@ -92,8 +92,8 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         sprintf("FolderInfo.getMinDate(): " + this.folderInfo.getMinDate());
         aModel_datefix.setDateTime(this.folderInfo.getMinDate(), true);
         aModel_datefix.setDateTime(this.folderInfo.getMaxDate(), false);
-        tilePane.setHgap(8);
-        tilePane.setVgap(8);
+        tilePane.setHgap(4);
+        tilePane.setVgap(4);
 
     }
 
@@ -205,7 +205,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
             Messages.sprintf("getFileList: " + node + " fileInfo is: " + fileInfo.getOrgPath());
             list.add(fileInfo);
         }
-
         return list;
     }
 
@@ -257,10 +256,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         table.getColumns().addAll(info_column, value_column);
 
         return table;
-    }
-
-    private TitledPane createTitledPane() {
-        return new TitledPane();
     }
 
     private void setSelectedVideoRoutine(FileInfo fileInfo, VBox frame) {
@@ -364,6 +359,10 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
             adjustTableHeight(table, obs);
         }
+    }
+
+    private TitledPane createTitledPane() {
+        return new TitledPane();
     }
 
 }

@@ -71,6 +71,16 @@
 .button:hover {
     -fx-background-color: red, blue, transparent, linear-gradient(grey 0%, darkgrey 25%, darkgrey 75%, grey 100%);
 }
+.acceptButton {
+    -fx-background-color: blue;
+}
+.bottomContainer {
+
+}
+
+.buttonDateTimeContainer {
+
+}
 
 .closeButton {
     /* -fx-insets: 12px 0 0 0; */
@@ -148,10 +158,12 @@
 .grid-pane {
 
 }
+
 .imageFrameTop Line {
     -fx-background-color: orange;
     -fx-stroke: red;
 }
+
 .imagesContainer {
     -fx-border-color: transparent;
     -fx-border-style: none;

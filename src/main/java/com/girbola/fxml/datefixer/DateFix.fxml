@@ -588,7 +588,7 @@
                                     <content>
                                         <TilePane fx:id="df_tilePane" styleClass="imagesContainer" tileAlignment="TOP_LEFT">
                                             <children>
-                                                <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" maxWidth="187.0" minHeight="250.0" minWidth="187.0" prefHeight="250.0" prefWidth="187.0" style="-fx-border-color: red;" styleClass="imageFrame" TilePane.alignment="CENTER">
+                                                <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" maxWidth="250.0" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-border-color: red;" styleClass="imageFrame" TilePane.alignment="CENTER">
                                                     <children>
                                                         <HBox fillHeight="false" VBox.vgrow="ALWAYS">
                                                             <children>
@@ -619,12 +619,24 @@
                                                    </image></ImageView>
                                                             </children>
                                                         </HBox>
-                                                        <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" styleClass="bottom" VBox.vgrow="NEVER">
-                                                            <children>
-                                                                <Button mnemonicParsing="false" text="Button" HBox.hgrow="NEVER" />
-                                                <Label text="Label" HBox.hgrow="ALWAYS" />
-                                                            </children>
-                                                        </HBox>
+                                          <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" style="-fx-border-color: white;" VBox.vgrow="NEVER">
+                                             <VBox.margin>
+                                                <Insets bottom="1.0" />
+                                             </VBox.margin>
+                                             <children>
+                                                <Label id="fileNae_ta" maxHeight="10.0" maxWidth="1.7976931348623157E308" minHeight="10.0" minWidth="-Infinity" prefHeight="10.0" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER" />
+                                                              <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxHeight="20.0" maxWidth="246.0" minHeight="20.0" minWidth="246.0" prefHeight="20.0" prefWidth="246.0" styleClass="buttonDateTimeContainer" VBox.vgrow="NEVER">
+                                                                  <children>
+                                                                      <Button contentDisplay="GRAPHIC_ONLY" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" styleClass="acceptButton" HBox.hgrow="NEVER">
+                                                         <graphic>
+                                                            <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="23" />
+                                                         </graphic>
+                                                      </Button>
+                                                      <Label id="fileDate_tf" text="20200202020202" HBox.hgrow="ALWAYS" />
+                                                                  </children>
+                                                              </HBox>
+                                             </children>
+                                          </VBox>
                                                     </children>
                                                 </VBox>
                                                 <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" minHeight="250.0" prefHeight="250.0" TilePane.alignment="CENTER">

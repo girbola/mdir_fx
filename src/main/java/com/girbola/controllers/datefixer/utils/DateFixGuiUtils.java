@@ -121,6 +121,7 @@ public class DateFixGuiUtils {
         ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
         button.setGraphic(imageView);
         button.setId("accept");
+        button.getStyleClass().add("acceptButton");
         if (!fi.isGood()) {
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
@@ -219,9 +220,9 @@ public class DateFixGuiUtils {
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
 
-        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x - 2, 40);
-        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x - 2, 40);
-        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x - 2, 40);
+        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x - 6, 40);
+        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x - 6, 40);
+        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x - 6, 40);
         return bottomContainer;
     }
 
@@ -229,13 +230,10 @@ public class DateFixGuiUtils {
         HBox buttonDateTimeContainer = new HBox();
         buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
         buttonDateTimeContainer.setId("bottom");
-        buttonDateTimeContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        buttonDateTimeContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        buttonDateTimeContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        buttonDateTimeContainer.setMinWidth(GuiImageFrame.imageFrame_x - 2);
-        buttonDateTimeContainer.setMaxWidth(GuiImageFrame.imageFrame_x - 2);
-        buttonDateTimeContainer.setPrefWidth(GuiImageFrame.imageFrame_x - 2);
-
+        buttonDateTimeContainer.setMaxSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setPrefSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setMinSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
         return buttonDateTimeContainer;
     }
 
