@@ -8,6 +8,7 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.configuration.GuiImageFrame;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.imagehandling.*;
 import com.girbola.messages.Messages;

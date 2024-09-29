@@ -294,16 +294,14 @@ public class DateFixGuiUtils {
     }
 
     public static Label getFileDateLabel(Node node) {
-        if (node instanceof VBox) {
-            if (node.getId().equals("imageFrame")) {
-                for (Node node2 : ((VBox) node).getChildren()) {
-                    sprintf("Node2 : " + node2);
-                    if (node2 instanceof HBox) {
-                        for (Node node3 : ((HBox) node2).getChildren()) {
-                            sprintf("Label: " + node3);
-                            if (node3 instanceof Label) {
-                                return (Label) node3;
-                            }
+        if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            for (Node node2 : ((VBox) node).getChildren()) {
+                sprintf("Node2 : " + node2);
+                if (node2 instanceof HBox) {
+                    for (Node node3 : ((HBox) node2).getChildren()) {
+                        sprintf("Label: " + node3);
+                        if (node3 instanceof Label) {
+                            return (Label) node3;
                         }
                     }
                 }

@@ -240,6 +240,7 @@ public class DateFixerController {
             warningText(bundle.getString("workDirHasNotConnected"));
             return;
         }
+
         ConcurrencyUtils.stopExecThread();
 
         List<FileInfo> fileInfo_list = new ArrayList<>();
@@ -266,8 +267,7 @@ public class DateFixerController {
         for (Node n : model_datefix.getSelectionModel().getSelectionList()) {
             if (n instanceof VBox && n.getId().equals("imageFrame")) {
                 FileInfo fileInfo = (FileInfo) n.getUserData();
-                sprintf(
-                        "destination is: " + fileInfo.getDestination_Path() + " isCopied?: " + fileInfo.isCopied());
+                sprintf("destination is: " + fileInfo.getDestination_Path() + " isCopied?: " + fileInfo.isCopied());
             }
         }
         Main.setChanged(true);

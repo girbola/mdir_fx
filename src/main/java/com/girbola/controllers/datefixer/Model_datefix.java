@@ -126,8 +126,7 @@ public class Model_datefix extends DateFixerModel {
 
     public void updateCameraInfos(List<FileInfo> fileInfo_List) {
         getCameras_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(),
-                Field.CAMERA.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(), Field.CAMERA.getType());
 
     }
 
@@ -138,15 +137,13 @@ public class Model_datefix extends DateFixerModel {
 
     public void updateLocationInfos(List<FileInfo> fileInfo_List) {
         getLocations_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(),
-                Field.LOCATION.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(), Field.LOCATION.getType());
 
     }
 
     public void updateEventsInfos(List<FileInfo> fileInfo_List) {
         getEvents_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(),
-                Field.EVENT.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(), Field.EVENT.getType());
     }
 
     public void updateAllInfos(List<FileInfo> fileInfo_List) {
@@ -187,8 +184,7 @@ public class Model_datefix extends DateFixerModel {
         if (getCameras_TableView() == null) {
             Messages.sprintfError("Cameras TableView were null!!!!");
         } else {
-            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(),
-                    Field.CAMERA.getType());
+            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(), Field.CAMERA.getType());
         }
     }
 
@@ -202,8 +198,7 @@ public class Model_datefix extends DateFixerModel {
                 }
             }
         }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(),
-                Field.EVENT.getType());
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(), Field.EVENT.getType());
     }
 
     public void updateLocationsInfos(TilePane tilePane) {
@@ -216,8 +211,7 @@ public class Model_datefix extends DateFixerModel {
                 }
             }
         }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(),
-                Field.LOCATION.getType());
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(), Field.LOCATION.getType());
     }
 
     public void updateDatesInfos(TilePane tilePane) {
@@ -239,9 +233,7 @@ public class Model_datefix extends DateFixerModel {
     public void acceptEverything(TilePane tilePane) {
         boolean changed = false;
         // CssStylesController css = new CssStylesController();
-        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(
-                Main.scene_Switcher.getScene_dateFixer().getWindow(),
-                bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getScene_dateFixer().getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 
         Optional<ButtonType> result = changesDialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
@@ -254,8 +246,7 @@ public class Model_datefix extends DateFixerModel {
                             FileInfo fileInfo = (FileInfo) node.getUserData();
                             if (fileInfo != null) {
                                 if (!fileInfo.isIgnored()) {
-                                    fileInfo.setDate(Conversion.stringDateToLong(tf.getText(),
-                                            simpleDates.getSdf_ymd_hms_minusDots_default()));
+                                    fileInfo.setDate(Conversion.stringDateToLong(tf.getText(), simpleDates.getSdf_ymd_hms_minusDots_default()));
                                     fileInfo.setGood(true);
                                     fileInfo.setSuggested(false);
                                     fileInfo.setBad(false);
@@ -301,11 +292,11 @@ public class Model_datefix extends DateFixerModel {
                     long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
                     HBox bottom = DateFixGuiUtils.getBottomHBox(node);
                     Label tf = DateFixGuiUtils.getFileDateLabel(node);
+                    tf.setText("" + DateUtils.longToLocalDateTime(date).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
                     if (date != 0) {
-                        tf.setText("" + DateUtils.longToLocalDateTime(date).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                        tf.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
+                        bottom.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                     } else {
-                        tf.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                        bottom.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
                     }
                 }
             }
@@ -332,34 +323,22 @@ public class Model_datefix extends DateFixerModel {
             return;
         }
         for (Node node : getSelectionModel().getSelectionList()) {
-            sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-            FileInfo fileInfo = (FileInfo) node.getUserData();
-            if (fileInfo != null) {
-                File file = new File(fileInfo.getOrgPath());
-                try {
-                    fileInfo = FileInfoUtils.createFileInfo(file.toPath());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-//				long date = DateTaken.getCreationDate(file.toPath());
-
-                // sdv;
-                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(fileInfo.getDate())
-                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
+                HBox bottomHBox = DateFixGuiUtils.getBottomHBox(node);
                 Label tf = DateFixGuiUtils.getFileDateLabel(node);
+
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+
+                tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
                 if (fileInfo.getDate() != 0) {
-                    if (tf != null) {
-                        tf.setText("" + DateUtils.longToLocalDateTime(fileInfo.getDate())
-                                .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                        tf.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
-                    }
+                    bottomHBox.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                 } else {
-                    // tf.setText("" +
-                    // DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                    tf.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                    bottomHBox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
                 }
+
+            } else {
+                sprintf("restoring Selected Exif dates imageFrame were not VBox nor imageFrame. Node was: " + node);
             }
         }
     }
@@ -372,17 +351,19 @@ public class Model_datefix extends DateFixerModel {
         }
         for (Node node : getSelectionModel().getSelectionList()) {
             sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-            FileInfo fileInfo = (FileInfo) node.getUserData();
-            if (fileInfo != null) {
-                File file = new File(fileInfo.getOrgPath());
-                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified())
-                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                HBox bottom = DateFixGuiUtils.getBottomHBox(node);
-                Label tf = DateFixGuiUtils.getFileDateLabel(node);
-                if (tf != null) {
-                    tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified())
-                            .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
-                    bottom.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                if (fileInfo != null) {
+                    File file = new File(fileInfo.getOrgPath());
+                    sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                    HBox bottom = DateFixGuiUtils.getBottomHBox(node);
+                    Label tf = DateFixGuiUtils.getFileDateLabel(node);
+                    if (tf != null) {
+                        tf.setText("" + DateUtils.longToLocalDateTime(file.lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                        bottom.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                    } else {
+                        Messages.sprintfError("fileDate Label were null:  " + tf);
+                    }
                 }
             }
         }
@@ -402,8 +383,7 @@ public class Model_datefix extends DateFixerModel {
                 Path sourceFile = Paths.get(fileInfo.getOrgPath());
                 Path textFieldMergedFileName = Paths.get(sourceFile.getRoot().toString() + tf);
 
-                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(sourceFile.toFile().lastModified())
-                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
+                sprintf("Node name is: " + node + " LastMod was: " + DateUtils.longToLocalDateTime(sourceFile.toFile().lastModified()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
 
                 try {
                     Path newPath = FileUtils.renameFile(sourceFile, textFieldMergedFileName);
@@ -436,8 +416,7 @@ public class Model_datefix extends DateFixerModel {
 
         int badDates = checkIfRedDates(tilePane);
         if (badDates != 0) {
-            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner,
-                    bundle.getString("badFilesFoundWantToClose"));
+            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(owner, bundle.getString("badFilesFoundWantToClose"));
 
             Messages.sprintf("2changesDialog width: " + dialog.getWidth());
             //Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
