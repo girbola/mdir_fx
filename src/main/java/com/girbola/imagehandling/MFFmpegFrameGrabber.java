@@ -12,6 +12,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -65,7 +67,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
                 BufferedImage bufferedImage = converter.getBufferedImage(frame);
                 if (bufferedImage != null) {
-                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage, 320);
+                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage);
                     list.add(bufferedImage1);
                     bufferedImage = null;
                     bufferedImage1 = null;
@@ -89,7 +91,6 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
     @Override
     protected List<BufferedImage> call() throws Exception {
-        Messages.sprintf("Processing VideoThumbmaker: " + fileInfo.getOrgPath());
         List<BufferedImage> list = null;
         try {
             list = frameGrabber(Paths.get(fileInfo.getOrgPath()));
@@ -111,26 +112,17 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
                 return;
             }
         } catch (Exception e) {
-            super.cancel();
-            Messages.sprintfError("buffered failed: " + e);
+            Messages.sprintfError("buffered failed: " + e.getMessage());
             return;
         }
 
-        StackPane pane = (StackPane) imageView.getParent();
+        HBox pane = (HBox) imageView.getParent();
         VBox rootPane = (VBox) pane.getParent();
 
         if (list == null || list.isEmpty()) {
             Messages.sprintfError("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
-            pane.getChildren().add(new Label("Video. NP"));
             return;
         }
-
-
-        Label label = new Label("Video");
-        label.setStyle("-fx-text-fill: orange;");
-        label.setMouseTransparent(true);
-        StackPane.setAlignment(label, Pos.TOP_CENTER);
-        pane.getChildren().add(label);
 
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         Platform.runLater(() -> {
@@ -140,9 +132,7 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
 
         rootPane.setOnMouseEntered(event -> {
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-                Messages.sprintf(" Showing video: " + timeLine.getCycleCount() + " File: " + fileInfo.getOrgPath() + videoPreview.getIndex());
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
-                Messages.sprintf("image.getWidth()::: " + image.getWidth());
                 Platform.runLater(() -> {
                     imageView.setImage(image);
                 });

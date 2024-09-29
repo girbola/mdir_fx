@@ -5,56 +5,55 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox alignment="CENTER_LEFT" prefHeight="25.0" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
+<HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
    <children>
-      <Button fx:id="options_btn" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true">
+      <Button fx:id="options_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font>
+         <graphic>
+            <FontIcon iconColor="WHITE" iconLiteral="bi-gear" iconSize="20" />
+         </graphic>
+      </Button>
+      <Button fx:id="start_copyBatch_btn" mnemonicParsing="false" onAction="#start_copyBatch_btn_action" styleClass="bottomButton" text="%startBatchCopy" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button fx:id="copySelected_btn" mnemonicParsing="false" onAction="#copySelected_btn_action" styleClass="bottomButton" text="Copy selected" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button fx:id="copy_ok_date_btn" mnemonicParsing="false" onAction="#copy_ok_date_btn_action" styleClass="bottomButton" text="Copy good" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button fx:id="workDir_btn" mnemonicParsing="false" onAction="#workDir_btn_action" styleClass="bottomButton" text="GOTO WorkDir" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button fx:id="collect" mnemonicParsing="false" onAction="#collect_action" styleClass="bottomButton" text="Collect" wrapText="true" HBox.hgrow="NEVER">
+         <font>
+            <Font size="9.0" />
+         </font></Button>
+      <Button fx:id="addFolders_btn" mnemonicParsing="false" onAction="#addFolders_btn_action" styleClass="bottomButton" text="Add" wrapText="true" HBox.hgrow="NEVER">
          <font>
             <Font size="9.0" />
          </font>
       </Button>
-      <Button fx:id="start_copyBatch_btn" mnemonicParsing="false" onAction="#start_copyBatch_btn_action" text="%startBatchCopy" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button fx:id="removeDuplicates_btn" mnemonicParsing="false" onAction="#removeDuplicates_btn_action" text="%removeDuplicates" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button mnemonicParsing="false" onAction="#findImageDuplicates_Btn_action" text="Find dup images" />
-      <Button fx:id="copySelected_btn" mnemonicParsing="false" onAction="#copySelected_btn_action" text="Copy selected" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button fx:id="copy_ok_date_btn" mnemonicParsing="false" onAction="#copy_ok_date_btn_action" text="Copy good" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button fx:id="workDir_btn" mnemonicParsing="false" onAction="#workDir_btn_action" text="GOTO WorkDir" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button fx:id="collect" mnemonicParsing="false" onAction="#collect_action" text="Collect" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font></Button>
-      <Button fx:id="addFolders_btn" mnemonicParsing="false" onAction="#addFolders_btn_action" text="Add" wrapText="true">
+      <Button fx:id="dates_ttv_btn" layoutX="558.0" layoutY="11.0" mnemonicParsing="false" onAction="#dates_ttv_btn_action" styleClass="bottomButton" text="TreeTableView" wrapText="true" HBox.hgrow="NEVER">
          <font>
             <Font size="9.0" />
          </font>
       </Button>
-      <Button fx:id="dates_ttv_btn" layoutX="558.0" layoutY="11.0" mnemonicParsing="false" onAction="#dates_ttv_btn_action" text="TreeTableView" wrapText="true">
+      <Button fx:id="showWorkdir_btn" layoutX="611.0" layoutY="10.0" mnemonicParsing="false" onAction="#showWorkdir_btn_action" styleClass="bottomButton" text="Work dir" wrapText="true" HBox.hgrow="NEVER">
          <font>
             <Font size="9.0" />
          </font>
       </Button>
-      <Button fx:id="showWorkdir_btn" layoutX="611.0" layoutY="10.0" mnemonicParsing="false" onAction="#showWorkdir_btn_action" text="Work dir" wrapText="true">
-         <font>
-            <Font size="9.0" />
-         </font>
-      </Button>
-      <Label text="Label" />
-      <Label fx:id="debug_pref_width" text="Label" />
+      <Label text="Label" HBox.hgrow="NEVER" />
+      <Label fx:id="debug_pref_width" text="Label" HBox.hgrow="NEVER" />
       <HBox alignment="TOP_RIGHT" prefHeight="25.0" HBox.hgrow="ALWAYS">
          <children>
             <HBox fx:id="drive_pane" alignment="CENTER" spacing="7.0">

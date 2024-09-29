@@ -12,23 +12,25 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.ErrorGUI;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.concurrent.ExecutionException;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -51,65 +53,61 @@ public class DateFixer extends Task<Void> {
         this.currentPath = aCurrentPath;
         this.model_main = aModel_main;
         this.isImported = isImported;
-        model_datefix = new Model_datefix(model_main, currentPath);
+        this.model_datefix = new Model_datefix(model_main, currentPath);
     }
 
     @Override
     protected Void call() throws Exception {
         sprintf("loading datefix fxmlloader");
-        try {
-
-            FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/DateFix.fxml"), bundle);
+        Platform.runLater(() -> {
             try {
+
+                FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/DateFix.fxml"), bundle);
                 parent = loader.load();
-            } catch (IOException ex) {
-                Messages.sprintfError("Cannot open DateFix window.");
-                ErrorGUI.errorGUI("Cannot open DateFix window.", false);
-                ex.printStackTrace();
-            }
 
-            dateFixerController = loader.getController();
-            Scene scene_dateFixer = new Scene(parent, (conf.getScreenBounds().getWidth()),
-                    (conf.getScreenBounds().getHeight() - 50));
-            dateFixerController.init(model_datefix, model_main, currentPath, folderInfo, isImported);
+                dateFixerController = loader.getController();
+                Scene scene_dateFixer = new Scene(parent, (Misc.getScreenBounds().getWidth()),
+                        (Misc.getScreenBounds().getHeight() - 50));
+                dateFixerController.init(model_datefix, model_main, currentPath, folderInfo, isImported);
 
-            scene_dateFixer.setOnKeyPressed(event -> {
-                if (event.getCode() == KeyCode.ENTER && event.isAltDown()) {
-                    Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-                    stage.setFullScreen(true);
-                }
-            });
+                scene_dateFixer.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER && event.isAltDown()) {
+                        Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+                        stage.setFullScreen(true);
+                    }
+                });
 
-            scene_dateFixer.setOnMouseClicked(event -> {
-                if (event.getTarget() instanceof StackPane node) {
-                    if (node.getParent() instanceof VBox && node.lookupAll("#imageView") != null) {
-                        model_datefix.getSelectionModel().addWithToggle(node.getParent());
-                        if (event.getClickCount() == 2) {
-                            FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
-                            if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
-                                    || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
-                                ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
-                                        Main.scene_Switcher.getScene_dateFixer().getWindow());
-                            } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                                ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
+                scene_dateFixer.setOnMouseClicked(event -> {
+                    Messages.sprintf("mouse clicked event.getTarget(): " + event.getTarget());
+                    if (event.getTarget() instanceof VBox node) {
+                        if (node.getParent() instanceof HBox && node.lookupAll("#imageView") != null) {
+                            model_datefix.getSelectionModel().addWithToggle(node);
+                            if (event.getClickCount() == 2) {
+                                FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
+                                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
+                                        || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
+                                    ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
+                                            Main.scene_Switcher.getScene_dateFixer().getWindow());
+                                } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+                                    ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
+                                }
                             }
                         }
                     }
-                }
-            });
+                });
 
-            sprintf("conf.getThemePath(): " + conf.getThemePath());
-            scene_dateFixer.getStylesheets().add(
-                    Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
+                sprintf("conf.getThemePath(): " + conf.getThemePath());
+                scene_dateFixer.getStylesheets().add(
+                        Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
-            Platform.runLater(() -> {
                 Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
                 Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
-            });
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        Thread.sleep(1000);
         return null;
     }
 
@@ -129,23 +127,38 @@ public class DateFixer extends Task<Void> {
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 
-        Task<Void> dateFixPopulateGridPane_task = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
+        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
-        dateFixPopulateGridPane_task.setOnCancelled(event -> {
-                sprintf("dateFixPopulateGridPane.setOnCancelled");
-                loadingProcess_task.closeStage();
+        dateFixPopulateTask.setOnCancelled(event -> {
+            sprintf("dateFixPopulateGridPane.setOnCancelled");
+            loadingProcess_task.closeStage();
         });
-        dateFixPopulateGridPane_task.setOnSucceeded(event -> {
+        dateFixPopulateTask.setOnSucceeded(event -> {
             sprintf("dateFixPopulateGridPane.setOnSucceeded");
-                DateFixLoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
+
+            try {
+                ObservableList<Node> nodes = dateFixPopulateTask.get();
+                Platform.runLater(() -> {
+                    model_datefix.getTilePane().getChildren().addAll(nodes);
+                    loadingProcess_task.closeStage();
+                });
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            } catch (ExecutionException e) {
+                throw new RuntimeException(e);
+            }
+
+//            model_datefix.getTilePane().getChildren().addAll(model_datefix.getAllNodes());
+            //DateFixLoadingProcessLoader.runUpdateTask(model_datefix, loadingProcess_task);
+//            DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, loadingProcess_task);
         });
-        dateFixPopulateGridPane_task.setOnFailed(event -> {
-                sprintf("dateFixPopulateGridPane.setOnFailed");
-                loadingProcess_task.closeStage();
+        dateFixPopulateTask.setOnFailed(event -> {
+            sprintf("dateFixPopulateGridPane.setOnFailed");
+            loadingProcess_task.closeStage();
         });
 
-        loadingProcess_task.setTask(dateFixPopulateGridPane_task);
-        Thread dateFixPopulateGridPane_th = new Thread(dateFixPopulateGridPane_task, "dateFixPopulateGridPane_th");
+        loadingProcess_task.setTask(dateFixPopulateTask);
+        Thread dateFixPopulateGridPane_th = new Thread(dateFixPopulateTask, "dateFixPopulateTask_thread");
         dateFixPopulateGridPane_th.start();
     }
 }

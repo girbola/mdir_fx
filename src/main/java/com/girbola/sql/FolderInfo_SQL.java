@@ -86,6 +86,42 @@ public class FolderInfo_SQL {
 		}
 	}
 
+	private static void ensureFolderInfoTable(Connection connection) {
+		 String alterTableSQL =	"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS id INTEGER PRIMARY KEY DEFAULT 0; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS status INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS changed BOOLEAN; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS connected BOOLEAN; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS ignored BOOLEAN; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS dateDifference DOUBLE; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS badFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS confirmed INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS copied INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderImageFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderRawFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderVideoFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS goodFiles INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS suggested INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderSize INTEGER; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS justFolderName TEXT; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS folderPath TEXT; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS maxDate TEXT; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS minDate TEXT; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS state TEXT; " +
+						"ALTER TABLE your_table_name ADD COLUMN IF NOT EXISTS tableType TEXT;";
+		try (Statement stmt = connection.createStatement()) {
+			stmt.executeUpdate(alterTableSQL);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try (Statement stmt = connection.createStatement()) {
+			stmt.executeUpdate(alterTableSQL);
+		} catch (Exception e) {
+			// Assuming the column exists if an error is thrown.
+			// If the error is not related to the column already existing, further handling is required.
+		}
+	}
+
 	private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
 		try {
 			PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
@@ -220,6 +256,9 @@ public class FolderInfo_SQL {
 	}
 
 	public static boolean saveFolderInfoToTable(Connection connection_mdirFile, FolderInfo folderInfo) {
+
+		ensureFolderInfoTable(connection_mdirFile);
+
 		boolean create = createFolderInfoTable(connection_mdirFile);
 		if (create) {
             return insertFolderInfo(connection_mdirFile, folderInfo);

@@ -110,7 +110,7 @@ public class RectangleSelection {
                     sprintf("left pressed");
                     break;
                 case ESCAPE:
-                    selectionModel.clearAll();
+                    selectionModel.clearAll(tilePane);
                 default:
                     break;
             }
@@ -226,7 +226,7 @@ public class RectangleSelection {
                 event.consume();
             }
             if (!event.isShiftDown() && !event.isControlDown()) {
-                selectionModel.clearAll();
+                selectionModel.clearAll(tilePane);
                 selectionModel.addWithToggle((Node) event.getTarget());
                 event.consume();
                 return;

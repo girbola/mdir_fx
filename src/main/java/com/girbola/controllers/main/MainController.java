@@ -9,14 +9,12 @@ package com.girbola.controllers.main;
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
-import common.utils.ui.ScreenUtils;
 import common.utils.ui.UI_Tools;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
-import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
@@ -46,9 +44,6 @@ public class MainController {
 	@FXML private AnchorPane tables_rootPane;
 	@FXML private HBox tables_hbox;
 	@FXML private VBox main_vbox;
-    @FXML Button asitisTopButton;
-    @FXML Button sortedTopButton;
-    @FXML Button sortitTopButton;
     @FXML MenuBarController menuBar_topController;
     @FXML TabPane tablesTabPane;
 	//@formatter:on
@@ -65,6 +60,12 @@ public class MainController {
 
         bottomController.init(model_main);
         setModelProperties();
+        tables_hbox.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
+                model_main.tables().setTablesParentWidth((double) t1);
+            }
+        });
 
 
         //tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
@@ -85,9 +86,9 @@ public class MainController {
 
     private void initControllers() {
         menuBar_topController.init(model_main);
-        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType(), sortitTopButton);
-        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType(), sortedTopButton);
-        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType(), asitisTopButton);
+        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
+        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
+        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
 
         sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
         sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);

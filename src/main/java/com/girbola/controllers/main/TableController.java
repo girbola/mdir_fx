@@ -9,8 +9,6 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
-import com.girbola.configuration.GUIPrefs;
-import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
@@ -39,6 +37,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -47,10 +46,10 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
-import javafx.scene.control.TextField;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn.SortType;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.scene.control.skin.TableViewSkin;
+import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
@@ -67,8 +66,7 @@ import java.sql.Connection;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
+import static com.girbola.Main.*;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
@@ -76,12 +74,11 @@ public class TableController {
 
     private final String ERROR = TableController.class.getSimpleName();
 
-    private Image show_im;
     private Model_CollectDialog model_CollectDialog;
     private Model_main model_main;
-    private ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
-    private SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-    private SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
+    private final ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
+    private final SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
+    private final SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
     private String tableType;
     private Window owner;
 
@@ -98,9 +95,9 @@ public class TableController {
 	@FXML private FlowPane topMenuButtonFlowPane;
 	@FXML private HBox buttons_hbox;
 	@FXML private HBox showHideButton_hbox;
-	@FXML private HBox tableInformation_hbox;
-	@FXML private HBox tables_parent;
-	@FXML private ImageView hide_btn_iv;
+//	@FXML private HBox tableInformation_hbox;
+//	@FXML private HBox tables_parent;
+//	@FXML private ImageView hide_btn_iv;
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesTotal_lbl;
 	@FXML private MenuItem checkChanges_mi;
@@ -125,7 +122,8 @@ public class TableController {
 	@FXML private TableColumn<FolderInfo, String> maxDates_col;
 	@FXML private TableColumn<FolderInfo, String> minDate_col;
 	@FXML private TableView<FolderInfo> table;
-	@FXML private TextField tableDescription_tf;
+    @FXML private ScrollPane tableScrollPane;
+	@FXML private Label tableDescription_tf;
 	@FXML private Tooltip addToBatch_tooltip;
 	@FXML private Tooltip collectSimilarDates_btn_tooltip;
 	@FXML private Tooltip copySelected_btn_tooltip;
@@ -141,7 +139,6 @@ public class TableController {
 	@FXML private VBox group;
 	@FXML private VBox table_Vbox;
 	@FXML public Button hide_btn;
-    @FXML public Button showHideButtonRoot;
     @FXML private AnchorPane hideablePane;
     @FXML private Label allFilesSize_lbl;
 	// @formatter:on
@@ -238,10 +235,10 @@ public class TableController {
 
             Main.centerWindowDialog(stage);
 
-            stage.setMaxWidth(Main.conf.getScreenBounds().getWidth());
+            stage.setMaxWidth(Misc.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
             scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-            MergeDialogController mergeDialogController = (MergeDialogController) loader.getController();
+            MergeDialogController mergeDialogController = loader.getController();
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
 
@@ -262,7 +259,7 @@ public class TableController {
             Scene scene = new Scene(parent);
             model_CollectDialog = new Model_CollectDialog();
 
-            Collect_DialogController controller = (Collect_DialogController) loader.getController();
+            Collect_DialogController controller = loader.getController();
             controller.init(model_main, model_CollectDialog, table, tableType);
             stage.setScene(scene);
             stage.showAndWait();
@@ -353,14 +350,14 @@ public class TableController {
     }
 
     public void setShowHideTableButtonIcons(Button button, boolean show) {
-        ImageView iv = (ImageView) button.getGraphic();
+
         if (show) {
             Platform.runLater(() -> {
-                iv.setRotate(0);
+                button.setRotate(0);
             });
         } else {
             Platform.runLater(() -> {
-                iv.setRotate(-180);
+                button.setRotate(-180);
             });
         }
     }
@@ -388,31 +385,57 @@ public class TableController {
 
     @FXML
     private void hide_btn_action(ActionEvent event) {
-
+        Messages.sprintf("hide_btn_action pressed");
         int visibles = TableUtils.getVisibleTables(model_main);
         if (visibles <= 1 && table.isVisible()) {
             return;
         }
+        Messages.sprintf("model_main.tables().tablesParentWidthProperty();: " + model_main.tables().getTablesParentWidth());
         table.setVisible(!table.isVisible());
         tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
-        hideablePane.setVisible(!hideablePane.isVisible());
+        //hideablePane.setVisible(!hideablePane.isVisible());
         tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
+        Bounds b = hide_btn.getBoundsInLocal();
 
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
-        if(!table.isVisible()) {
-            table_Vbox.setPrefWidth(35);
-            table_Vbox.setMinWidth(35);
-            table_Vbox.setMaxWidth(35);
-            tableInformation_flowpane.setVisible(false);
+        if (!table.isVisible()) {
+            table_Vbox.setPrefWidth(b.getWidth());
+            table_Vbox.setMinWidth(b.getWidth());
+            table_Vbox.setMaxWidth(b.getWidth());
+//            tableInformation_flowpane.setVisible(false);
+            for (Node node : topMenuButtonFlowPane.getChildren()) {
+                Messages.sprintf("WHAAAAT: " + node.getId());
+                if (node instanceof Button) {
+
+                    Button btn = (Button) node;
+                    Messages.sprintf("BUTTON FOUND: " + btn.getId());
+                    Platform.runLater(() -> {
+                        btn.setVisible(false);
+                    });
+                }
+            }
+
             Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
         } else {
             table_Vbox.setPrefWidth(-1);
             table_Vbox.setMinWidth(-1);
             table_Vbox.setMaxWidth(-1);
-            tableInformation_flowpane.setVisible(true);
+            for (Node node : topMenuButtonFlowPane.getChildren()) {
+                Messages.sprintf("222WHAAAAT: " + node.getId());
+                if (node instanceof Button) {
+                    Button btn = (Button) node;
+                    Messages.sprintf("BUTTON FOUND: " + btn.getId());
+                    Platform.runLater(() -> {
+                        btn.setVisible(true);
+                    });
+                }
+            }
+
+//            tableInformation_flowpane.setVisible(true);
             Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
         }
+
 
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
         Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
@@ -489,19 +512,12 @@ public class TableController {
     }
 
 
-    public void init(Model_main aModel_main, String tableName, String tableType, Button showHideButtonRoot) {
+    public void init(Model_main aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
 
         this.tableType = tableType;
 
-        this.showHideButtonRoot = showHideButtonRoot;
-        showHideButtonRoot.setOnAction(event -> {
-            Messages.sprintf("YEEEEIEEE: " + tableType);
-            setShowHideTableButtonIcons(showHideButtonRoot, model_main.tables().getTableByType(tableType).isVisible());
-        });
-
-        show_im = GUI_Methods.loadImage("showTable.png", GUIPrefs.BUTTON_WIDTH);
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
 
         Platform.runLater(() -> {
@@ -554,7 +570,7 @@ public class TableController {
 
         justFolderName_col.setOnEditCommit(event -> {
             Messages.sprintf("edit commited event.getNewValue(); " + event.getNewValue());
-            FolderInfo folderInfo = (FolderInfo) event.getRowValue();
+            FolderInfo folderInfo = event.getRowValue();
             if (event.getNewValue().isEmpty()) {
                 folderInfo.setJustFolderName(Paths.get(folderInfo.getFolderPath()).getFileName().toString());
             } else if (!folderInfo.getJustFolderName().equals(event.getNewValue()) && !event.getNewValue().isEmpty()) {
@@ -588,7 +604,7 @@ public class TableController {
                 if (value == null || empty) {
                     setText("");
                 } else {
-                    setText("" + (Conversion.convertToSmallerConversion(value)));
+                    setText(Conversion.convertToSmallerConversion(value));
                 }
             }
         });
@@ -606,14 +622,17 @@ public class TableController {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setAsItIsRootPane(table_Vbox);
+            tableScrollPane.setId("tableScrollPane_asitis");
         } else if (tableType.equals(TableType.SORTIT.getType())) {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setSortItRootPane(table_Vbox);
+            tableScrollPane.setId("tableScrollPane_sortit");
         } else if (tableType.equals(TableType.SORTED.getType())) {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setSortedRootPane(table_Vbox);
+            tableScrollPane.setId("tableScrollPane_sorted");
         }
 
         Main.conf.showTooltips_property().addListener(new ChangeListener<Boolean>() {
@@ -647,18 +666,77 @@ public class TableController {
                 }
             }
         });
-//        table.setRowFactory(
-//                new Callback<TableView<FolderInfo>, TableRow<FolderInfo>>() {
-//                    @Override
-//                    public TableRow<FolderInfo> call(TableView<FolderInfo> tableView) {
-//
-//                        return null;
+    }
+
+    private ScrollBar getHorizontalScrollBarFromTableView(TableView<?> tableView) {
+        if (tableView.getSkin() instanceof TableViewSkin<?> skin) {
+            VirtualFlow<?> virtualFlow = (VirtualFlow<?>) skin.getChildren().get(1); // VirtualFlow is usually the second child
+            ScrollBar scrollBar = (ScrollBar) virtualFlow.lookup(".scroll-bar:horizontal");
+            if (scrollBar != null) {
+                return scrollBar;
+            }
+
+        }
+        return null;
+    }
+
+    private ScrollPane getScrollPaneFromTableView() {
+        if (table.getSkin() instanceof TableViewSkin<?> skin) {
+            return (ScrollPane) skin.getChildren().stream()
+                    .filter(node -> node instanceof ScrollPane)
+                    .findFirst()
+                    .orElse(null);
+        }
+        return null;
+    }
+
+    private ScrollPane findScrollPaneInTableView(TableView<?> tableView) {
+        if (tableView.getSkin() instanceof TableViewSkin<?> skin) {
+            for (Node child : skin.getChildren()) {
+                if (child instanceof ScrollPane) {
+                    return (ScrollPane) child;
+                }
+            }
+        }
+        return null;
+    }
+
+    private void checkScrollBarVisibility() {
+        ScrollPane scrollPane = getScrollPaneFromTableView();
+        if (scrollPane != null) {
+            // Check horizontal scrollbar
+            ScrollBar horizontalScrollBar = (ScrollBar) scrollPane.lookup(".scroll-bar:horizontal");
+            if (horizontalScrollBar != null) {
+                System.out.println("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
+            }
+        } else {
+            Messages.sprintf("scrollPane is null");
+        }
+//        Platform.runLater(() -> {
+//            ScrollBar horizontalBar = null;
+//            ScrollPane tableViewScrollPane = (javafx.scene.control.ScrollPane) table.lookup(".scroll-pane");
+//            if (tableViewScrollPane != null) {
+//                Messages.sprintf("This worokrokaeorkgoaekthoaeth? " + tableViewScrollPane);
+//                // Check horizontal scrollbar
+//                var horizontalScrollBar = (javafx.scene.control.ScrollBar) tableViewScrollPane.lookup(".scroll-bar:horizontal");
+//                if (horizontalScrollBar != null) {
+//                    System.out.println("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
+//                }
+//            }
+//            for (Node node : table.lookupAll(".scroll-bar:horizontal")) {
+//                if (node instanceof ScrollBar bar) {
+//                    Messages.sprintf("WHAT IS THIS: " + node);
+//                    if (bar.getOrientation().equals(Orientation.HORIZONTAL)) {
+//                        horizontalBar = bar;
 //                    }
-//                });
-//        table.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-//            if (event.getButton() == MouseButton.SECONDARY) {
-//                ContextMenu contextMenu = new ContextMenu();
-//                Messages.sprintf("event.getTarget(): " +event.getTarget());
+//
+//                }
+//            }
+//            if (horizontalBar != null) {
+//                horizontalBar.visibleProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+//                            Messages.sprintf("horizontalBar is visible? " + newValue);
+//                        }
+//                );
 //            }
 //        });
     }

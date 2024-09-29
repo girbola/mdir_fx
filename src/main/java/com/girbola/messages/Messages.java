@@ -189,7 +189,7 @@ public class Messages {
 		Dialog<ButtonType> dialog = createDialog();
 		dialog.setTitle("Error");
 		dialog.setContentText(text);
-		ImageView errorSign = new ImageView(new Image(Main.class.getResourceAsStream("/resources/img/errorSign.png")));
+		ImageView errorSign = new ImageView(new Image(Main.class.getResourceAsStream("/img/errorSign.png")));
 		dialog.setGraphic(errorSign);
 
 		ButtonType ok_TypeButton = new ButtonType("CLOSE", ButtonData.CANCEL_CLOSE);
@@ -266,7 +266,7 @@ public class Messages {
 		Dialog<ButtonType> dialog = createDialog();
 		dialog.setTitle("");
 		dialog.setContentText(text);
-		ImageView warningImage = new ImageView(new Image(Main.class.getResourceAsStream("/resources/img/okSign.png")));
+		ImageView warningImage = new ImageView(new Image(Main.class.getResourceAsStream("/img/okSign.png")));
 
 		dialog.setGraphic(warningImage);
 		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
@@ -304,7 +304,7 @@ public class Messages {
 		Dialog<ButtonType> dialog = createDialog();
 		DialogPane dialogPane = new DialogPane();
 		// dialogPane.setHeaderText(text);
-		Image helpImg = new Image(Main.class.getResourceAsStream("/resources/img/helpSign.png"), 30, 0, true, true);
+		Image helpImg = new Image(Main.class.getResourceAsStream("/img/helpSign.png"), 30, 0, true, true);
 		ImageView helpIcon = new ImageView(helpImg);
 
 		Button helpButton = new Button();
@@ -329,7 +329,7 @@ public class Messages {
 		dialog.getDialogPane().setContent(bpane);
 
 		ImageView warningImage = new ImageView(
-				new Image(Main.class.getResourceAsStream("/resources/img/warningSign.png")));
+				new Image(Main.class.getResourceAsStream("/img/warningSign.png")));
 		bpane.setLeft(warningImage);
 		bpane.setCenter(new Label(text));
 		bpane.setBottom(lbl);
@@ -383,7 +383,7 @@ public class Messages {
 		dialog.getDialogPane().setContent(bpane);
 
 		ImageView warningImage = new ImageView(
-				new Image(Main.class.getResourceAsStream("/resources/img/warningSign.png")));
+				new Image(Main.class.getResourceAsStream("/img/warningSign.png")));
 		warningImage.setStyle("-fx-background-padding: 5;");
 		bpane.setLeft(warningImage);
 		bpane.setTop(new Label(text));
@@ -430,7 +430,7 @@ public class Messages {
 		dialog.setHeaderText(headerText);
 		dialog.setContentText(text);
 		ImageView warningSign = new ImageView(
-				new Image(Main.class.getResourceAsStream("/resources/img/errorSign.png")));
+				new Image(Main.class.getResourceAsStream("/img/errorSign.png")));
 		dialog.setGraphic(warningSign);
 		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);

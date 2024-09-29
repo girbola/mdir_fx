@@ -17,12 +17,16 @@ import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
+import javafx.beans.property.Property;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
@@ -52,7 +56,6 @@ public class DateTimeAdjusterController {
     @FXML private Button copy_startToEnd_btn;
     @FXML private Button selectRange_btn;
     @FXML private Button setDateTimeRange_btn;
-    @FXML private Button markFilesAccordingTheDateScale_btn;
     @FXML private Button findExistsPath_btn;
     //@formatter:on
 
@@ -77,7 +80,57 @@ public class DateTimeAdjusterController {
     @FXML private TextField start_sec;
     @FXML private Button start_sec_btn_down;
     @FXML private Button start_sec_btn_up;
+
+    @FXML private Button selectRangeOfNumbers_btn;
+
+    @FXML private TextField startFromNumber_tf;
+    @FXML private TextField endToNumber_tf;
+
+
     //@formatter:on
+
+    private int getInteger(String value) {
+
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            return -1;
+        }
+
+    }
+
+
+    @FXML
+    private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+        int startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
+        int endTo = Integer.parseInt(endToNumber_tf.getText().trim());
+
+        model_datefix.getSelectionModel().clearAll(df_tilePane);
+        for (Node node : model_datefix.getTilePane().getChildren()) {
+            if (node instanceof VBox) {
+                VBox vbox = (VBox) node;
+                if (vbox.getId().equals("imageFrame")) {
+                    for (Node hbox : vbox.getChildren()) {
+                        if (hbox instanceof StackPane) {
+                            for (Node stp : ((StackPane) hbox).getChildren()) {
+                                if (stp instanceof Label) {
+                                    Label label = (Label) stp;
+                                    String text = label.getText();
+                                    Integer number = getInteger(text);
+                                    if (number >= 0 && startFrom <= number && endTo >= number) {
+                                        model_datefix.getSelectionModel().addOnly(vbox);
+                                    }
+                                } else {
+                                    Messages.sprintf("This is not label: " + stp.toString());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     @FXML
     private void findExistsPath_btn_action(ActionEvent event) {
@@ -142,57 +195,13 @@ public class DateTimeAdjusterController {
 
         }
 
-        DateFixLoadingProcessLoader.runUpdateTask(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
         Messages.warningText(
                 "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
         for (FileInfo fileInfo : collectedList) {
             Messages.sprintf("fileInfo collected: " + fileInfo.toString() + " fileInfo date: " + DateUtils.longToLocalDateTime(fileInfo.getDate()));
         }
-
-    }
-
-    @FXML
-    private void markFilesAccordingTheDateScale_btn_action(ActionEvent event) {
-        Messages.sprintf("markFilesAccordingTheDateScale_btn_action");
-        LocalDateTime ldt_start = null;
-        LocalDateTime ldt_end = null;
-
-        try {
-            model_datefix.getStart_time().getTime();
-            model_datefix.getEnd_time().getTime();
-            ldt_start = model_datefix.getLocalDateTime(true);
-            ldt_end = model_datefix.getLocalDateTime(false);
-        } catch (Exception ex) {
-            errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-            Main.setProcessCancelled(true);
-        }
-        List<FileInfo> collectedList = new ArrayList<>();
-        if (this.model_main == null) {
-            Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
-        }
-
-        for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-            if (Main.getProcessCancelled()) {
-                Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-                break;
-            } /*
-             * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-             * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-             */
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-                if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-                    if (FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-                        collectedList.add(fileInfo);
-                        Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-                                + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-                    }
-                }
-            }
-        }
-        Messages.warningText(
-                "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
 
     }
 
@@ -219,8 +228,6 @@ public class DateTimeAdjusterController {
         LocalDateTime ldt_end = null;
 
         try {
-            model_datefix.getStart_time().getTime();
-            model_datefix.getEnd_time().getTime();
             ldt_start = model_datefix.getLocalDateTime(true);
             ldt_end = model_datefix.getLocalDateTime(false);
         } catch (Exception ex) {
@@ -233,6 +240,7 @@ public class DateTimeAdjusterController {
         if (model_datefix.getSelectionModel().getSelectionList().size() == 1) {
             makeChanges(ldt_start, ldt_start, model_datefix.getSelectionModel().getSelectionList().size());
         } else if (model_datefix.getSelectionModel().getSelectionList().size() >= 2) {
+
             if (ldt_start.isEqual(ldt_end)) {
                 Dialog<ButtonType> dialog = Messages.ask("", "", bundle.getString("startAndEndDateSame"),
                         Misc.getLineNumber());
@@ -246,7 +254,7 @@ public class DateTimeAdjusterController {
                 } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
                     return;
                 }
-                // warningText(bundle.getString("startAndEndDateSame"));
+
                 // endDate + end_Time) > (startDate + start_Time
             } else if (ldt_start.isBefore(ldt_end)) {
                 sprintf("isBefore");
@@ -370,6 +378,7 @@ public class DateTimeAdjusterController {
         model_datefix.getStart_time().increase_sec();
     }
 
+
     @FXML
     private void selectRange_btn_action(ActionEvent event) {
         Messages.sprintf("selected pressed");
@@ -415,7 +424,7 @@ public class DateTimeAdjusterController {
 
         LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
         changeDates.setOnSucceeded(event -> {
-            model_datefix.getSelectionModel().clearAll();
+            model_datefix.getSelectionModel().clearAll(df_tilePane);
             lpt.closeStage();
             Messages.sprintf("changeDates were successfully done");
         });
@@ -458,6 +467,38 @@ public class DateTimeAdjusterController {
         }
         return sec;
     }
+    private void setupDatePickers(Model_datefix model_datefix) {
+        model_datefix.setStart_datePicker(start_datePicker);
+        model_datefix.setEnd_datePicker(end_datePicker);
+    }
+
+    private void setupTimeBindings(Model_datefix model_datefix) {
+        bindTimeField(start_hour, model_datefix.getStart_time().hour_property());
+        bindTimeField(start_min, model_datefix.getStart_time().min_property());
+        bindTimeField(start_sec, model_datefix.getStart_time().sec_property());
+
+        bindTimeField(end_hour, model_datefix.getEnd_time().hour_property());
+        bindTimeField(end_min, model_datefix.getEnd_time().min_property());
+        bindTimeField(end_sec, model_datefix.getEnd_time().sec_property());
+    }
+
+    private void bindTimeField(TextField field, Property<Number> property) {
+        field.textProperty().bindBidirectional(property, new NumberStringConverter());
+        setTextProperty(field);
+    }
+
+    private void resetTimeFields() {
+        setFieldText(start_hour, "12");
+        setFieldText(start_min, "00");
+        setFieldText(start_sec, "00");
+        setFieldText(end_hour, "12");
+        setFieldText(end_min, "00");
+        setFieldText(end_sec, "00");
+    }
+
+    private void setFieldText(TextField field, String text) {
+        field.setText(text);
+    }
 
     public void init(Model_main aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
                      TilePane aQuickPick_tilePane) {
@@ -465,37 +506,31 @@ public class DateTimeAdjusterController {
         this.model_datefix = aModel_datefix;
         this.df_tilePane = aTilePane;
         this.quickPick_tilePane = aQuickPick_tilePane;
-        aModel_datefix.setStart_datePicker(start_datePicker);
-        aModel_datefix.setEnd_datePicker(end_datePicker);
+//        aModel_datefix.setStart_datePicker(start_datePicker);
+//        aModel_datefix.setEnd_datePicker(end_datePicker);
 
-        start_hour.textProperty().bindBidirectional(aModel_datefix.getStart_time().hour_property(),
-                new NumberStringConverter());
-        setTextProperty(start_hour);
+        setupDatePickers(aModel_datefix);
+        setupTimeBindings(aModel_datefix);
+        resetTimeFields();
 
-        start_min.textProperty().bindBidirectional(aModel_datefix.getStart_time().min_property(),
-                new NumberStringConverter());
-        setTextProperty(start_min);
+        startFromNumber_tf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
 
-        start_sec.textProperty().bindBidirectional(aModel_datefix.getStart_time().sec_property(),
-                new NumberStringConverter());
-        setTextProperty(start_sec);
-
-        end_hour.textProperty().bindBidirectional(aModel_datefix.getEnd_time().hour_property(),
-                new NumberStringConverter());
-        setTextProperty(end_hour);
-
-        end_min.textProperty().bindBidirectional(aModel_datefix.getEnd_time().min_property(), new NumberStringConverter());
-        setTextProperty(end_min);
-
-        end_sec.textProperty().bindBidirectional(aModel_datefix.getEnd_time().sec_property(), new NumberStringConverter());
-        setTextProperty(end_sec);
-
-        start_hour.setText("12");
-        start_min.setText("00");
-        start_sec.setText("00");
-        end_hour.setText("12");
-        end_min.setText("00");
-        end_sec.setText("00");
+                    startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
+           //         model_datefix.setStartFromNumber(startFromNumber_tf.getText());
+                }
+            }
+        });
+        endToNumber_tf.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (!newValue.matches("\\d*")) {
+                    endToNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
+                }
+            }
+        });
     }
 
     public void centerNodeInScrollPane_(ScrollPane scrollPane, Node node) {

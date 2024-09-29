@@ -1,9 +1,3 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
@@ -17,6 +11,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SqliteConnection;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -27,6 +22,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.sql.Connection;
@@ -38,318 +35,334 @@ import java.util.Optional;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
+/*
+ @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
+ @(#)Author:     Marko Lokka
+ @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
+ @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
+
 public class Tables {
 
-	private final String ERROR = Tables.class.getSimpleName();
+    private final String ERROR = Tables.class.getSimpleName();
 
-	private Model_main model_Main;
+    private Model_main model_Main;
 
-//	private HideButtons hideButtons;
-	public ShowAndHideTables showAndHideTables; 
-	private TableStatistic tableStatistic;
+    private SimpleDoubleProperty tablesParentWidth = new SimpleDoubleProperty(0);
 
-	private Pane sortItRootPane;
-	private Pane sortedRootPane;
-	private Pane asItIsRootPane;
+    //	private HideButtons hideButtons;
+    public ShowAndHideTables showAndHideTables;
+    private TableStatistic tableStatistic;
 
-	private TableView<FolderInfo> sortIt_table;
-	private TableView<FolderInfo> sorted_table;
-	private TableView<FolderInfo> asitis_table;
+    @Setter
+    private Pane sortItRootPane;
+    @Getter
+    @Setter
+    private Pane sortedRootPane;
+    @Setter
+    @Getter
+    private Pane asItIsRootPane;
 
-	private AnchorPane tables_rootPane;
+    private TableView<FolderInfo> sortIt_table;
+    private TableView<FolderInfo> sorted_table;
+    private TableView<FolderInfo> asitis_table;
 
-	private TableStatistic sortit_TableStatistic;
-	private TableStatistic sorted_TableStatistic;
-	private TableStatistic asitis_TableStatistic;
-	
-	boolean isSameTable = false;
+    private AnchorPane tables_rootPane;
 
-	public AnchorPane getTables_rootPane() {
-		return this.tables_rootPane;
-	}
+    @Getter
+    @Setter
+    private TableStatistic sortit_TableStatistic;
+    @Getter
+    @Setter
+    private TableStatistic sorted_TableStatistic;
+    @Getter
+    @Setter
+    private TableStatistic asitis_TableStatistic;
 
-	public void setTables_rootPane(AnchorPane tables_rootPane) {
-		this.tables_rootPane = tables_rootPane;
-	}
+    boolean isSameTable = false;
+
+    public AnchorPane getTables_rootPane() {
+        return this.tables_rootPane;
+    }
+
+    public void setTables_rootPane(AnchorPane tables_rootPane) {
+        this.tables_rootPane = tables_rootPane;
+    }
 
 
 //	private HBox tables_container;
 
-	
-	protected Tables(Model_main aModel) {
-		this.model_Main = aModel;
 
-		sprintf("Tables instantiated...");
-	}
+    protected Tables(Model_main aModel) {
+        this.model_Main = aModel;
 
-	public void init() {
-		
-		sprintf("Tables hideButtons instantiating...");
-		showAndHideTables = new ShowAndHideTables(this.model_Main);
-		sprintf("Tables hideButtons instantiated...");
-	}
+        sprintf("Tables instantiated...");
+    }
 
-	private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
-		for (FolderInfo tv : table.getItems()) {
-			if (tv.getFolderPath().equals(f.toString())) {
-				return tv;
-			}
-		}
-		sprintf("findTableValues is NULL");
-		return null;
-	}
+    public void init() {
 
-	void setDrag(TableView<FolderInfo> table) {
+        sprintf("Tables hideButtons instantiating...");
+        showAndHideTables = new ShowAndHideTables(this.model_Main);
+        sprintf("Tables hideButtons instantiated...");
+    }
 
-		table.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getClickCount() == 2) {
-					if (event.getTarget() instanceof TableColumn) {
-						sprintf("setOnMouseClicked is tablerow");
-					} else {
-						sprintf("is not tablerow. it is:  " + event.getTarget().toString());
-					}
-				}
-			}
-		});
-		table.setOnDragDetected(new EventHandler<MouseEvent>() {
+    private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {
+        for (FolderInfo tv : table.getItems()) {
+            if (tv.getFolderPath().equals(f.toString())) {
+                return tv;
+            }
+        }
+        sprintf("findTableValues is NULL");
+        return null;
+    }
 
-			@Override
-			public void handle(MouseEvent event) {
-				if (event.getTarget() instanceof Rectangle) {
-					return;
-				}
-				if (event.getTarget().equals(event.getSource())) {
-					return;
-				}
-				sprintf("setOnDragDetected:  " + event.getTarget() + " source: " + event.getSource());
+    void setDrag(TableView<FolderInfo> table) {
 
-				ObservableList<FolderInfo> selected = table.getSelectionModel().getSelectedItems();
-				List<File> selectedFiles = getSelectedFilesFromTable(selected);
-				if (selectedFiles.isEmpty()) {
-					return;
-				}
-				Dragboard db = table.startDragAndDrop(TransferMode.MOVE);
-				final ClipboardContent content = new ClipboardContent();
-				content.putFiles(selectedFiles);
-				db.setContent(content);
+        table.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getClickCount() == 2) {
+                    if (event.getTarget() instanceof TableColumn) {
+                        sprintf("setOnMouseClicked is tablerow");
+                    } else {
+                        sprintf("is not tablerow. it is:  " + event.getTarget().toString());
+                    }
+                }
+            }
+        });
+        table.setOnDragDetected(new EventHandler<MouseEvent>() {
 
-				event.consume();
-			}
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getTarget() instanceof Rectangle) {
+                    return;
+                }
+                if (event.getTarget().equals(event.getSource())) {
+                    return;
+                }
+                sprintf("setOnDragDetected:  " + event.getTarget() + " source: " + event.getSource());
 
-		});
+                ObservableList<FolderInfo> selected = table.getSelectionModel().getSelectedItems();
+                List<File> selectedFiles = getSelectedFilesFromTable(selected);
+                if (selectedFiles.isEmpty()) {
+                    return;
+                }
+                Dragboard db = table.startDragAndDrop(TransferMode.MOVE);
+                final ClipboardContent content = new ClipboardContent();
+                content.putFiles(selectedFiles);
+                db.setContent(content);
 
-		table.setOnDragDropped((DragEvent event) -> {
-			isSameTable = false;
-			sprintf("setOnDragDropped set on drag dropped: " + event.getGestureTarget() + " source gesture: "
-					+ event.getGestureSource());
+                event.consume();
+            }
 
-			if (event.getGestureSource() != event.getGestureTarget()) {
-				@SuppressWarnings("unchecked")
-				TableView<FolderInfo> source = (TableView<FolderInfo>) event.getGestureSource();
-				@SuppressWarnings("unchecked")
-				TableView<FolderInfo> target = (TableView<FolderInfo>) event.getGestureTarget();
+        });
 
-				Messages.sprintf("target= " + target.getId() + " source= " + source.getId());
-				// TableView<FolderInfo> tableTarget = (TableView<FolderInfo>)
-				// event.getGestureTarget();
+        table.setOnDragDropped((DragEvent event) -> {
+            isSameTable = false;
+            sprintf("setOnDragDropped set on drag dropped: " + event.getGestureTarget() + " source gesture: "
+                    + event.getGestureSource());
+
+            if (event.getGestureSource() != event.getGestureTarget()) {
+                @SuppressWarnings("unchecked")
+                TableView<FolderInfo> source = (TableView<FolderInfo>) event.getGestureSource();
+                @SuppressWarnings("unchecked")
+                TableView<FolderInfo> target = (TableView<FolderInfo>) event.getGestureTarget();
+
+                Messages.sprintf("target= " + target.getId() + " source= " + source.getId());
+                // TableView<FolderInfo> tableTarget = (TableView<FolderInfo>)
+                // event.getGestureTarget();
 //				if (target == null) {
 //					sprintf("tableTarget is null");
 //					return;
 //				}
-				Dragboard db = event.getDragboard();
-				List<File> folder = db.getFiles();
-				if (folder.isEmpty()) {
-					// sprintf("db getFiles were empty!");
-					return;
-				}
-				for (File f : folder) {
-					Messages.sprintf("TEH file?: " + f);
-					FolderInfo tableValue = findTableValues(source, f);
-					if (tableValue != null) {
-						target.getItems().add(tableValue);
-					} else {
-						break;
-					}
-				}
-				TableUtils.calculateTableViewsStatistic(model_Main.tables());
-			} else {
-				isSameTable = true;
-			}
-		});
+                Dragboard db = event.getDragboard();
+                List<File> folder = db.getFiles();
+                if (folder.isEmpty()) {
+                    // sprintf("db getFiles were empty!");
+                    return;
+                }
+                for (File f : folder) {
+                    Messages.sprintf("TEH file?: " + f);
+                    FolderInfo tableValue = findTableValues(source, f);
+                    if (tableValue != null) {
+                        target.getItems().add(tableValue);
+                    } else {
+                        break;
+                    }
+                }
+                TableUtils.calculateTableViewsStatistic(model_Main.tables());
+            } else {
+                isSameTable = true;
+            }
+        });
 
-		table.setOnDragOver((DragEvent event) -> {
-			/* show to the user that it is an actual gesture target */
-			/*
-			 * if (event.getGestureSource() != target && event.getDragboard().hasString()) {
-			 * // allow for both copying and moving, whatever user chooses
-			 * event.acceptTransferModes(TransferMode.COPY_OR_MOVE); }
-			 */
-			if (event.getGestureSource() != table && event.getDragboard().hasFiles()) {
-				// sprintf("Event drag over has files: " +
-				// event.getGestureSource() + " source:
-				// " + event.getSource());
-				event.acceptTransferModes(TransferMode.MOVE);
-				isSameTable = false;
-			} else {
-				isSameTable = true;
-			}
-			event.consume();
-		});
-		table.setOnDragExited((DragEvent event) -> {
-			sprintf("drag exited");
-			event.consume();
-		});
+        table.setOnDragOver((DragEvent event) -> {
+            /* show to the user that it is an actual gesture target */
+            /*
+             * if (event.getGestureSource() != target && event.getDragboard().hasString()) {
+             * // allow for both copying and moving, whatever user chooses
+             * event.acceptTransferModes(TransferMode.COPY_OR_MOVE); }
+             */
+            if (event.getGestureSource() != table && event.getDragboard().hasFiles()) {
+                // sprintf("Event drag over has files: " +
+                // event.getGestureSource() + " source:
+                // " + event.getSource());
+                event.acceptTransferModes(TransferMode.MOVE);
+                isSameTable = false;
+            } else {
+                isSameTable = true;
+            }
+            event.consume();
+        });
+        table.setOnDragExited((DragEvent event) -> {
+            sprintf("drag exited");
+            event.consume();
+        });
 
-		table.setOnDragEntered((DragEvent event) -> {
-			sprintf(" drag entered " + event.getGestureTarget());
-			if (event.getGestureTarget() == null) {
-				isSameTable = true;
-			} else {
-				isSameTable = false;
-			}
-		});
-		table.setOnDragDone((DragEvent event) -> {
-			sprintf("draggingg is done" + event.getGestureSource() + " target: " + event.getGestureTarget());
+        table.setOnDragEntered((DragEvent event) -> {
+            sprintf(" drag entered " + event.getGestureTarget());
+            if (event.getGestureTarget() == null) {
+                isSameTable = true;
+            } else {
+                isSameTable = false;
+            }
+        });
+        table.setOnDragDone((DragEvent event) -> {
+            sprintf("draggingg is done" + event.getGestureSource() + " target: " + event.getGestureTarget());
 
-			if (!isSameTable) {
-				@SuppressWarnings("unchecked")
-				TableView<FolderInfo> tableView = (TableView<FolderInfo>) event.getGestureSource();
-				ObservableList<FolderInfo> selectedToBeRemoved = tableView.getSelectionModel().getSelectedItems();
-				tableView.getItems().removeAll(selectedToBeRemoved);
-			}
-			isSameTable = false;
-			sortIt_table.getSelectionModel().clearSelection();
-			sorted_table.getSelectionModel().clearSelection();
-			asitis_table.getSelectionModel().clearSelection();
+            if (!isSameTable) {
+                @SuppressWarnings("unchecked")
+                TableView<FolderInfo> tableView = (TableView<FolderInfo>) event.getGestureSource();
+                ObservableList<FolderInfo> selectedToBeRemoved = tableView.getSelectionModel().getSelectedItems();
+                tableView.getItems().removeAll(selectedToBeRemoved);
+            }
+            isSameTable = false;
+            sortIt_table.getSelectionModel().clearSelection();
+            sorted_table.getSelectionModel().clearSelection();
+            asitis_table.getSelectionModel().clearSelection();
 
-		});
-	}
+        });
+    }
 
-	public void setDeleteKeyPressed(TableView<FolderInfo> table) {
-		table.setOnKeyPressed((KeyEvent event) -> {
-			if (event.getCode() == (KeyCode.DELETE)) {
-				ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
-				Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
-						bundle.getString("removePermanently"));
-				dialog.initStyle(StageStyle.UNDECORATED);
-				Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
-				while(iterator.hasNext()) {
-					ButtonType btn = iterator.next();
-					Messages.sprintf("BTNNTTNNT: " + btn.getText());
-				}
-				Optional<ButtonType> result = dialog.showAndWait();
-				if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+    public void setDeleteKeyPressed(TableView<FolderInfo> table) {
+        table.setOnKeyPressed((KeyEvent event) -> {
+            if (event.getCode() == (KeyCode.DELETE)) {
+                ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
+                Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+                        bundle.getString("removePermanently"));
+                dialog.initStyle(StageStyle.UNDECORATED);
+                Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
+                while (iterator.hasNext()) {
+                    ButtonType btn = iterator.next();
+                    Messages.sprintf("BTNNTTNNT: " + btn.getText());
+                }
+                Optional<ButtonType> result = dialog.showAndWait();
+                if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
-					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
-					Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-							Main.conf.getConfiguration_db_fileName());
+                    ArrayList<FolderInfo> listToRemove = new ArrayList<>();
+                    Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+                            Main.conf.getConfiguration_db_fileName());
 
-					for (FolderInfo folderInfo : table_row_list) {
-						if (!folderInfo.getFolderPath()
-								.equals(System.getProperty("user.home") + File.separator + "Pictures")) {
-							listToRemove.add(folderInfo);
-						} else {
-							Messages.warningText(bundle.getString("folderIsUserHomeDirectory") + " Folder name is: "
-									+ folderInfo.getFolderPath());
-							listToRemove.add(folderInfo);
-						}
-					}
-					for (FolderInfo folderInfo : listToRemove) {
-						table.getItems().remove(folderInfo);
-					}
-					Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
-					listToRemove.clear();
-					try {
-						connection.close();
-					} catch (Exception e) {
-						// TODO: handle exception
-					}
-				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-					ArrayList<FolderInfo> listToRemove = new ArrayList<>();
+                    for (FolderInfo folderInfo : table_row_list) {
+                        if (!folderInfo.getFolderPath()
+                                .equals(System.getProperty("user.home") + File.separator + "Pictures")) {
+                            listToRemove.add(folderInfo);
+                        } else {
+                            Messages.warningText(bundle.getString("folderIsUserHomeDirectory") + " Folder name is: "
+                                    + folderInfo.getFolderPath());
+                            listToRemove.add(folderInfo);
+                        }
+                    }
+                    for (FolderInfo folderInfo : listToRemove) {
+                        table.getItems().remove(folderInfo);
+                    }
+                    Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
+                    listToRemove.clear();
+                    try {
+                        connection.close();
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+                    ArrayList<FolderInfo> listToRemove = new ArrayList<>();
 
-					for (FolderInfo folderInfo : table_row_list) {
-						// if
-						// (!folderInfo.getFolderPath().contains(System.getProperty("user.home")))
-						// {
-						//
-						// }
-						listToRemove.add(folderInfo);
-					}
-					table.getItems().removeAll(listToRemove);
+                    for (FolderInfo folderInfo : table_row_list) {
+                        // if
+                        // (!folderInfo.getFolderPath().contains(System.getProperty("user.home")))
+                        // {
+                        //
+                        // }
+                        listToRemove.add(folderInfo);
+                    }
+                    table.getItems().removeAll(listToRemove);
 
-					listToRemove.clear();
-				} else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
-					Messages.sprintf("Cancelled removing files");
-				} else {
-					Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), false);
-				}
+                    listToRemove.clear();
+                } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+                    Messages.sprintf("Cancelled removing files");
+                } else {
+                    Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), false);
+                }
 
-				// table.getSelectionModel().clearSelection();
-			}
-		});
-	}
+                // table.getSelectionModel().clearSelection();
+            }
+        });
+    }
 
-	public boolean checkIfExist(TableView<FolderInfo> tableTarget, String f) {
-		for (FolderInfo folder : tableTarget.getItems()) {
-			if (folder.getFolderPath().equals(f)) {
-				// Messages.sprintf("folder listing: " + folder);
-				return true;
-				
-			}
-		}
-		return false;
-	}
+    public boolean checkIfExist(TableView<FolderInfo> tableTarget, String f) {
+        for (FolderInfo folder : tableTarget.getItems()) {
+            if (folder.getFolderPath().equals(f)) {
+                // Messages.sprintf("folder listing: " + folder);
+                return true;
 
-	private List<File> getSelectedFilesFromTable(ObservableList<FolderInfo> list) {
-		List<File> newList = new ArrayList<>();
+            }
+        }
+        return false;
+    }
 
-		for (FolderInfo listing : list) {
-			newList.add(new File(listing.getFolderPath()));
-		}
-		return newList;
-	}
+    private List<File> getSelectedFilesFromTable(ObservableList<FolderInfo> list) {
+        List<File> newList = new ArrayList<>();
 
-	public TableView<FolderInfo> getSortIt_table() {
-		return this.sortIt_table;
-	}
+        for (FolderInfo listing : list) {
+            newList.add(new File(listing.getFolderPath()));
+        }
+        return newList;
+    }
 
-	public TableView<FolderInfo> getSorted_table() {
-		return this.sorted_table;
-	}
+    public TableView<FolderInfo> getSortIt_table() {
+        return this.sortIt_table;
+    }
 
-	public TableView<FolderInfo> getAsItIs_table() {
-		return this.asitis_table;
-	}
+    public TableView<FolderInfo> getSorted_table() {
+        return this.sorted_table;
+    }
 
-	public void setSortIt_table(TableView<FolderInfo> sortIt_table) {
-		sprintf("setSortIt_table setted");
-		if (sortIt_table == null) {
-			Messages.sprintf("table was null!");
-		}
-		this.sortIt_table = sortIt_table;
-		Messages.sprintf("table was: " + sortIt_table);
-	}
+    public TableView<FolderInfo> getAsItIs_table() {
+        return this.asitis_table;
+    }
 
-	public void setSorted_table(TableView<FolderInfo> sorted_table) {
-		if (sorted_table == null) {
-			Messages.sprintf("table was null!");
-		}
-		this.sorted_table = sorted_table;
-		sprintf("Table sorted_table name is: " + sorted_table.getParent().getParent().getParent());
-	}
+    public void setSortIt_table(TableView<FolderInfo> sortIt_table) {
+        sprintf("setSortIt_table setted");
+        if (sortIt_table == null) {
+            Messages.sprintf("table was null!");
+        }
+        this.sortIt_table = sortIt_table;
+        Messages.sprintf("table was: " + sortIt_table);
+    }
 
-	public void setAsItIs_table(TableView<FolderInfo> asitis_table) {
-		if (asitis_table == null) {
-			Messages.sprintf("table was null!");
-		}
-		this.asitis_table = asitis_table;
-	}
+    public void setSorted_table(TableView<FolderInfo> sorted_table) {
+        if (sorted_table == null) {
+            Messages.sprintf("table was null!");
+        }
+        this.sorted_table = sorted_table;
+        
+    }
+
+    public void setAsItIs_table(TableView<FolderInfo> asitis_table) {
+        if (asitis_table == null) {
+            Messages.sprintf("table was null!");
+        }
+        this.asitis_table = asitis_table;
+    }
 
 //	void setTables_Container(HBox tables_container) {
 //		this.tables_container = tables_container;
@@ -386,187 +399,142 @@ public class Tables {
 //		return this.tables_container;
 //	}
 
-	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(
-			FolderInfo folderInfo) {
-		Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-			public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
-				return new EditingCell(model_Main, tableColumn);
-			}
-		};
-		return kala;
-	}
-
-	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
-			return new EditingCell(model_Main, tableColumn);
-		}
-	};
-
-	public Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>> connected_cellFactory = new Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>>() {
-		@Override
-		public TableCell<FolderInfo, Boolean> call(TableColumn<FolderInfo, Boolean> p) {
-			return new TableCell_Connected(model_Main);
-		}
-	};
-
-	public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> progressBar_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
-		@Override
-		public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
-			return new TableCell_ProgressBar();
-		}
-	};
-
-	public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> dateFixer_cellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
-		@Override
-		public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> p) {
-			return new TableCell_DateFixer(model_Main);
-		}
-	};
-	public Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>> dateDifference_Status_cellFactory = new Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>>() {
-		@Override
-		public TableCell<FolderInfo, Double> call(TableColumn<FolderInfo, Double> p) {
-			return new TableCell_DateDifference_Status(model_Main);
-		}
-	};
-	public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> cell_Status_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
-		@Override
-		public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
-			return new TableCell_Status(model_Main);
-		}
-	};
-
-	public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> copied_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
-		@Override
-		public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
-			return new TableCell_Copied();
-		}
-	};
-
-	public void refreshAllTables() {
-		Platform.runLater(() -> {
-			if (!getAsItIs_table().getItems().isEmpty()
-					|| (TableColumn<?, ?>) getAsItIs_table().getColumns().get(0) != null) {
-				((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(false);
-			}
-			((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(true);
-		});
-		Platform.runLater(() -> {
-			if (!getSortIt_table().getItems().isEmpty()
-					|| (TableColumn<?, ?>) getSortIt_table().getColumns().get(0) != null) {
-				((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(false);
-			}
-			((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(true);
-		});
-		Platform.runLater(() -> {
-			if (!getSorted_table().getItems().isEmpty()
-					|| (TableColumn<?, ?>) getSorted_table().getColumns().get(0) != null) {
-				((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(false);
-			}
-			((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(true);
-		});
-	}
-
-	public void registerTableView_obs_listener() {
-		getSorted_table().getItems().addListener(listener);
-		getSortIt_table().getItems().addListener(listener);
-		getAsItIs_table().getItems().addListener(listener);
-	}
-
-	ListChangeListener<FolderInfo> listener = new ListChangeListener<FolderInfo>() {
-
-		@Override
-		public void onChanged(Change<? extends FolderInfo> c) {
-			Main.setChanged(true);
-			sprintf("listener changed");
-		}
-
-	};
-//
-//	public HideButtons getHideButtons() {
-//		return this.hideButtons;
-//	}
-
-	public void unRegister_obs_listener() {
-		getSorted_table().getItems().removeListener(listener);
-		getSortIt_table().getItems().removeListener(listener);
-		getAsItIs_table().getItems().removeListener(listener);
-	}
-
-	public TableStatistic getSortit_TableStatistic() {
-		return this.sortit_TableStatistic;
-	}
-
-
-	public TableStatistic getSorted_TableStatistic() {
-		return this.sorted_TableStatistic;
-	}
-
-	public TableStatistic getAsItIs_TableStatistic() {
-		return this.asitis_TableStatistic;
-	}
-
-	public TableStatistic getAsitis_TableStatistic() {
-		return asitis_TableStatistic;
-	}
-
-	public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
-		this.asitis_TableStatistic = asitis_TableStatistic;
-	}
-
-	public void setSortit_TableStatistic(TableStatistic sortit_TableStatistic) {
-		this.sortit_TableStatistic = sortit_TableStatistic;
-	}
-
-	public void setSorted_TableStatistic(TableStatistic sorted_TableStatistic) {
-		this.sorted_TableStatistic = sorted_TableStatistic;
-	}
-
-
-	public Pane getSortItRootPane() {
-		return sortItRootPane;
-	}
-
-	public void setSortItRootPane(Pane sortItRootPane) {
-		this.sortItRootPane = sortItRootPane;
-	}
-
-	public Pane getSortedRootPane() {
-		return sortedRootPane;
-	}
-
-	public void setSortedRootPane(Pane sortedRootPane) {
-		this.sortedRootPane = sortedRootPane;
-	}
-
-	public Pane getAsItIsRootPane() {
-		return asItIsRootPane;
-	}
-
-	public void setAsItIsRootPane(Pane asItIsRootPane) {
-		this.asItIsRootPane = asItIsRootPane;
-	}
-
-
-    public TableView<FolderInfo> getTableByType(String tableType) {
-		if(tableType.equals(TableType.SORTIT.getType())) {
-			return getSortIt_table();
-		} else if(tableType.equals(TableType.SORTED.getType())) {
-			return getSorted_table();
-		} else if (tableType.equals(TableType.ASITIS.getType())) {
-			return getAsItIs_table();
-		}
-		return null;
+    public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory(
+            FolderInfo folderInfo) {
+        Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> kala = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+            public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+                return new EditingCell(model_Main, tableColumn);
+            }
+        };
+        return kala;
     }
 
-	public TableStatistic getTableStatisticByType(String tableType) {
-		if(tableType.equals(TableType.SORTIT.getType())) {
-			return getSortit_TableStatistic();
-		} else if(tableType.equals(TableType.SORTED.getType())) {
-			return getSorted_TableStatistic();
-		} else if (tableType.equals(TableType.ASITIS.getType())) {
-			return getAsItIs_TableStatistic();
-		}
-		return null;
-	}
+    public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> textFieldEditingCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+        public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> tableColumn) {
+            return new EditingCell(model_Main, tableColumn);
+        }
+    };
+
+    public Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>> connected_cellFactory = new Callback<TableColumn<FolderInfo, Boolean>, TableCell<FolderInfo, Boolean>>() {
+        @Override
+        public TableCell<FolderInfo, Boolean> call(TableColumn<FolderInfo, Boolean> p) {
+            return new TableCell_Connected(model_Main);
+        }
+    };
+
+    public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> progressBar_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
+        @Override
+        public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
+            return new TableCell_ProgressBar();
+        }
+    };
+
+    public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> dateFixer_cellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+        @Override
+        public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> p) {
+            return new TableCell_DateFixer(model_Main);
+        }
+    };
+    public Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>> dateDifference_Status_cellFactory = new Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>>() {
+        @Override
+        public TableCell<FolderInfo, Double> call(TableColumn<FolderInfo, Double> p) {
+            return new TableCell_DateDifference_Status(model_Main);
+        }
+    };
+    public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> cell_Status_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
+        @Override
+        public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
+            return new TableCell_Status(model_Main);
+        }
+    };
+
+    public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> copied_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
+        @Override
+        public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {
+            return new TableCell_Copied();
+        }
+    };
+
+    public void refreshAllTables() {
+        Platform.runLater(() -> {
+            if (!getAsItIs_table().getItems().isEmpty()
+                    || (TableColumn<?, ?>) getAsItIs_table().getColumns().get(0) != null) {
+                ((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(false);
+            }
+            ((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(true);
+        });
+        Platform.runLater(() -> {
+            if (!getSortIt_table().getItems().isEmpty()
+                    || (TableColumn<?, ?>) getSortIt_table().getColumns().get(0) != null) {
+                ((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(false);
+            }
+            ((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(true);
+        });
+        Platform.runLater(() -> {
+            if (!getSorted_table().getItems().isEmpty()
+                    || (TableColumn<?, ?>) getSorted_table().getColumns().get(0) != null) {
+                ((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(false);
+            }
+            ((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(true);
+        });
+    }
+
+    public void registerTableView_obs_listener() {
+        getSorted_table().getItems().addListener(listener);
+        getSortIt_table().getItems().addListener(listener);
+        getAsItIs_table().getItems().addListener(listener);
+    }
+
+    ListChangeListener<FolderInfo> listener = new ListChangeListener<FolderInfo>() {
+
+        @Override
+        public void onChanged(Change<? extends FolderInfo> c) {
+            Main.setChanged(true);
+            sprintf("listener changed");
+        }
+
+    };
+
+    public TableStatistic getAsItIs_TableStatistic() {
+        return this.asitis_TableStatistic;
+    }
+
+    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
+        this.asitis_TableStatistic = asitis_TableStatistic;
+    }
+
+    public TableView<FolderInfo> getTableByType(String tableType) {
+        if (tableType.equals(TableType.SORTIT.getType())) {
+            return getSortIt_table();
+        } else if (tableType.equals(TableType.SORTED.getType())) {
+            return getSorted_table();
+        } else if (tableType.equals(TableType.ASITIS.getType())) {
+            return getAsItIs_table();
+        }
+        return null;
+    }
+
+    public TableStatistic getTableStatisticByType(String tableType) {
+        if (tableType.equals(TableType.SORTIT.getType())) {
+            return getSortit_TableStatistic();
+        } else if (tableType.equals(TableType.SORTED.getType())) {
+            return getSorted_TableStatistic();
+        } else if (tableType.equals(TableType.ASITIS.getType())) {
+            return getAsItIs_TableStatistic();
+        }
+        return null;
+    }
+
+    public double getTablesParentWidth() {
+        return tablesParentWidth.get();
+    }
+
+    public SimpleDoubleProperty tablesParentWidthProperty() {
+        return tablesParentWidth;
+    }
+
+    public void setTablesParentWidth(double tablesParentWidth) {
+        this.tablesParentWidth.set(tablesParentWidth);
+    }
 
 }

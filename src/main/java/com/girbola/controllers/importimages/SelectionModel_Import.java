@@ -50,7 +50,7 @@ class SelectionModel_Import {
 		// sprintf("addAll: " + node);
 		if (!contains(node)) {
 			node.setStyle(style_selected);
-			this.selectionList.add(node);
+			selectionList.add(node);
 		}
 	}
 
@@ -60,7 +60,7 @@ class SelectionModel_Import {
 		if (!contains(node)) {
 			sprintf("59add: " + node);
 			node.setStyle(style_selected);
-			this.selectionList.add(node);
+			selectionList.add(node);
 			// }
 		} else {
 			sprintf("remove: " + node);
@@ -72,14 +72,14 @@ class SelectionModel_Import {
 	public synchronized void clearAll() {
 		sprintf("clearing all");
 
-		while (!this.selectionList.isEmpty()) {
-			remove(this.selectionList.iterator().next());
+		while (!selectionList.isEmpty()) {
+			remove(selectionList.iterator().next());
 		}
 
 	}
 
 	public synchronized boolean contains(Node node) {
-		return this.selectionList.contains(node);
+		return selectionList.contains(node);
 	}
 
 	public void log() {
@@ -90,7 +90,7 @@ class SelectionModel_Import {
 		if (contains(node)) {
 			node.getStyleClass().remove(style_selected);
 			node.setStyle(style_deselected);
-			this.selectionList.remove(node);
+			selectionList.remove(node);
 
 		}
 	}
@@ -147,11 +147,11 @@ class SelectionModel_Import {
 	}
 
 	public synchronized void setSelectionList(ObservableList<Node> selectionList) {
-		this.selectionList = selectionList;
+		selectionList = selectionList;
 	}
 
 	public ObservableList<Node> getSelectionList() {
-		return this.selectionList;
+		return selectionList;
 	}
 
 	public SimpleIntegerProperty getSelectedIndicator_property() {

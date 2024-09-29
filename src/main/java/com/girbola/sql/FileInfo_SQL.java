@@ -16,25 +16,11 @@ public class FileInfo_SQL {
     private static final String ERROR = FileInfo_SQL.class.getName();
 
     private static String fileInfoTableColumns() {
-        return " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING,"
-                + "workDirDriveSerialNumber STRING," + "destination_Path STRING," + "event           STRING,"
-                + "location        STRING," + "tags            STRING," + "camera_model    STRING,"
-                + "user			   STRING," + "orientation 	   INTEGER," + "timeshift       INTEGER,"
-                + "bad             BOOLEAN," + "good            BOOLEAN," + "suggested       BOOLEAN,"
-                + "confirmed       BOOLEAN," + "copied          BOOLEAN," + "ignored         BOOLEAN,"
-                + "tableduplicated BOOLEAN," + "image           BOOLEAN," + "video           BOOLEAN,"
-                + "raw             BOOLEAN," + "date            NUMERIC," + "size            NUMERIC,"
-                + "imageDifferenceHash   INTEGER," + "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
+        return " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING," + "workDirDriveSerialNumber STRING," + "destination_Path STRING," + "event           STRING," + "location        STRING," + "tags            STRING," + "camera_model    STRING," + "user			   STRING," + "orientation 	   INTEGER," + "timeshift       INTEGER," + "bad             BOOLEAN," + "good            BOOLEAN," + "suggested       BOOLEAN," + "confirmed       BOOLEAN," + "copied          BOOLEAN," + "ignored         BOOLEAN," + "tableduplicated BOOLEAN," + "image           BOOLEAN," + "video           BOOLEAN," + "raw             BOOLEAN," + "date            NUMERIC," + "size            NUMERIC," + "imageDifferenceHash   INTEGER," + "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
 
     }
 
-    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " ("
-            + "'fileInfo_id', " + "'orgPath', " + "'workDir', " + "'workDirDriveSerialNumber', "
-            + "'destination_Path', " + "'camera_model', " + "'user', " + "'orientation', " + "'bad'," + "'good', "
-            + "'confirmed', " + "'copied'," + "'ignored', " + "'suggested', " + "'image', " + "'raw', " + "'video', "
-            + "'timeshift', " + "'date', " + "'size', " + "'tableduplicated', " + "'tags', " + "'event', "
-            + "'location', " + "'imageDifferenceHash'," + "'thumb_offset', " + "'thumb_length')"
-            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " (" + "'fileInfo_id', " + "'orgPath', " + "'workDir', " + "'workDirDriveSerialNumber', " + "'destination_Path', " + "'camera_model', " + "'user', " + "'orientation', " + "'bad'," + "'good', " + "'confirmed', " + "'copied'," + "'ignored', " + "'suggested', " + "'image', " + "'raw', " + "'video', " + "'timeshift', " + "'date', " + "'size', " + "'tableduplicated', " + "'tags', " + "'event', " + "'location', " + "'imageDifferenceHash'," + "'thumb_offset', " + "'thumb_length')" + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 //
 //	private static String alterTableColumn_(String tableType) {
@@ -111,8 +97,6 @@ public class FileInfo_SQL {
 
             PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
             for (FileInfo fileInfo : list) {
-
-                Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
                 addToFileInfoDB(connection, pstmt, fileInfo);
             }
             pstmt.executeBatch();
@@ -172,7 +156,7 @@ public class FileInfo_SQL {
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
         String orgPath = rs.getString("orgPath");
-        Messages.sprintf("loadFileInfo orgPath: " + orgPath);String workDir = rs.getString("workDir");
+        String workDir = rs.getString("workDir");
         String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
         String destPath = rs.getString("destination_Path");
         String event = rs.getString("event");
@@ -199,9 +183,7 @@ public class FileInfo_SQL {
         long size = rs.getLong("size");
         int thumb_offset = rs.getInt("thumb_offset");
         int thumb_lenght = rs.getInt("thumb_length");
-        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags,
-                camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw,
-                video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght);
+        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght);
     }
 
     /*
@@ -266,11 +248,7 @@ public class FileInfo_SQL {
 
 		try {
 			boolean tableCreated = createFileInfoTable(connection);
-			if (tableCreated) {
-				Messages.sprintf("tableCreated");
-			} else {
-				Messages.sprintf("NOT tableCreated");
-			}
+        	Messages.sprintf("tableCreated? " + tableCreated);
 			connection.setAutoCommit(false);
 			Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(sql);
@@ -279,7 +257,6 @@ public class FileInfo_SQL {
                     return null;
                 }
 				FileInfo finfo = loadFileInfo(rs);
-                Messages.sprintf("fileinfo Loadedddd: " + finfo.getOrgPath());
 				list.add(finfo);
 			}
 		} catch (Exception e) {

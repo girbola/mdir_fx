@@ -7,7 +7,7 @@
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane id="stackPane" minHeight="400.0" minWidth="400.0" stylesheets="@../../../resources/themes/dark/vlcPlayer.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.vlcj.VLCPlayerController">
+<AnchorPane id="stackPane" minHeight="400.0" minWidth="400.0" stylesheets="@../../../../resources/themes/dark/vlcPlayer.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.vlcj.VLCPlayerController">
    <children>
       <StackPane id="stackPane" layoutX="-3.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -25,7 +25,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/play.png" />
+                                    <Image url="@../../../../resources/img/play.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -34,7 +34,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/skip%20back.jpg" />
+                                    <Image url="@../../../../resources/img/skip%20back.jpg" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -43,7 +43,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/stop.png" />
+                                    <Image url="@../../../../resources/img/stop.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -52,7 +52,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/skip%20forward.jpg" />
+                                    <Image url="@../../../../resources/img/skip%20forward.jpg" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -61,7 +61,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/mute%20on.jpg" />
+                                    <Image url="@../../../../resources/img/mute%20on.jpg" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -70,7 +70,7 @@
                            <graphic>
                               <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../resources/img/fullscreen.png" />
+                                    <Image url="@../../../../resources/img/fullscreen.png" />
                                  </image>
                               </ImageView>
                            </graphic>

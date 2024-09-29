@@ -1,15 +1,17 @@
 package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.CssStylesController;
+import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -47,8 +49,7 @@ public class MakeChanges extends Task<Integer> {
             localDateTimeList = new ArrayList<>();
             localDateTimeList.add(ldt_start);
         } else {
-            localDateTimeList = DateFixCommonUtils.createDateList_logic(files, ldt_start,
-                    ldt_end);
+            localDateTimeList = DateFixCommonUtils.createDateList_logic(files, ldt_start, ldt_end);
         }
 
         if (localDateTimeList.isEmpty()) {
@@ -75,12 +76,10 @@ public class MakeChanges extends Task<Integer> {
             String value1 = o1.getId().replace("fileDate: ", "");
             if (value1.length() <= 1) {
                 value1 = "0" + value1;
-                sprintf("Zero added: " + value1);
             }
             String value2 = o2.getId().replace("fileDate: ", "");
             if (value2.length() <= 1) {
                 value2 = "0" + value2;
-                sprintf("Zero added: " + value2);
             }
             return value1.compareTo(value2);
         });
@@ -94,16 +93,16 @@ public class MakeChanges extends Task<Integer> {
             errorSmth(ERROR, "Lists were different", null, getLineNumber(), true);
         }
         while (it.hasNext() && it2.hasNext()) {
-            Node node = it.next();
-            if (node instanceof HBox) {
-                for (Node nodeHBox : ((HBox) node).getChildren()) {
-                    if (nodeHBox instanceof TextField) {
-                        try {
-                            TextField tf = (TextField) nodeHBox;
-                            tf.setText(it2.next());
-                            tf.setStyle(CssStylesController.getModified_style());
-                        } catch (Exception ex) {
-                            errorSmth(ERROR, "Cannot make textfield changes. " + (it == null ? true : false), ex, Misc.getLineNumber(), true);
+            Node imageFrame = it.next();
+            if (imageFrame instanceof VBox) {
+                for (Node nodeVBox : ((VBox) imageFrame).getChildren()) {
+                    if (nodeVBox instanceof HBox && nodeVBox.getId().equals("bottom")) {
+                        for (Node bottom : ((HBox) nodeVBox).getChildren()) {
+                            if (bottom instanceof Label && bottom.getId().equals("fileDate")) {
+                                Label tf = (Label) bottom;
+                                tf.setText(it2.next());
+                                nodeVBox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                            }
                         }
                     }
                 }

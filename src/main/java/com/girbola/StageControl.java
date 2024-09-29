@@ -3,7 +3,7 @@ package com.girbola;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
-import javafx.geometry.Bounds;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class StageControl extends Stage {
@@ -34,39 +34,38 @@ public class StageControl extends Stage {
 
         primaryStage.setOnCloseRequest(modelMain.dontExit);
 
-
         primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-                Main.conf.setWindowStartPosX((double) newValue);
-                //Messages.sprintf("windowstartposX: " + newValue);
+                Platform.runLater(() -> {
+                    Main.conf.setWindowStartPosX((double) newValue);
+                });
             }
         });
 
         primaryStage.yProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
-                Main.conf.setWindowStartPosY((double) newValue);
-                //Messages.sprintf("windowstartposY: " + newValue);
+                Platform.runLater(() -> {
+                    Main.conf.setWindowStartPosY((double) newValue);
+                });
             }
         });
         primaryStage.widthProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartWidth((double) newValue);
-
                 int visibles = modelMain.tables().showAndHideTables.getVisibles();
 
-                modelMain.tables().getTables_rootPane().setPrefWidth((Double) newValue);
+//                if (visibles >= 3) {
+//                    return;
+//                }
+                modelMain.tables().getTables_rootPane().setPrefWidth((double) newValue);
 
                 double sortedWidth = 0;
                 double sortItWidth = 0;
                 double asitisWidth = 0;
                 double hiddenWidths = ((3 - visibles) * 50);
-                double bounds = modelMain.tables().getTables_rootPane().getLayoutBounds().getWidth();
-                //double tablesRootPane = (modelMain.tables().getTables_rootPane().getPrefWidth()-75);
-                double divider = Math.floor(bounds / (double) visibles);
-                divider -= hiddenWidths;
 
-                //divider -= (hiddenWidths*3);
-                Messages.sprintf("bounds width: " + bounds +  " hiddenWidths: " + hiddenWidths + " divider: " + divider);
+                double divider = Math.floor((double) newValue / (double) visibles);
+                divider -= hiddenWidths;
 
                 if (modelMain.tables().getSorted_table().isVisible()) {
                     TableUtils.setHandleDividingTableWidthEqually(modelMain.tables().getSorted_table(), divider);
@@ -102,26 +101,25 @@ public class StageControl extends Stage {
                         " sortit: " + sortItWidth +
                         " asitis: " + asitisWidth +
                         " divider: " + divider +
-                        " hiddenWidths: " + hiddenWidths +
-                        " modelMain.tables().getSorted_table().getParent(); " +
-                        modelMain.tables().getSorted_table().getParent().getParent().getParent().getId());
+                        " hiddenWidths: " + hiddenWidths);
             }
         });
 
         primaryStage.heightProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {
                 Main.conf.setWindowStartHeight((double) newValue);
-                Messages.sprintf("setWindowStartHeight: " + newValue);
             }
         });
     }
 
     public void setStageBoundarys() {
-        primaryStage.setX(Main.conf.getWindowStartPosX());
-        primaryStage.setY(Main.conf.getWindowStartPosY());
-        primaryStage.setWidth(Main.conf.getWindowStartWidth());
-        primaryStage.setHeight(Main.conf.getWindowStartHeight());
-        Messages.sprintf("AEORGAEOTJHAETh:" + Main.conf.toString());
+        Messages.sprintf("setStageBoundarys started");
+        Platform.runLater(() -> {
+            primaryStage.setX(Main.conf.getWindowStartPosX());
+            primaryStage.setY(Main.conf.getWindowStartPosY());
+            primaryStage.setWidth(Main.conf.getWindowStartWidth());
+            primaryStage.setHeight(Main.conf.getWindowStartHeight());
+        });
     }
 
     public int calculateVisibles(Model_main modelMain) {

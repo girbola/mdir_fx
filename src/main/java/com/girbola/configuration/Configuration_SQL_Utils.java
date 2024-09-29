@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -22,8 +23,7 @@ public class Configuration_SQL_Utils {
     private static final String ERROR = Configuration_SQL_Utils.class.getName();
     public static final String id = "id";
 
-    private final static String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType()
-            + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
+    private final static String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
 
     private static int configuration_id = 0;
     public static final String betterQualityThumbs = "betterQualityThumbs";
@@ -38,7 +38,7 @@ public class Configuration_SQL_Utils {
     public static final String tableShow_asItIs = "tableShow_asItIs";
     public static final String tableShow_sortIt = "tableShow_sortIt";
     public static final String tableShow_sorted = "tableShow_sorted";
-    public static final String themePath = "themePath";
+    public static final String currentTheme = "currentTheme";
     public static final String vlcPath = "vlcPath";
     public static final String vlcSupport = "vlcSupport";
     public static final String windowStartHeigth = "windowStartHeigth";
@@ -47,11 +47,70 @@ public class Configuration_SQL_Utils {
     public static final String windowStartWidth = "windowStartWidth";
     public static final String workDir = "workDir";
     public static final String workDirSerialNumber = "workDirSerialNumber";
-    final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType()
-            + " (path STRING UNIQUE)";
+    final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
 
-    private static boolean addTableColumn(Connection connection, PreparedStatement pstmt, TableColumn tc,
-                                          String tableId) {
+    /**
+     * Ensures that the 'currentTheme' column exists in the configuration table.
+     *
+     * @param connection the connection to the database.
+     * @throws Exception if any SQL error occurs.
+     */
+    private static void ensureCurrentThemeColumnExists(Connection connection) throws Exception {
+        String alterTableSQL = "ALTER TABLE your_table_name ADD COLUMN betterQualityThumbs BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN confirmOnExit BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN id_counter INTEGER UNIQUE; "
+                + "ALTER TABLE your_table_name ADD COLUMN showFullPath BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN showHints BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN showTooltips BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN currentTheme STRING; "
+                + "ALTER TABLE your_table_name ADD COLUMN vlcPath STRING; "
+                + "ALTER TABLE your_table_name ADD COLUMN vlcSupport BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN saveDataToHD STRING; "
+                + "ALTER TABLE your_table_name ADD COLUMN windowStartPosX DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE your_table_name ADD COLUMN windowStartPosY DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE your_table_name ADD COLUMN windowStartWidth DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE your_table_name ADD COLUMN windowStartHeigth DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE your_table_name ADD COLUMN imageViewXPos DOUBLE; "
+                + "ALTER TABLE your_table_name ADD COLUMN imageViewYPos DOUBLE; "
+                + "ALTER TABLE your_table_name ADD COLUMN workDirSerialNumber STRING; "
+                + "ALTER TABLE your_table_name ADD COLUMN workDir STRING; "
+                + "ALTER TABLE your_table_name ADD COLUMN tableShow_sortIt BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN tableShow_sorted BOOLEAN; "
+                + "ALTER TABLE your_table_name ADD COLUMN tableShow_asItIs BOOLEAN;";
+
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(alterTableSQL);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try (Statement stmt = connection.createStatement()) {
+            stmt.executeUpdate(alterTableSQL);
+        } catch (Exception e) {
+            // Assuming the column exists if an error is thrown.
+            // If the error is not related to the column already existing, further handling is required.
+        }
+    }
+
+    /**
+     * Updates the configuration in the database.
+     */
+    public synchronized static void update_Configuration() {
+        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        try {
+            // Ensure the 'currentTheme' column exists.
+            ensureCurrentThemeColumnExists(connection);
+
+            connection.setAutoCommit(false);
+            insert_Configuration(connection, Main.conf);
+            connection.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        SQL_Utils.closeConnection(connection);
+    }
+
+
+    private static boolean addTableColumn(Connection connection, PreparedStatement pstmt, TableColumn tc, String tableId) {
         try {
             if (tc.getId() != null) {
                 pstmt.setString(1, tableId + "_" + tc.getId());
@@ -79,8 +138,7 @@ public class Configuration_SQL_Utils {
                 return false;
             }
 
-            String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.TABLES_COLS.getType()
-                    + " (tableColumn STRING UNIQUE, " + "	width DOUBLE)";
+            String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.TABLES_COLS.getType() + " (tableColumn STRING UNIQUE, " + "	width DOUBLE)";
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
         } catch (Exception e) {
@@ -112,7 +170,7 @@ public class Configuration_SQL_Utils {
 		    	    + showFullPath + " BOOLEAN,"
 		    	    + showHints + " BOOLEAN,"
 		    	    + showTooltips + " BOOLEAN,"
-		    	    + themePath + " STRING,"
+		    	    + currentTheme + " STRING,"
 		    	    + vlcPath + " STRING,"
 		    	    + vlcSupport + " BOOLEAN,"
 		    	    + saveDataToHD + " STRING,"
@@ -164,29 +222,7 @@ public class Configuration_SQL_Utils {
      * @return true if the configuration is successfully loaded, false otherwise
      */
     public static boolean loadConfiguration(Connection connection, Configuration configuration) {
-        String sql = "SELECT id, " +
-                "betterQualityThumbs, " +
-                "confirmOnExit, " +
-                "id_counter, " +
-                "showFullPath, " +
-                "showHints, " +
-                "showTooltips, " +
-                "themePath, " +
-                "vlcPath, " +
-                "vlcSupport, " +
-                "saveDataToHD, " +
-                "windowStartPosX, " +
-                "windowStartPosY, " +
-                "windowStartWidth, " +
-                "windowStartHeigth, " +
-                "imageViewXPos, " +
-                "imageViewYPos, " +
-                "workDirSerialNumber, " +
-                "workDir, " +
-                "tableShow_sortIt, " +
-                "tableShow_sorted, " +
-                "tableShow_asItIs " +
-                "FROM " + SQL_Enums.CONFIGURATION.getType();
+        String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQL_Enums.CONFIGURATION.getType();
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.executeQuery();
@@ -199,7 +235,8 @@ public class Configuration_SQL_Utils {
                 configuration.setShowFullPath(Boolean.parseBoolean(rs.getString(showFullPath)));
                 configuration.setShowHints(Boolean.parseBoolean(rs.getString(showHints)));
                 configuration.setShowTooltips(Boolean.parseBoolean(rs.getString(showTooltips)));
-                configuration.setThemePath(rs.getString(themePath));
+                configuration.setCurrentTheme(rs.getString(currentTheme)); // e.x. dark
+                configuration.setThemePath("/" + configuration.getCurrentTheme() + "/");
                 configuration.setVlcPath(rs.getString(vlcPath));
                 configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(vlcSupport)));
                 configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(saveDataToHD)));
@@ -223,9 +260,7 @@ public class Configuration_SQL_Utils {
                     configuration.setWorkDir(rs.getString(workDir));
                 }
                 System.err.println("1conf.workDir_property(): " + configuration.getWorkDir().hashCode());
-                Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = "
-                        + rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips()
-                        + " configuration.: " + configuration.getWorkDir());
+                Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = " + rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
 
                 configuration.setTableShow_sortIt(Boolean.parseBoolean(rs.getString(tableShow_sortIt)));
                 configuration.setTableShow_sorted(Boolean.parseBoolean(rs.getString(tableShow_sorted)));
@@ -235,12 +270,11 @@ public class Configuration_SQL_Utils {
             }
             connection.commit();
             connection.close();
+            return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
         }
-        System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir());
-        return false;
     }
 
     /**
@@ -358,7 +392,7 @@ public class Configuration_SQL_Utils {
                             + "'" + showFullPath + "', "
                             + "'" + showHints + "', "
                             + "'" + showTooltips + "', "
-                            + "'" + themePath + "', "
+                            + "'" + currentTheme + "', "
                             + "'" + vlcPath + "', "
                             + "'" + vlcSupport + "', "
                             + "'" + saveDataToHD + "', "
@@ -384,7 +418,7 @@ public class Configuration_SQL_Utils {
                     pstmt.setBoolean(5, configuration.isShowFullPath());
                     pstmt.setBoolean(6, configuration.isShowHints());
                     pstmt.setBoolean(7, configuration.isShowTooltips());
-                    pstmt.setString(8, configuration.getThemePath());
+                    pstmt.setString(8, configuration.getCurrentTheme());
                     pstmt.setString(9, configuration.getVlcPath());
                     pstmt.setBoolean(10, configuration.isVlcSupport());
                     pstmt.setBoolean(11, configuration.isSaveDataToHD());
@@ -423,8 +457,7 @@ public class Configuration_SQL_Utils {
      * @param listToRemove the ArrayList of FolderInfo objects representing the folders to insert or replace in the ignored list
      */
     public static void insert_IgnoredList(ArrayList<FolderInfo> listToRemove) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         try {
             connection.setAutoCommit(false);
             String sql = "INSERT OR REPLACE INTO " + SQL_Enums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
@@ -451,8 +484,7 @@ public class Configuration_SQL_Utils {
         Connection connection = null;
 
         if (connection_open == null) {
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                    Main.conf.getConfiguration_db_fileName());
+            connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } else {
             connection = connection_open;
         }
@@ -480,8 +512,7 @@ public class Configuration_SQL_Utils {
     // @formatter:on
     public static void saveTableWidths(Tables table) {
         try {
-            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                    Main.conf.getConfiguration_db_fileName());
+            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
             connection.setAutoCommit(false);
             PreparedStatement pstmt = null;
 
@@ -530,7 +561,7 @@ public class Configuration_SQL_Utils {
 	/**
      * Updates the configuration in the database.
      */
-    public synchronized static void update_Configuration() {
+   /* public synchronized static void update_Configuration() {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
 				Main.conf.getConfiguration_db_fileName());
 		try {
@@ -542,6 +573,6 @@ public class Configuration_SQL_Utils {
 			e.printStackTrace();
 		}
         SQL_Utils.closeConnection(connection);
-	}
+	} */
 
 }

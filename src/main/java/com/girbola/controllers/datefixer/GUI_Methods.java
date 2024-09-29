@@ -26,7 +26,7 @@ public class GUI_Methods {
 	public static Image loadImage(String string, int buttonWidth) {
 		URL file = null;
 		try {
-			file = Main.class.getResource("/resources/img/" + string);
+			file = Main.class.getResource("/img/" + string);
 			if (file != null) {
 				Image image = new Image(file.toString(), buttonWidth, 0, true, true, false);
 				return image;

@@ -6,22 +6,13 @@
  */
 package common.utils.ui;
 
-import com.girbola.configuration.GUIPrefs;
+import com.girbola.messages.Messages;
 import javafx.geometry.Bounds;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.RowConstraints;
 
 import java.util.Set;
-
-import static com.girbola.messages.Messages.errorSmth;
-import static com.girbola.misc.Misc.getLineNumber;
 
 /**
  *
@@ -32,6 +23,7 @@ public class UI_Tools {
 	final private static String ERROR = UI_Tools.class.getSimpleName();
 
 	public static Bounds getNodeLayoutBounds(Node node) {
+		Messages.sprintf("getNodeLayoutBounds started");
 		return node.getLayoutBounds();
 	}
 

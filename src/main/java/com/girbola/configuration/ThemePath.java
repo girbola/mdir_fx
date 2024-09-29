@@ -7,8 +7,8 @@
 package com.girbola.configuration;
 
 enum ThemePath {
-    DARK("/resources/themes/dark/"),
-    LIGHT("/resources/themes/light/");
+    DARK("dark"),
+    LIGHT("light");
 
     private String type;
 

@@ -6,25 +6,24 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.Main;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.util.concurrent.atomic.AtomicInteger;
+
+import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.createImageNumberLbl;
 
 public class AddContentToDateFixContainer extends Task<Integer> {
 
@@ -54,42 +53,28 @@ public class AddContentToDateFixContainer extends Task<Integer> {
         loading_Process_Task.setMessage("Adding images");
     }
 
-    private Label createText(int i) {
-        Label label = new Label("" + i);
-        label.getStyleClass().add("imageNumber");
-        label.setId("imageNumber");
-        label.setMouseTransparent(true);
-        return label;
-    }
 
     // private AtomicInteger counter = new AtomicInteger(list.size());
     @Override
     protected Integer call() throws Exception {
 
         for (Node node : list) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                createNode(node);
-                // loadingProcess_Task.getProgressBar().setProgress((double) counter.get());
-            }
+            Messages.sprintf("ImageFrameeeeee: " + node.getId());
+            changeImageNumberOfNode(node);
         }
         return null;
     }
 
-    private void createNode(Node node) {
-        StackPane sp = (StackPane) node.lookup("#stackPane");
-        Label old_text = (Label) sp.lookup("#imageNumber");
-        if (old_text == null) {
-            Label imageNumber = createText(counter.get());
-            sp.getChildren().add(imageNumber);
-            StackPane.setAlignment(imageNumber, Pos.TOP_RIGHT);
-        } else {
-            old_text.setText("" + counter.get());
+    private void changeImageNumberOfNode(Node node) {
+        if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            VBox vbox = (VBox) node;
+            Label imageFrameImageNumber = DateFixGuiUtils.getImageFrameImageNumber(vbox);
+            if (imageFrameImageNumber != null) {
+                imageFrameImageNumber.setText("" + counter.get());
+            }
         }
 
-        model_datefix.getTilePane().getChildren().add(node);
-
         counter.incrementAndGet();
-
     }
 
     @Override

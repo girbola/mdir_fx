@@ -12,7 +12,7 @@ enum Configuration_Type {
     SHOWHINTS("showHints"),
     SAVETHUMBS("savingThumbs"),
     WORKDIR("workDir"),
-    THEMEPATH("themePath"),
+    THEMEPATH("currentTheme"),
     VLCPATH("vlcPath"),
     SAVEFOLDER("saveFolder"),
     CONFIRMONEXIT("confirmOnExit"),

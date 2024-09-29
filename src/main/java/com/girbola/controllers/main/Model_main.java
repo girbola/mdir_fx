@@ -11,7 +11,6 @@ import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
-import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -20,18 +19,13 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
-import com.girbola.thumbinfo.ThumbInfo;
 import com.girbola.workdir.WorkDirHandler;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Scene;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
@@ -43,9 +37,7 @@ import javafx.util.Duration;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 
 import static com.girbola.Main.bundle;
@@ -60,21 +52,11 @@ public class Model_main {
     private AnchorPane main_container;
     private BottomController bottomController;
     private Buttons buttons;
-    private List<ThumbInfo> thumbInfo = new ArrayList<>();
-    private MainWindowSizing mainWindowSizing;
     private Populate populate;
-    private Scene scene;
     private ScheduledService<Void> monitorExternalDriveConnectivity;
     private SelectedFolderScanner selectedFolders;
-    private SimpleDoubleProperty asitisTableWidth_prop;
-    private SimpleDoubleProperty sortedTableWidth_prop;
-    private SimpleDoubleProperty sortitTableWidth_prop;
-    private Stage main_stage;
     private StringProperty table_root_hbox_width = new SimpleStringProperty();
     private TablePositionHolder tablePositionHolder;
-    private TableStatistic asitisTableStatistic;
-    private TableStatistic sortedTableStatistic;
-    private TableStatistic sortitTableStatistic;
     private Tables tables;
     private VBox main_vbox;
     private WorkDirHandler workDirHandler = new WorkDirHandler();
@@ -85,7 +67,6 @@ public class Model_main {
         sprintf("Model instantiated...");
 
         buttons = new Buttons(this);
-        mainWindowSizing = new MainWindowSizing(this);
         monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
         monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
         populate = new Populate(this);
@@ -93,65 +74,13 @@ public class Model_main {
         tablePositionHolder = new TablePositionHolder(this);
         tables = new Tables(this);
 
-        sortitTableWidth_prop = new SimpleDoubleProperty(0);
-        sortedTableWidth_prop = new SimpleDoubleProperty(0);
-        asitisTableWidth_prop = new SimpleDoubleProperty(0);
-
         tables.init();
 
     }
-/*
-    public void setTable_root_hbox_width(String table_root_hbox_width) {
-        this.table_root_hbox_width.set(table_root_hbox_width);
-    }*/
-/*
-    public TableStatistic getSortitTableStatistic() {
-        return sortitTableStatistic;
-    }
-
-    public void setSortitTableStatistic(TableStatistic sortitTableStatistic) {
-        this.sortitTableStatistic = sortitTableStatistic;
-    }*/
-
-/*
-    public TableStatistic getSortedTableStatistic() {
-        return sortedTableStatistic;
-    }
-
-    public void setSortedTableStatistic(TableStatistic sortedTableStatistic) {
-        this.sortedTableStatistic = sortedTableStatistic;
-    }
-
-    public TableStatistic getAsitisTableStatistic() {
-        return asitisTableStatistic;
-    }
-
-    public void setAsitisTableStatistic(TableStatistic asitisTableStatistic) {
-        this.asitisTableStatistic = asitisTableStatistic;
-    }
-*/
-
 
     public StringProperty getTable_root_hbox_width() {
         return table_root_hbox_width;
     }
-
-
-/*
-    public final List<ThumbInfo> getThumbInfo() {
-        return thumbInfo;
-    }
-
-    public final void setThumbInfo(List<ThumbInfo> thumbInfo) {
-        this.thumbInfo = thumbInfo;
-    }
-*/
-
-/*
-    public TablePositionHolder getTablePositionHolder() {
-        return this.tablePositionHolder;
-    }
-*/
 
     public SelectedFolderScanner getSelectedFolders() {
         return selectedFolders;
@@ -351,10 +280,8 @@ public class Model_main {
         return monitorExternalDriveConnectivity;
     }
 
-
     public void setBottomController(BottomController bottomController) {
         this.bottomController = bottomController;
-
     }
 
     public BottomController getBottomController() {
@@ -375,54 +302,4 @@ public class Model_main {
             Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
         }
     }
-
-
-    public MainWindowSizing getMainWindowSizing() {
-        return this.mainWindowSizing;
-    }
-
-    public void saveTablesToDatabases_(Stage stage, LoadingProcessTask loadingProcess_Task,
-                                       boolean closeLoadingStage) {
-        Task<Void> task = new Task<Void>() {
-            @Override
-            protected Void call() throws Exception {
-                saveAllTableContents();
-                return null;
-            }
-        };
-        if (loadingProcess_Task == null) {
-            loadingProcess_Task = new LoadingProcessTask(stage);
-        }
-
-        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintf("Database were successfully saved");
-                if (closeLoadingStage) {
-                    // loadingProcess_Task.closeStage();
-                }
-            }
-        });
-
-        task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintfError("Saving database has been cancelled");
-//				lpt.closeStage();
-            }
-        });
-        task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                Messages.sprintfError("Saving database has been failed");
-//				lpt.closeStage();
-            }
-        });
-
-//		lpt.setTask(task);
-        Thread thread = new Thread(task, "Saving Thread");
-        thread.start();
-
-    }
-
 }
