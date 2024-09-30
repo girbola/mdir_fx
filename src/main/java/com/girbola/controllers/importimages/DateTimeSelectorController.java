@@ -6,10 +6,6 @@
  */
 package com.girbola.controllers.importimages;
 
-import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.misc.Misc;
-import common.utils.date.DateUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -19,15 +15,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
 /**

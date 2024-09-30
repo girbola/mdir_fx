@@ -6,8 +6,6 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.configuration.GuiImageFrame;
-import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
@@ -21,7 +19,6 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
