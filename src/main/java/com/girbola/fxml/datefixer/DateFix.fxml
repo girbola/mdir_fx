@@ -77,7 +77,11 @@
                                                         <Tooltip text="%selectNoneTooltip" />
                                                     </tooltip>
                                                     <graphic>
-                                                        <FontIcon iconColor="WHITE" iconLiteral="bi-ui-radios-grid" iconSize="25" />
+                                                    <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                                        <image>
+                                                            <Image url="@../../../../../resources/img/selectNone.png" />
+                                                        </image>
+                                                    </ImageView>
                                                     </graphic>
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
@@ -93,14 +97,19 @@
                                                     </tooltip>
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_good_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+
+
                                                     <tooltip>
                                                         <Tooltip text="%selectAllGoodFilesTooltip" />
                                                     </tooltip>
-                                                    <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                        <image>
-                                                            <Image url="@../../../../../resources/img/selectBad.png" />
-                                                        </image>
-                                                    </ImageView>
+
+                                                    <graphic>
+                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                                                            <image>
+                                                                <Image url="@../../../../../resources/img/selectGood.png" />
+                                                            </image>
+                                                        </ImageView>
+                                                    </graphic>
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
@@ -202,11 +211,7 @@
                                                         <Tooltip text="%selectAllSuggestedVideosTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button fx:id="listFileInfo_btn" alignment="CENTER" contentDisplay="CENTER" focusTraversable="false" graphicTextGap="0.0" minWidth="35.0" mnemonicParsing="false" onAction="#listFileInfo_btn_action" text="FI" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                                    <tooltip>
-                                                        <Tooltip text="Empty Tooltip" />
-                                                    </tooltip>
-                                                </Button>
+
                                             </children>
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -614,29 +619,30 @@
                                                         <HBox alignment="CENTER" fillHeight="false" VBox.vgrow="ALWAYS">
                                                             <children>
                                                                 <ImageView fitHeight="137.0" fitWidth="157.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
-                                                   <image>
-                                                      <Image url="@../../../../../resources/img/brokenImage.png" />
-                                                   </image></ImageView>
+                                                                    <image>
+                                                                        <Image url="@../../../../../resources/img/brokenImage.png" />
+                                                                    </image>
+                                                                </ImageView>
                                                             </children>
                                                         </HBox>
-                                          <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" style="-fx-border-color: white;" VBox.vgrow="NEVER">
-                                             <VBox.margin>
-                                                <Insets bottom="1.0" />
-                                             </VBox.margin>
-                                             <children>
-                                                <Label id="fileNae_ta" maxHeight="10.0" maxWidth="1.7976931348623157E308" minHeight="10.0" minWidth="-Infinity" prefHeight="10.0" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER" />
-                                                              <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxHeight="20.0" maxWidth="246.0" minHeight="20.0" minWidth="246.0" prefHeight="20.0" prefWidth="246.0" styleClass="buttonDateTimeContainer" VBox.vgrow="NEVER">
-                                                                  <children>
-                                                                      <Button contentDisplay="GRAPHIC_ONLY" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" styleClass="acceptButton" HBox.hgrow="NEVER">
-                                                         <graphic>
-                                                            <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="23" />
-                                                         </graphic>
-                                                      </Button>
-                                                      <Label id="fileDate_tf" text="20200202020202" HBox.hgrow="ALWAYS" />
-                                                                  </children>
-                                                              </HBox>
-                                             </children>
-                                          </VBox>
+                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" style="-fx-border-color: white;" VBox.vgrow="NEVER">
+                                                            <VBox.margin>
+                                                                <Insets bottom="1.0" />
+                                                            </VBox.margin>
+                                                            <children>
+                                                                <Label id="fileNae_ta" maxHeight="10.0" maxWidth="1.7976931348623157E308" minHeight="10.0" minWidth="-Infinity" prefHeight="10.0" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER" />
+                                                                <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxHeight="20.0" maxWidth="246.0" minHeight="20.0" minWidth="246.0" prefHeight="20.0" prefWidth="246.0" styleClass="buttonDateTimeContainer" VBox.vgrow="NEVER">
+                                                                    <children>
+                                                                        <Button contentDisplay="GRAPHIC_ONLY" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" styleClass="acceptButton" HBox.hgrow="NEVER">
+                                                                            <graphic>
+                                                                                <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="23" />
+                                                                            </graphic>
+                                                                        </Button>
+                                                                        <Label id="fileDate_tf" text="20200202020202" HBox.hgrow="ALWAYS" />
+                                                                    </children>
+                                                                </HBox>
+                                                            </children>
+                                                        </VBox>
                                                     </children>
                                                 </VBox>
                                                 <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" minHeight="250.0" prefHeight="250.0" TilePane.alignment="CENTER">

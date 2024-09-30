@@ -115,7 +115,6 @@ public class DateFixerController {
 	@FXML private Button select_btn;
 	@FXML private Button copyToMisc_btn;
 	@FXML private Button select_acceptable_btn;
-	@FXML private Button listFileInfo_btn;
 	@FXML private TableColumn<MetaData, String> info_column;
 	@FXML private TableColumn<MetaData, String> value_column;
 	@FXML private Button remove_btn;
@@ -141,11 +140,6 @@ public class DateFixerController {
 
 	@FXML private Button selectRangeOfNumbers_btn;
 	//@formatter:on
-
-    @FXML
-    private void listFileInfo_btn_action(ActionEvent event) {
-        warningText("listFileInfo_btn_action Not ready yet!");
-    }
 
     @FXML
     private void fileName_mi_action(ActionEvent event) {
