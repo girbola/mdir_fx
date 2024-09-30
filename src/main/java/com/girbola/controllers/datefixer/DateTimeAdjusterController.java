@@ -9,6 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.tasks.MakeChanges;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.tables.FolderInfo;
@@ -26,7 +27,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
@@ -102,30 +102,18 @@ public class DateTimeAdjusterController {
 
     @FXML
     private void selectRangeOfNumbers_btn_action(ActionEvent event) {
+        Messages.sprintf("selectRangeOfNumbers_btn_action");
         int startFrom = Integer.parseInt(startFromNumber_tf.getText().trim());
         int endTo = Integer.parseInt(endToNumber_tf.getText().trim());
 
         model_datefix.getSelectionModel().clearAll(df_tilePane);
         for (Node node : model_datefix.getTilePane().getChildren()) {
-            if (node instanceof VBox) {
-                VBox vbox = (VBox) node;
-                if (vbox.getId().equals("imageFrame")) {
-                    for (Node hbox : vbox.getChildren()) {
-                        if (hbox instanceof StackPane) {
-                            for (Node stp : ((StackPane) hbox).getChildren()) {
-                                if (stp instanceof Label) {
-                                    Label label = (Label) stp;
-                                    String text = label.getText();
-                                    Integer number = getInteger(text);
-                                    if (number >= 0 && startFrom <= number && endTo >= number) {
-                                        model_datefix.getSelectionModel().addOnly(vbox);
-                                    }
-                                } else {
-                                    Messages.sprintf("This is not label: " + stp.toString());
-                                }
-                            }
-                        }
-                    }
+            if (node instanceof VBox imageFrame && node.getId().equals("imageFrame")) {
+                int imageFrameImageNumber = DateFixGuiUtils.getImageFrameImageNumber(imageFrame);
+
+                if (imageFrameImageNumber >= 0 && startFrom <= imageFrameImageNumber && endTo >= imageFrameImageNumber) {
+                    Messages.sprintf("imageFrameImageNumber: " + imageFrameImageNumber);
+                    model_datefix.getSelectionModel().addOnly(imageFrame);
                 }
             }
         }
@@ -467,6 +455,7 @@ public class DateTimeAdjusterController {
         }
         return sec;
     }
+
     private void setupDatePickers(Model_datefix model_datefix) {
         model_datefix.setStart_datePicker(start_datePicker);
         model_datefix.setEnd_datePicker(end_datePicker);
@@ -519,7 +508,7 @@ public class DateTimeAdjusterController {
                 if (!newValue.matches("\\d*")) {
 
                     startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
-           //         model_datefix.setStartFromNumber(startFromNumber_tf.getText());
+                    //         model_datefix.setStartFromNumber(startFromNumber_tf.getText());
                 }
             }
         });

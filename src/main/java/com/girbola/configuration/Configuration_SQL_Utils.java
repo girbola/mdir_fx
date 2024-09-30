@@ -56,27 +56,29 @@ public class Configuration_SQL_Utils {
      * @throws Exception if any SQL error occurs.
      */
     private static void ensureCurrentThemeColumnExists(Connection connection) throws Exception {
-        String alterTableSQL = "ALTER TABLE your_table_name ADD COLUMN betterQualityThumbs BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN confirmOnExit BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN id_counter INTEGER UNIQUE; "
-                + "ALTER TABLE your_table_name ADD COLUMN showFullPath BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN showHints BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN showTooltips BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN currentTheme STRING; "
-                + "ALTER TABLE your_table_name ADD COLUMN vlcPath STRING; "
-                + "ALTER TABLE your_table_name ADD COLUMN vlcSupport BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN saveDataToHD STRING; "
-                + "ALTER TABLE your_table_name ADD COLUMN windowStartPosX DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE your_table_name ADD COLUMN windowStartPosY DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE your_table_name ADD COLUMN windowStartWidth DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE your_table_name ADD COLUMN windowStartHeigth DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE your_table_name ADD COLUMN imageViewXPos DOUBLE; "
-                + "ALTER TABLE your_table_name ADD COLUMN imageViewYPos DOUBLE; "
-                + "ALTER TABLE your_table_name ADD COLUMN workDirSerialNumber STRING; "
-                + "ALTER TABLE your_table_name ADD COLUMN workDir STRING; "
-                + "ALTER TABLE your_table_name ADD COLUMN tableShow_sortIt BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN tableShow_sorted BOOLEAN; "
-                + "ALTER TABLE your_table_name ADD COLUMN tableShow_asItIs BOOLEAN;";
+
+        String alterTableSQL =
+                "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS betterQualityThumbs BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS confirmOnExit BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS id_counter INTEGER UNIQUE; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showFullPath BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showHints BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showTooltips BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS currentTheme STRING; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS vlcPath STRING; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS vlcSupport BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS saveDataToHD STRING; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartPosX DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartPosY DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartWidth DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartHeigth DOUBLE DEFAULT (-1); "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS imageViewXPos DOUBLE; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS imageViewYPos DOUBLE; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS workDirSerialNumber STRING; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS workDir STRING; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_sortIt BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_sorted BOOLEAN; "
+                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_asItIs BOOLEAN;";
 
         try (Statement stmt = connection.createStatement()) {
             stmt.executeUpdate(alterTableSQL);

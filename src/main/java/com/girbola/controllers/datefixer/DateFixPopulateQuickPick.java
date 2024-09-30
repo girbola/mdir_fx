@@ -170,7 +170,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
         VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
 
-        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer();
+        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer(6);
 
         Label fileName_tf = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
         Label fileDate_tf = DateFixGuiUtils.createFileDate_tf(fileInfo, buttonDateTimeContainer);

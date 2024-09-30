@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.importimages;
 
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
@@ -103,51 +104,7 @@ public class DateTimeSelectorController {
 		model_ImportImages.end_time().increase_sec();
 	}
 
-   @FXML private void select_btn_action(ActionEvent event) {
-		LocalDateTime ldt_start = null;
-		LocalDateTime ldt_end = null;
-
-		try {
-			model_ImportImages.start_time().getTime();
-			model_ImportImages.end_time().getTime();
-
-			ldt_start = model_ImportImages.getLocalDateTime(true).minusSeconds(1);
-			ldt_end = model_ImportImages.getLocalDateTime(false).plusSeconds(1);
-		} catch (Exception ex) {
-			errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-		}
-
-		sprintf("Start date and time:" + ldt_start);
-		sprintf("End date and time: " + ldt_end);
-		model_ImportImages.getSelectionModel_Import().clearAll();
-		Parent vbox = select_btn.getScene().getRoot();
-		ScrollPane sp = (ScrollPane) vbox.lookup("#scrollPane");
-		Node sp_node = sp.getContent();
-		if (sp_node instanceof VBox) {
-			for (Node scrollPane_node : ((VBox) sp_node).getChildren()) {
-				sprintf("scrollPane_node= " + scrollPane_node);
-				if (scrollPane_node instanceof TitledPane) {
-					TitledPane titledPane = (TitledPane) scrollPane_node;
-					Node tp_node = titledPane.getContent();
-					if (tp_node instanceof TilePane) {
-						for (Node titledPane_node : ((TilePane) tp_node).getChildren()) {
-							if (titledPane_node instanceof StackPane) {
-								StackPane stackPane = (StackPane) titledPane_node;
-								FileInfo fig = (FileInfo) stackPane.getUserData();
-								LocalDateTime date = DateUtils.longToLocalDateTime(fig.getDate());
-
-								if (date.isAfter(ldt_start) && date.isBefore(ldt_end)) {
-									model_ImportImages.getSelectionModel_Import().add(titledPane_node);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public static ArrayList<Node> getAllNodes(Parent root) {
+  	public static ArrayList<Node> getAllNodes(Parent root) {
 		ArrayList<Node> nodes = new ArrayList<Node>();
 		addAllDescendents(root, nodes);
 		return nodes;

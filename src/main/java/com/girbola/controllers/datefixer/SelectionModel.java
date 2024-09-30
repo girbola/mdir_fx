@@ -32,14 +32,14 @@ import static com.girbola.messages.Messages.sprintf;
 public class SelectionModel {
 
     final private String style_deselected =
-            "-fx-border-color: cyan;" +
+            "-fx-border-color: transparent;" +
                     "-fx-border-radius: 1 1 1 1;" +
                     "-fx-border-style: none;" +
                     "-fx-border-width: 3px;";
 
     final private String style_selected =
             "-fx-border-color: #ba1d1d;" +
-                    "-fx-border-width: 2px;";
+                    "-fx-border-width: 3px;";
 
     private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
 
@@ -92,19 +92,19 @@ public class SelectionModel {
         if (!contains(node)) {
             Platform.runLater(() -> {
                 node.setStyle(style_selected);
-
+                selectionList.add(node);
             });
-
-            selectionList.add(node);
         }
     }
 
     public synchronized void clearAll(Pane parent) {
         sprintf("clearing all");
         for(Node pane : parent.getChildren()) {
-            Platform.runLater(() -> {
-                remove(pane);
-            });
+            if(pane instanceof VBox && pane.getId().equals("imageFrame")) {
+                Platform.runLater(() -> {
+                    remove(pane);
+                });
+            }
 
         }
 

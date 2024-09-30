@@ -2,7 +2,6 @@ package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.configuration.GuiImageFrame;
 import com.girbola.controllers.datefixer.CssStylesEnum;
-import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -13,9 +12,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.nio.file.Path;
 
@@ -118,8 +117,12 @@ public class DateFixGuiUtils {
 
     public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
         Button button = new Button();
-        ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
-        button.setGraphic(imageView);
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.setIconLiteral("bi-check");
+        fontIcon.setIconSize(15);
+        fontIcon.setIconColor(javafx.scene.paint.Color.GREEN);
+        //ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
+        button.setGraphic(fontIcon);
         button.setId("accept");
         button.getStyleClass().add("acceptButton");
         if (!fi.isGood()) {
@@ -226,13 +229,13 @@ public class DateFixGuiUtils {
         return bottomContainer;
     }
 
-    public static HBox createButtonDateTimeContainer() {
+    public static HBox createButtonDateTimeContainer(double hGap) {
         HBox buttonDateTimeContainer = new HBox();
         buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
         buttonDateTimeContainer.setId("bottom");
-        buttonDateTimeContainer.setMaxSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
-        buttonDateTimeContainer.setPrefSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
-        buttonDateTimeContainer.setMinSize(GuiImageFrame.imageFrame_x - 2, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setMaxSize(GuiImageFrame.imageFrame_x - hGap, 20);
+        buttonDateTimeContainer.setPrefSize(GuiImageFrame.imageFrame_x - hGap, 20);
+        buttonDateTimeContainer.setMinSize(GuiImageFrame.imageFrame_x - hGap, 20);
         buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
         return buttonDateTimeContainer;
     }
@@ -317,7 +320,23 @@ public class DateFixGuiUtils {
         return null;
     }
 
-    public static Label getImageFrameImageNumber(VBox vbox) {
+    public static int getImageFrameImageNumber(VBox vbox) {
+        GridPane imageFrameGridPane = getImageFrameGridPane(vbox);
+        if (imageFrameGridPane == null) {
+            Messages.sprintf("ImageNumber could not be found. First one");
+            return -1;
+        }
+
+        for (Node gridPaneChild : imageFrameGridPane.getChildren()) {
+            if (gridPaneChild instanceof Label label && gridPaneChild.getId().equals("imageNumber")) {
+                return Integer.parseInt(label.getText());
+            }
+        }
+        Messages.sprintf("ImageNumber could not be found. Last one");
+        return -1;
+    }
+
+    public static Label getImageFrameNumberLabel(VBox vbox) {
         GridPane imageFrameGridPane = getImageFrameGridPane(vbox);
         if (imageFrameGridPane == null) {
             return null;

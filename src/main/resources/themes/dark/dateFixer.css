@@ -72,14 +72,16 @@
     -fx-background-color: red, blue, transparent, linear-gradient(grey 0%, darkgrey 25%, darkgrey 75%, grey 100%);
 }
 .acceptButton {
-    -fx-background-color: blue;
+    -fx-background-color: transparent;
+    
 }
 .bottomContainer {
 
 }
 
 .buttonDateTimeContainer {
-
+    -fx-margin: 0;
+    -fx-padding: 0;
 }
 
 .closeButton {
