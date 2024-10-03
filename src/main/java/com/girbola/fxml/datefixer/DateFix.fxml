@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
@@ -62,11 +63,7 @@
                                                 </Label>
                                                 <Button fx:id="select_all" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectAll.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="#1198eb" iconLiteral="bi-square" iconSize="17" textAlignment="CENTER" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllTooltip" />
@@ -77,20 +74,12 @@
                                                         <Tooltip text="%selectNoneTooltip" />
                                                     </tooltip>
                                                     <graphic>
-                                                    <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                        <image>
-                                                            <Image url="@../../../../../resources/img/selectNone.png" />
-                                                        </image>
-                                                    </ImageView>
+                                                    <FontIcon iconColor="WHITE" iconLiteral="bi-chevron-contract" iconSize="20" />
                                                     </graphic>
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectInvert.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="WHITE" iconLiteral="bi-square" iconSize="15" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectInvertTooltip" />
@@ -98,26 +87,17 @@
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_good_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 
-
                                                     <tooltip>
                                                         <Tooltip text="%selectAllGoodFilesTooltip" />
                                                     </tooltip>
 
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectGood.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="#50ff35" iconLiteral="bi-square-fill" iconSize="11" />
                                                     </graphic>
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectBad.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="#e4290d" iconLiteral="bi-square-fill" iconSize="11" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllBadFilesTooltip" />
@@ -125,11 +105,7 @@
                                                 </Button>
                                                 <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectAllModified.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="#1afff0" iconLiteral="bi-square-fill" iconSize="11" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllModifiedFilesTooltip" />
@@ -137,11 +113,7 @@
                                                 </Button>
                                                 <Button fx:id="select_acceptable_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_acceptable_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <ImageView fitHeight="26.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
-                                                            <image>
-                                                                <Image url="@../../../../../resources/img/selectAcceptable.png" />
-                                                            </image>
-                                                        </ImageView>
+                                                        <FontIcon iconColor="#ee8c8c" iconLiteral="bi-square-fill" iconSize="11" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllSuggestedFilesTooltip" />
@@ -149,7 +121,7 @@
                                                 </Button>
                                                 <Button id="selection-btns_good" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_good_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_ok" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllGoodImagesTooltip" />
@@ -157,7 +129,7 @@
                                                 </Button>
                                                 <Button id="selection-btns_bad" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="52.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_bad_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_bad" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllBadImagesTooltip" />
@@ -165,7 +137,7 @@
                                                 </Button>
                                                 <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="76.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_modified" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllModifiedImagesTooltip" />
@@ -173,7 +145,7 @@
                                                 </Button>
                                                 <Button id="selection-btns_acceptable" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_acceptable_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_suggested" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllSuggestedFilesTooltip" />
@@ -181,7 +153,7 @@
                                                 </Button>
                                                 <Button id="selection-btns_good" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_good_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" styleClass="selection_btns_ok" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllGoodVideosTooltip" />
@@ -189,23 +161,27 @@
                                                 </Button>
                                                 <Button id="selection-btns_bad" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_bad_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" styleClass="selection_btns_bad" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllBadVideosTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" styleClass="selection_btns_modified" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllModifiedVideosTooltip" />
                                                     </tooltip>
+                                       <styleClass>
+                                          <String fx:value="selection_btns" />
+                                          <String fx:value="selection_btns_modified" />
+                                       </styleClass>
                                                 </Button>
                                                 <Button id="selection-btns_acceptable" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#select_acceptable_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
-                                                        <FontIcon iconLiteral="bi-camera" iconSize="20" />
+                                                        <FontIcon iconLiteral="bi-camera-video" iconSize="20" styleClass="selection_btns_suggested" />
                                                     </graphic>
                                                     <tooltip>
                                                         <Tooltip text="%selectAllSuggestedVideosTooltip" />

@@ -142,9 +142,7 @@ public class DateFixer extends Task<Void> {
                     model_datefix.getTilePane().getChildren().addAll(nodes);
                     loadingProcess_task.closeStage();
                 });
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
             }
 

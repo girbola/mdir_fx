@@ -17,13 +17,15 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
+<AnchorPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
     <children>
         <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <columnConstraints>
-            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
+            <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
@@ -41,7 +43,7 @@
             <RowConstraints valignment="CENTER" vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Label text="%start" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <Label text="%start" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <GridPane.margin>
                         <Insets />
                     </GridPane.margin>
@@ -52,10 +54,10 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <DatePicker fx:id="start_datePicker" promptText="YYYY-MM-DD" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <DatePicker fx:id="start_datePicker" minHeight="27.0" prefHeight="27.0" promptText="YYYY-MM-DD" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <children>
-                        <TextField fx:id="start_hour" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_hour_action" prefWidth="40.0" promptText="%hour" text="23" HBox.hgrow="NEVER">
+                        <TextField fx:id="start_hour" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_hour_action" prefWidth="40.0" promptText="%hour" styleClass="dateTimeTextField" text="23" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -85,9 +87,9 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <children>
-                        <TextField fx:id="start_min" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_min_action" prefWidth="40.0" promptText="%min" text="59" HBox.hgrow="NEVER">
+                        <TextField fx:id="start_min" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_min_action" prefWidth="40.0" promptText="%min" styleClass="dateTimeTextField" text="59" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -120,9 +122,9 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <children>
-                        <TextField fx:id="start_sec" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_sec_action" prefHeight="23.0" prefWidth="40.0" promptText="%sec" text="59" HBox.hgrow="NEVER">
+                        <TextField fx:id="start_sec" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#start_sec_action" prefHeight="23.0" prefWidth="40.0" promptText="%sec" styleClass="dateTimeTextField" text="59" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -155,7 +157,7 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <Label text="%end" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <Label text="%end" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <padding>
                         <Insets bottom="5.0" left="2.0" right="10.0" top="5.0" />
                     </padding>
@@ -163,14 +165,14 @@
                         <Font size="10.0" />
                     </font>
                 </Label>
-                <HBox alignment="CENTER_LEFT" fillHeight="false" GridPane.columnIndex="4" GridPane.rowIndex="4">
+                <HBox alignment="CENTER_LEFT" fillHeight="false" GridPane.columnIndex="6" GridPane.rowIndex="4">
                     <children>
-                        <DatePicker fx:id="end_datePicker" promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" HBox.hgrow="NEVER" />
+                        <DatePicker fx:id="end_datePicker" maxHeight="27.0" minHeight="27.0" prefHeight="27.0" promptText="YYYY-MM-DD" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="TOP" GridPane.vgrow="NEVER" HBox.hgrow="NEVER" />
                     </children>
                 </HBox>
-                <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="10.0" spacing="1.0" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <HBox alignment="CENTER" fillHeight="false" layoutX="10.0" layoutY="10.0" spacing="1.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <children>
-                        <TextField fx:id="end_min" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#end_min_action" prefWidth="40.0" promptText="%min" text="23" HBox.hgrow="NEVER">
+                        <TextField fx:id="end_min" alignment="CENTER" editable="false" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#end_min_action" prefWidth="40.0" promptText="%min" styleClass="dateTimeTextField" text="23" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -203,9 +205,9 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <HBox alignment="CENTER" fillHeight="false" layoutX="62.0" layoutY="10.0" spacing="1.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <HBox alignment="CENTER" fillHeight="false" layoutX="62.0" layoutY="10.0" spacing="1.0" GridPane.columnIndex="9" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <children>
-                        <TextField fx:id="end_sec" alignment="CENTER" editable="false" focusTraversable="false" maxHeight="23.0" maxWidth="40.0" minWidth="40.0" onAction="#end_sec_action" prefHeight="23.0" prefWidth="40.0" promptText="%sec" text="23" HBox.hgrow="NEVER">
+                        <TextField fx:id="end_sec" alignment="CENTER" editable="false" focusTraversable="false" maxHeight="23.0" maxWidth="40.0" minWidth="40.0" onAction="#end_sec_action" prefHeight="23.0" prefWidth="40.0" promptText="%sec" styleClass="dateTimeTextField" text="23" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -238,9 +240,9 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" HBox.hgrow="NEVER">
+                <HBox alignment="CENTER" fillHeight="false" spacing="1.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" HBox.hgrow="NEVER">
                     <children>
-                        <TextField fx:id="end_hour" alignment="CENTER" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#end_hour_action" prefWidth="40.0" promptText="%hour" text="23" HBox.hgrow="NEVER">
+                        <TextField fx:id="end_hour" alignment="CENTER" focusTraversable="false" maxWidth="40.0" minWidth="40.0" onAction="#end_hour_action" prefWidth="40.0" promptText="%hour" styleClass="dateTimeTextField" text="23" HBox.hgrow="NEVER">
                             <font>
                                 <Font size="12.0" />
                             </font>
@@ -273,61 +275,42 @@
                         <Insets top="1.0" />
                     </padding>
                 </HBox>
-                <Label alignment="CENTER" text="%hour" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                    <font>
-                        <Font size="10.0" />
-                    </font>
-                </Label>
-                <Label text="%minute" GridPane.columnIndex="6" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                    <font>
-                        <Font size="10.0" />
-                    </font>
-                </Label>
-                <Label text="%second" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                    <font>
-                        <Font size="10.0" />
-                    </font>
-                </Label>
-                <Button fx:id="copy_startToEnd_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="8" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <Button fx:id="copy_startToEnd_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_startToEnd_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="10" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <graphic>
                         <FontIcon iconLiteral="bi-arrow-90deg-up" iconSize="10" rotate="180.0" />
                     </graphic>
                 </Button>
-                <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" text="uppp" GridPane.columnIndex="8" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+                <Button fx:id="copy_endToStart" contentDisplay="GRAPHIC_ONLY" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#copy_endToStart_action" prefHeight="25.0" prefWidth="25.0" styleClass="switchButton" GridPane.columnIndex="10" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                     <graphic>
                         <FontIcon iconLiteral="bi-arrow-90deg-down" iconSize="10" rotate="180.0" />
                     </graphic>
                 </Button>
-                <Button id="actionButtons" fx:id="selectRange_btn" mnemonicParsing="false" onAction="#selectRange_btn_action" text="%selectRange" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <Button id="actionButtons" fx:id="selectRange_btn" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="85.0" mnemonicParsing="false" onAction="#selectRange_btn_action" prefHeight="25.0" prefWidth="85.0" text="%selectRange" GridPane.columnIndex="6" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <tooltip>
                         <Tooltip text="%selectRangeTooltip" />
                     </tooltip>
                 </Button>
-                <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" text="%applyDateAndTime" wrapText="true" GridPane.columnIndex="6" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                <Button fx:id="setDateTimeRange_btn" graphicTextGap="0.0" maxHeight="25.0" maxWidth="85.0" minHeight="25.0" minWidth="85.0" mnemonicParsing="false" onAction="#setDateTimeRange_btn_action" prefHeight="25.0" prefWidth="85.0" text="%applyDateAndTime" wrapText="true" GridPane.columnIndex="8" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                     <tooltip>
                         <Tooltip text="%applyDateAndTimeTooltip" />
                     </tooltip>
                 </Button>
-                <Button fx:id="findExistsPath_btn" layoutX="172.0" layoutY="94.0" mnemonicParsing="false" onAction="#findExistsPath_btn_action" text="Find exists path" wrapText="true" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-            <Label style="-fx-color: white;" text="%selectRange" GridPane.rowIndex="2" />
-            <TextField fx:id="startFromNumber_tf" maxWidth="80.0" minWidth="80.0" styleClass="textFieldNumber" text="1" GridPane.rowIndex="3" />
-            <TextField fx:id="endToNumber_tf" maxWidth="80.0" styleClass="textFieldNumber" text="999" GridPane.rowIndex="4" />
-            <Button fx:id="selectRangeOfNumbers_btn" lineSpacing="3.0" mnemonicParsing="false" onAction="#selectRangeOfNumbers_btn_action" prefHeight="25.0" prefWidth="100.0" text="Select" GridPane.rowIndex="5">
-               <font>
-                  <Font size="16.0" />
-               </font>
+            <Label style="-fx-color: white;" text="%selectRange" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" />
+            <TextField fx:id="startFromNumber_tf" maxWidth="50.0" minWidth="50.0" styleClass="dateTimeTextField" text="1" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+            <TextField fx:id="endToNumber_tf" maxWidth="50.0" styleClass="dateTimeTextField" text="999" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+            <Button fx:id="selectRangeOfNumbers_btn" lineSpacing="3.0" maxHeight="25.0" maxWidth="70.0" minHeight="25.0" minWidth="70.0" mnemonicParsing="false" onAction="#selectRangeOfNumbers_btn_action" prefHeight="25.0" prefWidth="70.0" text="%select" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                <padding>
                   <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                </padding>
             </Button>
-            <Label text="%mode" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <Label text="%mode" GridPane.rowIndex="2">
                <padding>
                   <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                </padding>
             </Label>
-            <HBox GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <HBox spacing="2.0" GridPane.rowIndex="3">
                <children>
-                  <ToggleButton maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" text="+">
+                  <ToggleButton maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" prefWidth="40.0" text="+">
                      <toggleGroup>
                         <ToggleGroup fx:id="selectMode" />
                      </toggleGroup>
@@ -335,7 +318,7 @@
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </padding>
                   </ToggleButton>
-                  <ToggleButton maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" text="-">
+                  <ToggleButton maxWidth="40.0" minWidth="40.0" mnemonicParsing="false" prefWidth="40.0" text="-">
                      <padding>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                      </padding>
@@ -345,6 +328,7 @@
                   </ToggleButton>
                </children>
             </HBox>
+            <Label text="%dateTimeSelector" GridPane.columnIndex="6" GridPane.rowIndex="2" />
             </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

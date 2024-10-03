@@ -89,16 +89,6 @@ public class DateTimeAdjusterController {
 
     //@formatter:on
 
-    private int getInteger(String value) {
-
-        try {
-            return Integer.parseInt(value);
-        } catch (Exception e) {
-            return -1;
-        }
-
-    }
-
 
     @FXML
     private void selectRangeOfNumbers_btn_action(ActionEvent event) {
@@ -117,80 +107,6 @@ public class DateTimeAdjusterController {
                 }
             }
         }
-    }
-
-
-    @FXML
-    private void findExistsPath_btn_action(ActionEvent event) {
-        Messages.sprintf("findExistsPath_btn_action");
-        LocalDateTime ldt_start = null;
-        LocalDateTime ldt_end = null;
-
-        try {
-//			model_datefix.getStart_time().getTime();
-//			model_datefix.getEnd_time().getTime();
-            ldt_start = model_datefix.getLocalDateTime(true);
-            ldt_end = model_datefix.getLocalDateTime(false);
-
-        } catch (Exception ex) {
-            errorSmth(ERROR, "Cannot get dates", ex, Misc.getLineNumber(), true);
-            Main.setProcessCancelled(true);
-        }
-        List<FileInfo> collectedList = new ArrayList<>();
-        if (this.model_main == null) {
-            Messages.errorSmth(ERROR, "This is null!", null, Misc.getLineNumber(), true);
-        }
-
-        for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
-            if (Main.getProcessCancelled()) {
-                Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-                break;
-            } /*
-             * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-             * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-             */
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-                if (file_ldt.isAfter(ldt_start.minusDays(1)) && file_ldt.isBefore(ldt_end.plusDays(1))) {
-                    if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-                        collectedList.add(fileInfo);
-                        Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-                                + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-                    }
-                }
-            }
-        }
-
-
-        for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
-            if (Main.getProcessCancelled()) {
-                Messages.sprintf("findFilesAccordingTheDateStale_btn_action cancelled");
-                break;
-            } /*
-             * ldt_start.isAfter(ldt_min) && ldt_end.isBefore(ldt_max)) 10.isAfter(9) &&
-             * 12.isBefore(11) == true 10.isAfter(9) && 12.isBefore(11) == false
-             */
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                LocalDateTime file_ldt = DateUtils.longToLocalDateTime(fileInfo.getDate());
-                if (file_ldt.isAfter(ldt_start) && file_ldt.isBefore(ldt_end)) {
-                    if (!FileInfoUtils.findDuplicates(fileInfo, model_datefix.getFolderInfo_full())) {
-                        collectedList.add(fileInfo);
-                        Messages.sprintf("File name: " + fileInfo.getOrgPath() + " file_ldt: " + file_ldt
-                                + "  ldt_start: " + ldt_start + " ldt_end: " + ldt_end);
-                    }
-                }
-            }
-
-        }
-
-        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
-
-        Messages.warningText(
-                "Similar files found = " + collectedList.size() + " startdate: " + ldt_start + " end: " + ldt_end);
-        for (FileInfo fileInfo : collectedList) {
-            Messages.sprintf("fileInfo collected: " + fileInfo.toString() + " fileInfo date: " + DateUtils.longToLocalDateTime(fileInfo.getDate()));
-        }
-
     }
 
     @FXML
@@ -502,22 +418,22 @@ public class DateTimeAdjusterController {
         setupTimeBindings(aModel_datefix);
         resetTimeFields();
 
-        startFromNumber_tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
 
-                    startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
-                    //         model_datefix.setStartFromNumber(startFromNumber_tf.getText());
-                }
+
+        endToNumber_tf.setText("" + model_datefix.getFolderInfo_full().getFileInfoList().size());
+        startFromNumber_tf.getText().trim();
+        endToNumber_tf.getText().trim();
+
+        startFromNumber_tf.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+
+                startFromNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
+                //         model_datefix.setStartFromNumber(startFromNumber_tf.getText());
             }
         });
-        endToNumber_tf.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (!newValue.matches("\\d*")) {
-                    endToNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
-                }
+        endToNumber_tf.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*")) {
+                endToNumber_tf.setText(newValue.replaceAll("[^\\d]", ""));
             }
         });
     }

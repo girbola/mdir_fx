@@ -31,7 +31,7 @@
     /*-fx-font-family: 'Gaduci';*/
 
     -fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
-    -fx-font-weight: 900;
+    -fx-font-weight: 200;
     -fx-font-smoothing-type: lcd;
     /*    -fx-background-color: -fx-base; */
     /*-fx-padding: 0 3 3 3;*/
@@ -56,25 +56,36 @@
 .button,
 .toggle-button {
     -fx-background-color: -fx-base, transparent, transparent,
-    linear-gradient(to bottom, derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
+    linear-gradient(to bottom, derive(-fx-base, 20%), derive(-fx-base, 3%), derive(-fx-base, 3%), derive(-fx-base, 7%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
     /*-fx-font-family: 'Gaduci';*/
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
+
+    -fx-border-width: 0;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+
+    /*-fx-border-color: white;*/
+
+    -fx-border-insets: 1 1 0 1;
+
+
 }
 
 .button:disabled {
     -fx-opacity: 0.4;
-    -fx-background-color: grey;
+    -fx-background-color: #6a6969;
 }
 
 .button:hover {
     -fx-background-color: red, blue, transparent, linear-gradient(grey 0%, darkgrey 25%, darkgrey 75%, grey 100%);
 }
+
 .acceptButton {
     -fx-background-color: transparent;
-    
 }
+
 .bottomContainer {
 
 }
@@ -134,13 +145,12 @@
 .fileDate_tf {
     -fx-font-size: 0.8em;
     -fx-background-color: transparent;
-    /*-fx-border-color: -fx-light-text-color;*/
     -fx-border-radius: 3;
     -fx-text-fill: -fx-light-text-color;
 }
 
 .date-picker:editable .arrow-button {
-    -fx-background-color: linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
+    -fx-background-color: rgba(239, 87, 5, 0.82);
 }
 
 .fileName_ta {
@@ -158,7 +168,7 @@
 }
 
 .grid-pane {
-
+    -fx-background-color: blue;
 }
 
 .imageFrameTop Line {
@@ -424,34 +434,32 @@
 
 .selection_btns {
     -fx-background-radius: 4;
-
-    /*-fx-text-fill: -fx-light-text-color;*/
-    /*-fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-}
-.selection-gridPane {
-    /*-fx-background-color: derive(-fx-base, 10%);*/
-    /*-fx-border-color: #ffffff;
-    -fx-border-width: 1.0px;
-    -fx-border-radius: 4.0; */
-    -fx-background-radius: 4;
     -fx-background-color: -fx-base;
+
     -fx-padding: 15;
 }
 
-#selection-btns_bad {
-    -fx-background-color: red;
+/*.selection_btns_suggested .ikonli-font-icon {*/
+/*    -fx-fill: cyan;*/
+/*    -fx-font-size: 20px;*/
+/*    -fx-background-color: yellow;*/
+
+/*}*/
+
+.selection_btns_ok {
+    -fx-fill: #50ff35;
 }
 
-#selection-btns_good {
-    -fx-background-color: green;
+.selection_btns_bad {
+    -fx-fill: #e4290d;
 }
 
-#selection-btns_modified {
-    -fx-background-color: cyan;
+.selection_btns_modified {
+    -fx-fill: #33b19d;
 }
 
-#selection-btns_acceptable {
-    -fx-background-color: pink;
+.selection_btns_suggested {
+    -fx-fill: #ee8c8c;
 }
 
 .selection_text {
@@ -532,9 +540,8 @@
 
 .switchButton {
     -fx-background-radius: 40px;
-    -fx-background-color: red;
     -fx-background-color: -fx-base, transparent, transparent,
-    linear-gradient(whitesmoke 0%, white 25%, white 75%, whitesmoke 100%);
+    linear-gradient(#bcbcbc 0%, #a5a4a4 25%, #a5a4a4ff 75%, #bcbcbc 100%);
 
 }
 
@@ -733,7 +740,15 @@
     -fx-background-insets: 0, 0 1 1 1;
     -fx-padding: 0.167em;
 }
-
+.dateTimeTextField {
+    -fx-background-color:  -fx-base,
+    linear-gradient(to bottom,
+            derive(-fx-base, 0%),
+            derive(-fx-base, 15%) 12%,
+            derive(-fx-base, 13%) 88%,
+            derive(-fx-base, 0%) 99%,
+            -fx-base);
+}
 .titled-pane > .title > .arrow-button .arrow {
     /*-fx-shape: ""; */
     -fx-padding: 0;
@@ -749,7 +764,7 @@
 }
 
 .textFieldNumber {
-    -fx-background-color: green;
+
 }
 
 .notValidNumber {
