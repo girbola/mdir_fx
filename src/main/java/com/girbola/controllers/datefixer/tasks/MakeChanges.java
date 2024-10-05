@@ -4,8 +4,11 @@ import com.girbola.Main;
 import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -14,10 +17,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
@@ -65,24 +65,29 @@ public class MakeChanges extends Task<Integer> {
         }
 
         List<Node> list = MakeChangesUtils.create_listOfSelectedNodes(model_datefix);
+        for (Node node : list) {
 
-        if (list.isEmpty()) {
-            errorSmth(ERROR, "List were empty", null, getLineNumber(), true);
+                    Label fileDateLabel = DateFixGuiUtils.getFileDateLabel(node);
+                    Messages.sprintf("Selected NODES: " + fileDateLabel.getId());
+
         }
 
         Collections.sort(dateList);
 
         list.sort((Node o1, Node o2) -> {
-            String value1 = o1.getId().replace("fileDate: ", "");
-            if (value1.length() <= 1) {
-                value1 = "0" + value1;
+            int imageFrameImageNumber = DateFixGuiUtils.getImageFrameImageNumber((VBox) o1);
+            int imageFrameImageNumber2 = DateFixGuiUtils.getImageFrameImageNumber((VBox) o2);
+            if (imageFrameImageNumber < imageFrameImageNumber2) {
+                return -1;
+            } else if (imageFrameImageNumber > imageFrameImageNumber2) {
+                return 1;
+            } else {
+                return 0;
             }
-            String value2 = o2.getId().replace("fileDate: ", "");
-            if (value2.length() <= 1) {
-                value2 = "0" + value2;
-            }
-            return value1.compareTo(value2);
         });
+        for (Node node : list) {
+            Messages.sprintf("===SORTED Selected NODES: " + node.getId());
+        }
         for (String dl : dateList) {
             sprintf("DLLIST: " + dl);
         }
@@ -94,18 +99,13 @@ public class MakeChanges extends Task<Integer> {
         }
         while (it.hasNext() && it2.hasNext()) {
             Node imageFrame = it.next();
-            if (imageFrame instanceof VBox) {
-                for (Node nodeVBox : ((VBox) imageFrame).getChildren()) {
-                    if (nodeVBox instanceof HBox && nodeVBox.getId().equals("bottom")) {
-                        for (Node bottom : ((HBox) nodeVBox).getChildren()) {
-                            if (bottom instanceof Label && bottom.getId().equals("fileDate")) {
-                                Label tf = (Label) bottom;
-                                tf.setText(it2.next());
-                                nodeVBox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
-                            }
-                        }
-                    }
-                }
+            if (imageFrame instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
+                HBox bottomHBox = DateFixGuiUtils.getBottomHBox(vbox);
+                Label fileDateLabel = DateFixGuiUtils.getFileDateLabel(vbox);
+                Platform.runLater(() -> {
+                    fileDateLabel.setText(it2.next());
+                    bottomHBox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                });
             }
         }
         return null;

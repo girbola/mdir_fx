@@ -141,7 +141,7 @@ public class DateFixerController {
     @FXML
     private void fileName_mi_action(ActionEvent event) {
         sortNodes();
-        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
     }
 
     private void sortNodes() {
@@ -163,7 +163,7 @@ public class DateFixerController {
             FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
             return Long.compare(fileInfo1.getDate(), fileInfo2.getDate());
         });
-        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
     }
 
     @FXML
@@ -320,7 +320,7 @@ public class DateFixerController {
 //            }
 //        }
 
-        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
+        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
 
     }
 
@@ -339,11 +339,13 @@ public class DateFixerController {
     @FXML
     private void show_all_btn_action(ActionEvent event) {
         sprintf("show_all_btn_action");
-        model_datefix.getSelectionModel().clearAll(df_tilePane);
+        model_datefix.getSelectionModel().clearAll();
         model_datefix.deselectAllExifDataSelectors();
-
-        DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
-
+        Platform.runLater(() -> {
+            df_tilePane.getChildren().clear();
+            df_tilePane.getChildren().addAll(model_datefix.getAllNodes());
+            DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
+        });
     }
 
     @FXML
@@ -510,7 +512,7 @@ public class DateFixerController {
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
+                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
             }
         });
 
@@ -590,18 +592,6 @@ public class DateFixerController {
                     openFileLocation.setOnAction(event2 -> {
                         Path path = Paths.get(fileInfo.getOrgPath());
                         openFileBrowser(path);
-//                        try {
-//                            Runtime.getRuntime().exec("explorer.exe  /select," + path.toFile());
-//                        } catch (Exception ex) {
-//                            System.out.println("Error - " + ex);
-//                        }
-
-//                        try {
-//
-//                            Desktop.getDesktop().open(path.toFile());
-//                        } catch (IOException e) {
-//                            throw new RuntimeException(e);
-//                        }
                     });
                     Platform.runLater(() -> {
                         contextMenu.show(vbox, event.getScreenX(), event.getScreenY());
@@ -821,7 +811,7 @@ public class DateFixerController {
                 model_datefix.getTilePane().getChildren().removeAll(toRemove);
                 model_datefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
 
-                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
+                DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
 
             }
         } else if (result.get().getButtonData().equals(ButtonData.NO)) {

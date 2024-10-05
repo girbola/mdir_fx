@@ -140,7 +140,6 @@ public class DateFixGuiUtils {
         return button;
     }
 
-
     public static void setGridPaneColumnWidth(ColumnConstraints column, double width) {
         column.setMinWidth(width);
         column.setMaxWidth(width);
@@ -157,14 +156,6 @@ public class DateFixGuiUtils {
         topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, 25);
         topContainer.setMinSize(Region.USE_COMPUTED_SIZE, 25);
         topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, 25);
-
-//
-//        topContainer.setMaxWidth(GuiImageFrame.imageFrame_x);
-//        topContainer.setMinHeight(Region.USE_COMPUTED_SIZE);
-//        topContainer.setMinWidth(GuiImageFrame.imageFrame_x);
-//
-//        topContainer.setPrefHeight(Region.USE_COMPUTED_SIZE);
-//        topContainer.setPrefWidth(GuiImageFrame.imageFrame_x);
 
         ColumnConstraints cc1 = new ColumnConstraints();
         cc1.setPercentWidth(20);
@@ -279,34 +270,46 @@ public class DateFixGuiUtils {
         }
     }
 
+    /**
+     * Retrieves the bottom HBox from a given Node if the Node structure corresponds to specific criteria.
+     * The method navigates through a VBox with id "imageFrame", finds a nested VBox with id "bottomContainer",
+     * and then searches for an HBox with id "bottom" inside it.
+     *
+     * @param node the root Node from which the search process starts, expected to be a VBox containing specific sub-nodes
+     * @return the HBox with id "bottom" if found, or null if the structure doesn't match the expected criteria
+     */
     public static HBox getBottomHBox(Node node) {
-
-        if (node instanceof VBox) {
-            if (node.getId().equals("imageFrame")) {
-                for (Node node2 : ((VBox) node).getChildren()) {
-                    sprintf("Node2 : " + node2);
-                    if (node2 instanceof HBox && node2.getId().equals("bottom")) {
-                        return (HBox) node2;
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public static Label getFileDateLabel(Node node) {
         if (node instanceof VBox && node.getId().equals("imageFrame")) {
             for (Node node2 : ((VBox) node).getChildren()) {
-                sprintf("Node2 : " + node2);
-                if (node2 instanceof HBox) {
-                    for (Node node3 : ((HBox) node2).getChildren()) {
-                        sprintf("Label: " + node3);
-                        if (node3 instanceof Label) {
-                            return (Label) node3;
+                if (node2 instanceof VBox bottomContainer && bottomContainer.getId().equals("bottomContainer")) {
+                    for (Node node3 : bottomContainer.getChildren()) {
+                        if (node3 instanceof HBox hbox && hbox.getId().equals("bottom")) {
+                            return (HBox) node3;
                         }
                     }
                 }
             }
+        }
+
+        return null;
+    }
+
+    public static Label getFileDateLabel(Node node) {
+        if (node instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
+            for (Node imageFrame : vbox.getChildren()) {
+                if (imageFrame instanceof VBox bottomContainer && bottomContainer.getId().equals("bottomContainer")) {
+                    for (Node bottomVBox : bottomContainer.getChildren()) {
+                        if (bottomVBox instanceof HBox hboxBottom && hboxBottom.getId().equals("bottom")) {
+                            for (Node bottomNode2 : hboxBottom.getChildren()) {
+                                if (bottomNode2 instanceof Label label && label.getId().equals("fileDate")) {
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
         }
         return null;
     }

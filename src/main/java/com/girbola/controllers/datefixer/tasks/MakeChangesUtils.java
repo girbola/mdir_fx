@@ -2,6 +2,7 @@ package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.messages.Messages;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -30,24 +31,9 @@ public class MakeChangesUtils {
     protected static List<Node> create_listOfSelectedNodes(Model_datefix model_datefix) {
         List<Node> list = new ArrayList<>();
         for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
-            if (node_main instanceof VBox && node_main.getId().equals("imageFrame")) {
+            if (node_main instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
                 Messages.sprintf("Inside imageFrame: " + node_main);
-                for (Node n : ((VBox) node_main).getChildren()) {
-                    Messages.sprintf("Inside imageFrame: " + n);
-                    if (n instanceof VBox && n.getId().equals("bottomContainer")) {
-                        for (Node bottomContainer : ((VBox) n).getChildren()) {
-                            if (bottomContainer instanceof HBox) {
-                                for (Node hbox : ((HBox) bottomContainer).getChildren()) {
-                                    if (hbox instanceof Label & hbox.getId().equals("fileDate")) {
-                                        list.add(n);
-                                    } else {
-                                        Messages.sprintf("bottomContainer is not instanceof Label or bottomContainer.getId() is not fileDate " + bottomContainer);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                list.add(node_main);
             }
         }
         return list;

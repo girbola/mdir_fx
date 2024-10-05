@@ -292,26 +292,12 @@ public class DateTimeAdjusterController {
         }
         Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
         for (Node node : model_datefix.getTilePane().getChildren()) {
-            if (node instanceof VBox) {
-                Messages.sprintf("123 node name " + node.getId());
-                VBox vbox = (VBox) node;
-                if (vbox.getId().equals("imageFrame")) {
-                    for (Node hbox : vbox.getChildren()) {
-                        if (hbox instanceof HBox) {
-                            for (Node tff : ((HBox) hbox).getChildren()) {
-                                if (tff instanceof TextField) {
-                                    TextField tf = (TextField) tff;
-                                    if (tf != null) {
-                                        LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(tf.getText());
-                                        Messages.sprintf("fileDate= " + fileDate);
-                                        if (fileDate.isAfter(ldt_start) && fileDate.isBefore(ldt_end)) {
-                                            model_datefix.getSelectionModel().addWithToggle(vbox);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+            if (node instanceof VBox vbox && node.getId().equals("imageFrame")) {
+                Label fileDateLabel = DateFixGuiUtils.getFileDateLabel(vbox);
+                LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(fileDateLabel.getText());
+                Messages.sprintf("fileDate= " + fileDate);
+                if (fileDate.isAfter(ldt_start) && fileDate.isBefore(ldt_end)) {
+                    model_datefix.getSelectionModel().addWithToggle(vbox);
                 }
             }
         }
