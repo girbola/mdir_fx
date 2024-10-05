@@ -94,6 +94,13 @@ public class SelectionModel {
         }
     }
 
+    public synchronized void clearAll() {
+        for(Node selected : selectionList) {
+            selected.setStyle(style_deselected);
+        }
+        selectionList.clear();
+    }
+
     public synchronized void clearAll(Pane parent) {
         sprintf("clearing all");
         for(Node pane : parent.getChildren()) {
@@ -102,9 +109,7 @@ public class SelectionModel {
                     remove(pane);
                 });
             }
-
         }
-
     }
 
     public synchronized boolean contains(Node node) {

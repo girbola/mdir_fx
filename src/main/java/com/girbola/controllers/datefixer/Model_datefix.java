@@ -26,6 +26,7 @@ import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
+import java.util.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -47,10 +48,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -111,6 +108,7 @@ public class Model_datefix extends DateFixerModel {
     private RenderVisibleNode renderVisibleNode = null;
     private Connection connection;
     private ObservableList<Node> allNodes = FXCollections.observableArrayList();
+    private ObservableList<Node> notVisibleNodes = FXCollections.observableArrayList();
 
     public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
@@ -849,4 +847,7 @@ public class Model_datefix extends DateFixerModel {
         return workDirHandler;
     }
 
+    public ObservableList<Node> getNotVisibleNodes() {
+        return this.notVisibleNodes;
+    }
 }

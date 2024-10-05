@@ -9,6 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.messages.Messages;
+import javafx.application.*;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
@@ -59,11 +60,14 @@ public class AddContentToDateFixContainer extends Task<Integer> {
     }
 
     private void changeImageNumberOfNode(Node node) {
-        if (node instanceof VBox && node.getId().equals("imageFrame")) {
-            VBox vbox = (VBox) node;
+        if (node instanceof VBox vbox && node.getId().equals("imageFrame")) {
             Label imageFrameImageNumber = DateFixGuiUtils.getImageFrameNumberLabel(vbox);
             if (imageFrameImageNumber != null) {
-                imageFrameImageNumber.setText("" + counter.get());
+                Messages.sprintf("imageFrameImageNumber: " + imageFrameImageNumber.getText() + " Counter: " + counter.get());
+                Platform.runLater(() -> {
+                    imageFrameImageNumber.setText("");
+                    imageFrameImageNumber.setText("" + counter.get());
+                });
             }
         }
 

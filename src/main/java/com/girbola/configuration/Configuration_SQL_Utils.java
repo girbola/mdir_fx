@@ -56,40 +56,45 @@ public class Configuration_SQL_Utils {
      */
     private static void ensureCurrentThemeColumnExists(Connection connection) throws Exception {
 
-        String alterTableSQL =
-                "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS betterQualityThumbs BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS confirmOnExit BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS id_counter INTEGER UNIQUE; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showFullPath BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showHints BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS showTooltips BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS currentTheme STRING; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS vlcPath STRING; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS vlcSupport BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS saveDataToHD STRING; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartPosX DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartPosY DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartWidth DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS windowStartHeigth DOUBLE DEFAULT (-1); "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS imageViewXPos DOUBLE; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS imageViewYPos DOUBLE; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS workDirSerialNumber STRING; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS workDir STRING; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_sortIt BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_sorted BOOLEAN; "
-                + "ALTER TABLE " + SQL_Enums.CONFIGURATION.getType() + " ADD COLUMN IF NOT EXISTS tableShow_asItIs BOOLEAN;";
+        String configTable = SQL_Enums.CONFIGURATION.getType();
+        String[] columns = {
+                "betterQualityThumbs BOOLEAN",
+                "confirmOnExit BOOLEAN",
+                "id_counter INTEGER UNIQUE",
+                "showFullPath BOOLEAN",
+                "showHints BOOLEAN",
+                "showTooltips BOOLEAN",
+                "currentTheme STRING",
+                "vlcPath STRING",
+                "vlcSupport BOOLEAN",
+                "saveDataToHD STRING",
+                "windowStartPosX DOUBLE DEFAULT (-1)",
+                "windowStartPosY DOUBLE DEFAULT (-1)",
+                "windowStartWidth DOUBLE DEFAULT (-1)",
+                "windowStartHeigth DOUBLE DEFAULT (-1)",
+                "imageViewXPos DOUBLE",
+                "imageViewYPos DOUBLE",
+                "workDirSerialNumber STRING",
+                "workDir STRING",
+                "tableShow_sortIt BOOLEAN",
+                "tableShow_sorted BOOLEAN",
+                "tableShow_asItIs BOOLEAN"
+        };
 
         try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(alterTableSQL);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            for (String column : columns) {
+                try {
+                    String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN " + column + ";";
+                    stmt.executeUpdate(alterTableSQL);
+                } catch (SQLException e) {
+                    // Column already exists, ignore this error
+                    if (!e.getMessage().contains("duplicate column name")) {
+                        throw e;
+                    }
+                }
+            }
         }
-        try (Statement stmt = connection.createStatement()) {
-            stmt.executeUpdate(alterTableSQL);
-        } catch (Exception e) {
-            // Assuming the column exists if an error is thrown.
-            // If the error is not related to the column already existing, further handling is required.
-        }
+    
     }
 
     /**

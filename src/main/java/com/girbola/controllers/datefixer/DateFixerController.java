@@ -21,6 +21,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
+import java.util.*;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -48,10 +49,6 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -271,14 +268,14 @@ public class DateFixerController {
     private void setBadDate_btn_action(ActionEvent event) {
         sprintf("setBadDate_btn_action: ");
         for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
-                if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                    HBox bottom = DateFixGuiUtils.getBottomHBox(node);
-                    sprintf("hboxi: " + bottom);
-                    bottom.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
-                    Label fileDate = DateFixGuiUtils.getFileDateLabel(node);
-                    if (fileDate != null) {
-                        FileInfo fileInfo = (FileInfo) node.getUserData();
-                        FileInfoUtils.setBad(fileInfo);
+            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                HBox bottom = DateFixGuiUtils.getBottomHBox(node);
+                sprintf("hboxi: " + bottom);
+                bottom.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                Label fileDate = DateFixGuiUtils.getFileDateLabel(node);
+                if (fileDate != null) {
+                    FileInfo fileInfo = (FileInfo) node.getUserData();
+                    FileInfoUtils.setBad(fileInfo);
                 }
 
             }
@@ -299,15 +296,44 @@ public class DateFixerController {
 
     @FXML
     private void show_only_selected_btn_action(ActionEvent event) {
-        sprintf("showOnlySelectedBtn action");
+        sprintf("11111111111111111111showOnlySelectedBtn action");
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         }
-        sprintf("show_only_selected_btn_action starting");
+        sprintf("show_only_selected_btn_action starting: " + df_tilePane.getChildren().size());
+
+        df_tilePane.getChildren().clear();
+
+        df_tilePane.getChildren().addAll(model_datefix.getSelectionModel().getSelectionList());
+        model_datefix.getSelectionModel().clearAll();
+
+
+//        Iterator<Node> iteratorNodeParent = df_tilePane.getChildren().iterator();
+//        while (iteratorNodeParent.hasNext()) {
+//            Node nodeParent = iteratorNodeParent.next();
+//
+//            if (!nodeParentIsSelected(nodeParent, df_tilePane.getChildren(), model_datefix.getSelectionModel().getSelectionList())) {
+//                model_datefix.getNotVisibleNodes().add(nodeParent);
+//                Messages.sprintf("Removing item: " + nodeParent.getId());
+//                iteratorNodeParent.remove();
+//            }
+//        }
 
         DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix, null);
 
+    }
+
+    private boolean nodeParentIsSelected(Node nodeParent, ObservableList<Node> allNodes, ObservableList<Node> selectedNodes) {
+        for (Node selectedNode : selectedNodes) {
+            for (Node node : allNodes) {
+                if (selectedNode.equals(node)) {
+                    Messages.sprintf("Mathcfdfgdfh found");
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @FXML

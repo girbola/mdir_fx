@@ -139,6 +139,7 @@ public class DateFixer extends Task<Void> {
                 ObservableList<Node> nodes = dateFixPopulateTask.get();
                 Platform.runLater(() -> {
                     model_datefix.getTilePane().getChildren().addAll(nodes);
+                    model_datefix.setAllNodes(nodes);
                     loadingProcess_task.closeStage();
                 });
             } catch (InterruptedException | ExecutionException e) {

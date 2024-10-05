@@ -31,7 +31,7 @@
     /*-fx-font-family: 'Gaduci';*/
 
     -fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);
-    -fx-font-weight: 200;
+    -fx-font-weight: 900;
     -fx-font-smoothing-type: lcd;
     /*    -fx-background-color: -fx-base; */
     /*-fx-padding: 0 3 3 3;*/
@@ -39,9 +39,9 @@
 }
 
 .text {
-    -fx-font-size: 0.9em;
-    /*-fx-font-family: "Inter", sans-serif;*/
-}
+    -fx-font-size: 1.0em;
+    -fx-font-family: "Inter", sans-serif;
+}   
 
 #actionButtons {
     -fx-pref-height: 30px;
@@ -59,7 +59,7 @@
     linear-gradient(to bottom, derive(-fx-base, 20%), derive(-fx-base, 3%), derive(-fx-base, 3%), derive(-fx-base, 7%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
     /*-fx-font-family: 'Gaduci';*/
-    -fx-font-size: 0.625em;
+    -fx-font-size: 0.8em;
     -fx-text-fill: -fx-light-text-color;
 
     -fx-border-width: 0;
@@ -98,10 +98,12 @@
 .closeButton {
     /* -fx-insets: 12px 0 0 0; */
     -fx-background-color: rgb(212, 22, 22);
-    -fx-background-radius: 0.625em;
+    -fx-background-radius: 0.7em;
     -fx-border-color: rgb(252, 195, 89);
-    -fx-border-radius: 0.625em;
+    -fx-border-insets: -1;
+    -fx-border-radius: 0.7em;
     -fx-border-width: 0.2em;
+    -fx-margin: 0;
 }
 
 .fileExtension .text {
@@ -143,14 +145,18 @@
 
 .date-picker .text-field,
 .fileDate_tf {
-    -fx-font-size: 0.8em;
+    /*-fx-font-size: 1em;*/
     -fx-background-color: transparent;
     -fx-border-radius: 3;
     -fx-text-fill: -fx-light-text-color;
+
 }
 
 .date-picker:editable .arrow-button {
-    -fx-background-color: rgba(239, 87, 5, 0.82);
+    -fx-background-color: #EF5705D1;
+    -fx-background-radius: 2;
+    -fx-border-color: transparent;
+    -fx-border-radius: 3;
 }
 
 .fileName_ta {
