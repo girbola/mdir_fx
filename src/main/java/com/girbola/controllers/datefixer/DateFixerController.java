@@ -296,7 +296,7 @@ public class DateFixerController {
 
     @FXML
     private void show_only_selected_btn_action(ActionEvent event) {
-        sprintf("11111111111111111111showOnlySelectedBtn action");
+        sprintf("show_only_selected_btn_action action");
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("youHaventSelectedMedia"));
             return;
@@ -307,18 +307,6 @@ public class DateFixerController {
 
         df_tilePane.getChildren().addAll(model_datefix.getSelectionModel().getSelectionList());
         model_datefix.getSelectionModel().clearAll();
-
-
-//        Iterator<Node> iteratorNodeParent = df_tilePane.getChildren().iterator();
-//        while (iteratorNodeParent.hasNext()) {
-//            Node nodeParent = iteratorNodeParent.next();
-//
-//            if (!nodeParentIsSelected(nodeParent, df_tilePane.getChildren(), model_datefix.getSelectionModel().getSelectionList())) {
-//                model_datefix.getNotVisibleNodes().add(nodeParent);
-//                Messages.sprintf("Removing item: " + nodeParent.getId());
-//                iteratorNodeParent.remove();
-//            }
-//        }
 
         DateFixLoadingProcessLoader.reNumberTheFrames(model_datefix);
 
@@ -350,13 +338,14 @@ public class DateFixerController {
 
     @FXML
     private void folderize_btn_action(ActionEvent event) {
+        sprintf("folderize_btn_action");
         if (model_datefix.getSelectionModel().getSelectionList().isEmpty()) {
             warningText(bundle.getString("youHaventSelectedMedia"));
             return;
         } else {
             ConcurrencyUtils.stopExecThread();
             Parent parent = null;
-            // rgwerg;
+
             try {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
                         bundle);
@@ -395,7 +384,6 @@ public class DateFixerController {
         Scene scene = dateFix_btn.getScene();
         sprintf("ImportImages about to start: " + p);
         new ImportImages(scene, model_datefix.getFolderInfo_full(), model_main, false);
-
     }
 
     @FXML

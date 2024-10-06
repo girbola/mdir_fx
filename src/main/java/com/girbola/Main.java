@@ -129,9 +129,6 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
 
                 Font[] allFonts = ge.getAllFonts();
 
-                for (Font font : allFonts) {
-                    System.out.println("Font name: " + font.getFontName(Locale.getDefault()));
-                }
                 Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
                         + conf.getWorkDir());
 

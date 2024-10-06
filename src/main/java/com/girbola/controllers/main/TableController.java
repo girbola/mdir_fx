@@ -55,6 +55,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import javafx.util.*;
 import javafx.util.converter.NumberStringConverter;
 
 import java.awt.*;
@@ -608,6 +609,20 @@ public class TableController {
                 }
             }
         });
+
+//        table.setRowFactory(new Callback<TableView<FolderInfo>, TableRow<FolderInfo>>() {
+//            @Override
+//            public TableRow<FolderInfo> call(TableView<FolderInfo> folderInfoTableView) {
+//                final TableRow<FolderInfo> row = new TableRow<>() {
+//                    @Override
+//                    protected void updateItem(FolderInfo folderInfo, boolean empty) {
+//                        super.updateItem(folderInfo, empty);
+//
+//                    }
+//                };
+//                return row;
+//            }
+//        });
 
         if (hide_btn == null) {
             Messages.errorSmth(ERROR, "model_main.tables().getHideButtons(). were null", null, Misc.getLineNumber(), true);
