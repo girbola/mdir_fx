@@ -454,10 +454,10 @@
     transparent,
     transparent,
     linear-gradient(to bottom,
-            derive(#353945, 40%),
-            derive(#8db5f2, 30%),
-            derive(#30607a, 30%),
-            derive(#44aec6, 40%)
+            derive(#6b81cf, 10%),
+            derive(#395591, 30%),
+            derive(#395591, 30%),
+            derive(#6b81cf, 10%)
     );
 
 }
