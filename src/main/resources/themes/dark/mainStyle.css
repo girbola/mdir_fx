@@ -7,40 +7,16 @@
     -fx-mid-base: rgb(30, 31, 34);
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
-    -fx-light-border-color: white;
 
-    -fx-focus-color: #3b8787;
+    -fx-base-cyan: #3b8787;
     -fx-base-orange: #cf6418;
-    -fx-base-blue: rgba(53, 80, 145, 1.00);
+    -fx-base-blue: #355091;
+    -fx-base-red: #c14545;
 
-    /* Button basic colors */
-    /*-fx-button-color: #4f4f4f;*/
-    /*-fx-button-fade-color: #484848;*/
-    /*-fx-button-border: #a36911;*/
 
-    /* One of these colors will be chosen based upon a ladder calculation
- * that uses the brightness of a background color.  Instead of using these
- * colors directly as -fx-text-fill values, the sections in this file should
- * use a derived color to match the background in use.  See also:
- *
- * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
- * -fx-text-background-color for text on top of -fx-background
- * -fx-text-inner-color for text on top of -fx-control-inner-color
- * -fx-selection-bar-text for text on top of -fx-selection-bar
- */
-    -fx-dark-text-color: black;
-    -fx-mid-text-color: #292929;
-    -fx-light-text-color: rgb(228, 225, 225);
+    -fx-light-text-color: #e4e1e1;
     -fx-font-family: "Inter";
     -fx-font-size: 1em;
-    /*-fx-effect: dropshadow( one-pass-box , #6e6e6e, 1 , 0.0 , 0 , 0.1 );*/
-
-    /*-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 10, 0, 5, 5);*/
-    /*-fx-font-weight: 400;*/
-    /*-fx-font-smoothing-type: lcd;*/
-    /*    -fx-background-color: -fx-base; */
-    /*-fx-padding: 0 3 3 3;*/
-    /*  -fx-border-color:  -fx-dark-border-color; */
 }
 
 .main {
@@ -62,10 +38,7 @@
     transparent,
     linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
-    /*!*-fx-font-family: 'Gaduci';*!*/
     -fx-font-size: 0.625em;
-    /*-fx-text-fill: -fx-light-text-color;*/
-    /*-fx-border-color: -fx-base;*/
     -fx-border-radius: 0.25em;
     -fx-background-radius: 0.25em;
 }
@@ -75,15 +48,7 @@
 }
 
 .buttons-separator:vertical .line {
-    /*-fx-border-color: transparent transparent transparent -fx-shadow-highlight-color,*/
-    /*transparent transparent transparent -fx-text-box-border;*/
-    /*-fx-border-width: 3, 1;*/
-    /*-fx-border-insets: 0, 0 0 0 1;*/
-
     -fx-text-box-border: derive(-fx-base, 30%);
-    /*-fx-padding: 3;*/
-    /*-fx-margin: 3;*/
-    /*-fx-shadow-highlight-color: transparent;*/
 }
 
 .flow-pane {
@@ -98,21 +63,21 @@
 }
 
 .imageFrame {
-    -fx-border-color: red;
-    -fx-background-color: orange;
+    -fx-border-color: -fx-base-red;
+    -fx-background-color: -fx-base-orange;
 }
 
-.imageFrameSelected {
-    -fx-border-color: red;
-    -fx-background-color: orange;
-    -fx-padding: 15px;
-}
+/*.imageFrameSelected {*/
+/*    -fx-border-color:  -fx-base-red;*/
+/*    -fx-background-color:  -fx-base-orange;*/
+/*    -fx-padding: 15px;*/
+/*}*/
 
-.imageFrameDeSelected {
-    -fx-border-color: blue;
-    -fx-background-color: yellow;
-    -fx-padding: -5px;
-}
+/*.imageFrameDeSelected {*/
+/*    -fx-border-color:  -fx-base-blue;*/
+/*    -fx-background-color: yellow;*/
+/*    -fx-padding: -5px;*/
+/*}*/
 
 .imageNumber {
     -fx-font-size: 2em;
@@ -141,7 +106,7 @@
 
 .media-column > .label .text {
     -fx-alignment: center-right;
-    -fx-background-color: #0d0dcc;
+    -fx-background-color: -fx-base-blue;
     -fx-font-size: 15px;
 }
 
@@ -153,11 +118,11 @@
 }
 
 .menu:hover {
-    -fx-background-color: orange;
+    -fx-background-color: -fx-base-orange;
 }
 
 .menu:showing {
-    -fx-background-color: cyan;
+    -fx-background-color: -fx-base-awerg
 }
 
 .menu-item {
@@ -194,11 +159,11 @@
 }
 
 .menu-button-action {
-    -fx-background-color: rgba(182, 111, 33, 0.98);
+    -fx-background-color: -fx-base-orange;
 }
 
 .menu-button:showing {
-    -fx-background-color: -fx-base-blue;
+    -fx-background-color: -fx-base-cyan;
 }
 
 .menu-button-reload {
@@ -206,7 +171,7 @@
 }
 
 .menu-item-action {
-    -fx-background-color: rgba(182, 111, 33, 0.65);
+    -fx-background-color: derive(-fx-base-orange, 50%);
 }
 
 .menu-item-reload {
@@ -221,7 +186,7 @@
 .tab .tab-label {
     -fx-alignment: center;
     -fx-font-size: 13px; /* all the same except this newly added one */
-    -fx-text-fill: white;
+    -fx-text-fill: -fx-light-text-color;
     -fx-font-weight: bold;
     -fx-background-color: transparent;
     -fx-border-color: transparent;
@@ -274,7 +239,7 @@
 }
 
 .table-row-cell:focused {
-    -fx-background-color: -fx-focus-color;
+    -fx-background-color: -fx-base-cyan;
 }
 
 /*.table-cell:focused {*/
@@ -327,11 +292,11 @@
 }
 
 .table-view .column-header.table_media {
-    -fx-background-color: linear-gradient(to bottom, red, orange);
+    -fx-background-color: linear-gradient(to bottom, -fx-base-red, -fx-base-orange);
     -fx-text-fill: -fx-light-text-color;
     -fx-alignment: right;
     -fx-font-weight: bold;
-    -fx-font-color: red;
+    -fx-font-color: -fx-base-red;
 }
 
 /*.table-view .column-header:hover {*/
@@ -399,7 +364,7 @@
 }
 
 .tableTextField {
-    -fx-background-color: orange;
+    -fx-background-color: -fx-base-orange;
     -fx-background-radius: 0.125em;
     -fx-text-fill: black;
     -fx-border-color: white;
@@ -409,8 +374,8 @@
 .tableTextField_bad {
     -fx-background-color: pink;
     -fx-background-radius: 0.125em;
-    -fx-text-fill: red;
-    -fx-border-color: red;
+    -fx-text-fill: -fx-base-red;
+    -fx-border-color: -fx-base-red;
     -fx-border-radius: 0.125em;
 }
 
