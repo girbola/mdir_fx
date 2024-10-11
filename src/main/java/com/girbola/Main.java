@@ -29,7 +29,7 @@ import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.*;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -37,6 +37,7 @@ import com.girbola.sql.FolderScannerSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
+import java.awt.Font;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -47,8 +48,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.robot.Robot;
+import javafx.scene.text.*;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -253,7 +256,10 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
                                 + t1);
                     });
 
-
+                    autoResizeColumns(model_main.tables().getSorted_table());
+                    autoResizeColumns(model_main.tables().getSorted_table());
+                    autoResizeColumns(model_main.tables().getSortIt_table());
+                    autoResizeColumns(model_main.tables().getSortIt_table());
 //							conf.windowStartPosX_property().bind(primaryScene.xProperty());
 //							conf.windowStartPosY_property().bind(primaryScene.yProperty());
                 });
@@ -325,6 +331,34 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
         mainTask_th.setDaemon(true);
         mainTask_th.start();
 
+    }
+
+    public static void autoResizeColumns( TableView<?> table )
+    {
+        //Set the right policy
+        //table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.getColumns().stream().forEach( (column) ->
+        {
+            //Minimal width = columnheader
+            Text t = new Text( column.getText() );
+            double max = t.getLayoutBounds().getWidth();
+            for ( int i = 0; i < table.getItems().size(); i++ )
+            {
+                //cell must not be empty
+                if ( column.getCellData( i ) != null )
+                {
+                    t = new Text( column.getCellData( i ).toString() );
+                    double calcwidth = t.getLayoutBounds().getWidth();
+                    //remember new max-width
+                    if ( calcwidth > max )
+                    {
+                        max = calcwidth;
+                    }
+                }
+            }
+            //set the new max-widht with some extra space
+            column.setPrefWidth( max + 10.0d );
+        } );
     }
 
     public static boolean getProcessCancelled() {

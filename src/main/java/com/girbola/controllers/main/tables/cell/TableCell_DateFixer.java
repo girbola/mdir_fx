@@ -35,7 +35,7 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 
     public TableCell_DateFixer(Model_main model_main) {
         this.model_main = model_main;
-        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 15));
+        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
         dateFixerButton.setGraphic(view_iv);
         dateFixerButton.setStyle(null);
         dateFixerButton.getStyleClass().add("view_btn");
