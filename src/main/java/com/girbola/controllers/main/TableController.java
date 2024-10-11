@@ -123,7 +123,6 @@ public class TableController {
 	@FXML private TableColumn<FolderInfo, String> maxDates_col;
 	@FXML private TableColumn<FolderInfo, String> minDate_col;
 	@FXML private TableView<FolderInfo> table;
-    @FXML private ScrollPane tableScrollPane;
 	@FXML private Label tableDescription_tf;
 	@FXML private Tooltip addToBatch_tooltip;
 	@FXML private Tooltip collectSimilarDates_btn_tooltip;
@@ -637,17 +636,14 @@ public class TableController {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("asitis_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setAsItIsRootPane(table_Vbox);
-            tableScrollPane.setId("tableScrollPane_asitis");
         } else if (tableType.equals(TableType.SORTIT.getType())) {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("sortit_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setSortItRootPane(table_Vbox);
-            tableScrollPane.setId("tableScrollPane_sortit");
         } else if (tableType.equals(TableType.SORTED.getType())) {
             tableDescription_tf_tooltip.setText(Main.bundle.getString("sorted_table_desc"));
             tableDescription_tf.setTooltip(tableDescription_tf_tooltip);
             model_main.tables().setSortedRootPane(table_Vbox);
-            tableScrollPane.setId("tableScrollPane_sorted");
         }
 
         Main.conf.showTooltips_property().addListener(new ChangeListener<Boolean>() {

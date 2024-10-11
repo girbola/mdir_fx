@@ -12,65 +12,65 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.List;
+import java.util.*;
 
 public class FolderInfo_SQL {
 
-//@formatter:off
-	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
-			+ " (id INTEGER PRIMARY KEY DEFAULT(0), "
-			+ "status INTEGER, " 
-			+ "changed BOOLEAN, " 
-			+ "connected BOOLEAN, " 
-			+ "ignored BOOLEAN, "
-			+ "dateDifference DOUBLE, " 
-			+ "badFiles INTEGER, " 
-			+ "confirmed INTEGER, " 
-			+ "copied INTEGER, "
-			+ "folderFiles INTEGER, " 
-			+ "folderImageFiles INTEGER, " 
-			+ "folderRawFiles INTEGER, "
-			+ "folderVideoFiles INTEGER, " 
-			+ "goodFiles INTEGER, " 
-			+ "suggested INTEGER, " 
-			+ "folderSize INTEGER, "
-			+ "justFolderName STRING, "
-			+ "folderPath STRING, "
-			+ "maxDate STRING, "
-			+ "minDate STRING, "
-			+ "state STRING, "
-			+ "tableType STRING)";
-
 	//@formatter:off
-	private static final String folderInfoInsert = "INSERT OR REPLACE INTO " 
-	+ SQL_Enums.FOLDERINFO.getType() 
-	+ " ("
-	+ "'id', " 
-	+ "'status', " 
-	+ "'changed', " 
-	+ "'connected', " 
-	+ "'ignored', " 
-	+ "'dateDifference', "
-	+ "'badFiles', "
-	+ "'confirmed', " 
-	+ "'copied', " 
-	+ "'folderFiles', " 
-	+ "'folderImageFiles', " 
-	+ "'folderRawFiles', "
-	+ "'folderVideoFiles', " 
-	+ "'goodFiles', " 
-	+ "'suggested', " 
-	+ "'folderSize', " 
-	+ "'justFolderName', "
-	+ "'folderPath', " 
-	+ "'maxDate', " 
-	+ "'minDate', " 
-	+ "'state', " 
-	+ "'tableType')"
-	+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
+			+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ "status INTEGER, "
+			+ "changed BOOLEAN, "
+			+ "connected BOOLEAN, "
+			+ "ignored BOOLEAN, "
+			+ "dateDifference DOUBLE, "
+			+ "badFiles INTEGER, "
+			+ "confirmed INTEGER, "
+			+ "copied INTEGER, "
+			+ "folderFiles INTEGER, "
+			+ "folderImageFiles INTEGER, "
+			+ "folderRawFiles INTEGER, "
+			+ "folderVideoFiles INTEGER, "
+			+ "goodFiles INTEGER, "
+			+ "suggested INTEGER, "
+			+ "folderSize INTEGER, "
+			+ "justFolderName TEXT, "
+			+ "folderPath TEXT, "
+			+ "maxDate TEXT, "
+			+ "minDate TEXT, "
+			+ "state TEXT, "
+			+ "tableType TEXT)";
+
+	//@formatter:on
+	private static final String folderInfoInsert = "INSERT OR REPLACE INTO "
+			+ SQL_Enums.FOLDERINFO.getType()
+			+ " ("
+			+ "'id', "
+			+ "'status', "
+			+ "'changed', "
+			+ "'connected', "
+			+ "'ignored', "
+			+ "'dateDifference', "
+			+ "'badFiles', "
+			+ "'confirmed', "
+			+ "'copied', "
+			+ "'folderFiles', "
+			+ "'folderImageFiles', "
+			+ "'folderRawFiles', "
+			+ "'folderVideoFiles', "
+			+ "'goodFiles', "
+			+ "'suggested', "
+			+ "'folderSize', "
+			+ "'justFolderName', "
+			+ "'folderPath', "
+			+ "'maxDate', "
+			+ "'minDate', "
+			+ "'state', "
+			+ "'tableType')"
+			+ " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 	/**
-	 * 
+	 *
 	 * @param connection_mdirFile
 	 * @return
 	 */
@@ -88,39 +88,48 @@ public class FolderInfo_SQL {
 
 
 	private static void ensureFolderInfoTable(Connection connection) {
-		 String alterTableSQL =
-				 		"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS id INTEGER PRIMARY KEY DEFAULT 0; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS status INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS changed BOOLEAN; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS connected BOOLEAN; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS ignored BOOLEAN; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS dateDifference DOUBLE; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS badFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS confirmed INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS copied INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderImageFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderRawFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderVideoFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS goodFiles INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS suggested INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderSize INTEGER; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS justFolderName TEXT; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS folderPath TEXT; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS maxDate TEXT; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS minDate TEXT; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS state TEXT; " +
-						"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN IF NOT EXISTS tableType TEXT;";
+		List<String> alterTableCommands = Arrays.asList(
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN status INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN changed BOOLEAN;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN connected BOOLEAN;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN ignored BOOLEAN;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN dateDifference DOUBLE;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN badFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN confirmed INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN copied INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderImageFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderRawFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderVideoFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN goodFiles INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN suggested INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderSize INTEGER;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN justFolderName TEXT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderPath TEXT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN maxDate TEXT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN minDate TEXT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN state TEXT;",
+				"ALTER TABLE " + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN tableType TEXT;"
+		);
+
 		try (Statement stmt = connection.createStatement()) {
-			stmt.executeUpdate(alterTableSQL);
+			for (String sql : alterTableCommands) {
+				try {
+					stmt.executeUpdate(sql);
+				} catch (SQLException e) {
+					if (!e.getMessage().contains("duplicate column name")) {
+						// Log and rethrow the exception for any issue other than duplicate column
+						System.err.println("Error altering table: " + e.getMessage());
+						e.printStackTrace();
+						throw e;
+					}
+				}
+			}
 		} catch (SQLException e) {
+			// Use a proper logger instead of e.printStackTrace() in production.
+			System.err.println("Overall error altering table: " + e.getMessage());
 			e.printStackTrace();
-		}
-		try (Statement stmt = connection.createStatement()) {
-			stmt.executeUpdate(alterTableSQL);
-		} catch (Exception e) {
-			// Assuming the column exists if an error is thrown.
-			// If the error is not related to the column already existing, further handling is required.
 		}
 	}
 
@@ -150,7 +159,7 @@ public class FolderInfo_SQL {
 			pstmt.setString(21, folderInfo.getState());
 			pstmt.setString(22, folderInfo.getTableType());
 			pstmt.addBatch();
-			
+
 			int[] counter = pstmt.executeBatch();
 			Messages.sprintf("COUNTER WERE: " + counter.length);
 			pstmt.close();
@@ -168,7 +177,7 @@ public class FolderInfo_SQL {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param path
 	 * @return
 	 */
@@ -263,7 +272,7 @@ public class FolderInfo_SQL {
 
 		boolean create = createFolderInfoTable(connection_mdirFile);
 		if (create) {
-            return insertFolderInfo(connection_mdirFile, folderInfo);
+			return insertFolderInfo(connection_mdirFile, folderInfo);
 		}
 		return false;
 //		try {

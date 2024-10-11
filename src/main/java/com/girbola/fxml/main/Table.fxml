@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -184,44 +183,40 @@
                         </HBox>
             			</children>
             		</HBox>
-                  <ScrollPane fx:id="tableScrollPane" fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" pannable="true" VBox.vgrow="ALWAYS">
-                     <content>
-                  		<TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handleMouseClicked">
-                  			<columns>
-                  				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
-                  				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
-                  				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
-                  				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied" />
-                  				<TableColumn fx:id="dateFix_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
-                  				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%justFolderName" />
-                  				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
-                  				<TableColumn fx:id="badFiles_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%badFiles" />
-                  				<TableColumn fx:id="minDate_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%mindate" />
-                  				<TableColumn fx:id="maxDates_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%maxdate" />
-                  				<TableColumn fx:id="size_col" editable="false" minWidth="100.0" prefWidth="100.0" text="%size" />
-                  				<TableColumn fx:id="media_col" editable="false" minWidth="150.0" prefWidth="150.0" styleClass="media-column" text="%media">
-                  					<columns>
-                  						<TableColumn fx:id="image_col" minWidth="50.0" prefWidth="50.0" text="%image" />
-                  						<TableColumn fx:id="raw_col" minWidth="50.0" prefWidth="50.0" text="%raw" />
-                  						<TableColumn fx:id="video_col" minWidth="50.0" prefWidth="50.0" text="%video" />
-                  					</columns>
-                  				</TableColumn>
-                  				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%suggested" />
-                  				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="350.0" prefWidth="350.0" text="%fullPath" />
-                  			</columns>
-                           <padding>
-                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                           </padding>
-                           <contextMenu>
-                              <ContextMenu>
-                                <items>
-                                  <MenuItem mnemonicParsing="false" onAction="#openFolderInSystemFileManager" text="Open file in filemanager" />
-                                </items>
-                              </ContextMenu>
-                           </contextMenu>
-                  		</TableView>
-                     </content>
-                  </ScrollPane>
+            		<TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handleMouseClicked" VBox.vgrow="ALWAYS">
+            			<columns>
+            				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
+            				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
+            				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
+            				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied" />
+            				<TableColumn fx:id="dateFix_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
+            				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%justFolderName" />
+            				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
+            				<TableColumn fx:id="badFiles_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%badFiles" />
+            				<TableColumn fx:id="minDate_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%mindate" />
+            				<TableColumn fx:id="maxDates_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%maxdate" />
+            				<TableColumn fx:id="size_col" editable="false" minWidth="100.0" prefWidth="100.0" text="%size" />
+            				<TableColumn fx:id="media_col" editable="false" minWidth="150.0" prefWidth="150.0" styleClass="media-column" text="%media">
+            					<columns>
+            						<TableColumn fx:id="image_col" minWidth="50.0" prefWidth="50.0" text="%image" />
+            						<TableColumn fx:id="raw_col" minWidth="50.0" prefWidth="50.0" text="%raw" />
+            						<TableColumn fx:id="video_col" minWidth="50.0" prefWidth="50.0" text="%video" />
+            					</columns>
+            				</TableColumn>
+            				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%suggested" />
+            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="350.0" prefWidth="350.0" text="%fullPath" />
+            			</columns>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                     <contextMenu>
+                        <ContextMenu>
+                          <items>
+                            <MenuItem mnemonicParsing="false" onAction="#openFolderInSystemFileManager" text="Open file in filemanager" />
+                          </items>
+                        </ContextMenu>
+                     </contextMenu>
+            		</TableView>
                   <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="tableBottomButtons" VBox.vgrow="NEVER">
                      <children>
                         <Label text="%totalFilesWithColon">
