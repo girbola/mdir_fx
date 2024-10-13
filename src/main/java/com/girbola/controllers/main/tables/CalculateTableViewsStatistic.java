@@ -3,7 +3,6 @@ package com.girbola.controllers.main.tables;
 import com.girbola.controllers.main.TableStatistic;
 import com.girbola.controllers.main.Tables;
 import com.girbola.messages.Messages;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 

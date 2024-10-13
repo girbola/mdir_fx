@@ -2,6 +2,7 @@ package com.girbola.fxml.operate;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.Model_main;
 import com.girbola.controllers.main.Model_operate;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -38,7 +39,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.girbola.fxml.operate.OperateFilesUtils.copyFile;
+import static com.girbola.fxml.operate.OperateFilesUtils.*;
 import static com.girbola.messages.Messages.sprintf;
 
 public class OperateFiles {
@@ -49,7 +50,7 @@ public class OperateFiles {
     private List<FileInfo> list = new ArrayList<>();
     private Model_main model_main;
     private String scene_NameType;
-    private List<FileInfo> listCopiedFiles = new ArrayList<>();
+    private static List<FileInfo> listCopiedFiles = new ArrayList<>();
 
     public OperateFiles(List<FileInfo> list, boolean close, Model_main aModel_main, String scene_NameType) {
         Messages.sprintf("OperateFiles starting LIST");
@@ -267,7 +268,7 @@ public class OperateFiles {
                     switch (copy_State) {
                         case COPY:
                             if (Files.exists(source)) {
-                                if (copyFile(fileInfo, source, dest, STATE, answer)) {
+                                if (copyFile(fileInfo, source, dest, STATE, answer, model_operate)) {
                                     updateSourceAndDestProcessValues(source, dest);
                                     updateIncreaseCopyingProcessValues();
                                     if (!fileInfo.isCopied()) {
@@ -289,7 +290,7 @@ public class OperateFiles {
 
                             break;
                         case RENAME:
-                            if (copyFile(fileInfo, source, dest, STATE, answer)) {
+                            if (copyFile(fileInfo, source, dest, STATE, answer, model_operate)) {
                                 updateIncreaseRenamedProcessValues();
                                 if (!fileInfo.isCopied()) {
                                     fileInfo.setCopied(true);
@@ -314,7 +315,11 @@ public class OperateFiles {
             return null;
         }
 
-
+        private void updateFilesLeftCounter() {
+            Platform.runLater(() -> {
+                model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
+            });
+        }
 
         /**
          * Check if there are possibilities for a conflict existence with copy process
@@ -361,75 +366,6 @@ public class OperateFiles {
             return false;
         }
 
-        private void updateFilesLeftCounter() {
-            Platform.runLater(() -> {
-                model_operate.getCopyProcess_values().setFilesLeft(counter.decrementAndGet());
-            });
-        }
-
-
-
-
-        private void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest) {
-            try {
-                Messages.sprintf("Renaming corrupted file to: " + dest);
-
-                String fileName = FileUtils.parseExtension(dest);
-                Path destPath = Paths.get(dest.getParent().toString() + File.separator + fileName + "_crp."
-                        + FileUtils.getExtension(dest));
-                if (Files.exists(destPath)) {
-                    destPath = FileUtils.renameFile(dest, destPath);
-                }
-                Files.move(Paths.get(dest.toString() + ".tmp"), destPath);
-
-//				listCopiedFiles.add(fileInfo);
-//
-//				String newName = FileUtils.parseWorkDir(destPath.toString(), fileInfo.getWorkDir());
-//				updateFileInfoWorkDirPathAndSerial(fileInfo, newName);
-//				fileInfo.setCopied(true);
-                String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-                fileInfo.setDestination_Path(newName);
-                fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-                fileInfo.setCopied(true);
-                listCopiedFiles.add(fileInfo);
-                boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-                if (added) {
-                    Messages.sprintf("FileInfo - corrupted added to destination succesfully");
-                } else {
-                    Messages.sprintf("FileInfo - corrupted were not added because it did exists "
-                            + fileInfo.getDestination_Path());
-                }
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                Messages.sprintfError(ex.getMessage());
-                Main.setProcessCancelled(true);
-            }
-        }
-
-        private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest) {
-            try {
-                Messages.sprintf(
-                        "Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
-                Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-                String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-                fileInfo.setDestination_Path(newName);
-                fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-                fileInfo.setCopied(true);
-                listCopiedFiles.add(fileInfo);
-                boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-                if (added) {
-                    Messages.sprintf("FileInfo added to destination succesfully");
-                } else {
-                    Messages.sprintf("FileInfo were not added because it did exists " + fileInfo.getDestination_Path());
-                }
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                Messages.sprintfError(ex.getMessage());
-            }
-
-        }
-
         private synchronized void resetAndUpdateFileCopiedProcessValues() {
             Platform.runLater(() -> {
                 model_operate.getCopyProcess_values().setLastSecondFileSize_tmp(0);
@@ -437,7 +373,7 @@ public class OperateFiles {
             });
         }
 
-        private synchronized void updateIncreaseLastSecondFileSizeProcessValues(int byteRead) {
+        private synchronized void updateIncreaseLastSecondFileSizeProcessValues(int byteRead, Model_operate model_operate) {
             Platform.runLater(() -> {
                 model_operate.getCopyProcess_values().increaseLastSecondFileSize_tmp(byteRead);
             });
@@ -467,26 +403,102 @@ public class OperateFiles {
                 model_operate.getCopyProcess_values().setCopyFrom(source.toString());
                 model_operate.getCopyProcess_values().setCopyTo(dest.toString());
             });
-
         }
 
-        private boolean cleanCancelledFile(InputStream from, OutputStream to, Path source, Path dest) {
-            sprintf("cleanCancelledFile cancelled");
-            try {
-                from.close();
-                to.flush();
-                to.close();
-                if (Files.size(source) != Files.size(dest)) {
-                    Files.deleteIfExists(Paths.get(dest.toString() + ".tmp"));
-                    sprintf("2file is gonna be deleted! " + dest.toString());
-                }
-                return true;
-            } catch (Exception ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        public static boolean copyFile(FileInfo fileInfo, Path source2, Path dest2, String STATE2,
+                                       SimpleIntegerProperty answer, Model_operate model_operate) {
+
+            if (!Files.exists(source2)) {
+
+                return false;
+            }
+            boolean destinationDirectoriesCreated = OperateFilesUtils.createDirectories(dest2);
+            if (!destinationDirectoriesCreated) {
+                Messages.sprintfError("Couldn't not be able to create folder");
                 Main.setProcessCancelled(true);
                 return false;
             }
+            try {
+                Path destTmpFile = Paths.get(dest2.toFile() + ".tmp");
+
+                Files.deleteIfExists(destTmpFile);
+                Messages.sprintf("Source: " + source2 + " dest: " + dest2);
+
+                InputStream from = new FileInputStream(source2.toFile());
+                OutputStream to = new FileOutputStream(destTmpFile.toFile());
+                resetAndupdateSourceAndDestProcessValues(source2, dest2);
+
+                long nread = 0L;
+                int byteRead = 0;
+                byte[] buf = new byte[8192];
+                sprintf("----] Starting copying: " + source2);
+                while ((byteRead = from.read(buf)) > 0) {
+                    if (Main.getProcessCancelled()) {
+                        boolean cancelledSucceeded = cleanCancelledFile(from, to, source2, dest2);
+                        if (cancelledSucceeded) {
+                            Messages.sprintf("Cleanup is done ");
+                        } else {
+                            Messages.sprintf("Cleanup has FAILED. There will be tmp file will remain: " + destTmpFile);
+                        }
+
+                        break;
+                    }
+                    to.write(buf, 0, byteRead);
+                    nread += byteRead;
+                    updateIncreaseLastSecondFileSizeProcessValues(byteRead);
+                }
+                from.close();
+                to.flush();
+                to.close();
+                resetAndUpdateFileCopiedProcessValues();
+
+                if (nread != source2.toFile().length()) {
+
+                    switch (rememberAnswer.get()) {
+                        case CopyAnswerType.COPY:
+                            answer.set(0);
+                            Messages.sprintf("Copy will be done. Value is: " + answer.get());
+                            break;
+                        case CopyAnswerType.DONTCOPY:
+                            answer.set(1);
+                            Messages.sprintf("Copy won't be done. Value is: " + answer.get());
+                            break;
+                        case CopyAnswerType.ASK:
+                            Messages.sprintf("Prompting dialogue");
+                            FutureTask<SimpleIntegerProperty> task = new FutureTask<>(
+                                    new OperateFiles.Dialogue((Window) model_operate.getStart_btn().getScene().getWindow(), fileInfo,
+                                            model_operate.getCopyProcess_values().getFilesCopyProgress_MAX_tmp(), answer,
+                                            rememberAnswer));
+                            Platform.runLater(task);
+                            answer = task.get();
+                            Messages.sprintf("And the answer is: " + answer.get());
+                            break;
+                    }
+
+                    if (answer.get() == 0) {
+                        renameTmpFileToCorruptedFileExtensions(fileInfo, destTmpFile, dest2, model_operate, listCopiedFiles);
+                        Messages.sprintf("renameTmpFileToCorruptedFile: " + destTmpFile);
+                    } else if (answer.get() == 1) {
+                        Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmpFile);
+                        Files.deleteIfExists(destTmpFile);
+                    } else if (answer.get() == 2) {
+                        Messages.sprintf("Cancel pressed. This is not finished!");
+                        cancel();
+                        Main.setProcessCancelled(true);
+                        return false;
+
+                    }
+                } else {
+                    renameTmpFileBackToOriginalExtentension(fileInfo, destTmpFile, dest2);
+                    Messages.sprintf("renameTmpFileBackToOriginalExtentension: " + destTmpFile + " dest: " + dest2);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return true;
         }
+
 
         @Override
         protected void failed() {

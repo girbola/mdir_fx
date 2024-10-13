@@ -3,10 +3,6 @@ package com.girbola.controllers.main;
 import com.girbola.SceneNameType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
-import com.girbola.messages.Messages;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 
 import java.util.ArrayList;
 import java.util.List;
