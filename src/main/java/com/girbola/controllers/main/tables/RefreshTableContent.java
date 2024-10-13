@@ -1,7 +1,5 @@
 package com.girbola.controllers.main.tables;
 
-import com.girbola.Main;
-import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
