@@ -19,7 +19,7 @@ public class EXIF_Data_Selector {
 
     private SimpleIntegerProperty count;
     private SimpleStringProperty info;
-    private BooleanProperty isShowing;
+    private SimpleBooleanProperty isShowing;
 
     @Override
     public String toString() {

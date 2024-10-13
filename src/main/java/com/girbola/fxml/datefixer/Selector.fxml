@@ -18,7 +18,6 @@
                             <content>
                                 <TableView fx:id="dates_tableView" styleClass="metadataTable">
                                     <columns>
-                                        <TableColumn fx:id="dates_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
                                         <TableColumn fx:id="dates_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%dates" />
                                         <TableColumn fx:id="dates_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
                                     </columns>
@@ -35,7 +34,6 @@
                             <content>
                                 <TableView fx:id="cameras_tableView" styleClass="metadataTable">
                                     <columns>
-                                        <TableColumn fx:id="cameras_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
                                         <TableColumn fx:id="cameras_col" editable="false" maxWidth="200.0" minWidth="120.0" prefWidth="120.0" text="%cameras" />
                                         <TableColumn fx:id="cameras_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" text="%photos" />
                                     </columns>
@@ -49,7 +47,6 @@
                             <content>
                                 <TableView fx:id="events_tableView" styleClass="metadataTable">
                                     <columns>
-                                        <TableColumn fx:id="events_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
                                         <TableColumn fx:id="events_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%events" />
                                         <TableColumn fx:id="events_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
                                     </columns>
@@ -63,7 +60,6 @@
                             <content>
                                 <TableView fx:id="locations_tableView" styleClass="metadataTable">
                                     <columns>
-                                        <TableColumn fx:id="locations_checkBox_hide_col" editable="false" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" sortable="false" />
                                         <TableColumn fx:id="locations_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%location" />
                                         <TableColumn fx:id="locations_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
                                     </columns>

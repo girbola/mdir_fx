@@ -84,7 +84,7 @@ public class AskEventDialogController {
     }
 
     @FXML
-    private void apply_and_copy_btn_action(ActionEvent event) {
+    private void apply_and_copy_btn_action(ActionEvent event) throws Exception {
         Messages.sprintf("apply_and_copy_btn_action started");
         if (apply_and_copy_btn == null) {
             Messages.errorSmth(ERROR, "ok_btn were null!", null, Misc.getLineNumber(), true);
@@ -102,34 +102,36 @@ public class AskEventDialogController {
         askStage.centerOnScreen();
         askStage.close();
 
-        Task<Boolean> operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main,
+      OperateFiles operateFiles = new OperateFiles(listOfApplyedChanges, true, model_main,
                 SceneNameType.DATEFIXER.getType());
-        operateFiles.setOnSucceeded((workerStateEvent) -> {
-            Messages.sprintf("operateFiles Succeeded");
-            UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
-        });
-        operateFiles.setOnCancelled((workerStateEvent) -> {
-            Messages.sprintf("operateFiles CANCELLED");
-        });
-        operateFiles.setOnFailed((workerStateEvent) -> {
-            Messages.sprintf("operateFiles FAILED");
-            Main.setProcessCancelled(true);
-        });
-        try {
-            if (!Files.exists(Paths.get(Main.conf.getWorkDir()).toRealPath())) {
-                Messages.warningText(Main.bundle.getString("cannotFindWorkDir"));
-                Messages.sprintfError(Main.bundle.getString("cannotFindWorkDir"));
-            } else {
-                Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
-                operateFiles_th.setDaemon(true);
-                operateFiles_th.start();
-            }
+      operateFiles.init();
 
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            Messages.warningText_title(ex.getMessage(), Main.bundle.getString("cannotFindWorkDir"));
-            Messages.errorSmth(ERROR, ex.getMessage(), ex, Misc.getLineNumber(), false);
-        }
+//        operateFiles.setOnSucceeded((workerStateEvent) -> {
+//            Messages.sprintf("operateFiles Succeeded");
+//            UpdateFolderInfoContent ufic = new UpdateFolderInfoContent(model_dateFix.getFolderInfo_full());
+//        });
+//        operateFiles.setOnCancelled((workerStateEvent) -> {
+//            Messages.sprintf("operateFiles CANCELLED");
+//        });
+//        operateFiles.setOnFailed((workerStateEvent) -> {
+//            Messages.sprintf("operateFiles FAILED");
+//            Main.setProcessCancelled(true);
+//        });
+//        try {
+//            if (!Files.exists(Paths.get(Main.conf.getWorkDir()).toRealPath())) {
+//                Messages.warningText(Main.bundle.getString("cannotFindWorkDir"));
+//                Messages.sprintfError(Main.bundle.getString("cannotFindWorkDir"));
+//            } else {
+//                Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
+//                operateFiles_th.setDaemon(true);
+//                operateFiles_th.start();
+//            }
+//
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//            Messages.warningText_title(ex.getMessage(), Main.bundle.getString("cannotFindWorkDir"));
+//            Messages.errorSmth(ERROR, ex.getMessage(), ex, Misc.getLineNumber(), false);
+//        }
 
         Messages.sprintf("OperateFiles instance ended?");
     }

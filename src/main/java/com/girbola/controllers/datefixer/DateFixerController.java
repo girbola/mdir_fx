@@ -21,7 +21,9 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
+
 import java.util.*;
+
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -219,6 +221,13 @@ public class DateFixerController {
         }
 
         operateFilesTask(fileInfo_list);
+        OperateFiles operateFiles = new OperateFiles(fileInfo_list, true, model_main,
+                SceneNameType.DATEFIXER.getType());
+        try {
+            operateFiles.init();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
@@ -543,7 +552,9 @@ public class DateFixerController {
         model_datefix.getSelectionModel().getSelectionList().addListener(new ListChangeListener<Node>() {
             @Override
             public void onChanged(Change<? extends Node> c) {
-                selected.setText("" + model_datefix.getSelectionModel().getSelectionList().size());
+                Platform.runLater(() -> {
+                    selected.setText("" + model_datefix.getSelectionModel().getSelectionList().size());
+                });
             }
         });
         rightInfoPanel_scrollPane.setMinWidth(0);
@@ -890,21 +901,13 @@ public class DateFixerController {
 	}
 
     private void operateFilesTask(List<FileInfo> fileInfo_list) {
-        Task<Boolean> operateFiles = new OperateFiles(fileInfo_list, true, model_main,
+       OperateFiles operateFiles = new OperateFiles(fileInfo_list, true, model_main,
                 SceneNameType.DATEFIXER.getType());
-        operateFiles.setOnSucceeded((workerStateEvent) -> {
-            sprintf("operateFiles Succeeded");
-        });
-        operateFiles.setOnCancelled((workerStateEvent) -> {
-            sprintf("operateFiles CANCELLED");
-        });
-        operateFiles.setOnFailed((workerStateEvent) -> {
-            sprintf("operateFiles FAILED");
-            Main.setProcessCancelled(true);
-        });
-        Thread operateFiles_th = new Thread(operateFiles, "operateFiles_th");
-        operateFiles_th.setDaemon(true);
-        operateFiles_th.start();
+        try {
+operateFiles.init();} catch (Exception e) {
+    throw new RuntimeException(e);
+}
+
    }
 
 

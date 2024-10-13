@@ -77,7 +77,7 @@ public class DateFixer extends Task<Void> {
                 });
 
                 scene_dateFixer.setOnMouseClicked(event -> {
-                    Messages.sprintf("mouse clicked event.getTarget(): " + event.getTarget());
+                    Messages.sprintf("scene_dateFixer mouse clicked event.getTarget(): " + event.getTarget());
                     if (event.getTarget() instanceof VBox node) {
                         if (node.getParent() instanceof HBox && node.lookupAll("#imageView") != null) {
                             model_datefix.getSelectionModel().addWithToggle(node);

@@ -919,7 +919,7 @@ public class TableUtils {
 
         }
 
-        Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+        OperateFiles = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
 
         operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
             @Override

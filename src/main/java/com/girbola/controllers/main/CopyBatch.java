@@ -37,29 +37,7 @@ public class CopyBatch {
 		filesReadyToCopy.addAll(sortIt_TableContent.getFileInfoList());
 
 		if (!filesReadyToCopy.isEmpty()) {
-			Task<Boolean> task = new OperateFiles(filesReadyToCopy, true, model_Main, SceneNameType.MAIN.getType());
-			task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("ConflictTable copy cancelled");
-				}
-			});
-			task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("ConflictTable copy failed");
-				}
-			});
-			task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-				@Override
-				public void handle(WorkerStateEvent event) {
-					Messages.sprintf("ConflictTable copy Succeeded");
-				}
-			});
-			new Thread(task).start();
+			OperateFiles operateFiles = new OperateFiles(filesReadyToCopy, true, model_Main, SceneNameType.MAIN.getType());
 		}
 	}
 }

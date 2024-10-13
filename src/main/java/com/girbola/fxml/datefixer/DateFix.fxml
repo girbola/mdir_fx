@@ -22,7 +22,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -306,47 +305,54 @@
                                         <Insets />
                                     </HBox.margin>
                                 </VBox>
-                                <GridPane hgap="3.0" vgap="3.0" HBox.hgrow="NEVER">
-                                    <columnConstraints>
-                                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-                                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
-                                        <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
-                                        <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
-                                        <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
-                                    </columnConstraints>
-                                    <rowConstraints>
-                                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
-                                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
-                                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
-                                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
-                                        <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
-                                    </rowConstraints>
-                                    <children>
-                                        <Label text="%sortBy" GridPane.columnIndex="1" />
-                                        <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%sortBy" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                                            <items>
-                                                <MenuItem fx:id="sortByDate_mi" mnemonicParsing="false" onAction="#sortByDate_mi_action" text="%date" />
-                                                <MenuItem fx:id="fileName_mi" mnemonicParsing="false" onAction="#fileName_mi_action" text="%fileName" />
-                                            </items>
-                                        </MenuButton>
-                                        <Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                                        <CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
-                                        <CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
-                                        <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_only_selected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_only_selected_btn_action" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                                            <graphic>
-                                                <FontIcon iconLiteral="bi-eye-slash" iconSize="20" />
-                                            </graphic>
-                                        </Button>
-                                        <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_all_btn_action" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                                            <graphic>
-                                                <FontIcon iconLiteral="bi-eye" iconSize="20" />
-                                            </graphic>
-                                            <GridPane.margin>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                            </GridPane.margin>
-                                        </Button>
-                                    </children>
-                                </GridPane>
+                        <VBox HBox.hgrow="ALWAYS">
+                           <children>
+                                      <GridPane hgap="3.0" vgap="3.0" VBox.vgrow="ALWAYS">
+                                          <columnConstraints>
+                                              <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                                              <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
+                                              <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
+                                              <ColumnConstraints halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
+                                              <ColumnConstraints hgrow="NEVER" minWidth="10.0" />
+                                          </columnConstraints>
+                                          <rowConstraints>
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                                              <RowConstraints valignment="CENTER" vgrow="NEVER" />
+                                              <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+                                          </rowConstraints>
+                                          <children>
+                                              <Label text="%sortBy" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="6" />
+                                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" text="%sortBy" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="7" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                  <items>
+                                                      <MenuItem fx:id="sortByDate_mi" mnemonicParsing="false" onAction="#sortByDate_mi_action" text="%date" />
+                                                      <MenuItem fx:id="fileName_mi" mnemonicParsing="false" onAction="#fileName_mi_action" text="%fileName" />
+                                                  </items>
+                                              </MenuButton>
+                                              <Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+                                              <CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER" />
+                                              <CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
+                                              <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_only_selected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_only_selected_btn_action" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                  <graphic>
+                                                      <FontIcon iconLiteral="bi-eye-slash" iconSize="20" />
+                                                  </graphic>
+                                              </Button>
+                                              <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_all_btn_action" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                  <graphic>
+                                                      <FontIcon iconLiteral="bi-eye" iconSize="20" />
+                                                  </graphic>
+                                                  <GridPane.margin>
+                                                      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                  </GridPane.margin>
+                                              </Button>
+                                          </children>
+                                      </GridPane>
+                           </children>
+                        </VBox>
                                 <VBox HBox.hgrow="ALWAYS">
                                     <children>
                                         <GridPane hgap="5.0" vgap="2.0" VBox.vgrow="NEVER">
@@ -356,6 +362,7 @@
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
                                             <rowConstraints>
+                                    <RowConstraints fillHeight="false" minHeight="10.0" vgrow="NEVER" />
                                                 <RowConstraints fillHeight="false" vgrow="NEVER" />
                                                 <RowConstraints valignment="CENTER" />
                                                 <RowConstraints valignment="CENTER" />
@@ -364,49 +371,49 @@
                                                 <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
                                             </rowConstraints>
                                             <children>
-                                                <Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#close_btn_action" styleClass="closeButton" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#close_btn_action" styleClass="closeButton" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#applyChanges_btn_action" text="%apply" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#applyChanges_btn_action" text="%apply" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="copyToMisc_btn" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#copyToMisc_btn_action" text="%copyToMisc" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="copyToMisc_btn" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#copyToMisc_btn_action" text="%copyToMisc" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="Empty Tooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="remove_btn" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#remove_btn_action" text="%remove" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="remove_btn" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#remove_btn_action" text="%remove" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="Empty Tooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label text="%action" />
-                                                <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Label text="%action" GridPane.rowIndex="1" />
+                                                <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="Make folder and choose to copy now or later" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label text="%batch" GridPane.columnIndex="1" />
-                                                <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%addToMisc" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Label text="%batch" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%addToMisc" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToMiscTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" text="%addToAsItIs" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" text="%addToAsItIs" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToAsItIsTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" text="%addToAsUnsorted" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" text="%addToAsUnsorted" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToAsItIsTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label text="%direct" GridPane.columnIndex="2" />
+                                                <Label text="%direct" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                             </children>
                                             <padding>
                                                 <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
@@ -601,57 +608,30 @@
                                                                 </ImageView>
                                                             </children>
                                                         </HBox>
-                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" style="-fx-border-color: white;" VBox.vgrow="NEVER">
+                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" VBox.vgrow="NEVER">
                                                             <VBox.margin>
                                                                 <Insets bottom="1.0" />
                                                             </VBox.margin>
                                                             <children>
-                                                                <Label id="fileNae_ta" maxHeight="10.0" maxWidth="1.7976931348623157E308" minHeight="10.0" minWidth="-Infinity" prefHeight="10.0" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER" />
-                                                                <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxHeight="20.0" maxWidth="246.0" minHeight="20.0" minWidth="246.0" prefHeight="20.0" prefWidth="246.0" styleClass="buttonDateTimeContainer" VBox.vgrow="NEVER">
+                                                                <Label id="fileNae_ta" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER">
+                                                   <font>
+                                                      <Font size="11.0" />
+                                                   </font></Label>
+                                                                <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxWidth="1.7976931348623157E308" styleClass="buttonDateTimeContainer" VBox.vgrow="NEVER">
                                                                     <children>
                                                                         <Button contentDisplay="GRAPHIC_ONLY" maxHeight="20.0" maxWidth="20.0" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="20.0" styleClass="acceptButton" HBox.hgrow="NEVER">
                                                                             <graphic>
                                                                                 <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="23" />
                                                                             </graphic>
                                                                         </Button>
-                                                                        <Label id="fileDate_tf" text="20200202020202" HBox.hgrow="ALWAYS" />
+                                                                        <Label id="fileDate_tf" maxWidth="1.7976931348623157E308" text="20200202020202" HBox.hgrow="ALWAYS">
+                                                         <font>
+                                                            <Font size="11.0" />
+                                                         </font></Label>
                                                                     </children>
                                                                 </HBox>
                                                             </children>
                                                         </VBox>
-                                                    </children>
-                                                </VBox>
-                                                <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" minHeight="250.0" prefHeight="250.0" TilePane.alignment="CENTER">
-                                                    <children>
-                                                        <GridPane>
-                                                            <columnConstraints>
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                            </columnConstraints>
-                                                            <rowConstraints>
-                                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                            </rowConstraints>
-                                                            <children>
-                                                                <Button mnemonicParsing="false" text="Button" />
-                                                            </children>
-                                                        </GridPane>
-                                                        <Region />
-                                                        <HBox VBox.vgrow="ALWAYS">
-                                                            <children>
-                                                                <Button mnemonicParsing="false" text="Button" HBox.hgrow="NEVER" />
-                                                            </children>
-                                                        </HBox>
-                                                        <Region />
-                                                        <GridPane>
-                                                            <columnConstraints>
-                                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
-                                                            </columnConstraints>
-                                                            <rowConstraints>
-                                                                <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
-                                                            </rowConstraints>
-                                                            <children>
-                                                                <Button mnemonicParsing="false" text="Button" />
-                                                            </children>
-                                                        </GridPane>
                                                     </children>
                                                 </VBox>
                                             </children>

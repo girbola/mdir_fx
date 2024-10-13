@@ -40,15 +40,15 @@ public class SelectorController {
 	@FXML private TitledPane events_titledPane;
 	@FXML private TitledPane locations_titledPane;
 	@FXML private TableView<EXIF_Data_Selector> cameras_tableView;
-	@FXML private TableColumn<EXIF_Data_Selector, Boolean> cameras_checkBox_hide_col;
+//	@FXML private TableColumn<EXIF_Data_Selector, Boolean> cameras_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> cameras_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> cameras_counter_col;
 	@FXML private TableView<EXIF_Data_Selector> dates_tableView;
-	@FXML private TableColumn<EXIF_Data_Selector, Boolean> dates_checkBox_hide_col;
+//	@FXML private TableColumn<EXIF_Data_Selector, Boolean> dates_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> dates_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> dates_counter_col;
 	@FXML private TableView<EXIF_Data_Selector> locations_tableView;
-	@FXML private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
+//	@FXML private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> locations_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> locations_counter_col;
 	@FXML private TableView<EXIF_Data_Selector> events_tableView;
@@ -56,10 +56,10 @@ public class SelectorController {
 	@FXML private TableColumn<EXIF_Data_Selector, String> events_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> events_counter_col;
 
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = p -> new CheckBoxCell_Dates(model_datefix);
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_EVENTS_CellFactory = p -> new CheckBoxCell_Events(model_datefix);
-	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_LOCATIONS_CellFactory = p -> new CheckBoxCell_Locations(model_datefix);
+//	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_DATES_CellFactory = p -> new CheckBoxCell_Dates(model_datefix);
+//	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_CAMERAS_CellFactory = p -> new CheckBoxCell_Cameras(model_datefix);
+//	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_EVENTS_CellFactory = p -> new CheckBoxCell_Events(model_datefix);
+//	Callback<TableColumn<EXIF_Data_Selector, Boolean>, TableCell<EXIF_Data_Selector, Boolean>> checkbox_LOCATIONS_CellFactory = p -> new CheckBoxCell_Locations(model_datefix);
 	//@formatter:on
 
 	@Deprecated
@@ -86,10 +86,10 @@ public class SelectorController {
 		model_datefix.getDateFix_Utils().createDates_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		dates_tableView.setItems(model_datefix.getDateFix_Utils().getDate_obs());
 		Messages.sprintf("model_datefix.getDateFix_Utils().getDate_obs():  " + model_datefix.getDateFix_Utils().getDate_obs().size());
-		dates_checkBox_hide_col.setCellFactory(checkbox_DATES_CellFactory);
-		dates_checkBox_hide_col.setCellValueFactory(
-				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
-						cellData.getValue().isShowing()));
+//		dates_checkBox_hide_col.setCellFactory(checkbox_DATES_CellFactory);
+//		dates_checkBox_hide_col.setCellValueFactory(
+//				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
+//						cellData.getValue().isShowing()));
 		dates_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getInfo()));
@@ -123,10 +123,10 @@ public class SelectorController {
 								TimeUnit.MILLISECONDS);
 					}
 				});
-		cameras_checkBox_hide_col.setCellFactory(checkbox_CAMERAS_CellFactory);
-		cameras_checkBox_hide_col.setCellValueFactory(
-				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
-						cellData.getValue().isShowing()));
+//		cameras_checkBox_hide_col.setCellFactory(checkbox_CAMERAS_CellFactory);
+//		cameras_checkBox_hide_col.setCellValueFactory(
+//				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
+//						cellData.getValue().isShowing()));
 		cameras_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getInfo()));
@@ -138,10 +138,10 @@ public class SelectorController {
 
 		model_datefix.getDateFix_Utils().createEvent_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		events_tableView.setItems(model_datefix.getDateFix_Utils().getEvents_obs());
-		events_checkBox_hide_col.setCellFactory(checkbox_EVENTS_CellFactory);
-		events_checkBox_hide_col.setCellValueFactory(
-				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
-						cellData.getValue().isShowing()));
+//		events_checkBox_hide_col.setCellFactory(checkbox_EVENTS_CellFactory);
+//		events_checkBox_hide_col.setCellValueFactory(
+//				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
+//						cellData.getValue().isShowing()));
 		events_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getInfo()));
@@ -153,10 +153,10 @@ public class SelectorController {
 
 		model_datefix.getDateFix_Utils().createLocation_list(model_datefix.getFolderInfo_full().getFileInfoList());
 		locations_tableView.setItems(model_datefix.getDateFix_Utils().getLocations_obs());
-		locations_checkBox_hide_col.setCellFactory(checkbox_LOCATIONS_CellFactory);
-		locations_checkBox_hide_col.setCellValueFactory(
-				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
-						cellData.getValue().isShowing()));
+//		locations_checkBox_hide_col.setCellFactory(checkbox_LOCATIONS_CellFactory);
+//		locations_checkBox_hide_col.setCellValueFactory(
+//				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Boolean> cellData) -> new SimpleObjectProperty<>(
+//						cellData.getValue().isShowing()));
 		locations_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, String> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getInfo()));

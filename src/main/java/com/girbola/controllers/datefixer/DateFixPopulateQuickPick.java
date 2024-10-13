@@ -144,7 +144,9 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
             }
         }
         return nodes;
-    };
+    }
+
+    ;
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {
         VBox frame_vbox = DateFixGuiUtils.createImageFrame(GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
@@ -227,6 +229,17 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
                     if (event.getClickCount() == 1) {
                         Messages.sprintf("Clickcount were 1");
                         handleImageFrameSelected(event, fileInfo);
+
+                        ObservableList<EXIF_Data_Selector> items = model_dateFix.getCameras_TableView().getItems();
+                        if (items != null && !items.isEmpty()) {
+                            items.forEach(item -> {
+                                item.setIsShowing(false);
+                            });
+                        }
+                        Platform.runLater(() -> {
+                            model_dateFix.getCameras_TableView().getSelectionModel().clearSelection();
+                        });
+                        Messages.sprintf("SElected should be deselected");
                     } else if (event.getClickCount() == 2) {
                         Messages.sprintf("Clickcount were 2");
                         List<FileInfo> list = getFileList(tilePane.getChildren());

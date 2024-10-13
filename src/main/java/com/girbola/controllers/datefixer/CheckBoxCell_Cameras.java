@@ -23,6 +23,7 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -30,144 +31,119 @@ import static com.girbola.messages.Messages.sprintf;
  * @author Marko Lokka
  */
 public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean> {
+    private static final String ERROR = CheckBoxCell_Cameras.class.getSimpleName();
+    private CheckBox checkBox = new CheckBox();
+    private final Model_datefix modelDateFix;
 
-    private final String ERROR = CheckBoxCell_Cameras.class.getSimpleName();
-    private CheckBox checkBox;
-    private Model_datefix model_DateFix;
-
-    public CheckBoxCell_Cameras(Model_datefix model_DateFix) {
-        this.model_DateFix = model_DateFix;
+    public CheckBoxCell_Cameras(Model_datefix modelDateFix) {
+        this.modelDateFix = modelDateFix;
+        initializeCheckBox();
     }
 
     @Override
     protected void updateItem(Boolean item, boolean empty) {
         super.updateItem(item, empty);
         if (empty) {
-            this.setGraphic(null);
-            this.setText(null);
+            setGraphic(null);
+            setText(null);
         } else {
-            paintCell();
+            checkBox.setSelected(item);
+            setText(null);
+            setGraphic(checkBox);
         }
     }
 
-    private void paintCell() {
-        if (checkBox == null) {
-            checkBox = new CheckBox();
-            checkBox.setSelected(getValue());
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                    // setItem(newValue);
-                    Task<ObservableList<Node>> updateCamera_Task = new Task<>() {
-                        @Override
-                        protected ObservableList<Node> call() {
-                            model_DateFix.getCameras_TableView().setDisable(true);
-                            model_DateFix.getDates_TableView().setDisable(true);
-                            model_DateFix.getEvents_TableView().setDisable(true);
-                            model_DateFix.getLocations_TableView().setDisable(true);
-                            EXIF_Data_Selector cameras_data = getTableView().getItems().get(getIndex());
-                            cameras_data.setIsShowing(newValue);
-
-                            ObservableList<Node> theList = FXCollections.observableArrayList();
-                            List<String> listOfCameras = new ArrayList<>();
-                            if (newValue == true) {
-                                for (EXIF_Data_Selector cameras : model_DateFix.getCameras_TableView().getItems()) {
-                                    if (cameras.isShowing()) {
-                                        listOfCameras.add(cameras.getInfo());
-                                    }
-                                }
-                            } else {
-                                for (EXIF_Data_Selector cameras : model_DateFix.getCameras_TableView().getItems()) {
-                                    if (!cameras.isShowing()) {
-                                        listOfCameras.add(cameras.getInfo());
-                                    }
-                                }
-                            }
-                            if (listOfCameras.isEmpty()) {
-                                return theList;
-                            }
-                            int counter = 0;
-                            if (newValue == true) {
-                                for (Node node : model_DateFix.getTilePane().getChildren()) {
-                                    if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                                        FileInfo fi = (FileInfo) node.getUserData();
-                                        if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
-                                        }
-                                        if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
-                                        }
-                                        if (has_cameraModel(fi.getCamera_model(), listOfCameras)) {
-                                            theList.add(node);
-                                            model_DateFix.getSelectionModel().addOnly(node);
-                                        }
-                                        counter++;
-                                    }
-                                }
-                            } else if (newValue == false) {
-                                for (Node node : model_DateFix.getTilePane().getChildren()) {
-                                    if (node instanceof VBox && node.getId().equals("imageFrame")) {
-                                        FileInfo fi = (FileInfo) node.getUserData();
-                                        if (fi.getCamera_model() == null) {
-                                            fi.setCamera_model(new String(MDir_Constants.UNKNOWN.getType()));
-                                        }
-                                        if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-                                            fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
-                                        }
-                                        if (has_cameraModel(fi.getCamera_model(), listOfCameras)) {
-                                            theList.add(node);
-                                            model_DateFix.getSelectionModel().remove(node);
-                                        }
-                                        counter++;
-                                    }
-                                }
-                            }
-                            return theList;
-                        }
-                    };
-                    updateCamera_Task.setOnSucceeded((WorkerStateEvent event) -> {
-                        model_DateFix.getCameras_TableView().setDisable(false);
-                        model_DateFix.getDates_TableView().setDisable(false);
-                        model_DateFix.getEvents_TableView().setDisable(false);
-                        model_DateFix.getLocations_TableView().setDisable(false);
-                    });
-
-                    updateCamera_Task.setOnCancelled((WorkerStateEvent event) -> {
-                        sprintf("updateCamera_Task cancelled");
-                    });
-
-                    updateCamera_Task.setOnFailed((WorkerStateEvent event) -> {
-                        sprintf("updateCamera_Task failed");
-                        Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-                    });
-                    Thread updateCamera_Task_th = new Thread(updateCamera_Task, "updateCamera_Task Thread");
-                    updateCamera_Task_th.start();
-                }
-
-                private boolean has_cameraModel(String format, List<String> listOfCameras) {
-                    for (String str : listOfCameras) {
-                        if (str.equals(format)) {
-                            Messages.sprintf("has format: " + str);
-                            return true;
-                        }
-                        if (str.isEmpty() || str.length() <= 0) {
-                            if (str.equals(MDir_Constants.UNKNOWN.getType())) {
-                                Messages.sprintf("Unknown has format match");
-                                return true;
-                            }
-                        }
-                    }
-                    return false;
-                }
+    private void initializeCheckBox() {
+        //checkBox.setSelected(getValue());
+        checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            Task<ObservableList<Node>> updateCameraTask = createUpdateCameraTask(newValue);
+            updateCameraTask.setOnCancelled(event -> {
+                enableTables(false);
+                Messages.sprintf("updateCameraTask cancelled");
             });
+            updateCameraTask.setOnFailed(event -> {
+                enableTables(false);
+                Messages.sprintf("updateCameraTask failed");
+            });
+            updateCameraTask.setOnSucceeded((WorkerStateEvent event) -> {
+                ObservableList<Node> updatedList = updateCameraTask.getValue();
+                modelDateFix.getTilePane().getChildren().setAll(updatedList);
+                enableTables(false);
+            });
+            Thread updateCameraTaskThread = new Thread(updateCameraTask, "updateCameraTask Thread");
+            updateCameraTaskThread.start();
+        });
+    }
+
+    private Task<ObservableList<Node>> createUpdateCameraTask(boolean newValue) {
+        return new Task<>() {
+            @Override
+            protected ObservableList<Node> call() {
+                enableTables(true);
+                EXIF_Data_Selector cameraData = getTableView().getItems().get(getIndex());
+                checkBox.selectedProperty().bindBidirectional(cameraData.isShowing_property());
+                //cameraData.setIsShowing(newValue);
+                return updateCameraList(newValue);
+            }
+        };
+    }
+
+    private ObservableList<Node> updateCameraList(boolean newValue) {
+        ObservableList<Node> nodeList = FXCollections.observableArrayList();
+        List<String> cameraList = new ArrayList<>();
+        ObservableList<Node> selectionList = modelDateFix.getSelectionModel().getSelectionList();
+        for(Node node : selectionList) {
+            FileInfo fileInfo = (FileInfo) node.getUserData();
+            if(fileInfo.getCamera_model() != null) {
+
+            }
+            Messages.sprintf("selectionList node: " + node);
+
         }
-        checkBox.setSelected(getValue());
-        setText(null);
-        setGraphic(checkBox);
+
+        for (EXIF_Data_Selector cameras : modelDateFix.getCameras_TableView().getItems()) {
+            if (cameras.isShowing() == newValue) {
+                String info = cameras.getInfo();
+                cameraList.add(info);
+            }
+        }
+
+        if (cameraList.isEmpty()) {
+            return nodeList;
+        }
+
+        for (Node node : modelDateFix.getTilePane().getChildren()) {
+            if (node instanceof VBox && "imageFrame".equals(node.getId())) {
+                FileInfo fileInfo = (FileInfo) node.getUserData();
+                initializeCameraModel(fileInfo);
+                if (cameraList.contains(fileInfo.getCamera_model())) {
+                    nodeList.add(node);
+                    if (newValue) {
+                        modelDateFix.getSelectionModel().addOnly(node);
+                    } else {
+                        modelDateFix.getSelectionModel().remove(node);
+                    }
+                }
+            }
+        }
+        return nodeList;
+    }
+
+    private void initializeCameraModel(FileInfo fileInfo) {
+        if (fileInfo.getCamera_model() == null || fileInfo.getCamera_model().isEmpty()) {
+            fileInfo.setCamera_model(MDir_Constants.UNKNOWN.getType());
+        }
+    }
+
+    private void enableTables(boolean value) {
+        modelDateFix.getCameras_TableView().setDisable(value);
+        modelDateFix.getDates_TableView().setDisable(value);
+        modelDateFix.getEvents_TableView().setDisable(value);
+        modelDateFix.getLocations_TableView().setDisable(value);
     }
 
     private Boolean getValue() {
-        return getItem() == null ? false : getItem();
+        return getItem() != null && getItem();
     }
 
 }

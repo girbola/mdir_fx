@@ -28,7 +28,7 @@ public class SelectByTableModel extends Task<Boolean> {
     @Override
     protected Boolean call() throws Exception {
         Iterator<Node> it = model_datefix.getTilePane().getChildren().iterator();
-        Messages.sprintf("===============" + type + " tableView");
+        Messages.sprintf("SelectByTableModel ===============" + type + " tableView");
         while (it.hasNext()) {
             Node node = it.next();
             if (node instanceof VBox && node.getId().equals("imageFrame")) {
