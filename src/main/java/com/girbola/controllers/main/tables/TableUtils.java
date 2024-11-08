@@ -890,12 +890,14 @@ public class TableUtils {
         }
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
             if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+                Messages.sprintf("1badBadFiles: " + folderInfo.getFolderPath());
                 continue;
             }
 
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
                 Path destPath = TableUtils.resolveFileDestinationPath(folderInfo.getJustFolderName(), fileInfo, tableType);
                 if (destPath != null) {
+                    Messages.sprintf("destPath NOT null: " + destPath);
                     if (!destPath.toString().equals(fileInfo.getDestination_Path())) {
                         fileInfo.setWorkDir(Main.conf.getWorkDir());
                         fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
@@ -910,36 +912,37 @@ public class TableUtils {
                 Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
             }
         }
+
         List<FileInfo> list = new ArrayList<>();
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
             if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+                Messages.sprintf("badFiles: " + folderInfo.getFolderPath());
                 continue;
             }
             list.addAll(folderInfo.getFileInfoList());
-
         }
 
-        OperateFiles = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
-
-        operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent event) {
-                for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-                    calculateFileInfoStatuses(folderInfo);
-                }
-                TableUtils.refreshAllTableContent(model_main.tables());
-            }
-        });
-        operate.setOnFailed(event -> {
-            Messages.warningText("Copy process failed");
-        });
-        operate.setOnCancelled(event -> {
-            Messages.sprintf("Copy process were cancelled");
-        });
-
-        Thread thread = new Thread(operate, "Operate Thread");
-        ExecutorService exec = Executors.newSingleThreadExecutor();
-        exec.submit(thread);
+        OperateFiles operateFiles = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+//
+//        operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+//            @Override
+//            public void handle(WorkerStateEvent event) {
+//                for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+//                    calculateFileInfoStatuses(folderInfo);
+//                }
+//                TableUtils.refreshAllTableContent(model_main.tables());
+//            }
+//        });
+//        operate.setOnFailed(event -> {
+//            Messages.warningText("Copy process failed");
+//        });
+//        operate.setOnCancelled(event -> {
+//            Messages.sprintf("Copy process were cancelled");
+//        });
+//
+//        Thread thread = new Thread(operate, "Operate Thread");
+//        ExecutorService exec = Executors.newSingleThreadExecutor();
+//        exec.submit(thread);
 
     }
 

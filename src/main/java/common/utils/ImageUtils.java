@@ -119,7 +119,7 @@ public class ImageUtils {
             }
         }
 
-        return "" + hash;
+        return "" + Math.abs(hash);
     }
 
     public static boolean compareImages(BufferedImage image1, BufferedImage image2) {

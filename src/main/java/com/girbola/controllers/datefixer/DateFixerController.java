@@ -214,7 +214,7 @@ public class DateFixerController {
                     fileInfo.setCopied(false);
                     fileInfo_list.add(fileInfo);
                 } else {
-                    sprintf("Dest were null. process is about to be cancelled");
+                    sprintf("1Dest were null. process is about to be cancelled");
                     break;
                 }
             }
@@ -258,7 +258,7 @@ public class DateFixerController {
                     fileInfo.setCopied(false);
                     fileInfo_list.add(fileInfo);
                 } else {
-                    sprintf("Dest were null. process is about to be cancelled");
+                    sprintf("2Dest were null. process is about to be cancelled");
                     break;
                 }
             }
@@ -847,6 +847,10 @@ public class DateFixerController {
 			warningText(bundle.getString("youHaventSelectedMedia"));
 			return;
 		}
+        if (Main.conf.getWorkDir() == null || !Main.conf.getDrive_connected()) {
+            Messages.warningText(bundle.getString("cannotFindWorkDir"));
+            return;
+        }
 		ConcurrencyUtils.stopExecThread();
 
 		List<FileInfo> fileInfo_list = new ArrayList<>();
@@ -864,11 +868,12 @@ public class DateFixerController {
 					fileInfo.setCopied(false);
 					fileInfo_list.add(fileInfo);
 				} else {
-					sprintf("Dest were null. process is about to be cancelled");
+					sprintf("3Dest were null. process is about to be cancelled");
 					break;
 				}
-			}
-		}
+			} else {
+                Messages.sprintf("NODE IS: " + n.toString());
+            }}
 
 		operateFilesTask(fileInfo_list);
 

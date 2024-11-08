@@ -113,7 +113,7 @@ public class Messages {
 	 *                  exit is false it won't quit
 	 */
 	public static void errorSmth(String className, String message, Exception exception, int line, boolean exit) {
-		Messages.sprintf("errorSmth triggered. " + " message: " + message + " className= " + className + " at line: " + line);
+		sprintf("errorSmth triggered. " + " message: " + message + " className= " + className + " at line: " + line);
 		if (exit) {
 			Main.setProcessCancelled(true);
 			ConcurrencyUtils.stopAllExecThreadNow();
@@ -181,112 +181,13 @@ public class Messages {
 
 	/**
 	 *
-	 * @param text
-	 * @param exit
+	 * @param message
 	 */
-	public static void isAlreadyRunning(String text, boolean exit) {
-
-		Dialog<ButtonType> dialog = createDialog();
-		dialog.setTitle("Error");
-		dialog.setContentText(text);
-		ImageView errorSign = new ImageView(new Image(Main.class.getResourceAsStream("/img/errorSign.png")));
-		dialog.setGraphic(errorSign);
-
-		ButtonType ok_TypeButton = new ButtonType("CLOSE", ButtonData.CANCEL_CLOSE);
-		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);
-
-		Optional<ButtonType> result = dialog.showAndWait();
-		sprintf("Buttpntype is = " + result);
-		if ((result.isPresent()) && (result.get().getText().equals("OK"))) {
-
-			sprintf("Ok pressed at errortext");
-			if (exit) {
-				sprintf("Exiting programm...");
-				fastExit();
-			} else {
-				sprintf("Closing dialog...");
-				dialog.close();
-			}
-		}
-	}
-//	public static void errorText_(String text, boolean exit) {
-//		Dialog<ButtonType> dialog = createDialog();
-//		// if(dialog != null || !dialog.isShowing()) {
-//		//
-//		// }
-//		dialog.setTitle("Error");
-//
-//		dialog.setContentText(text);
-//		ImageView errorSign = new ImageView(new Image(Main.class.getResourceAsStream("/resources/img/errorSign.png")));
-//		dialog.setGraphic(errorSign);
-//
-//		ButtonType ok_TypeButton = new ButtonType("CLOSE", ButtonData.CANCEL_CLOSE);
-//		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);
-//
-//		Optional<ButtonType> result = dialog.showAndWait();
-//		sprintf("Buttpntype is = " + result);
-//		if ((result.isPresent()) && (result.get().getText().equals("CLOSE"))) {
-//
-//			// if (result.isPresent() && result.get() == ButtonType.CLOSE) {
-//			sprintf("Ok pressed at errortext");
-//			if (exit) {
-//				sprintf("Exiting program...");
-//				fastExit();
-//			} else {
-//				sprintf("Closing dialog...");
-//				dialog.close();
-//			}
-//		}
-//	}
-
-//	public static void errorText_(String text, String headerText, boolean exit) {
-//		Dialog<ButtonType> dialog = createDialog();
-//
-//		dialog.setTitle("Error");
-//		if (!headerText.isEmpty() || headerText != null) {
-//			dialog.setHeaderText(headerText);
-//		}
-//		dialog.setContentText(text);
-//		ImageView errorSign = new ImageView(new Image(Main.class.getResourceAsStream("/resources/img/errorSign.png")));
-//		dialog.setGraphic(errorSign);
-//		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
-//		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);
-//
-//		Optional<ButtonType> result = dialog.showAndWait();
-//		if (result.isPresent() && result.get() == ButtonType.OK) {
-//			sprintf("Ok pressed at errortext");
-//			dialog.close();
-//			if (exit) {
-//				fastExit();
-//			}
-//		}
-//	}
-
-	public static void okText(String text) {
-		Dialog<ButtonType> dialog = createDialog();
-		dialog.setTitle("");
-		dialog.setContentText(text);
-		ImageView warningImage = new ImageView(new Image(Main.class.getResourceAsStream("/img/okSign.png")));
-
-		dialog.setGraphic(warningImage);
-		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
-		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);
-
-		Optional<ButtonType> result = dialog.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			sprintf("Ok pressed warningtext");
-			dialog.close();
-		}
-	}
-
-	/**
-	 *
-	 * @param text
-	 */
-	public static void warningText(String text) {
+	public static void warningText(String message) {
+		sprintf("warningText: " + message);
 		Alert alert = new Alert(AlertType.WARNING);
 		DialogPane dialogPane = alert.getDialogPane();
-		dialogPane.setContentText(text);
+		dialogPane.setContentText(message);
 		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		dialogPane.setHeaderText("");
 
@@ -297,10 +198,11 @@ public class Messages {
 
 	/**
 	 *
-	 * @param text
+	 * @param message
 	 * @param helpURL
 	 */
-	public static void warningTextHelp(String text, String helpURL) {
+	public static void warningTextHelp(String message, String helpURL) {
+		sprintf("message: " + message + " helpURL: " + helpURL);
 		Dialog<ButtonType> dialog = createDialog();
 		DialogPane dialogPane = new DialogPane();
 		// dialogPane.setHeaderText(text);
@@ -331,64 +233,8 @@ public class Messages {
 		ImageView warningImage = new ImageView(
 				new Image(Main.class.getResourceAsStream("/img/warningSign.png")));
 		bpane.setLeft(warningImage);
-		bpane.setCenter(new Label(text));
+		bpane.setCenter(new Label(message));
 		bpane.setBottom(lbl);
-		// dialog.setGraphic(warningImage);
-		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
-
-		dialog.getDialogPane().getButtonTypes().add(ok_TypeButton);
-
-		Optional<ButtonType> result = dialog.showAndWait();
-		if (result.isPresent() && result.get() == ButtonType.OK) {
-			sprintf("Ok pressed warningtext");
-			dialog.close();
-		}
-	}
-
-	/**
-	 *
-	 * @param text
-	 * @param list
-	 */
-	public static void warningTextList(String text, List<String> list) {
-		Dialog<ButtonType> dialog = createDialog();
-		DialogPane dialogPane = new DialogPane();
-		dialogPane.setMaxSize(800, 500);
-		dialogPane.setMinSize(800, 500);
-		dialogPane.setPrefSize(800, 500);
-
-		// dialogPane.setHeaderText(text);
-		VBox vbox = new VBox(1);
-		// vbox.setMinSize(800, 500);
-		// vbox.setMaxSize(800, 500);
-		// vbox.setPrefSize(800, 500);
-
-		for (String s : list) {
-			Label label = new Label(s);
-			vbox.getChildren().add(label);
-		}
-
-		BorderPane bpane = new BorderPane();
-		// bpane.setMinSize(800, 500);
-		// bpane.setMaxSize(800, 500);
-		// bpane.setPrefSize(800, 500);
-
-		ScrollPane scr = new ScrollPane();
-		// scr.setMinSize(800, 500);
-		// scr.setMaxSize(800, 500);
-		// scr.setPrefSize(800, 500);
-
-		scr.setContent(vbox);
-		dialog.setDialogPane(dialogPane);
-		dialog.getDialogPane().setContent(bpane);
-
-		ImageView warningImage = new ImageView(
-				new Image(Main.class.getResourceAsStream("/img/warningSign.png")));
-		warningImage.setStyle("-fx-background-padding: 5;");
-		bpane.setLeft(warningImage);
-		bpane.setTop(new Label(text));
-		bpane.setCenter(scr);
-
 		// dialog.setGraphic(warningImage);
 		ButtonType ok_TypeButton = new ButtonType("OK", ButtonData.OK_DONE);
 
@@ -403,6 +249,7 @@ public class Messages {
 
 	@SuppressWarnings("exports")
 	public static Dialog<ButtonType> ask(String titleText, String headerText, String contentText, int lineNumber) {
+		sprintf("titledText: " + titleText + " headerText: " + headerText + " contentText: " + contentText + " line: " + lineNumber);
 		Dialog<ButtonType> dialog = createDialog();
 		if (!titleText.isEmpty()) {
 			dialog.setTitle(titleText);
@@ -421,14 +268,15 @@ public class Messages {
 
 	/**
 	 *
-	 * @param text
+	 * @param message
 	 * @param headerText
 	 */
-	public static void warningText_title(String text, String headerText) {
+	public static void warningText_title(String message, String headerText) {
+		sprintf("warningText_title: " + message + " headerText: " + headerText);
 		Dialog<ButtonType> dialog = createDialog();
 		dialog.setTitle("Error");
 		dialog.setHeaderText(headerText);
-		dialog.setContentText(text);
+		dialog.setContentText(message);
 		ImageView warningSign = new ImageView(
 				new Image(Main.class.getResourceAsStream("/img/errorSign.png")));
 		dialog.setGraphic(warningSign);
@@ -444,6 +292,7 @@ public class Messages {
 	}
 
 	public static void showAlert(String message, @SuppressWarnings("exports") AlertType alertType) {
+		sprintf("warningText_title: " + message + " alertType: " + alertType.toString());
 		Alert alert = new Alert(alertType);
 		DialogPane dialogPane = alert.getDialogPane();
 		dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());

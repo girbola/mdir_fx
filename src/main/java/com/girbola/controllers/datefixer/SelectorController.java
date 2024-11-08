@@ -8,15 +8,12 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.messages.Messages;
-import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
@@ -27,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class SelectorController {
 
-	private WorkDir_Loader workDir_Loader;
+	private WorkDirSQL workDir_SQL;
 	private Model_datefix model_datefix;
 	private TilePane df_tilePane;
 	//private GridPane df_gridPane;
@@ -76,7 +73,7 @@ public class SelectorController {
 
 		Messages.sprintf("Folderinfo path name is: " + this.folderInfo.getFolderPath());
 
-		workDir_Loader = new WorkDir_Loader(Paths.get(folderInfo.getFolderPath()));
+		workDir_SQL = new WorkDirSQL(Paths.get(folderInfo.getFolderPath()));
 
 		model_datefix.setDates_TableView(dates_tableView);
 		model_datefix.setCameras_TableView(cameras_tableView);

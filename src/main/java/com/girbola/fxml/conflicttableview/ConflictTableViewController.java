@@ -49,29 +49,8 @@ public class ConflictTableViewController {
 
    @FXML private void copy_btn_action(ActionEvent event) {
 
-		Task<Boolean> task = new OperateFiles(list, true, model_Main, SceneNameType.MAIN.getType());
-		task.setOnCancelled(new EventHandler<WorkerStateEvent>() {
+	   OperateFiles task = new OperateFiles(list, true, model_Main, SceneNameType.MAIN.getType());
 
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("ConflictTable copy cancelled");
-			}
-		});
-		task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("ConflictTable copy failed");
-			}
-		});
-		task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("ConflictTable copy Succeeded");
-			}
-		});
-		new Thread(task).start();
 
 	}
 

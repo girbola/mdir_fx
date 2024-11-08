@@ -225,36 +225,27 @@ public class Collect_DialogController {
 			list.addAll(folderInfo.getFileInfoList());
 		}
 
-		Task<Boolean> operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
-
-		operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-					FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
-				}
-				TableUtils.refreshAllTableContent(tables);
-				close();
-			}
-		});
-		operate.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.warningText("Copy process failed");
-				close();
-			}
-		});
-
-		operate.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				Messages.sprintf("Copy process were cancelled");
-				close();
-			}
-		});
-
-		Thread thread = new Thread(operate, "Operate Thread");
-		exec.submit(thread);
+	   OperateFiles operate = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+//
+//		operate.setOnSucceeded((EventHandler<WorkerStateEvent>) event1 -> {
+//            for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
+//                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+//            }
+//            TableUtils.refreshAllTableContent(tables);
+//            close();
+//        });
+//		operate.setOnFailed((EventHandler<WorkerStateEvent>) event2 -> {
+//            Messages.warningText("Copy process failed");
+//            close();
+//        });
+//
+//		operate.setOnCancelled((EventHandler<WorkerStateEvent>) event3 -> {
+//            Messages.sprintf("Copy process were cancelled");
+//            close();
+//        });
+//
+//		Thread thread = new Thread(operate, "Operate Thread");
+//		exec.submit(thread);
 
 	}
 

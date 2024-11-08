@@ -468,7 +468,7 @@ public class FileInfoUtils {
     public static int checkWorkDir(FileInfo fileInfo) {
         if (Main.conf.getDrive_connected()) {
             if (!fileInfo.getWorkDir().equals("null")) {
-                if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir())
+                if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir().toString())
                         && Main.conf.getWorkDirSerialNumber().equals(fileInfo.getWorkDirDriveSerialNumber())) {
                     if (Files.exists(Paths.get(fileInfo.getWorkDir()))) {
                         return 0;
@@ -628,7 +628,7 @@ public class FileInfoUtils {
         return null;
     }
 
-    public static boolean compareImageHashes(FileInfo fileInfo, FolderInfo folderInfo) {
+    public static boolean compareImagesMetadata(FileInfo fileInfo, FolderInfo folderInfo) {
         Iterator<FileInfo> iterator = folderInfo.getFileInfoList().iterator();
         while (iterator.hasNext()) {
             FileInfo fileInfo_dest = iterator.next();
@@ -643,4 +643,16 @@ public class FileInfoUtils {
     }
 
 
+    public static boolean compareImagesMetadata(FileInfo fileInfo, FileInfo duplicateFileInfo) {
+        if (!fileInfo.getImageDifferenceHash().isEmpty()) {
+            if (!duplicateFileInfo.getImageDifferenceHash().isEmpty())
+                if (fileInfo.getImageDifferenceHash().equals(duplicateFileInfo.getImageDifferenceHash())) {
+                    return true;
+                }
+        }
+        if (fileInfo.getSize() == duplicateFileInfo.getSize()) {
+            return true;
+        }
+        return false;
+    }
 }

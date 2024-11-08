@@ -9,10 +9,13 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import org.slf4j.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FileInfoUtilsTest {
+
+    private final Logger log = LoggerFactory.getLogger(FileInfoUtilsTest.class);
 
     @Test
     public void createFileInfoTest_imageType() {
@@ -38,6 +41,7 @@ public class FileInfoUtilsTest {
     @Test
     void createFileInfo() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
+        fileInfo.setFileInfo_id(1);
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
         Messages.sprintf("fileInfo1giihgo: " + fileInfo.getImageDifferenceHash());
         Path path = Paths.get("src","test","resources", "in","20220413_160023.jpg");
@@ -54,7 +58,9 @@ public class FileInfoUtilsTest {
     @Test
     public void testRenameFile() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
+        fileInfo.setFileInfo_id(1);
         FileInfo fileInfo2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "out", "20220413_160023.jpg"));
+        fileInfo2.setFileInfo_id(2);
 
         FolderInfo folderInfo = new FolderInfo(Paths.get("src", "test", "resources", "in"));
         folderInfo.getFileInfoList().add(fileInfo2);
@@ -83,10 +89,11 @@ public class FileInfoUtilsTest {
     @Test
     public void testRenameFile_FileAlreadyExistsInDestination() throws IOException {
         FileInfo fileInfoSrc = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "IMG.jpg"));
+        fileInfoSrc.setFileInfo_id(1);
         FolderInfo folderInfoDest = new FolderInfo(Paths.get("src", "test", "resources", "in"));
 
         FileInfo fileInfoSrc2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "out", "IMG1.jpg"));
-
+        fileInfoSrc2.setFileInfo_id(2);
 
         // Add fileInfoSrc in folderInfoDest's list to simulate a file with same name already exists
         folderInfoDest.getFileInfoList().add(fileInfoSrc2);
@@ -102,6 +109,7 @@ public class FileInfoUtilsTest {
 
         try {
             FileInfo fileInfo = FileInfoUtils.createFileInfo(fileName);
+            fileInfo.setFileInfo_id(1);
             assertNotNull(fileInfo, "File info is null");
             assertEquals(fileName.toString(), fileInfo.getOrgPath(), "Original path didn't match");
             assertTrue(fileInfo.isRaw(), "File should be of raw type");
@@ -116,9 +124,63 @@ public class FileInfoUtilsTest {
 
         try {
             FileInfo fileInfo = FileInfoUtils.createFileInfo(fileName);
+
             assertNull(fileInfo, "File info should be null for unsupported types");
         } catch (IOException e) {
             fail("IOException thrown on createFileInfo: " + e.getMessage());
+        }
+    }
+    @Test
+    public void testCompareImagesMetadata_SameFileInfoMetadata() {
+        Path sourcePath = Paths.get("src", "test", "resources", "test-material", "milky-way-559641_640.jpg");
+        try {
+            FileInfo fileInfo = FileInfoUtils.createFileInfo(sourcePath);
+            fileInfo.setFileInfo_id(1);
+
+            FileInfo fileInfo2 = FileInfoUtils.createFileInfo(sourcePath);
+            fileInfo2.setFileInfo_id(2);
+
+            assertTrue(FileInfoUtils.compareImagesMetadata(fileInfo, fileInfo2), "Comparison of identical files failed");
+        } catch (IOException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCompareImagesMetadata_DifferentFileInfoMetadataFalse() {
+        Path sourcePath = Paths.get("src", "test", "resources", "test-material", "milky-way-559641_640.jpg");
+        Path differentPath = Paths.get("src", "test", "resources", "test-material", "another-image2.jpg");
+        try {
+            FileInfo fileInfo1 = FileInfoUtils.createFileInfo(sourcePath);
+            fileInfo1.setFileInfo_id(1);
+
+            FileInfo fileInfo2 = FileInfoUtils.createFileInfo(differentPath);
+            fileInfo2.setFileInfo_id(2);
+
+            log.info("Fileinfo1: " + fileInfo1.getImageDifferenceHash() + " fileInfo2: " + fileInfo2.getImageDifferenceHash());
+
+            assertFalse(FileInfoUtils.compareImagesMetadata(fileInfo1, fileInfo2), "Comparison of different files incorrectly returned false");
+        } catch (IOException e) {
+            fail("Exception occurred during test: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCompareImagesMetadata_DifferentFileInfoMetadataTrue() {
+        Path sourcePath = Paths.get("src", "test", "resources", "test-material", "milky-way-559641_640.jpg");
+        Path differentPath = Paths.get("src", "test", "resources", "test-material", "another-image.jpg");
+        try {
+            FileInfo fileInfo1 = FileInfoUtils.createFileInfo(sourcePath);
+            fileInfo1.setFileInfo_id(1);
+
+            FileInfo fileInfo2 = FileInfoUtils.createFileInfo(differentPath);
+            fileInfo2.setFileInfo_id(2);
+
+            log.info("Fileinfo1: " + fileInfo1.getImageDifferenceHash() + " fileInfo2: " + fileInfo2.getImageDifferenceHash());
+
+            assertTrue(FileInfoUtils.compareImagesMetadata(fileInfo1, fileInfo2), "Comparison of different files incorrectly returned true");
+        } catch (IOException e) {
+            fail("Exception occurred during test: " + e.getMessage());
         }
     }
 }

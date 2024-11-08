@@ -78,12 +78,18 @@ public class FileUtils {
 
     public static Path renameFile(Path srcFile, Path destFile) throws IOException {
 
-        long start = System.currentTimeMillis();
-        String srcImageHash = ImageUtils.calculateImagePHash(srcFile);
-        String destImageHash = ImageUtils.calculateImagePHash(destFile);
-        long end = System.currentTimeMillis() - start;
-        Messages.sprintf("Took: " + end + " ms");
-        if (Files.size(destFile) != Files.size(srcFile) && srcImageHash != destImageHash && !srcImageHash.isEmpty() && !destImageHash.isEmpty()) {
+        Messages.sprintf("Renaming srcFile: " + srcFile.toFile().length() + " destFile: " + destFile.toFile().length());
+
+//        String srcImageHash = ImageUtils.calculateImagePHash(srcFile);
+//
+//        String destImageHash = ImageUtils.calculateImagePHash(destFile);
+
+        if(Files.exists(destFile.getParent())) {
+            // Get FolderInfo
+            // If not exists return null
+        }
+
+        if (Files.size(srcFile) != Files.size(destFile) && Files.size(destFile)>0) {
             Messages.sprintf("Files have same name but they differ with sizes");
             return rename(srcFile, destFile);
         } else {

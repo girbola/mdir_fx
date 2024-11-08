@@ -60,15 +60,6 @@ public class OperateFilesUtils {
         }
     }
 
-    private static synchronized void resetAndupdateSourceAndDestProcessValues(Path source, Path dest, Model_operate model_operate) {
-        Platform.runLater(() -> {
-            model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
-            model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
-            model_operate.getCopyProcess_values().setCopyProgress(0);
-            model_operate.getCopyProcess_values().setFilesCopyProgress_MAX_tmp(source.toFile().length());
-        });
-    }
-
     public static void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest, Model_main model_main, List<FileInfo> listCopiedFiles) {
         try {
             Messages.sprintf("Renaming corrupted file to: " + dest);
@@ -101,28 +92,7 @@ public class OperateFilesUtils {
         }
     }
 
-    private static void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, Model_main model_main) {
-        try {
-            Messages.sprintf(
-                    "Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
-            Files.move(Paths.get(dest.toString() + ".tmp"), dest);
-            String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
-            fileInfo.setDestination_Path(newName);
-            fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
-            fileInfo.setCopied(true);
-            listCopiedFiles.add(fileInfo);
-            boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-            if (added) {
-                Messages.sprintf("FileInfo added to destination succesfully");
-            } else {
-                Messages.sprintf("FileInfo were not added because it did exists " + fileInfo.getDestination_Path());
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Messages.sprintfError(ex.getMessage());
-        }
 
-    }
 
 
 }

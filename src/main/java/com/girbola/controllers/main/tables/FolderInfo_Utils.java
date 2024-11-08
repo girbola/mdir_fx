@@ -154,7 +154,7 @@ public class FolderInfo_Utils {
             FileInfo fileInfo = it.next();
             Path fileName = Paths.get(fileInfo.getOrgPath()).getFileName();
             Path changeDestPath = Paths.get(destPath.getParent().toString(), fileName.toString());
-            if (!FileInfoUtils.compareImageHashes(fileInfo, folderInfoDest)) {
+            if (!FileInfoUtils.compareImagesMetadata(fileInfo, folderInfoDest)) {
 
             }
             for (Iterator<FileInfo> it2 = folderInfoSrc.getFileInfoList().iterator(); it2.hasNext(); ) {

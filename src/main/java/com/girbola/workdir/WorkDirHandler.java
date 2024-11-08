@@ -236,7 +236,6 @@ public class WorkDirHandler {
 
 		Messages.sprintf("year: " + year + " month " + month + " day" + day);
 
-//		Path workDirToSearch = Paths.get(Main.conf.getWorkDir() + File.separator + year + File.separator + month);
 		for (FileInfo fileInfo : workDir_List) {
 			if (fileInfo.getDate() == fileInfoToSearch.getDate()) {
 				if (fileInfo.getSize() == fileInfoToSearch.getSize()) {
