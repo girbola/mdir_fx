@@ -131,12 +131,8 @@ public class OperateFiles {
                     Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
 
                     Task<Integer> copy = new Copy();
-                    copy.setOnSucceeded((WorkerStateEvent eventWorker) -> {
-                        Messages.sprintf("copy succeeded");
-                    });
-                    copy.setOnFailed((WorkerStateEvent eventWorker) -> {
-                        Messages.sprintf("copy failed");
-                    });
+                    copy.setOnSucceeded((WorkerStateEvent eventWorker) -> Messages.sprintf("copy succeeded"));
+                    copy.setOnFailed((WorkerStateEvent eventWorker) -> Messages.sprintf("copy failed"));
                     copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
                         model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
                         model_operate.doneButton(scene_NameType, close);
