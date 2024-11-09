@@ -1,14 +1,11 @@
 package com.girbola.controllers.folderscanner;
 
 
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import common.utils.FileUtils;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 import org.slf4j.Logger;
@@ -18,12 +15,12 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
 
     private Logger logger = LoggerFactory.getLogger(CheckBoxSelectFolderTableCell.class);
 
-    private Model_main modelMain;
+    private ModelMain modelMain;
     private ModelFolderScanner modelFolderScanner;
 
     private CheckBox checkBox;
 
-    public CheckBoxSelectFolderTableCell(Model_main modelMain, ModelFolderScanner modelFolderScanner) {
+    public CheckBoxSelectFolderTableCell(ModelMain modelMain, ModelFolderScanner modelFolderScanner) {
         this.modelMain = modelMain;
         this.modelFolderScanner = modelFolderScanner;
     }

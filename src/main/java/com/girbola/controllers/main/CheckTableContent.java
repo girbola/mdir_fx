@@ -15,7 +15,7 @@ import java.util.List;
 
 public class CheckTableContent {
 	private TableView<FolderInfo> table;
-	private Model_main model_Main;
+	private ModelMain model_Main;
 
 	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
 	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
@@ -25,7 +25,7 @@ public class CheckTableContent {
 		return fileInfoList;
 	}
 
-	public CheckTableContent(TableView<FolderInfo> table, Model_main model_Main) {
+	public CheckTableContent(TableView<FolderInfo> table, ModelMain model_Main) {
 		super();
 		this.table = table;
 		this.model_Main = model_Main;

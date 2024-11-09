@@ -1,7 +1,7 @@
 package com.girbola.fxml.main.collect;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
@@ -31,7 +31,7 @@ import static com.girbola.messages.Messages.sprintf;
 public class Collect_DateTimeAdjusterController {
     private final String ERROR = Collect_DateTimeAdjusterController.class.getName();
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
     private Model_CollectDialog model_CollectDialog;
     //@formatter:off
@@ -306,7 +306,7 @@ public class Collect_DateTimeAdjusterController {
         });
     }
 
-    public void init(Model_main aModel_main, Model_CollectDialog aModel_CollectDialog) {
+    public void init(ModelMain aModel_main, Model_CollectDialog aModel_CollectDialog) {
         this.model_main = aModel_main;
         this.model_CollectDialog = aModel_CollectDialog;
 

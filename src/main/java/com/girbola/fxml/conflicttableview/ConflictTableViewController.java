@@ -2,19 +2,15 @@ package com.girbola.fxml.conflicttableview;
 
 import com.girbola.Main;
 import com.girbola.SceneNameType;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.operate.OperateFiles;
-import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -24,7 +20,7 @@ import javafx.stage.Stage;
 
 public class ConflictTableViewController {
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
 
    @FXML private Button fixConflicts_btn;
@@ -66,7 +62,7 @@ public class ConflictTableViewController {
 
 	}
 
-	public void init(Model_main model_Main, ObservableList<FileInfo> list) {
+	public void init(ModelMain model_Main, ObservableList<FileInfo> list) {
 		this.model_Main = model_Main;
 		this.list = list;
 		folderName.setCellValueFactory(

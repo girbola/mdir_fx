@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main.tables.cell;
 
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
@@ -17,9 +17,9 @@ import javafx.scene.paint.Color;
  */
 public class TableCell_DateDifference_Status extends TableCell<FolderInfo, Double> {
 
-	private Model_main model_main;
+	private ModelMain model_main;
 
-	public TableCell_DateDifference_Status(Model_main model_main) {
+	public TableCell_DateDifference_Status(ModelMain model_main) {
 		this.model_main = model_main;
 
 	}

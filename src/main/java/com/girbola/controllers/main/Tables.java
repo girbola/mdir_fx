@@ -46,7 +46,7 @@ public class Tables {
 
     private final String ERROR = Tables.class.getSimpleName();
 
-    private Model_main model_Main;
+    private ModelMain model_Main;
 
     private SimpleDoubleProperty tablesParentWidth = new SimpleDoubleProperty(0);
 
@@ -93,7 +93,7 @@ public class Tables {
 //	private HBox tables_container;
 
 
-    protected Tables(Model_main aModel) {
+    protected Tables(ModelMain aModel) {
         this.model_Main = aModel;
 
         sprintf("Tables instantiated...");

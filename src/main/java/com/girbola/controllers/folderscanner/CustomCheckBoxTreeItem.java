@@ -1,7 +1,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import common.utils.FileUtils;
 import javafx.application.Platform;
@@ -10,15 +10,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBoxTreeItem;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static com.girbola.messages.Messages.sprintf;
 
 public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
-    private Model_main modelMain;
+    private ModelMain modelMain;
     private final Path path;
 
-    public CustomCheckBoxTreeItem(Model_main modelMain, Path path) {
+    public CustomCheckBoxTreeItem(ModelMain modelMain, Path path) {
         super(path.getFileName().toString());
         this.modelMain = modelMain;
         this.path = path;

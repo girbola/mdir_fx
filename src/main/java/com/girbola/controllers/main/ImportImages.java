@@ -34,13 +34,13 @@ public class ImportImages {
 	private final String ERROR = ImportImages.class.getSimpleName();
 
 	private Scene scene;
-	private Model_main model_main;
+	private ModelMain model_main;
 	private List<FileInfo> fileInfo_list;
 	private FolderInfo folderInfo;
 	private Task<List<Path>> createFileList;
 	private boolean isImporter;
 
-	public ImportImages(Scene scene, FolderInfo aFolderInfo, Model_main aModel_main, boolean isImporter) {
+	public ImportImages(Scene scene, FolderInfo aFolderInfo, ModelMain aModel_main, boolean isImporter) {
 		Main.setProcessCancelled(false);
 		this.scene = scene;
 		this.model_main = aModel_main;

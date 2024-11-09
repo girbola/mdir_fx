@@ -7,7 +7,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FolderScannerSQL;
 import common.utils.FileUtils;
@@ -33,7 +33,7 @@ public class SelectedFoldersController {
 
     /*private ScheduledService<Void> scanner;*/
 
-    private Model_main model_main;
+    private ModelMain model_main;
     private ModelFolderScanner model_folderScanner;
 
     //@formatter:off
@@ -117,7 +117,7 @@ public class SelectedFoldersController {
         table.getSelectionModel().clearSelection();
     }
 
-    public void init(Model_main aModel_main, ModelFolderScanner aModel_folderScanner) {
+    public void init(ModelMain aModel_main, ModelFolderScanner aModel_folderScanner) {
         this.model_main = aModel_main;
         this.model_folderScanner = aModel_folderScanner;
 

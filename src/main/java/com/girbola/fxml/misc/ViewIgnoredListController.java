@@ -7,7 +7,7 @@
 package com.girbola.fxml.misc;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -33,7 +33,7 @@ public class ViewIgnoredListController implements Initializable {
 
    @FXML private ListView<Path> ignoredList_lv;
 
-	private Model_main model_main;
+	private ModelMain model_main;
    @FXML private Button remove_btn;
 
    @FXML private void apply_btn_action(ActionEvent event) {

@@ -11,7 +11,7 @@ import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.DateFix_Utils.Field;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.dialogs.Dialogs;
@@ -20,7 +20,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.thumbinfo.ThumbInfo;
-import com.girbola.utils.FileInfoUtils;
 import com.girbola.workdir.WorkDirHandler;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
@@ -61,7 +60,7 @@ import static com.girbola.messages.Messages.*;
  */
 public class Model_datefix extends DateFixerModel {
     private final String ERROR = Model_datefix.class.getSimpleName();
-    private Model_main model_Main;
+    private ModelMain model_Main;
 
     private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
     private ObservableList<String> workDir_obs = FXCollections.observableArrayList();
@@ -110,7 +109,7 @@ public class Model_datefix extends DateFixerModel {
     private ObservableList<Node> allNodes = FXCollections.observableArrayList();
     private ObservableList<Node> notVisibleNodes = FXCollections.observableArrayList();
 
-    public Model_datefix(Model_main model_Main, Path aCurrentFolderPath) {
+    public Model_datefix(ModelMain model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
         this.model_Main = model_Main;
         this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());

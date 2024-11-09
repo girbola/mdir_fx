@@ -7,11 +7,10 @@
 package com.girbola.configuration;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
-import javafx.beans.property.SimpleDoubleProperty;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -23,7 +22,7 @@ public class Configuration extends Configuration_defaults {
 
     private static final String ERROR = Configuration.class.getSimpleName();
 
-    private Model_main model_Main;
+    private ModelMain model_Main;
 
     private final String programName = "MDir - Image and Video Organizer";
 
@@ -54,11 +53,11 @@ public class Configuration extends Configuration_defaults {
 
     }
 
-    public void setModel(Model_main model) {
+    public void setModel(ModelMain model) {
         this.model_Main = model;
     }
 
-    public Model_main getModel() {
+    public ModelMain getModel() {
         return this.model_Main;
     }
 

@@ -26,10 +26,10 @@ import static com.girbola.messages.Messages.sprintf;
 public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;
-	private Model_main model;
+	private ModelMain model;
 	private AtomicInteger counter = new AtomicInteger(0);
 
-	public Sorter(Model_main model, List<Path> selectedList) {
+	public Sorter(ModelMain model, List<Path> selectedList) {
 		this.model = model;
 		this.selectedList = selectedList;
 	}

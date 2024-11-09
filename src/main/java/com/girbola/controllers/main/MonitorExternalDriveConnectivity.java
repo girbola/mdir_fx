@@ -21,9 +21,9 @@ import java.util.List;
 
 public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 
-	public MonitorExternalDriveConnectivity(Model_main model_Main) {
+	public MonitorExternalDriveConnectivity(ModelMain model_Main) {
 		this.model_Main = model_Main;
 	}
 

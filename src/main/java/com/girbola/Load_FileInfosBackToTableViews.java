@@ -1,6 +1,6 @@
 package com.girbola;
 
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -17,10 +17,10 @@ import java.sql.Connection;
 import java.util.List;
 
 public class Load_FileInfosBackToTableViews extends Task<Boolean> {
-    private Model_main model_main;
+    private ModelMain model_main;
     private Connection connection;
 
-    public Load_FileInfosBackToTableViews(Model_main aModel_Main, Connection aConnection) {
+    public Load_FileInfosBackToTableViews(ModelMain aModel_Main, Connection aConnection) {
         this.model_main = aModel_Main;
         this.connection = aConnection;
     }

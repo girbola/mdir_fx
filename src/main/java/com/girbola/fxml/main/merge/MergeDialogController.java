@@ -1,17 +1,14 @@
 package com.girbola.fxml.main.merge;
 
 import com.girbola.Main;
-import com.girbola.SceneNameType;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -19,7 +16,6 @@ import common.utils.FileUtils;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -31,12 +27,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class MergeDialogController {
 
@@ -44,7 +37,7 @@ public class MergeDialogController {
 
     private ObservableList<FolderInfo> paths = FXCollections.observableArrayList();
 
-    private Model_main model_main;
+    private ModelMain model_main;
     private Tables tables;
     private TableView<FolderInfo> table;
     private String tableType;
@@ -330,7 +323,7 @@ public class MergeDialogController {
         close();
     }
 
-    public void init(Model_main model_main, Tables tables, TableView<FolderInfo> table, String tableType) {
+    public void init(ModelMain model_main, Tables tables, TableView<FolderInfo> table, String tableType) {
         this.model_main = model_main;
         this.tables = tables;
         this.table = table;

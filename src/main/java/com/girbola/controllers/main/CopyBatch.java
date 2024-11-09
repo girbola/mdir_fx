@@ -9,14 +9,14 @@ import java.util.List;
 
 public class CopyBatch {
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 
 //	private ObservableList<FileInfo> conflictWithWorkdir_list = FXCollections.observableArrayList();
 //	private ObservableList<FileInfo> cantCopy_list = FXCollections.observableArrayList();
 //	private ObservableList<FileInfo> okFiles_list = FXCollections.observableArrayList();
 //	private ObservableList<FileInfo> list = FXCollections.observableArrayList();
 
-	public CopyBatch(Model_main model_Main) {
+	public CopyBatch(ModelMain model_Main) {
 		this.model_Main = model_Main;
 	}
 

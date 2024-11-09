@@ -19,10 +19,10 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	private Stage stage;
 	private LoadingProcessTask loadingProcess_Task;
 	private boolean closeLoadingStage;
-	private Model_main model_main;
+	private ModelMain model_main;
 
-	public SaveTablesToDatabases(Model_main model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
-			boolean closeLoadingStage) {
+	public SaveTablesToDatabases(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
+                                 boolean closeLoadingStage) {
 		super();
 		this.model_main = model_main;
 		this.stage = stage;

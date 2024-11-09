@@ -12,7 +12,7 @@ import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ImportImages;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
@@ -30,7 +30,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -55,7 +54,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.controllers.datefixer.utils.DateFixGuiUtils.*;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static com.girbola.misc.Misc.openFileBrowser;
@@ -67,7 +65,7 @@ public class DateFixerController {
     private SimpleBooleanProperty leftInfoTables_visible = new SimpleBooleanProperty(true);
     private QuickPick_Navigator quickPick_Navigator;
     private Model_datefix model_datefix;
-    private Model_main model_main;
+    private ModelMain model_main;
 
     //@formatter:off
 	@FXML private Button show_only_selected_btn;
@@ -477,7 +475,7 @@ public class DateFixerController {
         return null;
     }
 
-    public void init(Model_datefix aModel_datefix, Model_main aModel_main, Path currentPath, FolderInfo folderInfo,
+    public void init(Model_datefix aModel_datefix, ModelMain aModel_main, Path currentPath, FolderInfo folderInfo,
                      boolean isImported) {
         Main.setProcessCancelled(false);
 

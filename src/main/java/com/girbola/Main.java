@@ -28,7 +28,7 @@ import com.girbola.configuration.ConfigurationUtils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.*;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -45,19 +45,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Point2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
-import javafx.scene.robot.Robot;
 import javafx.scene.text.*;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.awt.*;
-import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.*;
@@ -86,7 +82,7 @@ public class Main extends Application {
     private static AtomicBoolean processCancelled = new AtomicBoolean(false);
     private static AtomicBoolean changed = new AtomicBoolean(false);
 
-    private Model_main model_main = new Model_main();
+    private ModelMain model_main = new ModelMain();
 
     private static Stage main_stage;
 

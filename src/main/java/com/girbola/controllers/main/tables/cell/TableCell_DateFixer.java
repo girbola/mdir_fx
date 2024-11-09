@@ -8,7 +8,7 @@ package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.datefixer.GUI_Methods;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
@@ -31,9 +31,9 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 
     Button dateFixerButton = new Button();
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
-    public TableCell_DateFixer(Model_main model_main) {
+    public TableCell_DateFixer(ModelMain model_main) {
         this.model_main = model_main;
         ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
         dateFixerButton.setGraphic(view_iv);

@@ -1,7 +1,7 @@
 package com.girbola.fxml.datestreetableview;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -27,7 +27,7 @@ public class DatesTreeTableViewController {
 
     TreeMap<String, List<FileInfo>> filesMap = new TreeMap<>();
 
-    private Model_main model_main;
+    private ModelMain model_main;
     //@formatter:off
    @FXML private TreeTableView<TreeFolderInfo> dates_treeTableView;
    @FXML private TreeTableColumn<TreeFolderInfo, String> folders_ttc;
@@ -38,7 +38,7 @@ public class DatesTreeTableViewController {
 	//@formatter:on
     private TreeItem<TreeFolderInfo> root;
 
-    public void init(Model_main model_main) {
+    public void init(ModelMain model_main) {
         this.model_main = model_main;
 
         root = new TreeItem<>();

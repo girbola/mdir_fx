@@ -11,7 +11,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.tasks.MakeChanges;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
@@ -21,7 +21,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.util.converter.NumberStringConverter;
@@ -42,7 +41,7 @@ public class DateTimeAdjusterController {
 
     //private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
-    private Model_main model_main;
+    private ModelMain model_main;
     private Model_datefix model_datefix;
 
     //@formatter:off
@@ -386,7 +385,7 @@ public class DateTimeAdjusterController {
         field.setText(text);
     }
 
-    public void init(Model_main aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
+    public void init(ModelMain aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
                      TilePane aQuickPick_tilePane) {
         this.model_main = aModel_main;
         this.model_datefix = aModel_datefix;

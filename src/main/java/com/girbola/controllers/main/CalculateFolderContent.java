@@ -37,11 +37,11 @@ public class CalculateFolderContent extends Task<Void> {
 
     private final String ERROR = CalculateFolderContent.class.getSimpleName();
 
-    private Model_main model;
+    private ModelMain model;
     private IntegerProperty total;
     private IntegerProperty counter = new SimpleIntegerProperty();
 
-    public CalculateFolderContent(Model_main aModel, LoadingProcessTask aLoadingProcess_Task, IntegerProperty total) {
+    public CalculateFolderContent(ModelMain aModel, LoadingProcessTask aLoadingProcess_Task, IntegerProperty total) {
         this.model = aModel;
         this.total = total;
         this.counter = this.total;

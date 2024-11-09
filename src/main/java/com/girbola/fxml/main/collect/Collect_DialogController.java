@@ -3,7 +3,7 @@ package com.girbola.fxml.main.collect;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
@@ -15,10 +15,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
-import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
@@ -35,7 +32,7 @@ public class Collect_DialogController {
 
 	private final String ERROR = Collect_DialogController.class.getSimpleName();
 
-	private Model_main model_main;
+	private ModelMain model_main;
 	private Model_CollectDialog model_CollectDialog;
 
 	private Tables tables;
@@ -253,8 +250,8 @@ public class Collect_DialogController {
 		close();
 	}
 
-	public void init(Model_main aModel_main, Model_CollectDialog aModel_CollectDialog, TableView<FolderInfo> aTable,
-			String aTableType) {
+	public void init(ModelMain aModel_main, Model_CollectDialog aModel_CollectDialog, TableView<FolderInfo> aTable,
+                     String aTableType) {
 		this.model_main = aModel_main;
 		this.model_CollectDialog = aModel_CollectDialog;
 		this.tables = aModel_main.tables();

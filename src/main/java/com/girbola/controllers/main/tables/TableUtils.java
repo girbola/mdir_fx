@@ -78,7 +78,7 @@ public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
 
-    public static void showConflictTable(Model_main model_Main, ObservableList<FileInfo> obs) {
+    public static void showConflictTable(ModelMain model_Main, ObservableList<FileInfo> obs) {
         try {
             Parent parent = null;
             FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/conflicttableview/ConflictTableView.fxml"), bundle);
@@ -397,7 +397,7 @@ public class TableUtils {
         return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
 
-    public void check_All_TableView_forChanges(Model_main model_main) {
+    public void check_All_TableView_forChanges(ModelMain model_main) {
         Iterator<FolderInfo> sorted_it = model_main.tables().getSorted_table().getItems().iterator();
         Iterator<FolderInfo> sortit_it = model_main.tables().getSortIt_table().getItems().iterator();
 
@@ -813,7 +813,7 @@ public class TableUtils {
         return null;
     }
 
-    public static int getVisibleTables(Model_main model_main) {
+    public static int getVisibleTables(ModelMain model_main) {
         int visibles = 0;
         if (model_main.tables().getSortIt_table().isVisible()) {
             visibles++;
@@ -828,7 +828,7 @@ public class TableUtils {
         return visibles;
     }
 
-    public static void handleTableStates(Model_main model_main, Button hide_btn) {
+    public static void handleTableStates(ModelMain model_main, Button hide_btn) {
 
         int visibles = getVisibleTables(model_main);
 
@@ -879,7 +879,7 @@ public class TableUtils {
         control.getTooltip().hide();
     }
 
-    public static void copySelectedTableRows(Model_main model_main, TableView<FolderInfo> table, String tableType) {
+    public static void copySelectedTableRows(ModelMain model_main, TableView<FolderInfo> table, String tableType) {
         if (Main.conf.getWorkDir() == null) {
             Messages.warningText("copySelectedTableRows Workdir were null");
             return;
@@ -946,7 +946,7 @@ public class TableUtils {
 
     }
 
-    public static void addToBatchSelectedTableRows(Model_main model_main, TableView<FolderInfo> table, String tableType) {
+    public static void addToBatchSelectedTableRows(ModelMain model_main, TableView<FolderInfo> table, String tableType) {
         if (Main.conf.getWorkDir() == null) {
             Messages.warningText("copySelectedTableRows Workdir were null");
             return;

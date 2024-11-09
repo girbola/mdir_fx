@@ -61,7 +61,7 @@ public class MenuBarController {
 
     private final String ERROR = MenuBarController.class.getSimpleName();
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
     @FXML
     private MenuItem menuItem_tools_options_viewIgnoredList;
@@ -490,7 +490,7 @@ public class MenuBarController {
 
     }
 
-    public void init(Model_main aModel_main) {
+    public void init(ModelMain aModel_main) {
         this.model_main = aModel_main;
         sprintf("menuBarController....");
         sprintf("menuItem_tools_showFullPath: " + conf.isShowFullPath());

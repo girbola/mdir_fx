@@ -9,7 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -41,13 +41,13 @@ public class DateFixer extends Task<Void> {
 
     private Path currentPath;
     private FolderInfo folderInfo;
-    private Model_main model_main;
+    private ModelMain model_main;
     private Model_datefix model_datefix;
     private Parent parent = null;
     private DateFixerController dateFixerController = null;
     private boolean isImported;
 
-    public DateFixer(Path aCurrentPath, FolderInfo aFolderInfo, Model_main aModel_main, boolean isImported) {
+    public DateFixer(Path aCurrentPath, FolderInfo aFolderInfo, ModelMain aModel_main, boolean isImported) {
         this.folderInfo = aFolderInfo;
         this.currentPath = aCurrentPath;
         this.model_main = aModel_main;

@@ -7,7 +7,6 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
@@ -17,8 +16,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.stage.Window;
 
 import java.nio.file.Path;
@@ -40,13 +37,13 @@ public class Populate {
 
     private static final String ERROR = Populate.class.getSimpleName();
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
     private IntegerProperty total = new SimpleIntegerProperty();
 
     private AtomicInteger processAtomicInteger = new AtomicInteger(0);
 
-    public Populate(Model_main model) {
+    public Populate(ModelMain model) {
         this.model_main = model;
         Messages.sprintf("Populate initialized");
     }

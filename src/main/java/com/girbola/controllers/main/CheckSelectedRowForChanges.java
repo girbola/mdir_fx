@@ -30,10 +30,10 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 	private TableView<FolderInfo> tableView;
 	private SimpleBooleanProperty changed = new SimpleBooleanProperty();
 	private final String ERROR = CheckSelectedRowForChanges.class.getName();
-	private Model_main model_main;
+	private ModelMain model_main;
 	private LoadingProcessTask loadingProcess;
 
-	public CheckSelectedRowForChanges(TableView<FolderInfo> tableView, Model_main aModel_main,
+	public CheckSelectedRowForChanges(TableView<FolderInfo> tableView, ModelMain aModel_main,
 			LoadingProcessTask loadingProcess) {
 		super();
 		this.tableView = tableView;

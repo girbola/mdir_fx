@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.importimages;
 
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -35,7 +35,7 @@ public class ImportImagesController {
 
 	private final String ERROR = ImportImagesController.class.getSimpleName();
 
-	private Model_main model_main;
+	private ModelMain model_main;
 	private Model_importImages model_importImages;
 
    @FXML private Button apply_btn_main;
@@ -85,7 +85,7 @@ public class ImportImagesController {
 
 	}
 
-	public void init(Model_main aModel_main, FolderInfo aFolderInfo, boolean importer) {
+	public void init(ModelMain aModel_main, FolderInfo aFolderInfo, boolean importer) {
 		sprintf("Initing importimages controller");
 		container.getChildren().removeAll();
 		this.model_main = aModel_main;

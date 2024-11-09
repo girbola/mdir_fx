@@ -55,7 +55,6 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.*;
 import javafx.util.converter.NumberStringConverter;
 
 import java.awt.*;
@@ -76,7 +75,7 @@ public class TableController {
     private final String ERROR = TableController.class.getSimpleName();
 
     private Model_CollectDialog model_CollectDialog;
-    private Model_main model_main;
+    private ModelMain model_main;
     private final ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
     private final SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
     private final SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
@@ -512,7 +511,7 @@ public class TableController {
     }
 
 
-    public void init(Model_main aModel_main, String tableName, String tableType) {
+    public void init(ModelMain aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
 

@@ -38,11 +38,11 @@ public class CreateFileInfoRow extends Task<Void> {
 
 	private AtomicInteger counter = new AtomicInteger(0);
 	private final String ERROR = CreateFileInfoRow.class.getSimpleName();
-	private Model_main model_Main;
+	private ModelMain model_Main;
 	private Window owner;
 	private TableView<FolderInfo> table;
 
-	CreateFileInfoRow(Model_main aModel_main, TableView<FolderInfo> aTable,  Window anOwner) {
+	CreateFileInfoRow(ModelMain aModel_main, TableView<FolderInfo> aTable, Window anOwner) {
 		this.model_Main = aModel_main;
 		this.table = aTable;
 		this.owner = anOwner;

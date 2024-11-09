@@ -29,7 +29,7 @@ public class MainController {
 
     private final static String ERROR = MainController.class.getSimpleName();
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
     private SimpleStringProperty table_hbox_pref_width = new SimpleStringProperty("TODO");
 
@@ -48,7 +48,7 @@ public class MainController {
     @FXML TabPane tablesTabPane;
 	//@formatter:on
 
-    public void initialize(Model_main model_main) {
+    public void initialize(ModelMain model_main) {
         this.model_main = model_main;
 
         sprintf("Maincontroller loading....");

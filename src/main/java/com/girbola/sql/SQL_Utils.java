@@ -3,7 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.drive.DriveInfo;
@@ -255,7 +255,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
-    public static List<FolderInfos> loadFolderInfosToTables(Connection connection, Model_main model_Main) {
+    public static List<FolderInfos> loadFolderInfosToTables(Connection connection, ModelMain model_Main) {
         if(Main.getProcessCancelled()) {
             return null;
         }
@@ -298,7 +298,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
-    public static boolean loadFolders_list(Connection connection, Model_main model_Main) {
+    public static boolean loadFolders_list(Connection connection, ModelMain model_Main) {
         if (connection == null) {
             Messages.sprintfError("Connection were null!");
             return false;

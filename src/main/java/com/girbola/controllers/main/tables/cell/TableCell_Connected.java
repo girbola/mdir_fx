@@ -2,7 +2,7 @@ package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.GUI_Methods;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -26,9 +26,9 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 
 	private Button tryToReconnect = new Button();
 	private StackPane stackPane = new StackPane();
-	private Model_main model_main;
+	private ModelMain model_main;
 
-	public TableCell_Connected(Model_main model_main) {
+	public TableCell_Connected(ModelMain model_main) {
 		this.model_main = model_main;
 		ImageView reload_iv = new ImageView(GUI_Methods.loadImage("reload.png", 15));
 		tryToReconnect.setGraphic(reload_iv);

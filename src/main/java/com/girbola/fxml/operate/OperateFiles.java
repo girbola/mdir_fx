@@ -3,7 +3,7 @@ package com.girbola.fxml.operate;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.*;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Model_operate;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.YesNoCancelDialogController;
@@ -43,15 +43,15 @@ public class OperateFiles {
     private boolean close;
     private Model_operate model_operate = new Model_operate();
     private List<FileInfo> list = new ArrayList<>();
-    private Model_main model_main;
+    private ModelMain modelMain;
     private String scene_NameType;
     private static List<FileInfo> listCopiedFiles = new ArrayList<>();
 
-    public OperateFiles(List<FileInfo> list, boolean close, Model_main aModel_main, String scene_NameType) {
+    public OperateFiles(List<FileInfo> list, boolean close, ModelMain aModel_main, String scene_NameType) {
         Messages.sprintf("OperateFiles starting...");
         this.list = list;
         this.close = close;
-        this.model_main = aModel_main;
+        this.modelMain = aModel_main;
         this.scene_NameType = scene_NameType;
         try {
             init();
@@ -89,7 +89,7 @@ public class OperateFiles {
         });
 
         Main.scene_Switcher.getWindow().setOnCloseRequest(event -> {
-            Model_main model_Main = (Model_main) Main.getMain_stage().getUserData();
+            ModelMain model_Main = (ModelMain) Main.getMain_stage().getUserData();
             Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
             Main.getMain_stage().setOnCloseRequest(model_Main.exitProgram);
             event.consume();
@@ -119,13 +119,13 @@ public class OperateFiles {
         Platform.runLater(() -> {
 
             model_operate.getStart_btn().setOnAction(event -> {
-                if (model_main == null) {
+                if (modelMain == null) {
                     Messages.sprintfError("model main is null");
                 }
-                if (model_main.getMonitorExternalDriveConnectivity() == null) {
+                if (modelMain.getMonitorExternalDriveConnectivity() == null) {
                     Messages.sprintfError("model main getMonitorExternalDriveConnectivity is null");
                 }
-                model_main.getMonitorExternalDriveConnectivity().cancel();
+                modelMain.getMonitorExternalDriveConnectivity().cancel();
 
                 try {
                     Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
@@ -231,7 +231,7 @@ public class OperateFiles {
                     Messages.sprintf("source is: " + source + " dest: " + dest);
                     updateSourceAndDestProcessValues(source, dest);
 
-//                    List<FileInfo> findPossibleExistsFoldersInWorkdir = model_main.getWorkDir_Handler().findPossibleExistsFoldersInWorkdir(fileInfo);
+//                    List<FileInfo> findPossibleExistsFoldersInWorkdir = modelMain.getWorkDir_Handler().findPossibleExistsFoldersInWorkdir(fileInfo);
 
                     Path dest_test = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), dest);
                     if (dest_test != null) {
@@ -252,7 +252,7 @@ public class OperateFiles {
                                     updateIncreaseCopyingProcessValues();
                                     if (!fileInfo.isCopied()) {
                                         fileInfo.setCopied(true);
-                                        model_main.getWorkDir_Handler().add(fileInfo);
+                                        modelMain.getWorkDir_Handler().add(fileInfo);
                                     }
                                 }
                             } else {
@@ -267,7 +267,7 @@ public class OperateFiles {
                                 if (!fileInfo.isCopied()) {
                                     fileInfo.setCopied(true);
                                 }
-                                model_main.getWorkDir_Handler().add(fileInfo);
+                                modelMain.getWorkDir_Handler().add(fileInfo);
 
                             }
                             break;
@@ -484,7 +484,7 @@ public class OperateFiles {
                     }
 
                     if (answer.get() == 0) {
-                        renameTmpFileToCorruptedFileExtensions(fileInfo, destTmpFile, dest2, model_main, listCopiedFiles);
+                        renameTmpFileToCorruptedFileExtensions(fileInfo, destTmpFile, dest2, modelMain, listCopiedFiles);
                         Messages.sprintf("renameTmpFileToCorruptedFile: " + destTmpFile);
                     } else if (answer.get() == 1) {
                         Messages.sprintf("Don't keep the file. Tmp file will be deleted: " + destTmpFile);
@@ -497,7 +497,7 @@ public class OperateFiles {
 
                     }
                 } else {
-                    renameTmpFileBackToOriginalExtentension(fileInfo, destTmpFile, dest2, model_main);
+                    renameTmpFileBackToOriginalExtentension(fileInfo, destTmpFile, dest2, modelMain);
                     Messages.sprintf("renameTmpFileBackToOriginalExtentension: " + destTmpFile + " dest: " + dest2);
                 }
 
@@ -513,7 +513,7 @@ public class OperateFiles {
         protected void failed() {
             model_operate.stopTimeLine();
 
-            TableUtils.refreshAllTableContent(model_main.tables());
+            TableUtils.refreshAllTableContent(modelMain.tables());
 //			model_operate.doneButton(scene_NameType, close);
             Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
         }
@@ -523,7 +523,7 @@ public class OperateFiles {
             Messages.sprintf("OperateFiles COPY were cancelled");
             model_operate.stopTimeLine();
             model_operate.doneButton(scene_NameType, close);
-            TableUtils.refreshAllTableContent(model_main.tables());
+            TableUtils.refreshAllTableContent(modelMain.tables());
         }
 
         @Override
@@ -548,19 +548,19 @@ public class OperateFiles {
                 @Override
                 protected Void call() throws Exception {
                     Messages.sprintf("Step1");
-                    if (model_main.getWorkDir_Handler() == null) {
+                    if (modelMain.getWorkDir_Handler() == null) {
                         Messages.sprintf("Workdir_handler null");
                     }
-                    boolean saveWorkDirList = model_main.getWorkDir_Handler().saveWorkDirListToDatabase();
+                    boolean saveWorkDirList = modelMain.getWorkDir_Handler().saveWorkDirListToDatabase();
                     Messages.sprintf("Step2");
-                    TableUtils.refreshAllTableContent(model_main.tables());
+                    TableUtils.refreshAllTableContent(modelMain.tables());
                     if (saveWorkDirList) {
                         Messages.sprintf("saveWorkDirList DONE!!!");
                     } else {
                         Messages.sprintf("saveWorkDirList FAILED");
                     }
-                    TableUtils.updateAllFolderInfos(model_main.tables());
-                    TableUtils.refreshAllTableContent(model_main.tables());
+                    TableUtils.updateAllFolderInfos(modelMain.tables());
+                    TableUtils.refreshAllTableContent(modelMain.tables());
                     return null;
                 }
             };
@@ -587,7 +587,7 @@ public class OperateFiles {
             sprintf("OperateFiles succeeded");
         }
 
-        private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, Model_main model_main) {
+        private void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, ModelMain model_main) {
             try {
                 Messages.sprintf(
                         "Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);

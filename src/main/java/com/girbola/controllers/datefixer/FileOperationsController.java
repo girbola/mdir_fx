@@ -9,7 +9,7 @@ package com.girbola.controllers.datefixer;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
@@ -53,7 +53,7 @@ public class FileOperationsController {
 	private final String ERROR = FileOperationsController.class.getSimpleName();
 
 	private Model_datefix model_datefix;
-	private Model_main model_main;
+	private ModelMain model_main;
 	private ObservableList<Folder> comboList = FXCollections.observableArrayList();
 
    @FXML private Button fixBadDates_btn;
@@ -108,7 +108,7 @@ public class FileOperationsController {
 
 	}
 
-	public void init(Model_datefix aModel_datefix, Model_main aModel_main) {
+	public void init(Model_datefix aModel_datefix, ModelMain aModel_main) {
 		this.model_datefix = aModel_datefix;
 		this.model_main = aModel_main;
 

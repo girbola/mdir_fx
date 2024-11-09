@@ -1,19 +1,17 @@
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.main.tables.FolderInfo;
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.control.TableView;
 
 public class MainWindowSizing {
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
 
     private SimpleDoubleProperty sorted;
     private SimpleDoubleProperty sortid;
     private SimpleDoubleProperty asitis;
 
-    public MainWindowSizing(Model_main model_main) {
+    public MainWindowSizing(ModelMain model_main) {
         this.model_main = model_main;
         sorted = new SimpleDoubleProperty(-1);
         sortid = new SimpleDoubleProperty(-1);

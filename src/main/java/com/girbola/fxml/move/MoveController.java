@@ -1,7 +1,7 @@
 package com.girbola.fxml.move;
 
 import com.girbola.controllers.datefixer.Model_datefix;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import javafx.collections.ObservableList;
@@ -89,10 +89,10 @@ public class MoveController {
 //		List<FolderInfo> folderInfo_location = FolderInfo_Utils.getLocation(model_datefix.getFolderInfo_full());
 	}
 
-	private Model_main model_main;
+	private ModelMain model_main;
 	private Model_datefix model_datefix;
 
-	public void init(Model_main model_main, Model_datefix model_datefix) {
+	public void init(ModelMain model_main, Model_datefix model_datefix) {
 		this.model_main = model_main;
 		this.model_datefix = model_datefix;
 	}

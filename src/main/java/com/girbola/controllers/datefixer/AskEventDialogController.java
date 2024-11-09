@@ -10,11 +10,9 @@ import com.girbola.fxml.operate.*;
 import com.girbola.messages.*;
 import com.girbola.misc.*;
 import common.utils.*;
-import java.io.*;
 import java.nio.file.*;
 import java.util.*;
 import javafx.beans.binding.*;
-import javafx.concurrent.*;
 import javafx.event.*;
 import javafx.fxml.*;
 import javafx.scene.*;
@@ -25,7 +23,7 @@ public class AskEventDialogController {
 
     private final String ERROR = AskEventDialogController.class.getSimpleName();
 
-    private Model_main model_main;
+    private ModelMain model_main;
     private Model_datefix model_dateFix;
 
     //@formatter:off
@@ -144,7 +142,7 @@ public class AskEventDialogController {
 
     }
 
-    public void init(Model_main aModel_main, Model_datefix model_dateFix) {
+    public void init(ModelMain aModel_main, Model_datefix model_dateFix) {
         this.model_main = aModel_main;
         this.model_dateFix = model_dateFix;
 

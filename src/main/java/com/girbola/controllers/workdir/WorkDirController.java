@@ -7,7 +7,7 @@
 package com.girbola.controllers.workdir;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -38,9 +38,9 @@ public class WorkDirController {
 
    @FXML private Label label;
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 
-	public void init(Model_main aModel_main) {
+	public void init(ModelMain aModel_main) {
 		this.model_Main = aModel_main;
 	}
 

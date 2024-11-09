@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 
 public class ShowAndHideTables {
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 
 	private SimpleBooleanProperty sortit_show_property = new SimpleBooleanProperty(true);
 	private SimpleBooleanProperty sorted_show_property = new SimpleBooleanProperty(true);
@@ -35,7 +35,7 @@ public class ShowAndHideTables {
 		this.sorted_show_property.set(sorted_show_property);
 	}
 
-	public ShowAndHideTables(Model_main model_Main) {
+	public ShowAndHideTables(ModelMain model_Main) {
 		this.model_Main = model_Main;
 	}
 

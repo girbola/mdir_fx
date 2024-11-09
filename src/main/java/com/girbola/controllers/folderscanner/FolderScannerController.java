@@ -7,7 +7,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.messages.Messages;
@@ -51,7 +51,7 @@ public class FolderScannerController {
     @FXML private TreeView<File> drives_treeView;
     @FXML private VBox analyzeList_vbox;
 
-    private Model_main model_main;
+    private ModelMain model_main;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
 
     private Scene folderScannerController_scene;
@@ -157,7 +157,7 @@ public class FolderScannerController {
         });
     }
 
-    public void init(Model_main aModel_main) {
+    public void init(ModelMain aModel_main) {
         Main.setProcessCancelled(false);
 
         this.model_main = aModel_main;

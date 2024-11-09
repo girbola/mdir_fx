@@ -7,8 +7,6 @@
 package com.girbola.controllers.main;
 
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.messages.Messages;
-import javafx.application.Platform;
 import javafx.scene.control.TableView;
 
 import java.util.stream.IntStream;
@@ -21,9 +19,9 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class Buttons {
 
-	private Model_main model;
+	private ModelMain model;
 
-	protected Buttons(Model_main model) {
+	protected Buttons(ModelMain model) {
 		this.model = model;
 		sprintf("Buttons instantiated...");
 	}

@@ -1,7 +1,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DrivesListHandler;
 import com.girbola.filelisting.ValidatePathUtils;
@@ -41,9 +41,9 @@ public class ScanDrives {
     private int rootCount = 0;
     private DrivesListHandler drivesListHandler;
     private final static String ERROR = ScanDrives.class.getSimpleName();
-    private Model_main model_Main;
+    private ModelMain model_Main;
 
-    public ScanDrives(Model_main aModel_main, CheckBoxTreeItem aRootItem, ObservableList<Path> aDrivesList_selected_obs,
+    public ScanDrives(ModelMain aModel_main, CheckBoxTreeItem aRootItem, ObservableList<Path> aDrivesList_selected_obs,
                       DrivesListHandler aDrivesListHandler, ModelFolderScanner aModel_folderScanner) {
         this.model_Main = aModel_main;
         this.rootItem = aRootItem;

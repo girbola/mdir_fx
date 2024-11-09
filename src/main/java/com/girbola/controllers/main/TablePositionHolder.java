@@ -17,11 +17,11 @@ import java.util.Map.Entry;
 
 class TablePositionHolder implements Serializable {
 
-    private Model_main model_main;
+    private ModelMain model_main;
 
     private Map<Path, TableType> tablePositionHolder_map = new HashMap<>();
 
-    public TablePositionHolder(Model_main aModel_main) {
+    public TablePositionHolder(ModelMain aModel_main) {
         this.model_main = aModel_main;
     }
 

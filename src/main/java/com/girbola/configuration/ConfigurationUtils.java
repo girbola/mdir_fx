@@ -1,7 +1,7 @@
 package com.girbola.configuration;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -86,7 +86,7 @@ public class ConfigurationUtils {
 
     }
 
-    public static void loadConfig_GUI(Model_main modelMain) {
+    public static void loadConfig_GUI(ModelMain modelMain) {
         Messages.sprintf("loadConfig_GUI Started: " + Main.conf.getAppDataPath());
         Connection connection = null;
         boolean createDatabase = false;

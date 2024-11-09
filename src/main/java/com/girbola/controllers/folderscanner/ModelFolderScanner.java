@@ -6,9 +6,8 @@
  */
 package com.girbola.controllers.folderscanner;
 
-import com.girbola.Main;
 import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersController;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DrivesListHandler;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +26,7 @@ import java.util.List;
 public class ModelFolderScanner {
 
 	//	@SuppressWarnings("unused")
-	private Model_main model_main;
+	private ModelMain model_main;
 
 //	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
 
@@ -102,7 +101,7 @@ public class ModelFolderScanner {
 		});
 	}
 
-	public void init(Model_main aModel_main, CheckBoxTreeItem<File> aDrives_rootItem) {
+	public void init(ModelMain aModel_main, CheckBoxTreeItem<File> aDrives_rootItem) {
 		this.model_main = aModel_main;
 		this.drives_rootItem = aDrives_rootItem;
 		drivesListHandler.loadList(this);

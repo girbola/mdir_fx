@@ -18,11 +18,11 @@ import java.nio.file.Paths;
 
 public class EditingCell extends TableCell<FolderInfo, String> {
 	private TextField textField;
-	private Model_main model_Main;
+	private ModelMain model_Main;
 	private TableColumn<FolderInfo, String> tableColumn;
 	private FolderInfo folderInfo;
 
-	public EditingCell(Model_main aModel_Main, TableColumn<FolderInfo, String> aTableColumn) {
+	public EditingCell(ModelMain aModel_Main, TableColumn<FolderInfo, String> aTableColumn) {
 		this.model_Main = aModel_Main;
 		this.tableColumn = aTableColumn;
 	}

@@ -8,7 +8,7 @@ package com.girbola.controllers.main.tasks;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -21,14 +21,12 @@ import javafx.scene.control.TableView;
 
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.Main.conf;
-import static com.girbola.controllers.main.tables.TableUtils.resolvePath;
 import static com.girbola.messages.Messages.sprintf;
 
 /**
@@ -39,16 +37,16 @@ public class AddToTable extends Task<Integer> {
 
 	private final String ERROR = AddToTable.class.getSimpleName();
 	private List<Path> list;
-	private Model_main model;
+	private ModelMain model;
 	private AtomicInteger counter = new AtomicInteger(0);
 
-	public AddToTable(Path path, Model_main model) {
+	public AddToTable(Path path, ModelMain model) {
 		this.list = new ArrayList<>();
 		this.list.add(path);
 		this.model = model;
 	}
 
-	public AddToTable(List<Path> list, Model_main model) {
+	public AddToTable(List<Path> list, ModelMain model) {
 		this.list = list;
 		this.model = model;
 	}
@@ -117,18 +115,21 @@ public class AddToTable extends Task<Integer> {
 		if (isIgnoredList(p)) {
 			return false;
 		}
-		DirectoryStream<Path> list = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
+        try (DirectoryStream<Path> list = FileUtils.createDirectoryStream(p, FileUtils.filter_directories)) {
 
-		for (Path path : list) {
-			try {
-				if (ValidatePathUtils.validFile(path) && FileUtils.supportedMediaFormat(path.toFile())) {
-					return true;
-				}
-			} catch (IOException ex) {
-				Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-			}
-		}
-		return false;
+            for (Path path : list) {
+                try {
+                    if (ValidatePathUtils.validFile(path) && FileUtils.supportedMediaFormat(path.toFile())) {
+                        return true;
+                    }
+                } catch (IOException ex) {
+                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
 	}
 
 	private boolean isIgnoredList(Path path) {

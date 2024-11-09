@@ -11,19 +11,14 @@ import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
-import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import common.utils.Conversion;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -31,16 +26,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -51,7 +42,7 @@ import static common.utils.FileUtils.supportedImage;
 public class BottomController {
 
     private final String ERROR = BottomController.class.getSimpleName();
-    private Model_main model_main;
+    private ModelMain model_main;
     private DuplicateStatistics duplicateStatistics;
 
     @FXML
@@ -323,7 +314,7 @@ public class BottomController {
         Main.conf.setDrive_connected(false);
     }
 
-    public void init(Model_main aModel_main) {
+    public void init(ModelMain aModel_main) {
         this.model_main = aModel_main;
         sprintf("bottom controller...");
         debug_pref_width.textProperty().bind(model_main.getTable_root_hbox_width());

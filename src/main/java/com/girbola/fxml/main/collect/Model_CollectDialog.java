@@ -1,7 +1,7 @@
 package com.girbola.fxml.main.collect;
 
 import com.girbola.controllers.datefixer.DateFixerModel;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
@@ -10,7 +10,7 @@ import javafx.collections.ObservableList;
 
 public class Model_CollectDialog extends DateFixerModel {
 
-	private Model_main model_Main;
+	private ModelMain model_Main;
 	private Model_CollectDialog model_CollectDialog;
 
 	public Model_CollectDialog() {
@@ -49,7 +49,7 @@ public class Model_CollectDialog extends DateFixerModel {
 		obs_Location.add(fileInfo_ToFind);
 	}
 
-	public void init(Model_main model_Main, Model_CollectDialog model_CollectDialog) {
+	public void init(ModelMain model_Main, Model_CollectDialog model_CollectDialog) {
 		this.model_Main = model_Main;
 		this.model_CollectDialog = model_CollectDialog;
 	}

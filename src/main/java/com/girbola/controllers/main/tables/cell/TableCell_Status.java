@@ -1,16 +1,16 @@
 package com.girbola.controllers.main.tables.cell;
 
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
 import javafx.scene.control.TableCell;
 
 public class TableCell_Status extends TableCell<FolderInfo, Integer> {
 
-	private Model_main model_main;
+	private ModelMain model_main;
 	private int currentFilesTotal;
 
-	public TableCell_Status(Model_main model_main) {
+	public TableCell_Status(ModelMain model_main) {
 		this.model_main = model_main;
 	}
 

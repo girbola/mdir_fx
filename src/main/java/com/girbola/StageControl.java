@@ -1,6 +1,6 @@
 package com.girbola;
 
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
@@ -8,11 +8,11 @@ import javafx.stage.Stage;
 
 public class StageControl extends Stage {
 
-    private Model_main modelMain;
+    private ModelMain modelMain;
     private Stage primaryStage;
 
 
-    public StageControl(Model_main modelMain, Stage primaryStage) {
+    public StageControl(ModelMain modelMain, Stage primaryStage) {
         this.modelMain = modelMain;
         this.primaryStage = primaryStage;
 
@@ -122,7 +122,7 @@ public class StageControl extends Stage {
         });
     }
 
-    public int calculateVisibles(Model_main modelMain) {
+    public int calculateVisibles(ModelMain modelMain) {
         int visibles = 0;
         visibles += getVisibilityValue(modelMain.tables().getSorted_table().isVisible());
         visibles += getVisibilityValue(modelMain.tables().getSortIt_table().isVisible());

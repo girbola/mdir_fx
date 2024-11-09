@@ -1,22 +1,17 @@
 package com.girbola.fxml.operate;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_main;
-import com.girbola.controllers.main.Model_operate;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
-import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.stage.Window;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.concurrent.FutureTask;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -60,7 +55,7 @@ public class OperateFilesUtils {
         }
     }
 
-    public static void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest, Model_main model_main, List<FileInfo> listCopiedFiles) {
+    public static void renameTmpFileToCorruptedFileExtensions(FileInfo fileInfo, Path destTmp, Path dest, ModelMain model_main, List<FileInfo> listCopiedFiles) {
         try {
             Messages.sprintf("Renaming corrupted file to: " + dest);
 

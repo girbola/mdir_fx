@@ -2,7 +2,7 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.Model_main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.messages.Messages;
 
@@ -54,7 +54,7 @@ public class FolderScannerSQL {
      * @param modelMain The main model of the application.
      * @return true if the selected folders are successfully removed, false otherwise.
      */
-    public static boolean removeSelectedFolders(Model_main modelMain) {
+    public static boolean removeSelectedFolders(ModelMain modelMain) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
@@ -84,7 +84,7 @@ public class FolderScannerSQL {
         return true;
     }
 
-    public static boolean loadSelectedFolders(Model_main model_Main) {
+    public static boolean loadSelectedFolders(ModelMain model_Main) {
 
         Connection connection = null;
         Path configFile = Paths
@@ -113,7 +113,7 @@ public class FolderScannerSQL {
         }
     }
 
-    public static void saveSelectedFolder(Model_main modelMain) {
+    public static void saveSelectedFolder(ModelMain modelMain) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());

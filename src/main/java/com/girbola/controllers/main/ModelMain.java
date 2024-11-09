@@ -31,7 +31,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
@@ -47,7 +46,7 @@ import static com.girbola.messages.Messages.sprintf;
 /**
  * @author Marko Lokka
  */
-public class Model_main {
+public class ModelMain {
 
     private AnchorPane main_container;
     private BottomController bottomController;
@@ -61,9 +60,9 @@ public class Model_main {
     private VBox main_vbox;
     private WorkDirHandler workDirHandler = new WorkDirHandler();
 
-    private final String ERROR = Model_main.class.getSimpleName();
+    private final String ERROR = ModelMain.class.getSimpleName();
 
-    public Model_main() {
+    public ModelMain() {
         sprintf("Model instantiated...");
 
         buttons = new Buttons(this);
