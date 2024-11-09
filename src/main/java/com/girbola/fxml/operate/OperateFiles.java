@@ -38,21 +38,22 @@ import static com.girbola.messages.Messages.sprintf;
 
 public class OperateFiles {
 
-    private WorkDirSQL workDirSQL;
     private final String ERROR = OperateFiles.class.getSimpleName();
+
+    private WorkDirSQL workDirSQL;
     private boolean close;
     private Model_operate model_operate = new Model_operate();
     private List<FileInfo> list = new ArrayList<>();
     private ModelMain modelMain;
-    private String scene_NameType;
+    private String sceneNameType;
     private static List<FileInfo> listCopiedFiles = new ArrayList<>();
 
-    public OperateFiles(List<FileInfo> list, boolean close, ModelMain aModel_main, String scene_NameType) {
+    public OperateFiles(List<FileInfo> list, boolean close, ModelMain aModel_main, String sceneNameType) {
         Messages.sprintf("OperateFiles starting...");
         this.list = list;
         this.close = close;
         this.modelMain = aModel_main;
-        this.scene_NameType = scene_NameType;
+        this.sceneNameType = sceneNameType;
         try {
             init();
         } catch (Exception e) {
@@ -135,7 +136,7 @@ public class OperateFiles {
                     copy.setOnFailed((WorkerStateEvent eventWorker) -> Messages.sprintf("copy failed"));
                     copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
                         model_operate.getCancel_btn().setText(Main.bundle.getString("close"));
-                        model_operate.doneButton(scene_NameType, close);
+                        model_operate.doneButton(sceneNameType, close);
                         Messages.sprintf("copy cancelled");
                     });
 
@@ -514,7 +515,7 @@ public class OperateFiles {
             model_operate.stopTimeLine();
 
             TableUtils.refreshAllTableContent(modelMain.tables());
-//			model_operate.doneButton(scene_NameType, close);
+//			model_operate.doneButton(sceneNameType, close);
             Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
         }
 
@@ -522,7 +523,7 @@ public class OperateFiles {
         protected void cancelled() {
             Messages.sprintf("OperateFiles COPY were cancelled");
             model_operate.stopTimeLine();
-            model_operate.doneButton(scene_NameType, close);
+            model_operate.doneButton(sceneNameType, close);
             TableUtils.refreshAllTableContent(modelMain.tables());
         }
 
@@ -542,7 +543,7 @@ public class OperateFiles {
         protected void succeeded() {
             Messages.sprintf("OperateFiles COPY were succeeded");
             model_operate.stopTimeLine();
-            model_operate.doneButton(scene_NameType, close);
+            model_operate.doneButton(sceneNameType, close);
             model_operate.stopTimeLine();
             Task<Void> saveWorkDirToDatabase = new Task<Void>() {
                 @Override
