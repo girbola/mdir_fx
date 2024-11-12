@@ -474,17 +474,14 @@ public class MenuBarController {
 
         Stage stage_opt = new Stage();
         stage_opt.setAlwaysOnTop(true);
+
         Scene scene_opt = new Scene(parent);
         scene_opt.getStylesheets()
                 .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.OPTIONPANE.getType()).toExternalForm());
 
         stage_opt.setScene(scene_opt);
-        stage_opt.setOnCloseRequest(new EventHandler<WindowEvent>() {
-
-            @Override
-            public void handle(WindowEvent event) {
-                Configuration_SQL_Utils.update_Configuration();
-            }
+        stage_opt.setOnCloseRequest(closeEvent -> {
+            Configuration_SQL_Utils.update_Configuration();
         });
         stage_opt.show();
 
@@ -495,7 +492,7 @@ public class MenuBarController {
         sprintf("menuBarController....");
         sprintf("menuItem_tools_showFullPath: " + conf.isShowFullPath());
 
-        menuItem_tools_showFullPath.selectedProperty().bindBidirectional(conf.showFullPath_property());
+        menuItem_tools_showFullPath.selectedProperty().bindBidirectional(conf.showFullPathProperty());
         if (conf.getThemePath().endsWith("light/")) {
             menuItem_tools_themes_light.setSelected(true);
             menuItem_tools_themes_dark.setSelected(false);

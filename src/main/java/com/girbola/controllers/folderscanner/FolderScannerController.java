@@ -166,17 +166,7 @@ public class FolderScannerController {
         drives_rootItem = new CheckBoxTreeItem<>();
         drives_rootItem.setExpanded(true);
         drives_treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
-//        drives_treeView.setCellFactory(treeView -> new TreeCell<>() {
-//            @Override
-//            public void updateItem(File path, boolean empty) {
-//                super.updateItem(path, empty);
-//                if (empty) {
-//                    setText(null);
-//                } else {
-//                    setText(path.toPath().getFileName().toString());
-//                }
-//            }
-//        });
+
         drives_treeView.setRoot(drives_rootItem);
         drives_treeView.setShowRoot(false);
 

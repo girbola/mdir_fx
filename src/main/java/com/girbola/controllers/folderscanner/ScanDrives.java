@@ -33,7 +33,6 @@ import static com.girbola.messages.Messages.sprintf;
 public class ScanDrives {
 
     private CheckBoxTreeItem rootItem;
-    //	private DriveInfo driveInfo;
     private ObservableList<Path> drivesList_selected_obs;
     private ModelFolderScanner model_folderScanner;
     private Set<DriveInfo> rootDrives = new HashSet<>();
@@ -58,7 +57,6 @@ public class ScanDrives {
     }
 
     public void stop() {
-//		Main.setProcessCancelled(true);
         scanner.cancel();
         sprintf("Scanning cancelled? " + scanner.isRunning());
     }
@@ -84,13 +82,11 @@ public class ScanDrives {
 
                     if (listOfRoots != null) {
                         if (updateRootDrives(listOfRoots)) {
-
                             Messages.sprintf("Updating root drives: " + rootDrives.size());
                             rootItem.getChildren().clear();
                             rootCount = listOfRoots.length;
 
                             redrawRootFolders();
-
                         }
                     } else {
                         Messages.errorSmth(ERROR, "Listing Drives list were null", null, Misc.getLineNumber(), false);
@@ -116,7 +112,6 @@ public class ScanDrives {
                         }
                         rootItem.getChildren().add(checkBoxTreeItem);
                     }
-
                 }
 
                 private boolean updateRootDrives(File[] listOfRoots) {
@@ -128,11 +123,6 @@ public class ScanDrives {
                         }
                         String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
                         Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
-//						if (serial == null) {
-//							Main.setProcessCancelled(true);
-//							Messages.errorSmth(ERROR, "Can't read drives serialnumber with OSHI", null,
-//									Misc.getLineNumber(), true);
-//						}
                         setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(),
                                 listOfRoots[i].exists(), false, serial));
                     }
@@ -215,7 +205,6 @@ public class ScanDrives {
                                     break;
                                 }
                             }
-
                         }
 
                         private boolean selectedFolderHasValue(Path path) {

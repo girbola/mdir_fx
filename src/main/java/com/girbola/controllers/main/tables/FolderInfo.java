@@ -53,22 +53,21 @@ public class FolderInfo implements TableValues_inf {
         this.dateDifference = new SimpleDoubleProperty(0);
         this.folderFiles = new SimpleIntegerProperty(0);
         this.folderImageFiles = new SimpleIntegerProperty(0);
-        this.justFolderName = new SimpleStringProperty("");
         this.folderPath = new SimpleStringProperty("");
         this.folderRawFiles = new SimpleIntegerProperty(0);
         this.folderSize = new SimpleLongProperty(0);
         this.folderVideoFiles = new SimpleIntegerProperty(0);
         this.goodFiles = new SimpleIntegerProperty(0);
         this.ignored = new SimpleBooleanProperty(false);
+        this.justFolderName = new SimpleStringProperty("");
         this.maxDate = new SimpleStringProperty("0");
         this.minDate = new SimpleStringProperty("0");
         this.state = new SimpleStringProperty("");
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
-        // Bindings.subtract(folderFiles, copied);
-        Bindings.subtract(folderFiles, badFiles);
 
+        Bindings.subtract(folderFiles, badFiles);
     }
 
     /**

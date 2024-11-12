@@ -41,31 +41,6 @@ public class WorkDirHandler {
 //		addTable(tables.getSortIt_table());
 //	}
 
-	private void addTable(TableView<FolderInfo> table) {
-		List<Long> dateList = new ArrayList<>();
-
-		for (FolderInfo folderInfo : table.getItems()) {
-			dateList = new ArrayList<>();
-			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-				dateList.add(fileInfo.getDate());
-			}
-			Collections.sort(dateList);
-			long min = Collections.min(dateList);
-			long max = Collections.max(dateList);
-			if (min != 0) {
-				LocalDateTime ld_min = DateUtils.longToLocalDateTime(min);
-				LocalDateTime ld_max = DateUtils.longToLocalDateTime(max);
-
-				for (int i = ld_min.getYear(); i < ld_max.getYear(); i++) {
-					if (Files.exists(Paths.get(Main.conf.getWorkDir() + File.separator + i))) {
-						loadListFromWorkDir_To_List(Main.conf.getWorkDir() + File.separator + i);
-					}
-				}
-			}
-			dateList.clear();
-			dateList = null;
-		}
-	}
 	/**
 	 * Loading all workdir paths to WorkDir_Handler's workDir_List
 	 *
@@ -90,13 +65,6 @@ public class WorkDirHandler {
 			return false;
 		}
 
-
-
-
-
-
-
-
 		if (SQL_Utils.isDbConnected(connection)) {
 			List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
 			if (!fileInfo_list.isEmpty()) {
@@ -108,10 +76,6 @@ public class WorkDirHandler {
 		}
 		SQL_Utils.commitChanges(connection);
 		SQL_Utils.closeConnection(connection);
-
-
-
-
 
 		return true;
 	}
@@ -146,9 +110,7 @@ public class WorkDirHandler {
 		return null;
 	}
 
-	public List<FileInfo> getWorkDir_List() {
-		return workDir_List;
-	}
+	public List<FileInfo> getWorkDir_List() {return workDir_List;}
 
 	public boolean add(FileInfo fileInfo) {
 		for (FileInfo fileInfo_Workdir : workDir_List) {
@@ -162,7 +124,6 @@ public class WorkDirHandler {
 
 		}
 		return this.workDir_List.add(fileInfo);
-
 	}
 
 	public boolean saveWorkDirListToDatabase() {
@@ -246,5 +207,4 @@ public class WorkDirHandler {
 		}
 		return list;
 	}
-
 }

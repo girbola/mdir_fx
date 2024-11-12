@@ -60,6 +60,7 @@ public class ModelMain {
     private VBox main_vbox;
     private WorkDirHandler workDirHandler = new WorkDirHandler();
 
+
     private final String ERROR = ModelMain.class.getSimpleName();
 
     public ModelMain() {

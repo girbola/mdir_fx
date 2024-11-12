@@ -268,9 +268,9 @@ public class Configuration_SQL_Utils {
                 System.err.println("1conf.workDir_property(): " + configuration.getWorkDir().hashCode());
                 Messages.sprintf("Workdir loaded: " + rs.getString(workDir) + " serial number = " + rs.getString(workDirSerialNumber) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
 
-                configuration.setTableShow_sortIt(Boolean.parseBoolean(rs.getString(tableShow_sortIt)));
-                configuration.setTableShow_sorted(Boolean.parseBoolean(rs.getString(tableShow_sorted)));
-                configuration.setTableShow_asItIs(Boolean.parseBoolean(rs.getString(tableShow_asItIs)));
+                configuration.setTableShowSortIt(Boolean.parseBoolean(rs.getString(tableShow_sortIt)));
+                configuration.setTableShowSorted(Boolean.parseBoolean(rs.getString(tableShow_sorted)));
+                configuration.setTableShowAsItIs(Boolean.parseBoolean(rs.getString(tableShow_asItIs)));
 
                 return true;
             }
@@ -436,9 +436,9 @@ public class Configuration_SQL_Utils {
                     pstmt.setDouble(17, configuration.getImageViewYPosition());
                     pstmt.setString(18, configuration.getWorkDirSerialNumber());
                     pstmt.setString(19, configuration.getWorkDir());
-                    pstmt.setBoolean(20, configuration.getTableShow_sortIt());
-                    pstmt.setBoolean(21, configuration.getTableShow_sorted());
-                    pstmt.setBoolean(22, configuration.getTableShow_asItIs());
+                    pstmt.setBoolean(20, configuration.getTableShowSortIt());
+                    pstmt.setBoolean(21, configuration.getTableShowSorted());
+                    pstmt.setBoolean(22, configuration.getTableShowAsItIs());
 
                     Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
                     pstmt.executeUpdate();

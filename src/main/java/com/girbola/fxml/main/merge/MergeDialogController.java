@@ -112,11 +112,7 @@ public class MergeDialogController {
         }
 
         Path newDestinationPath = definePathByEventLocationUserName(absolutePath, eventName, locationName, userName);
-
-
         Messages.sprintf("newDestinationPath will be: " + newDestinationPath);
-
-
 
         if (!FileUtils.createFolders(newDestinationPath)) {
             Messages.warningText(Main.bundle.getString("cannotCreateFolders") + " " + newDestinationPath);
@@ -162,53 +158,50 @@ public class MergeDialogController {
             List<FileInfo> fileList = new ArrayList<>();
             while (fileInfo_list_it.hasNext()) {
                 FileInfo fileInfo = fileInfo_list_it.next();
+                fileInfo.setEvent(eventName);
+                fileInfo.setLocation(locationName);
+                fileInfo.setUser(userName);
 
+                Path destinationPath = Paths.get(FileUtils.getFileNameDateWithEventAndLocation(fileInfo, newDestinationPath.toString()).toString());
+                Path finalDest = Paths.get(newDestinationPath.toString(), destinationPath.toString());
 
+                Messages.sprintf("New dest path? " + finalDest);
 
-                    fileInfo.setEvent(eventName);
-                    fileInfo.setLocation(locationName);
-                    fileInfo.setUser(userName);
-
-                    Path destinationPath = Paths.get(FileUtils.getFileNameDateWithEventAndLocation(fileInfo, newDestinationPath.toString()).toString());
-                    Path finalDest = Paths.get(newDestinationPath.toString(), destinationPath.toString());
-
-                    Messages.sprintf("New dest path? " + finalDest);
-
-                    if (Files.exists(finalDest)) {
-                        try {
-                            finalDest = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), finalDest);
-                            Messages.sprintf("and RENAMING to new dest path: " + finalDest);
-                        } catch (IOException e) {
-                            Messages.sprintfError(Main.bundle.getString("cannotRename"));
-                            continue;
-                        }
-                    } else {
-                        Messages.sprintf("+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
-                    }
+                if (Files.exists(finalDest)) {
                     try {
-                        if (finalDest != null) {
-                            if (!Files.isDirectory(finalDest.getFileName())) {
-                                Path parent = Files.createDirectories(finalDest.getParent());
-                                boolean exists = Files.exists(parent);
-                                if (exists) {
-                                    Path movedToDestination = Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
-                                    if (!Files.exists(movedToDestination)) {
-                                        Messages.errorSmth(ERROR, Main.bundle.getString("cannotMoveFile" + "\nRadically stopping the app, before proper testing"), null, Misc.getLineNumber(), true);
-                                    }
-
-                                } else {
-                                    Messages.warningText(Main.bundle.getString("cannotCreateDir"));
+                        finalDest = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), finalDest);
+                        Messages.sprintf("and RENAMING to new dest path: " + finalDest);
+                    } catch (IOException e) {
+                        Messages.sprintfError(Main.bundle.getString("cannotRename"));
+                        continue;
+                    }
+                } else {
+                    Messages.sprintf("+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
+                }
+                try {
+                    if (finalDest != null) {
+                        if (!Files.isDirectory(finalDest.getFileName())) {
+                            Path parent = Files.createDirectories(finalDest.getParent());
+                            boolean exists = Files.exists(parent);
+                            if (exists) {
+                                Path movedToDestination = Files.move(Paths.get(fileInfo.getOrgPath()), finalDest);
+                                if (!Files.exists(movedToDestination)) {
+                                    Messages.errorSmth(ERROR, Main.bundle.getString("cannotMoveFile" + "\nRadically stopping the app, before proper testing"), null, Misc.getLineNumber(), true);
                                 }
+
+                            } else {
+                                Messages.warningText(Main.bundle.getString("cannotCreateDir"));
                             }
                         }
-
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                        System.exit(0);
                     }
 
-                    fileList.add(fileInfo);
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+
+                fileList.add(fileInfo);
 
 
                 if (fileList.isEmpty()) {

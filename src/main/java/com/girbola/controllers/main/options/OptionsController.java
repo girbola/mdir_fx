@@ -72,21 +72,19 @@ public class OptionsController {
 
 	public void init() {
 		sprintf("OptionsController init...");
-		confirmOnExit.selectedProperty().bindBidirectional(conf.confirmOnExit_property());
-		showHints.selectedProperty().bindBidirectional(conf.showHints_properties());
-		showTooltips.selectedProperty().bindBidirectional(conf.showTooltips_property());
-		if (savingThumbs == null || conf.savingThumb_property() == null) {
+		confirmOnExit.selectedProperty().bindBidirectional(conf.confirmOnExitProperty());
+		showHints.selectedProperty().bindBidirectional(conf.showHintsProperties());
+		showTooltips.selectedProperty().bindBidirectional(conf.showTooltipsProperty());
+		if (savingThumbs == null || conf.savingThumbProperty() == null) {
 			Messages.sprintfError("Something went wrooooont with options");
 		}
-		savingThumbs.selectedProperty().bindBidirectional(conf.savingThumb_property());
+
+		savingThumbs.selectedProperty().bindBidirectional(conf.savingThumbProperty());
+
 		betterQuality.selectedProperty().bindBidirectional(conf.betterQualityThumbs_property());
-//		conf.workDir_property().set(conf.getWorkDir());
-		String path = conf.getWorkDir();
+
 		workDir_input.setText("" + conf.getWorkDir());
-//		workDir_input.textProperty().bindBidirectional(conf.workDir_property());
-		
-		System.err.println("path " + path
-				+ " 2conf.workDir_property(): " + conf.workDir_property().hashCode() + " workdir: " + conf.workDir_property().get());
+
 		vlcPath_input.textProperty().bindBidirectional(conf.vlcPath_property());
 	}
 

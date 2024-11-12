@@ -645,7 +645,7 @@ public class TableController {
             model_main.tables().setSortedRootPane(table_Vbox);
         }
 
-        Main.conf.showTooltips_property().addListener(new ChangeListener<Boolean>() {
+        Main.conf.showTooltipsProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue) {

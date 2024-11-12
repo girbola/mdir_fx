@@ -13,7 +13,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class Configuration_GetsSets extends Configuration_GUI {
+public class Configuration_GetsSets extends ConfigurationGui {
 
 	private final String userHome = System.getProperty("user.home");
 

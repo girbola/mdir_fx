@@ -97,11 +97,6 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Properties properties = System.getProperties();
-for(Map.Entry<Object, Object> entry : properties.entrySet()) {
-    Messages.sprintf("properties: Key: " + entry.getKey() + " Value: " + entry.getValue());
-}
-
         stageControl = new StageControl(model_main, primaryStage);
 
         try {
@@ -112,9 +107,9 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
             Messages.sprintfError("Something went wrong: " + e.getMessage());
         }
 
-        mainTask = new Task<Void>() {
+        mainTask = new Task<>() {
             @Override
-            protected Void call() throws Exception {
+            protected Void call() {
                 setMain_stage(primaryStage);
                 setChanged(false);
                 conf.setModel(model_main);
@@ -149,17 +144,10 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
                     Messages.sprintf("conf.getThemePath() == null");
                 }
 
-//                primaryScene.getStylesheets()
-//                        .add(Main.class.getResource(conf.getThemePath() + "javafx-dark-theme.css").toExternalForm());
                 primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-//                primaryScene.getStylesheets().add(BootstrapFX.bootstrapFXStylesheet());
 
-                primaryScene.widthProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
-                        Messages.sprintf("wdth: " + t1);
-                    }
-                });
+                primaryScene.widthProperty().addListener((observableValue, number, t1) -> Messages.sprintf("wdth: " + t1));
+
                 MainController mainController = (MainController) main_loader.getController();
                 mainController.initialize(model_main);
                 Platform.runLater(() -> {
@@ -169,25 +157,14 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
                     primaryStage.show();
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
+
                 lpt = new LoadingProcessTask(scene_Switcher.getWindow());
 
                 Platform.runLater(() -> {
                     lpt.setTask(mainTask);
-//					lpt.showLoadStage();
                 });
-//                primaryStage.showingProperty().addListener(new ChangeListener<Boolean>() {
-//                    @Override
-//                    public void changed(ObservableValue<? extends Boolean> observableValue, Boolean aBoolean, Boolean t1) {
-//                        if (t1) {
-//                            Messages.warningText("Is showing!");
-//                            Platform.runLater(() -> {
-//                                primaryStage.setWidth(primaryStage.getWidth() + 1);
-//                                primaryStage.setWidth(primaryStage.getWidth() - 1);
-//                            });
-//                        }
-//                    }
-//                });
-//				ScenicView.show(parent);
+
+                // ScenicView.show(parent);
                 return null;
             }
         };
@@ -205,14 +182,18 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
             ConfigurationUtils.loadConfig_GUI(model_main);
 
             FolderScannerSQL.loadSelectedFolders(model_main);
+            Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()));
+            if (Platform.isFxApplicationThread()) {
+                Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()));
+            } else {
+                Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
+            }
 
-            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(),
-                    conf.getConfiguration_db_fileName());
+            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
 
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
-                Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: "
-                        + conf.getConfiguration_db_fileName());
+                Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
                 load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
                         connection_loadConfigurationFile);
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
@@ -235,63 +216,21 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
 
                     model_main.getMonitorExternalDriveConnectivity().restart();
 
-                    boolean loaded = model_main.getWorkDir_Handler().loadAllLists(Paths.get(conf.getWorkDir()));
-                    if (loaded) {
-                        for (FileInfo finfo : model_main.getWorkDir_Handler().getWorkDir_List()) {
-                            Messages.sprintf("loadAllLists fileInfo loading: " + finfo.getOrgPath());
-                        }
-                        Messages.sprintf("==============Loading workdir size is: "
-                                + model_main.getWorkDir_Handler().getWorkDir_List().size());
-
-                        VLCJDiscovery.initVlc();
-                    }
-
-                    getMain_stage().maximizedProperty().addListener((ov, t, t1) -> {
-//									model_main.tables().getHideButtons().updateVisibleTableWidths();
-                        Messages.sprintf("model_main.tables().getHideButtons().updateTableVisible();: "
-                                + t1);
-                    });
+                    VLCJDiscovery.initVlc();
 
                     autoResizeColumns(model_main.tables().getSorted_table());
                     autoResizeColumns(model_main.tables().getSorted_table());
                     autoResizeColumns(model_main.tables().getSortIt_table());
                     autoResizeColumns(model_main.tables().getSortIt_table());
-//							conf.windowStartPosX_property().bind(primaryScene.xProperty());
-//							conf.windowStartPosY_property().bind(primaryScene.yProperty());
                 });
+
                 load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
 
-                    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-                        @Override
-                        public void handle(WindowEvent event12) {
-                            model_main.exitProgram_NOSAVE();
-                        }
-                    });
+                    primaryStage.setOnCloseRequest(event14 -> model_main.exitProgram_NOSAVE());
                     Platform.runLater(() -> {
                         lpt.closeStage();
                     });
 
-//                    Platform.runLater(() -> {
-//
-//                        try {
-//                            if (!load_FileInfosBackToTableViews.get()) {
-//                                Messages.sprintfError("Loading FileInfos were failed");
-//                                Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), null,
-//                                        Misc.getLineNumber(), true);
-//                            }
-//                        } catch (InterruptedException | ExecutionException ex) {
-//                            Messages.errorSmth(ERROR, bundle.getString("cannotLoadFolderInfoDatFile"), ex,
-//                                    Misc.getLineNumber(), true);
-//                        }
-//                        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-//                            @Override
-//                            public void handle(WindowEvent event12) {
-//                                model_main.exitProgram_NOSAVE();
-//                            }
-//                        });
-//                        lpt.closeStage();
-//
-//                    });
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
@@ -311,11 +250,9 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
             if (lpt != null) {
                 lpt.closeStage();
             }
-            //primaryStage.setOnCloseRequest(model_main.dontExit);
+
             Messages.sprintf("Something went wrong while loading main window");
-            /*Messages.errorSmth(ERROR, "Something went wrong while loading main window", null, Misc.getLineNumber(),
-                    true);
-            model_main.exitProgram_NOSAVE(); */
+
             System.exit(1);
         });
         mainTask.setOnCancelled(event -> {
@@ -329,32 +266,28 @@ for(Map.Entry<Object, Object> entry : properties.entrySet()) {
 
     }
 
-    public static void autoResizeColumns( TableView<?> table )
-    {
+    public static void autoResizeColumns(TableView<?> table) {
         //Set the right policy
         //table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach( (column) ->
+        table.getColumns().stream().forEach((column) ->
         {
             //Minimal width = columnheader
-            Text t = new Text( column.getText() );
+            Text t = new Text(column.getText());
             double max = t.getLayoutBounds().getWidth();
-            for ( int i = 0; i < table.getItems().size(); i++ )
-            {
+            for (int i = 0; i < table.getItems().size(); i++) {
                 //cell must not be empty
-                if ( column.getCellData( i ) != null )
-                {
-                    t = new Text( column.getCellData( i ).toString() );
+                if (column.getCellData(i) != null) {
+                    t = new Text(column.getCellData(i).toString());
                     double calcwidth = t.getLayoutBounds().getWidth();
                     //remember new max-width
-                    if ( calcwidth > max )
-                    {
+                    if (calcwidth > max) {
                         max = calcwidth;
                     }
                 }
             }
             //set the new max-widht with some extra space
-            column.setPrefWidth( max + 10.0d );
-        } );
+            column.setPrefWidth(max + 10.0d);
+        });
     }
 
     public static boolean getProcessCancelled() {

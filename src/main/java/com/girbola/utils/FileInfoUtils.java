@@ -51,76 +51,62 @@ public class FileInfoUtils {
 
     private final static String ERROR = FileInfoUtils.class.getSimpleName();
 
-    public static String findFileInfoByDate(FileInfo fileInfoToSearch, TableView<FolderInfo> table) {
-        LocalDate yearAndMonthToSearch = DateUtils.longToLocalDateTime(fileInfoToSearch.getDate()).toLocalDate();
-
-        String year = Conversion.stringWithDigits(yearAndMonthToSearch.getYear(), 4);
-        String month = Conversion.stringWithDigits(yearAndMonthToSearch.getMonthValue(), 2);
-        String day = Conversion.stringWithDigits(yearAndMonthToSearch.getDayOfMonth(), 2);
-        Messages.sprintf("year: " + year + " month " + month + " day" + day);
-        List<FileInfo> list = Main.conf.getModel().getWorkDir_Handler()
-                .findPossibleExistsFoldersInWorkdir(fileInfoToSearch);
-        if (!list.isEmpty()) {
-            FXMLLoader loader = null;
-            Parent parent = null;
-            try {
-                loader = new FXMLLoader(Main.class.getResource("fxml/possibleFolderChooser.FXML"), Main.bundle);
-                parent = loader.load();
-                PossibleFolderChooserController pfcc = (PossibleFolderChooserController) loader.getController();
-                SimpleStringProperty path = new SimpleStringProperty();
-                pfcc.init(path);
-                Stage stage = new Stage();
-                Scene scene = new Scene(parent);
-                stage.setScene(scene);
-                stage.showAndWait();
-                return path.get();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return null;
-            }
-        }
-        return null;
-
-    }
-
     public static FileInfo createFileInfo(Path fileName) throws IOException {
 
-        FileInfo fileInfo = null;
-        if (FileUtils.supportedImage(fileName)) {
-            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-            setImage(fileInfo);
-            handleImageMetadata(fileName, fileInfo);
-            String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName.toAbsolutePath());
-            Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
-            fileInfo.setSize(Files.size(fileName));
-            fileInfo.setImageDifferenceHash(imageDifferenceHash);
-        } else if (FileUtils.supportedVideo(fileName)) {
-            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-            setVideo(fileInfo);
-            fileInfo.setSize(Files.size(fileName));
-            boolean metaDataFound = getVideoDateTaken(fileName, fileInfo);
-            if (!metaDataFound) {
-                fileInfo.setBad(true);
-            }
-        } else if (FileUtils.supportedRaw(fileName)) {
-            fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
-            setRaw(fileInfo);
-            handleImageMetadata(fileName, fileInfo);
-            fileInfo.setSize(Files.size(fileName));
-            String imageDifferenceHash = ImageUtils.calculateRAWImagePHash(fileName.toAbsolutePath());
-            fileInfo.setImageDifferenceHash(imageDifferenceHash);
+        if (!Files.isRegularFile(fileName)) {
+            Messages.sprintf("File were not a regular file: " + fileName);
+            return null;
         }
-        return fileInfo;
+
+        try {
+            FileInfo fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+
+            if (FileUtils.supportedImage(fileName)) {
+                setImage(fileInfo);
+                tryToGetCreationDateTime(fileName, fileInfo);
+                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName.toAbsolutePath());
+                Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
+                fileInfo.setSize(Files.size(fileName));
+                fileInfo.setImageDifferenceHash(imageDifferenceHash);
+            } else if (FileUtils.supportedVideo(fileName)) {
+                setVideo(fileInfo);
+                fileInfo.setSize(Files.size(fileName));
+                boolean metaDataFound = getVideoDateTaken(fileName, fileInfo);
+                if (!metaDataFound) {
+                    fileInfo.setBad(true);
+                }
+            } else if (FileUtils.supportedRaw(fileName)) {
+                setRaw(fileInfo);
+                tryToGetCreationDateTime(fileName, fileInfo);
+                String imageDifferenceHash = ImageUtils.calculateRAWImagePHash(fileName.toAbsolutePath());
+                fileInfo.setImageDifferenceHash(imageDifferenceHash);
+                fileInfo.setSize(Files.size(fileName));
+            } else {
+                Messages.sprintf("Cannot create FileInfo: " + fileName);
+                Messages.sprintfError("Something went wrong and this file can't be created: " + fileName);
+                return null;
+            }
+
+            return fileInfo;
+        } catch (IOException e) {
+            Messages.sprintfError("IOException while processing file: " + fileName + " - " + e.getMessage());
+            throw e;
+        }
     }
 
-    public static void handleImageMetadata(Path fileName, FileInfo fileInfo) throws IOException {
-        boolean metaDataFound = setImageMetadata(fileName, fileInfo);
-        if (!metaDataFound) {
-            boolean tryFileNameDate = tryFileNameDate(fileName, fileInfo);
-            if (!tryFileNameDate) {
-                setBad(fileInfo);
-                fileInfo.setDate(0);
+    public static void tryToGetCreationDateTime(Path fileName, FileInfo fileInfo) {
+        try {
+            boolean metaDataFound = setImageMetadata(fileName, fileInfo);
+            if (!metaDataFound) {
+                boolean tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+                if (!tryFileNameDate) {
+                    setBad(fileInfo);
+                    fileInfo.setDate(0);
+                }
             }
+        } catch (Exception e) {
+            setBad(fileInfo);
+            fileInfo.setDate(0);
         }
     }
 
@@ -549,79 +535,74 @@ public class FileInfoUtils {
     }
 
     /**
-     * Moves file according the FileInfo workdir path.
+     * Moves file according to the FileInfo workdir path.
      *
-     * @param fileInfo
-     * @return
+     * @param fileInfo the file information containing source and workdir details
+     * @return {@code true} if the file was moved successfully, {@code false} otherwise
      */
     public static boolean moveFileToWorkDir(FileInfo fileInfo) {
-        boolean skip = true;
-        Path source = Paths.get(fileInfo.getOrgPath());
-        Messages.sprintf("DEBUG1: " + source);
+        Path originalPath = Paths.get(fileInfo.getOrgPath());
 
-        if (!Files.exists(source) && !Files.exists(Paths.get(fileInfo.getWorkDir()))
+        // Check initial conditions
+        if (!Files.exists(originalPath)
+                && !Files.exists(Paths.get(fileInfo.getWorkDir()))
                 || Main.getProcessCancelled()) {
             Main.setProcessCancelled(true);
             return false;
         }
-        if (fileInfo.getDestination_Path().isBlank() || fileInfo.getDestination_Path().isEmpty()) {
-            Messages.warningText("Destination path is not definied");
+        if (fileInfo.getDestination_Path().isBlank()) {
+            Messages.warningText("Destination path is not defined");
             return false;
         }
 
-        Path dest = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
+        Path destinationPath = FileUtils.getFileNameDate(fileInfo, fileInfo.getWorkDir());
+        createDirectoriesIfNotExists(destinationPath);
 
-        if (!Files.exists(dest.getParent())) {
-            try {
-                Files.createDirectories(dest.getParent());
-            } catch (Exception e) {
-                e.printStackTrace();
-                Messages.sprintfError("Can't create directories: " + dest.getParent());
-                Messages.errorSmth(ERROR, "Can't create directories", e, Misc.getLineNumber(), true);
-                return false;
-            }
-        }
         try {
-            if (Files.exists(dest) && Files.size(dest) != Files.size(source)) {
-                try {
-                    Path dest_temp = FileUtils.renameFile(source, dest);
-                    if (dest_temp != null && !Files.exists(dest_temp)) {
-                        dest = dest_temp;
-                        skip = false;
-                    } else {
-                        skip = true;
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Main.setProcessCancelled(true);
-                    return false;
-                }
+            if (!Files.exists(destinationPath) || Files.size(destinationPath) == Files.size(originalPath)) {
+                Messages.sprintf("DST: " + destinationPath + " source: " + originalPath + " size: " + Files.size(originalPath));
+                return moveFile(originalPath, destinationPath);
             } else {
-                skip = false;
-                Messages.sprintf("DST: " + dest + " source: " + source + " size: " + Files.size(source));
+                Path tempDestinationPath = FileUtils.renameFile(originalPath, destinationPath);
+                if (tempDestinationPath != null && !Files.exists(tempDestinationPath)) {
+                    return moveFile(originalPath, tempDestinationPath);
+                }
             }
-        } catch (IOException e1) {
-            e1.printStackTrace();
+        } catch (IOException e) {
+            Messages.sprintfError("IOException thrown: " + e.getMessage());
+            Main.setProcessCancelled(true);
             return false;
         }
 
-        if (!skip) {
-            if (source != null && dest != null)
-                try {
-                    Path target = Files.move(source, dest);
-                    Messages.sprintf("Source dest: " + source + " TARGET: " + target);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Main.setProcessCancelled(true);
-                    return false;
-                }
-            return true;
-        }
         return false;
     }
 
-    public static String getFolderName(FileInfo fileInfo_ToFind) {
-        Path path = Paths.get(fileInfo_ToFind.getOrgPath());
+    private static void createDirectoriesIfNotExists(Path path) {
+        if (!Files.exists(path.getParent())) {
+            try {
+                if (Files.isWritable(path.getFileName())) {
+                    Files.createDirectories(path.getParent());
+                }
+            } catch (IOException e) {
+                Messages.sprintfError("Can't create directories: " + path.getParent());
+                Messages.errorSmth(ERROR, "Can't create directories", e, Misc.getLineNumber(), true);
+            }
+        }
+    }
+
+    private static boolean moveFile(Path source, Path destination) {
+        try {
+            Path target = Files.move(source, destination);
+            Messages.sprintf("Source: " + source + " TARGET: " + target);
+            return true;
+        } catch (IOException e) {
+            Messages.sprintfError("IOException thrown: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static String getFolderName(FileInfo fileInfoToFind) {
+        Path path = Paths.get(fileInfoToFind.getOrgPath());
         if (!Files.isDirectory(path)) {
             return path.getParent().getFileName().toString();
         }
@@ -631,11 +612,11 @@ public class FileInfoUtils {
     public static boolean compareImagesMetadata(FileInfo fileInfo, FolderInfo folderInfo) {
         Iterator<FileInfo> iterator = folderInfo.getFileInfoList().iterator();
         while (iterator.hasNext()) {
-            FileInfo fileInfo_dest = iterator.next();
-            if (fileInfo.getOrgPath().equals(fileInfo_dest.getOrgPath())) {
+            FileInfo fileInfoDest = iterator.next();
+            if (fileInfo.getOrgPath().equals(fileInfoDest.getOrgPath())) {
                 return true;
             }
-            if (fileInfo.getImageDifferenceHash() == fileInfo_dest.getImageDifferenceHash()) {
+            if (Objects.equals(fileInfo.getImageDifferenceHash(), fileInfoDest.getImageDifferenceHash())) {
                 return true;
             }
         }
@@ -645,14 +626,12 @@ public class FileInfoUtils {
 
     public static boolean compareImagesMetadata(FileInfo fileInfo, FileInfo duplicateFileInfo) {
         if (!fileInfo.getImageDifferenceHash().isEmpty()) {
-            if (!duplicateFileInfo.getImageDifferenceHash().isEmpty())
+            if (!duplicateFileInfo.getImageDifferenceHash().isEmpty()) {
                 if (fileInfo.getImageDifferenceHash().equals(duplicateFileInfo.getImageDifferenceHash())) {
                     return true;
                 }
+            }
         }
-        if (fileInfo.getSize() == duplicateFileInfo.getSize()) {
-            return true;
-        }
-        return false;
+        return fileInfo.getSize() == duplicateFileInfo.getSize();
     }
 }
