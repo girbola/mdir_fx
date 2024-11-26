@@ -1,0 +1,35 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Maven Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 21 with GraalVM
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'                  # Specify Java version
+        distribution: 'graalvm'             # Use GraalVM distribution
+        server-id: github                    # ID for distributionManagement/repository in pom.xml
+        settings-path: ${{ github.workspace }} # Custom location for settings.xml
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml    # Build the package
+      #run: mvn -B package --file pom.xml --add-modules javafx.controls,javafx.fxml
+  
+    - name: Publish to GitHub Packages Apache Maven
+      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml # Deploy to GitHub Packages
+      env:
+        GITHUB_TOKEN: ${{ github.token }}    # GitHub token for authentication
