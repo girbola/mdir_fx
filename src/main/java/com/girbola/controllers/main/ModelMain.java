@@ -19,7 +19,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
-import com.girbola.workdir.WorkDirHandler;
+import com.girbola.workdir.WorkDirSQL;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -58,14 +58,17 @@ public class ModelMain {
     private TablePositionHolder tablePositionHolder;
     private Tables tables;
     private VBox main_vbox;
-    private WorkDirHandler workDirHandler = new WorkDirHandler();
+    private WorkDirSQL workDirSQL;
 
 
     private final String ERROR = ModelMain.class.getSimpleName();
 
     public ModelMain() {
         sprintf("Model instantiated...");
+        if(Main.conf.getWorkDir().trim().isEmpty()) {
 
+        }
+        workDirSQL = new WorkDirSQL();
         buttons = new Buttons(this);
         monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
         monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
@@ -269,12 +272,7 @@ public class ModelMain {
 
     }
 
-    /**
-     * @return the workDir_Handler
-     */
-    public WorkDirHandler getWorkDir_Handler() {
-        return this.workDirHandler;
-    }
+    public WorkDirSQL getWorkDirSQL() {return this.workDirSQL;}
 
     public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
         return monitorExternalDriveConnectivity;

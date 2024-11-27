@@ -20,7 +20,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.thumbinfo.ThumbInfo;
-import com.girbola.workdir.WorkDirHandler;
+import com.girbola.workdir.WorkDirSQL;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
@@ -102,7 +102,7 @@ public class Model_datefix extends DateFixerModel {
     private TilePane quickPick_tilePane;
     private int imagesPerLine;
 
-    private WorkDirHandler workDirHandler;
+    private WorkDirSQL workDirSQL;
 
     private RenderVisibleNode renderVisibleNode = null;
     private Connection connection;
@@ -810,13 +810,9 @@ public class Model_datefix extends DateFixerModel {
         this.locations_TableView = table;
     }
 
-    public void setMetaDataTableView(TableView<MetaData> metadataTableView) {
-        this.metaDataTableView = metadataTableView;
-    }
+    public void setMetaDataTableView(TableView<MetaData> metadataTableView) {this.metaDataTableView = metadataTableView;}
 
-    public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) {
-        this.quickPick_Navigator = aQuickPick_Navigator;
-    }
+    public void setQuickPick_Navigator(QuickPick_Navigator aQuickPick_Navigator) {this.quickPick_Navigator = aQuickPick_Navigator;}
 
     public void setQuickPick_tilePane(TilePane quickPick_tilePane) {
         this.quickPick_tilePane = quickPick_tilePane;
@@ -838,12 +834,10 @@ public class Model_datefix extends DateFixerModel {
         this.tilePane = tilePane;
     }
 
-    public void setWorkDir_Handler(WorkDirHandler workDirHandler) {
-        this.workDirHandler = workDirHandler;
-    }
+//    public void setWorkDir_Handler(WorkDirSQL workDirSQL) {this.workDirSQL= workDirSQL;}
 
-    public WorkDirHandler getWorkDir_Handler() {
-        return workDirHandler;
+    public WorkDirSQL getWorkDir_Handler() {
+        return this.workDirSQL;
     }
 
     public ObservableList<Node> getNotVisibleNodes() {

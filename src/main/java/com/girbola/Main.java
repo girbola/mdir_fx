@@ -100,10 +100,9 @@ public class Main extends Application {
         stageControl = new StageControl(model_main, primaryStage);
 
         try {
-            locale = new Locale(lang, country);
+            locale = Locale.of(lang, country);
             bundle = ResourceBundle.getBundle("bundle/lang", locale);
         } catch (Exception e) {
-            e.printStackTrace();
             Messages.sprintfError("Something went wrong: " + e.getMessage());
         }
 
@@ -118,10 +117,8 @@ public class Main extends Application {
                 Messages.sprintf("CONFIG contains: " + conf.toString());
                 Messages.sprintf("Java version: " + System.getProperty("java.version"));
                 Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
-                GraphicsEnvironment ge = GraphicsEnvironment
-                        .getLocalGraphicsEnvironment();
-
-                Font[] allFonts = ge.getAllFonts();
+//                GraphicsEnvironment ge = GraphicsEnvironment
+//                        .getLocalGraphicsEnvironment();
 
                 Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
                         + conf.getWorkDir());
@@ -133,7 +130,6 @@ public class Main extends Application {
                     main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
                     parent = main_loader.load();
                 } catch (Exception ex) {
-                    ex.printStackTrace();
                     Messages.sprintf("error loading parent= " + ex.getMessage());
                     cancel();
                 }
@@ -285,7 +281,7 @@ public class Main extends Application {
                     }
                 }
             }
-            //set the new max-widht with some extra space
+            //set the new max-width with some extra space
             column.setPrefWidth(max + 10.0d);
         });
     }
@@ -343,10 +339,11 @@ public class Main extends Application {
     public void stop() throws Exception {
         super.stop();
         Main.setProcessCancelled(true);
-        System.out.println("Stopping app");
+        Messages.sprintf("Stopping app");
         model_main.getMonitorExternalDriveConnectivity().cancel();
         ConcurrencyUtils.stopAllExecThreadNow();
-        System.out.println("Threads are ended. Exiting...");
+        Messages.sprintf("Program has ended. Exiting...");
+        Platform.exit();
     }
 
     public static void centerWindowDialog(Stage stage) {
@@ -362,5 +359,4 @@ public class Main extends Application {
             });
         }
     }
-
 }

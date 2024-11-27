@@ -6,28 +6,25 @@
  */
 package com.girbola.controllers.datefixer;
 
-import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.messages.Messages;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.fxml.FXML;
+import com.girbola.controllers.main.tables.*;
+import com.girbola.messages.*;
+import com.girbola.workdir.*;
+import java.nio.file.*;
+import java.util.*;
+import java.util.concurrent.*;
+import javafx.beans.property.*;
+import javafx.beans.value.*;
+import javafx.concurrent.*;
+import javafx.fxml.*;
 import javafx.scene.control.*;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
-import javafx.util.Callback;
-
-import java.nio.file.Paths;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import javafx.scene.layout.*;
+import javafx.util.*;
 
 public class SelectorController {
 
 	private WorkDirSQL workDir_SQL;
 	private Model_datefix model_datefix;
 	private TilePane df_tilePane;
-	//private GridPane df_gridPane;
 	private FolderInfo folderInfo;
 	//@formatter:off
 	@FXML private ScrollPane infoTables_container;

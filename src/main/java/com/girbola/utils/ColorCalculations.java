@@ -31,10 +31,10 @@ public class ColorCalculations {
         Color color = rgbToColor(fixedColor[0], fixedColor[1],fixedColor[2]);
 
         // Create the image
-        WritableImage image = createImageWithColor(300, 300, color);
+        //WritableImage image = createImageWithColor(300, 300, color);
 
         // Save the image to a file
-        saveImageToFile(image, "C:\\Temp\\output.png");
+        //saveImageToFile(image, "C:\\Temp\\output.png");
 
         System.out.printf("Fixed Color:  RGB  (%d, %d, %d)%n", fixedColor[0], fixedColor[1], fixedColor[2]);
         System.out.println("Fixed Color: HEX (" + rgbToHex(fixedColor[0], fixedColor[1], fixedColor[2])+")");

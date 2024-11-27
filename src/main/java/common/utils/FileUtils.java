@@ -7,14 +7,11 @@
 package common.utils;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.*;
-import com.girbola.controllers.main.tables.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.CheckMediaExistenceInFolder;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -56,7 +53,7 @@ public class FileUtils {
      * @param path
      * @return
      */
-    public static String fileSeparator_mrl(Path path) {
+    public static String fileSeparatorMRL(Path path) {
         String value = path.toString();
         String newPath = "";
         if (Misc.isWindows()) {
@@ -76,7 +73,6 @@ public class FileUtils {
      * @return
      * @throws java.io.IOException
      */
-
     public static Path renameFile(Path srcFile, Path destFile) throws IOException {
 
         Messages.sprintf("Renaming srcFile: " + srcFile.toFile().length() + " destFile: " + destFile.toFile().length());
@@ -111,16 +107,13 @@ public class FileUtils {
             Iterator<Path> it = stream.iterator();
 
             while (it.hasNext()) {
+                Path path = Paths.get(destFile.getParent().toString(), destFile.getFileName().toString()
+                                .substring(0, destFile.getFileName().toString().lastIndexOf(".")) + prefix + String.valueOf(counter) + "." + ext);
 
-                fileName = destFile.getParent().toString() + File.separator + (destFile.getFileName().toString()
-                        .substring(0, destFile.getFileName().toString().lastIndexOf("."))) + prefix + counter + "."
-                        + ext;
-
-                Messages.sprintf("fileName testing starting: " + counter + " fileName: " + fileName);
+                Messages.sprintf("fileName testing starting: " + path);
 
                 counter++;
 
-                Path path = Paths.get(fileName);
                 if (Files.exists(path)) {
                     if (Files.size(srcFile) == Files.size(path)) {
                         Messages.sprintf("DUPLICATED. File existed: " + destFile + " filename: " + fileName);
@@ -460,13 +453,7 @@ public class FileUtils {
                 + FileUtils.getFileExtension(Paths.get(fileInfo.getOrgPath())));
         fileInfo.setDestination_Path(destPath.toString());
 
-        fileInfo.setCopied(fileInfoIsCopiedToDest(fileInfo, Main.conf.getWorkDir()));
-
         return destPath;
-    }
-
-    public static boolean fileInfoIsCopiedToDest(FileInfo fileInfo, String workDir) {
-        return Main.conf.getModel().getWorkDir_Handler().exists(fileInfo) != null;
     }
 
     public static void moveFile(FileInfo fileInfo, Path sourceFile, Path newPath) throws IOException {

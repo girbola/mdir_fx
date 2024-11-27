@@ -9,6 +9,7 @@ import com.girbola.fileinfo.*;
 import com.girbola.messages.*;
 import com.girbola.misc.*;
 import com.girbola.sql.*;
+import com.girbola.workdir.*;
 import common.utils.*;
 import java.io.*;
 import java.nio.file.*;
@@ -249,7 +250,7 @@ public class OperateFiles {
                                     updateIncreaseCopyingProcessValues();
                                     if (!fileInfo.isCopied()) {
                                         fileInfo.setCopied(true);
-                                        modelMain.getWorkDir_Handler().add(fileInfo);
+                                        workDirSQL.insertFileInfo(fileInfo);
                                     }
                                 }
                             } else {
@@ -264,8 +265,7 @@ public class OperateFiles {
                                 if (!fileInfo.isCopied()) {
                                     fileInfo.setCopied(true);
                                 }
-                                modelMain.getWorkDir_Handler().add(fileInfo);
-
+                                modelMain.getWorkDirSQL().insertFileInfo(fileInfo);
                             }
                             break;
                         case BROKENFILE:
@@ -491,11 +491,11 @@ public class OperateFiles {
             switch (rememberAnswer.get()) {
                 case CopyAnswerType.COPY:
                     answer.set(0);
-                    Messages.sprintf("Copy will be done. Value is: " + answer.get());
+                    Messages.sprintf("Copy will be done. User answer is: " + answer.get());
                     break;
                 case CopyAnswerType.DONTCOPY:
                     answer.set(1);
-                    Messages.sprintf("Copy won't be done. Value is: " + answer.get());
+                    Messages.sprintf("Copy won't be done. User answer is: " + answer.get());
                     break;
                 case CopyAnswerType.ASK:
                     promptUserForDecision(fileInfo, answer);
@@ -577,10 +577,7 @@ public class OperateFiles {
                 @Override
                 protected Void call() throws Exception {
                     Messages.sprintf("Step1");
-                    if (modelMain.getWorkDir_Handler() == null) {
-                        Messages.sprintf("Workdir_handler null");
-                    }
-                    boolean saveWorkDirList = modelMain.getWorkDir_Handler().saveWorkDirListToDatabase();
+                    boolean saveWorkDirList = workDirSQL.saveWorkDirDatabase();
                     Messages.sprintf("Step2");
                     TableUtils.refreshAllTableContent(modelMain.tables());
                     if (saveWorkDirList) {
@@ -626,42 +623,11 @@ public class OperateFiles {
                 fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
                 fileInfo.setCopied(true);
                 listCopiedFiles.add(fileInfo);
-                boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-                if (added) {
-                    Messages.sprintf("FileInfo added to destination succesfully");
-                } else {
-                    Messages.sprintf("FileInfo were not added because it did exists " + fileInfo.getDestination_Path());
-                }
+
+                model_main.getWorkDirSQL().insertFileInfo(fileInfo);
             } catch (Exception ex) {
                 ex.printStackTrace();
                 Messages.sprintfError(ex.getMessage());
-            }
-
-        }
-
-
-        private void writeToDatabase() {
-            Messages.sprintf("Insert worked!");
-            if (Main.conf.getDrive_connected()) {
-                try {
-
-                    Connection connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir().toString()),
-                            Main.conf.getMdir_db_fileName());
-                    connection.setAutoCommit(false);
-                    boolean inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
-                    if (!inserted) {
-                        connection.close();
-                        connection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir().toString()),
-                                Main.conf.getMdir_db_fileName() + new Date().toString());
-                        inserted = FileInfo_SQL.insertFileInfoListToDatabase(connection, listCopiedFiles, true);
-                        if (!inserted) {
-                            Messages.errorSmth(ERROR, "Can't save to destination dir", null, Misc.getLineNumber(),
-                                    true);
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
 
         }

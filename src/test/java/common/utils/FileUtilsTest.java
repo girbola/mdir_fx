@@ -58,4 +58,35 @@ public class FileUtilsTest {
         assertNotNull(path);
         assertEquals(destExpected.toString(), path.toString());
     }
+    @Test
+    public void testRenameFileWithDifferentSize() throws IOException {
+        Path sourceFile = Paths.get("src", "test", "resources", "test-material", "IMG.jpg");
+// "src", "test", "resources", "in", "20220413_160023.jpg"
+
+
+        Path destinationFile = Paths.get("src", "test", "resources", "test-material", "IMG1.jpg");
+
+        log.info("sourceFile: " + sourceFile + " destinationFile: " + destinationFile);
+
+        // Perform a file rename
+        Path actualResult = FileUtils.renameFile(sourceFile, destinationFile);
+
+        // Expected Result
+        Path expectedFile = Paths.get("src", "test", "resources", "test-material", "IMG1_1.jpg");
+
+        // Check the Assert
+        assertEquals(expectedFile, actualResult);
+    }
+
+    @Test
+    public void testRenameFileWithSameSize() throws IOException {
+        Path sourceFile = Paths.get("src", "test", "resources", "test-material", "IMG1.jpg");
+        Path destinationFile = Paths.get("src", "test", "resources", "test-material", "IMG1.jpg");
+
+        // Perform a file rename
+        Path actualResult = FileUtils.renameFile(sourceFile, destinationFile);
+
+        // As both files have the same size, no renaming should be done and null should be returned.
+        assertNull(actualResult);
+    }
 }

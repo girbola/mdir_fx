@@ -1,5 +1,6 @@
 package com.girbola.sql;
 
+import com.girbola.messages.Messages;
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.*;
@@ -7,6 +8,13 @@ import java.sql.*;
 public class SqliteConnection {
 
 	public static Connection connector(Path path, String tableName) {
+		Messages.sprintf("Connection to path: " + path.toFile().getAbsolutePath() + " tableName: " + tableName);
+
+		if(path.startsWith("")) {
+			Messages.sprintf("Path is empty and its absolutely path is: " + path.toFile().getAbsolutePath() + ". TableName is: " + tableName);
+			return null;
+		}
+
 		Connection conn = null;
 		try {
 			Class.forName("org.sqlite.JDBC");

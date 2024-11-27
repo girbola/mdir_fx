@@ -100,7 +100,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 
 		List<BufferedImage> bufferedImageList = new ArrayList<>();
 
-		String mrl = "file:///" + FileUtils.fileSeparator_mrl(Paths.get(fileInfo.getOrgPath()));
+		String mrl = "file:///" + FileUtils.fileSeparatorMRL(Paths.get(fileInfo.getOrgPath()));
 		Messages.sprintf("MRL for video path: " + mrl);
 		MediaPlayerFactory factory = new MediaPlayerFactory(VLC_ARGS);
 		MediaPlayer mediaPlayer = factory.mediaPlayers().newMediaPlayer();

@@ -72,13 +72,7 @@ public class OperateFilesUtils {
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
             fileInfo.setCopied(true);
             listCopiedFiles.add(fileInfo);
-            boolean added = model_main.getWorkDir_Handler().add(fileInfo);
-            if (added) {
-                Messages.sprintf("FileInfo - corrupted added to destination succesfully");
-            } else {
-                Messages.sprintf("FileInfo - corrupted were not added because it did exists "
-                        + fileInfo.getDestination_Path());
-            }
+            model_main.getWorkDirSQL().insertFileInfo(fileInfo);
 
         } catch (Exception ex) {
             ex.printStackTrace();

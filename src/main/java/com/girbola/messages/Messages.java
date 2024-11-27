@@ -315,7 +315,7 @@ public class Messages {
         retryButton.setOnAction(e -> {
             Messages.sprintf("Retry dialog");
             // You can perform your retry logic here
-            retryConnectingWorkDir(Paths.get(Main.conf.getWorkDir()), dialog);
+            retryConnectingWorkDir(workDir, dialog);
         });
 
         cancelButton.setOnAction(e -> {
