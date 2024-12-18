@@ -3,6 +3,7 @@ package com.girbola.workdir;
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.*;
+import com.girbola.drive.DriveInfo;
 import com.girbola.fileinfo.*;
 import com.girbola.messages.Messages;
 import com.girbola.sql.*;
@@ -238,7 +239,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
             return null;
         }
         if (duplicateFileInfo != null) {
-
+            Messages.warningText("duplicateFileInfo were not null. This under constructor");
         }
         return list;
 
@@ -249,7 +250,6 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
             return null;
         }
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORG_PATH.getColumnName()));
         fileInfo.setBad(rs.getBoolean(FileInfoEnum.BAD.getColumnName()));
         fileInfo.setCamera_model(rs.getString(FileInfoEnum.CAMERA_MODEL.getColumnName()));
         fileInfo.setConfirmed(rs.getBoolean(FileInfoEnum.CONFIRMED.getColumnName()));
@@ -263,6 +263,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
         fileInfo.setImageDifferenceHash(rs.getString(FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName()));
         fileInfo.setLocalDateTime(rs.getObject(FileInfoEnum.LOCAL_DATE_TIME.getColumnName(), LocalDateTime.class));
         fileInfo.setLocation(rs.getString(FileInfoEnum.LOCATION.getColumnName()));
+        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORG_PATH.getColumnName()));
         fileInfo.setOrientation(rs.getInt(FileInfoEnum.ORIENTATION.getColumnName()));
         fileInfo.setRaw(rs.getBoolean(FileInfoEnum.RAW.getColumnName()));
         fileInfo.setSize(rs.getLong(FileInfoEnum.SIZE.getColumnName()));
@@ -394,27 +395,28 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
                     Messages.sprintf("FileInfo creationg did not work this time or folder were empty.");
                 }
             }
-            folderInfo.setChanged(changed);
-            folderInfo.setConnected(connected);
-            folderInfo.setFileInfoList(fileInfo_list);
-            folderInfo.setIgnored(ignored);
-            folderInfo.setDateDifferenceRatio(dateDifference);
             folderInfo.setBadFiles(badFiles);
+            folderInfo.setChanged(changed);
             folderInfo.setConfirmed(confirmed);
+            folderInfo.setConnected(connected);
             folderInfo.setCopied(copied);
+            folderInfo.setDateDifferenceRatio(dateDifference);
+            folderInfo.setFileInfoList(fileInfo_list);
             folderInfo.setFolderFiles(folderFiles);
             folderInfo.setFolderImageFiles(folderImageFiles);
+            folderInfo.setFolderPath(folderPath);
             folderInfo.setFolderRawFiles(folderRawFiles);
+            folderInfo.setFolderSize(folderSize);
             folderInfo.setFolderVideoFiles(folderVideoFiles);
             folderInfo.setGoodFiles(goodFiles);
-            folderInfo.setSuggested(suggested);
-            folderInfo.setFolderSize(folderSize);
+            folderInfo.setIgnored(ignored);
             folderInfo.setJustFolderName(justFolderName);
-            folderInfo.setFolderPath(folderPath);
             folderInfo.setMaxDate(maxDate);
             folderInfo.setMinDate(minDate);
             folderInfo.setState(state);
+            folderInfo.setSuggested(suggested);
             folderInfo.setTableType(tableType);
+
             smtm.close();
             workDirConnection.close();
 
@@ -426,4 +428,25 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
         }
     }
 
+    public void registerDrive(String string, String serial) {
+        /*
+        C:\\,serial1234
+        D:\\,serial1234
+        E:\\,serial9999
+         */
+
+        if(!SQL_Utils.isDbConnected(workDirConnection)) {
+            workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), SQL_Enums.WORKDIR.getType());
+        }
+
+        try {
+            String sql = "INSERT INTO " + SQL_Enums.REGISTEREDDRIVES.getType() + " VALUES (?, ?)";
+            PreparedStatement pstmt = workDirConnection.prepareStatement(sql);
+            pstmt.setString(1, string);
+            pstmt.setString(2, serial);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            Messages.sprintfError("Error registering drive: " + e.getMessage());
+        }
+    }
 }

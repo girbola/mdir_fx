@@ -30,27 +30,26 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class AnalyzeFolderContent extends Task<Void> {
 
-	private List<Path> selected;
-	private ModelFolderScanner model_folderScanner;
+	private List<Path> selectedPaths;
+	private ModelFolderScanner modelFolderScanner;
 	//    private Path rootPath = null;
 
-	public AnalyzeFolderContent(List<Path> selected, ModelFolderScanner model_folderScanner) {
-		this.selected = selected;
-		this.model_folderScanner = model_folderScanner;
-
+	public AnalyzeFolderContent(List<Path> selectedPaths, ModelFolderScanner modelFolderScanner) {
+		this.selectedPaths = selectedPaths;
+		this.modelFolderScanner = modelFolderScanner;
 	}
 
 	@Override
 	protected Void call() throws Exception {
-		sprintf("analyzeFolderContent started: " + selected.size());
-		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
+		sprintf("analyzeFolderContent started: " + selectedPaths.size());
+		for (Path selectedFolder : modelFolderScanner.getSelectedDrivesFoldersListObs()) {
 			sprintf("getDrivesList is: " + selectedFolder);
 		}
 		Map<Path,
 				List<Path>> map = new HashMap<>();
-		for (Path selectedFolder : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
+		for (Path selectedFolder : modelFolderScanner.getSelectedDrivesFoldersListObs()) {
 			List<Path> list = new ArrayList<>();
-			list = createList(selectedFolder, selected);
+			list = createList(selectedFolder, selectedPaths);
 			Collections.sort(list, (Path o1, Path o2) -> {
 				if (o1.toString().length() == o2.toString().length()) {
 					return 0;
@@ -67,7 +66,7 @@ public class AnalyzeFolderContent extends Task<Void> {
 				List<Path>> entry : map.entrySet()) {
 			sprintf("Selected Folders ROOT is: " + entry.getKey());
 
-			if (!FolderScanner_Methods.titledPaneExists(model_folderScanner.getAnalyzeList_vbox(), entry.getKey())) {
+			if (!FolderScanner_Methods.titledPaneExists(modelFolderScanner.getAnalyzeList_vbox(), entry.getKey())) {
 				TreeTableView ttv = createTreeTableView(entry.getKey());
 				TitledPane titledPane = new TitledPane(entry.getKey().toString(), ttv);
 				root = new CheckBoxTreeItem<>(new FolderInfoTable(entry.getKey().toString()));
@@ -76,14 +75,14 @@ public class AnalyzeFolderContent extends Task<Void> {
 
 				titledPane.setContent(ttv);
 
-				model_folderScanner.getAnalyzeList_vbox().getChildren().add(titledPane);
+				modelFolderScanner.getAnalyzeList_vbox().getChildren().add(titledPane);
 			}
 
 			sprintf("Test root path is false");
 			for (Path p : entry.getValue()) {
 				if (Files.exists(p)) {
 					if (ValidatePathUtils.hasMediaFilesInFolder(p)) {
-						TreeItem<FolderInfoTable> cbi = createTreeItem_FolderInfo(p.toFile(), model_folderScanner.getAnalyzeList_selected());
+						TreeItem<FolderInfoTable> cbi = createTreeItemFolderInfo(p.toFile(), modelFolderScanner.getAnalyzeList_selected());
 						root.getChildren().add(cbi);
 					}
 				}
@@ -93,28 +92,28 @@ public class AnalyzeFolderContent extends Task<Void> {
 		return null;
 	}
 
-	private TreeItem<FolderInfoTable> createTreeItem_FolderInfo(File file, List<TreeItem<FolderInfoTable>> selected_list) {
-		TreeItem<FolderInfoTable> treeItem = new TreeItem<>(new FolderInfoTable(file.getAbsolutePath()));
-		CheckBox checkBoxi = new CheckBox();
-		checkBoxi.getStyleClass().add("checkBoxi");
-		checkBoxi.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
-			if (newValue) {
-				sprintf("Selected TreeItem<FolderInfo> cbi: " + treeItem.getValue().getPath());
-				selected_list.add(treeItem);
-			} else {
-				sprintf("Deselected TreeItem<FolderInfo> cbi: " + treeItem.getValue().getPath());
-				selected_list.remove(treeItem);
-			}
-		});
-		treeItem.setGraphic(new HBox(checkBoxi));
+	private TreeItem<FolderInfoTable> createTreeItemFolderInfo(File file, List<TreeItem<FolderInfoTable>> selectedList) {
+	    TreeItem<FolderInfoTable> treeItem = new TreeItem<>(new FolderInfoTable(file.getAbsolutePath()));
+	    CheckBox checkBoxi = new CheckBox();
+	    checkBoxi.getStyleClass().add("checkBoxi");
+	    checkBoxi.selectedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+	        if (newValue) {
+	            sprintf("Selected TreeItem<FolderInfo> cbi: " + treeItem.getValue().getPath());
+	            selectedList.add(treeItem);
+	        } else {
+	            sprintf("Deselected TreeItem<FolderInfo> cbi: " + treeItem.getValue().getPath());
+	            selectedList.remove(treeItem);
+	        }
+	    });
+	    treeItem.setGraphic(new HBox(checkBoxi));
 
-		return treeItem;
+	    return treeItem;
 	}
 
 	private List<Path> createList(Path rootPath, List<Path> selectedList) {
 		sprintf("rootPath: " + rootPath);
 		List<Path> found = new ArrayList<>();
-		for (Path p : selectedList) {
+		for (Path p : selectedPaths) {
 			if (p.getRoot().toString().equals(rootPath.getRoot().toString())) {
 				sprintf("found same root! " + p);
 				found.add(p);

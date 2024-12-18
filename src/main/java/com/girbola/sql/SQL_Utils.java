@@ -158,7 +158,7 @@ public class SQL_Utils extends FolderInfo_SQL {
             for (DriveInfo driveInfo : driveInfo_list) {
                 pstmt.setString(1, driveInfo.getDrivePath());
                 pstmt.setBoolean(2, driveInfo.isConnected());
-                pstmt.setBoolean(3, driveInfo.getSelected());
+                pstmt.setBoolean(3, driveInfo.isSelected());
                 pstmt.setLong(4, driveInfo.getDriveTotalSize());
                 pstmt.setString(5, driveInfo.getIdentifier());
                 pstmt.addBatch();

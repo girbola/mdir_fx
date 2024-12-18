@@ -26,7 +26,7 @@ import java.util.List;
 public class ModelFolderScanner {
 
 	//	@SuppressWarnings("unused")
-	private ModelMain model_main;
+	private ModelMain modelMain;
 
 //	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
 
@@ -36,9 +36,9 @@ public class ModelFolderScanner {
 	private ChooseFoldersController chooseFoldersController;
 
 	private List<TreeItem<FolderInfoTable>> analyzeList_selected = new ArrayList<>();
-	private ObservableList<Path> selectedDrivesFoldersList_obs = FXCollections.observableArrayList();
+	private ObservableList<Path> selectedDrivesFoldersListObs = FXCollections.observableArrayList();
 	private VBox analyzeList_vbox;
-	private CheckBoxTreeItem<File> drives_rootItem;
+	private CheckBoxTreeItem<File> drivesRootItem;
 
 	public ScanDrives getScanDrives() {
 		return scanDrives;
@@ -64,8 +64,8 @@ public class ModelFolderScanner {
 		this.analyzeList_vbox = analyzeList_vbox;
 	}
 
-	public ObservableList<Path> getSelectedDrivesFoldersList_obs() {
-		return selectedDrivesFoldersList_obs;
+	public ObservableList<Path> getSelectedDrivesFoldersListObs() {
+		return selectedDrivesFoldersListObs;
 	}
 
 	// public void setDrivesList(ObservableList<SelectedFolder> drivesList) {
@@ -80,8 +80,8 @@ public class ModelFolderScanner {
 		return chooseFoldersController;
 	}
 
-	@Deprecated
-	public void setDeleteKeyPressed(TableView<SelectedFolder> table) {
+    @Deprecated(since = "1.0", forRemoval = false)
+    public void setDeleteKeyPressed(TableView<SelectedFolder> table) {
 		table.setOnKeyPressed((KeyEvent event) -> {
 			if (event.getCode() == (KeyCode.DELETE)) {
 				ObservableList<SelectedFolder> table_row_list = table.getSelectionModel().getSelectedItems();
@@ -92,7 +92,7 @@ public class ModelFolderScanner {
 					listToRemove.add(folderInfo);
 				}
 
-				model_main.getSelectedFolders().getSelectedFolderScanner_obs().removeAll(listToRemove);
+				modelMain.getSelectedFolders().getSelectedFolderScanner_obs().removeAll(listToRemove);
 				listToRemove.clear();
 
 				table.getSelectionModel().clearSelection();
@@ -101,12 +101,12 @@ public class ModelFolderScanner {
 		});
 	}
 
-	public void init(ModelMain aModel_main, CheckBoxTreeItem<File> aDrives_rootItem) {
-		this.model_main = aModel_main;
-		this.drives_rootItem = aDrives_rootItem;
+	public void init(ModelMain modelMain, CheckBoxTreeItem<File> drivesRootItem) {
+		this.modelMain = modelMain;
+		this.drivesRootItem = drivesRootItem;
 		drivesListHandler.loadList(this);
-		scanDrives = new ScanDrives(this.model_main, drives_rootItem, selectedDrivesFoldersList_obs, drivesListHandler, this);
-		
+		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, drivesListHandler, this);
+
 		scanDrives.restart();
 	}
 //

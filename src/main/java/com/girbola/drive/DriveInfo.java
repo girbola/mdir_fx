@@ -11,100 +11,41 @@ import java.nio.file.FileStore;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class DriveInfo {
 
 	private FileStore fileSystem;
-	private boolean connected;
-	private boolean selected;
-	private String drivePath;
-	private long driveTotalSize;
-	private String identifier;
-	private boolean isWritable;
 	private List<Path> selectedFolders = new ArrayList<>();
 	private Path drive;
+	private String drivePath;
+	private String identifier;
 	private String serial;
+	private boolean connected;
+	private boolean isWritable;
+	private boolean selected;
+	private long driveTotalSize;
+
 
 	/**
-	 * 
-	 * @param aDrivePath
-	 * @param aDriveTotalSize
-	 * @param aConnected
-	 * @param aSelected
-	 * @param aIdentifier
+	 * Constructs a DriveInfo object with the given drive details.
+	 *
+	 * @param drivePath the path to the drive.
+	 * @param driveTotalSize the total size of the drive in bytes.
+	 * @param connected indicates whether the drive is currently connected.
+	 * @param selected indicates whether the drive is selected.
+	 * @param identifier a unique identifier for the drive, such as a serial number.
 	 */
-	public DriveInfo(String aDrivePath, long aDriveTotalSize, boolean aConnected, boolean aSelected,
-			String aIdentifier) {
-		this.drivePath = aDrivePath;
-		this.driveTotalSize = aDriveTotalSize;
-		this.connected = aConnected;
-		this.selected = aSelected;
-		this.identifier = aIdentifier;
-//		this.serial = aSerial;
-	}
-
-	public boolean getSelected() {
-		return this.selected;
-	}
-
-	public void setSelected(boolean selected) {
-		this.selected = selected;
-	}
-
-	public String getDrivePath() {
-		return drivePath;
-	}
-
-	public boolean isConnected() {
-		return connected;
-	}
-
-	public void setDrivePath(String driveLetter) {
-		this.drivePath = driveLetter;
-	}
-
-	public void setConnected(boolean connected) {
-		this.connected = connected;
-	}
-
-	public long getDriveTotalSize() {
-		return driveTotalSize;
-	}
-
-	public void setDriveTotalSize(long driveTotalSize) {
+	public DriveInfo(String drivePath, long driveTotalSize, boolean connected, boolean selected,
+			String identifier) {
+		this.drivePath = drivePath;
 		this.driveTotalSize = driveTotalSize;
-	}
-
-	public String getIdentifier() {
-		return identifier;
-	}
-
-	public void setIdentifier(String value) {
-		this.identifier = value;
-	}
-
-	public boolean isWritable() {
-		return isWritable;
-	}
-
-	public List<Path> getSelectedFolders() {
-		return selectedFolders;
-	}
-
-	public void setWritable(boolean isWritable) {
-		this.isWritable = isWritable;
-	}
-
-	public void setSelectedFolders(List<Path> selectedFolders) {
-		this.selectedFolders = selectedFolders;
-	}
-
-	public Path getDrive() {
-		return drive;
-	}
-
-	public void setDrive(Path drive) {
-		this.drive = drive;
+		this.connected = connected;
+		this.selected = selected;
+		this.identifier = identifier;
 	}
 
 }

@@ -364,7 +364,7 @@ public class Messages {
 //    }
 
     private static void retryConnectingWorkDir(Path workDir, Dialog<Boolean> dialog) {
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+        timeline = new Timeline(new KeyFrame(Duration.seconds(5), event -> {
             try {
                 if (Files.exists(workDir)) {
                     String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(String.valueOf(workDir));
@@ -391,6 +391,7 @@ public class Messages {
                 }
             } catch (Exception e) {
                 errorSmth("Messages", "Error checking work directory connection", e, Thread.currentThread().getStackTrace()[1].getLineNumber(), false);
+                timeline.stop();
             }
         }));
         timeline.setCycleCount(Timeline.INDEFINITE); // Run indefinitely for periodic checks

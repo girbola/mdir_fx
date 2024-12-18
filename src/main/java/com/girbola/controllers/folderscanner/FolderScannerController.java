@@ -62,7 +62,7 @@ public class FolderScannerController {
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
         sprintf("addToSelectedFolders_btn_action...");
-        for (Path path : model_folderScanner.getSelectedDrivesFoldersList_obs()) {
+        for (Path path : model_folderScanner.getSelectedDrivesFoldersListObs()) {
             sprintf("Path is: " + path);
             if (Files.exists(path)) {
                 if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),

@@ -136,7 +136,7 @@ public class OperateFiles {
 
                     Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
 
-                    Messages.workdirConnection(workDir);
+//                    Messages.workdirConnection(workDir);
 
                     Task<Integer> copy = new Copy();
                     copy.setOnSucceeded((WorkerStateEvent eventWorker) -> Messages.sprintf("copy succeeded"));

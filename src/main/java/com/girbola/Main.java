@@ -178,7 +178,7 @@ public class Main extends Application {
             ConfigurationUtils.loadConfig_GUI(model_main);
 
             FolderScannerSQL.loadSelectedFolders(model_main);
-            Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()));
+
             if (Platform.isFxApplicationThread()) {
                 Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()));
             } else {

@@ -131,15 +131,16 @@ public class FileUtils {
     }
 
     public static DirectoryStream<Path> createDirectoryStream(Path path) {
+
         try {
-            return Files.newDirectoryStream(path);
+            DirectoryStream<Path> paths = Files.newDirectoryStream(path);
+            return paths;
         } catch (IOException ex) {
             Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
             Messages.warningText("Cannot read directory: " + path.toString());
             return null;
         }
     }
-
     public static DirectoryStream<Path> createDirectoryStream(Path path, DirectoryStream.Filter<Path> filter_directories) {
         try {
             return Files.newDirectoryStream(path, filter_directories);

@@ -5,6 +5,7 @@ public enum SQL_Enums {
 	FOLDERINFO("folderinfo"),
 	FILEINFO("fileinfo"),
 	SELECTEDFOLDERS("selectedfolders"),
+	REGISTEREDDRIVES("registereddrives"),
 	DRIVEINFO("driveinfo"),
 	THUMBINFO("thumbinfo"),
 	WORKDIR("workdir"),
