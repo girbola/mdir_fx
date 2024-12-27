@@ -10,6 +10,7 @@ import com.girbola.controllers.folderscanner.FolderInfoTable;
 import com.girbola.controllers.folderscanner.FolderScanner_Methods;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.filelisting.ValidatePathUtils;
+import common.utils.Comparators;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.beans.value.ObservableValue;
@@ -45,25 +46,18 @@ public class AnalyzeFolderContent extends Task<Void> {
 		for (Path selectedFolder : modelFolderScanner.getSelectedDrivesFoldersListObs()) {
 			sprintf("getDrivesList is: " + selectedFolder);
 		}
-		Map<Path,
-				List<Path>> map = new HashMap<>();
+		Map<Path, List<Path>> map = new HashMap<>();
 		for (Path selectedFolder : modelFolderScanner.getSelectedDrivesFoldersListObs()) {
-			List<Path> list = new ArrayList<>();
-			list = createList(selectedFolder, selectedPaths);
-			Collections.sort(list, (Path o1, Path o2) -> {
-				if (o1.toString().length() == o2.toString().length()) {
-					return 0;
-				}
-				return o1.toString().length() < o2.toString().length() ? -1 : 1;
-			});
+			List<Path> list = createList(selectedFolder, selectedPaths);
+			Comparators.compareInt(list);
+
 			sprintf("rootPath: " + selectedFolder);
-			sprintf("First node path would be: " + list.get(0));
-			map.put(list.get(0), list);
+			sprintf("First node path would be: " + list.getFirst());
+			map.put(list.getFirst(), list);
 		}
 
 		CheckBoxTreeItem<FolderInfoTable> root = null;
-		for (Map.Entry<Path,
-				List<Path>> entry : map.entrySet()) {
+		for (Map.Entry<Path, List<Path>> entry : map.entrySet()) {
 			sprintf("Selected Folders ROOT is: " + entry.getKey());
 
 			if (!FolderScanner_Methods.titledPaneExists(modelFolderScanner.getAnalyzeList_vbox(), entry.getKey())) {

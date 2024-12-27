@@ -56,11 +56,11 @@ public class ChooseFoldersController {
 	// private FolderScannerController folderScannerController;
 	private TreeItem<Path> root = new TreeItem<>(Paths.get(System.getProperty("user.home")));
 
-   @FXML private TreeView<Path> chooseFolders_treeView;
+   @FXML private TreeView<Path> chooseFoldersTreeView;
    @FXML private Button ok;
    @FXML private Button cancel;
 
-   @FXML private void cancel_action(ActionEvent event) {
+   @FXML private void cancelAction(ActionEvent event) {
 		inherited_stage.setScene(inherited_scene);
 	}
 
@@ -68,15 +68,15 @@ public class ChooseFoldersController {
 		this.model_folderScanner = model_folderScanner;
 		this.selection_FolderScanner = selection_FolderScanner;
 
-		chooseFolders_treeView.setRoot(root);
+		chooseFoldersTreeView.setRoot(root);
 		root.setExpanded(true);
 
-		chooseFolders_treeView.setShowRoot(true);
-		chooseFolders_treeView.setCellFactory(CheckBoxTreeCell.<Path>forTreeView());
+		chooseFoldersTreeView.setShowRoot(true);
+		chooseFoldersTreeView.setCellFactory(CheckBoxTreeCell.<Path>forTreeView());
 
 	}
 
-   @FXML private void ok_action(ActionEvent event) {
+   @FXML private void okAction(ActionEvent event) {
 		sprintf("Stage ok_action pressed");
 
 		inherited_stage.setScene(inherited_scene);
@@ -146,8 +146,8 @@ public class ChooseFoldersController {
 		}
 
 		tree.setExpanded(true);
-		chooseFolders_treeView.setRoot(tree);
-		// chooseFolders_treeView.setShowRoot(false);
+		chooseFoldersTreeView.setRoot(tree);
+		// chooseFoldersTreeView.setShowRoot(false);
 	}
 
 	private void getSubLeafs(Path subPath, TreeItem<Path> parent) {

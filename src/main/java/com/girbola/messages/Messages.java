@@ -14,9 +14,11 @@ import com.girbola.messages.html.HTMLClass;
 import com.girbola.utils.*;
 import common.utils.*;
 import java.nio.file.*;
+import java.util.concurrent.atomic.AtomicReference;
 import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -303,10 +305,15 @@ public class Messages {
 
     }
 
-    public static void workdirConnection(Path workDir) {
+    public static void workdirConnection(Path workDir, Stage owner) {
         Dialog<Boolean> dialog = new Dialog<>();
         dialog.setTitle("Workdir is not connected");
         dialog.setContentText(bundle.getString("workDirHasNotConnected"));
+        dialog.initOwner(owner);
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.UTILITY);
+        dialog.setResizable(false);
+        dialog.setOnCloseRequest(Event::consume);
 
         Button retryButton = new Button("Retry");
         Button cancelButton = new Button("Cancel");
@@ -330,7 +337,24 @@ public class Messages {
         });
 
         HBox buttonPane = new HBox(retryButton, cancelButton, browseButton);
-        VBox dialogPane = new VBox(buttonPane);
+
+        AtomicReference<Double> xOffset = new AtomicReference<>((double) 0);
+        AtomicReference<Double> yOffset = new AtomicReference<>((double) 0);
+
+        Label topLabel = new Label("This is top");
+        topLabel.setOnMousePressed(event -> {
+            Messages.sprintf("Drargging: yay");
+            xOffset.set(event.getSceneX());
+            yOffset.set(event.getScreenY());
+        });
+
+        topLabel.setOnMouseDragged(event -> {
+           owner.setX(event.getScreenX() - xOffset.get());
+           owner.setY(event.getScreenY() - yOffset.get());
+        });
+
+        VBox dialogPane = new VBox(topLabel,buttonPane);
+
         dialog.getDialogPane().setContent(dialogPane);
         System.out.println("Showing dialog...");
         // Show the dialog and wait for it to close

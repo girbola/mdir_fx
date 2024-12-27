@@ -1,12 +1,10 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.thumbinfo.ThumbInfo;
@@ -14,7 +12,11 @@ import com.girbola.thumbinfo.ThumbInfo;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +25,22 @@ public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
 
     // @formatter:off
-	final static String thumbInfoInsert =
+    final static String folderInfoColumns =
+            "configuration," +
+            "folderinfo," +
+            "fileinfo," +
+            "selectedfolders, " +
+            "registereddrives," +
+            "driveinfo, " +
+            "thumbinfo," +
+            "workdir," +
+            "ignoredlist, " +
+            "config," +
+            "tables_cols," +
+            "folderinfos " +
+            "FROM your_table_name;";
+
+    final static String thumbInfoInsert =
             "INSERT OR REPLACE INTO " +
                     SQL_Enums.THUMBINFO.getType() +
                     " ('id',"+
@@ -67,46 +84,6 @@ public class SQL_Utils extends FolderInfo_SQL {
                     "'connected')" +
                     " VALUES(?,?,?,?)";
 
-	final static String insertDriveInfo =
-            "INSERT OR REPLACE INTO " +
-                    SQL_Enums.DRIVEINFO.getType() +
-                    "('drivePath', " +
-                    "'identifier', " +
-                    "'totalSize', " +
-                    "'connected,' " +
-                    "'selected')" +
-                    " VALUES(?,?,?,?)";
-
-    final private static String DRIVE_INFO_TABLE_CREATION_QUERY =
-            "CREATE TABLE IF NOT EXISTS " +
-                    SQL_Enums.DRIVEINFO.getType() +
-                    " (" +
-                    "drivePath STRING NOT NULL, " +
-                    "driveTotalSize INTEGER, " +
-                    "identifier STRING, " +
-                    "driveSelected STRING," +
-                    "driveConnected BOOLEAN)";
-
-    //@formatter:on
-    /*
-     * DriveInfo
-     */
-    private static boolean createDriveInfoTable(Connection connection) {
-        Messages.sprintf("createDriveInfoTable creating..." + connection);
-        if (!isDbConnected(connection)) {
-            return false;
-        }
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(DRIVE_INFO_TABLE_CREATION_QUERY);
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    //@formatter:on
 
     /**
      * Commits any pending changes to the database.
@@ -146,157 +123,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
-
-    public static boolean addDriveInfo_list(Connection connection, List<DriveInfo> driveInfo_list) {
-        if (isDbConnected(connection)) {
-            return false;
-        }
-        createDriveInfoTable(connection);
-
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(insertDriveInfo);
-            for (DriveInfo driveInfo : driveInfo_list) {
-                pstmt.setString(1, driveInfo.getDrivePath());
-                pstmt.setBoolean(2, driveInfo.isConnected());
-                pstmt.setBoolean(3, driveInfo.isSelected());
-                pstmt.setLong(4, driveInfo.getDriveTotalSize());
-                pstmt.setString(5, driveInfo.getIdentifier());
-                pstmt.addBatch();
-            }
-            pstmt.executeBatch();
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    // @formatter:on
-    public static boolean loadDriveInfo(Connection connection, ModelFolderScanner model_folderScanner) {
-        String sql = "SELECT * FROM " + SQL_Enums.DRIVEINFO.getType();
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-
-            while (rs.next()) {
-                String drivePath = rs.getString("drivePath");
-                boolean isConnected = rs.getBoolean("driveConnected");
-                boolean isSelected = rs.getBoolean("driveSelected");
-                long driveTotalSize = rs.getLong("driveTotalSize");
-                String identifier = rs.getString("identifier");
-
-                DriveInfo driveInfo = new DriveInfo(drivePath, driveTotalSize, isConnected, isSelected, identifier);
-                model_folderScanner.drive().getDrivesList_obs().add(driveInfo);
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    /*
-     * FolderInfos
-     */
-    public static boolean createFolderInfosDatabase(Connection connection) {
-/*        if (!isDbConnected(connection)) {
-
-            try {
-                DatabaseMetaData metaData = connection.getMetaData();
-                Messages.sprintf("METADATA: " + metaData.toString());
-                return true;
-            } catch (SQLException e) {
-                Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase" + connection.getMetaData().getURL()), e, Misc.getLineNumber(), true);
-                throw new RuntimeException(e);
-            }
-            Messages.sprintfError("Can't connect with configuration file: " + Main.conf.getConfiguration_db_fileName());
-
-            return false;
-        }*/
-
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
-            return false;
-        }
-
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
-
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(sql);
-            stmt.close();
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-    //@formatter:on
-    public static boolean addToFolderInfosDB(Connection connection, FolderInfos folderInfos) {
-        if (connection == null) {
-            return false;
-        }
-        createFolderInfosDatabase(connection);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, folderInfos.getFolderPath());
-            pstmt.setString(2, folderInfos.getTableType());
-            pstmt.setString(3, folderInfos.getJustFolderName());
-            pstmt.setBoolean(4, folderInfos.isConnected());
-            pstmt.executeUpdate();
-            pstmt.close();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    public static List<FolderInfos> loadFolderInfosToTables(Connection connection, ModelMain model_Main) {
-        if(Main.getProcessCancelled()) {
-            return null;
-        }
-
-        if (!isDbConnected(connection)) {
-            Messages.sprintf("Connected!");
-        }
-
-        String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFOS.getType();
-        try {
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            List<FolderInfos> arrayList = new ArrayList<>();
-
-            while (rs.next()) {
-                if(Main.getProcessCancelled()) {
-                    return null;
-                }
-                String path = rs.getString("path");
-                String tableType = rs.getString("tableType");
-                String justFolderName = rs.getString("justFolderName");
-                boolean isConnected = rs.getBoolean("connected");
-                if (path == null) {
-                    Messages.sprintf("Something went badly wrong!");
-                    Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
-                    return null;
-                }
-                FolderInfos folderInfos = new FolderInfos(path, tableType, justFolderName, isConnected);
-                folderInfos.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + folderInfos.isConnected());
-                arrayList.add(folderInfos);
-            }
-
-            return arrayList;
-        } catch (Exception e) {
-            SQL_Utils.closeConnection(connection);
-            return null;
-        }
-
-    }
-
 
     public static boolean loadFolders_list(Connection connection, ModelMain model_Main) {
         if (connection == null) {

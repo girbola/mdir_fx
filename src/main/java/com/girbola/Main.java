@@ -64,8 +64,9 @@ import static com.girbola.messages.Messages.sprintf;
 public class Main extends Application {
 
     private static final String ERROR = Main.class.getSimpleName();
+
     final public static boolean DEBUG = true;
-    final public static boolean debugMemory = false;
+    final public static boolean DEBUG_MEMORY = false;
 
     public final static boolean DEBUG_CONF = true;
     public final static boolean DEBUG_XML = true;
@@ -179,13 +180,7 @@ public class Main extends Application {
 
             FolderScannerSQL.loadSelectedFolders(model_main);
 
-            if (Platform.isFxApplicationThread()) {
-                Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()));
-            } else {
-                Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
-            }
-
-            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+              Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
 
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
@@ -225,12 +220,22 @@ public class Main extends Application {
                     primaryStage.setOnCloseRequest(event14 -> model_main.exitProgram_NOSAVE());
                     Platform.runLater(() -> {
                         lpt.closeStage();
+                        if (Platform.isFxApplicationThread()) {
+                            Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()),getMain_stage());
+                        } else {
+                            Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
+                        }
                     });
 
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
                     lpt.closeStage();
+                    if (Platform.isFxApplicationThread()) {
+                        Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()),getMain_stage());
+                    } else {
+                        Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
+                    }
                 });
 
                 lpt.setTask(load_FileInfosBackToTableViews);
