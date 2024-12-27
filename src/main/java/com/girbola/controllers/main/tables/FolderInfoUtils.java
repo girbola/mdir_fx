@@ -23,18 +23,9 @@ import java.util.*;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.controllers.main.tables.TableUtils.calculateDateDifferenceRatio;
 
-public class FolderInfo_Utils {
+public class FolderInfoUtils {
 
-    private static final String ERROR = FolderInfo_Utils.class.getSimpleName();
-
-    private static boolean findDuplicate(FolderInfo folderInfo, FileInfo fileInfo) {
-        for (FileInfo findFileInfo : folderInfo.getFileInfoList()) {
-            if (fileInfo.getOrgPath().equals(findFileInfo.getOrgPath())) {
-                return true;
-            }
-        }
-        return false;
-    }
+    private static final String ERROR = FolderInfoUtils.class.getSimpleName();
 
     public static boolean addFileInfoList(FolderInfo folderInfo, List<FileInfo> newList) {
         boolean changed = false;
@@ -46,6 +37,124 @@ public class FolderInfo_Utils {
             }
         }
         return changed;
+    }
+
+    public static void calculateFolderInfoStatus(FolderInfo folderInfo) {
+        Messages.sprintf("calculateFileInfoStatuses updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
+
+        int badFiles = 0;
+        int goodFiles = 0;
+        int imageFiles = 0;
+        int rawFiles = 0;
+        int videoFiles = 0;
+        int confirmedFiles = 0;
+        long sizeOfFiles = 0;
+        int copiedFiles = 0;
+        int ignoredFiles = 0;
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+
+        List<Long> dateCounter_list = new ArrayList<>();
+        if (folderInfo.getFileInfoList() == null) {
+            Messages.sprintf("Somehow fileInfo list were null!!!");
+            Main.setProcessCancelled(true);
+            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+            return;
+        }
+
+        for (FileInfo fi : folderInfo.getFileInfoList()) {
+            if (Main.getProcessCancelled()) {
+                return;
+            }
+            if (fi.isIgnored() || fi.isTableDuplicated()) {
+                Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
+                ignoredFiles++;
+            } else {
+                sizeOfFiles += fi.getSize();
+                if (fi.isCopied()) {
+                    copiedFiles++;
+                }
+                if (fi.isBad()) {
+                    badFiles++;
+                }
+                if (fi.isConfirmed()) {
+                    confirmedFiles++;
+                }
+                if (fi.isGood()) {
+                    goodFiles++;
+                }
+
+                if (fi.isRaw()) {
+                    rawFiles++;
+                }
+                if (fi.isImage()) {
+                    imageFiles++;
+                }
+                if (fi.isVideo()) {
+                    videoFiles++;
+                }
+                if (fi.getDate() != 0) {
+                    dateCounter_list.add(fi.getDate());
+                } else {
+                    fi.getDate();
+                }
+
+                LocalDate localDate = null;
+                try {
+                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
+
+                } catch (Exception ex) {
+                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+                }
+
+                map.put(localDate, 0);
+            }
+        }
+        Messages.sprintf("SIZES: " + sizeOfFiles + " Copied: " + copiedFiles + " files: " + (imageFiles + rawFiles + videoFiles) + " ignoredFiles: " + ignoredFiles);
+        folderInfo.setBadFiles(badFiles);
+        folderInfo.setConfirmed(confirmedFiles);
+        folderInfo.setCopied(copiedFiles);
+        folderInfo.setFolderFiles(imageFiles + rawFiles + videoFiles);
+        folderInfo.setFolderImageFiles(imageFiles);
+        folderInfo.setFolderRawFiles(rawFiles);
+        folderInfo.setFolderSize(sizeOfFiles);
+        folderInfo.setFolderVideoFiles(videoFiles);
+        folderInfo.setFolderVideoFiles(videoFiles);
+        folderInfo.setGoodFiles(goodFiles);
+
+        long min = 0;
+        long max = 0;
+
+        if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
+            folderInfo.setConnected(true);
+        } else {
+            folderInfo.setConnected(false);
+        }
+        if (!dateCounter_list.isEmpty()) {
+            Collections.sort(dateCounter_list);
+            try {
+                min = Collections.min(dateCounter_list);
+                max = Collections.max(dateCounter_list);
+
+            } catch (Exception ex) {
+                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            }
+        }
+
+        folderInfo.setMinDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(min));
+        folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(max));
+
+        double dateDifferenceRatio = calculateDateDifferenceRatio(map);
+        folderInfo.setDateDifferenceRatio(dateDifferenceRatio);
+        // sprintf("Datedifference ratio completed");
+        // folderInfo.setDateDifferenceRatio(0);
+        dateCounter_list.clear();
+        badFiles = 0;
+        goodFiles = 0;
+        imageFiles = 0;
+        rawFiles = 0;
+        videoFiles = 0;
+        confirmedFiles = 0;
+
     }
 
     /**
@@ -66,8 +175,7 @@ public class FolderInfo_Utils {
         return list;
     }
 
-    public static void addToObservableFileInfoList(ObservableList<FileInfo> list, String string,
-                                                   FileInfo fileInfo_ToFind) {
+    public static void addToObservableFileInfoList(ObservableList<FileInfo> list, String string, FileInfo fileInfo_ToFind) {
 
         for (FileInfo fileInfo : list) {
             if (fileInfo != fileInfo_ToFind) {
@@ -76,6 +184,14 @@ public class FolderInfo_Utils {
                 }
             }
         }
+    }
+
+    public static boolean hasBadFiles(FolderInfo folderInfo) {
+        if (folderInfo.getBadFiles() >= 1) {
+            Messages.warningText(Main.bundle.getString("badDatesFound"));
+            return false;
+        }
+        return true;
     }
 
     public static boolean moveEntireFolderInfoSourceToDestination(Tables tables, List<FolderInfo> selected, FolderInfo folderInfoSrc, String destinationPath) throws IOException {
@@ -261,136 +377,4 @@ public class FolderInfo_Utils {
         return true;
     }
 
-    public static void calculateFileInfoStatuses(FolderInfo folderInfo) {
-        Messages.sprintf("calculateFileInfoStatuses updateFolderInfos_FileInfo: " + folderInfo.getFolderPath());
-
-        int badFiles = 0;
-        int goodFiles = 0;
-        int imageFiles = 0;
-        int rawFiles = 0;
-        int videoFiles = 0;
-        int confirmedFiles = 0;
-        long sizeOfFiles = 0;
-        int copiedFiles = 0;
-        int ignoredFiles = 0;
-        TreeMap<LocalDate, Integer> map = new TreeMap<>();
-
-        List<Long> dateCounter_list = new ArrayList<>();
-        if (folderInfo.getFileInfoList() == null) {
-            Messages.sprintf("Somehow fileInfo list were null!!!");
-            Main.setProcessCancelled(true);
-            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-            return;
-        }
-
-        for (FileInfo fi : folderInfo.getFileInfoList()) {
-            if (Main.getProcessCancelled()) {
-                return;
-            }
-            if (fi.isIgnored() || fi.isTableDuplicated()) {
-                Messages.sprintf("FileInfo were ignore or duplicated: " + fi.getOrgPath());
-                ignoredFiles++;
-            } else {
-                sizeOfFiles += fi.getSize();
-                if (fi.isCopied()) {
-                    copiedFiles++;
-                }
-                if (fi.isBad()) {
-                    badFiles++;
-                }
-                if (fi.isConfirmed()) {
-                    confirmedFiles++;
-                }
-                if (fi.isGood()) {
-                    goodFiles++;
-                }
-
-                if (fi.isRaw()) {
-                    rawFiles++;
-                }
-                if (fi.isImage()) {
-                    imageFiles++;
-                }
-                if (fi.isVideo()) {
-                    videoFiles++;
-                }
-                if (fi.getDate() != 0) {
-                    dateCounter_list.add(fi.getDate());
-                } else {
-                    fi.getDate();
-                }
-
-                LocalDate localDate = null;
-                try {
-                    localDate = LocalDate.of(Integer.parseInt(simpleDates.getSdf_Year().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Month().format(fi.getDate())), Integer.parseInt(simpleDates.getSdf_Day().format(fi.getDate())));
-
-                } catch (Exception ex) {
-                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-                }
-
-                map.put(localDate, 0);
-            }
-        }
-        Messages.sprintf("SIZES: " + sizeOfFiles + " Copied: " + copiedFiles + " files: " + (imageFiles + rawFiles + videoFiles) + " ignoredFiles: " + ignoredFiles);
-        folderInfo.setConfirmed(confirmedFiles);
-        folderInfo.setFolderFiles(imageFiles + rawFiles + videoFiles);
-
-        folderInfo.setBadFiles(badFiles);
-
-        folderInfo.setFolderRawFiles(rawFiles);
-
-        folderInfo.setFolderVideoFiles(videoFiles);
-
-        folderInfo.setGoodFiles(goodFiles);
-
-        folderInfo.setCopied(copiedFiles);
-
-        folderInfo.setFolderSize(sizeOfFiles);
-        folderInfo.setFolderImageFiles(imageFiles);
-        folderInfo.setFolderVideoFiles(videoFiles);
-
-        long min = 0;
-        long max = 0;
-
-        if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
-            folderInfo.setConnected(true);
-        } else {
-            folderInfo.setConnected(false);
-        }
-        if (!dateCounter_list.isEmpty()) {
-            Collections.sort(dateCounter_list);
-            try {
-                min = Collections.min(dateCounter_list);
-                max = Collections.max(dateCounter_list);
-
-            } catch (Exception ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-            }
-        }
-
-        folderInfo.setMinDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(min));
-        folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(max));
-
-        double dateDifferenceRatio = calculateDateDifferenceRatio(map);
-        folderInfo.setDateDifferenceRatio(dateDifferenceRatio);
-        // sprintf("Datedifference ratio completed");
-        // folderInfo.setDateDifferenceRatio(0);
-        dateCounter_list.clear();
-        badFiles = 0;
-        goodFiles = 0;
-        imageFiles = 0;
-        rawFiles = 0;
-        videoFiles = 0;
-        confirmedFiles = 0;
-
-    }
-
-
-    public static boolean hasBadFiles(FolderInfo folderInfo) {
-        if (folderInfo.getBadFiles() >= 1) {
-            Messages.warningText(Main.bundle.getString("badDatesFound"));
-            return false;
-        }
-        return true;
-    }
 }

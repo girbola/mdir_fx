@@ -2,7 +2,7 @@ package com.girbola.fxml.move;
 
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -83,10 +83,10 @@ public class MoveController {
 		assert cancel_btn != null
 				: "fx:id=\"cancel_btn\" was not injected: check your FXML file 'SplitFolderToNewFolderName.fxml'.";
 
-		ObservableList<FileInfo> obs_event = FolderInfo_Utils.getEvents(model_datefix.getFolderInfo_full());
+		ObservableList<FileInfo> obs_event = FolderInfoUtils.getEvents(model_datefix.getFolderInfo_full());
 		folderName_cmb.setItems(obs_event);
 		
-//		List<FolderInfo> folderInfo_location = FolderInfo_Utils.getLocation(model_datefix.getFolderInfo_full());
+//		List<FolderInfo> folderInfo_location = FolderInfoUtils.getLocation(model_datefix.getFolderInfo_full());
 	}
 
 	private ModelMain model_main;

@@ -66,7 +66,7 @@ import java.util.concurrent.Executors;
 import static com.girbola.Main.*;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
-import static com.girbola.controllers.main.tables.FolderInfo_Utils.calculateFileInfoStatuses;
+import static com.girbola.controllers.main.tables.FolderInfoUtils.calculateFolderInfoStatus;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -204,7 +204,7 @@ public class TableUtils {
             if (tv.getFolderPath().equals(folderInfo.getFolderPath())) {
                 sprintf("hasTabe found! " + tv.getFolderPath());
                 tv.setFileInfoList(folderInfo.getFileInfoList());
-                FolderInfo_Utils.calculateFileInfoStatuses(tv);
+                FolderInfoUtils.calculateFolderInfoStatus(tv);
                 return true;
             }
         }
@@ -418,7 +418,7 @@ public class TableUtils {
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
                 folderInfo.setState("Updated");
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                 TableUtils.refreshTableContent(model_main.tables().getSorted_table());
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(false);
                 // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(true);
@@ -442,7 +442,7 @@ public class TableUtils {
             List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
             if (!list.isEmpty()) {
                 folderInfo.setFileInfoList(list);
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
                 folderInfo.setState("Updated");
                 model_main.tables().getSortIt_table().getColumns().get(0).setVisible(false);
@@ -651,13 +651,13 @@ public class TableUtils {
 
     public static void updateAllFolderInfos(Tables tables) {
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
-            calculateFileInfoStatuses(folderInfo);
+            calculateFolderInfoStatus(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
-            calculateFileInfoStatuses(folderInfo);
+            calculateFolderInfoStatus(folderInfo);
         }
         for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
-            calculateFileInfoStatuses(folderInfo);
+            calculateFolderInfoStatus(folderInfo);
         }
     }
 
@@ -889,7 +889,7 @@ public class TableUtils {
             return;
         }
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+            if (FolderInfoUtils.hasBadFiles(folderInfo)) {
                 Messages.sprintf("1badBadFiles: " + folderInfo.getFolderPath());
                 continue;
             }
@@ -915,7 +915,7 @@ public class TableUtils {
 
         List<FileInfo> list = new ArrayList<>();
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+            if (FolderInfoUtils.hasBadFiles(folderInfo)) {
                 Messages.sprintf("badFiles: " + folderInfo.getFolderPath());
                 continue;
             }
@@ -957,7 +957,7 @@ public class TableUtils {
         }
 
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+            if (FolderInfoUtils.hasBadFiles(folderInfo)) {
                 continue;
             }
 

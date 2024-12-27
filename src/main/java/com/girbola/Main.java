@@ -30,20 +30,16 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.*;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderScannerSQL;
+import com.girbola.sql.SelectedFoldersSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
-import java.awt.Font;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,9 +47,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import java.awt.*;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.*;
@@ -167,20 +161,12 @@ public class Main extends Application {
         };
 
         mainTask.setOnSucceeded(event -> {
-            Messages.sprintf("main succeeded");
-
-            boolean isValidOS = Misc.checkOS();
-            if (isValidOS) {
-                Messages.sprintf("Valid OS found");
-            } else {
-                Messages.sprintfError("Valid OS NOT found");
-            }
 
             ConfigurationUtils.loadConfig_GUI(model_main);
 
-            FolderScannerSQL.loadSelectedFolders(model_main);
+            SelectedFoldersSQL.loadSelectedFolders(model_main);
 
-              Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
 
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
@@ -261,11 +247,20 @@ public class Main extends Application {
             lpt.closeStage();
         });
 
-        Thread mainTask_th = new Thread(mainTask, "mainTask_th");
-        mainTask_th.setDaemon(true);
-        mainTask_th.start();
+        Thread mainTaskTh = new Thread(mainTask, "mainTaskTh");
+        mainTaskTh.setDaemon(false);
+        Messages.sprintf("main succeeded");
+
+        boolean isValidOS = Misc.checkOS();
+        if (isValidOS) {
+            Messages.sprintf("Valid OS found");
+            mainTaskTh.start();
+        } else {
+            Messages.sprintfError("Your OS: " + Misc.getCurrentOs() + " is not supported yet" + "\n\n" + "Please visit our homepage: " + HTMLClass.programHomePage);
+        }
 
     }
+
 
     public static void autoResizeColumns(TableView<?> table) {
         //Set the right policy

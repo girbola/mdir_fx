@@ -133,7 +133,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
 //                    }
 //                    if (fileInfoList.size() > 0) {
 //                        folderInfo.getFileInfoList().addAll(fileInfoList);
-//                        FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+//                        FolderInfoUtils.calculateFileInfoStatuses(folderInfo);
 //                        Messages.sprintf("Counter" + counter + " fileInfoList.size() " + fileInfoList.size()
 //                                + " List were empty. Path" + folderInfo.getFolderPath() + " files == "
 //                                + folderInfo.getFolderFiles());

@@ -15,7 +15,7 @@ import java.util.List;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
 
-public class FolderScannerSQL {
+public class SelectedFoldersSQL {
 
     final private static String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
@@ -134,7 +134,7 @@ public class FolderScannerSQL {
 
         createSelectedFoldersTable(connection);
 
-        insertSelectedFolders_List_ToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
+        insertSelectedFoldersListToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 
         closeConnection(connection);
 
@@ -144,28 +144,25 @@ public class FolderScannerSQL {
      * Creates a table in the database to store selected folders.
      *
      * @param connection The database connection.
-     * @return true if the table is created successfully, false otherwise.
      */
-    public static boolean createSelectedFoldersTable(Connection connection) {
+    public static void createSelectedFoldersTable(Connection connection) {
         if (connection == null) {
             Messages.sprintf("createSelectedFoldersTable Connection were null!");
-            return false;
+            return;
         }
         if (!SQL_Utils.isDbConnected(connection)) {
             Messages.sprintf("createSelectedFoldersTable Not connected");
-            return false;
+            return;
         }
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(selectedFolderTable);
-            return true;
         } catch (Exception ex) {
             Messages.sprintf("createSelectedFoldersTable were not able to connect to");
-            return false;
         }
     }
 
-    public static boolean insertSelectedFolders_List_ToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
+    public static boolean insertSelectedFoldersListToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
         Messages.sprintf("insertSelectedFolders_List_ToDB: " + insertSelectedFolders);
         createSelectedFoldersTable(connection);
         try {
@@ -175,7 +172,6 @@ public class FolderScannerSQL {
             for (SelectedFolder selectedFolder : selectedFolder_list) {
                 Messages.sprintf("select: " + selectedFolder.getFolder());
                 if (selectedFolder.isSelected()) {
-                    Messages.sprintf("332 addToSelectedFoldersDB");
                     boolean folderAdded = addToSelectedFoldersDB(connection, pstmt, selectedFolder);
                     if (!folderAdded) {
                         Messages.sprintfError("Cannot add folder to database: " + selectedFolder.getFolder());
@@ -186,9 +182,9 @@ public class FolderScannerSQL {
                 }
             }
             pstmt.executeBatch();
-            connection.commit();
+            SQL_Utils.commitChanges(connection);
             pstmt.close();
-            closeConnection(connection);
+            SQL_Utils.closeConnection(connection);
             return true;
         } catch (Exception ex) {
             Messages.sprintfError("Insert SElected Folders list to database has failed: " + ex.getMessage());

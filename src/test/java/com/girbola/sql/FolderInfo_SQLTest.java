@@ -2,7 +2,7 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import org.junit.jupiter.api.Assertions;
@@ -74,7 +74,7 @@ public class FolderInfo_SQLTest {
         list.add(fileInfo);
         fi.setFileInfoList(list);
 
-        FolderInfo_Utils.calculateFileInfoStatuses(fi);
+        FolderInfoUtils.calculateFolderInfoStatus(fi);
 
         FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, fi);
         FolderInfo loadedFi = FolderInfo_SQL.loadFolderInfo(Paths.get(fi.getFolderPath()));

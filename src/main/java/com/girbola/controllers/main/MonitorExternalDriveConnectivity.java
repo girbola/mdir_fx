@@ -2,7 +2,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
@@ -127,7 +127,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					if (!loaded) {
 						List<FileInfo> list = FileInfoUtils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);
-						FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+						FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 						Main.setChanged(true);
 						folderInfo.setChanged(true);
 						folderInfo.setState("*");
@@ -140,7 +140,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 					folderInfo.setConnected(false);
 					Messages.sprintf("===Updating folder doesn't exists: " + folderInfo.isConnected());
 					folderInfo.getFileInfoList().clear();
-					FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+					FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 					TableUtils.refreshAllTableContent(model_Main.tables());
 				}
 			}

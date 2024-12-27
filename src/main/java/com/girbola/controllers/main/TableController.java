@@ -11,7 +11,7 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -176,7 +176,7 @@ public class TableController {
                         fileInfo.setTags("");
                         Main.setChanged(true);
                     }
-                    FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                    FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                     TableUtils.refreshAllTableContent(model_main.tables());
                     // ldt.setMessage("counter; " + counter.get());
                     counter.getAndIncrement();
@@ -581,7 +581,7 @@ public class TableController {
 
                 Main.setChanged(true);
                 folderInfo.setChanged(true);
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
                 Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
                 SQL_Utils.isDbConnected(connection);

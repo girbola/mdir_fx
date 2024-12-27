@@ -3,7 +3,7 @@ package com.girbola.fxml.datestreetableview;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -108,8 +108,8 @@ public class DatesTreeTableViewController {
             Path destPath = Paths.get(Main.conf.getWorkDir() + File.separator + entry.getKey());
             FolderInfo folderInfo = new FolderInfo(destPath);
             List<FileInfo> listFileInfos = entry.getValue();
-            FolderInfo_Utils.addFileInfoList(folderInfo, listFileInfos);
-            FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+            FolderInfoUtils.addFileInfoList(folderInfo, listFileInfos);
+            FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
             TreeItem<TreeFolderInfo> fold = new TreeItem<>();
             root.getChildren().add(fold);
 

@@ -7,7 +7,6 @@
 package com.girbola.controllers.main.selectedfolder;
 
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.sql.FolderScannerSQL;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

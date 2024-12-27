@@ -13,7 +13,7 @@ import com.girbola.controllers.datefixer.DateFix_Utils.Field;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -258,7 +258,7 @@ public class Model_datefix extends DateFixerModel {
             }
             if (changed) {
                 // TODO Korjaa apply_btn;
-                FolderInfo_Utils.calculateFileInfoStatuses(getFolderInfo_full());
+                FolderInfoUtils.calculateFolderInfoStatus(getFolderInfo_full());
                 if (model_Main.tables() == null) {
                     Main.setProcessCancelled(true);
                     errorSmth(ERROR, "", null, Misc.getLineNumber(), true);

@@ -48,6 +48,8 @@ import static com.girbola.messages.Messages.sprintf;
  */
 public class ModelMain {
 
+    private final String ERROR = ModelMain.class.getSimpleName();
+
     private AnchorPane main_container;
     private BottomController bottomController;
     private Buttons buttons;
@@ -59,9 +61,6 @@ public class ModelMain {
     private Tables tables;
     private VBox main_vbox;
     private WorkDirSQL workDirSQL;
-
-
-    private final String ERROR = ModelMain.class.getSimpleName();
 
     public ModelMain() {
         sprintf("Model instantiated...");
@@ -110,7 +109,7 @@ public class ModelMain {
     }
 
     public boolean saveAllTableContents() {
-        Messages.sprintf("save started");
+        Messages.sprintf("saveAllTableContents started");
 
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName()); // folderInfo.db
@@ -120,37 +119,30 @@ public class ModelMain {
         SQL_Utils.setAutoCommit(connection, false);
 
         SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFOS.getType()); // clear table folderInfo.db
-        SQL_Utils.createFolderInfosDatabase(connection); // create new folderinfodatabase folderInfo.db
 
-        boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(),
-                TableType.SORTED.getType());
-        if (sorted) {
-            Messages.sprintf("sorted were saved successfully");
-        }
-        boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(),
-                TableType.SORTIT.getType());
-        if (sortit) {
-            Messages.sprintf("sortit were saved successfully");
-        }
-        boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(),
-                TableType.ASITIS.getType());
-        if (asitis) {
-            Messages.sprintf("asitis were saved successfully");
-        }
+        SelectedFoldersSQL.createSelectedFoldersTable(connection); // create new folderinfodatabase folderInfo.db
+
+        boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
+        if (sorted) { Messages.sprintf("sorted were saved successfully"); }
+
+        boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
+        if (sortit) { Messages.sprintf("sortit were saved successfully"); }
+
+        boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
+        if (asitis) { Messages.sprintf("asitis were saved successfully"); }
 
         SQL_Utils.commitChanges(connection);
-        boolean closeConnection = SQL_Utils.closeConnection(connection);
-        if (!closeConnection) {
-            return false;
-        }
 
+        boolean closeConnection = SQL_Utils.closeConnection(connection);
+        if (!closeConnection) return false;
 
         Main.setChanged(true);
+
         return true;
+
     }
 
-    public boolean saveTableContent(Connection connection_Configuration, ObservableList<FolderInfo> items,
-                                    String tableType) {
+    public boolean saveTableContent(Connection connection_Configuration, ObservableList<FolderInfo> items, String tableType) {
         if (items.isEmpty()) {
             Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
             return false;

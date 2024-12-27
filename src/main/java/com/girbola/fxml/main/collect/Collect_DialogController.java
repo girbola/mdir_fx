@@ -6,7 +6,7 @@ import com.girbola.controllers.importimages.AutoCompleteComboBoxListener;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
@@ -88,7 +88,7 @@ public class Collect_DialogController {
 				"locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+			if (FolderInfoUtils.hasBadFiles(folderInfo)) {
 				continue;
 			}
 			// TODO extract to method
@@ -123,7 +123,7 @@ public class Collect_DialogController {
 			}
 
 		}
-//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+//		FolderInfoUtils.moveToAnotherTable(tables, table, tableType);
 		TableUtils.refreshAllTableContent(tables);
 		close();
 	}
@@ -152,7 +152,7 @@ public class Collect_DialogController {
 		}
 
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+			if (FolderInfoUtils.hasBadFiles(folderInfo)) {
 				continue;
 			}
 
@@ -211,12 +211,12 @@ public class Collect_DialogController {
 			}
 
 		}
-//		FolderInfo_Utils.moveToAnotherTable(tables, table, tableType);
+//		FolderInfoUtils.moveToAnotherTable(tables, table, tableType);
 
 		List<FileInfo> list = new ArrayList<>();
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-			if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+			if (FolderInfoUtils.hasBadFiles(folderInfo)) {
 				continue;
 			}
 			list.addAll(folderInfo.getFileInfoList());
@@ -226,7 +226,7 @@ public class Collect_DialogController {
 //
 //		operate.setOnSucceeded((EventHandler<WorkerStateEvent>) event1 -> {
 //            for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-//                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+//                FolderInfoUtils.calculateFileInfoStatuses(folderInfo);
 //            }
 //            TableUtils.refreshAllTableContent(tables);
 //            close();

@@ -14,7 +14,7 @@ import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
@@ -152,7 +152,7 @@ public class MenuBarController {
             Iterator<FolderInfo> foi = model_main.tables().getSortIt_table().getItems().iterator();
             while (foi.hasNext()) {
                 FolderInfo folderInfo = foi.next();
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                 if (folderInfo.getFolderFiles() <= 0) {
                     toRemove.add(folderInfo);
                 }
@@ -239,7 +239,7 @@ public class MenuBarController {
             if (!listToRemove.isEmpty()) {
                 Messages.sprintf("listToRemove were not empty");
                 folderInfo.getFileInfoList().removeAll(listToRemove);
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
             }
             if (folderInfo.getFileInfoList().isEmpty()) {
                 tableSource.getItems().remove(folderInfo);
@@ -324,7 +324,7 @@ public class MenuBarController {
 
             if (list != null) {
                 folderInfo.setFileInfoList(list);
-                FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
             }
 
             if (folderInfo.getFileInfoList().isEmpty()) {
