@@ -4,7 +4,7 @@ import com.girbola.Main;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -70,7 +70,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
 				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
-				FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+				FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
 				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
 				TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());

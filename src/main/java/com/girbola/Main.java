@@ -31,6 +31,7 @@ import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.*;
 import com.girbola.messages.Messages;
+import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SQL_Utils;
@@ -150,20 +151,12 @@ public class Main extends Application {
         };
 
         mainTask.setOnSucceeded(event -> {
-            Messages.sprintf("main succeeded");
-
-            boolean isValidOS = Misc.checkOS();
-            if (isValidOS) {
-                Messages.sprintf("Valid OS found");
-            } else {
-                Messages.sprintfError("Valid OS NOT found");
-            }
 
             ConfigurationUtils.loadConfig_GUI(model_main);
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
-              Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
 
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
@@ -233,11 +226,20 @@ public class Main extends Application {
             lpt.closeStage();
         });
 
-        Thread mainTask_th = new Thread(mainTask, "mainTask_th");
-        mainTask_th.setDaemon(true);
-        mainTask_th.start();
+        Thread mainTaskTh = new Thread(mainTask, "mainTaskTh");
+        mainTaskTh.setDaemon(false);
+        Messages.sprintf("main succeeded");
+
+        boolean isValidOS = Misc.checkOS();
+        if (isValidOS) {
+            Messages.sprintf("Valid OS found");
+            mainTaskTh.start();
+        } else {
+            Messages.sprintfError("Your OS: " + Misc.getCurrentOs() + " is not supported yet" + "\n\n" + "Please visit our homepage: " + HTMLClass.programHomePage);
+        }
 
     }
+
 
     public static void autoResizeColumns(TableView<?> table) {
         //Set the right policy

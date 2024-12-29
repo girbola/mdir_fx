@@ -31,8 +31,12 @@ public class Misc {
 
 	private static final String ERROR = Misc.class.getSimpleName();
 
+	public static String getCurrentOs() {
+		return System.getProperty("os.name");
+	}
+
 	public static boolean checkOS() {
-		String os = System.getProperty("os.name").toLowerCase();
+		String os = getCurrentOs().toLowerCase();
 		Messages.sprintf("OS is: " + os);
 		if (os.contains("win") || os.contains("linux") || os.contains("mac")) {
 			Path configPath = Paths.get(System.getProperty("user.home") + File.separator + ".mdir");

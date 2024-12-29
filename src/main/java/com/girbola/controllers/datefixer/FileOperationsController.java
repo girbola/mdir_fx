@@ -239,7 +239,7 @@ public class FileOperationsController {
 				}
 			}
 			if (update) {
-				FolderInfo_Utils.calculateFileInfoStatuses(loadFolderInfo);
+				FolderInfoUtils.calculateFolderInfoStatus(loadFolderInfo);
 //				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
@@ -247,10 +247,10 @@ public class FileOperationsController {
 		// Remove moved fileinfos from original source
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
 		// Clean Source FolderInfo from moved FileInfos
-		FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+		FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
 		folderInfo.getFileInfoList().removeAll(selectedFileInfoList);
-		FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+		FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
 	}
 }

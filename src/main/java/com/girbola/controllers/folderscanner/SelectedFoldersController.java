@@ -9,6 +9,7 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
+import com.girbola.sql.SelectedFoldersSQL;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;

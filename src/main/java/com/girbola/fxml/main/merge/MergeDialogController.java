@@ -4,7 +4,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -124,7 +124,7 @@ public class MergeDialogController {
 
         while (it.hasNext()) {
             FolderInfo folderInfo = it.next();
-/*            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+/*            if (FolderInfoUtils.hasBadFiles(folderInfo)) {
                 Messages.warningText(Main.bundle.getString("badDatesFound") + " at: " + folderInfo.getFolderPath());
                 continue;
             }*/
@@ -261,7 +261,7 @@ public class MergeDialogController {
                 "locationName were= '" + locationName + " eventName were= " + eventName + " userName: " + userName);
 
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
-            if (FolderInfo_Utils.hasBadFiles(folderInfo)) {
+            if (FolderInfoUtils.hasBadFiles(folderInfo)) {
                 continue;
             }
             if (Main.getProcessCancelled()) {

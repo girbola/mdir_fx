@@ -7,7 +7,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.messages.Messages;
 import javafx.concurrent.Task;
 
@@ -30,7 +30,7 @@ public class UpdateFolderInfoContent extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
     	Messages.sprintf("Running now updatefolerinfocontent");
-    	FolderInfo_Utils.calculateFileInfoStatuses(folderInfo);
+    	FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
         return null;
     }
 
