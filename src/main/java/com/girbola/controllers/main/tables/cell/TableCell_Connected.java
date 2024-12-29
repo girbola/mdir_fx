@@ -3,7 +3,7 @@ package com.girbola.controllers.main.tables.cell;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;

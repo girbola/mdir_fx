@@ -9,7 +9,7 @@ package com.girbola.controllers.main.tables.cell;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.datefixer.GUI_Methods;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

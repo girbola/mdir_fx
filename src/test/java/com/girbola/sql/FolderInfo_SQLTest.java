@@ -1,7 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;

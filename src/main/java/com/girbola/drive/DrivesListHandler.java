@@ -7,8 +7,10 @@
 package com.girbola.drive;
 
 import com.girbola.Main;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.messages.Messages;
+import com.girbola.sql.DriveInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.OSHI_Utils;
@@ -35,7 +37,7 @@ public class DrivesListHandler {
 
 	public boolean loadList(ModelFolderScanner model_folderScanner) {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-		boolean driveInfoLoaded = SQL_Utils.loadDriveInfo(connection, model_folderScanner);
+		boolean driveInfoLoaded = DriveInfo_SQL.loadDriveInfo(connection, model_folderScanner);
 		if (driveInfoLoaded) {
 			return true;
 		} else {
@@ -48,14 +50,14 @@ public class DrivesListHandler {
 	}
 
 	public void saveList() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-		if(!SQL_Utils.isDbConnected(connection)) {
-			SQL_Utils.createFolderInfosDatabase(connection);
+		Connection connectionConfiguration = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+		if(!SQL_Utils.isDbConnected(connectionConfiguration)) {
+			Configuration_SQL_Utils.createFolderInfosDatabase(connectionConfiguration);
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
-		SQL_Utils.addDriveInfo_list(connection, drivesList_obs);
+		DriveInfo_SQL.addDriveInfo_list(connectionConfiguration, drivesList_obs);
 		try {
-			connection.close();
+			connectionConfiguration.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

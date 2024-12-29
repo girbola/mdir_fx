@@ -1,6 +1,6 @@
 package com.girbola.fileinfo;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileInfoTestUtil;

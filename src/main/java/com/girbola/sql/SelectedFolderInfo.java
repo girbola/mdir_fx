@@ -1,13 +1,12 @@
 package com.girbola.sql;
 
-public class FolderInfos {
+public class SelectedFolderInfo {
 	private String folderPath;
 	private String tableType;
 	private String justFolderName;
 	private boolean isConnected;
 
-	public FolderInfos(String folderPath, String tableType, String justFolderName, boolean isConnected) {
-		super();
+	public SelectedFolderInfo(String folderPath, String tableType, String justFolderName, boolean isConnected) {
 		this.folderPath = folderPath;
 		this.tableType = tableType;
 		this.justFolderName = justFolderName;

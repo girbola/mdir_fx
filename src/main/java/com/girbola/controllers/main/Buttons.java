@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.TableView;
 
 import java.util.stream.IntStream;

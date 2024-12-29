@@ -1,11 +1,10 @@
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 
 @Log

@@ -3,7 +3,7 @@ package com.girbola.configuration;
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -23,7 +23,6 @@ public class Configuration_SQL_Utils {
     public static final String id = "id";
 
     private final static String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
-
     private static int configuration_id = 0;
     public static final String betterQualityThumbs = "betterQualityThumbs";
     public static final String confirmOnExit = "confirmOnExit";
@@ -564,21 +563,28 @@ public class Configuration_SQL_Utils {
 		}
 	}
 
-	/**
-     * Updates the configuration in the database.
+
+    /*
+     * FolderInfos
      */
-   /* public synchronized static void update_Configuration() {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-				Main.conf.getConfiguration_db_fileName());
-		try {
-			connection.setAutoCommit(false);
-			insert_Configuration(connection, Main.conf);
-            connection.commit();
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-        SQL_Utils.closeConnection(connection);
-	} */
+    public static boolean createFolderInfosDatabase(Connection connection) {
+
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.errorSmth(SQL_Utils.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
+            return false;
+        }
+
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.execute(sql);
+            stmt.close();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
 
 }

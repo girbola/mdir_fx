@@ -4,7 +4,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import java.io.File;
@@ -66,7 +65,7 @@ public class ConfigurationUtils {
         // Inserts default params to configuration
         Configuration_SQL_Utils.insert_Configuration(connection, Main.conf);
         Configuration_SQL_Utils.createIgnoredListTable(connection);
-        SQL_Utils.createFolderInfosDatabase(connection);
+        Configuration_SQL_Utils.createFolderInfosDatabase(connection);
 
         try {
             connection.commit();

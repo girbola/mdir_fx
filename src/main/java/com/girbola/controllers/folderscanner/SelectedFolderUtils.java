@@ -1,14 +1,13 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import javafx.scene.control.TableView;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SelectedFolderUtils {

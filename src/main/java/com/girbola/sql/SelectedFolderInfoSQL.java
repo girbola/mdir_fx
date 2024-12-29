@@ -15,46 +15,65 @@ import java.util.List;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
 
-public class FolderScannerSQL {
+public class SelectedFolderInfoSQL {
 
-    final private static String selectedFolderTable =
+    private static final String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
                     SQL_Enums.SELECTEDFOLDERS.getType() +
                     " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN)";
 
-    final static String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
+    static final String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
             + " ('selected', 'connected', 'path', 'media') VALUES(?,?,?,?)";
 
-    /**
-     * Adds the selected folder to the selected folders database.
-     *
-     * @param connection     The database connection.
-     * @param pstmt          The prepared statement for the query.
-     * @param selectedFolder The SelectedFolder object containing the folder details.
-     * @return true if the folder is successfully added, false otherwise.
-     */
-    private static boolean addToSelectedFoldersDB(Connection connection, PreparedStatement pstmt, SelectedFolder selectedFolder) {
+    public static boolean createSelectedFoldersDBTable(Connection connection) {
+        if (connection == null) {
+            Messages.sprintf("createSelectedFoldersTable Connection were null!");
+            return false;
+        }
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintf("createSelectedFoldersTable Not connected");
+            return false;
+        }
         try {
-            pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
-            pstmt.setBoolean(2, selectedFolder.connected_property().get());
-            pstmt.setString(3, selectedFolder.getFolder());
-
-            Messages.sprintf("selectedfolder is. " + selectedFolder.getFolder() + " is connected? " + selectedFolder.connected_property().get());
-            pstmt.addBatch();
+            Statement stmt = connection.createStatement();
+            stmt.execute(selectedFolderTable);
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            Messages.sprintf("createSelectedFoldersTable were not able to connect to");
             return false;
         }
     }
 
-    /**
-     * Removes the selected folders from the database.
-     *
-     * @param modelMain The main model of the application.
-     * @return true if the selected folders are successfully removed, false otherwise.
-     */
-    public static boolean removeSelectedFolders(ModelMain modelMain) {
+    public static boolean loadSelectedFolders(ModelMain model_Main) {
+
+        Connection connection = null;
+        Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
+
+        try {
+            connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        } catch (Exception e) {
+            Messages.sprintfError("Error connecting to database: " + configFile);
+        }
+
+        if (connection == null) {
+            return false;
+        }
+
+        if (SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
+            SQL_Utils.loadFolders_list(connection, model_Main);
+            closeConnection(connection);
+            return true;
+        } else {
+            Messages.sprintf("Nothing to load from database");
+            closeConnection(connection);
+            return false;
+        }
+    }
+
+
+
+    public static boolean clearSelectedFolders(ModelMain modelMain) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
@@ -84,35 +103,6 @@ public class FolderScannerSQL {
         return true;
     }
 
-    public static boolean loadSelectedFolders(ModelMain model_Main) {
-
-        Connection connection = null;
-        Path configFile = Paths
-                .get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
-
-        try {
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                    Main.conf.getConfiguration_db_fileName());
-        } catch (Exception e) {
-            Messages.sprintfError("Error connecting to database: " + configFile);
-        }
-
-        if (connection == null) {
-            return false;
-        }
-
-        if (SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
-            SQL_Utils.loadFolders_list(connection, model_Main);
-            closeConnection(connection);
-            return true;
-        } else {
-            Messages.sprintf("Nothing to load from database");
-            closeConnection(connection);
-            return false;
-        }
-    }
-
     public static void saveSelectedFolder(ModelMain modelMain) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
@@ -132,42 +122,17 @@ public class FolderScannerSQL {
         }
         //createFolderInfoDatabase
 
-        createSelectedFoldersTable(connection);
+        createSelectedFoldersDBTable(connection);
 
-        insertSelectedFolders_List_ToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
+        insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 
         closeConnection(connection);
 
     }
 
-    /**
-     * Creates a table in the database to store selected folders.
-     *
-     * @param connection The database connection.
-     * @return true if the table is created successfully, false otherwise.
-     */
-    public static boolean createSelectedFoldersTable(Connection connection) {
-        if (connection == null) {
-            Messages.sprintf("createSelectedFoldersTable Connection were null!");
-            return false;
-        }
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("createSelectedFoldersTable Not connected");
-            return false;
-        }
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(selectedFolderTable);
-            return true;
-        } catch (Exception ex) {
-            Messages.sprintf("createSelectedFoldersTable were not able to connect to");
-            return false;
-        }
-    }
-
-    public static boolean insertSelectedFolders_List_ToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
+    public static boolean insertSelectedFoldersToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
         Messages.sprintf("insertSelectedFolders_List_ToDB: " + insertSelectedFolders);
-        createSelectedFoldersTable(connection);
+        createSelectedFoldersDBTable(connection);
         try {
             connection.setAutoCommit(false);
             PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
@@ -192,6 +157,29 @@ public class FolderScannerSQL {
             return true;
         } catch (Exception ex) {
             Messages.sprintfError("Insert SElected Folders list to database has failed: " + ex.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Adds the selected folder to the selected folders database.
+     *
+     * @param connection     The database connection.
+     * @param pstmt          The prepared statement for the query.
+     * @param selectedFolder The SelectedFolder object containing the folder details.
+     * @return true if the folder is successfully added, false otherwise.
+     */
+    private static boolean addToSelectedFoldersDB(Connection connection, PreparedStatement pstmt, SelectedFolder selectedFolder) {
+        try {
+            pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
+            pstmt.setBoolean(2, selectedFolder.connected_property().get());
+            pstmt.setString(3, selectedFolder.getFolder());
+
+            Messages.sprintf("selectedfolder is. " + selectedFolder.getFolder() + " is connected? " + selectedFolder.connected_property().get());
+            pstmt.addBatch();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
     }

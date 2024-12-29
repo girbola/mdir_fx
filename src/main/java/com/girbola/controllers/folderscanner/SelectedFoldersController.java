@@ -9,7 +9,7 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FolderScannerSQL;
+import com.girbola.sql.SelectedFolderInfoSQL;
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -56,7 +56,7 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        com.girbola.sql.FolderScannerSQL.saveSelectedFolder(model_main);
+        SelectedFolderInfoSQL.saveSelectedFolder(model_main);
 
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
@@ -109,7 +109,7 @@ public class SelectedFoldersController {
 
         }
 
-        FolderScannerSQL.removeSelectedFolders(model_main);
+        SelectedFolderInfoSQL.clearSelectedFolders(model_main);
 
         table.getItems().removeAll(selectedItems);
         table.getSelectionModel().clearSelection();

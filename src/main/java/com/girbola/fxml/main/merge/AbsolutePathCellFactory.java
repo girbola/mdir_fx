@@ -1,9 +1,7 @@
 package com.girbola.fxml.main.merge;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.util.Callback;
 
 public class AbsolutePathCellFactory extends ListCell<FolderInfo> {
 

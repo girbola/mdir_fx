@@ -2,6 +2,7 @@ package com.girbola.controllers.main.tables;
 
 import com.girbola.controllers.main.TableStatistic;
 import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import javafx.concurrent.Task;
 import javafx.scene.control.TableView;

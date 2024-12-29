@@ -1,6 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
@@ -54,7 +55,7 @@ public class SaveTablesToDatabases extends Task<Integer> {
             return null;
         }
         SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERINFOS.getType());
-        SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new FoldersInfos table
+        Configuration_SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new FoldersInfos table
         if(!SQL_Utils.isDbConnected(connection_Configuration)) {
             Messages.errorSmth(ERROR, "Connection were closed!", new Exception("Connection were closed"),
                     Misc.getLineNumber(), true);

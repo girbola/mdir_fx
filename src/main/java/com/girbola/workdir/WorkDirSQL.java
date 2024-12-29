@@ -2,8 +2,7 @@ package com.girbola.workdir;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.tables.*;
-import com.girbola.drive.DriveInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.*;
 import com.girbola.messages.Messages;
 import com.girbola.sql.*;

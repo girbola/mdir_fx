@@ -1,6 +1,6 @@
 package com.girbola.controllers.main.tables.cell;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoType;
 import com.girbola.messages.Messages;
 import javafx.scene.control.TableCell;

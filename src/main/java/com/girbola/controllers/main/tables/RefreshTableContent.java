@@ -1,5 +1,6 @@
 package com.girbola.controllers.main.tables;
 
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;

@@ -12,7 +12,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.DateFix_Utils.Field;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfo_Utils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;

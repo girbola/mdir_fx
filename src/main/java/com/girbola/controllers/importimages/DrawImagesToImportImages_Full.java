@@ -8,7 +8,7 @@ package com.girbola.controllers.importimages;
 
 import com.girbola.Main;
 import com.girbola.controllers.closerlook.CloserLookController;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;

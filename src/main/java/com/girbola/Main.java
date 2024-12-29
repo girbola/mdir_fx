@@ -30,20 +30,15 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.*;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderScannerSQL;
+import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
-import java.awt.Font;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -51,9 +46,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.text.*;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
-import java.awt.*;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.*;
@@ -65,36 +58,26 @@ public class Main extends Application {
 
     private static final String ERROR = Main.class.getSimpleName();
 
-    final public static boolean DEBUG = true;
-    final public static boolean DEBUG_MEMORY = false;
-
-    public final static boolean DEBUG_CONF = true;
-    public final static boolean DEBUG_XML = true;
-
+    private ModelMain model_main = new ModelMain();
+    private Scene primaryScene;
+    private StageControl stageControl;
+    private Task<Boolean> load_FileInfosBackToTableViews = null;
+    private Task<Void> mainTask;
+    private static AtomicBoolean changed = new AtomicBoolean(false);
+    private static AtomicBoolean processCancelled = new AtomicBoolean(false);
+    private static Stage main_stage;
     public static Configuration conf = new Configuration();
+    public static LoadingProcessTask lpt;
+    public static Locale locale;
+    public static ResourceBundle bundle;
+    public static SceneSwitcher scene_Switcher = new SceneSwitcher();
     public static SimpleDates simpleDates = new SimpleDates();
 
-    public static ResourceBundle bundle;
-    public static Locale locale;
+    final public static boolean DEBUG = true;
+    final public static boolean DEBUG_CONF = true;
+    final public static String country = "EN";
+    final public static String lang = "en";
 
-    public final static String country = "EN";
-    public final static String lang = "en";
-
-    private static AtomicBoolean processCancelled = new AtomicBoolean(false);
-    private static AtomicBoolean changed = new AtomicBoolean(false);
-
-    private ModelMain model_main = new ModelMain();
-
-    private static Stage main_stage;
-
-    private Task<Boolean> load_FileInfosBackToTableViews = null;
-
-    public static SceneSwitcher scene_Switcher = new SceneSwitcher();
-
-    private Scene primaryScene;
-    public static LoadingProcessTask lpt;
-    private Task<Void> mainTask;
-    private StageControl stageControl;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -178,7 +161,7 @@ public class Main extends Application {
 
             ConfigurationUtils.loadConfig_GUI(model_main);
 
-            FolderScannerSQL.loadSelectedFolders(model_main);
+            SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
               Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
@@ -220,22 +203,11 @@ public class Main extends Application {
                     primaryStage.setOnCloseRequest(event14 -> model_main.exitProgram_NOSAVE());
                     Platform.runLater(() -> {
                         lpt.closeStage();
-                        if (Platform.isFxApplicationThread()) {
-                            Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()),getMain_stage());
-                        } else {
-                            Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
-                        }
                     });
-
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
                     lpt.closeStage();
-                    if (Platform.isFxApplicationThread()) {
-                        Messages.workdirConnection(Paths.get(Main.conf.getWorkDir()),getMain_stage());
-                    } else {
-                        Platform.runLater(() -> Paths.get(Main.conf.getWorkDir()));
-                    }
                 });
 
                 lpt.setTask(load_FileInfosBackToTableViews);

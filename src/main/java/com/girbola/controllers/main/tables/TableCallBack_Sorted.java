@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.main.tables;
 
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;

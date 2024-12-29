@@ -2,7 +2,7 @@ package com.girbola.media.collector;
 
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.Events;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.date.DateUtils;

@@ -2,6 +2,7 @@ package com.girbola.controllers.main.tables;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;

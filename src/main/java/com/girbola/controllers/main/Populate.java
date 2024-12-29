@@ -131,7 +131,10 @@ public class Populate {
         });
 
         createFileList.setOnCancelled(createFileListCancelled -> Messages.sprintf("CreateFileList cancelled"));
-        createFileList.setOnFailed(createFileListFailed -> Messages.sprintf("CreateFileList failed"));
+        createFileList.setOnFailed(createFileListFailed -> {
+            loadingProcessTask.closeStage();
+            Messages.sprintf("CreateFileList failed");
+        });
 
         return new Thread(createFileList, "createFileList_th");
     }

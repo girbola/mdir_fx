@@ -12,7 +12,7 @@ import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
@@ -120,7 +120,7 @@ public class ModelMain {
         SQL_Utils.setAutoCommit(connection, false);
 
         SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFOS.getType()); // clear table folderInfo.db
-        SQL_Utils.createFolderInfosDatabase(connection); // create new folderinfodatabase folderInfo.db
+        SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection); // create new folderinfodatabase folderInfo.db
 
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(),
                 TableType.SORTED.getType());
@@ -156,16 +156,15 @@ public class ModelMain {
             return false;
         }
 
-        Connection fileList_connection = null;
+        Connection fileListConnection = null;
         for (FolderInfo folderInfo : items) {
             if (folderInfo.getFolderFiles() >= 1) {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
-                    FolderInfos folderInfos = new FolderInfos(folderInfo.getFolderPath(), tableType,
-                            folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    SelectedFolderInfo folderInfos = new SelectedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = SQL_Utils.addToFolderInfosDB(connection_Configuration, folderInfos);
+                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connection_Configuration, folderInfos);
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
                     }
@@ -174,15 +173,15 @@ public class ModelMain {
                      * Connection status when this was saved Connects to current folder for existing
                      * or creates new one called fileinfo.db
                      */
-                    fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+                    fileListConnection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
                             Main.conf.getMdir_db_fileName());
-                    fileList_connection.setAutoCommit(false);
+                    fileListConnection.setAutoCommit(false);
                     // Inserts all data info fileinfo.db
-                    FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
-                    SQL_Utils.commitChanges(fileList_connection);
-                    FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
-                    SQL_Utils.commitChanges(fileList_connection);
-                    SQL_Utils.closeConnection(fileList_connection);
+                    FileInfo_SQL.insertFileInfoListToDatabase(fileListConnection, folderInfo.getFileInfoList(), false);
+                    SQL_Utils.commitChanges(fileListConnection);
+                    FolderInfo_SQL.saveFolderInfoToTable(fileListConnection, folderInfo);
+                    SQL_Utils.commitChanges(fileListConnection);
+                    SQL_Utils.closeConnection(fileListConnection);
 
                 } catch (Exception e) {
                     e.printStackTrace();

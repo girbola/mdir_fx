@@ -4,8 +4,9 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.main.tables;
+package com.girbola.controllers.main.tables.model;
 
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
@@ -127,7 +128,6 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
-        // Bindings.subtract(folderFiles, copied);
         Bindings.subtract(folderFiles, badFiles);
 
     }
