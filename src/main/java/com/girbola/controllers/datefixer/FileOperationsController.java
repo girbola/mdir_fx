@@ -11,7 +11,7 @@ import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfo_Utils;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.fxml.move.MoveController;

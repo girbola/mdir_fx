@@ -9,7 +9,7 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
-import com.girbola.sql.SelectedFoldersSQL;
+import com.girbola.sql.FolderInfosSQL;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
@@ -96,7 +96,8 @@ public class SelectedFoldersController {
     }
 
     private void removeFromTable(TableView<SelectedFolder> table) {
-        Messages.sprintf("RemoveFromtable started");
+        //TODO Finish removeFromTable
+        Messages.warningText("RemoveFromTable option is NOT READY");
 
         Iterator<SelectedFolder> selectedFolderScannerObs = model_main.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
         while(selectedFolderScannerObs.hasNext()) {

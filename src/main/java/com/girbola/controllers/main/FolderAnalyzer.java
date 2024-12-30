@@ -6,7 +6,7 @@
  */
 package com.girbola.controllers.main;
 
-import com.girbola.controllers.main.tables.FolderInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import javafx.collections.ObservableList;
 
