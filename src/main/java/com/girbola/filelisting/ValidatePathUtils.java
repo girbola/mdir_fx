@@ -15,6 +15,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.misc.Misc.getLineNumber;
@@ -31,8 +33,11 @@ public class ValidatePathUtils {
     public final static String[] skippedFolderList_UNIX = {"bin", "dev", "lib", "libx32", "root", "snap", "swapfile", "usr", "boot", "etc", "lib32", "lost+found", "opt", "run", "some", "sys", "var", "cdrom", "lib64", "media", "proc", "sbin", "srv"};
     public final static String[] skippedFolderList_WIN = {"$SysReset", "$Recycle.Bin", "RECYCLER", ".Trash", "Android", "AppData", "Boot", "Default", "Efi", "Intel", "Java", "NetBeansProjects", "OEM", "PerfLogs", "Program Files (x86)", "Program Files", "ProgramData", "Recycle", "Resource",
             "System Volume Information", "Windows", "source"};
-    public final static String[] skippedFolderList_OSX = {"$RECYCLE.BIN", ".DS_Store", "Photos Library", "Applications", "Library", "Network", "System", "Users", "Volumes", "bin", "cores", "etc", "home", "opt", "private", "sbin", "tmp", "usr", "var"};
-
+    public static final ArrayList<String> skippedFolderList_OSX = new ArrayList<>(Arrays.asList(
+            "$RECYCLE.BIN", ".DS_Store", "Photos Library", "Applications", "Library", "Network",
+            "System", "Users", "Volumes", "bin", "cores", "etc", "home", "opt",
+            "private", "sbin", "tmp", "usr", "var"
+    ));
     public final static String[] skippedFolderList_MAC = {};
 
     public static boolean hasMediaFilesInFolder(Path path) {
@@ -77,14 +82,14 @@ public class ValidatePathUtils {
                 return true;
             }
             for (String list : skippedFolderList_WIN) {
-                if (file.getFileName().toString().toLowerCase().equals(list.toLowerCase())) {
+                if (file.toString().toLowerCase().equals(list.toLowerCase())) {
                     return true;
                 }
             }
             return false;
         } else if (Misc.isUnix()) {
             for (String list : skippedFolderList_UNIX) {
-                if (file.getFileName().toString().toLowerCase().equals(list.toLowerCase())) {
+                if (file.toString().toLowerCase().equals(list.toLowerCase())) {
                     return true;
                 }
             }

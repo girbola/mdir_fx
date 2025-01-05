@@ -388,7 +388,7 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         sprintf("menuItem_file_save_action");
-        Task<Integer> saveTablesToDatabases = new SaveTablesToDatabases(model_main, Main.scene_Switcher.getWindow(),
+        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.scene_Switcher.getWindow(),
                 null, true);
 
         saveTablesToDatabases.setOnSucceeded(event2 -> {

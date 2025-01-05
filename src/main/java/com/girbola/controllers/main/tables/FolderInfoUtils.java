@@ -176,6 +176,15 @@ public class FolderInfoUtils {
         return list;
     }
 
+    private static boolean findDuplicate(FolderInfo folderInfo, FileInfo fileInfo) {
+        for (FileInfo findFileInfo : folderInfo.getFileInfoList()) {
+            if (fileInfo.getOrgPath().equals(findFileInfo.getOrgPath())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void addToObservableFileInfoList(ObservableList<FileInfo> list, String string, FileInfo fileInfo_ToFind) {
 
         for (FileInfo fileInfo : list) {

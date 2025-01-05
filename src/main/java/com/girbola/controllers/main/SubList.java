@@ -39,7 +39,9 @@ public class SubList extends Task<List<Path>> {
 	}
 
 	private static void calculate(Path p) throws IOException {
-		sprintf("SubList - calculate: " + p);
+		if(Files.isReadable(p)) {
+			sprintf("IS Readable. SubList - calculate: " + p);
+		}
 		SubFolders subFolders = new SubFolders();
 		List<Path> list = SubFolders.subFolders(p);
 

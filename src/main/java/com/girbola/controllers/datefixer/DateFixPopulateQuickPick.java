@@ -146,8 +146,6 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         return nodes;
     }
 
-    ;
-
     private VBox createImageFrame(FileInfo fileInfo, int index) {
         VBox frame_vbox = DateFixGuiUtils.createImageFrame(GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
 

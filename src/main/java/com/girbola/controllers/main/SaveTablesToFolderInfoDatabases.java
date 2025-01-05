@@ -13,18 +13,18 @@ import javafx.stage.Stage;
 
 import java.sql.Connection;
 
-public class SaveTablesToDatabases extends Task<Integer> {
+public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
 
-	private final String ERROR = SaveTablesToDatabases.class.getName();
+	private final String ERROR = SaveTablesToFolderInfoDatabases.class.getName();
 
 	private Stage stage;
 	private LoadingProcessTask loadingProcess_Task;
 	private boolean closeLoadingStage;
 	private ModelMain model_main;
 
-	public SaveTablesToDatabases(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
-                                 boolean closeLoadingStage) {
-		super();
+	public SaveTablesToFolderInfoDatabases(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
+                                           boolean closeLoadingStage) {
+//		super();
 		this.model_main = model_main;
 		this.stage = stage;
 		if (loadingProcess_Task == null) {
@@ -38,9 +38,8 @@ public class SaveTablesToDatabases extends Task<Integer> {
 	@Override
 	protected Integer call() throws Exception {
 
-        Connection connection_Configuration = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
-        if (connection_Configuration == null) {
+        Connection connectionConfiguration = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if (connectionConfiguration == null) {
             Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
             Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving FolderInfos failed!"),
                     Misc.getLineNumber(), true);
@@ -48,15 +47,15 @@ public class SaveTablesToDatabases extends Task<Integer> {
             return null;
         }
         try {
-            connection_Configuration.setAutoCommit(false);
+            connectionConfiguration.setAutoCommit(false);
         } catch (Exception e) {
             e.printStackTrace();
             cancel();
             return null;
         }
-        SQL_Utils.clearTable(connection_Configuration, SQL_Enums.FOLDERINFOS.getType());
-        Configuration_SQL_Utils.createFolderInfosDatabase(connection_Configuration); // create new FoldersInfos table
-        if(!SQL_Utils.isDbConnected(connection_Configuration)) {
+        SQL_Utils.clearTable(connectionConfiguration, SQL_Enums.FOLDERINFOS.getType());
+        Configuration_SQL_Utils.createFolderInfosDatabase(connectionConfiguration); // create new FoldersInfos table
+        if(!SQL_Utils.isDbConnected(connectionConfiguration)) {
             Messages.errorSmth(ERROR, "Connection were closed!", new Exception("Connection were closed"),
                     Misc.getLineNumber(), true);
 
@@ -64,26 +63,26 @@ public class SaveTablesToDatabases extends Task<Integer> {
 
         long start = System.currentTimeMillis();
         updateMessage("Loading Sorted");
-        boolean sorted = model_main.saveTableContent(connection_Configuration,
+        boolean sorted = model_main.saveTableContent(connectionConfiguration,
                 model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
         if (sorted) {
             Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
         }
         start = System.currentTimeMillis();
         updateMessage("Loading SortIt");
-        boolean sortit = model_main.saveTableContent(connection_Configuration,
+        boolean sortit = model_main.saveTableContent(connectionConfiguration,
                 model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
         if (sortit) {
             Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
         }
         start = System.currentTimeMillis();
         updateMessage("Loading AsItIs");
-        boolean asitis = model_main.saveTableContent(connection_Configuration,
+        boolean asitis = model_main.saveTableContent(connectionConfiguration,
                 model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
         if (asitis) {
             Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
         }
-        SQL_Utils.closeConnection(connection_Configuration);
+        SQL_Utils.closeConnection(connectionConfiguration);
 
         return null;
     }

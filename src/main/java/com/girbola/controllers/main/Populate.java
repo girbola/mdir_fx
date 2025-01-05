@@ -7,6 +7,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
@@ -104,6 +105,11 @@ public class Populate {
                 loadingProcessTask.setTask(sorterTask);
                 sorterTask.setOnSucceeded(sorterSuccess -> {
                     Task<Void> calculateFolderContent = loadContentToContainer(loadingProcessTask, sorterTask);
+                    if(exec[getExecCounter()].isShutdown() || exec[getExecCounter()].isTerminated()) {
+                        ConcurrencyUtils.initNewSingleExecutionService();
+                        Messages.sprintf("initNewSingleExecutionService NEW one");
+                    }
+
                     exec[getExecCounter()].submit(calculateFolderContent);
                 });
                 sorterTask.setOnCancelled(sorterCancelled -> {
