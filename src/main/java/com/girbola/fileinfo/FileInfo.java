@@ -6,7 +6,7 @@
  */
 package com.girbola.fileinfo;
 
-import com.girbola.MDir_Constants;
+import com.girbola.controllers.datefixer.utils.MetadataField;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -80,7 +80,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setOrientation(0);
         this.setTags("");
 
-        this.setCamera_model(MDir_Constants.UNKNOWN.getType());
+        this.setCamera_model(MetadataField.UNKNOWN.getType());
         this.setBad(false);
         this.setGood(false);
         this.setSuggested(false);

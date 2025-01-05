@@ -1,5 +1,7 @@
 package com.girbola.controllers.datefixer;
 
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
+import com.girbola.controllers.datefixer.utils.GUI_Methods;
 import com.girbola.messages.Messages;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;

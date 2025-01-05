@@ -4,9 +4,9 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.datefixer;
+package com.girbola.controllers.datefixer.table;
 
-import com.girbola.MDir_Constants;
+import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -30,13 +30,13 @@ import static com.girbola.messages.Messages.sprintf;
  *
  * @author Marko Lokka
  */
-public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolean> {
+public class CheckBoxCell_Events extends TableCell<EXIF_Data_Selector, Boolean> {
 
-	private final String ERROR = CheckBoxCell_Locations.class.getSimpleName();
+	private final String ERROR = CheckBoxCell_Events.class.getSimpleName();
 	private CheckBox checkBox;
 	private Model_datefix model_DateFix;
 
-	public CheckBoxCell_Locations(Model_datefix model_DateFix) {
+	public CheckBoxCell_Events(Model_datefix model_DateFix) {
 		this.model_DateFix = model_DateFix;
 	}
 
@@ -44,11 +44,11 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 	protected void updateItem(Boolean item, boolean empty) {
 		super.updateItem(item, empty);
 		if (empty) {
-			sprintf("CheckBoxCell_Cameras checkboxtree was empty");
+			sprintf("CheckBoxCell_Events checkboxtree was empty");
 			this.setGraphic(null);
 			this.setText(null);
 		} else {
-			sprintf("Painting cell! getTypeSelector : " + getTypeSelector());
+			sprintf("Painting cell CheckBoxCell_Events! getTypeSelector : " + getTypeSelector());
 			paintCell();
 		}
 	}
@@ -61,8 +61,8 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 				@Override
 				public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
 					// setItem(newValue);
-					sprintf("checkBox Cameras is selected? " + newValue);
-					Task<ObservableList<Node>> updateLocations_Task = new Task<ObservableList<Node>>() {
+					sprintf("CheckBoxCell_Events is selected? " + newValue);
+					Task<ObservableList<Node>> updateEvents_Task = new Task<ObservableList<Node>>() {
 						@Override
 						protected ObservableList<Node> call() throws Exception {
 							model_DateFix.getCameras_TableView().setDisable(true);
@@ -70,51 +70,52 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 							model_DateFix.getEvents_TableView().setDisable(true);
 							model_DateFix.getLocations_TableView().setDisable(true);
 
-							EXIF_Data_Selector location_data = (EXIF_Data_Selector) getTableView().getItems().get(getIndex());
-							location_data.setIsShowing(newValue);
-							sprintf("locations checkboz: " + checkBox + " data isShowing? " + location_data.isShowing() + " string= "
-									+ location_data.getInfo());
+							EXIF_Data_Selector events_data = (EXIF_Data_Selector) getTableView().getItems().get(getIndex());
+							events_data.setIsShowing(newValue);
+							sprintf("events checkboz: " + checkBox + " data isShowing? " + events_data.isShowing() + " string= "
+									+ events_data.getInfo());
 							ObservableList<Node> theList = FXCollections.observableArrayList();
-							List<String> listOfLocations = new ArrayList<>();
+							List<String> listOfEvents = new ArrayList<>();
 							if (newValue == true) {
-								for (EXIF_Data_Selector locations : model_DateFix.getLocations_TableView().getItems()) {
-									if (locations.isShowing()) {
-										listOfLocations.add(locations.getInfo());
+								for (EXIF_Data_Selector events : model_DateFix.getEvents_TableView().getItems()) {
+									if (events.isShowing()) {
+										Messages.sprintf("Were showing events: " + events);
+										listOfEvents.add(events.getInfo());
 									}
 								}
 							} else {
-								for (EXIF_Data_Selector locations : model_DateFix.getLocations_TableView().getItems()) {
-									if (!locations.isShowing()) {
-										listOfLocations.add(locations.getInfo());
+								for (EXIF_Data_Selector events : model_DateFix.getEvents_TableView().getItems()) {
+									if (!events.isShowing()) {
+										listOfEvents.add(events.getInfo());
 									}
 								}
 							}
-							if (listOfLocations.isEmpty()) {
-								sprintf("List of locations were empty");
+							if (listOfEvents.isEmpty()) {
+								sprintf("List of cameras were empty");
 								return theList;
 							}
-							// sprintf("Cameras selected: " +
-							// data.getInfo());
 							int counter = 0;
 							if (newValue == true) {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
+
+										Messages.sprintf("NODEEEE: " + node.getId());
 										FileInfo fi = (FileInfo) node.getUserData();
-										if (!fi.getLocation().isEmpty()) {
-											if (has_locations(fi.getLocation(), listOfLocations)) {
-												theList.add(node);
-												model_DateFix.getSelectionModel().addOnly(node);
-											}
+										if (has_events(fi.getEvent(), listOfEvents)) {
+											theList.add(node);
+											Messages.sprintf("About to add");
+											model_DateFix.getSelectionModel().addOnly(node);
+
+											Messages.sprintf("-------added");
 										}
 										counter++;
 									}
 								}
-
 							} else if (newValue == false) {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
-										if (has_locations(fi.getLocation(), listOfLocations)) {
+										if (has_events(fi.getEvent(), listOfEvents)) {
 											theList.add(node);
 											model_DateFix.getSelectionModel().remove(node);
 										}
@@ -125,7 +126,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 							return theList;
 						}
 					};
-					updateLocations_Task.setOnSucceeded((WorkerStateEvent event) -> {
+					updateEvents_Task.setOnSucceeded((WorkerStateEvent event) -> {
 //						model_DateFix.getScrollPane().setVvalue(-1);
 //						model_DateFix.getScrollPane().setVvalue(0);
 
@@ -135,26 +136,23 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 						model_DateFix.getLocations_TableView().setDisable(false);
 					});
 
-					updateLocations_Task.setOnCancelled((WorkerStateEvent event) -> {
-						sprintf("updateCamera_Task cancelled");
+					updateEvents_Task.setOnCancelled((WorkerStateEvent event) -> {
+						sprintf("updateEvents_Task cancelled");
 					});
 
-					updateLocations_Task.setOnFailed((WorkerStateEvent event) -> {
-						sprintf("updateCamera_Task failed");
+					updateEvents_Task.setOnFailed((WorkerStateEvent event) -> {
+						sprintf("updateEvents_Task failed");
 						Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
 					});
-					new Thread(updateLocations_Task).run();
+					new Thread(updateEvents_Task).run();
 				}
 
-				private boolean has_locations(String format, List<String> listOfLocations) {
-					for (String str : listOfLocations) {
+				private boolean has_events(String format, List<String> listOfEvents) {
+					Messages.sprintf("Has events started");
+					for (String str : listOfEvents) {
 						if (str.equals(format)) {
+							Messages.sprintf("has_events format: " + str);
 							return true;
-						}
-						if (str.isEmpty() || str.length() <= 0) {
-							if (str.equals(MDir_Constants.UNKNOWN.getType())) {
-								return true;
-							}
 						}
 					}
 					return false;

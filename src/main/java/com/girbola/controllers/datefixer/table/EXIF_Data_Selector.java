@@ -4,7 +4,7 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.datefixer;
+package com.girbola.controllers.datefixer.table;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

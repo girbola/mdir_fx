@@ -57,7 +57,7 @@ public class ImageUtils {
 			imageViewerController = (ImageViewerController) loader.getController();
 			scene = new Scene(parent);
 			scene.getStylesheets()
-					.add(Main.class.getResource(conf.getThemePath() + MDir_Constants.IMAGEVIEWER.getType()).toExternalForm());
+					.add(Main.class.getResource(conf.getThemePath() + MetadataField.IMAGEVIEWER.getType()).toExternalForm());
 
 			stage = new Stage();
 			stage.centerOnScreen();

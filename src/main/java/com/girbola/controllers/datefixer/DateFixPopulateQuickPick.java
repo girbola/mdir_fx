@@ -12,6 +12,7 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.girbola.Main;
 import com.girbola.configuration.GuiImageFrame;
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.model.FolderInfo;

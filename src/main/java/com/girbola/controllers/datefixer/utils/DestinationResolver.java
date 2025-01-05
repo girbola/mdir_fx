@@ -1,4 +1,4 @@
-package com.girbola.controllers.datefixer;
+package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;

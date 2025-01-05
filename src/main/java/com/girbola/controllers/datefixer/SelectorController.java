@@ -6,6 +6,7 @@
  */
 package com.girbola.controllers.datefixer;
 
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.*;
 import com.girbola.workdir.*;

@@ -1,6 +1,7 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;

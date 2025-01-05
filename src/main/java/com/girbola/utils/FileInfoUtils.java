@@ -8,8 +8,8 @@ package com.girbola.utils;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
-import com.girbola.MDir_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.utils.MetadataField;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.ValidatePathUtils;
@@ -321,7 +321,7 @@ public class FileInfoUtils {
         int orientation = 0;
         int width = 0;
         int height = 0;
-        String camera_model = MDir_Constants.UNKNOWN.getType();
+        String camera_model = MetadataField.UNKNOWN.getType();
         Metadata metaData = null;
         fileInfo.setCamera_model(camera_model);
         try {

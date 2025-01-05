@@ -9,8 +9,10 @@ package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.datefixer.DateFix_Utils.Field;
+import com.girbola.controllers.datefixer.utils.DateFix_Utils;
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
+import com.girbola.controllers.datefixer.utils.MetadataField;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
@@ -123,7 +125,7 @@ public class Model_datefix extends DateFixerModel {
 
     public void updateCameraInfos(List<FileInfo> fileInfo_List) {
         getCameras_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(), Field.CAMERA.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getCameras_TableView().getItems(), MetadataField.CAMERA.getType());
 
     }
 
@@ -134,13 +136,13 @@ public class Model_datefix extends DateFixerModel {
 
     public void updateLocationInfos(List<FileInfo> fileInfo_List) {
         getLocations_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(), Field.LOCATION.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getLocations_TableView().getItems(), MetadataField.LOCATION.getType());
 
     }
 
     public void updateEventsInfos(List<FileInfo> fileInfo_List) {
         getEvents_TableView().getItems().clear();
-        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(), Field.EVENT.getType());
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(), MetadataField.EVENT.getType());
     }
 
     public void updateAllInfos(List<FileInfo> fileInfo_List) {
@@ -181,7 +183,7 @@ public class Model_datefix extends DateFixerModel {
         if (getCameras_TableView() == null) {
             Messages.sprintfError("Cameras TableView were null!!!!");
         } else {
-            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(), Field.CAMERA.getType());
+            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(), MetadataField.CAMERA.getType());
         }
     }
 
@@ -195,7 +197,7 @@ public class Model_datefix extends DateFixerModel {
                 }
             }
         }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(), Field.EVENT.getType());
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(), MetadataField.EVENT.getType());
     }
 
     public void updateLocationsInfos(TilePane tilePane) {
@@ -208,7 +210,7 @@ public class Model_datefix extends DateFixerModel {
                 }
             }
         }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(), Field.LOCATION.getType());
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(), MetadataField.LOCATION.getType());
     }
 
     public void updateDatesInfos(TilePane tilePane) {

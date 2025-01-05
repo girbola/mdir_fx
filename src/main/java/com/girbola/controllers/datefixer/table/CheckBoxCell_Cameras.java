@@ -4,14 +4,12 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.datefixer;
+package com.girbola.controllers.datefixer.table;
 
-import com.girbola.MDir_Constants;
+import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.utils.MetadataField;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -23,7 +21,6 @@ import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -131,7 +128,7 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
 
     private void initializeCameraModel(FileInfo fileInfo) {
         if (fileInfo.getCamera_model() == null || fileInfo.getCamera_model().isEmpty()) {
-            fileInfo.setCamera_model(MDir_Constants.UNKNOWN.getType());
+            fileInfo.setCamera_model(MetadataField.UNKNOWN.getType());
         }
     }
 

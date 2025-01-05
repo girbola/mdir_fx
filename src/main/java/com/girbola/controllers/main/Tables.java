@@ -72,9 +72,11 @@ public class Tables {
     @Getter
     @Setter
     private TableStatistic sortit_TableStatistic;
+
     @Getter
     @Setter
     private TableStatistic sorted_TableStatistic;
+
     @Getter
     @Setter
     private TableStatistic asitis_TableStatistic;

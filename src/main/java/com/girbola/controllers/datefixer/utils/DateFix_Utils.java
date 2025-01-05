@@ -4,9 +4,9 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.controllers.datefixer;
+package com.girbola.controllers.datefixer.utils;
 
-import com.girbola.MDir_Constants;
+import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.collections.FXCollections;
@@ -42,8 +42,8 @@ public class DateFix_Utils {
 
 		for (FileInfo fi : fileInfo_list) {
 			if (fi.getCamera_model() == null) {
-				if (!hasValue(MDir_Constants.UNKNOWN.getType(), camera_list)) {
-					camera_list.add(MDir_Constants.UNKNOWN.getType());
+				if (!hasValue(MetadataField.UNKNOWN.getType(), camera_list)) {
+					camera_list.add(MetadataField.UNKNOWN.getType());
 				}
 			} else {
 				if (!hasValue(fi.getCamera_model(), camera_list)) {
@@ -58,7 +58,7 @@ public class DateFix_Utils {
 			Map<String, Integer> map = findHashMap(camera, list_map);
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
-					if (MDir_Constants.UNKNOWN.getType().equals(camera)) {
+					if (MetadataField.UNKNOWN.getType().equals(camera)) {
 						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
@@ -82,10 +82,10 @@ public class DateFix_Utils {
 		List<String> camera_list = new ArrayList<>();
 		for (FileInfo fi : fileInfo_list) {
 			if (fi.getCamera_model() == null) {
-				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
+				fi.setCamera_model(MetadataField.UNKNOWN.getType());
 			}
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
+				fi.setCamera_model(MetadataField.UNKNOWN.getType());
 			}
 			if (!hasValue(fi.getCamera_model(), camera_list)) {
 				sprintf("3Adding camera: " + fi.getCamera_model());
@@ -98,7 +98,7 @@ public class DateFix_Utils {
 			Map<String, Integer> map = findHashMap(camera, list_map);
 			for (FileInfo fi : fileInfo_list) {
 				if (fi.getCamera_model() == null) {
-					if (MDir_Constants.UNKNOWN.getType().equals(camera)) {
+					if (MetadataField.UNKNOWN.getType().equals(camera)) {
 						int count = map.getOrDefault(camera, 0);
 						map.put(camera, count + 1);
 					}
@@ -125,7 +125,7 @@ public class DateFix_Utils {
 			if (!hasValue(simpleDates.getSdf_ymd_minus().format(fi.getDate()), date_list)) {
 				date_list.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}
-			fileInfoField(date_list, fi, Field.DATE.getType());
+			fileInfoField(date_list, fi, MetadataField.DATE.getType());
 		}
 		Collections.sort(date_list);
 		for (String dates : date_list) {
@@ -208,22 +208,22 @@ public class DateFix_Utils {
 	}
 
 	private void checkEquals(Map<String, Integer> map, FileInfo fileInfo, String info, String fileInfoField) {
-		if (fileInfoField.equals(Field.EVENT.getType())) {
+		if (fileInfoField.equals(MetadataField.EVENT.getType())) {
 			if (fileInfo.getEvent().equals(info)) {
 				int count = map.containsKey(info) ? map.get(info) : 0;
 				map.put(info, count + 1);
 			}
-		} else if (fileInfoField.equals(Field.LOCATION.getType())) {
+		} else if (fileInfoField.equals(MetadataField.LOCATION.getType())) {
 			if (fileInfo.getLocation().equals(info)) {
 				int count = map.containsKey(info) ? map.get(info) : 0;
 				map.put(info, count + 1);
 			}
-		} else if (fileInfoField.equals(Field.CAMERA.getType())) {
+		} else if (fileInfoField.equals(MetadataField.CAMERA.getType())) {
 			if (fileInfo.getCamera_model().equals(info)) {
 				int count = map.containsKey(info) ? map.get(info) : 0;
 				map.put(info, count + 1);
 			}
-		} else if (fileInfoField.equals(Field.DATE.getType())) {
+		} else if (fileInfoField.equals(MetadataField.DATE.getType())) {
 			if (simpleDates.getSdf_ymd_minus().format(fileInfo.getDate()).equals(info)) {
 				int count = map.containsKey(info) ? map.get(info) : 0;
 				map.put(info, count + 1);
@@ -240,29 +240,29 @@ public class DateFix_Utils {
 	 * @param fileInfoFieldexifInfo_list
 	 */
 	private void fileInfoField(List<String> exifInfo_list, FileInfo fi, String fileInfoFieldexifInfo_list) {
-		if (fileInfoFieldexifInfo_list.equals(Field.EVENT.getType())) {
+		if (fileInfoFieldexifInfo_list.equals(MetadataField.EVENT.getType())) {
 			if (!fi.getEvent().isEmpty()) {
 				if (!hasValue(fi.getEvent(), exifInfo_list)) {
 					exifInfo_list.add(fi.getEvent());
 				}
 			}
-		} else if (fileInfoFieldexifInfo_list.equals(Field.LOCATION.getType())) {
+		} else if (fileInfoFieldexifInfo_list.equals(MetadataField.LOCATION.getType())) {
 			if (!fi.getLocation().isEmpty()) {
 				if (!hasValue(fi.getLocation(), exifInfo_list)) {
 					exifInfo_list.add(fi.getLocation());
 				}
 			}
-		} else if (fileInfoFieldexifInfo_list.equals(Field.CAMERA.getType())) {
+		} else if (fileInfoFieldexifInfo_list.equals(MetadataField.CAMERA.getType())) {
 			if (fi.getCamera_model() == null) {
-				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
+				fi.setCamera_model(MetadataField.UNKNOWN.getType());
 			}
 			if (fi.getCamera_model().length() == 0 || fi.getCamera_model().isEmpty()) {
-				fi.setCamera_model(MDir_Constants.UNKNOWN.getType());
+				fi.setCamera_model(MetadataField.UNKNOWN.getType());
 			}
 			if (!hasValue(fi.getCamera_model(), exifInfo_list)) {
 				exifInfo_list.add(fi.getCamera_model());
 			}
-		} else if (fileInfoFieldexifInfo_list.equals(Field.DATE.getType())) {
+		} else if (fileInfoFieldexifInfo_list.equals(MetadataField.DATE.getType())) {
 			if (!hasValue(simpleDates.getSdf_ymd_minus().format(fi.getDate()), exifInfo_list)) {
 				exifInfo_list.add(simpleDates.getSdf_ymd_minus().format(fi.getDate()));
 			}
@@ -341,6 +341,7 @@ public class DateFix_Utils {
 		return events_obs;
 	}
 
+
 	/**
 	 * @return the locations_obs
 	 */
@@ -348,18 +349,5 @@ public class DateFix_Utils {
 		return locations_obs;
 	}
 
-	enum Field {
 
-		EVENT("Event"), LOCATION("Location"), CAMERA("Camera"), DATE("Date");
-		private String type;
-
-		Field(String type) {
-			this.type = type;
-		}
-
-		public String getType() {
-			return this.type;
-		}
-
-	}
 }
