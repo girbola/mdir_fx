@@ -24,7 +24,7 @@ public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
         this.modelMain = modelMain;
         this.path = path;
         // Update the item when the checkbox is selected/deselected
-        this.selectedProperty().addListener((observable, oldValue, newValue) -> updateItem(newValue));
+       // this.selectedProperty().addListener((observable, oldValue, newValue) -> updateItem(newValue));
     }
 
     private void handleWorkDirConflict() {

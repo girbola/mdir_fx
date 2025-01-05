@@ -203,10 +203,22 @@ public class ScanDrives {
                         SelectedFolder sf = iterator.next();
                         Messages.sprintf("==== validfolderstream file: " + f);
                         if (sf.getFolder().equals(f.toFile().getAbsolutePath())) {
-                            Platform.runLater(() -> checkBoxTreeItem.setSelected(true));
+                            Platform.runLater(() -> checkBoxTreeItem2.setSelected(true));
                             break;
                         }
                     }
+                    checkBoxTreeItem2.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                        if (Boolean.TRUE.equals(newValue)) {
+                            processSelectedPath(f, checkBoxTreeItem2);
+                        } else {
+                            processDeselectedPath(checkBoxTreeItem2, f);
+                        }
+                        modelFolderScanner.getSelectedDrivesFoldersListObs().add(f);
+                        sprintf("drive selected: " + f);
+                        if (newValue == null) {
+                            sprintf("null value");
+                        }
+                    });
                 }
             }
             rootItem.getChildren().add(checkBoxTreeItem);

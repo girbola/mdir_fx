@@ -37,25 +37,6 @@ public class DriveInfo_SQL {
                     " VALUES(?,?,?,?)";
 
 
-    /*
-     * DriveInfo
-     */
-    private static boolean createDriveInfoTable(Connection connection) {
-        Messages.sprintf("createDriveInfoTable creating..." + connection);
-        if (!isDbConnected(connection)) {
-            return false;
-        }
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(createDriveInfoTable);
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }
-
-
     public static boolean addDriveInfo_list(Connection connection, List<DriveInfo> driveInfo_list) {
         if (isDbConnected(connection)) {
             return false;
@@ -104,5 +85,26 @@ public class DriveInfo_SQL {
             return false;
         }
     }
+
+
+
+    /*
+     * DriveInfo
+     */
+    private static boolean createDriveInfoTable(Connection connection) {
+        Messages.sprintf("createDriveInfoTable creating..." + connection);
+        if (!isDbConnected(connection)) {
+            return false;
+        }
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.execute(createDriveInfoTable);
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
 
 }

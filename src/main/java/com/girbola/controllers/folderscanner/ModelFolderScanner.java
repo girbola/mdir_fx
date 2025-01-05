@@ -104,7 +104,7 @@ public class ModelFolderScanner {
 	public void init(ModelMain modelMain, CheckBoxTreeItem<File> drivesRootItem) {
 		this.modelMain = modelMain;
 		this.drivesRootItem = drivesRootItem;
-		drivesListHandler.loadList(this);
+		drivesListHandler.loadDrives(this);
 		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, drivesListHandler, this);
 
 		scanDrives.restart();

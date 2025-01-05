@@ -427,25 +427,4 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
         }
     }
 
-    public void registerDrive(String string, String serial) {
-        /*
-        C:\\,serial1234
-        D:\\,serial1234
-        E:\\,serial9999
-         */
-
-        if(!SQL_Utils.isDbConnected(workDirConnection)) {
-            workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), SQL_Enums.WORKDIR.getType());
-        }
-
-        try {
-            String sql = "INSERT INTO " + SQL_Enums.REGISTEREDDRIVES.getType() + " VALUES (?, ?)";
-            PreparedStatement pstmt = workDirConnection.prepareStatement(sql);
-            pstmt.setString(1, string);
-            pstmt.setString(2, serial);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            Messages.sprintfError("Error registering drive: " + e.getMessage());
-        }
-    }
 }

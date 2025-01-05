@@ -35,7 +35,7 @@ public class DrivesListHandler {
 		return false;
 	}
 
-	public boolean loadList(ModelFolderScanner model_folderScanner) {
+	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 		boolean driveInfoLoaded = DriveInfo_SQL.loadDriveInfo(connection, model_folderScanner);
 		if (driveInfoLoaded) {
