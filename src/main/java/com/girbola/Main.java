@@ -156,6 +156,8 @@ public class Main extends Application {
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
+            boolean load1 = model_main.getSqlHandler().getDriveInfoSQL().load();
+
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();
 

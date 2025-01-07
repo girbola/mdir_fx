@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
+import static com.girbola.sql.SQL_Utils.isDbConnected;
 
 public class SelectedFolderInfoSQL {
 
@@ -30,7 +31,7 @@ public class SelectedFolderInfoSQL {
             Messages.sprintf("createSelectedFoldersTable Connection were null!");
             return false;
         }
-        if (!SQL_Utils.isDbConnected(connection)) {
+        if (!isDbConnected(connection)) {
             Messages.sprintf("createSelectedFoldersTable Not connected");
             return false;
         }
@@ -52,14 +53,14 @@ public class SelectedFolderInfoSQL {
         try {
             connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } catch (Exception e) {
-            Messages.sprintfError("Error connecting to database: " + configFile);
+            Messages.sprintfError("Error connecting to database: " + configFile + " Exception: " + e.getMessage());
         }
 
         if (connection == null) {
             return false;
         }
 
-        if (SQL_Utils.isDbConnected(connection)) {
+        if (isDbConnected(connection)) {
             Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
             SQL_Utils.loadFolders_list(connection, model_Main);
             closeConnection(connection);
@@ -128,6 +129,39 @@ public class SelectedFolderInfoSQL {
 
         closeConnection(connection);
 
+    }
+
+    public static boolean loadFolders_list(Connection connection, ModelMain model_Main) {
+        if (connection == null) {
+            Messages.sprintfError("Connection were null!");
+            return false;
+        }
+        if (!isDbConnected(connection)) {
+            Messages.sprintf("NOT connected");
+            return false;
+        }
+        try {
+            String sql = "SELECT * FROM " + SQL_Enums.SELECTEDFOLDERS.getType();
+            Statement stmt = connection.createStatement();
+            ResultSet rs = stmt.executeQuery(sql);
+            while (rs.next()) {
+                Messages.sprintf("loadFolders_list starting: " + sql);
+                boolean selected = rs.getBoolean("selected");
+                String path = rs.getString("path");
+                boolean connected = rs.getBoolean("connected");
+                boolean media = rs.getBoolean("media");
+                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
+                model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
+            }
+            Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());
+            for (SelectedFolder self : model_Main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                Messages.sprintf("selectedFolder: " + self.getFolder() + " isConnected? " + self.isConnected());
+            }
+            return true;
+        } catch (Exception e) {
+            Messages.sprintfError("Can't find selectedfolders list.");
+            return false;
+        }
     }
 
     public static boolean insertSelectedFoldersToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {

@@ -12,10 +12,12 @@ import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
+import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
+import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
@@ -37,6 +39,7 @@ import javafx.util.Duration;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import static com.girbola.Main.bundle;
@@ -60,14 +63,18 @@ public class ModelMain {
     private TablePositionHolder tablePositionHolder;
     private Tables tables;
     private VBox main_vbox;
-    private WorkDirSQL workDirSQL;
+    private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
+    private SQLHandler sqlHandler;
+
+    private List<DriveInfo> driveInfos;
 
     public ModelMain() {
         sprintf("Model instantiated...");
         if(Main.conf.getWorkDir().trim().isEmpty()) {
-
+            Messages.sprintfError("workdir were empty");
         }
         workDirSQL = new WorkDirSQL();
+        sqlHandler = new SQLHandler(conf);
         buttons = new Buttons(this);
         monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
         monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
@@ -92,9 +99,7 @@ public class ModelMain {
         return this.buttons;
     }
 
-    void setMainContainer(AnchorPane main_container) {
-        this.main_container = main_container;
-    }
+    void setMainContainer(AnchorPane main_container) {this.main_container = main_container;}
 
     void setMainVBox(VBox main_vbox) {
         this.main_vbox = main_vbox;
@@ -198,23 +203,13 @@ public class ModelMain {
         Platform.exit();
     }
 
-    public EventHandler<WindowEvent> exitProgram = new EventHandler<WindowEvent>() {
-        @Override
-        public void handle(WindowEvent event) {
-            Messages.sprintf("exitProgram");
-            exitProgram();
-            Messages.sprintf("exitProgram ended");
-        }
+    public EventHandler<WindowEvent> exitProgram = event -> {
+        Messages.sprintf("exitProgram");
+        exitProgram();
+        Messages.sprintf("exitProgram ended");
     };
-    // model_main.getSelection_FolderScanner().save_Selection_FolderScannerDataTo_File(model_main.getSelection_FolderScanner().getSelectedFolderScanner_list());
 
-    public EventHandler<WindowEvent> dontExit = new EventHandler<WindowEvent>() {
-        @Override
-        public void handle(WindowEvent event) {
-            event.consume();
-        }
-
-    };
+    public EventHandler<WindowEvent> dontExitWindow = event -> event.consume();
 
     public void exitProgram() {
         sprintf("exitProgram()");
@@ -262,20 +257,6 @@ public class ModelMain {
 
     }
 
-    public WorkDirSQL getWorkDirSQL() {return this.workDirSQL;}
-
-    public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
-        return monitorExternalDriveConnectivity;
-    }
-
-    public void setBottomController(BottomController bottomController) {
-        this.bottomController = bottomController;
-    }
-
-    public BottomController getBottomController() {
-        return this.bottomController;
-    }
-
     public void load() {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                 Main.conf.getConfiguration_db_fileName());
@@ -290,4 +271,23 @@ public class ModelMain {
             Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
         }
     }
+
+    public SQLHandler getSqlHandler() {return this.sqlHandler;}
+
+    public WorkDirSQL getWorkDirSQL() {return this.workDirSQL;}
+
+    public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
+        return monitorExternalDriveConnectivity;
+    }
+
+    public void setBottomController(BottomController bottomController) {
+        this.bottomController = bottomController;
+    }
+
+    public BottomController getBottomController() {
+        return this.bottomController;
+    }
+
+    public List<DriveInfo> driveInfos() { return this.driveInfos; }
+
 }

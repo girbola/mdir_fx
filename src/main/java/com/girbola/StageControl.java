@@ -32,7 +32,7 @@ public class StageControl extends Stage {
 
         primaryStage.fullScreenProperty().addListener((observable, oldValue, newValue) -> Messages.sprintf("stage fullScreen changed: " + newValue));
 
-        primaryStage.setOnCloseRequest(modelMain.dontExit);
+        primaryStage.setOnCloseRequest(modelMain.dontExitWindow);
 
         primaryStage.xProperty().addListener((observable, oldValue, newValue) -> {
             if (Main.conf != null) {

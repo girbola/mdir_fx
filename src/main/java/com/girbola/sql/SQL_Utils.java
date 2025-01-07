@@ -99,38 +99,7 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    public static boolean loadFolders_list(Connection connection, ModelMain model_Main) {
-        if (connection == null) {
-            Messages.sprintfError("Connection were null!");
-            return false;
-        }
-        if (!isDbConnected(connection)) {
-            Messages.sprintf("NOT connected");
-            return false;
-        }
-        try {
-            String sql = "SELECT * FROM " + SQL_Enums.SELECTEDFOLDERS.getType();
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                Messages.sprintf("loadFolders_list starting: " + sql);
-                boolean selected = rs.getBoolean("selected");
-                String path = rs.getString("path");
-                boolean connected = rs.getBoolean("connected");
-                boolean media = rs.getBoolean("media");
-                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
-                model_Main.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-            }
-            Messages.sprintf("size of sel obs= " + model_Main.getSelectedFolders().getSelectedFolderScanner_obs().size());
-            for (SelectedFolder self : model_Main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                Messages.sprintf("selectedFolder: " + self.getFolder() + " isConnected? " + self.isConnected());
-            }
-            return true;
-        } catch (Exception e) {
-            Messages.sprintfError("Can't find selectedfolders list.");
-            return false;
-        }
-    }
+
 
 
     // @formatter:on

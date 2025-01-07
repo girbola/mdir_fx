@@ -8,7 +8,8 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersController;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.drive.DrivesListHandler;
+import com.girbola.drive.DriveInfo;
+import com.girbola.drive.DriveInfoUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;
@@ -31,7 +32,7 @@ public class ModelFolderScanner {
 //	private Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
 
 	private ScanDrives scanDrives;
-	private DrivesListHandler drivesListHandler = new DrivesListHandler();
+	private DriveInfoUtils driveInfoUtils = new DriveInfoUtils();
 
 	private ChooseFoldersController chooseFoldersController;
 
@@ -44,8 +45,8 @@ public class ModelFolderScanner {
 		return scanDrives;
 	}
 
-	public DrivesListHandler drive() {
-		return this.drivesListHandler;
+	public DriveInfoUtils drive() {
+		return this.driveInfoUtils;
 	}
 
 	public List<TreeItem<FolderInfoTable>> getAnalyzeList_selected() {
@@ -104,8 +105,8 @@ public class ModelFolderScanner {
 	public void init(ModelMain modelMain, CheckBoxTreeItem<File> drivesRootItem) {
 		this.modelMain = modelMain;
 		this.drivesRootItem = drivesRootItem;
-		drivesListHandler.loadDrives(this);
-		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, drivesListHandler, this);
+		List<DriveInfo> driveInfos = modelMain.driveInfos();
+		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, driveInfoUtils, this);
 
 		scanDrives.restart();
 	}

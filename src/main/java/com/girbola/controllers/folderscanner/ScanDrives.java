@@ -3,17 +3,15 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DrivesListHandler;
+import com.girbola.drive.DriveInfoUtils;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import common.utils.OSHI_Utils;
 import java.util.Arrays;
-import java.util.Collections;
+
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
@@ -34,18 +32,19 @@ import static com.girbola.messages.Messages.sprintf;
 
 public class ScanDrives {
 
+    private final String ERROR = ScanDrives.class.getSimpleName();
+
     private CheckBoxTreeItem<File> rootItem;
     private ObservableList<Path> driveListSelectedObs;
     private ModelFolderScanner modelFolderScanner;
     private Set<DriveInfo> rootDrives = new HashSet<>();
     private int i = 0;
     private int rootCount = 0;
-    private DrivesListHandler driveListHandler;
-    private final static String ERROR = ScanDrives.class.getSimpleName();
+    private DriveInfoUtils driveListHandler;
     private ModelMain modelMain;
 
     public ScanDrives(ModelMain modelMain, CheckBoxTreeItem<File> rootItem, ObservableList<Path> driveListSelectedObs,
-                      DrivesListHandler driveListHandler, ModelFolderScanner modelFolderScanner) {
+                      DriveInfoUtils driveListHandler, ModelFolderScanner modelFolderScanner) {
         this.modelMain = modelMain;
         this.rootItem = rootItem;
         this.driveListSelectedObs = driveListSelectedObs;
@@ -63,7 +62,7 @@ public class ScanDrives {
         sprintf("Scanning cancelled? " + scanner.isRunning());
     }
 
-    ScheduledService<Void> scanner = new ScheduledService<Void>() {
+    ScheduledService<Void> scanner = new ScheduledService<>() {
 
         @Override
         protected Task createTask() {
@@ -71,16 +70,7 @@ public class ScanDrives {
                 @Override
                 protected Integer call() throws Exception {
 
-                    File[] listOfRoots = null;
-                    if (com.sun.jna.Platform.isWindows()) {
-                        listOfRoots = File.listRoots();
-                    } else if (com.sun.jna.Platform.isMac()) {
-                        File media = new File(File.separator + "/Volumes");
-                        listOfRoots = media.listFiles();
-                    } else if (com.sun.jna.Platform.isLinux()) {
-                        File media = new File(File.separator + "media");
-                        listOfRoots = media.listFiles();
-                    }
+                    File[] listOfRoots = getListOfRoots();
 
                     Arrays.sort(listOfRoots, (File f1, File f2) -> f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()));
 
@@ -94,6 +84,7 @@ public class ScanDrives {
                         }
                     } else {
                         Messages.errorSmth(ERROR, "Listing Drives list were null", null, Misc.getLineNumber(), false);
+                        Main.setProcessCancelled(true);
                     }
                     return null;
                 }
@@ -103,6 +94,19 @@ public class ScanDrives {
         }
 
     };
+
+    private File[] getListOfRoots() {
+        if (com.sun.jna.Platform.isWindows()) {
+          return File.listRoots();
+        } else if (com.sun.jna.Platform.isMac()) {
+            File media = new File(File.separator + "/Volumes");
+            return media.listFiles();
+        } else if (com.sun.jna.Platform.isLinux()) {
+            File media = new File(File.separator + "/media");
+            return media.listFiles();
+        }
+        return null;
+    }
 
     private CheckBoxTreeItem<File> createBranch(File fileName) {
         CheckBoxTreeItem<File> cb = new CheckBoxTreeItem<>(fileName);
@@ -120,7 +124,7 @@ public class ScanDrives {
             if (Main.conf.getWorkDir().equals(selectedPath.toString())) {
                 handleWorkDirConflict(cb, selectedPath);
             } else {
-                processSelectedPath(selectedPath, cb);
+                processSelectedPath(cb, selectedPath);
             }
         } else {
             processDeselectedPath(cb, selectedPath);
@@ -136,7 +140,7 @@ public class ScanDrives {
         });
     }
 
-    private void processSelectedPath(Path selectedPath, CheckBoxTreeItem<File> cb) {
+    private void processSelectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
         if (Files.exists(selectedPath) && !selectedFolderHasValue(selectedPath)) {
             boolean hasMedia = FileUtils.getHasMedia(selectedPath.toFile());
             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -181,7 +185,16 @@ public class ScanDrives {
     }
 
     private void redrawRootFolders() throws IOException {
+        if(Main.getProcessCancelled()) {
+            Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
+            return;
+        }
         for (DriveInfo driveInfo : rootDrives) {
+
+            if(Main.getProcessCancelled()) {
+                Messages.sprintfError("Iterating driveInfo were stopped. Process cancelled");
+                break;
+            }
 
             Messages.sprintf("Iterating root drives: " + driveInfo.getDrivePath() + " drive serial: "
                     + driveInfo.getIdentifier());
@@ -190,6 +203,11 @@ public class ScanDrives {
 
             CheckBoxTreeItem<File> checkBoxTreeItem = createBranch(drive);
             DirectoryStream<Path> stream = FileUtils.createDirectoryStream(Paths.get(driveInfo.getDrivePath()));
+            if(stream == null) {
+                Messages.sprintfError("Stream were null");
+                return;
+            }
+
             for (Path f : stream) {
                 if (ValidatePathUtils.validFolder(f)) {
                     Messages.sprintf("==== validfolderstream file: " + f);
@@ -209,7 +227,7 @@ public class ScanDrives {
                     }
                     checkBoxTreeItem2.selectedProperty().addListener((observable, oldValue, newValue) -> {
                         if (Boolean.TRUE.equals(newValue)) {
-                            processSelectedPath(f, checkBoxTreeItem2);
+                            processSelectedPath(checkBoxTreeItem2,f);
                         } else {
                             processDeselectedPath(checkBoxTreeItem2, f);
                         }
@@ -227,16 +245,28 @@ public class ScanDrives {
 
     private boolean updateRootDrives(File[] listOfRoots) {
         Set<DriveInfo> setOfRootDrives = new HashSet<>();
-
+        modelMain.driveInfos();
         for (int i = 0; i < listOfRoots.length; i++) {
             if (Main.getProcessCancelled()) {
                 break;
             }
             String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
+
             Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
-            modelMain.getWorkDirSQL().registerDrive(listOfRoots[i].toString(), serial);
-            setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(),
-                    listOfRoots[i].exists(), false, serial));
+            DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));
+
+//DriveInfoUtils
+            if(!modelMain.driveInfos().contains(driveInfo.getDrivePath())) {
+                Messages.sprintf("Drive already in list: " + listOfRoots[i].toString());
+                continue;
+            } else {
+
+            }
+            modelMain.getSqlHandler().getDriveInfoSQL().update(driveInfo);
+//            modelMain.getWorkDirSQL().registerDrive(listOfRoots[i].toString(), serial);
+
+            setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));
+
         }
 
         for (DriveInfo driveInfo : setOfRootDrives) {

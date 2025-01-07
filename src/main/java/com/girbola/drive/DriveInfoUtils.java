@@ -10,7 +10,7 @@ import com.girbola.Main;
 import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.messages.Messages;
-import com.girbola.sql.DriveInfo_SQL;
+import com.girbola.sql.DriveInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.OSHI_Utils;
@@ -20,9 +20,9 @@ import javafx.collections.ObservableList;
 import java.io.File;
 import java.sql.Connection;
 
-public class DrivesListHandler {
+public class DriveInfoUtils {
 
-	private final String ERROR = DrivesListHandler.class.getSimpleName();
+	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
 	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
@@ -37,7 +37,8 @@ public class DrivesListHandler {
 
 	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
 		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-		boolean driveInfoLoaded = DriveInfo_SQL.loadDriveInfo(connection, model_folderScanner);
+
+		boolean driveInfoLoaded = DriveInfoSQL.loadDriveInfo(connection, model_folderScanner);
 		if (driveInfoLoaded) {
 			return true;
 		} else {
@@ -55,7 +56,8 @@ public class DrivesListHandler {
 			Configuration_SQL_Utils.createFolderInfosDatabase(connectionConfiguration);
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
-		DriveInfo_SQL.addDriveInfo_list(connectionConfiguration, drivesList_obs);
+
+		DriveInfoSQL.addDriveInfos(connectionConfiguration, drivesList_obs);
 		try {
 			connectionConfiguration.close();
 		} catch (Exception e) {
