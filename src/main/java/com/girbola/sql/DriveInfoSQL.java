@@ -5,6 +5,7 @@ import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 
+import com.girbola.misc.Misc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,7 +16,9 @@ import static com.girbola.sql.SQL_Utils.isDbConnected;
 
 public class DriveInfoSQL implements SQLInterface {
 
-    private Connection configurationConnection;
+    private final static String ERROR = DriveInfoSQL.class.getSimpleName();
+
+    private static Connection configurationConnection;
 
     public static final String TABLE_NAME = "DriveInfo";
 
@@ -43,15 +46,19 @@ public class DriveInfoSQL implements SQLInterface {
         this.configurationConnection = configurationConnection;
     }
 
-    public static boolean addDriveInfos(Connection connection, List<DriveInfo> driveInfos) {
-        if (isDbConnected(connection)) {
+    public static boolean addDriveInfos(List<DriveInfo> driveInfos) {
+        if (isDbConnected(configurationConnection)) {
             return false;
         }
 
-        createDriveInfoTable(connection);
-
         try {
-            PreparedStatement pstmt = connection.prepareStatement(insertDriveInfo);
+            boolean driveInfoTable = createDriveInfoTable(configurationConnection);
+            if(!driveInfoTable) {
+                Messages.sprintfError("DriveInfo table was not created!");
+                Messages.errorSmth(ERROR,"", null, Misc.getLineNumber(), false);
+                return false;
+            }
+            PreparedStatement pstmt = configurationConnection.prepareStatement(insertDriveInfo);
             for (DriveInfo driveInfo : driveInfos) {
                 pstmt.setString(1, driveInfo.getDrivePath());
                 pstmt.setBoolean(2, driveInfo.isConnected());
@@ -105,13 +112,13 @@ public class DriveInfoSQL implements SQLInterface {
     }
 
     @Override
-    public boolean save() {
+    public boolean save(List<DriveInfo> driveInfos) {
         return false;
     }
 
     @Override
     public List<DriveInfo> load() {
-        return ;
+        return loadDriveInfo(this.configurationConnection);
     }
 
     @Override
@@ -120,19 +127,8 @@ public class DriveInfoSQL implements SQLInterface {
     }
 
     @Override
-    public boolean update() {
-        Messages.sprintf("createDriveInfoTable creating..." + configurationConnection);
-        if (!isDbConnected(configurationConnection)) {
-            return false;
-        }
-        try {
-            Statement stmt = configurationConnection.createStatement();
-            stmt.execute(createDriveInfoTable);
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
+    public boolean update(List<DriveInfo> driveInfos) {
+        return addDriveInfos(driveInfos);
     }
 
     @Override

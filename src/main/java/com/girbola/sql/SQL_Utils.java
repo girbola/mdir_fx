@@ -19,7 +19,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
 
     // @formatter:off
-    final static String folderInfoColumns =
+/*    final static String folderInfoColumns =
             "configuration," +
             "folderinfo," +
             "fileinfo," +
@@ -32,7 +32,7 @@ public class SQL_Utils extends FolderInfo_SQL {
             "config," +
             "tables_cols," +
             "folderinfos " +
-            "FROM your_table_name;";
+            "FROM your_table_name;";*/
 
 	/*
 	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
@@ -48,6 +48,7 @@ public class SQL_Utils extends FolderInfo_SQL {
             pstmt.setBoolean(2, selectedFolder.connected_property().get());
             pstmt.setString(3, selectedFolder.getFolder());
  */
+/*
 
     final static String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
@@ -59,6 +60,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                     "'connected')" +
                     " VALUES(?,?,?,?)";
 
+*/
 
     /**
      * Commits any pending changes to the database.
@@ -203,5 +205,22 @@ public class SQL_Utils extends FolderInfo_SQL {
             Messages.sprintfError("Could not rollback: " + e.getMessage());
             Main.setProcessCancelled(true);
         }
+    }
+
+    public static Connection createConfigurationConfig() {
+        try {
+            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            if (connection == null) {
+                return null;
+            }
+            if (!SQL_Utils.isDbConnected(connection)) {
+                return null;
+            }
+            return connection;
+        } catch (Exception e) {
+            Messages.sprintfError("Error connecting to database: " + Main.conf.getConfiguration_db_fileName());
+            return null;
+        }
+
     }
 }

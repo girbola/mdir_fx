@@ -1,6 +1,8 @@
 package com.girbola.sql;
 
+import com.girbola.drive.DriveInfo;
 import java.sql.Connection;
+import java.util.List;
 
 public interface SQLInterface {
     public boolean create();
@@ -8,7 +10,7 @@ public interface SQLInterface {
     public boolean insert();
     public Connection getConfigurationConnection();
     public boolean isConnected();
-    public boolean load();
-    public boolean save();
-    public boolean update();
+    List<DriveInfo> load();
+    public boolean save(List<DriveInfo> driveInfos);
+    public boolean update(List<DriveInfo> driveInfo);
 }

@@ -24,4 +24,21 @@ public class OSHI_Utils {
         }
         return null;
     }
+
+    public static HWDiskStore getDrive(String path) {
+        SystemInfo si = new SystemInfo();
+        HardwareAbstractionLayer hal = si.getHardware();
+        for (HWDiskStore disk : hal.getDiskStores()) {
+            for (HWPartition part : disk.getPartitions()) {
+                Path root = Paths.get(path).getRoot();
+                if (part.getMountPoint().contains(root.toString())) {
+                    Messages.sprintf("Disk s: " + disk.toString());
+
+                    return disk;
+                }
+            }
+        }
+        return null;
+    }
+
 }

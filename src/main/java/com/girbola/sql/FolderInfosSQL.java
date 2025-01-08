@@ -3,6 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import java.nio.file.Files;
@@ -30,17 +31,17 @@ public class FolderInfosSQL {
                     " VALUES(?,?,?,?)";
 
     //@formatter:on
-    public static boolean addToFolderInfosDB(Connection connection, SelectedFolderInfo folderInfos) {
+    public static boolean addToFolderInfosDB(Connection connection, SelectedFolderInfo selectedFolderInfo) {
         if (connection == null) {
             return false;
         }
         createFolderInfosDatabase(connection);
         try {
             PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, folderInfos.getFolderPath());
-            pstmt.setString(2, folderInfos.getTableType());
-            pstmt.setString(3, folderInfos.getJustFolderName());
-            pstmt.setBoolean(4, folderInfos.isConnected());
+            pstmt.setString(1, selectedFolderInfo.getFolderPath());
+            pstmt.setString(2, selectedFolderInfo.getTableType());
+            pstmt.setString(3, selectedFolderInfo.getJustFolderName());
+            pstmt.setBoolean(4, selectedFolderInfo.isConnected());
             pstmt.executeUpdate();
             pstmt.close();
             return true;
@@ -79,10 +80,10 @@ public class FolderInfosSQL {
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
                     return null;
                 }
-                SelectedFolderInfo folderInfos = new SelectedFolderInfo(path, tableType, justFolderName, isConnected);
-                folderInfos.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + folderInfos.isConnected());
-                arrayList.add(folderInfos);
+                SelectedFolderInfo selectedFolderInfo = new SelectedFolderInfo(path, tableType, justFolderName, isConnected);
+                selectedFolderInfo.setConnected(Files.exists(Paths.get(path)));
+                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + selectedFolderInfo.isConnected());
+                arrayList.add(selectedFolderInfo);
             }
 
             return arrayList;

@@ -15,6 +15,7 @@ import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -146,7 +147,7 @@ public class ModelMain {
 
     }
 
-    public boolean saveTableContent(Connection connection_Configuration, ObservableList<FolderInfo> items, String tableType) {
+    public boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
         if (items.isEmpty()) {
             Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
@@ -158,9 +159,9 @@ public class ModelMain {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
-                    SelectedFolderInfo folderInfos = new SelectedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    SelectedFolderInfo selectedFolderInfo = new SelectedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connection_Configuration, folderInfos);
+                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connectionConfiguration, selectedFolderInfo);
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
                     }
@@ -189,7 +190,7 @@ public class ModelMain {
         }
 
         try {
-            SQL_Utils.commitChanges(connection_Configuration);
+            SQL_Utils.commitChanges(connectionConfiguration);
             return true;
         } catch (Exception e) {
             Messages.sprintfError("Cannot commit to SQL database");

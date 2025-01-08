@@ -4,6 +4,7 @@ import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
 import com.girbola.messages.Messages;
 
 import java.io.File;
@@ -62,7 +63,7 @@ public class SelectedFolderInfoSQL {
 
         if (isDbConnected(connection)) {
             Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
-            SQL_Utils.loadFolders_list(connection, model_Main);
+            SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
             closeConnection(connection);
             return true;
         } else {

@@ -34,17 +34,17 @@ public class DriveInfoUtils {
 		}
 		return false;
 	}
-
-	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
-		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-
-		boolean driveInfoLoaded = DriveInfoSQL.loadDriveInfo(connection, model_folderScanner);
-		if (driveInfoLoaded) {
-			return true;
-		} else {
-			return false;
-		}
-	}
+//
+//	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
+//		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//
+//		boolean driveInfoLoaded = DriveInfoSQL.loadDriveInfo(model_folderScanner);
+//		if (driveInfoLoaded) {
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 
 	public ObservableList<DriveInfo> getDrivesList_obs() {
 		return this.drivesList_obs;
@@ -57,7 +57,7 @@ public class DriveInfoUtils {
 			Messages.sprintf("createFolderInfoDatabase created");
 		}
 
-		DriveInfoSQL.addDriveInfos(connectionConfiguration, drivesList_obs);
+		DriveInfoSQL.addDriveInfos(drivesList_obs);
 		try {
 			connectionConfiguration.close();
 		} catch (Exception e) {

@@ -250,10 +250,11 @@ public class ScanDrives {
             if (Main.getProcessCancelled()) {
                 break;
             }
+
             String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
 
             Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
-            DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));
+            DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial);
 
 //DriveInfoUtils
             if(!modelMain.driveInfos().contains(driveInfo.getDrivePath())) {
@@ -262,7 +263,7 @@ public class ScanDrives {
             } else {
 
             }
-            modelMain.getSqlHandler().getDriveInfoSQL().update(driveInfo);
+            modelMain.getSqlHandler().getDriveInfoHandler(); // getDriveInfoSQL().update(driveInfo);
 //            modelMain.getWorkDirSQL().registerDrive(listOfRoots[i].toString(), serial);
 
             setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));

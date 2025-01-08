@@ -85,8 +85,7 @@ public class FolderInfo implements TableValues_inf {
         this.fileInfoList = new ArrayList<>();
         this.folderFiles = new SimpleIntegerProperty(0);
         this.folderImageFiles = new SimpleIntegerProperty(0);
-        this.justFolderName = new SimpleStringProperty(
-                justFolderName.isEmpty() ? folderPath.getFileName().toString() : justFolderName);
+        this.justFolderName = new SimpleStringProperty(justFolderName.isEmpty() ? folderPath.getFileName().toString() : justFolderName);
         this.folderPath = new SimpleStringProperty(folderPath.toString());
         this.folderRawFiles = new SimpleIntegerProperty(0);
         this.folderSize = new SimpleLongProperty(0);

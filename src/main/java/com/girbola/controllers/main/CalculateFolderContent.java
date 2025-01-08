@@ -105,8 +105,7 @@ public class CalculateFolderContent extends Task<Void> {
     }
 
     private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
-        Path mdirDatabaseFilePath = Paths
-                .get(folderInfo.getFolderPath(), conf.getMdir_db_fileName());
+        Path mdirDatabaseFilePath = Paths.get(folderInfo.getFolderPath(), conf.getMdir_db_fileName());
         Messages.sprintf("mdirDatabaseFilePath trying to find folderinfo path: " + mdirDatabaseFilePath);
         if (Files.exists(mdirDatabaseFilePath)) {
             Messages.sprintf("File DOES exists at: " + mdirDatabaseFilePath);
@@ -115,11 +114,12 @@ public class CalculateFolderContent extends Task<Void> {
             try {
                 loaded_FolderInfo = SQL_Utils.loadFolderInfoCurrentDir(mdirDatabaseFilePath.getParent());
                 if (loaded_FolderInfo == null) {
-                    Messages.sprintf(
-                            "loaded_FolderInfo were null at: " + mdirDatabaseFilePath + " Creating new one");
+                    Messages.sprintf("loaded_FolderInfo were null at: " + mdirDatabaseFilePath + " Creating new one");
                     List<FileInfo> listOfFileInfos = createFileInfo_list(folderInfo);
                     loaded_FolderInfo = new FolderInfo(mdirDatabaseFilePath.getParent());
+
                     folderInfo.setFileInfoList(listOfFileInfos);
+
                     if (!folderInfo.getFileInfoList().isEmpty()) {
                         FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                         counter.set(counter.get() - 1);

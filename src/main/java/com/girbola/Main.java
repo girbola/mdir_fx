@@ -29,6 +29,7 @@ import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.DriveInfoHandler;
 import com.girbola.controllers.main.tables.*;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
@@ -155,8 +156,6 @@ public class Main extends Application {
             ConfigurationUtils.loadConfig_GUI(model_main);
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
-
-            boolean load1 = model_main.getSqlHandler().getDriveInfoSQL().load();
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
             stageControl.setStageBoundarys();

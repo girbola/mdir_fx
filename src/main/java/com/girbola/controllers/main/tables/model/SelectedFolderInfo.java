@@ -1,4 +1,4 @@
-package com.girbola.sql;
+package com.girbola.controllers.main.tables.model;
 
 public class SelectedFolderInfo {
 	private String folderPath;
