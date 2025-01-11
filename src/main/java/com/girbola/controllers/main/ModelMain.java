@@ -23,6 +23,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.*;
 import com.girbola.workdir.WorkDirSQL;
+import java.util.ArrayList;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -67,12 +68,15 @@ public class ModelMain {
     private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
     private SQLHandler sqlHandler;
 
-    private List<DriveInfo> driveInfos;
+    private List<DriveInfo> driveInfos = new ArrayList<>();
 
     public ModelMain() {
         sprintf("Model instantiated...");
         if(Main.conf.getWorkDir().trim().isEmpty()) {
             Messages.sprintfError("workdir were empty");
+        }
+        if(conf == null) {
+            Messages.sprintfError("conf were null!!!!!!!!!!!!!!!!!!");
         }
         workDirSQL = new WorkDirSQL();
         sqlHandler = new SQLHandler(conf);
@@ -117,8 +121,7 @@ public class ModelMain {
     public boolean saveAllTableContents() {
         Messages.sprintf("saveAllTableContents started");
 
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName()); // folderInfo.db
+        Connection connection = sqlHandler.getConfigurationConnection();
         if (!SQL_Utils.isDbConnected(connection)) {
             Messages.warningText(bundle.getString("cannotOpenConnectionToDatabase") + Main.conf.getAppDataPath() + " fileName: " + Main.conf.getConfiguration_db_fileName());
         }
@@ -259,12 +262,10 @@ public class ModelMain {
     }
 
     public void load() {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
+        Connection connection = sqlHandler.getConfigurationConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
-            Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(
-                    this, connection);
+            Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
 
             Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
             load_thread.start();

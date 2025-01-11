@@ -75,10 +75,10 @@ public class Main extends Application {
     public static SceneSwitcher scene_Switcher = new SceneSwitcher();
     public static SimpleDates simpleDates = new SimpleDates();
 
-    final public static boolean DEBUG = true;
-    final public static boolean DEBUG_CONF = true;
-    final public static String country = "EN";
-    final public static String lang = "en";
+    public static final boolean DEBUG = true;
+    public static final boolean DEBUG_CONF = true;
+    public static final String country = "EN";
+    public static final String lang = "en";
 
 
     @Override
@@ -158,12 +158,12 @@ public class Main extends Application {
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
             Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+
             stageControl.setStageBoundarys();
 
             if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
-                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main,
-                        connection_loadConfigurationFile);
+                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, connection_loadConfigurationFile);
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
                     Platform.runLater(() -> {
                         lpt.closeStage();
@@ -321,6 +321,10 @@ public class Main extends Application {
         Main.setProcessCancelled(true);
         Messages.sprintf("Stopping app");
         model_main.getMonitorExternalDriveConnectivity().cancel();
+
+        model_main.getSqlHandler().getConfigurationConnection().close();
+        Messages.sprintf("Configuration connection closed");
+
         ConcurrencyUtils.stopAllExecThreadNow();
         Messages.sprintf("Program has ended. Exiting...");
         Platform.exit();

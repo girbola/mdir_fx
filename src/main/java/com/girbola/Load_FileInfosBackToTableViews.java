@@ -30,11 +30,6 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
     protected Boolean call() throws Exception {
         Messages.sprintf("Load_FileInfosBackToTableViews starts " + Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 
-        if (!Files.exists(Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
-            Messages.sprintf("Can't find " + (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
-            return false;
-        }
-
         if (!SQL_Utils.isDbConnected(connection)) {
             return false;
         }
@@ -53,10 +48,6 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
                 }
                 FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(selectedFolderInfo.getFolderPath());
                 Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath());
-                if (folderInfo == null) {
-                    Messages.sprintfError("FolderInfo were null!: " + selectedFolderInfo.getFolderPath());
-                    continue;
-                }
 
                 if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
                     modelMain.tables().getSortIt_table().getItems().add(folderInfo);

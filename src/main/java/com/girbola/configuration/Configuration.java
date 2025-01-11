@@ -32,9 +32,9 @@ public class Configuration extends Configuration_defaults {
     public Configuration() { Messages.sprintf("Configuration instantiated..."); }
 
     public boolean loadConfig_SQL() throws SQLException {
-        Messages.sprintf("Loading SQL config: " + Main.conf.getWorkDir());
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
+        Messages.sprintf("Loading SQL config: " + Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+
         if (SQL_Utils.isDbConnected(connection)) {
             connection.setAutoCommit(false);
             Configuration_SQL_Utils.loadConfiguration(connection, Main.conf);

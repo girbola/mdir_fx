@@ -14,6 +14,7 @@ import com.girbola.sql.DriveInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.OSHI_Utils;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -25,6 +26,15 @@ public class DriveInfoUtils {
 	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
 	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
+
+	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath) {
+		for(DriveInfo driveInfo : driveInfos) {
+			if(driveInfo.getDrivePath().equals(drivePath)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean exists(DriveInfo driveInfoToSearch) {
 		for (DriveInfo driveInfo : drivesList_obs) {

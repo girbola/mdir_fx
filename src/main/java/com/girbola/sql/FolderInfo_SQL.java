@@ -125,8 +125,6 @@ public class FolderInfo_SQL {
                         Messages.sprintfError("Error altering table: {}" + e.getMessage());
                         connection.rollback(); // rollback on any non-recoverable error
                         throw e;
-                    } else {
-                        Messages.sprintf("Duplicate column name: {}", e.getMessage());
                     }
                 }
             }

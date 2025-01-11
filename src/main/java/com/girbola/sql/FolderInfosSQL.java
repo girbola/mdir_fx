@@ -58,7 +58,7 @@ public class FolderInfosSQL {
         }
 
         if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("Connected!");
+            Messages.sprintf("NOT Connected!");
         }
 
         String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFOS.getType();
@@ -69,12 +69,13 @@ public class FolderInfosSQL {
 
             while (rs.next()) {
                 if (Main.getProcessCancelled()) {
+                    Messages.sprintf("getAll cancelled!");
                     return null;
                 }
-                String path = rs.getString("folderPath");
+                String path = rs.getString("path");
                 String tableType = rs.getString("tableType");
                 String justFolderName = rs.getString("justFolderName");
-                boolean isConnected = rs.getBoolean("isConnected");
+                boolean isConnected = rs.getBoolean("connected");
                 if (path == null) {
                     Messages.sprintf("Something went badly wrong!");
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
@@ -85,10 +86,10 @@ public class FolderInfosSQL {
                 Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + selectedFolderInfo.isConnected());
                 arrayList.add(selectedFolderInfo);
             }
-
+            Messages.sprintf("getALLLLLL size was: " + arrayList.size());
             return arrayList;
         } catch (Exception e) {
-            SQL_Utils.closeConnection(connection);
+            //SQL_Utils.closeConnection(connection);
             return null;
         }
 

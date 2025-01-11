@@ -59,7 +59,7 @@ public class ScanDrives {
 
     public void stop() {
         scanner.cancel();
-        sprintf("Scanning cancelled? " + scanner.isRunning());
+        sprintf("Scanning cancelled and it shouldn't run? " + scanner.isRunning());
     }
 
     ScheduledService<Void> scanner = new ScheduledService<>() {
@@ -256,15 +256,15 @@ public class ScanDrives {
             Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
             DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial);
 
-//DriveInfoUtils
-            if(!modelMain.driveInfos().contains(driveInfo.getDrivePath())) {
-                Messages.sprintf("Drive already in list: " + listOfRoots[i].toString());
-                continue;
-            } else {
+            Messages.sprintf("Method…: " + modelMain.driveInfos().size());
+//            if(DriveInfoUtils.hasDrivePath(modelMain.driveInfos(),driveInfo.getDrivePath())) {
+//                Messages.sprintf("Drive already in list: " + listOfRoots[i].toString());
+//                continue;
+//            } else {
+//                Messages.sprintf("Drive is NEW: " + listOfRoots[i].toString());
+//            }
 
-            }
-            modelMain.getSqlHandler().getDriveInfoHandler(); // getDriveInfoSQL().update(driveInfo);
-//            modelMain.getWorkDirSQL().registerDrive(listOfRoots[i].toString(), serial);
+            modelMain.driveInfos().add(driveInfo);
 
             setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));
 

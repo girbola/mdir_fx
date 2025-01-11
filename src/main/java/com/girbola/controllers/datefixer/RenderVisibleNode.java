@@ -79,7 +79,7 @@ public class RenderVisibleNode {
             timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), e -> renderVisibleNodes()));
             sprintf("1time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
             timeline.play();
-            map.clear();
+            //map.clear();
         });
 
         scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
@@ -89,7 +89,7 @@ public class RenderVisibleNode {
             timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
             Messages.sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
             timeline.play();
-            map.clear();
+            //map.clear();
         });
 
     }

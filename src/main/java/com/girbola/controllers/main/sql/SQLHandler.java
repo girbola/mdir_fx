@@ -18,6 +18,7 @@ public class SQLHandler {
     private DriveInfoHandler driveInfoHandler;
 
     public SQLHandler(Configuration configuration) {
+        Messages.sprintf("SQLHandler init");
         this.configuration = configuration;
 
         configurationConnection = SqliteConnection.connector(configuration.getAppDataPath(), configuration.getConfiguration_db_fileName());
