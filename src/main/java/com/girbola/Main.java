@@ -108,8 +108,7 @@ public class Main extends Application {
 //                GraphicsEnvironment ge = GraphicsEnvironment
 //                        .getLocalGraphicsEnvironment();
 
-                Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? "
-                        + conf.getWorkDir());
+                Messages.sprintf("Created program path and loaded config. The workDir should something else than NULL? " + conf.getWorkDir());
 
                 FXMLLoader main_loader = null;
 
@@ -127,17 +126,20 @@ public class Main extends Application {
                 if (conf.getThemePath() == null) {
                     Messages.sprintf("conf.getThemePath() == null");
                 }
-                File file = new File(this.getClass().getResource("/").getPath());
+                File file = new File(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).getPath());
 
-                URL url = this.getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                Messages.sprintf("BLAAa: " + file);
+                URL url = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
                 if (url == null) {
                     Messages.sprintf("FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
                     System.exit(-1);
+                } else {
+                    Messages.sprintf("NOT NULL FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
                 }
                 String css = url.toExternalForm();
 
-                Messages.sprintf("FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
-                primaryScene.getStylesheets().add(Main.class.getResource("themes/" + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+                Messages.sprintf(" Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
                 primaryScene.widthProperty().addListener((observableValue, number, t1) -> Messages.sprintf("wdth: " + t1));
 
