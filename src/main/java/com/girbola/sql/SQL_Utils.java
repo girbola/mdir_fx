@@ -18,49 +18,23 @@ import java.util.ArrayList;
 public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
 
-    // @formatter:off
-/*    final static String folderInfoColumns =
-            "configuration," +
-            "folderinfo," +
-            "fileinfo," +
-            "selectedfolders, " +
-            "registereddrives," +
-            "driveinfo, " +
-            "thumbinfo," +
-            "workdir," +
-            "ignoredlist, " +
-            "config," +
-            "tables_cols," +
-            "folderinfos " +
-            "FROM your_table_name;";*/
 
-	/*
-	 * this.orgPath = aOrgPath; this.fileInfo_id = fileInfo_id; this.destinationPath
-	 * = ""; this.event = ""; this.location = ""; this.tags = ""; this.camera_model
-	 * = "Unknown"; this.orientation = 0; this.timeShift = 0; this.bad = false;
-	 * this.good = false; this.suggested = false; this.confirmed = false; this.raw =
-	 * false; this.image = false; this.video = false; this.ignored = false;
-	 * this.tableDuplicated = false; this.date = 0; this.size = 0; this.thumb_offset
-	 * = 0; this.thumb_length = 0; this.user = "";
-	 */
-/*
-  pstmt.setBoolean(1, selectedFolder.selectedProperty().get());
-            pstmt.setBoolean(2, selectedFolder.connected_property().get());
-            pstmt.setString(3, selectedFolder.getFolder());
- */
-/*
-
-    final static String insertToFolderInfos =
-            "INSERT OR REPLACE INTO " +
-                    SQL_Enums.FOLDERINFOS.getType() +
-                    " (" +
-                    "'path', " +
-                    "'tableType', " +
-                    "'justFolderName', " +
-                    "'connected')" +
-                    " VALUES(?,?,?,?)";
-
-*/
+    /**
+     * Checks if the specified database and table are accessible by executing a basic query.
+     *
+     * @param conn      The database connection to be tested.
+     * @param tableName The name of the table in the database to check accessibility.
+     * @return true if the connection and table are accessible, false otherwise.
+     */
+    public static boolean isDatabaseAccessible(Connection conn, String tableName) {
+        try (Statement stmt = conn.createStatement()) {
+            // A simple query that is generally safe to run and will work if the DB is accessible
+            stmt.execute("SELECT * " + "FROM " + tableName + " " + "LIMIT 1" + ";");
+            return true;  // If the query runs without exceptions, the database is accessible
+        } catch (SQLException e) {
+            return false;  // If an exception occurs, the database is not accessible
+        }
+    }
 
     /**
      * Commits any pending changes to the database.
@@ -100,8 +74,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
     }
-
-
 
 
     // @formatter:on

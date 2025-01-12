@@ -27,9 +27,9 @@ public class DriveInfoUtils {
 
 	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
-	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath) {
+	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath, String driveSerialNumber) {
 		for(DriveInfo driveInfo : driveInfos) {
-			if(driveInfo.getDrivePath().equals(drivePath)) {
+			if(driveInfo.getDrivePath().equals(drivePath) && driveInfo.getSerial().equals(driveSerialNumber)) {
 				return true;
 			}
 		}

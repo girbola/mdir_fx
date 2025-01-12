@@ -266,7 +266,7 @@ public class RenderVisibleNode {
             Messages.sprintf("getThumbswere null" + fileInfo.getOrgPath());
             return 1;
         }
-        if (thumbInfo.getThumbs().get(0) == null) {
+        if (thumbInfo.getThumbs().getFirst() == null) {
             Messages.sprintf("getThumbs.get(0) is empty" + fileInfo.getOrgPath());
             return 1;
         }

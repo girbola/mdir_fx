@@ -7,13 +7,16 @@ import com.girbola.sql.DriveInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import java.sql.Connection;
 import java.util.List;
+import lombok.Getter;
 
 public class DriveInfoHandler {
 
     private Configuration configuration;
     private Connection configurationConnection;
 
+    @Getter
     private List<DriveInfo> driveInfoList;
+
     private DriveInfoSQL driveInfoSQL;
 
     public DriveInfoHandler(Connection configurationConnection, Configuration configuration) {
@@ -57,4 +60,5 @@ public class DriveInfoHandler {
             return false;
         }
     }
+
 }

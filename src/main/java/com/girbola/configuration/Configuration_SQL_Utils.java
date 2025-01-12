@@ -227,6 +227,10 @@ public class Configuration_SQL_Utils {
      * @return true if the configuration is successfully loaded, false otherwise
      */
     public static boolean loadConfiguration(Connection connection, Configuration configuration) {
+        if(!SQL_Utils.isDatabaseAccessible(connection, SQL_Enums.CONFIGURATION.getType())) {
+            createConfiguration_Table(connection);
+        }
+
         String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQL_Enums.CONFIGURATION.getType();
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);

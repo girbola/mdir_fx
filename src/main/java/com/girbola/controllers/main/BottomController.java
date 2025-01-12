@@ -287,7 +287,7 @@ public class BottomController {
 
     @FXML
     public void initialize() {
-        sprintf("bottom controller...");
+        sprintf("initialize BottomController...");
     }
 
     public void initBottomWorkdirMonitors() {

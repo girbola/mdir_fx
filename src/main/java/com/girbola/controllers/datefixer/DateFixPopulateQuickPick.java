@@ -101,7 +101,8 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     @Override
     protected ObservableList<Node> call() throws Exception {
         ObservableList<Node> nodes = FXCollections.observableArrayList();
-        for (FileInfo fi : folderInfo.getFileInfoList()) {
+        Messages.sprintf("DateFixPopulateQuickPick.call() and size: " + model_dateFix.getFolderInfo_full().getFileInfoList().size());
+        for (FileInfo fi : model_dateFix.getFolderInfo_full().getFileInfoList()) {
             if (Main.getProcessCancelled()) {
                 cancel();
                 sprintf("Process has been cancelled!");

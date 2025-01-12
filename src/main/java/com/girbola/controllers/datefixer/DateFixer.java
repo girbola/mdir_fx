@@ -125,9 +125,11 @@ public class DateFixer extends Task<Void> {
         sprintf("dateFixLoader.setOnSucceeded");
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-
+        Messages.sprintf("folderinfo size: " + folderInfo.getFileInfoList().size());
         model_datefix.setFolderInfo_full(folderInfo);
-model_datefix.setFolderInfo_filtered(folderInfo);
+        model_datefix.setFolderInfo_filtered(folderInfo);
+        Messages.sprintf("Folderinfo test: " + model_datefix.getFolderInfo_full().getFileInfoList().size() + " filter: " + model_datefix.getFolderInfo_filtered().getFileInfoList().size());
+
         Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
         dateFixPopulateTask.setOnCancelled(event -> {

@@ -38,6 +38,8 @@ import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
+import java.io.File;
+import java.net.URL;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
@@ -125,8 +127,17 @@ public class Main extends Application {
                 if (conf.getThemePath() == null) {
                     Messages.sprintf("conf.getThemePath() == null");
                 }
+                File file = new File(this.getClass().getResource("/").getPath());
 
-                primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+                URL url = this.getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                if (url == null) {
+                    Messages.sprintf("FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                    System.exit(-1);
+                }
+                String css = url.toExternalForm();
+
+                Messages.sprintf("FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                primaryScene.getStylesheets().add(Main.class.getResource("themes/" + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
                 primaryScene.widthProperty().addListener((observableValue, number, t1) -> Messages.sprintf("wdth: " + t1));
 

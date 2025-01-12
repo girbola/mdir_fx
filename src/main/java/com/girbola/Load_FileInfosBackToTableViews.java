@@ -1,14 +1,20 @@
 package com.girbola;
 
+import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.drive.DriveInfo;
+import com.girbola.drive.DriveInfoUtils;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.FolderInfosSQL;
 import com.girbola.sql.SQL_Utils;
+import java.nio.file.Path;
 import javafx.concurrent.Task;
 
 import java.io.File;
@@ -47,7 +53,10 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
                     return false;
                 }
                 FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(selectedFolderInfo.getFolderPath());
+
                 Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath());
+
+                checkFolderPathChanges(folderInfo);
 
                 if (folderInfo.getTableType().equals(TableType.SORTIT.getType())) {
                     modelMain.tables().getSortIt_table().getItems().add(folderInfo);
@@ -63,6 +72,56 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
         }
 
         return true;
+    }
+
+    private void checkFolderPathChanges(FolderInfo folderInfo) {
+        String folderPath = folderInfo.getFolderPath();
+        List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoHandler().getDriveInfoList();
+
+        String sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
+        if(sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
+
+            Path rootPath = Paths.get(folderInfo.getFolderPath());
+            // D:\UserPicturesUser1\Picture
+            // E:\UserPicturesUser1\Picture
+
+            // /media/
+            SelectedFolderScanner selectedFolders = modelMain.getSelectedFolders();
+            int folders = folderInfo.getFileInfoList().size();
+            int counter = 0;
+            for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                for (SelectedFolder selectedFolderInfo : selectedFolders.getSelectedFolderScanner_obs()) {
+                    String parsedFileInfoPath = fileInfo.getOrgPath().replace(selectedFolderInfo.getFolder(), "");
+
+                    if (fileInfo.getOrgPath().contains(selectedFolderInfo.getFolder())) {
+                        Path path = Paths.get(selectedFolderInfo.getFolder(), parsedFileInfoPath);
+                        if (Files.exists(path)) {
+                            fileInfo.setOrgPath(path.toString());
+                            folderInfo.setChanged(true);
+                            counter++;
+                        }
+                    }
+                }
+            }
+            if(counter == folders) {
+                Messages.sprintf("All files were renamed to new path");
+                folderInfo.setSourceFolderSerialNumber(rootPath.getFileSystem().toString());
+                folderInfo.setChanged(true);
+            }
+
+        } else {
+            Messages.sprintfError("sourceFolderSerialNumber was null or empty!");
+            for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                if(!folderPath.equals(fileInfo.getOrgPath())) {
+                    if(DriveInfoUtils.hasDrivePath(driveInfoList, fileInfo.getOrgPath(),sourceFolderSerialNumber)) {
+                        fileInfo.setOrgPath(folderPath);
+                        folderInfo.setChanged(true);
+                    }
+                }
+            }
+
+        }
+
     }
 
     @Override
