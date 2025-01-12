@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -126,10 +126,13 @@ public class DateFixer extends Task<Void> {
 
         LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
 
+        model_datefix.setFolderInfo_full(folderInfo);
+model_datefix.setFolderInfo_filtered(folderInfo);
         Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
         dateFixPopulateTask.setOnCancelled(event -> {
             sprintf("dateFixPopulateGridPane.setOnCancelled");
+
             loadingProcess_task.closeStage();
         });
         dateFixPopulateTask.setOnSucceeded(event -> {

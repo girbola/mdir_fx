@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -63,7 +63,7 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
                 dateFixerButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent event) {
-
+                        Messages.sprintf("dateFixerButton clicked");
 //						model_main.getRegisterTableActivity().cancel();
                         model_main.getMonitorExternalDriveConnectivity().cancel();
                         Task<Void> dateFixer = new DateFixer(path, folderInfo, model_main, false);

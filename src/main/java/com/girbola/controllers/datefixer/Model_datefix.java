@@ -1,11 +1,10 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
 package com.girbola.controllers.datefixer;
-
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -524,37 +523,21 @@ public class Model_datefix extends DateFixerModel {
         return null;
     }
 
-    public BooleanProperty ignored_property() {
-        return this.ignored;
-    }
+    public BooleanProperty ignored_property() {return this.ignored;}
 
-    public BooleanProperty events_property() {
-        return this.events;
-    }
+    public BooleanProperty events_property() {return this.events;}
 
-    public BooleanProperty copied_property() {
-        return this.copied;
-    }
+    public BooleanProperty copied_property() {return this.copied;}
 
-    public BooleanProperty locations_property() {
-        return this.locations;
-    }
+    public BooleanProperty locations_property() {return this.locations;}
 
-    public boolean getIgnored() {
-        return this.ignored.get();
-    }
+    public boolean getIgnored() {return this.ignored.get();}
 
-    public boolean getEvents() {
-        return this.events.get();
-    }
+    public boolean getEvents() {return this.events.get();}
 
-    public boolean getCopied() {
-        return this.copied.get();
-    }
+    public boolean getCopied() {return this.copied.get();}
 
-    public boolean getLocations() {
-        return this.locations.get();
-    }
+    public boolean getLocations() {return this.locations.get();}
 
     public boolean fileInfoisShowing_(FileInfo fileInfo) {
         boolean hide = false;
@@ -688,9 +671,7 @@ public class Model_datefix extends DateFixerModel {
         return folderInfo_filtered;
     }
 
-    public FolderInfo getFolderInfo_full() {
-        return folderInfo_full;
-    }
+    public FolderInfo getFolderInfo_full() {return folderInfo_full;}
 
     public int getImagesPerLine() {
         return imagesPerLine;
@@ -768,9 +749,7 @@ public class Model_datefix extends DateFixerModel {
         this.anchorPane = anchorPane;
     }
 
-    public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) {
-        this.cameras_TableView = cameras_TableView;
-    }
+    public void setCameras_TableView(TableView<EXIF_Data_Selector> cameras_TableView) {this.cameras_TableView = cameras_TableView;}
 
     public void setChanges_made(boolean changes_made) {
         this.changes_made.set(changes_made);
@@ -784,21 +763,15 @@ public class Model_datefix extends DateFixerModel {
         this.currentFolderPath = currentFilePath;
     }
 
-    public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) {
-        this.dates_TableView = dates_TableView;
-    }
+    public void setDates_TableView(TableView<EXIF_Data_Selector> dates_TableView) {this.dates_TableView = dates_TableView;}
 
     public void setEvents_TableView(TableView<EXIF_Data_Selector> table) {
         this.events_TableView = table;
     }
 
-    public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) {
-        this.folderInfo_filtered = folderInfo_filtered;
-    }
+    public void setFolderInfo_filtered(FolderInfo folderInfo_filtered) {this.folderInfo_filtered = folderInfo_filtered;}
 
-    public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) {
-        this.folderInfo_full = aCurrentFolderInfo;
-    }
+    public void setFolderInfo_full(FolderInfo aCurrentFolderInfo) {this.folderInfo_full = aCurrentFolderInfo;}
 
     public void setImagesPerLine(int imagesPerLine) {
         this.imagesPerLine = imagesPerLine;

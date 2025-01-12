@@ -43,13 +43,13 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 			@Override
 			protected void cancelled() {
 				super.cancelled();
-				Messages.sprintf("Cancelled check");
+				Messages.sprintf("MonitorExternalDriveConnectivity cancelled");
 			}
 
 			@Override
 			protected void failed() {
 				super.failed();
-				Messages.sprintf("Failed check");
+				Messages.sprintf("MonitorExternalDriveConnectivity failed");
 			}
 
 			@Override

@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -87,7 +87,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();
         this.tilePane = aTilePane;
         this.model_dateFix.getSelectionModel().clearAll(tilePane);
-        this.folderInfo = aModel_datefix.getFolderInfo_full();
+        this.folderInfo = this.model_dateFix.getFolderInfo_full();
         this.scrollPane = aModel_datefix.getScrollPane();
         this.loadingProcess_task = loadingProcess_task;
         sprintf("FolderInfo.getMinDate(): " + this.folderInfo.getMinDate());

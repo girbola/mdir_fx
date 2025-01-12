@@ -1,5 +1,5 @@
 /*
- @(#)Copyright:  Copyright (c) 2012-2024 All right reserved.  
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.  
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -20,6 +20,7 @@ import com.girbola.thumbinfo.ThumbInfo;
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -91,6 +92,13 @@ public class RenderVisibleNode {
             timeline.play();
             //map.clear();
         });
+        Platform.runLater(()-> {
+
+        scrollPane.setVvalue(1);
+        scrollPane.setVvalue(0);
+
+        });
+
 
     }
 
@@ -273,14 +281,14 @@ public class RenderVisibleNode {
 
     private synchronized void checkVisible() {
 
-        map.clear();
+        //map.clear();
         Bounds paneBounds = scrollPane.localToScene(scrollPane.getBoundsInParent());
         sprintf("Scrollpane id is: " + scrollPane.getContent());
 
         Node mainNode = scrollPane.getContent();
 
         if (mainNode instanceof TilePane && mainNode.getId().equals("dateFixer")) {
-            Messages.sprintf("datefixer");
+            Messages.sprintf("datefixer. mainNode is: " + ((TilePane) mainNode).getChildren().size());
             for (Node tilePane : ((TilePane) mainNode).getChildren()) {
                 if (tilePane instanceof VBox && tilePane.getId().equals("imageFrame")) {
                     Bounds nodeBounds = tilePane.localToScene(tilePane.getBoundsInLocal());
@@ -292,6 +300,8 @@ public class RenderVisibleNode {
                             }
                         }
                     }
+                } else {
+                    Messages.sprintf("datefixer. mainNode is: " + mainNode);
                 }
             }
             // container
