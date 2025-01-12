@@ -156,7 +156,7 @@ public class LoadingProcessTask {
 	}
 
 	public void closeStage() {
-		Messages.sprintf("Closing window or not?");
+		Messages.sprintf("closeStage is closing window");
 
 		stopTask();
 		unbind();

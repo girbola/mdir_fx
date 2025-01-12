@@ -75,12 +75,22 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
     }
 
     private void checkFolderPathChanges(FolderInfo folderInfo) {
+       Messages.sprintf("checkFolderPathChanges started");
         String folderPath = folderInfo.getFolderPath();
         List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoHandler().getDriveInfoList();
 
-        String sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
-        if(sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
+        String sourceFolderSerialNumber =  "";
 
+        try {
+            sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
+        } catch (Exception e) {
+            Messages.sprintfError("sourceFolderSerialNumber was null or empty!");
+            return;
+        }
+
+
+        if(sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
+            Messages.sprintf("sourceFolderSerialNumber was null or empty!");
             Path rootPath = Paths.get(folderInfo.getFolderPath());
             // D:\UserPicturesUser1\Picture
             // E:\UserPicturesUser1\Picture
@@ -92,7 +102,6 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
             for(FileInfo fileInfo : folderInfo.getFileInfoList()) {
                 for (SelectedFolder selectedFolderInfo : selectedFolders.getSelectedFolderScanner_obs()) {
                     String parsedFileInfoPath = fileInfo.getOrgPath().replace(selectedFolderInfo.getFolder(), "");
-
                     if (fileInfo.getOrgPath().contains(selectedFolderInfo.getFolder())) {
                         Path path = Paths.get(selectedFolderInfo.getFolder(), parsedFileInfoPath);
                         if (Files.exists(path)) {
@@ -119,9 +128,8 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
                     }
                 }
             }
-
         }
-
+        Messages.sprintf("checkFolderPathChanges finished");
     }
 
     @Override
