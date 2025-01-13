@@ -126,21 +126,23 @@ public class Main extends Application {
                 if (conf.getThemePath() == null) {
                     Messages.sprintf("conf.getThemePath() == null");
                 }
-                File file = new File(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).getPath());
+                try {
+                    //String file = new File(".").getAbsolutePath();
+                    if (conf.getThemePath() != null) {
+                        Messages.sprintf("conf.getThemePath() != null: " + conf.getThemePath());
+                    }
+                    if (MDir_Stylesheets_Constants.MAINSTYLE.getType() != null) {
+                        Messages.sprintf("MDir_Stylesheets_Constants.MAINSTYLE.getType() != null: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                    }
+                    String externalForm = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm();
+//                    Messages.sprintf("==============file: " + file);
+                    Messages.sprintf("externalForm: " + externalForm);
 
-                Messages.sprintf("BLAAa: " + file);
-                URL url = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
-                if (url == null) {
-                    Messages.sprintf("FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
-                    System.exit(-1);
-                } else {
-                    Messages.sprintf("NOT NULL FILEEEEE= " + file + " Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+                    primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+                } catch (Exception e) {
+                    Messages.sprintfError("Something went wrong: " + e.getMessage());
+                    System.exit(1);
                 }
-                String css = url.toExternalForm();
-
-                Messages.sprintf(" Theme path: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
-                primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-
                 primaryScene.widthProperty().addListener((observableValue, number, t1) -> Messages.sprintf("wdth: " + t1));
 
                 MainController mainController = (MainController) main_loader.getController();

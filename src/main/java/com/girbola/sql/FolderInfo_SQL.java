@@ -293,12 +293,18 @@ public class FolderInfo_SQL {
 
     public static boolean saveFolderInfoToTable(Connection connection_mdirFile, FolderInfo folderInfo) {
 
-        ensureFolderInfoTable(connection_mdirFile);
-
-        boolean create = createFolderInfoTable(connection_mdirFile);
-        if (create) {
-            return insertFolderInfo(connection_mdirFile, folderInfo);
+        if(SQL_Utils.isDatabaseAccessible(connection_mdirFile, SQL_Enums.FOLDERINFO.getType())) {
+            boolean create = createFolderInfoTable(connection_mdirFile);
+            if (create) {
+                return insertFolderInfo(connection_mdirFile, folderInfo);
+            }
+            ensureFolderInfoTable(connection_mdirFile);
+            return true;
         }
+
+
+
+
         return false;
 //		try {
 //			Statement stmt = connection_mdirFile.createStatement();

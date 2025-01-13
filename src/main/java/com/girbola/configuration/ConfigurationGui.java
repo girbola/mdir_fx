@@ -56,7 +56,7 @@ class ConfigurationGui {
     private SimpleStringProperty workDir = new SimpleStringProperty("");
     private SimpleStringProperty workDirSerialNumber = new SimpleStringProperty("");
     private String currentTheme = ThemePath.DARK.getType();
-    private String themePath = File.separator + ThemePath.DARK.getType() + File.separator;
+    private String themePath = "/" + ThemePath.DARK.getType() + "/";
 
     public BooleanProperty betterQualityThumbs_property() {return this.betterQualityThumbs;}
     public BooleanProperty confirmOnExitProperty() {return this.confirmOnExit;}

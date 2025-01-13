@@ -31,7 +31,7 @@ public class WorkdirUtils {
                 Main.conf.setWorkDir(file.toString());
 
                 Main.conf.setWorkDirSerialNumber(OSHI_Utils.getDriveSerialNumber((file.toPath().getRoot()).toString()));
-                Configuration_SQL_Utils.update_Configuration();
+                Configuration_SQL_Utils.updateConfiguration();
 
             } else {
                 Messages.warningText("Can't find current path. Check you folder access");

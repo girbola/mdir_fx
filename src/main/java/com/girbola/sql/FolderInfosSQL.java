@@ -3,7 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
+import com.girbola.controllers.main.tables.model.SavedFolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import java.nio.file.Files;
@@ -31,17 +31,17 @@ public class FolderInfosSQL {
                     " VALUES(?,?,?,?)";
 
     //@formatter:on
-    public static boolean addToFolderInfosDB(Connection connection, SelectedFolderInfo selectedFolderInfo) {
+    public static boolean addToFolderInfosDB(Connection connection, SavedFolderInfo savedFolderInfo) {
         if (connection == null) {
             return false;
         }
         createFolderInfosDatabase(connection);
         try {
             PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, selectedFolderInfo.getFolderPath());
-            pstmt.setString(2, selectedFolderInfo.getTableType());
-            pstmt.setString(3, selectedFolderInfo.getJustFolderName());
-            pstmt.setBoolean(4, selectedFolderInfo.isConnected());
+            pstmt.setString(1, savedFolderInfo.getFolderPath());
+            pstmt.setString(2, savedFolderInfo.getTableType());
+            pstmt.setString(3, savedFolderInfo.getJustFolderName());
+            pstmt.setBoolean(4, savedFolderInfo.isConnected());
             pstmt.executeUpdate();
             pstmt.close();
             return true;
@@ -52,7 +52,7 @@ public class FolderInfosSQL {
     }
 
 
-    public static List<SelectedFolderInfo> getAll(Connection connection, ModelMain model_Main) {
+    public static List<SavedFolderInfo> getAll(Connection connection, ModelMain model_Main) {
         if (Main.getProcessCancelled()) {
             return null;
         }
@@ -65,7 +65,7 @@ public class FolderInfosSQL {
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            List<SelectedFolderInfo> arrayList = new ArrayList<>();
+            List<SavedFolderInfo> arrayList = new ArrayList<>();
 
             while (rs.next()) {
                 if (Main.getProcessCancelled()) {
@@ -81,10 +81,10 @@ public class FolderInfosSQL {
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
                     return null;
                 }
-                SelectedFolderInfo selectedFolderInfo = new SelectedFolderInfo(path, tableType, justFolderName, isConnected);
-                selectedFolderInfo.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + selectedFolderInfo.isConnected());
-                arrayList.add(selectedFolderInfo);
+                SavedFolderInfo savedFolderInfo = new SavedFolderInfo(path, tableType, justFolderName, isConnected);
+                savedFolderInfo.setConnected(Files.exists(Paths.get(path)));
+                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + savedFolderInfo.isConnected());
+                arrayList.add(savedFolderInfo);
             }
             Messages.sprintf("getALLLLLL size was: " + arrayList.size());
             return arrayList;

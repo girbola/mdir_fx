@@ -4,7 +4,6 @@ import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
-import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
 import com.girbola.messages.Messages;
 
 import java.io.File;

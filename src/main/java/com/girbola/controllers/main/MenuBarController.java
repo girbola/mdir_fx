@@ -481,7 +481,7 @@ public class MenuBarController {
 
         stage_opt.setScene(scene_opt);
         stage_opt.setOnCloseRequest(closeEvent -> {
-            Configuration_SQL_Utils.update_Configuration();
+            Configuration_SQL_Utils.updateConfiguration();
         });
         stage_opt.show();
 
@@ -532,7 +532,7 @@ public class MenuBarController {
         menuItem_tools_themes_light.setSelected(false);
         Main.scene_Switcher.getScene_main().getStylesheets()
                 .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        Configuration_SQL_Utils.update_Configuration();
+        Configuration_SQL_Utils.updateConfiguration();
     }
 
     @FXML
@@ -542,7 +542,7 @@ public class MenuBarController {
         menuItem_tools_themes_dark.setSelected(false);
         Main.scene_Switcher.getScene_main().getStylesheets()
                 .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        Configuration_SQL_Utils.update_Configuration();
+        Configuration_SQL_Utils.updateConfiguration();
     }
 
     private void viewWebPage(String string) {

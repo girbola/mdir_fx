@@ -99,19 +99,23 @@ public class Configuration_SQL_Utils {
     /**
      * Updates the configuration in the database.
      */
-    public synchronized static void update_Configuration() {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+    public static synchronized void updateConfiguration() {
+        Connection configurationConnection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if(!SQL_Utils.isDatabaseAccessible(configurationConnection,  Main.conf.getConfiguration_db_fileName())) {
+            createConfiguration_Table(configurationConnection);
+        }
+
         try {
             // Ensure the 'currentTheme' column exists.
-            ensureCurrentThemeColumnExists(connection);
+            ensureCurrentThemeColumnExists(configurationConnection);
 
-            connection.setAutoCommit(false);
-            insert_Configuration(connection, Main.conf);
-            connection.commit();
+            configurationConnection.setAutoCommit(false);
+            insert_Configuration(configurationConnection, Main.conf);
+            configurationConnection.commit();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        SQL_Utils.closeConnection(connection);
+        SQL_Utils.closeConnection(configurationConnection);
     }
 
 

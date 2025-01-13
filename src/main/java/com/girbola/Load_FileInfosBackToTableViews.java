@@ -5,7 +5,7 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
+import com.girbola.controllers.main.tables.model.SavedFolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DriveInfoUtils;
@@ -40,19 +40,19 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
             return false;
         }
 
-        List<SelectedFolderInfo> selectedFolderInfos = FolderInfosSQL.getAll(connection, modelMain);
+        List<SavedFolderInfo> savedFolderInfos = FolderInfosSQL.getAll(connection, modelMain);
 
-        if (selectedFolderInfos == null || selectedFolderInfos.isEmpty()) {
+        if (savedFolderInfos == null || savedFolderInfos.isEmpty()) {
             Messages.sprintfError("folderInfo_list were empty!!!!" + Load_FileInfosBackToTableViews.class.getName());
             cancel();
             return false;
         } else {
-            for (SelectedFolderInfo selectedFolderInfo : selectedFolderInfos) {
+            for (SavedFolderInfo savedFolderInfo : savedFolderInfos) {
                 if (Main.getProcessCancelled()) {
                     cancel();
                     return false;
                 }
-                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(selectedFolderInfo.getFolderPath());
+                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(savedFolderInfo.getFolderPath());
 
                 Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath());
 

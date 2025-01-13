@@ -1,12 +1,12 @@
 package com.girbola.controllers.main.tables.model;
 
-public class SelectedFolderInfo {
+public class SavedFolderInfo {
 	private String folderPath;
 	private String tableType;
 	private String justFolderName;
 	private boolean isConnected;
 
-	public SelectedFolderInfo(String folderPath, String tableType, String justFolderName, boolean isConnected) {
+	public SavedFolderInfo(String folderPath, String tableType, String justFolderName, boolean isConnected) {
 		this.folderPath = folderPath;
 		this.tableType = tableType;
 		this.justFolderName = justFolderName;

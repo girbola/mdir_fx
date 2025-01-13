@@ -15,7 +15,7 @@ import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.model.SelectedFolderInfo;
+import com.girbola.controllers.main.tables.model.SavedFolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -162,23 +162,24 @@ public class ModelMain {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
-                    SelectedFolderInfo selectedFolderInfo = new SelectedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connectionConfiguration, selectedFolderInfo);
+                    SavedFolderInfo savedFolderInfo = new SavedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+
+                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connectionConfiguration, savedFolderInfo);
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
                     }
+
                     /*
                      * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
                      * Connection status when this was saved Connects to current folder for existing
                      * or creates new one called fileinfo.db
                      */
-                    fileListConnection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
-                            Main.conf.getMdir_db_fileName());
+                    fileListConnection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
                     fileListConnection.setAutoCommit(false);
                     // Inserts all data info fileinfo.db
                     FileInfo_SQL.insertFileInfoListToDatabase(fileListConnection, folderInfo.getFileInfoList(), false);
-                    SQL_Utils.commitChanges(fileListConnection);
+//                    SQL_Utils.commitChanges(fileListConnection);
                     FolderInfo_SQL.saveFolderInfoToTable(fileListConnection, folderInfo);
                     SQL_Utils.commitChanges(fileListConnection);
                     SQL_Utils.closeConnection(fileListConnection);
@@ -200,6 +201,7 @@ public class ModelMain {
             Messages.errorSmth(ERROR, "Cannot commit to SQL database", e, Misc.getLineNumber(), true);
             return false;
         }
+
     }
 
     public void exitProgram_NOSAVE() {
@@ -223,7 +225,7 @@ public class ModelMain {
         // saveTablePositions();
         // erg;
         Messages.sprintf("Exiting program");
-        Configuration_SQL_Utils.update_Configuration();
+        Configuration_SQL_Utils.updateConfiguration();
 
         if (Main.getChanged()) {
             Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
