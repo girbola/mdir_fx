@@ -130,11 +130,10 @@ public class DateFixer extends Task<Void> {
         model_datefix.setFolderInfo_filtered(folderInfo);
         Messages.sprintf("Folderinfo test: " + model_datefix.getFolderInfo_full().getFileInfoList().size() + " filter: " + model_datefix.getFolderInfo_filtered().getFileInfoList().size());
 
-        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulateQuickPick(Main.scene_Switcher.getScene_dateFixer(),
+        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulate(Main.scene_Switcher.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
         dateFixPopulateTask.setOnCancelled(event -> {
             sprintf("dateFixPopulateGridPane.setOnCancelled");
-
             loadingProcess_task.closeStage();
         });
         dateFixPopulateTask.setOnSucceeded(event -> {
@@ -146,6 +145,9 @@ public class DateFixer extends Task<Void> {
                     model_datefix.getTilePane().getChildren().addAll(nodes);
                     model_datefix.setAllNodes(nodes);
                     loadingProcess_task.closeStage();
+                    model_datefix.getScrollPane().setVvalue(-1);
+                    model_datefix.getScrollPane().setVvalue(0);
+
                 });
             } catch (InterruptedException | ExecutionException e) {
                 throw new RuntimeException(e);
@@ -157,6 +159,10 @@ public class DateFixer extends Task<Void> {
         });
         dateFixPopulateTask.setOnFailed(event -> {
             sprintf("dateFixPopulateGridPane.setOnFailed");
+            loadingProcess_task.closeStage();
+        });
+        dateFixPopulateTask.setOnCancelled(event -> {
+            sprintf("dateFixPopulateGridPane.setOnCancelled");
             loadingProcess_task.closeStage();
         });
 

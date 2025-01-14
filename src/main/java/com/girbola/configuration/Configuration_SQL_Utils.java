@@ -22,8 +22,9 @@ public class Configuration_SQL_Utils {
     private static final String ERROR = Configuration_SQL_Utils.class.getName();
     public static final String id = "id";
 
-    private final static String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
+    private static final String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
     private static int configuration_id = 0;
+
     public static final String betterQualityThumbs = "betterQualityThumbs";
     public static final String confirmOnExit = "confirmOnExit";
     public static final String id_counter = "id_counter";
@@ -45,7 +46,7 @@ public class Configuration_SQL_Utils {
     public static final String windowStartWidth = "windowStartWidth";
     public static final String workDir = "workDir";
     public static final String workDirSerialNumber = "workDirSerialNumber";
-    final private static String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
+    private static final String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
 
     /**
      * Ensures that the 'currentTheme' column exists in the configuration table.

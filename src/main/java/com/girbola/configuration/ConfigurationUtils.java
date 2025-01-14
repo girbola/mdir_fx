@@ -4,6 +4,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
 import java.io.File;
@@ -43,45 +44,26 @@ public class ConfigurationUtils {
 
     public static boolean createConfiguration_db() {
         Messages.sprintf("creatingConfiguration_DB at: " + Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
-                Main.conf.getConfiguration_db_fileName());
-        try {
-            connection.setAutoCommit(false);
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-        }
+        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+
+        SQL_Utils.setAutoCommit(connection, false);
+
         // Create configuration table_cols which keeps tableview's widths
         Configuration_SQL_Utils.createConfigurationTable_properties(connection);
         // Create configuration for programs config like currentTheme, workDir, vlcPath
         // etc.
         Configuration_SQL_Utils.createConfiguration_Table(connection);
-        try {
-            connection.commit();
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+        boolean b = SQL_Utils.commitChanges(connection);
+        if(!b) {
+            SQL_Utils.rollBack(connection);
         }
+
         // Inserts default params to configuration
         Configuration_SQL_Utils.insert_Configuration(connection, Main.conf);
         Configuration_SQL_Utils.createIgnoredListTable(connection);
         Configuration_SQL_Utils.createFolderInfosDatabase(connection);
 
-        try {
-            connection.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-
-            connection.close();
-            return true;
-        } catch (Exception e) {
-            System.err.println("Can't close database file at: " + Main.conf.getAppDataPath());
-            e.printStackTrace();
-            return false;
-        }
+        return SQL_Utils.closeConnection(connection);
 
     }
 
@@ -90,8 +72,12 @@ public class ConfigurationUtils {
         Connection connection = null;
         boolean createDatabase = false;
         Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator);
-        configFile.toFile().setWritable(true);
-        configFile.toFile().setReadable(true);
+        if (!configFile.toFile().setWritable(true)) {
+            Messages.sprintfError("Failed to set writable permissions for: " + configFile.toFile().getAbsolutePath());
+        }
+        if (!configFile.toFile().setReadable(true)) {
+            Messages.sprintfError("Failed to set readable permissions for: " + configFile.toFile().getAbsolutePath());
+        }
 
         if (!Files.exists(configFile) && Files.isWritable(configFile)) {
             try {

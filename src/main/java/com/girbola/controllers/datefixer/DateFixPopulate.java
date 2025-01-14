@@ -63,12 +63,11 @@ import static com.girbola.misc.Misc.getLineNumber;
 /**
  * @author Marko Lokka
  */
-public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
+public class DateFixPopulate extends Task<ObservableList<Node>> {
 
-    private final static String ERROR = DateFixPopulateQuickPick.class.getSimpleName();
+    private final static String ERROR = DateFixPopulate.class.getSimpleName();
 
     private FolderInfo folderInfo;
-    //private GridPane gridPane;
     private TilePane quickPick_tilePane;
     private Model_datefix model_dateFix;
     private ScrollPane scrollPane;
@@ -81,7 +80,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
 
     private TilePane tilePane;
 
-    public DateFixPopulateQuickPick(Scene scene, Model_datefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
+    public DateFixPopulate(Scene scene, Model_datefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
         this.scene = scene;
         this.model_dateFix = aModel_datefix;
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();
@@ -101,7 +100,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
     @Override
     protected ObservableList<Node> call() throws Exception {
         ObservableList<Node> nodes = FXCollections.observableArrayList();
-        Messages.sprintf("DateFixPopulateQuickPick.call() and size: " + model_dateFix.getFolderInfo_full().getFileInfoList().size());
+        Messages.sprintf("DateFixPopulate.call() and size: " + model_dateFix.getFolderInfo_full().getFileInfoList().size());
         for (FileInfo fi : model_dateFix.getFolderInfo_full().getFileInfoList()) {
             if (Main.getProcessCancelled()) {
                 cancel();
@@ -292,7 +291,7 @@ public class DateFixPopulateQuickPick extends Task<ObservableList<Node>> {
                             try {
                                 Desktop.getDesktop().open(path.toFile());
                             } catch (IOException ex) {
-                                Logger.getLogger(DateFixPopulateQuickPick.class.getName()).log(Level.SEVERE, null, ex);
+                                Logger.getLogger(DateFixPopulate.class.getName()).log(Level.SEVERE, null, ex);
                                 errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
                             }
                         } else {

@@ -260,6 +260,8 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
     protected void succeeded() {
         super.succeeded();
         model_importImages.getScrollPane().setVvalue(-1);
+        model_importImages.getScrollPane().setVvalue(0);
+
     }
 
 }
