@@ -101,7 +101,7 @@ public class MergeDialogController {
 
     @FXML
     private void apply_and_move_btn_action(ActionEvent event) {
-        verifyWorkDirectory();
+        //verifyWorkDirectory();
 
         String absolutePath = getSelectedDestinationPath();
         String eventName = getEventName();
@@ -143,20 +143,20 @@ public class MergeDialogController {
             }
 
 //            Connection connection = null;
-            FolderInfo folderInfoSource = FolderInfo_SQL.loadFolderInfo(newDestinationPath);
+            FolderInfo folderInfoDestination = FolderInfo_SQL.loadFolderInfo(newDestinationPath);
 
-            if (folderInfoSource == null) {
-                folderInfoSource = new FolderInfo();
-                folderInfoSource.setFolderPath(newDestinationPath.toFile().getAbsolutePath());
-                folderInfoSource.setTableType(TableUtils.resolvePath(newDestinationPath).getType());
+            if (folderInfoDestination == null) {
+                folderInfoDestination = new FolderInfo();
+                folderInfoDestination.setFolderPath(newDestinationPath.toFile().getAbsolutePath());
+                folderInfoDestination.setTableType(TableUtils.resolvePath(newDestinationPath).getType());
 
-                Messages.sprintf("folderInfo were not found at destination: " + folderInfoSource + " with database name " + Main.conf.getMdir_db_fileName());
+                Messages.sprintf("folderInfo were not found at destination: " + folderInfoDestination + " with database name " + Main.conf.getMdir_db_fileName());
 
 //                connection = SqliteConnection.connector(newDestinationPath, Main.conf.getMdir_db_fileName());
 //
 //                SQL_Utils.setAutoCommit(connection, false);
 
-                Messages.sprintf("folderInfoSource were created at: " + folderInfoSource.getFolderPath());
+                Messages.sprintf("folderInfoSource were created at: " + folderInfoDestination.getFolderPath());
             }
 
             Iterator<FileInfo> fileInfo_list_it = folderInfo.getFileInfoList().iterator();
@@ -218,11 +218,11 @@ public class MergeDialogController {
 
 
             }
-            folderInfoSource.setFileInfoList(fileList);
-            folderInfoSource.setChanged(true);
+            folderInfoDestination.setFileInfoList(fileList);
+            folderInfoDestination.setChanged(true);
             TableView<FolderInfo> tableByType = model_main.tables().getTableByType(folderInfo.getTableType());
             if (tableByType != null) {
-                tableByType.getItems().add(folderInfoSource);
+                tableByType.getItems().add(folderInfoDestination);
             }
 
         }
