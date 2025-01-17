@@ -167,19 +167,35 @@
                               <Insets bottom="1.0" top="1.0" />
                            </HBox.margin>
                            <children>
-                              <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf" HBox.hgrow="ALWAYS">
-                                 <tooltip>
-                                    <Tooltip fx:id="tableDescription_tf_tooltip">
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <Label fx:id="selectedLbl">
                                        <font>
-                                          <Font size="11.0" />
+                                          <Font size="10.0" />
                                        </font>
-                                    </Tooltip>
-                                 </tooltip>
-                                 <font>
-                                    <Font size="10.0" />
-                                 </font>
-                              </Label>
+                                    </Label>
+                                 </children>
+                              </HBox>
+                              <HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf">
+                                       <tooltip>
+                                          <Tooltip fx:id="tableDescription_tf_tooltip">
+                                             <font>
+                                                <Font size="11.0" />
+                                             </font>
+                                          </Tooltip>
+                                       </tooltip>
+                                       <font>
+                                          <Font size="10.0" />
+                                       </font>
+                                    </Label>
+                                 </children>
+                              </HBox>
                            </children>
+                           <padding>
+                              <Insets right="15.0" />
+                           </padding>
                         </HBox>
             			</children>
             		</HBox>

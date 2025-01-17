@@ -50,6 +50,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.skin.TableViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
@@ -98,6 +101,7 @@ public class TableController {
 //	@FXML private HBox tableInformation_hbox;
 //	@FXML private HBox tables_parent;
 //	@FXML private ImageView hide_btn_iv;
+    @FXML private Label selectedLbl;
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesTotal_lbl;
 	@FXML private MenuItem checkChanges_mi;
@@ -236,7 +240,7 @@ public class TableController {
 
             stage.setMaxWidth(Misc.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
-            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+            scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
             MergeDialogController mergeDialogController = loader.getController();
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
@@ -526,6 +530,37 @@ public class TableController {
         tableDescription_tf.setText(tableName);
 
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        // Listener to keep track of selected items
+        table.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            int selectedCount = table.getSelectionModel().getSelectedItems().size();
+            Messages.sprintf("selectedCount: " + selectedCount);
+            updateSelectedLbl(selectedCount);
+        });
+
+        table.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.A) {
+                table.getSelectionModel().selectAll(); // Select all items
+                int selectedCount = table.getSelectionModel().getSelectedItems().size();
+                Messages.sprintf("selectedCount: " + selectedCount);
+                updateSelectedLbl(selectedCount);
+
+                event.consume(); // Consume the event to prevent further processing
+            }
+        });
+
+        table.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.isControlDown()) {
+                // Handle Ctrl + Click for selecting/deselecting rows
+                int selectedCount = table.getSelectionModel().getSelectedItems().size();
+                Messages.sprintf("selectedCount: " + selectedCount);
+                updateSelectedLbl(selectedCount);
+                event.consume(); // Consume the event
+            }
+        });
+
+        table.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            Messages.sprintf("table.focusedProperty(): " + newValue);
+        });
         table.setEditable(true);
         table.setPlaceholder(new Label(bundle.getString("tableContentEmpty")));
         table.setId(tableType);
@@ -676,6 +711,18 @@ public class TableController {
                 }
             }
         });
+    }
+
+    private void updateSelectedLbl(int selectedCount) {
+        if (selectedCount > 0) {
+            Platform.runLater(() -> {
+                selectedLbl.setText(selectedCount + " " + bundle.getString("selected"));
+            });
+        } else {
+            Platform.runLater(() -> {
+                selectedLbl.setText("");
+            });
+        }
     }
 
     private ScrollBar getHorizontalScrollBarFromTableView(TableView<?> tableView) {

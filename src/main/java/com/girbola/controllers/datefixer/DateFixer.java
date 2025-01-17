@@ -136,6 +136,7 @@ public class DateFixer extends Task<Void> {
             sprintf("dateFixPopulateGridPane.setOnCancelled");
             loadingProcess_task.closeStage();
         });
+
         dateFixPopulateTask.setOnSucceeded(event -> {
             sprintf("dateFixPopulateGridPane.setOnSucceeded");
 
@@ -144,12 +145,13 @@ public class DateFixer extends Task<Void> {
                 Platform.runLater(() -> {
                     model_datefix.getTilePane().getChildren().addAll(nodes);
                     model_datefix.setAllNodes(nodes);
-                    loadingProcess_task.closeStage();
                     model_datefix.getScrollPane().setVvalue(-1);
                     model_datefix.getScrollPane().setVvalue(0);
-
+                    loadingProcess_task.closeStage();
                 });
             } catch (InterruptedException | ExecutionException e) {
+                Thread.currentThread().interrupt();
+                Messages.errorSmth(ERROR, "Error occured while populating datefixer view", null, Misc.getLineNumber(), true);
                 throw new RuntimeException(e);
             }
 

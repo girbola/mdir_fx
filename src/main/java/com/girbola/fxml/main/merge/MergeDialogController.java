@@ -6,6 +6,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -18,7 +19,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Bounds;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 
@@ -41,6 +44,8 @@ public class MergeDialogController {
     private Tables tables;
     private TableView<FolderInfo> table;
     private String tableType;
+
+    private ToggleGroup selectedTableType = new ToggleGroup();
 
     //@formatter:off
 	@FXML private Button apply_and_copy_btn;
@@ -137,7 +142,7 @@ public class MergeDialogController {
                 break;
             }
 
-            Connection connection = null;
+//            Connection connection = null;
             FolderInfo folderInfoSource = FolderInfo_SQL.loadFolderInfo(newDestinationPath);
 
             if (folderInfoSource == null) {
@@ -147,9 +152,9 @@ public class MergeDialogController {
 
                 Messages.sprintf("folderInfo were not found at destination: " + folderInfoSource + " with database name " + Main.conf.getMdir_db_fileName());
 
-                connection = SqliteConnection.connector(newDestinationPath, Main.conf.getMdir_db_fileName());
-
-                SQL_Utils.setAutoCommit(connection, false);
+//                connection = SqliteConnection.connector(newDestinationPath, Main.conf.getMdir_db_fileName());
+//
+//                SQL_Utils.setAutoCommit(connection, false);
 
                 Messages.sprintf("folderInfoSource were created at: " + folderInfoSource.getFolderPath());
             }
@@ -178,6 +183,7 @@ public class MergeDialogController {
                 } else {
                     Messages.sprintf("+ fileInfo.SRC: " + fileInfo.toString() + "---->22222222new dest path: " + finalDest);
                 }
+
                 try {
                     if (finalDest != null) {
                         if (!Files.isDirectory(finalDest.getFileName())) {
@@ -198,7 +204,8 @@ public class MergeDialogController {
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
-                    System.exit(0);
+                    Messages.sprintfError(Main.bundle.getString("cannotMoveFile"));
+                    continue;
                 }
 
                 fileList.add(fileInfo);
@@ -209,24 +216,15 @@ public class MergeDialogController {
                     return;
                 }
 
-               /* boolean deleteFileInfoListToDatabase = FileInfo_SQL.deleteFileInfoListToDatabase(connection, fileList);
-                if (deleteFileInfoListToDatabase) {
-                    Messages.sprintf("Deleting fileInfo_list from database were success");
-                } else {
-                    Messages.sprintfError("Bug sniffer when deleting files form database");
-                }*/
-
 
             }
-/*
-            try {
-                connection.commit();
-                connection.close();
+            folderInfoSource.setFileInfoList(fileList);
+            folderInfoSource.setChanged(true);
+            TableView<FolderInfo> tableByType = model_main.tables().getTableByType(folderInfo.getTableType());
+            if (tableByType != null) {
+                tableByType.getItems().add(folderInfoSource);
+            }
 
-            } catch (SQLException e) {
-                Messages.sprintfError("SQL Exception when deleting from table: " + e.getMessage());
-                e.printStackTrace();
-            }*/
         }
 
         TableUtils.refreshAllTableContent(tables);
@@ -265,15 +263,13 @@ public class MergeDialogController {
                 continue;
             }
             if (Main.getProcessCancelled()) {
-                Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-                        Misc.getLineNumber(), true);
+                Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null, Misc.getLineNumber(), true);
                 break;
             }
             for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
 
                 if (Main.getProcessCancelled()) {
-                    Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null,
-                            Misc.getLineNumber(), true);
+                    Messages.errorSmth(ERROR, Main.bundle.getString("creatingDestinationDirFailed"), null, Misc.getLineNumber(), true);
                     break;
                 }
                 fileInfo.setEvent(eventName);
@@ -284,13 +280,13 @@ public class MergeDialogController {
                 // I:\\2017\\2017-06-24 Merikarvia - Kalassa äijien kanssa
                 Path destinationPath = FileUtils.getFileNameDateWithEventAndLocation(fileInfo, Main.conf.getWorkDir());
                 if (!Files.exists(destinationPath)) {
-                    Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: "
-                            + destinationPath);
+                    Messages.sprintfError(Main.bundle.getString("creatingDestinationDirFailed") + " File destination: " + destinationPath);
                     Main.setProcessCancelled(true);
                     break;
                 }
                 fileInfo.setCopied(false);
                 folderInfo.setChanged(true);
+                folderInfo.setTableType(selectedTableType.getSelectedToggle().getUserData().toString());
                 Main.setChanged(true);
                 Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
             }
@@ -352,15 +348,33 @@ public class MergeDialogController {
 
         selectedDestinationPath_cmb.getSelectionModel().select(0);
 
-        ToggleGroup toggleGroup = new ToggleGroup();
         Platform.runLater(() -> {
-            sortitTableSelected.setToggleGroup(toggleGroup);
-            sortedTableSelected.setToggleGroup(toggleGroup);
-            asitisTableSelected.setToggleGroup(toggleGroup);
+            sortitTableSelected.setUserData(TableType.SORTIT.getType());
+            sortedTableSelected.setUserData(TableType.SORTED.getType());
+            asitisTableSelected.setUserData(TableType.ASITIS.getType());
+
+            sortitTableSelected.setToggleGroup(selectedTableType);
+            sortedTableSelected.setToggleGroup(selectedTableType);
+            asitisTableSelected.setToggleGroup(selectedTableType);
 
             sortitTableSelected.setSelected(true);
         });
+        selectedTableType.selectedToggleProperty().addListener((ov, old_toggle, new_toggle) -> {
+            Messages.sprintf("fromString: " + selectedTableType.getSelectedToggle().getUserData().toString() + " NEWNWNWN: " + new_toggle.getUserData().toString());
+        });
 
+        selectedDestinationPath_cmb.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            selectedDestinationPath_cmb.getEditor().positionCaret(newText.length()); // Set caret to the end
+        });
+        event_cmb.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            event_cmb.getEditor().positionCaret(newText.length()); // Set caret to the end
+        });
+        location_cmb.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            location_cmb.getEditor().positionCaret(newText.length()); // Set caret to the end
+        });
+        user_cmb.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            user_cmb.getEditor().positionCaret(newText.length()); // Set caret to the end
+        });
 
     }
 }
