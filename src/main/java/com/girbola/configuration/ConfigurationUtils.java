@@ -7,6 +7,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
+import common.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -54,7 +55,7 @@ public class ConfigurationUtils {
         // etc.
         Configuration_SQL_Utils.createConfiguration_Table(connection);
         boolean b = SQL_Utils.commitChanges(connection);
-        if(!b) {
+        if (!b) {
             SQL_Utils.rollBack(connection);
         }
 
@@ -72,19 +73,16 @@ public class ConfigurationUtils {
         Connection connection = null;
         boolean createDatabase = false;
         Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator);
-        if (!configFile.toFile().setWritable(true)) {
-            Messages.sprintfError("Failed to set writable permissions for: " + configFile.toFile().getAbsolutePath());
-        }
-        if (!configFile.toFile().setReadable(true)) {
-            Messages.sprintfError("Failed to set readable permissions for: " + configFile.toFile().getAbsolutePath());
-        }
 
-        if (!Files.exists(configFile) && Files.isWritable(configFile)) {
+        if (!Files.exists(configFile)) {
             try {
                 Path createDirectories = Files.createDirectories(configFile);
                 Path createFile = Files.createFile(Paths.get(configFile.toString() + Main.conf.getConfiguration_db_fileName()));
-                createFile.toFile().setWritable(true);
-                createFile.toFile().setReadable(true);
+/*
+                boolean writable = FileUtils.setWritable(createFile, true);
+                boolean readable = FileUtils.setReadable(createFile, true);
+*/
+
                 if (!Files.exists(createDirectories)) {
                     Messages.errorSmth(ERROR, Main.bundle.getString("cannotCreateConfigFile"), null,
                             Misc.getLineNumber(), true);
@@ -92,8 +90,7 @@ public class ConfigurationUtils {
                     createDatabase = true;
                 }
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                Messages.sprintf("Something went wrong: " + e1.getMessage());
             }
             connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
                     Main.conf.getConfiguration_db_fileName());

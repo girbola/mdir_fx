@@ -387,4 +387,20 @@ public class FolderInfoUtils {
         return true;
     }
 
+    public static void cleanTables(Tables tables) {
+        Iterator<FolderInfo> sorttIterator = tables.getSortIt_table().getItems().iterator();
+
+        while(sorttIterator.hasNext()) {
+            FolderInfo folderInfo = sorttIterator.next();
+            if (folderInfo.getFileInfoList() == null) {
+                sorttIterator.remove();
+            } else {
+                if (folderInfo.getFileInfoList().isEmpty()) {
+                    sorttIterator.remove();
+                }
+            }
+            FileInfoUtils.cleanList(folderInfo.getFileInfoList());
+        }
+
+    }
 }

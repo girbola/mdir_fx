@@ -28,6 +28,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static com.girbola.messages.Messages.sprintf;
@@ -55,7 +56,7 @@ public class FileInfoUtils {
             if (FileUtils.supportedImage(fileName)) {
                 setImage(fileInfo);
                 tryToGetCreationDateTime(fileName, fileInfo);
-                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName.toAbsolutePath());
+                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
                 Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
                 fileInfo.setSize(Files.size(fileName));
                 fileInfo.setImageDifferenceHash(imageDifferenceHash);
@@ -77,6 +78,8 @@ public class FileInfoUtils {
                 Messages.sprintfError("Something went wrong and this file can't be created: " + fileName);
                 return null;
             }
+
+            fileInfo.setFileHistories(Arrays.asList(LocalDateTime.now() + " FileInfo created. PATH=" + fileInfo.getOrgPath()));
 
             return fileInfo;
         } catch (IOException e) {
@@ -249,7 +252,7 @@ public class FileInfoUtils {
                 Messages.sprintf("createFileInfo_list had some issue(s): " + ex.getMessage());
                 Messages.errorSmth(ERROR, "createFileInfo_list had some issue(s)", ex, Misc.getLineNumber(), true);
                 Main.setProcessCancelled(true);
-                break;
+                return null;
             }
         }
         sprintf("=======entire createFileInfo_list took: " + (System.currentTimeMillis() - start));
@@ -624,5 +627,16 @@ public class FileInfoUtils {
             }
         }
         return fileInfo.getSize() == duplicateFileInfo.getSize();
+    }
+
+    public static void cleanList(List<FileInfo> fileInfoList) {
+        Iterator<FileInfo> iterator = fileInfoList.iterator();
+        while (iterator.hasNext()) {
+            FileInfo fileInfo = iterator.next();
+            Path path = Paths.get(fileInfo.getOrgPath());
+            if(Files.exists(path)) {
+                iterator.remove();
+            }
+        }
     }
 }

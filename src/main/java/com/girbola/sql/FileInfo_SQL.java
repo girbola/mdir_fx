@@ -9,27 +9,77 @@ import com.girbola.messages.Messages;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class FileInfo_SQL {
 
     private static final String ERROR = FileInfo_SQL.class.getName();
 
-    private static String fileInfoTableColumns() {
-        return " (fileInfo_id  INTEGER PRIMARY KEY," + "orgPath STRING UNIQUE," + "workDir STRING," + "workDirDriveSerialNumber STRING," + "destination_Path STRING," + "event           STRING," + "location        STRING," + "tags            STRING," + "camera_model    STRING," + "user			   STRING," + "orientation 	   INTEGER," + "timeshift       INTEGER," + "bad             BOOLEAN," + "good            BOOLEAN," + "suggested       BOOLEAN," + "confirmed       BOOLEAN," + "copied          BOOLEAN," + "ignored         BOOLEAN," + "tableduplicated BOOLEAN," + "image           BOOLEAN," + "video           BOOLEAN," + "raw             BOOLEAN," + "date            NUMERIC," + "size            NUMERIC," + "imageDifferenceHash   INTEGER," + "thumb_offset    INTEGER," + "thumb_length    INTEGER)";
+    final static String[] fileInfoColumns = {(
+            FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " +
+                    FileInfoConstants.ORG_PATH + " STRING UNIQUE, " +
+                    FileInfoConstants.WORK_DIR + " STRING, " +
+                    FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING, " +
+                    FileInfoConstants.DESTINATIONPATH + " STRING, " +
+                    FileInfoConstants.EVENT + " STRING, " +
+                    FileInfoConstants.LOCATION + " STRING, " +
+                    FileInfoConstants.TAGS + " STRING, " +
+                    FileInfoConstants.CAMERA_MODEL + " STRING, " +
+                    FileInfoConstants.USER + " STRING, " +
+                    FileInfoConstants.ORIENTATION + " INTEGER, " +
+                    FileInfoConstants.TIMESHIFT + " INTEGER, " +
+                    FileInfoConstants.BAD + " BOOLEAN, " +
+                    FileInfoConstants.GOOD + " BOOLEAN, " +
+                    FileInfoConstants.SUGGESTED + " BOOLEAN, " +
+                    FileInfoConstants.CONFIRMED + " BOOLEAN, " +
+                    FileInfoConstants.COPIED + " BOOLEAN, " +
+                    FileInfoConstants.IGNORED + " BOOLEAN, " +
+                    FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN, " +
+                    FileInfoConstants.IMAGE + " BOOLEAN, " +
+                    FileInfoConstants.VIDEO + " BOOLEAN, " +
+                    FileInfoConstants.RAW + " BOOLEAN, " +
+                    FileInfoConstants.DATE + " NUMERIC, " +
+                    FileInfoConstants.SIZE + " NUMERIC, " +
+                    FileInfoConstants.IMAGE_DIFFERENCE_HASH + " INTEGER, " +
+                    FileInfoConstants.THUMB_OFFSET + " INTEGER, " +
+                    FileInfoConstants.THUMB_LENGTH + " INTEGER, " +
+                    FileInfoConstants.FILEHISTORIES + " STRING"
+    )};
 
-    }
+    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
+            + FileInfoConstants.ORG_PATH + ", "
+            + FileInfoConstants.WORK_DIR + ", "
+            + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + ", "
+            + FileInfoConstants.DESTINATIONPATH + ", "
+            + FileInfoConstants.CAMERA_MODEL + ", "
+            + FileInfoConstants.USER + ", "
+            + FileInfoConstants.ORIENTATION + ", "
+            + FileInfoConstants.BAD + ", "
+            + FileInfoConstants.GOOD + ", "
+            + FileInfoConstants.CONFIRMED + ", "
+            + FileInfoConstants.COPIED + ", "
+            + FileInfoConstants.IGNORED + ", "
+            + FileInfoConstants.SUGGESTED + ", "
+            + FileInfoConstants.IMAGE + ", "
+            + FileInfoConstants.RAW + ", "
+            + FileInfoConstants.VIDEO + ", "
+            + FileInfoConstants.TIMESHIFT + ", "
+            + FileInfoConstants.DATE + ", "
+            + FileInfoConstants.SIZE + ", "
+            + FileInfoConstants.TABLE_DUPLICATED + ", "
+            + FileInfoConstants.TAGS + ", "
+            + FileInfoConstants.EVENT + ", "
+            + FileInfoConstants.LOCATION + ", "
+            + FileInfoConstants.IMAGE_DIFFERENCE_HASH + ", "
+            + FileInfoConstants.THUMB_OFFSET + ", "
+            + FileInfoConstants.THUMB_LENGTH + ", "
+            + FileInfoConstants.FILEHISTORIES + ")"
+            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " (" + "'fileInfo_id', " + "'orgPath', " + "'workDir', " + "'workDirDriveSerialNumber', " + "'destination_Path', " + "'camera_model', " + "'user', " + "'orientation', " + "'bad'," + "'good', " + "'confirmed', " + "'copied'," + "'ignored', " + "'suggested', " + "'image', " + "'raw', " + "'video', " + "'timeshift', " + "'date', " + "'size', " + "'tableduplicated', " + "'tags', " + "'event', " + "'location', " + "'imageDifferenceHash'," + "'thumb_offset', " + "'thumb_length')" + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
-//
-//	private static String alterTableColumn_(String tableType) {
-//		String sql = "ALTER TABLE " + tableType + fileInfoTableColumns();
-//		return sql;
-//	}
 
     // @formatter:on
-    public static boolean addToFileInfoDB(Connection connection, PreparedStatement pstmt, FileInfo fileInfo) {
+    public static boolean addToFileInfoDB(PreparedStatement pstmt, FileInfo fileInfo) {
         try {
             pstmt.setInt(1, fileInfo.getFileInfo_id());
             pstmt.setString(2, fileInfo.getOrgPath());
@@ -58,6 +108,8 @@ public class FileInfo_SQL {
             pstmt.setString(25, fileInfo.getImageDifferenceHash());
             pstmt.setInt(26, fileInfo.getThumb_offset());
             pstmt.setInt(27, fileInfo.getThumb_length());
+            pstmt.setString(28, convertFileHistoriesToString(fileInfo.getFileHistories()));
+
             pstmt.addBatch();
             return true;
         } catch (Exception e) {
@@ -66,10 +118,22 @@ public class FileInfo_SQL {
         }
     }
 
+    private static String convertFileHistoriesToString(List<String> fileHistories) {
+        return String.join(",", fileHistories);
+    }
+
+
     /**
-     * @param connection
-     * @param list
-     * @return
+     * Inserts a list of FileInfo objects into the database. If the isWorkDir parameter is false,
+     * the method clears the existing data in the file information table before insertion.
+     *
+     * @param connection The database connection to use for the operation.
+     * @param list       A list of FileInfo objects to be inserted into the database.
+     * @param isWorkDir  A boolean indicating whether the operation relates to a working directory.
+     *                   If false, the table is cleared prior to insertion.
+     * @return A boolean indicating whether the operation was successful. Returns true if the
+     * records were inserted successfully and the database operations completed without errors;
+     * otherwise, returns false.
      */
     // @formatter:on
     public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
@@ -81,9 +145,8 @@ public class FileInfo_SQL {
             }
         }
         try {
-            if (!connection.getAutoCommit()) {
-                connection.setAutoCommit(false);
-            }
+            SQL_Utils.setAutoCommit(connection, false);
+
             boolean tableCreated = createFileInfoTable(connection);
             if (tableCreated) {
                 Messages.sprintf("insertFileInfoListToDatabase tableCreated");
@@ -96,11 +159,13 @@ public class FileInfo_SQL {
             }
 
             PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
+
+            ensureFileInfoColumnsExists(connection);
+
             for (FileInfo fileInfo : list) {
-                addToFileInfoDB(connection, pstmt, fileInfo);
+                addToFileInfoDB(pstmt, fileInfo);
             }
             pstmt.executeBatch();
-//			pstmt.closeOnCompletion();
             pstmt.close();
             connection.commit();
             Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
@@ -110,6 +175,18 @@ public class FileInfo_SQL {
             Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED");
             return false;
         }
+    }
+
+    private static void ensureFileInfoColumnsExists(Connection connection) throws SQLException {
+
+        String fileInfoTable = SQL_Enums.FILEINFO.getType();
+        try (Statement stmt = connection.createStatement()) {
+            for (String column : fileInfoColumns) {
+                String alterTableSQL = "ALTER TABLE " + fileInfoTable + " ADD COLUMN " + column + ";";
+                stmt.executeUpdate(alterTableSQL);
+            }
+        }
+
     }
 
     /**
@@ -155,35 +232,48 @@ public class FileInfo_SQL {
     }
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
-        String orgPath = rs.getString("orgPath");
-        String workDir = rs.getString("workDir");
-        String workDirDriveSerialNumber = rs.getString("workDirDriveSerialNumber");
-        String destPath = rs.getString("destination_Path");
-        String event = rs.getString("event");
-        String imageDifferenceHash = rs.getString("imageDifferenceHash");
-        String location = rs.getString("location");
-        String tags = rs.getString("tags");
-        String camera_model = rs.getString("camera_model");
-        String user = rs.getString("user");
+        String camera_model = rs.getString(FileInfoConstants.CAMERA_MODEL);
+        String destPath = rs.getString(FileInfoConstants.DESTINATIONPATH);
+        String event = rs.getString(FileInfoConstants.EVENT);
+        String imageDifferenceHash = rs.getString(FileInfoConstants.IMAGE_DIFFERENCE_HASH);
+        String location = rs.getString(FileInfoConstants.LOCATION);
+        String orgPath = rs.getString(FileInfoConstants.ORG_PATH);
+        String tags = rs.getString(FileInfoConstants.TAGS);
+        String user = rs.getString(FileInfoConstants.USER);
+        String workDir = rs.getString(FileInfoConstants.WORK_DIR);
+        String workDirDriveSerialNumber = rs.getString(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER);
+        boolean bad = rs.getBoolean(FileInfoConstants.BAD);
+        boolean confirmed = rs.getBoolean(FileInfoConstants.CONFIRMED);
+        boolean copied = rs.getBoolean(FileInfoConstants.COPIED);
+        boolean good = rs.getBoolean(FileInfoConstants.GOOD);
+        boolean ignored = rs.getBoolean(FileInfoConstants.IGNORED);
+        boolean image = rs.getBoolean(FileInfoConstants.IMAGE);
+        boolean raw = rs.getBoolean(FileInfoConstants.RAW);
+        boolean suggested = rs.getBoolean(FileInfoConstants.SUGGESTED);
+        boolean tableDuplicated = rs.getBoolean(FileInfoConstants.TABLE_DUPLICATED);
+        boolean video = rs.getBoolean(FileInfoConstants.VIDEO);
+        int fileInfo_id = rs.getInt(FileInfoConstants.FILEINFOID);
+        int orientation = rs.getInt(FileInfoConstants.ORIENTATION);
+        int thumb_lenght = rs.getInt(FileInfoConstants.THUMB_LENGTH);
+        int thumb_offset = rs.getInt(FileInfoConstants.THUMB_OFFSET);
+        long date = rs.getLong(FileInfoConstants.DATE);
+        long size = rs.getLong(FileInfoConstants.SIZE);
+        long timeShift = rs.getInt(FileInfoConstants.TIMESHIFT);
 
-        int orientation = rs.getInt("orientation");
-        long timeShift = rs.getInt("timeshift");
-        int fileInfo_id = rs.getInt("fileInfo_id");
-        boolean bad = rs.getBoolean("bad");
-        boolean good = rs.getBoolean("good");
-        boolean suggested = rs.getBoolean("suggested");
-        boolean confirmed = rs.getBoolean("confirmed");
-        boolean image = rs.getBoolean("image");
-        boolean raw = rs.getBoolean("raw");
-        boolean video = rs.getBoolean("video");
-        boolean ignored = rs.getBoolean("ignored");
-        boolean copied = rs.getBoolean("copied");
-        boolean tableDuplicated = rs.getBoolean("tableDuplicated");
-        long date = rs.getLong("date");
-        long size = rs.getLong("size");
-        int thumb_offset = rs.getInt("thumb_offset");
-        int thumb_lenght = rs.getInt("thumb_length");
-        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght);
+        List<String> fileHistories = getFileHistoriesData(rs);
+
+        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght, fileHistories);
+    }
+
+    private static List<String> getFileHistoriesData(ResultSet rs) throws SQLException {
+        List<String> list = new ArrayList<>();
+        while (rs.next()) {
+            String[] fileHistories = rs.getString(FileInfoConstants.FILEHISTORIES).split(",");
+            for (String fileHistoryItem : fileHistories) {
+                list.add(fileHistoryItem);
+            }
+        }
+        return list;
     }
 
     /*
@@ -195,7 +285,8 @@ public class FileInfo_SQL {
 			Messages.sprintf("Connection were null!");
 			return false;
 		}
-		final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + fileInfoTableColumns();
+		final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + "(" + String.join(",", fileInfoColumns) +");";
+Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
 
 		try {
 			Statement stmt = connection.createStatement();
@@ -257,6 +348,9 @@ public class FileInfo_SQL {
                     return null;
                 }
 				FileInfo finfo = loadFileInfo(rs);
+                if(finfo == null) {
+                    return null;
+                }
 				list.add(finfo);
 			}
 		} catch (Exception e) {

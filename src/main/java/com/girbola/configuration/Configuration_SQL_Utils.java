@@ -164,7 +164,7 @@ public class Configuration_SQL_Utils {
      * @return true if the configuration table is successfully created, false otherwise
      */
     public static boolean createConfiguration_Table(Connection connection) {
-        Messages.sprintfError("createConfiguration_Table: " + connection);
+        Messages.sprintfError("createConfiguration_Table: " + SQL_Utils.getUrl(connection));
 
         try {
             if (!SQL_Utils.isDbConnected(connection)) {
@@ -233,8 +233,10 @@ public class Configuration_SQL_Utils {
      */
     public static boolean loadConfiguration(Connection connection, Configuration configuration) {
         if(!SQL_Utils.isDatabaseAccessible(connection, SQL_Enums.CONFIGURATION.getType())) {
+           Messages.sprintf("Configuration database were not connected while loading loadConfiguration. Creating configuration database: " + SQL_Enums.CONFIGURATION.getType());
             createConfiguration_Table(connection);
         }
+        Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
 
         String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQL_Enums.CONFIGURATION.getType();
         try {
@@ -340,6 +342,7 @@ public class Configuration_SQL_Utils {
             Messages.sprintf("loadFileInfoDatabase Not Connected!");
             return false;
         }
+        Messages.sprintf("loadTables connection were connected: " + SQL_Utils.getUrl(connection));
 //		String sql = "SELECT * FROM " + SQL_Enums.TABLES_COLS.getType();
         Messages.sprintf("Loading table column loading");
         loadTableColumnsWidths(connection, tables.getSorted_table());
@@ -395,7 +398,7 @@ public class Configuration_SQL_Utils {
     public static boolean insert_Configuration(Connection connection, Configuration configuration) {
         if (configuration != null) {
             if (SQL_Utils.isDbConnected(connection)) {
-                Messages.sprintf("insertAllProgram_config connection were connected");
+                Messages.sprintf("insertAllProgram_config connection were connected: " + SQL_Utils.getUrl(connection));
                 try {
                     //@formatter:off
                     String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIGURATION.getType()
@@ -472,8 +475,16 @@ public class Configuration_SQL_Utils {
      */
     public static void insert_IgnoredList(ArrayList<FolderInfo> listToRemove) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if (SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintf("insert_IgnoredList connection were connected: " + SQL_Utils.getUrl(connection));
+        } else {
+            Messages.sprintfError("insert_IgnoredList connection were not connected!");
+            return;
+        }
+
+        SQL_Utils.setAutoCommit(connection, false);
+
         try {
-            connection.setAutoCommit(false);
             String sql = "INSERT OR REPLACE INTO " + SQL_Enums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             for (FolderInfo folderInfo : listToRemove) {

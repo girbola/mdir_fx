@@ -7,6 +7,8 @@
 package com.girbola.fileinfo;
 
 import com.girbola.controllers.datefixer.utils.MetadataField;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -60,7 +62,8 @@ public class FileInfo extends Metadata implements Cloneable {
                 ", user='" + getUser() + '\'' +
                 ", video=" + isVideo() +
                 ", workDir='" + getWorkDir() + '\'' +
-                ", workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() + '\'' +
+                ", workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() +
+                ", fileInfoHistories='" + getFileHistories() + '\'' +
                 '}';
     }
 
@@ -99,7 +102,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setUser("");
         this.setWorkDir("");
         this.setWorkDirDriveSerialNumber("");
-
+        this.setFileHistories(new ArrayList<>());
         this.timeShift = 0;
 
     }
@@ -109,7 +112,7 @@ public class FileInfo extends Metadata implements Cloneable {
      */
     public FileInfo() {
         this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
-                false, false, false, false, 0, 0L, "", 0, 0);
+                false, false, false, false, 0, 0L, "", 0, 0, new ArrayList<String>());
     }
 
 
@@ -120,34 +123,35 @@ public class FileInfo extends Metadata implements Cloneable {
                     String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
                     long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
                     boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
-                    long aDate, long aSize, String aImageDifferenceHash, int aThumb_offset, int aThumb_length) {
-        this.setOrgPath(aOrgPath);
-        this.setWorkDir(aWorkDir);
-        this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
+                    long aDate, long aSize, String aImageDifferenceHash, int aThumb_offset, int aThumb_length, List<String> fileInfoHistories) {
+        this.setBad(aBad);
+        this.setCamera_model(aCamera_model);
+        this.setConfirmed(aConfirmed);
+        this.setCopied(aCopied);
+        this.setDate(aDate);
         this.setDestination_Path(aDestinationStructure);
         this.setEvent(aEvent);
-        this.setLocation(aLocation);
-        this.setTags(aTags);
-        this.setOrientation(aOrientation);
+        this.setFileHistories(fileInfoHistories);
         this.setFileInfo_id(aFileInfo_id);
-        this.setCamera_model(aCamera_model);
-        this.setTimeShift(aTimeShift);
-        this.setDate(aDate);
-        this.setSize(aSize);
-        this.setBad(aBad);
         this.setGood(aGood);
         this.setIgnored(aIgnored);
-        this.setTableDuplicated(aTableDuplicated);
-        this.setSuggested(aSuggested);
-        this.setConfirmed(aConfirmed);
-        this.setRaw(aRaw);
         this.setImage(aImage);
-        this.setVideo(aVideo);
-        this.setCopied(aCopied);
         this.setImageDifferenceHash(aImageDifferenceHash);
-        this.setThumb_offset(aThumb_offset);
+        this.setLocation(aLocation);
+        this.setOrgPath(aOrgPath);
+        this.setOrientation(aOrientation);
+        this.setRaw(aRaw);
+        this.setSize(aSize);
+        this.setSuggested(aSuggested);
+        this.setTableDuplicated(aTableDuplicated);
+        this.setTags(aTags);
         this.setThumb_length(aThumb_length);
+        this.setThumb_offset(aThumb_offset);
+        this.setTimeShift(aTimeShift);
         this.setUser(user);
+        this.setVideo(aVideo);
+        this.setWorkDir(aWorkDir);
+        this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
     }
 
 

@@ -168,6 +168,8 @@ public class Main extends Application {
 
         mainTask.setOnSucceeded(event -> {
 
+            ConfigurationUtils.createConfiguration_db();
+
             ConfigurationUtils.loadConfig_GUI(model_main);
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);

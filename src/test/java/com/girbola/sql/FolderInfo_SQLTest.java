@@ -5,6 +5,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,7 @@ public class FolderInfo_SQLTest {
     static public void setupDBConnection() {
         try {
             connection_mdirFile = DriverManager.getConnection("jdbc:sqlite:" + filePath.getParent() + File.separator + Main.conf.getMdir_db_fileName());
+            SQL_Utils.setAutoCommit(connection_mdirFile,false);
             boolean dbConnected = SQL_Utils.isDbConnected(connection_mdirFile);
             if (!dbConnected) {
 
@@ -43,48 +45,56 @@ public class FolderInfo_SQLTest {
         }
     }
 
+    @AfterAll
+    public static void closeDBConnection() {
+        SQL_Utils.closeConnection(connection_mdirFile);
+    }
     @Test
     public void testLoadFolderInfo() throws IOException {
 
-        FolderInfo fi = new FolderInfo();
-        fi.setStatus(0);
-        fi.setChanged(true);
-        fi.setConnected(true);
-        fi.setIgnored(false);
-        fi.setDateDifferenceRatio(0.1);
-        fi.setBadFiles(2);
-        fi.setConfirmed(3);
-        fi.setCopied(4);
-        fi.setFolderFiles(100);
-        fi.setFolderImageFiles(20);
-        fi.setFolderRawFiles(30);
-        fi.setFolderVideoFiles(40);
-        fi.setGoodFiles(10);
-        fi.setSuggested(5);
-        fi.setFolderSize(100000);
-        fi.setJustFolderName("test_folder");
-        fi.setFolderPath(filePath.getParent().toString());
-        fi.setMaxDate("2022-04-25");
-        fi.setMinDate("2022-01-01");
-        fi.setState("active");
-        fi.setTableType("test_table");
+        FolderInfo folderInfo = new FolderInfo();
+        folderInfo.setStatus(0);
+        folderInfo.setChanged(true);
+        folderInfo.setConnected(true);
+        folderInfo.setIgnored(false);
+        folderInfo.setDateDifferenceRatio(0.1);
+        folderInfo.setBadFiles(2);
+        folderInfo.setConfirmed(3);
+        folderInfo.setCopied(4);
+        folderInfo.setFolderFiles(100);
+        folderInfo.setFolderImageFiles(20);
+        folderInfo.setFolderRawFiles(30);
+        folderInfo.setFolderVideoFiles(40);
+        folderInfo.setGoodFiles(10);
+        folderInfo.setSuggested(5);
+        folderInfo.setFolderSize(100000);
+        folderInfo.setJustFolderName("test_folder");
+        folderInfo.setFolderPath(filePath.getParent().toString());
+        folderInfo.setMaxDate("2022-04-25");
+        folderInfo.setMinDate("2022-01-01");
+        folderInfo.setState("active");
+        folderInfo.setTableType("test_table");
         List<FileInfo> list = new ArrayList<FileInfo>();
 
         FileInfo fileInfo = FileInfoUtils.createFileInfo(filePath);
         list.add(fileInfo);
-        fi.setFileInfoList(list);
+        folderInfo.setFileInfoList(list);
 
-        FolderInfoUtils.calculateFolderInfoStatus(fi);
+        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
-        FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, fi);
-        FolderInfo loadedFi = FolderInfo_SQL.loadFolderInfo(Paths.get(fi.getFolderPath()));
+        FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, folderInfo);
+
+        FolderInfo loadedFi = FolderInfo_SQL.loadFolderInfo(Paths.get(folderInfo.getFolderPath()));
         Assertions.assertNotNull(loadedFi);
-        Assertions.assertTrue(fi.getChanged());
-        Assertions.assertTrue(fi.isConnected());
-        Assertions.assertFalse(fi.getIgnored());
+        Assertions.assertTrue(folderInfo.getChanged());
+        Assertions.assertTrue(folderInfo.isConnected());
+        Assertions.assertFalse(folderInfo.getIgnored());
         Assertions.assertEquals(5, loadedFi.getSuggested());
         SQL_Utils.closeConnection(connection_mdirFile);
-        Path removeTestFile = Paths.get(fi.getFolderPath(), Main.conf.getMdir_db_fileName());
-        Files.deleteIfExists(removeTestFile);
+        Path removeTestFile = Paths.get(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+        if(Files.exists(removeTestFile)) {
+            System.out.println("Deleting: " + removeTestFile);
+            Files.deleteIfExists(removeTestFile);
+        }
     }
 }

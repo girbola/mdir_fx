@@ -24,6 +24,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+import com.girbola.utils.WorkdirUtils;
 import common.utils.Conversion;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -197,7 +198,13 @@ public class TableController {
 
     @FXML
     private void mergeMove_btn_action(ActionEvent event) {
+        boolean verifyWorkDirectory = WorkdirUtils.verifyWorkDirectory();
+        if (!verifyWorkDirectory) {
+            return;
+        }
+
         Main.setProcessCancelled(false);
+/*
         try {
             if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
                 warningText(bundle.getString("cannotFindWorkDir"));
@@ -207,6 +214,7 @@ public class TableController {
             warningText(bundle.getString("cannotFindWorkDir"));
             return;
         }
+*/
 
         if (tableType.equals(TableType.SORTIT.getType())) {
             if (model_main.tables().getSortIt_table().getSelectionModel().getSelectedItems().size() <= 1) {
@@ -245,7 +253,10 @@ public class TableController {
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
 
-            stage.showAndWait();
+            Platform.runLater(() -> {
+                stage.showAndWait();
+            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -53,13 +53,14 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static boolean closeConnection(Connection connection) {
+        Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
-            if (connection != null) {
+            if(!isDbConnected(connection)) {
                 connection.close();
                 return true;
             }
         } catch (Exception e) {
-            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + e.getMessage());
+            Messages.warningText(Main.bundle.getString("cannotCloseConnection") + " " + SQL_Utils.getUrl(connection) + "\n\nError message:" + e.getMessage());
             return false;
         }
         return false;
@@ -194,5 +195,14 @@ public class SQL_Utils extends FolderInfo_SQL {
             return null;
         }
 
+    }
+
+    public static String getUrl(Connection connection) {
+        try {
+            return connection.getMetaData().getURL();
+        } catch (SQLException e) {
+            Messages.sprintfError("Error getting URL: " + e.getMessage());
+            return null;
+        }
     }
 }

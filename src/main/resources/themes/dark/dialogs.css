@@ -41,6 +41,12 @@
 	/*-fx-padding: 0 3 3 3;*/
 	/*  -fx-border-color:  -fx-dark-border-color; */
 }
+
+.text {
+	-fx-font-size: 1.2em;
+	-fx-font-family: "Inter", sans-serif;
+}
+
 .loadingPane {
 	-fx-background-color: -fx-primary;
 	-fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
@@ -107,32 +113,30 @@
 Custom styleclasses
 */
 .alertDiag {
-	-fx-background-color: linear-gradient(
-		derive(-fx-base-background-dark, 40%),
-		derive(-fx-base-background-dark, 30%),
-		derive(-fx-base-background-dark, 30%),
-		derive(-fx-base-background-dark, 40%)
-	);
+	/*-fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40%),derive(-fx-base-background-dark, 30%),derive(-fx-base-background-dark, 30%),derive(-fx-base-background-dark, 40%));*/
+	-fx-background-color: blue;
 	-fx-border-color: orange;
 	-fx-border-width: 0.0625em;;
 	-fx-text-fill: white;
 }
 .alertDiag:header *.header-panel {
-	-fx-background-color: linear-gradient(
-		derive(-fx-base-background-dark, 40%),
-		derive(-fx-base-background-dark, 30%),
-		derive(-fx-base-background-dark, 30%),
-		derive(-fx-base-background-dark, 40%)
-	);
+	/*-fx-background-color: linear-gradient(*/
+	/*	derive(-fx-base-background-dark, 40%),*/
+	/*	derive(-fx-base-background-dark, 30%),*/
+	/*	derive(-fx-base-background-dark, 30%),*/
+	/*	derive(-fx-base-background-dark, 40%)*/
+	/*);*/
+	-fx-background-color: -fx-base;
 }
 
 .alertDiag > .button-bar > .container {
-	-fx-background-color: linear-gradient(
-		derive(-fx-base-background-dark, 10%),
-		derive(-fx-base-background-dark, 20%),
-		derive(-fx-base-background-dark, 20%),
-		derive(-fx-base-background-dark, 30%)
-	);
+	/*-fx-background-color: linear-gradient(*/
+	/*	derive(-fx-base-background-dark, 10%),*/
+	/*	derive(-fx-base-background-dark, 20%),*/
+	/*	derive(-fx-base-background-dark, 20%),*/
+	/*	derive(-fx-base-background-dark, 30%)*/
+	/*);*/
+	-fx-background-color: -fx-base;
 }
 .alertDiag > *.label.content {
 	-fx-text-fill: #ffffff;

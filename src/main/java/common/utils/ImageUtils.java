@@ -7,6 +7,13 @@ import com.girbola.configuration.GuiImageFrame;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.messages.Messages;
 
+import java.awt.geom.AffineTransform;
+import java.awt.image.DataBufferByte;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
@@ -67,7 +74,7 @@ public class ImageUtils {
                 ByteArrayInputStream in = new ByteArrayInputStream(slice);
                 BufferedImage bufferedImage = null;
                 try {
-                    bufferedImage = javax.imageio.ImageIO.read(in);
+                    bufferedImage = ImageIO.read(in);
                 } catch (IOException ex) {
                     Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);
                     return null;
@@ -91,35 +98,66 @@ public class ImageUtils {
         return getString(image);
     }
 
-    private static String getString(BufferedImage image) {
+    private static String getString2(BufferedImage image) {
         // Resize the image to 8x8
         BufferedImage resizedImage = new BufferedImage(8, 8, BufferedImage.TYPE_BYTE_GRAY);
         resizedImage.getGraphics().drawImage(image.getScaledInstance(8, 8, Image.SCALE_SMOOTH), 0, 0, null);
 
         // Calculate the average color
-        long sum = 0;
-        for (int y = 0; y < resizedImage.getHeight(); y++) {
-            for (int x = 0; x < resizedImage.getWidth(); x++) {
-                Color color = new Color(resizedImage.getRGB(x, y));
-                sum += color.getRed(); // Use the red component for grayscale
-            }
-        }
+        long sum = IntStream.range(0, resizedImage.getHeight()) // Iterate over rows
+                .parallel()
+                .mapToLong(y -> {
+                    long rowSum = 0;
+                    for (int x = 0; x < resizedImage.getWidth(); x++) {
+                        Color color = new Color(resizedImage.getRGB(x, y));
+                        rowSum += color.getRed();
+                    }
+                    return rowSum;
+                })
+                .sum(); // Sum all rows
 
         long avg = sum / ((long) resizedImage.getWidth() * resizedImage.getHeight());
 
         // Generate the hash
-        long hash = 0;
-        for (int y = 0; y < resizedImage.getHeight(); y++) {
-            for (int x = 0; x < resizedImage.getWidth(); x++) {
-                Color color = new Color(resizedImage.getRGB(x, y));
-                hash <<= 1; // Shift hash left
-                if (color.getRed() > avg) {
-                    hash |= 1; // Set the last bit to 1 if the pixel is above average
-                }
-            }
-        }
+        long hash = calculateHash(resizedImage, (int) avg);
+//        long hash = 0;
+//        for (int y = 0; y < resizedImage.getHeight(); y++) {
+//            for (int x = 0; x < resizedImage.getWidth(); x++) {
+//                Color color = new Color(resizedImage.getRGB(x, y));
+//                hash <<= 1; // Shift hash left
+//                if (color.getRed() > avg) {
+//                    hash |= 1; // Set the last bit to 1 if the pixel is above average
+//                }
+//            }
+//        }
 
         return "" + Math.abs(hash);
+    }
+
+    public static long calculateHash(BufferedImage resizedImage, int avg) {
+        int height = resizedImage.getHeight();
+        int width = resizedImage.getWidth();
+
+        // AtomicLong to manage concurrent updates
+        AtomicLong hash = new AtomicLong(0);
+
+        // Parallelize over rows (or can split over pixels too if needed)
+        IntStream.range(0, height).parallel().forEach(y -> {
+            long rowHash = 0L; // Each thread computes row-wise hash independently
+            for (int x = 0; x < width; x++) {
+                Color color = new Color(resizedImage.getRGB(x, y));
+                rowHash <<= 1;
+                if (color.getRed() > avg) {
+                    rowHash |= 1;
+                }
+            }
+            synchronized (hash) {
+                long finalRowHash = rowHash;
+                hash.updateAndGet(h -> (h << width) | finalRowHash);
+            }
+        });
+
+        return hash.get();
     }
 
     public static boolean compareImages(BufferedImage image1, BufferedImage image2) {
@@ -175,7 +213,7 @@ public class ImageUtils {
 
     private static BufferedImage scaleBufferedImage(BufferedImage image, int desiredWidth, int desiredHeight) {
         BufferedImage scaledImage = new BufferedImage(desiredWidth, desiredHeight, BufferedImage.TYPE_INT_RGB);
-        scaledImage.getGraphics().drawImage(image.getScaledInstance(desiredWidth, desiredHeight, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+        scaledImage.getGraphics().drawImage(image.getScaledInstance(desiredWidth, desiredHeight, Image.SCALE_SMOOTH), 0, 0, null);
         return scaledImage;
     }
 
@@ -213,4 +251,74 @@ public class ImageUtils {
 
         return scaledImage;
     }
+
+
+    public static String processImagesOneAtATime(Path file) {
+        String hash = "";
+
+            System.out.println("Processing file: " + file);
+            try {
+                // Read image from file
+                BufferedImage imagee = ImageIO.read(file.toFile());
+                if (imagee == null) {
+                    throw new IOException("Unsupported or corrupted file: " + file);
+                }
+                // Generate hash for the image
+                hash = getString(imagee);
+
+
+                // Output the result for the current file
+                System.out.println("File: " + file + " -> Hash: " + hash);
+            } catch (IOException e) {
+                // Log error and skip invalid file
+                System.err.println("Error processing file: " + file + ". Skipping.");
+            }
+            return hash;
+    }
+
+    private static String getString(BufferedImage image) {
+        // Resize image to 8x8 grayscale
+        BufferedImage resizedImage = resizeImage(image, 8, 8);
+
+        // Directly access raw pixel values for fast processing
+        byte[] pixels = ((DataBufferByte) resizedImage.getRaster().getDataBuffer()).getData();
+
+        // Calculate the average brightness
+        long sum = 0;
+        for (byte pixel : pixels) {
+            sum += (pixel & 0xFF); // Convert byte (signed) to unsigned int
+        }
+        long avg = sum / pixels.length;
+
+        // Generate the hash
+        long hash = 0;
+        for (byte pixel : pixels) {
+            hash <<= 1; // Shift left by 1 bit
+            if ((pixel & 0xFF) > avg) {
+                hash |= 1; // Set the least significant bit if above average
+            }
+        }
+
+        return Long.toHexString(hash); // Convert hash to hexadecimal string
+    }
+
+    private static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {
+        // Create a new BufferedImage for resizing (grayscale)
+        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        // Perform scaling using AffineTransform
+        Graphics2D g2d = resized.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        AffineTransform at = AffineTransform.getScaleInstance(
+                (double) width / originalImage.getWidth(),
+                (double) height / originalImage.getHeight()
+        );
+        g2d.drawRenderedImage(originalImage, at);
+        g2d.dispose();
+
+        return resized;
+    }
+
+
 }

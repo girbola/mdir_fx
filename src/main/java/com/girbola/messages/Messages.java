@@ -184,11 +184,11 @@ public class Messages {
      * @param message
      */
     public static void warningText(String message) {
-        sprintf("warningText: " + message);
+        Messages.sprintfError("WarningText appeared: " + message);
         Alert alert = new Alert(AlertType.WARNING);
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setContentText(message);
-        dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+        dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
         dialogPane.setHeaderText("");
 
         dialogPane.getStyleClass().add("alertDiag");

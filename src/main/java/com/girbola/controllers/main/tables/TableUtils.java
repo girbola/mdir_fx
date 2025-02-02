@@ -597,27 +597,17 @@ public class TableUtils {
 //        updateTableViewStatistic(tables, tableView);
 //    }
 
-    public static void updateTableViewStatistic(Tables tables, TableView<FolderInfo> tableView) {
+/*    public static void updateTableViewStatistic(Tables tables, TableView<FolderInfo> tableView) {
         CalculateTableViewsStatistic calculateTableViewsStatisticTask = new CalculateTableViewsStatistic(tables, tableView);
         Thread calculateTableViewsStatisticThread = new Thread(calculateTableViewsStatisticTask, "calculateTableViewsStatisticThread");
         exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticThread);
-    }
+    }*/
 
     public static void refreshAllTableContent(Tables tables) {
         Messages.sprintf("refreshAllTableContent started");
         ConcurrencyUtils.initNewSingleExecutionService();
 
-        Task<Void> refreshSortItTableTask = new RefreshTableContent(tables.getSortIt_table());
-        Thread refreshSortItThread = new Thread(refreshSortItTableTask, "refreshSortItThread");
-        exec[ConcurrencyUtils.getExecCounter()].submit(refreshSortItThread);
-
-        Task<Void> refreshSortedTableTask = new RefreshTableContent(tables.getSorted_table());
-        Thread refreshSortedThread = new Thread(refreshSortedTableTask, "refreshSortedThread");
-        exec[ConcurrencyUtils.getExecCounter()].submit(refreshSortedThread);
-
-        Task<Void> refreshAsItIsTableTask = new RefreshTableContent(tables.getAsItIs_table());
-        Thread refreshAsItIsThread = new Thread(refreshAsItIsTableTask, "refreshAsItIsThread");
-        exec[ConcurrencyUtils.getExecCounter()].submit(refreshAsItIsThread);
+        RefreshAllTableContent refreshSortItTableTask = new RefreshAllTableContent(tables);
 
         calculateTableViewsStatistic(tables);
 

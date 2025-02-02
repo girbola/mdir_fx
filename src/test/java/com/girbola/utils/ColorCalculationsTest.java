@@ -2,7 +2,6 @@
 package com.girbola.utils;
 
 import static com.girbola.utils.ColorCalculations.fixContrast;
-import static com.girbola.utils.ColorCalculations.rgbToHex;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -19,13 +18,6 @@ public class ColorCalculationsTest {
         int[] fixedColor = fixContrast(foregroundColor, backgroundColor, 4.5);
         System.out.printf("Fixed Color: RGB(%d, %d, %d)%n", fixedColor[0], fixedColor[1], fixedColor[2]);
     }
-
-    @Test
-    public void testSomeinthtrueTest() {
-        ColorCalculations colorCalculations = new ColorCalculations("272727","5bffb2");
-
-    }
-
 
     @Test
     void testFixContrastWithIncreasedContrastNeeded() {

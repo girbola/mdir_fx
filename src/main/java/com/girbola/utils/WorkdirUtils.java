@@ -49,4 +49,14 @@ public class WorkdirUtils {
 
         }
     }
+
+
+    public static boolean verifyWorkDirectory() {
+        if (Main.conf.getWorkDir() == null || Main.conf.getWorkDir().isEmpty()) {
+            Messages.warningText(Main.bundle.getString("workDirHasNotBeenSet") + " " + Main.bundle.getString("setWorkdirToContinue"));
+            return false;
+        }
+        return true;
+    }
+
 }

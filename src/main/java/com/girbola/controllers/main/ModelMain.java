@@ -176,7 +176,8 @@ public class ModelMain {
                      * or creates new one called fileinfo.db
                      */
                     fileListConnection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-                    fileListConnection.setAutoCommit(false);
+                    SQL_Utils.setAutoCommit(fileListConnection, false);
+
                     // Inserts all data info fileinfo.db
                     FileInfo_SQL.insertFileInfoListToDatabase(fileListConnection, folderInfo.getFileInfoList(), false);
 //                    SQL_Utils.commitChanges(fileListConnection);

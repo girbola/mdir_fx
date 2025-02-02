@@ -3,6 +3,10 @@ package common.utils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -58,6 +62,38 @@ public class FileUtilsTest {
         assertNotNull(path);
         assertEquals(destExpected.toString(), path.toString());
     }
+
+    @Test
+    public void testRenameFileSourceDoesNotExist() throws IOException {
+        Path nonExistentSource = Paths.get("src", "test", "resources", "non-existent.jpg");
+        Path destFile = Paths.get("src", "test", "resources", "out", "IMG1.jpg");
+
+        // Attempt to rename and expect an exception
+        IOException exception = assertThrows(IOException.class, () -> FileUtils.renameFile(nonExistentSource, destFile));
+        assertTrue(exception.getMessage().contains("non-existent.jpg"));
+    }
+
+    @Test
+    public void testRenameFileDestinationDirectoryDoesNotExist() throws IOException {
+        Path destFile = Paths.get("src", "test", "resources", "non-existent-directory", "IMG1.jpg");
+
+        // Attempt to rename and expect an exception
+        IOException exception = assertThrows(IOException.class, () -> FileUtils.renameFile(srcTest, destFile));
+        assertTrue(exception.getMessage().contains("non-existent-directory"));
+    }
+
+    @Test
+    public void testRenameFileWhenPathsAreSameButFileDoesNotExist() throws IOException {
+
+        Path sourceAndDest = Paths.get("src", "test", "resources", "out", "IMG_NON_EXISTENT.jpg");
+        createTestImage(sourceAndDest);
+
+        // Perform the rename operation
+        Path result = FileUtils.renameFile(sourceAndDest, sourceAndDest);
+
+        // Expect no actual renaming as the file does not exist
+        assertNull(result);
+    }
     @Test
     public void testRenameFileWithDifferentSize() throws IOException {
         Path sourceFile = Paths.get("src", "test", "resources", "test-material", "IMG.jpg");
@@ -89,4 +125,27 @@ public class FileUtilsTest {
         // As both files have the same size, no renaming should be done and null should be returned.
         assertNull(actualResult);
     }
+
+    private static Path createTestImage(Path filePath) throws IOException {
+        int width = 10; // Width of the image
+        int height = 10; // Height of the image
+
+        // Create a buffered image
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        // Fill the image with a solid color
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                image.setRGB(x, y, Color.WHITE.getRGB());
+            }
+        }
+
+        // Write the image to the specified path
+        ImageIO.write(image, "jpg", filePath.toFile().getAbsoluteFile());
+
+        System.out.println("Test image created at: " + filePath);
+        return filePath;
+    }
+
+
 }

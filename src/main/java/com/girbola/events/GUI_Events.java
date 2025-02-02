@@ -28,7 +28,7 @@ public class GUI_Events {
 			tooltip_characterNotValid = showTooltip(textField, Main.bundle.getString("characterNotValid"));
 		}
 		if (tooltip_tooLongFileName == null) {
-			tooltip_tooLongFileName = showTooltip(textField, Main.bundle.getString("maxLenght"));
+			tooltip_tooLongFileName = showTooltip(textField, Main.bundle.getString("maxLength"));
 		}
 		textField.setOnMouseExited(new EventHandler<MouseEvent>() {
 

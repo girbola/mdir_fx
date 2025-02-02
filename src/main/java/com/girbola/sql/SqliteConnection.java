@@ -4,8 +4,42 @@ import com.girbola.messages.Messages;
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import lombok.Getter;
 
 public class SqliteConnection {
+
+	@Getter
+    private static List<Connection> connectionList = new ArrayList<>();
+
+	public static void closeAllConnections() {
+		Iterator<Connection> iterator = connectionList.iterator();
+
+		while (iterator.hasNext()) {
+			Connection conn = iterator.next();
+			try {
+				if (conn != null) {
+					if(!conn.isClosed()) {
+						Messages.sprintf("Closed connection: " + conn.getMetaData().getURL());
+						conn.close();
+						iterator.remove();
+					}
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+    public static void addConnection(Connection conn) {
+		connectionList.add(conn);
+	}
+
+	public static void removeConnection(Connection conn) {
+		connectionList.remove(conn);
+	}
 
 	public static Connection connector(Path path, String tableName) {
 		Messages.sprintf("Connection to path: " + path.toFile().getAbsolutePath() + " tableName: " + tableName);
@@ -19,6 +53,8 @@ public class SqliteConnection {
 		try {
 			Class.forName("org.sqlite.JDBC");
 			conn = DriverManager.getConnection("jdbc:sqlite:" + path.toString() + File.separator + tableName);
+			Messages.sprintf("Opening SQLite connection: " + conn.getMetaData().getURL());
+			addConnection(conn);
 			return conn;
 		} catch (Exception e) {
 			e.printStackTrace();

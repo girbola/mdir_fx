@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class FileDetails {
+public class FileDetails extends FileHistory {
     private String orgPath;
     private String workDir;
     private String workDirDriveSerialNumber;

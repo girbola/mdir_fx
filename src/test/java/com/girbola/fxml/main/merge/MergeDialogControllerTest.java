@@ -10,13 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class MergeDialogControllerTest {
 
     @Test
-    public void testDefinePathByEventLocationUserName() {
+    public void testDefinePathByLocationEventUserName() {
         String absolutePath = "C:\\girbola";
         String locationName = "location";
         String eventName = "event";
         String userName = "user";
 
-        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, locationName, eventName, userName);
+        Path actual = MergeDialogController.definePathByLocationEventUserName(absolutePath, locationName, eventName, userName);
 
         Path expected = Paths.get(absolutePath + " - " + locationName + " - " + eventName + userName);
         assertEquals(expected, actual);
@@ -28,7 +28,7 @@ public class MergeDialogControllerTest {
         String locationName = "location";
         String userName = "user";
 
-        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, locationName, "", userName);
+        Path actual = MergeDialogController.definePathByLocationEventUserName(absolutePath, locationName, "", userName);
 
         Path expected = Paths.get(absolutePath + " - " + locationName + userName);
         assertEquals(expected, actual);
@@ -40,7 +40,7 @@ public class MergeDialogControllerTest {
         String eventName = "event";
         String userName = "user";
 
-        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, "", eventName, userName);
+        Path actual = MergeDialogController.definePathByLocationEventUserName(absolutePath, "", eventName, userName);
 
         Path expected = Paths.get(absolutePath + " - " + eventName + userName);
         assertEquals(expected, actual);
@@ -51,7 +51,7 @@ public class MergeDialogControllerTest {
         String absolutePath = "C:\\girbola";
         String userName = "user";
 
-        Path actual = MergeDialogController.definePathByEventLocationUserName(absolutePath, "", "", userName);
+        Path actual = MergeDialogController.definePathByLocationEventUserName(absolutePath, "", "", userName);
 
         Path expected = Paths.get(absolutePath + userName);
         assertEquals(expected, actual);

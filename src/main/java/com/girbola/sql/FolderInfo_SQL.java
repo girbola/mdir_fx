@@ -213,13 +213,13 @@ public class FolderInfo_SQL {
         }
         FolderInfo folderInfo = null;
 
-        Connection connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
-        boolean dbConnected = SQL_Utils.isDbConnected(connection);
-        SQL_Utils.setAutoCommit(connection, false);
+        Connection connectionFileInfos = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+        boolean dbConnected = SQL_Utils.isDbConnected(connectionFileInfos);
+        SQL_Utils.setAutoCommit(connectionFileInfos, false);
         if (dbConnected) {
             try {
                 String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
-                Statement smtm = connection.createStatement();
+                Statement smtm = connectionFileInfos.createStatement();
                 ResultSet rs = smtm.executeQuery(sql);
 
                 boolean changed = rs.getBoolean(FolderInfoEnum.CHANGED.getColumnName());
@@ -243,19 +243,26 @@ public class FolderInfo_SQL {
                 String state = rs.getString(FolderInfoEnum.STATE.getColumnName());
                 String tableType = rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName());
 
-                List<FileInfo> fileInfo_list = FileInfo_SQL.loadFileInfoDatabase(connection);
+                List<FileInfo> fileInfos = FileInfo_SQL.loadFileInfoDatabase(connectionFileInfos);
+
+                if(fileInfos == null || fileInfos.isEmpty()) {
+                    Messages.sprintfError("Could not load fileInfos!");
+                    return null;
+                }
 
                 folderInfo = new FolderInfo();
-                if (fileInfo_list.isEmpty()) {
+                if (fileInfos.isEmpty()) {
                     Messages.sprintf("FileInfo were empty!");
-                    fileInfo_list = FileInfoUtils.createFileInfo_list(folderInfo);
-                    if (fileInfo_list.isEmpty()) {
-                        Messages.sprintf("FileInfo creationg did not work this time or folder were empty.");
+                    fileInfos = FileInfoUtils.createFileInfo_list(folderInfo);
+                    if (fileInfos == null || fileInfos.isEmpty()) {
+                        Messages.sprintf("Folder were empty.");
+                        return null;
                     }
                 }
+
                 folderInfo.setChanged(changed);
                 folderInfo.setConnected(connected);
-                folderInfo.setFileInfoList(fileInfo_list);
+                folderInfo.setFileInfoList(fileInfos);
                 folderInfo.setIgnored(ignored);
                 folderInfo.setDateDifferenceRatio(dateDifference);
                 folderInfo.setBadFiles(badFiles);
@@ -275,15 +282,16 @@ public class FolderInfo_SQL {
                 folderInfo.setState(state);
                 folderInfo.setTableType(tableType);
                 smtm.close();
-                connection.close();
+                connectionFileInfos.close();
 
                 return folderInfo;
 
             } catch (Exception e) {
+                Messages.sprintfError("Cannot load FolderInfo from: " + path);
                 Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase") + path);
                 return null;
             } finally {
-                SQL_Utils.closeConnection(connection);
+                SQL_Utils.closeConnection(connectionFileInfos);
             }
         } else {
             Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase"));
@@ -302,21 +310,17 @@ public class FolderInfo_SQL {
             return true;
         }
 
+		try {
+			Statement stmt = connection_mdirFile.createStatement();
+			stmt.execute(folderInfoTable);
+			insertFolderInfo(connection_mdirFile, folderInfo);
+			connection_mdirFile.commit();
+			return true;
+		} catch (Exception ex) {
+			ex.printStackTrace();
 
-
-
-        return false;
-//		try {
-//			Statement stmt = connection_mdirFile.createStatement();
-//			stmt.execute(folderInfoTable);
-//			insertFolderInfo(connection_mdirFile, folderInfo);
-//			connection_mdirFile.commit();
-//			return true;
-//		} catch (Exception ex) {
-//			ex.printStackTrace();
-//
-//			return false;
-//		}
+			return false;
+		}
     }
 
 }

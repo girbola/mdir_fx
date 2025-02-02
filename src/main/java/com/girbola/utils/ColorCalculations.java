@@ -95,12 +95,12 @@ public class ColorCalculations {
         return foreground; // Return original color if contrast is sufficient
     }
 
-    private static double calculateContrastRatio(int[] foreground, double backgroundLuminance) {
+    public static double calculateContrastRatio(int[] foreground, double backgroundLuminance) {
         double foregroundLuminance = calculateLuminance(foreground);
         return (foregroundLuminance + 0.05) / (backgroundLuminance + 0.05);
     }
 
-    private static double calculateLuminance(int[] rgb) {
+    public static double calculateLuminance(int[] rgb) {
         double r = gammaCorrect(rgb[0] / 255.0);
         double g = gammaCorrect(rgb[1] / 255.0);
         double b = gammaCorrect(rgb[2] / 255.0);

@@ -475,4 +475,12 @@ public class FileUtils {
         }
         return true;
     }
+
+    public static boolean setWritable(Path createFile, boolean b) {
+        return createFile.toFile().setWritable(true);
+    }
+
+    public  static boolean setReadable(Path createFile, boolean b) {
+        return createFile.toFile().setReadable(true);
+    }
 }
