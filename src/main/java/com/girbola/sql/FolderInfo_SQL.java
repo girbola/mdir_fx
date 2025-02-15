@@ -4,7 +4,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoEnum;
-import com.girbola.controllers.main.tables.tabletype.FolderInfoStateType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
@@ -115,7 +114,7 @@ public class FolderInfo_SQL {
                 ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN tableType TEXT;"
         );
 
-       SQL_Utils.setAutoCommit(connection, false);
+        SQL_Utils.setAutoCommit(connection, false);
         try (Statement stmt = connection.createStatement()) {
             for (String sql : alterTableCommands) {
                 try {
@@ -130,7 +129,7 @@ public class FolderInfo_SQL {
             }
             connection.commit(); // commit only if all commands succeed
         } catch (SQLException e) {
-            Messages.sprintfError("Overall error altering table: "+  e.getMessage());
+            Messages.sprintfError("Overall error altering table: " + e.getMessage());
             SQL_Utils.rollBack(connection);
 
         } finally {
@@ -245,7 +244,7 @@ public class FolderInfo_SQL {
 
                 List<FileInfo> fileInfos = FileInfo_SQL.loadFileInfoDatabase(connectionFileInfos);
 
-                if(fileInfos == null || fileInfos.isEmpty()) {
+                if (fileInfos == null || fileInfos.isEmpty()) {
                     Messages.sprintfError("Could not load fileInfos!");
                     return null;
                 }
@@ -299,28 +298,32 @@ public class FolderInfo_SQL {
         return null;
     }
 
-    public static boolean saveFolderInfoToTable(Connection connection_mdirFile, FolderInfo folderInfo) {
+    public static boolean saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) {
 
-        if(SQL_Utils.isDatabaseAccessible(connection_mdirFile, SQL_Enums.FOLDERINFO.getType())) {
-            boolean create = createFolderInfoTable(connection_mdirFile);
-            if (create) {
-                return insertFolderInfo(connection_mdirFile, folderInfo);
+        try {
+            if (SQL_Utils.isDatabaseAccessible(connectionMdirFile, SQL_Enums.FOLDERINFO.getType())) {
+                boolean create = createFolderInfoTable(connectionMdirFile);
+                if (create) {
+                    return insertFolderInfo(connectionMdirFile, folderInfo);
+                }
+                ensureFolderInfoTable(connectionMdirFile);
+
+                Statement stmt = connectionMdirFile.createStatement();
+                stmt.execute(folderInfoTable);
+                insertFolderInfo(connectionMdirFile, folderInfo);
+                connectionMdirFile.commit();
+                return true;
+
+            } else {
+                Messages.sprintfError("Could not access database: " + SQL_Utils.getUrl(connectionMdirFile));
+                return false;
             }
-            ensureFolderInfoTable(connection_mdirFile);
-            return true;
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            return false;
         }
-
-		try {
-			Statement stmt = connection_mdirFile.createStatement();
-			stmt.execute(folderInfoTable);
-			insertFolderInfo(connection_mdirFile, folderInfo);
-			connection_mdirFile.commit();
-			return true;
-		} catch (Exception ex) {
-			ex.printStackTrace();
-
-			return false;
-		}
     }
 
 }

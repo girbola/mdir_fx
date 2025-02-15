@@ -745,7 +745,7 @@ public class TableUtils {
             fileList_connection.setAutoCommit(false);
             // Inserts all data info fileinfo.db
             FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
-            FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
+            FolderInfo_SQL.saveFolderInfoToDatabase(fileList_connection, folderInfo);
             SQL_Utils.commitChanges(fileList_connection);
             SQL_Utils.closeConnection(fileList_connection);
         } catch (Exception e) {

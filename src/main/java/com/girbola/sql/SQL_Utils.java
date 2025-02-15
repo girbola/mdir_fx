@@ -2,7 +2,6 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
@@ -10,7 +9,6 @@ import com.girbola.messages.Messages;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -84,15 +82,12 @@ public class SQL_Utils extends FolderInfo_SQL {
      * @return
      */
     public static boolean isDbConnected(Connection connection) {
-        if (connection == null) {
-            return false;
-        }
         try {
-            return !connection.isClosed();
+            return connection.isClosed();
         } catch (SQLException e) {
-            return false;
+            Messages.sprintf("THere is something wrong with a connection while returning database status. Error messages is::: " + e.getMessage());
+            throw new RuntimeException(e);
         }
-
     }
 
     public static FolderInfo loadFolderInfoCurrentDir(Path path) {
@@ -197,11 +192,39 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     }
 
+    public static Connection createFileInfoTable(Path path) {
+        Connection connection = null;
+        try {
+            connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+            if (!SQL_Utils.isDbConnected(connection)) {
+                return null;
+            }
+            return connection;
+        } catch (Exception e) {
+            Messages.sprintfError("Error connecting to database: " + Main.conf.getMdir_db_fileName() + (connection != null ? " at: " + getUrl(connection) : ""));
+            return null;
+        }
+    }
+
     public static String getUrl(Connection connection) {
         try {
             return connection.getMetaData().getURL();
         } catch (SQLException e) {
             Messages.sprintfError("Error getting URL: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static Connection createFolderInfoDatabase(Path path) {
+        Connection connection = null;
+        try {
+            connection = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+            if (!SQL_Utils.isDbConnected(connection)) {
+                return null;
+            }
+            return connection;
+        } catch (Exception e) {
+            Messages.sprintfError("Error connecting to database: " + Main.conf.getMdir_db_fileName() + (connection != null ? " at: " + getUrl(connection) : ""));
             return null;
         }
     }

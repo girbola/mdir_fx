@@ -82,7 +82,7 @@ public class FolderInfo_SQLTest {
 
         FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
-        FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, folderInfo);
+        FolderInfo_SQL.saveFolderInfoToDatabase(connection_mdirFile, folderInfo);
 
         FolderInfo loadedFi = FolderInfo_SQL.loadFolderInfo(Paths.get(folderInfo.getFolderPath()));
         Assertions.assertNotNull(loadedFi);

@@ -15,7 +15,7 @@ import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.model.SavedFolderInfo;
+import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -158,14 +158,15 @@ public class ModelMain {
 
         Connection fileListConnection = null;
         for (FolderInfo folderInfo : items) {
+            Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath());
             if (folderInfo.getFolderFiles() >= 1) {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
 
-                    SavedFolderInfo savedFolderInfo = new SavedFolderInfo(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    SavedFolderInfoStatus savedFolderInfoStatus = new SavedFolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = FolderInfosSQL.addToFolderInfosDB(connectionConfiguration, savedFolderInfo);
+                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, savedFolderInfoStatus);
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
                     }
@@ -180,14 +181,12 @@ public class ModelMain {
 
                     // Inserts all data info fileinfo.db
                     FileInfo_SQL.insertFileInfoListToDatabase(fileListConnection, folderInfo.getFileInfoList(), false);
-//                    SQL_Utils.commitChanges(fileListConnection);
-                    FolderInfo_SQL.saveFolderInfoToTable(fileListConnection, folderInfo);
+                    FolderInfo_SQL.saveFolderInfoToDatabase(fileListConnection, folderInfo);
                     SQL_Utils.commitChanges(fileListConnection);
                     SQL_Utils.closeConnection(fileListConnection);
 
                 } catch (Exception e) {
-                    e.printStackTrace();
-                    Messages.sprintfError("Something went wrong writing folderinfo to database at line: "
+                    Messages.sprintfError("Something went wrong with writing folderinfo into database at line: "
                             + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
                     return false;
                 }

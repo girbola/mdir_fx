@@ -24,7 +24,6 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
 
 	public SaveTablesToFolderInfoDatabases(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
                                            boolean closeLoadingStage) {
-//		super();
 		this.model_main = model_main;
 		this.stage = stage;
 		if (loadingProcess_Task == null) {
@@ -40,7 +39,7 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
 
         Connection connectionConfiguration = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connectionConfiguration == null) {
-            Messages.sprintfError("Can't connect configutation file: " + Main.conf.getConfiguration_db_fileName());
+            Messages.sprintfError("Can't connect configuration file: " + Main.conf.getConfiguration_db_fileName());
             Messages.errorSmth(ERROR, "createFolderInfoDatabase failed!", new Exception("Saving FolderInfos failed!"),
                     Misc.getLineNumber(), true);
             cancel();
@@ -68,6 +67,7 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
         if (sorted) {
             Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
         }
+
         start = System.currentTimeMillis();
         updateMessage("Loading SortIt");
         boolean sortit = model_main.saveTableContent(connectionConfiguration,
@@ -75,6 +75,7 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
         if (sortit) {
             Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
         }
+
         start = System.currentTimeMillis();
         updateMessage("Loading AsItIs");
         boolean asitis = model_main.saveTableContent(connectionConfiguration,

@@ -6,6 +6,8 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
@@ -138,12 +140,25 @@ public class FileInfo_SQL {
     // @formatter:on
     public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
         Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
-        if (!isWorkDir) {
-            boolean clearTable = SQL_Utils.clearTable(connection, SQL_Enums.FILEINFO.getType());
-            if (clearTable) {
-                Messages.sprintf("FileInfo table cleared");
+//        if (!isWorkDir) {
+//            boolean clearTable = SQL_Utils.clearTable(connection, SQL_Enums.FILEINFO.getType());
+//            if (clearTable) {
+//                Messages.sprintf("FileInfo table cleared");
+//            }
+//        }
+        Path folder = null;
+        try {
+            folder = Paths.get(list.get(0).getOrgPath()).getParent();
+            if (Files.exists(folder)) {
+
+            } else {
+                return false;
             }
+        } catch (Exception e) {
+            Messages.sprintf("Cannot get path for the folder");
+            return false;
         }
+        SqliteConnection.connector(folder, Main.conf.getMdir_db_fileName());
         try {
             SQL_Utils.setAutoCommit(connection, false);
 
@@ -163,6 +178,7 @@ public class FileInfo_SQL {
             ensureFileInfoColumnsExists(connection);
 
             for (FileInfo fileInfo : list) {
+                Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
                 addToFileInfoDB(pstmt, fileInfo);
             }
             pstmt.executeBatch();
@@ -171,8 +187,7 @@ public class FileInfo_SQL {
             Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
             return true;
         } catch (Exception ex) {
-            ex.printStackTrace();
-            Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED");
+            Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED: " + ex.getMessage());
             return false;
         }
     }
@@ -269,9 +284,7 @@ public class FileInfo_SQL {
         List<String> list = new ArrayList<>();
         while (rs.next()) {
             String[] fileHistories = rs.getString(FileInfoConstants.FILEHISTORIES).split(",");
-            for (String fileHistoryItem : fileHistories) {
-                list.add(fileHistoryItem);
-            }
+            list.addAll(Arrays.asList(fileHistories));
         }
         return list;
     }
@@ -281,19 +294,21 @@ public class FileInfo_SQL {
      */
     // @formatter:off
 	public static boolean createFileInfoTable(Connection connection) {
-		if (connection == null) {
-			Messages.sprintf("Connection were null!");
-			return false;
-		}
-		final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + "(" + String.join(",", fileInfoColumns) +");";
-Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintfError("Database connection is not active. Aborting the operation. Path is?" + SQL_Utils.getUrl(connection));
+            return false;
+        }
+
+        final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + " (" + String.join(",", fileInfoColumns) +");";
+
+        Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
 
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.execute(sql);
 			return true;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+            Messages.sprintfError("Cannot create table: " + sql);
 			return false;
 		}
 	}

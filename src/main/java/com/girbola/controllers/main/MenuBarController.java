@@ -18,6 +18,7 @@ import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.SaveTableFileInfos;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
@@ -388,8 +389,9 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         sprintf("menuItem_file_save_action");
-        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.scene_Switcher.getWindow(),
-                null, true);
+        Task<Integer> saveFileInfos = new SaveTableFileInfos(model_main, Main.scene_Switcher.getWindow(), null, null);
+
+        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.scene_Switcher.getWindow(), null, true);
 
         saveTablesToDatabases.setOnSucceeded(event2 -> {
             Messages.sprintfError("saveTablesToDatabases succeeded");

@@ -5,14 +5,14 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.model.SavedFolderInfo;
+import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DriveInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.FolderInfo_SQL;
-import com.girbola.sql.FolderInfosSQL;
+import com.girbola.sql.SavedFolderInfosSQL;
 import com.girbola.sql.SQL_Utils;
 import java.nio.file.Path;
 import javafx.concurrent.Task;
@@ -40,19 +40,19 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
             return false;
         }
 
-        List<SavedFolderInfo> savedFolderInfos = FolderInfosSQL.getAll(connection, modelMain);
+        List<SavedFolderInfoStatus> savedFolderInfoStatuses = SavedFolderInfosSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
 
-        if (savedFolderInfos == null || savedFolderInfos.isEmpty()) {
+        if (savedFolderInfoStatuses == null || savedFolderInfoStatuses.isEmpty()) {
             Messages.sprintfError("folderInfo_list were empty!!!!" + Load_FileInfosBackToTableViews.class.getName());
             cancel();
             return false;
         } else {
-            for (SavedFolderInfo savedFolderInfo : savedFolderInfos) {
+            for (SavedFolderInfoStatus savedFolderInfoStatus : savedFolderInfoStatuses) {
                 if (Main.getProcessCancelled()) {
                     cancel();
                     return false;
                 }
-                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(savedFolderInfo.getFolderPath());
+                FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(savedFolderInfoStatus.getFolderPath());
 
                 Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath());
 
