@@ -14,10 +14,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
+import lombok.Getter;
 
+@Getter
 public class FolderInfo_SQL {
 
     private static final String ALTER_TABLE = "ALTER TABLE ";
+
+    private Connection connection = null;
 
     //@formatter:off
 	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
@@ -71,6 +75,8 @@ public class FolderInfo_SQL {
             + "'state', "
             + "'tableType')"
             + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+
 
     /**
      * @param connectionMdirFileStatement

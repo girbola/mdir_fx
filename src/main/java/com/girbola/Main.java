@@ -24,37 +24,35 @@ package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
-import com.girbola.configuration.ConfigurationUtils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.sql.DriveInfoHandler;
-import com.girbola.controllers.main.tables.*;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
-import java.io.File;
-import java.net.URL;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.text.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -101,7 +99,8 @@ public class Main extends Application {
                 setChanged(false);
                 conf.setModel(model_main);
                 conf.createProgramPaths();
-                ConfigurationUtils.loadConfig();
+                ConfigurationSQLHandler.loadConfiguration(Main.conf);
+
                 Messages.sprintf("CONFIG contains: " + conf.toString());
                 Messages.sprintf("Java version: " + System.getProperty("java.version"));
                 Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
@@ -168,9 +167,9 @@ public class Main extends Application {
 
         mainTask.setOnSucceeded(event -> {
 
-            ConfigurationUtils.createConfiguration_db();
+            //ConfigurationSQLHandler.createConfigurationDatabase();
 
-            ConfigurationUtils.loadConfig_GUI(model_main);
+            ConfigurationSQLHandler.loadConfiguration(Main.conf);
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
@@ -339,7 +338,8 @@ public class Main extends Application {
         Messages.sprintf("Stopping app");
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        model_main.getSqlHandler().getConfigurationConnection().close();
+        model_main.getSqlHandler().closeAll();
+
         Messages.sprintf("Configuration connection closed");
 
         ConcurrencyUtils.stopAllExecThreadNow();

@@ -184,7 +184,7 @@ public class Messages {
      * @param message
      */
     public static void warningText(String message) {
-        Messages.sprintfError("WarningText appeared: " + message);
+        Messages.sprintfError("WARN: message: " + message);
         Alert alert = new Alert(AlertType.WARNING);
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setContentText(message);
@@ -201,7 +201,8 @@ public class Messages {
      * @param helpURL
      */
     public static void warningTextHelp(String message, String helpURL) {
-        sprintf("message: " + message + " helpURL: " + helpURL);
+        Messages.sprintfError("WARN: message: " + message + " helpURL: " + helpURL);
+
         Dialog<ButtonType> dialog = createDialog();
         DialogPane dialogPane = new DialogPane();
         // dialogPane.setHeaderText(text);

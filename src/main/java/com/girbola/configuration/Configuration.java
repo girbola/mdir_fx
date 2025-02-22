@@ -8,6 +8,7 @@ package com.girbola.configuration;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -37,7 +38,7 @@ public class Configuration extends Configuration_defaults {
 
         if (SQL_Utils.isDbConnected(connection)) {
             connection.setAutoCommit(false);
-            Configuration_SQL_Utils.loadConfiguration(connection, Main.conf);
+            ConfigurationSQLHandler.loadConfiguration(Main.conf);
             Messages.sprintf("Loading stopped. SQL config: " + Main.conf.getWorkDir());
             try {
                 connection.close();

@@ -77,7 +77,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
     private void checkFolderPathChanges(FolderInfo folderInfo) {
        Messages.sprintf("checkFolderPathChanges started");
         String folderPath = folderInfo.getFolderPath();
-        List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoHandler().getDriveInfoList();
+        List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoList();
 
         String sourceFolderSerialNumber =  "";
 

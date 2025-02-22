@@ -1,7 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.cell.*;
@@ -278,7 +278,7 @@ public class Tables {
                     for (FolderInfo folderInfo : listToRemove) {
                         table.getItems().remove(folderInfo);
                     }
-                    Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
+                    ConfigurationSQLHandler.insertIgnoredList(listToRemove);
                     listToRemove.clear();
                     try {
                         connection.close();

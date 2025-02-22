@@ -10,8 +10,9 @@ package com.girbola.controllers.main;
 import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
+/*import com.girbola.controllers.main.sql.SQLHandler;*/
 import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -120,10 +121,10 @@ public class ModelMain {
 
     public boolean saveAllTableContents() {
         Messages.sprintf("saveAllTableContents started");
-
-        Connection connection = sqlHandler.getConfigurationConnection();
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.warningText(bundle.getString("cannotOpenConnectionToDatabase") + Main.conf.getAppDataPath() + " fileName: " + Main.conf.getConfiguration_db_fileName());
+        Connection connection = ConfigurationSQLHandler.getConnection();
+        if(SQL_Utils.isDbConnected(connection)) {
+            Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
+            return false;
         }
         SQL_Utils.setAutoCommit(connection, false);
 
@@ -144,7 +145,7 @@ public class ModelMain {
         boolean closeConnection = SQL_Utils.closeConnection(connection);
         if (!closeConnection) return false;
 
-        Main.setChanged(true);
+        Main.setChanged(false);
 
         return true;
 
@@ -183,7 +184,7 @@ public class ModelMain {
                     FileInfo_SQL.insertFileInfoListToDatabase(fileListConnection, folderInfo.getFileInfoList(), false);
                     FolderInfo_SQL.saveFolderInfoToDatabase(fileListConnection, folderInfo);
                     SQL_Utils.commitChanges(fileListConnection);
-                    SQL_Utils.closeConnection(fileListConnection);
+                    //SQL_Utils.closeConnection(fileListConnection);
 
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong with writing folderinfo into database at line: "
@@ -225,7 +226,7 @@ public class ModelMain {
         // saveTablePositions();
         // erg;
         Messages.sprintf("Exiting program");
-        Configuration_SQL_Utils.updateConfiguration();
+        ConfigurationSQLHandler.updateConfiguration();
 
         if (Main.getChanged()) {
             Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
@@ -264,7 +265,7 @@ public class ModelMain {
     }
 
     public void load() {
-        Connection connection = sqlHandler.getConfigurationConnection();
+        Connection connection = ConfigurationSQLHandler.getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
             Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);

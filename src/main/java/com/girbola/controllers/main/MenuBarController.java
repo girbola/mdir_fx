@@ -8,7 +8,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.options.OptionsController;
@@ -389,7 +389,8 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         sprintf("menuItem_file_save_action");
-        Task<Integer> saveFileInfos = new SaveTableFileInfos(model_main, Main.scene_Switcher.getWindow(), null, null);
+        SaveTableFileInfos saveFileInfos = new SaveTableFileInfos(model_main, Main.scene_Switcher.getWindow(), null, true);
+        saveFileInfos.readTables();
 
         Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.scene_Switcher.getWindow(), null, true);
 
@@ -483,7 +484,7 @@ public class MenuBarController {
 
         stage_opt.setScene(scene_opt);
         stage_opt.setOnCloseRequest(closeEvent -> {
-            Configuration_SQL_Utils.updateConfiguration();
+            ConfigurationSQLHandler.updateConfiguration();
         });
         stage_opt.show();
 
@@ -534,7 +535,7 @@ public class MenuBarController {
         menuItem_tools_themes_light.setSelected(false);
         Main.scene_Switcher.getScene_main().getStylesheets()
                 .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        Configuration_SQL_Utils.updateConfiguration();
+        ConfigurationSQLHandler.updateConfiguration();
     }
 
     @FXML
@@ -544,7 +545,7 @@ public class MenuBarController {
         menuItem_tools_themes_dark.setSelected(false);
         Main.scene_Switcher.getScene_main().getStylesheets()
                 .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        Configuration_SQL_Utils.updateConfiguration();
+        ConfigurationSQLHandler.updateConfiguration();
     }
 
     private void viewWebPage(String string) {

@@ -40,15 +40,15 @@ public class ScanDrives {
     private Set<DriveInfo> rootDrives = new HashSet<>();
     private int i = 0;
     private int rootCount = 0;
-    private DriveInfoUtils driveListHandler;
+    private DriveInfoUtils driveInfoUtils;
     private ModelMain modelMain;
 
     public ScanDrives(ModelMain modelMain, CheckBoxTreeItem<File> rootItem, ObservableList<Path> driveListSelectedObs,
-                      DriveInfoUtils driveListHandler, ModelFolderScanner modelFolderScanner) {
+                      DriveInfoUtils driveInfoUtils, ModelFolderScanner modelFolderScanner) {
         this.modelMain = modelMain;
         this.rootItem = rootItem;
         this.driveListSelectedObs = driveListSelectedObs;
-        this.driveListHandler = driveListHandler;
+        this.driveInfoUtils = driveInfoUtils;
         this.modelFolderScanner = modelFolderScanner;
         scanner.setPeriod(Duration.seconds(10));
     }
@@ -129,7 +129,7 @@ public class ScanDrives {
         } else {
             processDeselectedPath(cb, selectedPath);
         }
-        driveListHandler.createDriveInfo(cb.getValue().toString(), isSelected);
+        driveInfoUtils.createDriveInfo(cb.getValue().toString(), isSelected);
     }
 
     private void handleWorkDirConflict(CheckBoxTreeItem<File> cb, Path selectedPath) {
@@ -157,14 +157,14 @@ public class ScanDrives {
     }
 
     private void initializeCheckBoxSelection(CheckBoxTreeItem<File> cb, File fileName) {
-        if (driveListHandler.isDriveAlreadyInRegister(fileName.toString())) {
-            driveListHandler.getDrivesList_obs().stream()
+        if (driveInfoUtils.isDriveAlreadyInRegister(fileName.toString())) {
+            driveInfoUtils.getDrivesList_obs().stream()
                     .filter(driveInfo -> driveInfo.getDrivePath().equals(fileName.toString()))
                     .findFirst()
                     .ifPresent(driveInfo -> cb.setSelected(driveInfo.isSelected()));
         } else {
             Messages.sprintf("has no drive in list");
-            driveListHandler.createDriveInfo(cb.getValue().toString(), false);
+            driveInfoUtils.createDriveInfo(cb.getValue().toString(), false);
         }
     }
 

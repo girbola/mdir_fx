@@ -53,7 +53,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     public static boolean closeConnection(Connection connection) {
         Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
-            if(!isDbConnected(connection)) {
+            if (!isDbConnected(connection)) {
                 connection.close();
                 return true;
             }
@@ -177,14 +177,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     public static Connection createConfigurationConfig() {
         try {
-            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-            if (connection == null) {
-                return null;
-            }
-            if (!SQL_Utils.isDbConnected(connection)) {
-                return null;
-            }
-            return connection;
+            return SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } catch (Exception e) {
             Messages.sprintfError("Error connecting to database: " + Main.conf.getConfiguration_db_fileName());
             return null;

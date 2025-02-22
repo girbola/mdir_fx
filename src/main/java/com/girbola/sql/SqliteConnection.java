@@ -54,6 +54,7 @@ public class SqliteConnection {
 			Class.forName("org.sqlite.JDBC");
 			conn = DriverManager.getConnection("jdbc:sqlite:" + path.toString() + File.separator + tableName);
 			Messages.sprintf("Opening SQLite connection: " + conn.getMetaData().getURL());
+
 			addConnection(conn);
 			return conn;
 		} catch (Exception e) {
