@@ -1,11 +1,14 @@
 package com.girbola.imagehandling;
 
+import static com.girbola.Main.bundle;
+
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.List;
 
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -32,6 +35,8 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 	private double image_width;
 	private Timeline timeLine;
 
+	private final String ERROR = VideoThumbMaker.class.getSimpleName();
+	
 	public VideoThumbMaker(FileInfo fileInfo, ImageView imageView, double image_width) {
 		this.fileInfo = fileInfo;
 		this.imageView = imageView;
@@ -71,16 +76,9 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 			org.bytedeco.javacv.FrameGrabber fr = FrameGrabber.createDefault(fileInfo.getOrgPath());
 			Messages.sprintf("FrameGrabberFrameGrabberFrameGrabber: " + fr.toString());
 
-		} catch (FFmpegFrameGrabber.Exception e) {
-			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
-			Messages.sprintf("1GARBBERRRERBAERB: " + grabber.getFormat());
-			Messages.sprintf("2AERAERAGERA: " + grabber.toString());
-			throw new RuntimeException(e);
-		} catch (FrameGrabber.Exception e) {
-			FrameGrabber grabber = new OpenCVFrameGrabber(fileInfo.getOrgPath());
-			Messages.sprintf("3GARBBERRRERBAERB: " + grabber.getFormat());
-			Messages.sprintf("4AERAERAGERA: " + grabber.toString());
-			throw new RuntimeException(e);
+		} catch (Exception e) {
+			Messages.errorSmth(ERROR, "Can't convert video to thumbnail with framegrabber", e, Misc.getLineNumber(),
+					true);
 		}
 		if (list == null) {
 			System.err.println("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
@@ -128,8 +126,6 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
 	private FFmpegFrameGrabber createVideoThumb(String fileName) throws FFmpegFrameGrabber.Exception {
 		FFmpegFrameGrabber frameGrabber = FFmpegFrameGrabber.createDefault(fileName);
 		if (frameGrabber != null) {
-
-//	int lengthInFrames = frameGrabber.getLengthInFrames();
 			Messages.sprintf("=======lengthInFrames" + frameGrabber.toString());
 		}
 		return null;

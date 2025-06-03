@@ -12,6 +12,31 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 /bin/
 *null*
 
-
 /.apt_generated/
 /.apt_generated_tests/
+
+# Eclipse specific
+.metadata/
+.settings/
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.factorypath
+.recommenders/
+
+# Eclipse Core
+.project
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Eclipse m2e generated files
+# Eclipse Core
+.project
+# JDT-specific (Eclipse Java Development Tools)
+.classpath

@@ -1,6 +1,6 @@
 /*
 
- @(#)Copyright:  Copyright (c) 2012-2022 All right reserved. 
+ @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
  @(#)Author:     Marko Lokka
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
@@ -338,7 +338,7 @@ public class TableController {
 			if (model_main.tables().getAsItIs_table().getSelectionModel().getSelectedItems().size() <= 1) {
 				warningText(bundle.getString("noSelectedFoldersToMerge"));
 				return;
-			} 
+			}
 		}
 
 		FXMLLoader loader = null;

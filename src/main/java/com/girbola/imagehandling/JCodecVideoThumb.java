@@ -37,7 +37,7 @@ public class JCodecVideoThumb {
 		if(list == null) {
 			return null;
 		}
-		System.out.println("Total duration: " + duration + " GetList done: " + list.size());
+		System.out.println("Total duration: " + duration + " GetList done: " + list.size() + " listOfTimeLine: " + listOfTimeLine.size());
 		return list;
 	}
 
@@ -107,15 +107,19 @@ public class JCodecVideoThumb {
 
 	public static double getVideoLenght(File file) {
 		Messages.sprintf("getVideoLenght: " + file);
-		Format f = null;
+		Format format = null;
+		Demuxer demuxer = null;
 		try {
-			f = JCodecUtil.detectFormat(file);
-			Demuxer d = JCodecUtil.createDemuxer(f, file);
-			DemuxerTrack vt = d.getVideoTracks().get(0);
+			format = JCodecUtil.detectFormat(file);
+			System.out.println("File format is: " + format.isVideo());
+			demuxer = JCodecUtil.createDemuxer(format, file);
+			if(demuxer == null) {
+				return -1;
+			}
+			DemuxerTrack vt = demuxer.getVideoTracks().get(0);
 			DemuxerTrackMeta dtm = vt.getMeta();
 			return dtm.getTotalDuration();
 		} catch (IOException e) {
-			e.printStackTrace();
 			return -1;
 		}
 	}
