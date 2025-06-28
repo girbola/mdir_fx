@@ -96,34 +96,109 @@ public class LoadingProcessTask {
 //            if (Main.getProcessCancelled()) {}
 //        });
     }
-
     public void loadGUI() {
         Platform.runLater(() -> {
-            FXMLLoader loader = null;
-//            URL fxmlLocation = getClass().getResource("/fxml/loading/LoadingProcess.fxml");
+            try {
+                // Load FXML
+                FXMLLoader loader = loadFXML();
+                if (loader == null) return;
 
-      /*      if(bundle == null) {
-                Messages.sprintfError("Bundle was null");
-                Platform.exit();
-            }*/
-         /*URL fxmlLocation = getClass().getResource("fxml/loading/LoadingProcess.fxml");*/
-            /*URL fxmlLocation = getClass().getResource("../../fxml/");*/
-            /*URL fxmlLocation = getClass().getResource("/fxml/loading/LoadingProcess.fxml");*/
-//            URL fxmlLocation = Main.class.getResource("/com/girbola/fxml/loading/LoadingProcess.fxml");
+                // Initialize controller
+                LoadingProcessController lpc = (LoadingProcessController) loader.getController();
+                lpc.init(modelLoading);
+
+                // Configure stage
+                setupLoadingStage(parent);
+
+                // Configure scene
+                setupLoadingScene();
+
+                // Show stage and update scene switcher
+                loadingStage.show();
+                updateSceneSwitcher();
+
+            } catch (Exception ex) {
+                Logger.getLogger(LoadingProcessTask.class.getName())
+                        .log(Level.SEVERE, "Failed to load GUI", ex);
+                Messages.errorSmth(ERROR, "Failed to load GUI", ex, Misc.getLineNumber(), true);
+            }
+        });
+    }
+
+    private FXMLLoader loadFXML() throws IOException {
+        URL fxmlLocation = Main.class.getResource("/com/girbola/fxml/loading/LoadingProcess.fxml");
+        if (fxmlLocation == null) {
+            Messages.sprintfError("FXML resource not found");
+            Platform.exit();
+            return null;
+        }
+
+        FXMLLoader loader = new FXMLLoader(fxmlLocation, bundle);
+        parent = loader.load();
+        return loader;
+    }
+
+    private void setupLoadingStage(Parent parent) {
+        loadingScene = new Scene(parent);
+        loadingStage = new Stage();
+
+        // Set fixed dimensions
+        loadingStage.setWidth(500);
+        loadingStage.setHeight(400);
+        loadingStage.setMinWidth(500);
+        loadingStage.setMinHeight(400);
+        loadingStage.setMaxWidth(500);
+        loadingStage.setMaxHeight(400);
+
+        if (owner != null) {
+            loadingStage.initOwner(owner);
+        }
+
+        loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
+        loadingStage.setAlwaysOnTop(true);
+        Main.centerWindowDialog(loadingStage);
+    }
+
+    private void setupLoadingScene() {
+        // Add stylesheet
+        String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+        loadingScene.getStylesheets().add(getClass().getResource(stylesheetPath).toExternalForm());
+
+        // Store initial position
+        xOffset = loadingStage.getX();
+        yOffset = loadingStage.getY();
+
+        // Add drag functionality
+        setupDragHandlers();
+
+        loadingStage.setScene(loadingScene);
+    }
+
+    private void setupDragHandlers() {
+        loadingScene.setOnMousePressed(event -> {
+            xOffset = loadingStage.getX() - event.getScreenX();
+            yOffset = loadingStage.getY() - event.getScreenY();
+        });
+
+        loadingScene.setOnMouseDragged(event -> {
+            loadingStage.setX(event.getScreenX() + xOffset);
+            loadingStage.setY(Math.max(0, event.getScreenY() + yOffset));
+        });
+    }
+
+    private void updateSceneSwitcher() {
+        Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
+        Main.scene_Switcher.setScene_loading(loadingScene);
+    }
+    public void loadGUI_() {
+        Platform.runLater(() -> {
+            FXMLLoader loader = null;
             URL fxmlLocation = Main.class.getResource("/com/girbola/fxml/loading/LoadingProcess.fxml");
-           /* File file = new File(fxmlLocation.getFile());
-            for(File f : file.listFiles()) {
-                Messages.sprintf("====File: " + f.getAbsolutePath());
-            }*/
-            Messages.sprintf("fxmlLocation: " + fxmlLocation);
-            if(fxmlLocation == null) {
+            if (fxmlLocation == null) {
                 Messages.sprintfError("FXML resource not found: " + fxmlLocation);
                 Platform.exit();
                 return;
             }
-
-            /*FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/loading/LoadingProcess.fxml"), bundle);*/
-
 
             try {
                 loader = new FXMLLoader(fxmlLocation, bundle);
@@ -152,8 +227,7 @@ public class LoadingProcessTask {
             Messages.sprintf("Owner is: " + loadingStage.getOwner());
 //		loadingStage.setX(Main.conf.getWindowStartPosX());
             loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
-            loadingScene.getStylesheets()
-                    .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
+            loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
 
             xOffset = loadingStage.getX();
             yOffset = loadingStage.getY();
@@ -196,16 +270,14 @@ public class LoadingProcessTask {
     private void bind() {
         if (modelLoading.getTask() != null && modelLoading.getProgressBar() != null) {
             Platform.runLater(() -> {
-                modelLoading.getProgressBar().progressProperty()
-                        .bind(modelLoading.getTask().progressProperty());
-                modelLoading.getMessages_lbl().textProperty()
-                        .bind(modelLoading.getTask().messageProperty());
+                modelLoading.getProgressBar().progressProperty().bind(modelLoading.getTask().progressProperty());
+                modelLoading.getMessages_lbl().textProperty().bind(modelLoading.getTask().messageProperty());
             });
         } else {
             sprintf("task or progress bar were null in BIND()");
         }
     }
-    
+
     public void closeStage() {
         Messages.sprintf("closeStage is closing window");
 
@@ -213,13 +285,10 @@ public class LoadingProcessTask {
         unbind();
 
         Platform.runLater(() -> {
-            if (Main.scene_Switcher.getScene_loading() != null &&
-                    Main.scene_Switcher.getScene_loading().getRoot() != null &&
-                    Main.scene_Switcher.getWindow_loadingprogress() != null) {
+            if (Main.scene_Switcher.getScene_loading() != null && Main.scene_Switcher.getScene_loading().getRoot() != null && Main.scene_Switcher.getWindow_loadingprogress() != null) {
 
                 Timeline timeline = new Timeline();
-                KeyFrame key = new KeyFrame(Duration.millis(2000),
-                        new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
+                KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
                 timeline.getKeyFrames().add(key);
                 timeline.setOnFinished(event -> Main.scene_Switcher.getWindow_loadingprogress().close());
                 timeline.play();
@@ -263,8 +332,7 @@ public class LoadingProcessTask {
             stage.show();
 
         } else {
-            Messages.errorSmth(ERROR, "Loading scene haven't been initialisiz. It was null null!!!", null,
-                    Misc.getLineNumber(), true);
+            Messages.errorSmth(ERROR, "Loading scene haven't been initialisiz. It was null null!!!", null, Misc.getLineNumber(), true);
         }
 
     }
