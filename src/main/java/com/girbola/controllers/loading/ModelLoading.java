@@ -21,7 +21,14 @@ class ModelLoading {
 	private Label messages_lbl;
 	private ProgressBar progressBar;
 	private Stage stage_loading;
-	
+
+	public ModelLoading() {
+		// Initialize components in constructor
+		this.messages_lbl = new Label();
+		this.progressBar = new ProgressBar();
+	}
+
+
 	@Override
 	public String toString() {
 		return ("Model_loading{ task= " + task);

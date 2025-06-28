@@ -1,7 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoEnum;
 import com.girbola.fileinfo.FileInfo;
@@ -24,7 +24,7 @@ public class FolderInfo_SQL {
     private Connection connection = null;
 
     //@formatter:off
-	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFO.getType()
+	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType()
 			+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ "status INTEGER, "
 			+ "changed BOOLEAN, "
@@ -50,7 +50,7 @@ public class FolderInfo_SQL {
 
 	//@formatter:on
     private static final String folderInfoInsert = "INSERT OR REPLACE INTO "
-            + SQL_Enums.FOLDERINFO.getType()
+            + SQLTableEnums.FOLDERINFO.getType()
             + " ("
             + "'id', "
             + "'status', "
@@ -96,28 +96,28 @@ public class FolderInfo_SQL {
 
     private static void ensureFolderInfoTable(Connection connection) {
         List<String> alterTableCommands = Arrays.asList(
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN status INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN changed BOOLEAN;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN connected BOOLEAN;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN ignored BOOLEAN;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN dateDifference DOUBLE;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN badFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN confirmed INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN copied INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderImageFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderRawFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderVideoFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN goodFiles INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN suggested INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderSize INTEGER;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN justFolderName TEXT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN folderPath TEXT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN maxDate TEXT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN minDate TEXT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN state TEXT;",
-                ALTER_TABLE + SQL_Enums.FOLDERINFO.getType() + " ADD COLUMN tableType TEXT;"
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN status INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN changed BOOLEAN;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN connected BOOLEAN;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN ignored BOOLEAN;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN dateDifference DOUBLE;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN badFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN confirmed INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN copied INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderImageFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderRawFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderVideoFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN goodFiles INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN suggested INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderSize INTEGER;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN justFolderName TEXT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderPath TEXT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN maxDate TEXT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN minDate TEXT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN state TEXT;",
+                ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN tableType TEXT;"
         );
 
         SQL_Utils.setAutoCommit(connection, false);
@@ -136,7 +136,7 @@ public class FolderInfo_SQL {
             connection.commit(); // commit only if all commands succeed
         } catch (SQLException e) {
             Messages.sprintfError("Overall error altering table: " + e.getMessage());
-            SQL_Utils.rollBack(connection);
+            SQL_Utils.rollBackConnection(connection);
 
         } finally {
             SQL_Utils.setAutoCommit(connection, true);
@@ -213,7 +213,7 @@ public class FolderInfo_SQL {
         Path src = Paths.get(path + File.separator + Main.conf.getMdir_db_fileName());
         Messages.sprintf("loadFolderInfo src is: " + src);
         if (!Files.exists(src)) {
-            Messages.sprintfError("Cannot load FolderInfo from: " + path);
+            Messages.sprintfError("1Cannot load FolderInfo from: " + path);
             return null;
         }
         FolderInfo folderInfo = null;
@@ -223,7 +223,7 @@ public class FolderInfo_SQL {
         SQL_Utils.setAutoCommit(connectionFileInfos, false);
         if (dbConnected) {
             try {
-                String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
+                String sql = "SELECT korjaa tämä hirvitys * FROM " + SQLTableEnums.FILEINFO.getType();
                 Statement smtm = connectionFileInfos.createStatement();
                 ResultSet rs = smtm.executeQuery(sql);
 
@@ -292,7 +292,7 @@ public class FolderInfo_SQL {
                 return folderInfo;
 
             } catch (Exception e) {
-                Messages.sprintfError("Cannot load FolderInfo from: " + path);
+                Messages.sprintfError("2Cannot load FolderInfo from: " + path);
                 Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase") + path);
                 return null;
             } finally {
@@ -304,13 +304,14 @@ public class FolderInfo_SQL {
         return null;
     }
 
-    public static boolean saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) {
+    public static void saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) {
 
         try {
-            if (SQL_Utils.isDatabaseAccessible(connectionMdirFile, SQL_Enums.FOLDERINFO.getType())) {
+
                 boolean create = createFolderInfoTable(connectionMdirFile);
                 if (create) {
-                    return insertFolderInfo(connectionMdirFile, folderInfo);
+                    insertFolderInfo(connectionMdirFile, folderInfo);
+                    return;
                 }
                 ensureFolderInfoTable(connectionMdirFile);
 
@@ -318,17 +319,13 @@ public class FolderInfo_SQL {
                 stmt.execute(folderInfoTable);
                 insertFolderInfo(connectionMdirFile, folderInfo);
                 connectionMdirFile.commit();
-                return true;
 
-            } else {
-                Messages.sprintfError("Could not access database: " + SQL_Utils.getUrl(connectionMdirFile));
-                return false;
-            }
 
         } catch (Exception ex) {
             ex.printStackTrace();
 
-            return false;
+        } finally {
+            SQL_Utils.closeConnection(connectionMdirFile);
         }
     }
 

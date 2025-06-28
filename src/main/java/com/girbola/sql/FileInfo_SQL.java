@@ -1,7 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -12,13 +12,15 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FileInfo_SQL {
 
     private static final String ERROR = FileInfo_SQL.class.getName();
 
-    final static String[] fileInfoColumns = {(
+    final static String[] fileInfoColumnsSQL = {(
             FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " +
                     FileInfoConstants.ORG_PATH + " STRING UNIQUE, " +
                     FileInfoConstants.WORK_DIR + " STRING, " +
@@ -49,7 +51,7 @@ public class FileInfo_SQL {
                     FileInfoConstants.FILEHISTORIES + " STRING"
     )};
 
-    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
+    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
             + FileInfoConstants.ORG_PATH + ", "
             + FileInfoConstants.WORK_DIR + ", "
             + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + ", "
@@ -183,7 +185,7 @@ public class FileInfo_SQL {
             }
             pstmt.executeBatch();
             pstmt.close();
-            connection.commit();
+            SQL_Utils.commitChanges(connection);
             Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
             return true;
         } catch (Exception ex) {
@@ -193,15 +195,31 @@ public class FileInfo_SQL {
     }
 
     private static void ensureFileInfoColumnsExists(Connection connection) throws SQLException {
+        DatabaseMetaData meta = connection.getMetaData();
+        String fileInfoTable = SQLTableEnums.FILEINFO.getType();
 
-        String fileInfoTable = SQL_Enums.FILEINFO.getType();
-        try (Statement stmt = connection.createStatement()) {
-            for (String column : fileInfoColumns) {
-                String alterTableSQL = "ALTER TABLE " + fileInfoTable + " ADD COLUMN " + column + ";";
-                stmt.executeUpdate(alterTableSQL);
+        // Get existing columns
+        Set<String> existingColumns = new HashSet<>();
+        try (ResultSet rs = meta.getColumns(null, null, fileInfoTable, null)) {
+            while (rs.next()) {
+                existingColumns.add(rs.getString("COLUMN_NAME").toLowerCase());
             }
         }
 
+        try (Statement stmt = connection.createStatement()) {
+            // Add any missing columns
+            for (String columnDef : fileInfoColumnsSQL) {
+                String columnName = columnDef.split("\\s+")[0].toLowerCase();
+                if (!existingColumns.contains(columnName)) {
+                    try {
+                        String alterTableSQL = "ALTER TABLE " + fileInfoTable + " ADD COLUMN " + columnDef;
+                        stmt.executeUpdate(alterTableSQL);
+                    } catch (SQLException e) {
+                        // Column may already exist, ignore error
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -226,7 +244,7 @@ public class FileInfo_SQL {
                 Messages.sprintfError("insertFileInfoListToDatabase were NOT connected");
                 return false;
             }
-            String sql = "DELETE FROM " + SQL_Enums.FILEINFO.getType() + " WHERE orgPath = ?";
+            String sql = "DELETE FROM " + SQLTableEnums.FILEINFO.getType() + " WHERE orgPath = ?";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             for (FileInfo fileInfo : list) {
                 pstmt.setString(1, fileInfo.getOrgPath());
@@ -299,7 +317,7 @@ public class FileInfo_SQL {
             return false;
         }
 
-        final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + " (" + String.join(",", fileInfoColumns) +");";
+        final String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FILEINFO.getType() + " (" + String.join(",", fileInfoColumnsSQL) +");";
 
         Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
 
@@ -345,12 +363,14 @@ public class FileInfo_SQL {
 		if (connection == null) {
 			return new ArrayList<>();
 		}
+
+        Messages.sprintf("loadFileInfoDatabase Started!: " + SQL_Utils.getUrl(connection));
 		if (!SQL_Utils.isDbConnected(connection)) {
 			Messages.sprintf("loadFileInfoDatabase Not Connected!");
 			return new ArrayList<>();
 		}
 		List<FileInfo> list = new ArrayList<>();
-		String sql = "SELECT * FROM " + SQL_Enums.FILEINFO.getType();
+		String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
 
 		try {
 			boolean tableCreated = createFileInfoTable(connection);

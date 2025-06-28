@@ -128,7 +128,7 @@ public class ModelMain {
         }
         SQL_Utils.setAutoCommit(connection, false);
 
-        SQL_Utils.clearTable(connection, SQL_Enums.FOLDERINFOS.getType()); // clear table folderInfo.db
+        SQL_Utils.clearTable(connection, SQLTableEnums.FOLDERINFOS.getType()); // clear table folderInfo.db
         SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection); // create new folderinfodatabase folderInfo.db
 
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
@@ -160,7 +160,7 @@ public class ModelMain {
         Connection fileListConnection = null;
         for (FolderInfo folderInfo : items) {
             Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath());
-            if (folderInfo.getFolderFiles() >= 1) {
+            if (folderInfo.getFolderFiles() > 0) {
                 Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
@@ -169,7 +169,7 @@ public class ModelMain {
 
                     boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, savedFolderInfoStatus);
                     if (!addingToFolderInfos) {
-                        Messages.sprintfError("Something went wrong with adding folderinfo configuration file");
+                        Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
                     }
 
                     /*
@@ -226,7 +226,7 @@ public class ModelMain {
         // saveTablePositions();
         // erg;
         Messages.sprintf("Exiting program");
-        ConfigurationSQLHandler.updateConfiguration();
+        getSqlHandler().getConfigurationSQLHandler().updateConfiguration();
 
         if (Main.getChanged()) {
             Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
@@ -265,13 +265,26 @@ public class ModelMain {
     }
 
     public void load() {
-        Connection connection = ConfigurationSQLHandler.getConnection();
+        Connection connection = getSqlHandler().getConfigurationSQLHandler().getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
             Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
+            load_FileInfosBackToTableViews.setOnSucceeded(event -> {
+                Messages.sprintf("load_FileInfosBackToTableViews succeeded");
+                SQL_Utils.closeConnection(connection);
+            });
+            load_FileInfosBackToTableViews.setOnFailed(event -> {
+                Messages.sprintf("load_FileInfosBackToTableViews failed");
+                SQL_Utils.rollBackConnection(connection);
+            });
 
-            Thread load_thread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
-            load_thread.start();
+            load_FileInfosBackToTableViews.setOnCancelled(event -> {
+                Messages.sprintf("load_FileInfosBackToTableViews cancelled");
+                SQL_Utils.rollBackConnection(connection);
+            });
+
+            Thread loadFileInfosBackToTableViewsThread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
+            loadFileInfosBackToTableViewsThread.start();
         } else {
             Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
         }

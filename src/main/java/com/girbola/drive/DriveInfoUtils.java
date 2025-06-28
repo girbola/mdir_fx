@@ -20,7 +20,7 @@ public class DriveInfoUtils {
 
 	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
-	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
+	private static ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
 	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath, String driveSerialNumber) {
 		for(DriveInfo driveInfo : driveInfos) {
@@ -31,14 +31,14 @@ public class DriveInfoUtils {
 		return false;
 	}
 
-	public boolean exists(DriveInfo driveInfoToSearch) {
-		for (DriveInfo driveInfo : drivesList_obs) {
-			if (driveInfo.getDrivePath().equals(driveInfoToSearch.getDrivePath())) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	public boolean exists(DriveInfo driveInfoToSearch) {
+//		for (DriveInfo driveInfo : drivesList_obs) {
+//			if (driveInfo.getDrivePath().equals(driveInfoToSearch.getDrivePath())) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 //
 //	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
 //		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());

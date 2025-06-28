@@ -8,6 +8,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.main.options.OptionsComponent;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
@@ -39,6 +40,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -169,7 +171,7 @@ public class MenuBarController {
 
     @FXML
     private void menuItem_file_addFolders_action(ActionEvent event) {
-        Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
+        Messages.sprintf("menuItem_file_addFolders_action pressed");
         model_main.getMonitorExternalDriveConnectivity().cancel();
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
                 Main.bundle);
@@ -202,6 +204,9 @@ public class MenuBarController {
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);
+        fc_stage.setTitle("Select folder to scan for images");
+        fc_stage.initModality(Modality.WINDOW_MODAL);
+        fc_stage.initOwner(menuBar.getScene().getWindow());
         fc_stage.setScene(fc_scene);
 
         fc_stage.show();
@@ -464,31 +469,9 @@ public class MenuBarController {
 
     @FXML
     private void menuItem_tools_options_action(ActionEvent event) {
-        sprintf("menuItem_tools_options_action starting Theme path is: " + conf.getThemePath());
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/main/options/Options.fxml"), bundle);
-        Parent parent = null;
-        try {
-            parent = loader.load();
-        } catch (IOException ex) {
-            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-        }
-        OptionsController optionsController = (OptionsController) loader.getController();
-        optionsController.init();
-
-        Stage stage_opt = new Stage();
-        stage_opt.setAlwaysOnTop(true);
-
-        Scene scene_opt = new Scene(parent);
-        scene_opt.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.OPTIONPANE.getType()).toExternalForm());
-
-        stage_opt.setScene(scene_opt);
-        stage_opt.setOnCloseRequest(closeEvent -> {
-            ConfigurationSQLHandler.updateConfiguration();
-        });
-        stage_opt.show();
-
+        OptionsComponent.openOptions();
     }
+
 
     public void init(ModelMain aModel_main) {
         this.model_main = aModel_main;

@@ -11,32 +11,32 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.messages.html.HTMLClass;
-import com.girbola.utils.*;
-import common.utils.*;
-import java.nio.file.*;
-import java.util.concurrent.atomic.AtomicReference;
-import javafx.animation.*;
+import java.net.URL;
+import java.util.Optional;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import javafx.stage.*;
+import javafx.stage.Stage;
 
-import java.util.Optional;
-import javafx.util.*;
-
-import static com.girbola.Main.*;
+import static com.girbola.Main.DEBUG;
+import static com.girbola.Main.DEBUG_CONF;
+import static com.girbola.Main.conf;
 import static com.girbola.controllers.misc.Misc_GUI.fastExit;
 
 /**
@@ -97,10 +97,21 @@ public class Messages {
         }
     }
 
+
     public static Alert createAlert(AlertType alertType) {
         Alert alert = new Alert(alertType);
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGS.getType()).toExternalForm());
+        try {
+            String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGS.getType();
+            URL resourceUrl = Main.class.getResource(stylesheetPath);
+            if (resourceUrl != null) {
+                dialogPane.getStylesheets().add(resourceUrl.toExternalForm());
+            } else {
+                sprintf("Warning: Could not load stylesheet from path: " + stylesheetPath);
+            }
+        } catch (Exception e) {
+            sprintf("Error loading stylesheet: " + e.getMessage());
+        }
         dialogPane.getStyleClass().add("alertDiag");
         return alert;
     }
@@ -124,19 +135,16 @@ public class Messages {
 //		Node node = alert.getDialogPane().getContent();
         if (alert == null) {
             alert = createAlert(AlertType.ERROR);
-            alert.setTitle(Main.bundle.getString("error"));
+            // Use a default title if bundle is not available
+            alert.setTitle(Main.bundle != null ? Main.bundle.getString("error") : "Error");
             textArea_alert = new TextArea(message);
             alert.getDialogPane().setContent(textArea_alert);
             alert.getDialogPane().setHeaderText(className + " at line " + line);
             if (exception != null) {
                 textArea_alert.appendText("\n\n==============" + exception.getMessage());
             }
-            alert.setOnCloseRequest(new EventHandler<DialogEvent>() {
-                @Override
-                public void handle(DialogEvent event) {
-                    alert.hide();
-                }
-            });
+            alert.setOnCloseRequest(event -> alert.hide());
+
             result = alert.showAndWait();
             if (result.isPresent() && result.get() == ButtonType.OK) {
                 if (exit) {
@@ -147,6 +155,7 @@ public class Messages {
                     alert.hide();
                 }
             }
+
         } else {
 
             if (alert.isShowing()) {

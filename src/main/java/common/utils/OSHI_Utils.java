@@ -17,7 +17,6 @@ public class OSHI_Utils {
                 Path root = Paths.get(path).getRoot();
                 if (part.getMountPoint().contains(root.toString())) {
 					Messages.sprintf("Disk serial is: " + disk.getSerial());
-
                     return disk.getSerial();
                 }
             }
@@ -33,12 +32,10 @@ public class OSHI_Utils {
                 Path root = Paths.get(path).getRoot();
                 if (part.getMountPoint().contains(root.toString())) {
                     Messages.sprintf("Disk s: " + disk.toString());
-
                     return disk;
                 }
             }
         }
         return null;
     }
-
 }

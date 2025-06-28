@@ -31,6 +31,92 @@ import static com.girbola.messages.Messages.sprintf;
 public class ImageUtils {
 
     public static String calculateRAWImagePHash(Path imagePath) {
+        try {
+            // Read the metadata from the RAW (CR2) file
+            Metadata metaData = ImageMetadataReader.readMetadata(imagePath.toFile());
+            ExifThumbnailDirectory directory = metaData.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+
+            if (directory == null) {
+                Messages.sprintfError("No ExifThumbnailDirectory found in metadata.");
+                return "";
+            }
+
+            // Get offset and length from the thumbnail metadata
+            Integer offset = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET);
+            Integer length = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
+
+            if (offset == null || length == null) {
+                Messages.sprintfError("Offset or length not found in ExifThumbnailDirectory.");
+                return "";
+            }
+
+            // Read the file into a byte array
+            byte[] fileData = readFileData(imagePath);
+            if (fileData == null) {
+                Messages.sprintfError("Failed to read file data.");
+                return "";
+            }
+
+            // Extract the thumbnail slice
+            byte[] thumbnailData = extractThumbnailSlice(fileData, offset, length);
+            if (thumbnailData == null) {
+                Messages.sprintfError("Failed to extract thumbnail slice.");
+                return "";
+            }
+
+            // Decode the thumbnail into a BufferedImage
+            BufferedImage thumbnailImage = decodeToImage(thumbnailData);
+            if (thumbnailImage == null) {
+                Messages.sprintfError("Failed to decode thumbnail to image.");
+                return "";
+            }
+
+            // Convert the image to a hash string
+            return getString(thumbnailImage);
+
+        } catch (Exception e) {
+            Messages.sprintfError("Error calculating RAW image PHash: " + e.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * Reads all bytes from the image file.
+     */
+    private static byte[] readFileData(Path imagePath) {
+        try {
+            return Files.readAllBytes(imagePath);
+        } catch (IOException e) {
+            Messages.sprintfError("Error reading file: " + imagePath + ". Message: " + e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Extracts a slice of bytes from the given data.
+     */
+    private static byte[] extractThumbnailSlice(byte[] data, int offset, int length) {
+        try {
+            return Arrays.copyOfRange(data, offset, offset + length);
+        } catch (IndexOutOfBoundsException e) {
+            Messages.sprintfError("Error extracting slice: offset=" + offset + ", length=" + length);
+            return null;
+        }
+    }
+
+    /**
+     * Decodes byte array into a BufferedImage.
+     */
+    private static BufferedImage decodeToImage(byte[] imageData) {
+        try (ByteArrayInputStream in = new ByteArrayInputStream(imageData)) {
+            return ImageIO.read(in);
+        } catch (IOException e) {
+            Messages.sprintfError("Error decoding image from byte array: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public static String calculateRAWImagePHash_org(Path imagePath) {
         int offset = -1;
         int length = -1;
         try {

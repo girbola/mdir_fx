@@ -1,6 +1,6 @@
 package com.girbola.controllers.main;
 
-public enum SQL_Enums {
+public enum SQLTableEnums {
 	CONFIGURATION("configuration"),
 	FOLDERINFO("folderinfo"),
 	FILEINFO("fileinfo"),
@@ -16,7 +16,7 @@ public enum SQL_Enums {
 
 	private String type;
 
-	SQL_Enums(String type) {
+	SQLTableEnums(String type) {
 		this.type = type;
 	}
 

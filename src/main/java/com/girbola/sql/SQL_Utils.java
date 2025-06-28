@@ -2,7 +2,7 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 
@@ -12,6 +12,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
@@ -82,11 +84,14 @@ public class SQL_Utils extends FolderInfo_SQL {
      * @return
      */
     public static boolean isDbConnected(Connection connection) {
+        if (connection == null) {
+            return false;
+        }
         try {
-            return connection.isClosed();
+            return !connection.isClosed();  // Return true if connection is NOT closed
         } catch (SQLException e) {
-            Messages.sprintf("THere is something wrong with a connection while returning database status. Error messages is::: " + e.getMessage());
-            throw new RuntimeException(e);
+            Messages.sprintf("There is something wrong with the connection. Error message: " + e.getMessage());
+            return false;
         }
     }
 
@@ -156,7 +161,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     public static void removeSelectedFolder_FromDB(Connection connection, String path) {
         try {
-            String sql = "DELETE FROM " + SQL_Enums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
+            String sql = "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setString(1, path);
             pstmt.executeUpdate();
@@ -166,7 +171,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     }
 
-    public static void rollBack(Connection connection) {
+    public static void rollBackConnection(Connection connection) {
         try {
             connection.rollback();
         } catch (SQLException e) {
@@ -200,6 +205,9 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static String getUrl(Connection connection) {
+        if(connection == null) {
+            return null;
+        }
         try {
             return connection.getMetaData().getURL();
         } catch (SQLException e) {
@@ -219,6 +227,24 @@ public class SQL_Utils extends FolderInfo_SQL {
         } catch (Exception e) {
             Messages.sprintfError("Error connecting to database: " + Main.conf.getMdir_db_fileName() + (connection != null ? " at: " + getUrl(connection) : ""));
             return null;
+        }
+    }
+
+    private static void showConnections(List<Connection> connectionList) {
+        Messages.sprintf("Database ConnectionList size is: " + connectionList.size());
+        Iterator<Connection> iterator = connectionList.iterator();
+        while (iterator.hasNext()) {
+            Connection conn = iterator.next();
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    Messages.sprintf("SQLite database connection is: " + conn.getMetaData().getURL());
+                } else {
+                    iterator.remove(); // Remove closed connections from the list
+                }
+            } catch (SQLException e) {
+                iterator.remove(); // Remove problematic connections
+                Messages.sprintf("Error accessing connection: " + e.getMessage());
+            }
         }
     }
 }

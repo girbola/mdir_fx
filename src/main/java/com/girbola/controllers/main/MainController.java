@@ -110,7 +110,7 @@ public class MainController {
 
         this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
         this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
-        this.model_main.tables().setAsItIs_TableStatistic(asitisTableStatistic);
+        this.model_main.tables().setAsitis_TableStatistic(asitisTableStatistic);
     }
 
     private void configureTableActions() {

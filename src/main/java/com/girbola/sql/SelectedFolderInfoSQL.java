@@ -3,7 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.messages.Messages;
 
 import java.io.File;
@@ -20,10 +20,10 @@ public class SelectedFolderInfoSQL {
 
     private static final String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
-                    SQL_Enums.SELECTEDFOLDERS.getType() +
+                    SQLTableEnums.SELECTEDFOLDERS.getType() +
                     " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN)";
 
-    static final String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQL_Enums.SELECTEDFOLDERS.getType()
+    static final String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQLTableEnums.SELECTEDFOLDERS.getType()
             + " ('selected', 'connected', 'path', 'media') VALUES(?,?,?,?)";
 
     public static boolean createSelectedFoldersDBTable(Connection connection) {
@@ -82,7 +82,7 @@ public class SelectedFolderInfoSQL {
 
         List<SelectedFolder> list = new ArrayList<>(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 
-        String sql = "DELETE FROM " + SQL_Enums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
+        String sql = "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
         Messages.sprintf("removeFromIgnoredList SQL= " + sql);
 
         try {
@@ -112,11 +112,11 @@ public class SelectedFolderInfoSQL {
         }
         try {
             DatabaseMetaData metaData = connection.getMetaData();
-            ResultSet resultSet = metaData.getTables(null, null, SQL_Enums.SELECTEDFOLDERS.getType(), null);
+            ResultSet resultSet = metaData.getTables(null, null, SQLTableEnums.SELECTEDFOLDERS.getType(), null);
             if (resultSet.next()) {
-                Messages.sprintf("Table: " + SQL_Enums.SELECTEDFOLDERS.getType() + " already exists");
+                Messages.sprintf("Table: " + SQLTableEnums.SELECTEDFOLDERS.getType() + " already exists");
             } else {
-                Messages.sprintf("Table: " + SQL_Enums.SELECTEDFOLDERS.getType() + " not exists");
+                Messages.sprintf("Table: " + SQLTableEnums.SELECTEDFOLDERS.getType() + " not exists");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -141,7 +141,7 @@ public class SelectedFolderInfoSQL {
             return false;
         }
         try {
-            String sql = "SELECT * FROM " + SQL_Enums.SELECTEDFOLDERS.getType();
+            String sql = "SELECT * FROM " + SQLTableEnums.SELECTEDFOLDERS.getType();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {

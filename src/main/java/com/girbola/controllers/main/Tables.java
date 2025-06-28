@@ -497,13 +497,9 @@ public class Tables {
 
     };
 
-    public TableStatistic getAsItIs_TableStatistic() {
-        return this.asitis_TableStatistic;
-    }
-
-    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
+/*    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
         this.asitis_TableStatistic = asitis_TableStatistic;
-    }
+    }*/
 
     public TableView<FolderInfo> getTableByType(String tableType) {
         if (tableType.equals(TableType.SORTIT.getType())) {
@@ -522,7 +518,7 @@ public class Tables {
         } else if (tableType.equals(TableType.SORTED.getType())) {
             return getSorted_TableStatistic();
         } else if (tableType.equals(TableType.ASITIS.getType())) {
-            return getAsItIs_TableStatistic();
+            return getAsitis_TableStatistic();
         }
         return null;
     }

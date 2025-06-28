@@ -39,7 +39,7 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
             Messages.sprintf("Cannot get connected with database at: " + ConfigurationSQLHandler.getConnection().getMetaData().getURL());
         }
 
-        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQL_Enums.FOLDERINFOS.getType());
+        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQLTableEnums.FOLDERINFOS.getType());
 
         long start = System.currentTimeMillis();
         updateMessage("Loading Sorted");

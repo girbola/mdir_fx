@@ -31,10 +31,10 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 
     Button dateFixerButton = new Button();
 
-    private ModelMain model_main;
+    private ModelMain modelMain;
 
-    public TableCell_DateFixer(ModelMain model_main) {
-        this.model_main = model_main;
+    public TableCell_DateFixer(ModelMain modelMain) {
+        this.modelMain = modelMain;
         ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
         dateFixerButton.setGraphic(view_iv);
         dateFixerButton.setStyle(null);
@@ -64,9 +64,9 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
                     @Override
                     public void handle(ActionEvent event) {
                         Messages.sprintf("dateFixerButton clicked");
-//						model_main.getRegisterTableActivity().cancel();
-                        model_main.getMonitorExternalDriveConnectivity().cancel();
-                        Task<Void> dateFixer = new DateFixer(path, folderInfo, model_main, false);
+//						modelMain.getRegisterTableActivity().cancel();
+                        modelMain.getMonitorExternalDriveConnectivity().cancel();
+                        Task<Void> dateFixer = new DateFixer(path, folderInfo, modelMain, false);
                         Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
                         dateFixer_th.setDaemon(true);
                         sprintf("dateFixer_th.getName(): " + dateFixer_th.getName());

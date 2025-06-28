@@ -746,8 +746,8 @@ public class TableUtils {
             // Inserts all data info fileinfo.db
             FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
             FolderInfo_SQL.saveFolderInfoToDatabase(fileList_connection, folderInfo);
-            SQL_Utils.commitChanges(fileList_connection);
-            SQL_Utils.closeConnection(fileList_connection);
+/*            SQL_Utils.commitChanges(fileList_connection);
+            SQL_Utils.closeConnection(fileList_connection);*/
         } catch (Exception e) {
             Messages.warningText(Main.bundle.getString("cannotSaveFoldernfoToDatabase"));
         }

@@ -24,11 +24,11 @@ package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
-import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
@@ -37,9 +37,12 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
+import java.net.URL;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.util.ListResourceBundle;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -53,12 +56,16 @@ import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.girbola.messages.Messages.sprintf;
 
 public class Main extends Application {
 
     private static final String ERROR = Main.class.getSimpleName();
+
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
     private ModelMain model_main = new ModelMain();
     private Scene primaryScene;
@@ -80,18 +87,153 @@ public class Main extends Application {
     public static final String country = "EN";
     public static final String lang = "en";
 
+    public static final String APP_NAME = "MDir - Image and Video Organizer";
+    public static final String APP_VERSION = "1.0.0";
+    public static final String APP_AUTHOR = "<NAME>";
+    public static final String APP_EMAIL = "<EMAIL>";
+    public static final String APP_WEBSITE = "https://github.com/MarkoLokka/MDir";
+    public static final String APP_COPYRIGHT = "Copyright (c) 2012-2025 All right reserved.";
+    public static final String APP_LICENSE = "Apache License, Version 2.0";
+
+    private static final String BUNDLE_PATH = "bundle/lang";
+
+    @Override
+    public void init() throws Exception {
+        super.init();
+
+        if (lang == null || country == null) {
+            throw new IllegalStateException("Language or country code not initialized");
+        }
+
+        try {
+            locale = Locale.of(lang, country);
+            if(locale == null) {
+                Messages.sprintfError("Locale was null");
+                Platform.exit();
+                return;
+            }
+            if (country.equals("EN") && lang.equals("en") || country.equals("FI") && lang.equals("fi") || country.equals("SV") && lang.equals("sv")) {
+                Messages.sprintf("Locale is: " + locale.getLanguage() + ", " + locale.getCountry());
+            } else {
+                Messages.sprintfError("Locale is: " + locale.getLanguage() + ", " + locale.getCountry());
+                Platform.exit();
+            }
+            boolean loadSpecificBundle = loadSpecificBundle();
+            if (!loadSpecificBundle) {
+                boolean loadDefaultBundle = loadDefaultBundle();
+                if (!loadDefaultBundle) {
+                    Messages.sprintfError("Unable to load default bundle");
+                    Platform.exit();
+                } else {
+                    Messages.sprintf("=====Successfully loaded default resource bundle: " + bundle.getString("startBatchCopy"));
+                }
+            }
+        } catch (MissingResourceException e) {
+            boolean loadedDefault = loadDefaultBundle();
+            if (bundle == null || !loadedDefault) {
+                Messages.sprintfError("Unable to load default bundle");
+            }
+
+        }
+    }
+    /*private boolean loadSpecificBundle() throws MissingResourceException {
+        // Add these imports at the top of your file
+        // import org.apache.log4j.Logger;
+
+
+        logger.debug("Attempting to load bundle:");
+        logger.debug("- BUNDLE_PATH: " + BUNDLE_PATH);
+        logger.debug("- Locale country: " + locale.getCountry());
+        logger.debug("- Locale language: " + locale.getLanguage());
+        logger.debug("- ClassLoader: " + Main.class.getClassLoader());
+
+        try {
+            URL resourceURL = Main.class.getClassLoader().getResource(BUNDLE_PATH.replace(".", "/") + ".properties");
+            logger.debug("- Looking for resource at: " + (resourceURL != null ? resourceURL : "not found"));
+
+            bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale, Main.class.getClassLoader());
+
+            logger.debug("- Bundle loaded: " + bundle.getClass().getName());
+            logger.debug("- Bundle locale: " + bundle.getLocale());
+            logger.debug("- Available keys: " + String.join(", ", bundle.keySet()));
+
+            if (bundle != null) {
+                Messages.sprintf("=====Successfully loaded specific resource bundle: " + bundle.getString("startBatchCopy"));
+                return true;
+            }
+        } catch (MissingResourceException e) {
+            logger.error("Failed to load bundle: " + e.getMessage());
+            logger.error("- Cause: " + e.getCause());
+            logger.error("- Key: " + e.getKey());
+            logger.error("- Expected path: " + e.getClassName());
+            throw e;
+        }
+
+        logger.warn("Locale NOT initialized: country=" + locale.getCountry() + ", language=" + locale.getLanguage());
+        return false;
+    }*/
+
+    private boolean loadSpecificBundle() throws MissingResourceException {
+        bundle = ResourceBundle.getBundle(BUNDLE_PATH, locale, Main.class.getClassLoader());
+        if (bundle != null) {
+            Messages.sprintf("=====Successfully loaded specific resource bundle: " + bundle.getString("startBatchCopy"));
+            return true;
+        }
+        Messages.sprintf("Locale NOT initialized: country=" + locale.getCountry() + ", language=" + locale.getLanguage());
+        return false;
+    }
+    private boolean loadDefaultBundle() {
+        try {
+            bundle = ResourceBundle.getBundle(BUNDLE_PATH);
+
+            Messages.sprintf("=====Successfully loaded default resource bundle: " + bundle.getString("startBatchCopy"));
+            return true;
+        } catch (MissingResourceException defaultEx) {
+            boolean fallingBack = loadFallbackBundle();
+            if (bundle.getString("startBatchCopy").equals("Start Batch Copy") && bundle != null && fallingBack) {
+                Messages.sprintf("Fallback bundle were loaded successfully: " + bundle.toString());
+                return true;
+            } else {
+                Messages.sprintfError("Cannot load bundle!");
+                return false;
+            }
+        }
+    }
+
+    private boolean loadFallbackBundle() {
+        bundle = new MinimalFallbackBundle();
+        if (bundle != null) {
+            return true;
+        }
+        return false;
+    }
+
+    private static class MinimalFallbackBundle extends ListResourceBundle {
+        @Override
+        protected Object[][] getContents() {
+            return new Object[][]{{"startBatchCopy", "Start Batch Copy"}, {"error.general", "An error occurred"}, {"button.ok", "OK"},
+                    // Add other essential messages
+            };
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         stageControl = new StageControl(model_main, primaryStage);
-
+/*
         try {
             locale = Locale.of(lang, country);
             bundle = ResourceBundle.getBundle("bundle/lang", locale);
         } catch (Exception e) {
             Messages.sprintfError("Something went wrong: " + e.getMessage());
-        }
-
+        }*/
+/*        try {
+            locale = Locale.of(lang, country);
+            bundle = ResourceBundle.getBundle("bundle/lang", locale);
+        } catch (MissingResourceException e) {
+            System.err.println("Warning: Resource bundle not found, using default messages");
+            // Create a default bundle or handle the error appropriately
+        }*/
         mainTask = new Task<>() {
             @Override
             protected Void call() {
@@ -114,6 +256,7 @@ public class Main extends Application {
                 Parent parent = null;
                 try {
                     main_loader = new FXMLLoader(getClass().getResource("fxml/main/Main.fxml"), bundle);
+
                     parent = main_loader.load();
                 } catch (Exception ex) {
                     Messages.sprintf("error loading parent= " + ex.getMessage());
@@ -168,18 +311,24 @@ public class Main extends Application {
         mainTask.setOnSucceeded(event -> {
 
             //ConfigurationSQLHandler.createConfigurationDatabase();
+            boolean configurationDatabase = ConfigurationSQLHandler.createConfigurationDatabase();
+            if (!configurationDatabase) {
+                Messages.sprintfError("Couldn't create configuration database");
+                lpt.closeStage();
+                return;
+            }
 
             ConfigurationSQLHandler.loadConfiguration(Main.conf);
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
-            Connection connection_loadConfigurationFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+            Connection configurationLoadedFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
 
             stageControl.setStageBoundarys();
 
-            if (SQL_Utils.isDbConnected(connection_loadConfigurationFile)) {
+            if (SQL_Utils.isDbConnected(configurationLoadedFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
-                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, connection_loadConfigurationFile);
+                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, configurationLoadedFile);
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
                     Platform.runLater(() -> {
                         lpt.closeStage();
@@ -209,11 +358,8 @@ public class Main extends Application {
                 });
 
                 load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
-
                     primaryStage.setOnCloseRequest(event14 -> model_main.exitProgram_NOSAVE());
-                    Platform.runLater(() -> {
-                        lpt.closeStage();
-                    });
+                    Platform.runLater(() -> lpt.closeStage());
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
@@ -221,28 +367,49 @@ public class Main extends Application {
                 });
 
                 lpt.setTask(load_FileInfosBackToTableViews);
-                Thread load = new Thread(load_FileInfosBackToTableViews, "Main thread");
-                load.setDaemon(true);
+                Thread load = new Thread(load_FileInfosBackToTableViews, "Load_FileInfosBackToTableViewsThread");
+//                load.setDaemon(true);
                 load.start();
             } else {
+                Messages.sprintfError("11111 Couldn't connect to database");
                 lpt.closeStage();
             }
         });
+// Modify the mainTask.setOnFailed handler
         mainTask.setOnFailed(event -> {
             Messages.sprintfError("Main Task failed!!!");
-            if (lpt != null) {
-                lpt.closeStage();
+            try {
+                if (lpt != null) {
+                    lpt.closeStage();
+                }
+            } catch (Exception e) {
+                Messages.sprintfError("Error while closing loading stage: " + e.getMessage());
             }
-
             Messages.sprintf("Something went wrong while loading main window");
-
             System.exit(1);
         });
+
+// Modify the mainTask.setOnCancelled handler
         mainTask.setOnCancelled(event -> {
             Messages.sprintf("Main Task cancelled");
-            lpt.closeStage();
+            try {
+                if (lpt != null) {
+                    lpt.closeStage();
+                }
+            } catch (Exception e) {
+                Messages.sprintfError("Error while closing loading stage: " + e.getMessage());
+                System.exit(1);
+            }
         });
 
+// Modify where lpt is initialized in the mainTask
+// Move this initialization earlier in the task, before any UI operations
+        lpt = new LoadingProcessTask(scene_Switcher.getWindow());
+        Platform.runLater(() -> {
+            if (lpt != null) {
+                lpt.setTask(mainTask);
+            }
+        });
         Thread mainTaskTh = new Thread(mainTask, "mainTaskTh");
         mainTaskTh.setDaemon(false);
         Messages.sprintf("main succeeded");
@@ -261,8 +428,7 @@ public class Main extends Application {
     public static void autoResizeColumns(TableView<?> table) {
         //Set the right policy
         //table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
-        table.getColumns().stream().forEach((column) ->
-        {
+        table.getColumns().stream().forEach((column) -> {
             //Minimal width = columnheader
             Text t = new Text(column.getText());
             double max = t.getLayoutBounds().getWidth();
@@ -343,6 +509,7 @@ public class Main extends Application {
         Messages.sprintf("Configuration connection closed");
 
         ConcurrencyUtils.stopAllExecThreadNow();
+        SqliteConnection.closeAllConnections();
         Messages.sprintf("Program has ended. Exiting...");
         Platform.exit();
     }
@@ -352,10 +519,8 @@ public class Main extends Application {
         if (Main.conf.getWindowStartPosX() > 0) {
             stage.setOnShowing(ev -> {
                 Platform.runLater(() -> {
-                    stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2)
-                            - (stage.getWidth() / 2));
-                    stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2)
-                            - stage.getHeight() / 2));
+                    stage.setX(Main.conf.getWindowStartPosX() + (Main.conf.getWindowStartWidth() / 2) - (stage.getWidth() / 2));
+                    stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2) - stage.getHeight() / 2));
                 });
             });
         }

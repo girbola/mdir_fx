@@ -26,10 +26,10 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 
 	private Button tryToReconnect = new Button();
 	private StackPane stackPane = new StackPane();
-	private ModelMain model_main;
+	private ModelMain modelMain;
 
-	public TableCell_Connected(ModelMain model_main) {
-		this.model_main = model_main;
+	public TableCell_Connected(ModelMain modelMain) {
+		this.modelMain = modelMain;
 		ImageView reload_iv = new ImageView(GUI_Methods.loadImage("reload.png", 15));
 		tryToReconnect.setGraphic(reload_iv);
 		tryToReconnect.getStyleClass().add("transparent_btn");
@@ -71,9 +71,9 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
 				FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-				TableUtils.refreshTableContent(model_main.tables().getSorted_table());
-				TableUtils.refreshTableContent(model_main.tables().getSortIt_table());
-				TableUtils.refreshTableContent(model_main.tables().getAsItIs_table());
+				TableUtils.refreshTableContent(modelMain.tables().getSorted_table());
+				TableUtils.refreshTableContent(modelMain.tables().getSortIt_table());
+				TableUtils.refreshTableContent(modelMain.tables().getAsItIs_table());
 
 				SQL_Utils.closeConnection(connection);
 

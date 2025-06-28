@@ -96,22 +96,25 @@ public class ScanDrives {
     };
 
     private File[] getListOfRoots() {
-        if (com.sun.jna.Platform.isWindows()) {
-          return File.listRoots();
-        } else if (com.sun.jna.Platform.isMac()) {
-            File media = new File(File.separator + "/Volumes");
+        String osName = System.getProperty("os.name").toLowerCase();
+        if (osName.contains("win")) {
+            return File.listRoots();
+        } else if (osName.contains("mac")) {
+            File media = new File(File.separator + "Volumes");
             return media.listFiles();
-        } else if (com.sun.jna.Platform.isLinux()) {
-            File media = new File(File.separator + "/media");
+        } else if (osName.contains("nix") || osName.contains("nux")) {
+            File media = new File(File.separator + "media");
             return media.listFiles();
+        } else {
+            throw new UnsupportedOperationException("Unsupported platform: " + osName);
         }
-        return null;
     }
 
     private CheckBoxTreeItem<File> createBranch(File fileName) {
         CheckBoxTreeItem<File> cb = new CheckBoxTreeItem<>(fileName);
         cb.setExpanded(true);
         cb.selectedProperty().addListener((observable, oldValue, newValue) -> handleSelectionChange(cb, newValue));
+
         initializeCheckBoxSelection(cb, fileName);
         return cb;
     }
@@ -119,7 +122,9 @@ public class ScanDrives {
     private void handleSelectionChange(CheckBoxTreeItem<File> cb, Boolean isSelected) {
         Path selectedPath = Paths.get(cb.getValue().toString());
         sprintf("cb.selectedProperty path is: " + selectedPath);
-
+        if(cb.isIndeterminate()) {
+            return;
+        }
         if (Boolean.TRUE.equals(isSelected)) {
             if (Main.conf.getWorkDir().equals(selectedPath.toString())) {
                 handleWorkDirConflict(cb, selectedPath);
@@ -147,7 +152,7 @@ public class ScanDrives {
                     .add(new SelectedFolder(true, true, selectedPath.toString(), hasMedia));
         }
         modelFolderScanner.getSelectedDrivesFoldersListObs().add(selectedPath);
-        sprintf("drive selected: " + cb.getValue());
+        sprintf("111drive selected: " + cb.getValue());
     }
 
     private void processDeselectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
@@ -232,7 +237,7 @@ public class ScanDrives {
                             processDeselectedPath(checkBoxTreeItem2, f);
                         }
                         modelFolderScanner.getSelectedDrivesFoldersListObs().add(f);
-                        sprintf("drive selected: " + f);
+                        sprintf("222drive selected: " + f);
                         if (newValue == null) {
                             sprintf("null value");
                         }
@@ -250,13 +255,13 @@ public class ScanDrives {
             if (Main.getProcessCancelled()) {
                 break;
             }
-
+    //TODO driveinfos ei huomioi olemassa olevia lisättyjä drivejnfoja vaan se lisää listaan kokoajan uutta.
             String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
 
             Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
             DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial);
 
-            Messages.sprintf("Method…: " + modelMain.driveInfos().size());
+            Messages.sprintf("Method… modelMain.driveInfos().size():  " + modelMain.driveInfos().size());
 //            if(DriveInfoUtils.hasDrivePath(modelMain.driveInfos(),driveInfo.getDrivePath())) {
 //                Messages.sprintf("Drive already in list: " + listOfRoots[i].toString());
 //                continue;

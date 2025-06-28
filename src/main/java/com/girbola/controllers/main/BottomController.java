@@ -27,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -45,40 +46,24 @@ public class BottomController {
     private ModelMain model_main;
     private DuplicateStatistics duplicateStatistics;
 
-    @FXML
-    private Label debug_pref_width;
-    @FXML
-    private Button addFolders_btn;
-    @FXML
-    private Button copy_ok_date_btn;
-    @FXML
-    private Button copySelected_btn;
-    @FXML
-    private Button help_btn;
-    @FXML
-    private Button options_btn;
-    @FXML
-    private Button start_copyBatch_btn;
-    @FXML
-    private Button workDir_btn;
-    @FXML
-    private Button collect;
-    @FXML
-    private Label drive_name;
-    @FXML
-    private Label drive_space;
-    @FXML
-    private Label drive_spaceLeft;
-    @FXML
-    private Label drive_connected;
-    @FXML
-    private HBox drive_pane;
-    @FXML
-    private Button removeDuplicates_btn;
-    @FXML
-    private Button dates_ttv_btn;
-    @FXML
-    private Button showWorkdir_btn;
+    //@formatter:off
+    @FXML private Button addFolders_btn;
+    @FXML private Button collect;
+    @FXML private Button copy_ok_date_btn;
+    @FXML private Button copySelected_btn;
+    @FXML private Button dates_ttv_btn;
+    @FXML private Button options_btn;
+    @FXML private Button removeDuplicates_btn;
+    @FXML private Button showWorkdir_btn;
+    @FXML private Button start_copyBatch_btn;
+    @FXML private Button workDir_btn;
+    @FXML private HBox drive_pane;
+    @FXML private Label debug_pref_width;
+    @FXML private Label drive_connected;
+    @FXML private Label drive_name;
+    @FXML private Label drive_space;
+    @FXML private Label drive_spaceLeft;
+    //@formatter:on
 
     @FXML
     private void showWorkdir_btn_action(ActionEvent event) {
@@ -100,21 +85,6 @@ public class BottomController {
             }
         });
     }
-
-    @FXML
-    private void findImageDuplicatesMenuItemAction(ActionEvent event) {
-
-    }
-
-
-    @FXML
-    private void moveFilesToSortedTable_btn_action(ActionEvent event) {
-//		TableUtils.checkTableDuplicates(null, null)
-    }
-
-
-
-
 
     @FXML
     private void dates_ttv_btn_action(ActionEvent event) {
@@ -169,7 +139,7 @@ public class BottomController {
     @FXML
     private void addFolders_btn_action(ActionEvent action) {
 
-        Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
+        Messages.sprintf("addFolders_btn_action pressed");
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
                 Main.bundle);
 
@@ -196,6 +166,9 @@ public class BottomController {
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);
         fc_stage.setScene(fc_scene);
+        /*fc_stage.initModality(Modality.WINDOW_MODAL);*//**/
+        fc_stage.setTitle(bundle.getString("folderChooser"));
+        Messages.sprintf("fc_stage.initModality(Modality.WINDOW_MODAL)");
 
         fc_stage.show();
 
@@ -229,13 +202,6 @@ public class BottomController {
     @FXML
     private void copySelected_btn_action(ActionEvent event) {
         Messages.warningText("Under construction");
-    }
-
-    @FXML
-    private void help_btn_action(ActionEvent event) {
-        Messages.warningTextHelp(
-                "Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy",
-                HTMLClass.help_html + "#sorter");
     }
 
     @FXML

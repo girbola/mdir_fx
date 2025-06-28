@@ -84,7 +84,6 @@ public class Model_datefix extends DateFixerModel {
 
     private TilePane tilePane;
 
-    //private GridPane gridPane;
     private TableView<EXIF_Data_Selector> cameras_TableView;
     private TableView<EXIF_Data_Selector> dates_TableView;
     private TableView<EXIF_Data_Selector> events_TableView;

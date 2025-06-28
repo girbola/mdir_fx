@@ -3,6 +3,7 @@ package com.girbola;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
@@ -37,7 +38,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
         Messages.sprintf("Load_FileInfosBackToTableViews starts " + Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 
         if (!SQL_Utils.isDbConnected(connection)) {
-            return false;
+            ConfigurationSQLHandler.checkConnection();
         }
 
         List<SavedFolderInfoStatus> savedFolderInfoStatuses = SavedFolderInfosSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
@@ -137,6 +138,8 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
         super.cancelled();
         Messages.sprintfError("Load fileinfo back to table cancelled!");
         Main.setChanged(false);
+
+
     }
 
     @Override

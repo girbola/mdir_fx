@@ -24,7 +24,9 @@ public class SQLHandler {
         Messages.sprintf("SQLHandler init");
         this.configuration = configuration;
         configurationSQLHandler = new ConfigurationSQLHandler();
-        ConfigurationSQLHandler.getConnection();
+        if(configurationSQLHandler.getConnection() == null) {
+
+        }
 
         //TODO Initialize all Configuration tables in here in future
         DriveInfoSQL.createDriveInfoTable();
@@ -32,9 +34,9 @@ public class SQLHandler {
 
     public void closeAll() {
         Messages.sprintf("Close all connection at once");
-        if(!SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection())) {
-            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
-            SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
+        if(!SQL_Utils.isDbConnected(configurationSQLHandler.getConnection())) {
+            SQL_Utils.commitChanges(configurationSQLHandler.getConnection());
+            SQL_Utils.closeConnection(configurationSQLHandler.getConnection());
         }
     }
 

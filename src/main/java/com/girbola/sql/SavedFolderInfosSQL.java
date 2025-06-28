@@ -2,7 +2,7 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -22,7 +22,7 @@ public class SavedFolderInfosSQL {
     //@formatter:off
     private static final String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
-                    SQL_Enums.FOLDERINFOS.getType() +
+                    SQLTableEnums.FOLDERINFOS.getType() +
                     " (" +
                     "'path', " +
                     "'tableType', " +
@@ -61,7 +61,7 @@ public class SavedFolderInfosSQL {
             Messages.sprintf("NOT Connected!");
         }
 
-        String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFOS.getType();
+        String sql = "SELECT * FROM " + SQLTableEnums.FOLDERINFOS.getType();
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -107,7 +107,7 @@ public class SavedFolderInfosSQL {
             return false;
         }
 
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
 
         try {
             Statement stmt = connection.createStatement();
