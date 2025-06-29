@@ -25,6 +25,7 @@ package com.girbola;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.VLCJDiscovery;
+import com.girbola.controllers.loading.LoadingProcess;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
@@ -59,6 +60,8 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.girbola.controllers.loading.LoadingProcess.loadGUI;
+import static com.girbola.controllers.loading.LoadingProcess.setMessage;
 import static com.girbola.messages.Messages.sprintf;
 
 public class Main extends Application {
@@ -297,11 +300,11 @@ public class Main extends Application {
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
 
-                lpt = new LoadingProcessTask(scene_Switcher.getWindow());
-
-                Platform.runLater(() -> {
-                    lpt.setTask(mainTask);
-                });
+//                lpt = new LoadingProcessTask(scene_Switcher.getWindow());
+//
+//                Platform.runLater(() -> {
+//                    lpt.setTask(mainTask);
+//                });
 
                 // ScenicView.show(parent);
                 return null;
