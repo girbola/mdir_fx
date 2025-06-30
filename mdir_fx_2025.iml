@@ -8,6 +8,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/fonts" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/img" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/themes" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/.ideaold" />
     </content>
   </component>
 </module>
