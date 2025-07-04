@@ -12,10 +12,7 @@ import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetadataDateTaken;
 import static common.utils.FileUtils.supportedVideo;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class VideoDateTaken {
 
     /**

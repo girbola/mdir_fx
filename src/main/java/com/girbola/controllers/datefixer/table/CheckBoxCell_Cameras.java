@@ -1,7 +1,7 @@
 
 package com.girbola.controllers.datefixer.table;
 
-import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.controllers.datefixer.utils.MetadataField;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -19,15 +19,13 @@ import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean> {
     private static final String ERROR = CheckBoxCell_Cameras.class.getSimpleName();
     private CheckBox checkBox = new CheckBox();
-    private final Model_datefix modelDateFix;
+    private final ModelDatefix modelDateFix;
 
-    public CheckBoxCell_Cameras(Model_datefix modelDateFix) {
+    public CheckBoxCell_Cameras(ModelDatefix modelDateFix) {
         this.modelDateFix = modelDateFix;
         initializeCheckBox();
     }

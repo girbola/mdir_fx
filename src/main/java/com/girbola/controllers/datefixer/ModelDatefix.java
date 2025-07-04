@@ -51,11 +51,9 @@ import static com.girbola.Main.bundle;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.*;
 
-/**
- * @author Marko Lokka
- */
-public class Model_datefix extends DateFixerModel {
-    private final String ERROR = Model_datefix.class.getSimpleName();
+
+public class ModelDatefix extends DateFixerModel {
+    private final String ERROR = ModelDatefix.class.getSimpleName();
     private ModelMain model_Main;
 
     private ScheduledExecutorService selector_exec = Executors.newScheduledThreadPool(1);
@@ -104,7 +102,7 @@ public class Model_datefix extends DateFixerModel {
     private ObservableList<Node> allNodes = FXCollections.observableArrayList();
     private ObservableList<Node> notVisibleNodes = FXCollections.observableArrayList();
 
-    public Model_datefix(ModelMain model_Main, Path aCurrentFolderPath) {
+    public ModelDatefix(ModelMain model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
         this.model_Main = model_Main;
         this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());

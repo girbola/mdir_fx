@@ -19,10 +19,7 @@ import java.util.List;
 
 import static com.girbola.controllers.folderscanner.FolderScanner_Methods.titledPaneExists;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class CreateTitledPane extends Task<Void> {
 
     private Path path;

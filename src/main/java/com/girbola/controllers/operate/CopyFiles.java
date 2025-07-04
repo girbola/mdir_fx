@@ -17,9 +17,7 @@ import java.nio.file.Paths;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class CopyFiles {
 
     private final String ERROR = CopyFiles.class.getSimpleName();

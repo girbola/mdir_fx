@@ -33,8 +33,6 @@ import static com.girbola.messages.Messages.sprintf;
 
 /**
  * Converts video thumbnail using JCodec library
- *
- * @author Marko Lokka
  */
 public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 

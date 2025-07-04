@@ -1,10 +1,7 @@
 
 package com.girbola.drive;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public enum DriveTypes {
     CD_DRIVE("CD Drive"),
     LOCAL_DISK("Local Disk"),

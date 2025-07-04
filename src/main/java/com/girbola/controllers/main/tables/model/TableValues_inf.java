@@ -7,10 +7,7 @@ import javafx.beans.property.*;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author Marko Lokka
- */
+
 interface TableValues_inf {
 
     //@formatter:off

@@ -31,9 +31,7 @@ import static common.media.DateTaken.getMetaDataCreationDate;
 import static common.media.DateTaken.readMetaData;
 import static common.utils.FileUtils.*;
 
-/**
- * @author Marko Lokka
- */
+
 public class FileInfoUtils {
 
     private final static String ERROR = FileInfoUtils.class.getSimpleName();

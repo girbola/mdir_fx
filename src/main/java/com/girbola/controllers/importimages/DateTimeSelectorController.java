@@ -16,11 +16,7 @@ import java.util.ArrayList;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * FXML Controller class
- *
- * @author Marko Lokka
- */
+
 public class DateTimeSelectorController {
 
 	private final String ERROR = DateTimeSelectorController.class.getSimpleName();

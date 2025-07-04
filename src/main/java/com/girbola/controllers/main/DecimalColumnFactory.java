@@ -8,12 +8,7 @@ import javafx.util.Callback;
 
 import java.text.DecimalFormat;
 
-/**
- *
- * @author Marko Lokka
- * @param <S>
- * @param <T>
- */
+
 public class DecimalColumnFactory<S, T extends Number> implements Callback<TableColumn<S, T>, TableCell<S, T>> {
 
     private DecimalFormat format;

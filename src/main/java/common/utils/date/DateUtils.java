@@ -7,10 +7,7 @@ import java.time.temporal.ChronoUnit;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class DateUtils {
 
 	public static LocalDateTime parseLocalDateTimeFromString(String string) {

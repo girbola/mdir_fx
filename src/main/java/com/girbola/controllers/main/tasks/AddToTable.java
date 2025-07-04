@@ -24,10 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class AddToTable extends Task<Integer> {
 
 	private final String ERROR = AddToTable.class.getSimpleName();

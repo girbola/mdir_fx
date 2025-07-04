@@ -44,9 +44,7 @@ import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class ModelMain {
 
     private final String ERROR = ModelMain.class.getSimpleName();

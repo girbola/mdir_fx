@@ -21,10 +21,7 @@ import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class QuickPick_Navigator {
 
 	private final static String ERROR = QuickPick_Navigator.class.getSimpleName();
@@ -32,9 +29,9 @@ public class QuickPick_Navigator {
 	//private GridPane gridPane;
 	private TilePane tilePane;
 	private TilePane quickPick_tilePane;
-	private Model_datefix model_dateFix;
+	private ModelDatefix model_dateFix;
 
-	QuickPick_Navigator(Model_datefix aModel_dateFix, ScrollPane aScrollPane, TilePane aTilePane, TilePane aQuickPick_TilePane) {
+	QuickPick_Navigator(ModelDatefix aModel_dateFix, ScrollPane aScrollPane, TilePane aTilePane, TilePane aQuickPick_TilePane) {
 		this.model_dateFix = aModel_dateFix;
 		this.scrollPane = aScrollPane;
 		this.tilePane = aTilePane;

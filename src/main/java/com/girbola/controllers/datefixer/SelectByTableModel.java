@@ -17,9 +17,9 @@ public class SelectByTableModel extends Task<Boolean> {
     //	private ObservableList<Node> children;
     private String type;
     private TableView<EXIF_Data_Selector> tableView;
-    private Model_datefix model_datefix;
+    private ModelDatefix model_datefix;
 
-    public SelectByTableModel(Model_datefix model_datefix, String type, TableView<EXIF_Data_Selector> aTableView) {
+    public SelectByTableModel(ModelDatefix model_datefix, String type, TableView<EXIF_Data_Selector> aTableView) {
         super();
         this.model_datefix = model_datefix;
         this.type = type;

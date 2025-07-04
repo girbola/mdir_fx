@@ -48,9 +48,7 @@ import static com.girbola.imagehandling.ImageHandling.handleImageThumb;
 import static com.girbola.imagehandling.ImageHandling.handleRawImageThumb;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class RenderVisibleNode {
 
     final private static String ERROR = RenderVisibleNode.class.getName();

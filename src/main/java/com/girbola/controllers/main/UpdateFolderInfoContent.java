@@ -9,10 +9,7 @@ import javafx.concurrent.Task;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class UpdateFolderInfoContent extends Task<Integer> {
 
     private FolderInfo folderInfo;

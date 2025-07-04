@@ -3,10 +3,7 @@ package com.girbola.controllers.folderscanner;
 
 import javafx.beans.property.*;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class FolderInfoTable {
 
     private StringProperty path;

@@ -3,10 +3,7 @@ package com.girbola.controllers.datefixer.utils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class CameraColor {
 
     private AtomicInteger color = new AtomicInteger(-1);

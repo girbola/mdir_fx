@@ -8,10 +8,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 
 import java.time.LocalTime;
 
-/**
- *
- * @author Marko Lokka
- */
+
 
 public class TimeControl {
 

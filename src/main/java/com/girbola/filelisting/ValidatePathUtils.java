@@ -16,10 +16,7 @@ import java.util.Arrays;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ValidatePathUtils {
 
     private final static String ERROR = ValidatePathUtils.class.getSimpleName();

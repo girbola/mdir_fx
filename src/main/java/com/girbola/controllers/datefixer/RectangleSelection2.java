@@ -15,14 +15,8 @@ import java.awt.*;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
-/**
- *
- * @author Marko Lokka
- */
+
+
 public class RectangleSelection2 {
 
     private final String ERROR = RectangleSelection2.class.getSimpleName();

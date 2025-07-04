@@ -47,7 +47,7 @@ public class FileOperationsController {
 
 	private final String ERROR = FileOperationsController.class.getSimpleName();
 
-	private Model_datefix model_datefix;
+	private ModelDatefix model_datefix;
 	private ModelMain model_main;
 	private ObservableList<Folder> comboList = FXCollections.observableArrayList();
 
@@ -103,7 +103,7 @@ public class FileOperationsController {
 
 	}
 
-	public void init(Model_datefix aModel_datefix, ModelMain aModel_main) {
+	public void init(ModelDatefix aModel_datefix, ModelMain aModel_main) {
 		this.model_datefix = aModel_datefix;
 		this.model_main = aModel_main;
 

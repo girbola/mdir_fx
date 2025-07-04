@@ -19,10 +19,7 @@ import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class SubList extends Task<List<Path>> {
 	private final String ERROR = SubList.class.getSimpleName();
 

@@ -66,9 +66,7 @@ import static com.girbola.controllers.main.tables.FolderInfoUtils.calculateFolde
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 @Log
 public class TableUtils {
 

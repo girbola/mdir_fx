@@ -9,7 +9,7 @@ import javafx.scene.control.ToggleGroup;
 
 public class TimeShiftController {
 
-	private Model_datefix model_dateFix;
+	private ModelDatefix model_dateFix;
    @FXML private ToggleGroup plusMinus;
 
    @FXML private TextField timeShift_hour;
@@ -22,7 +22,7 @@ public class TimeShiftController {
    @FXML private Button timeShift_sec_btn_down;
    @FXML private Button timeShift_sec_btn_up;
 
-	public void init(Model_datefix model_dateFix) {
+	public void init(ModelDatefix model_dateFix) {
 		this.model_dateFix = model_dateFix;
 	}
 

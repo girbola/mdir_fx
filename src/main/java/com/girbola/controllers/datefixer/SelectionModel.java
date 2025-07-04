@@ -18,9 +18,7 @@ import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class SelectionModel {
 
     final private String style_deselected =

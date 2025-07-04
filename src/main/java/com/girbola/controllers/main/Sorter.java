@@ -14,10 +14,7 @@ import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;

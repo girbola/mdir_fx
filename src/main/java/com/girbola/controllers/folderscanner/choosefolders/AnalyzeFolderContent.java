@@ -20,10 +20,7 @@ import java.util.*;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class AnalyzeFolderContent extends Task<Void> {
 
 	private List<Path> selectedPaths;

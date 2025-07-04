@@ -1,20 +1,15 @@
 package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.Model_datefix;
-import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.messages.Messages;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MakeChangesUtils {
 
@@ -28,7 +23,7 @@ public class MakeChangesUtils {
         return collect;
     }
 
-    protected static List<Node> create_listOfSelectedNodes(Model_datefix model_datefix) {
+    protected static List<Node> create_listOfSelectedNodes(ModelDatefix model_datefix) {
         List<Node> list = new ArrayList<>();
         for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
             if (node_main instanceof VBox vbox && vbox.getId().equals("imageFrame")) {

@@ -4,10 +4,7 @@ package com.girbola.controllers.loading;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Marko Lokka
- */
+
 interface LoadingProcess_impl {
 
     public ProgressBar getProgressBar();

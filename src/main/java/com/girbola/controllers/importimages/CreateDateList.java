@@ -14,7 +14,6 @@ import static com.girbola.Main.simpleDates;
 
 /**
  *	Returns a map 2020-08-29
- * @author Marko Lokka
  */
 public class CreateDateList extends Task<Map<String, List<FileInfo>>> {
 

@@ -27,14 +27,8 @@ import java.util.List;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
-/**
- *
- * @author Marko Lokka
- */
-/**
- *
- * @author Marko Lokka
- */
+
+
 public class RectangleSelection {
 
     private double dx;

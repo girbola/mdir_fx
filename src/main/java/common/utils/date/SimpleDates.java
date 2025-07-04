@@ -8,10 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class SimpleDates {
 
 	private final String YMD_HMS_NOSPACES = "yyyyMMddHHmmss";

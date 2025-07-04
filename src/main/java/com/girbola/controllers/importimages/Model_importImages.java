@@ -32,10 +32,7 @@ import java.util.Map;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 class Model_importImages {
 
 	public Model_importImages(Path currentFolderPath) {

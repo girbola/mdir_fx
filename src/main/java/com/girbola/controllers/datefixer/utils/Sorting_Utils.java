@@ -9,9 +9,7 @@ import javafx.scene.Node;
 import java.util.Collections;
 import java.util.Comparator;
 
-/**
- * @author Marko Lokka
- */
+
 public class Sorting_Utils {
 
     public static void sortByFileName(ObservableList<Node> list) {

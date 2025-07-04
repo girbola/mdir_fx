@@ -34,11 +34,7 @@ import java.util.logging.Logger;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * FXML Controller class
- *
- * @author Marko Lokka
- */
+
 public class ChooseFoldersController {
 
 	// private ObservableList<Path> rootFolder_obs;

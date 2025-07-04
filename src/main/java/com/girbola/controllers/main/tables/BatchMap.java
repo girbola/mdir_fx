@@ -8,10 +8,7 @@ import javafx.beans.value.ObservableValue;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class BatchMap {
 
     private SimpleStringProperty src;

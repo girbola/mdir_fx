@@ -25,9 +25,7 @@ import static com.girbola.Main.conf;
 import static com.girbola.utils.FileInfoUtils.createFileInfo_list;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class CalculateFolderContent extends Task<Void> {
 
     private final String ERROR = CalculateFolderContent.class.getSimpleName();

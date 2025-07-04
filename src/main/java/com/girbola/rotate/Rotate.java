@@ -1,10 +1,7 @@
 
 package com.girbola.rotate;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Rotate {
 
     public static double rotate(int orientation) {

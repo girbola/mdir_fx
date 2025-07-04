@@ -9,10 +9,7 @@ import javafx.application.Platform;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Misc_GUI {
 
     public static void fastExit() {

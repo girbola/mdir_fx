@@ -11,9 +11,7 @@ import com.girbola.sql.SqliteConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * @author Marko Lokka
- */
+
 public class Configuration extends Configuration_defaults {
 
     private static final String ERROR = Configuration.class.getSimpleName();

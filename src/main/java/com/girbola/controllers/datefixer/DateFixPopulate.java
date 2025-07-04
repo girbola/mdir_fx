@@ -55,16 +55,14 @@ import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- * @author Marko Lokka
- */
+
 public class DateFixPopulate extends Task<ObservableList<Node>> {
 
     private final static String ERROR = DateFixPopulate.class.getSimpleName();
 
     private FolderInfo folderInfo;
     private TilePane quickPick_tilePane;
-    private Model_datefix model_dateFix;
+    private ModelDatefix model_dateFix;
     private ScrollPane scrollPane;
     private Scene scene;
     private DoubleProperty node_height = new SimpleDoubleProperty(0);
@@ -75,7 +73,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
 
     private TilePane tilePane;
 
-    public DateFixPopulate(Scene scene, Model_datefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
+    public DateFixPopulate(Scene scene, ModelDatefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
         this.scene = scene;
         this.model_dateFix = aModel_datefix;
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();

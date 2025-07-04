@@ -41,9 +41,7 @@ import java.util.TreeMap;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class DrawImagesToImportImages_Full extends Task<Void> {
 
     private final String ERROR = DrawImagesToImportImages_Full.class.getSimpleName();

@@ -17,10 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Configuration_defaults extends
 		ConfigurationWindow {
 

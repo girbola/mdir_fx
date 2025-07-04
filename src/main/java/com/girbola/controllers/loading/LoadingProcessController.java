@@ -20,11 +20,7 @@ import javafx.util.Duration;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * FXML Controller class
- *
- * @author Marko Lokka
- */
+
 public class LoadingProcessController {
 
 	private final static String ERROR = LoadingProcessController.class.getSimpleName();

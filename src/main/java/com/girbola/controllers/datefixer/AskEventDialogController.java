@@ -24,7 +24,7 @@ public class AskEventDialogController {
     private final String ERROR = AskEventDialogController.class.getSimpleName();
 
     private ModelMain model_main;
-    private Model_datefix model_dateFix;
+    private ModelDatefix model_dateFix;
 
     //@formatter:off
    @FXML private Button apply_and_copy_btn;
@@ -142,7 +142,7 @@ public class AskEventDialogController {
 
     }
 
-    public void init(ModelMain aModel_main, Model_datefix model_dateFix) {
+    public void init(ModelMain aModel_main, ModelDatefix model_dateFix) {
         this.model_main = aModel_main;
         this.model_dateFix = model_dateFix;
 

@@ -17,9 +17,7 @@ import javafx.scene.layout.VBox;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class MainController {
 
     private final static String ERROR = MainController.class.getSimpleName();

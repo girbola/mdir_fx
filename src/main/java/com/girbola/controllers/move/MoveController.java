@@ -1,6 +1,6 @@
 package com.girbola.controllers.move;
 
-import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
@@ -90,9 +90,9 @@ public class MoveController {
 	}
 
 	private ModelMain model_main;
-	private Model_datefix model_datefix;
+	private ModelDatefix model_datefix;
 
-	public void init(ModelMain model_main, Model_datefix model_datefix) {
+	public void init(ModelMain model_main, ModelDatefix model_datefix) {
 		this.model_main = model_main;
 		this.model_datefix = model_datefix;
 	}

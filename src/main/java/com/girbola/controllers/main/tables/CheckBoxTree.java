@@ -9,10 +9,7 @@ import javafx.scene.control.TableCell;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class CheckBoxTree extends TableCell<BatchMap, Boolean> {
 
     private CheckBox checkBox;

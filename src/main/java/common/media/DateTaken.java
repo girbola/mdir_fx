@@ -22,9 +22,7 @@ import java.util.Date;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class DateTaken {
 
     public static String getCameraModel(Metadata metaData) {

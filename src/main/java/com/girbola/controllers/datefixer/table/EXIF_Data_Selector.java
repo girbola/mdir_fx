@@ -6,10 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class EXIF_Data_Selector {
 
     private SimpleIntegerProperty count;

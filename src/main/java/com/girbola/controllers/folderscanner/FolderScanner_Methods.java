@@ -9,10 +9,7 @@ import java.nio.file.Path;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class FolderScanner_Methods {
 
     public static boolean titledPaneExists(VBox listOfRoots_vbox, Path p) {

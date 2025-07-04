@@ -37,7 +37,7 @@ public class DateFixer extends Task<Void> {
     private Path currentPath;
     private FolderInfo folderInfo;
     private ModelMain model_main;
-    private Model_datefix model_datefix;
+    private ModelDatefix model_datefix;
     private Parent parent = null;
     private DateFixerController dateFixerController = null;
     private boolean isImported;
@@ -47,7 +47,7 @@ public class DateFixer extends Task<Void> {
         this.currentPath = aCurrentPath;
         this.model_main = aModel_main;
         this.isImported = isImported;
-        this.model_datefix = new Model_datefix(model_main, currentPath);
+        this.model_datefix = new ModelDatefix(model_main, currentPath);
     }
 
     @Override

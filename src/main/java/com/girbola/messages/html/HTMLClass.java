@@ -1,10 +1,7 @@
 
 package com.girbola.messages.html;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class HTMLClass {
 
 //    public final static String urlExt = ".html";

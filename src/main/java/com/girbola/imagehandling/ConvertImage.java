@@ -13,10 +13,7 @@ import java.util.concurrent.ExecutionException;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ConvertImage extends Task<Image> {
 
 	private final String ERROR = ConvertImage.class.getSimpleName();

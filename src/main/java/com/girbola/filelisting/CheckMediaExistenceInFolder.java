@@ -16,8 +16,6 @@ import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 /**
  * Get all possible media files under given folder
- *
- * @author Marko Lokka
  */
 public class CheckMediaExistenceInFolder {
     private final static String ERROR = GetAllMediaFiles.class.getSimpleName();

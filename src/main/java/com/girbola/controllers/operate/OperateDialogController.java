@@ -10,11 +10,7 @@ import javafx.util.converter.NumberStringConverter;
 
 import java.util.ResourceBundle;
 
-/**
- * FXML Controller class
- *
- * @author Marko Lokka
- */
+
 public class OperateDialogController {
 
 	private final String ERROR = OperateDialogController.class.getSimpleName();

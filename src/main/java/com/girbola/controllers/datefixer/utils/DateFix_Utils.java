@@ -12,10 +12,7 @@ import java.util.*;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class DateFix_Utils {
 
 	private ObservableList<EXIF_Data_Selector> cameras_obs = FXCollections.observableArrayList();

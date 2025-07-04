@@ -27,10 +27,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
 
 	private final String ERROR = ConvertVideo_Byte.class.getSimpleName();

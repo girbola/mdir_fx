@@ -1,10 +1,7 @@
 
 package com.girbola.controllers.main.tables.tabletype;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public enum TableType {
     SORTIT("SortIt"),
     SORTED("Sorted"),

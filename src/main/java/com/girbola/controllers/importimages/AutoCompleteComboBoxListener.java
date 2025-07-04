@@ -10,10 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
 	private ComboBox comboBox;

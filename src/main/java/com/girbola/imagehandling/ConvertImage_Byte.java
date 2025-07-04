@@ -13,10 +13,7 @@ import java.nio.file.Path;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ConvertImage_Byte extends Task<Image> {
 
 	private final String ERROR = ConvertImage_Byte.class.getSimpleName();

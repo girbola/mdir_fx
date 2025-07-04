@@ -2,17 +2,14 @@ package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.CssStylesEnum;
-import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
@@ -30,11 +27,11 @@ public class MakeChanges extends Task<Integer> {
     private ArrayList<LocalDateTime> localDateTimeList;
     private LocalDateTime ldt_end;
     private LocalDateTime ldt_start;
-    private Model_datefix model_datefix;
+    private ModelDatefix model_datefix;
     private int files;
 
 
-    public MakeChanges(Model_datefix model_datefix, LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
+    public MakeChanges(ModelDatefix model_datefix, LocalDateTime ldt_start, LocalDateTime ldt_end, int files) {
         this.model_datefix = model_datefix;
         this.ldt_start = ldt_start;
         this.ldt_end = ldt_end;

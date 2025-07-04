@@ -1,6 +1,4 @@
 /*
-Copyright [2020] [Marko Lokka]
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,12 +12,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
  */
 
-/*
-@(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
-@(#)Author:     Marko Lokka
-@(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
-@(#)Purpose:    To help to organize images and video files in your harddrive with less pain
-*/
 package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;

@@ -8,9 +8,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-/**
- * @author Marko Lokka
- */
+
 class ConfigurationGui {
 
     @Override

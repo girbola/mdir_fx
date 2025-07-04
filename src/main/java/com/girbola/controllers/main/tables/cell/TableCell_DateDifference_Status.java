@@ -6,10 +6,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class TableCell_DateDifference_Status extends TableCell<FolderInfo, Double> {
 
 	private ModelMain model_main;

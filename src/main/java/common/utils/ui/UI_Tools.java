@@ -9,10 +9,7 @@ import javafx.scene.control.ScrollPane;
 
 import java.util.Set;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class UI_Tools {
 
 	final private static String ERROR = UI_Tools.class.getSimpleName();

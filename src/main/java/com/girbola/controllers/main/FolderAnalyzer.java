@@ -14,10 +14,7 @@ import java.util.Map.Entry;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class FolderAnalyzer {
 
 	private Map<FileInfo, FileInfo> duplicatedFolders = new HashMap<>();

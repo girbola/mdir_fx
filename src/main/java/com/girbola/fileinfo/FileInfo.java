@@ -9,9 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * @author Marko Lokka
- */
+
 @Getter
 @Setter
 public class FileInfo extends Metadata implements Cloneable {

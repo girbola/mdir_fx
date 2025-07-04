@@ -10,9 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class ConcurrencyUtils {
 
     private static AtomicInteger execCounter = new AtomicInteger();

@@ -11,9 +11,7 @@ import java.util.*;
 
 import static com.girbola.Main.simpleDates;
 
-/**
- * @author Marko Lokka
- */
+
 public class FolderInfo implements TableValues_inf {
 
     //@formatter:off

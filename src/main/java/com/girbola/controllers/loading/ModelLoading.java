@@ -6,10 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Marko Lokka
- */
+
 class ModelLoading {
 
 	private Task<?> task;

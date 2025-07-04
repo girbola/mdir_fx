@@ -8,10 +8,7 @@ import java.util.stream.IntStream;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Buttons {
 
 	private ModelMain model;

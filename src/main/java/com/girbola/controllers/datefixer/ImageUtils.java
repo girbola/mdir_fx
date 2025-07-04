@@ -29,10 +29,7 @@ import java.util.List;
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ImageUtils {
 
 	private static Scene scene;
