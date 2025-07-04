@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.merge;
+package com.girbola.controllers.main.merge;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;

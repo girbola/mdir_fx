@@ -1,7 +1,7 @@
 package com.girbola.dialogs;
 
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.CopyAnswerType;
+import com.girbola.controllers.operate.CopyAnswerType;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;

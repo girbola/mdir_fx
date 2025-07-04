@@ -8,7 +8,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.Main;
 import com.girbola.SceneNameType;
-import com.girbola.fxml.operate.CopyProcess_Properties;
+import com.girbola.controllers.operate.CopyProcess_Properties;
 import com.girbola.messages.Messages;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

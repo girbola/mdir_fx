@@ -369,38 +369,36 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
      * @throws Exception if any SQL error occurs.
      */
     private static void ensureAllColumnExists(Connection connection) throws Exception {
-
         String configTable = SQLTableEnums.CONFIGURATION.getType();
         final String[] columnsSettings = {
-                betterQualityThumbs + " BOOLEAN,",
-                confirmOnExit + " BOOLEAN,",
-                currentTheme + " STRING,",
-                id + " INTEGER PRIMARY KEY CHECK (id = 0),",
-                id_counter + " INTEGER UNIQUE,",
-                imageViewXPos + " DOUBLE,",
-                imageViewYPos + " DOUBLE,",
-                saveDataToHD + " STRING,",
-                showFullPath + " BOOLEAN,",
-                showHints + " BOOLEAN,",
-                showTooltips + " BOOLEAN,",
+                betterQualityThumbs + " BOOLEAN",
+                confirmOnExit + " BOOLEAN",
+                currentTheme + " STRING",
+                id + " INTEGER PRIMARY KEY CHECK (id = 0)",
+                id_counter + " INTEGER UNIQUE",
+                imageViewXPos + " DOUBLE",
+                imageViewYPos + " DOUBLE",
+                saveDataToHD + " STRING",
+                showFullPath + " BOOLEAN",
+                showHints + " BOOLEAN",
+                showTooltips + " BOOLEAN",
                 tableShow_asItIs + " BOOLEAN",
-                tableShow_sortIt + " BOOLEAN,",
-                tableShow_sorted + " BOOLEAN,",
-                vlcPath + " STRING,",
-                vlcSupport + " BOOLEAN,",
-                windowStartHeigth + " DOUBLE DEFAULT ( -1),",
-                windowStartPosX + " DOUBLE DEFAULT ( -1),",
-                windowStartPosY + " DOUBLE DEFAULT ( -1),",
-                windowStartWidth + " DOUBLE DEFAULT ( -1),",
-                workDir + " STRING,",
+                tableShow_sortIt + " BOOLEAN",
+                tableShow_sorted + " BOOLEAN",
+                vlcPath + " STRING",
+                vlcSupport + " BOOLEAN",
+                windowStartHeigth + " DOUBLE DEFAULT (-1)",
+                windowStartPosX + " DOUBLE DEFAULT (-1)",
+                windowStartPosY + " DOUBLE DEFAULT (-1)",
+                windowStartWidth + " DOUBLE DEFAULT (-1)",
+                workDir + " STRING",
                 workDirSerialNumber + " STRING"
         };
 
         try (Statement stmt = connection.createStatement()) {
             for (String column : columnsSettings) {
                 try {
-                    String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN "
-                            + column + ";";
+                    String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN " + column;
                     stmt.executeUpdate(alterTableSQL);
                 } catch (SQLException e) {
                     // Column already exists, ignore this error
@@ -410,8 +408,50 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 }
             }
         }
-
     }
+    //   private static void ensureAllColumnExists(Connection connection) throws Exception {
+//        String configTable = SQLTableEnums.CONFIGURATION.getType();
+//        final String[] columnsSettings = {
+//                betterQualityThumbs + " BOOLEAN,",
+//                confirmOnExit + " BOOLEAN,",
+//                currentTheme + " STRING,",
+//                id + " INTEGER PRIMARY KEY CHECK (id = 0),",
+//                id_counter + " INTEGER UNIQUE,",
+//                imageViewXPos + " DOUBLE,",
+//                imageViewYPos + " DOUBLE,",
+//                saveDataToHD + " STRING,",
+//                showFullPath + " BOOLEAN,",
+//                showHints + " BOOLEAN,",
+//                showTooltips + " BOOLEAN,",
+//                tableShow_asItIs + " BOOLEAN",
+//                tableShow_sortIt + " BOOLEAN,",
+//                tableShow_sorted + " BOOLEAN,",
+//                vlcPath + " STRING,",
+//                vlcSupport + " BOOLEAN,",
+//                windowStartHeigth + " DOUBLE DEFAULT ( -1),",
+//                windowStartPosX + " DOUBLE DEFAULT ( -1),",
+//                windowStartPosY + " DOUBLE DEFAULT ( -1),",
+//                windowStartWidth + " DOUBLE DEFAULT ( -1),",
+//                workDir + " STRING,",
+//                workDirSerialNumber + " STRING"
+//        };
+//
+//        try (Statement stmt = connection.createStatement()) {
+//            for (String column : columnsSettings) {
+//                try {
+//                    String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN "
+//                            + column + ";";
+//                    stmt.executeUpdate(alterTableSQL);
+//                } catch (SQLException e) {
+//                    // Column already exists, ignore this error
+//                    if (!e.getMessage().contains("duplicate column name")) {
+//                        throw e;
+//                    }
+//                }
+//            }
+//        }
+//
+//    }
 
 
     /**

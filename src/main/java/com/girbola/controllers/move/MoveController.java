@@ -1,4 +1,4 @@
-package com.girbola.fxml.move;
+package com.girbola.controllers.move;
 
 import com.girbola.controllers.datefixer.Model_datefix;
 import com.girbola.controllers.main.ModelMain;

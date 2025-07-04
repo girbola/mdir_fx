@@ -1,4 +1,4 @@
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 public class CopyAnswerType {
 	public static final String ASK = "ASK";

@@ -1,20 +1,16 @@
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 import com.girbola.*;
-import com.girbola.controllers.datefixer.*;
 import com.girbola.controllers.main.*;
 import com.girbola.controllers.main.tables.*;
 import com.girbola.dialogs.*;
 import com.girbola.fileinfo.*;
 import com.girbola.messages.*;
 import com.girbola.misc.*;
-import com.girbola.sql.*;
 import com.girbola.workdir.*;
 import common.utils.*;
 import java.io.*;
 import java.nio.file.*;
-import java.sql.*;
-import java.util.Date;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.*;
@@ -25,7 +21,7 @@ import javafx.fxml.*;
 import javafx.scene.*;
 import javafx.stage.*;
 
-import static com.girbola.fxml.operate.OperateFilesUtils.*;
+import static com.girbola.controllers.operate.OperateFilesUtils.*;
 import static com.girbola.messages.Messages.*;
 
 public class OperateFiles {

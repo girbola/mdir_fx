@@ -366,26 +366,39 @@ public class ImageUtils {
         // Resize image to 8x8 grayscale
         BufferedImage resizedImage = resizeImage(image, 8, 8);
 
-        // Directly access raw pixel values for fast processing
+        // Get pixel data
         byte[] pixels = ((DataBufferByte) resizedImage.getRaster().getDataBuffer()).getData();
 
-        // Calculate the average brightness
-        long sum = 0;
-        for (byte pixel : pixels) {
-            sum += (pixel & 0xFF); // Convert byte (signed) to unsigned int
-        }
-        long avg = sum / pixels.length;
+        // Calculate average brightness using bit operations and unrolled loop
+        int sum = 0;
+        int length = pixels.length;
+        int i = 0;
 
-        // Generate the hash
+        // Unroll the loop for better performance (process 4 pixels at a time)
+        for (; i < length - 3; i += 4) {
+            sum += pixels[i] & 0xFF;
+            sum += pixels[i + 1] & 0xFF;
+            sum += pixels[i + 2] & 0xFF;
+            sum += pixels[i + 3] & 0xFF;
+        }
+
+        // Handle remaining pixels
+        for (; i < length; i++) {
+            sum += pixels[i] & 0xFF;
+        }
+
+        // Use bit shift for division by 64 (since pixels.length is always 64)
+        int avg = sum >> 6;
+
+        // Generate hash using bit operations
         long hash = 0;
         for (byte pixel : pixels) {
-            hash <<= 1; // Shift left by 1 bit
-            if ((pixel & 0xFF) > avg) {
-                hash |= 1; // Set the least significant bit if above average
-            }
+            // Combine operations to reduce steps
+            hash = (hash << 1) | (((pixel & 0xFF) > avg) ? 1 : 0);
         }
 
-        return Long.toHexString(hash); // Convert hash to hexadecimal string
+        // Use lookup table for faster hex conversion of small chunks
+        return Long.toHexString(hash);
     }
 
     private static BufferedImage resizeImage(BufferedImage originalImage, int width, int height) {

@@ -1,4 +1,4 @@
-package com.girbola.fxml.datestreetableview;
+package com.girbola.controllers.datestreetableview;
 
 import com.girbola.fileinfo.FileInfo;
 import javafx.beans.property.SimpleStringProperty;

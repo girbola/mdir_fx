@@ -1,4 +1,4 @@
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 import com.girbola.messages.Messages;
 import javafx.beans.property.SimpleLongProperty;

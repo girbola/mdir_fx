@@ -1,4 +1,4 @@
-package com.girbola.fxml.possiblefolderchooser;
+package com.girbola.controllers.possiblefolderchooser;
 
 import com.girbola.messages.Messages;
 import javafx.beans.property.SimpleStringProperty;

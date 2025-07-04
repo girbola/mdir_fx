@@ -1,4 +1,4 @@
-package com.girbola.fxml.datestreetableview;
+package com.girbola.controllers.datestreetableview;
 
 import javafx.collections.ObservableList;
 import javafx.scene.control.ListView;

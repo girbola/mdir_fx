@@ -1,4 +1,4 @@
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;

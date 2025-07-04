@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.collect;
+package com.girbola.controllers.main.collect;
 
 import com.girbola.Main;
 import com.girbola.SceneNameType;
@@ -10,7 +10,7 @@ import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.events.GUI_Events;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.controllers.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;

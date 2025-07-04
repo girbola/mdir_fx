@@ -4,7 +4,7 @@
  @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
  @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
  */
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.Model_operate;

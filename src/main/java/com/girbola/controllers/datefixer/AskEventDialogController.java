@@ -6,7 +6,7 @@ import com.girbola.controllers.importimages.*;
 import com.girbola.controllers.main.*;
 import com.girbola.events.*;
 import com.girbola.fileinfo.*;
-import com.girbola.fxml.operate.*;
+import com.girbola.controllers.operate.*;
 import com.girbola.messages.*;
 import com.girbola.misc.*;
 import common.utils.*;

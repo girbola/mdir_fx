@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.merge;
+package com.girbola.controllers.main.merge;
 
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.ListCell;

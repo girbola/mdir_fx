@@ -1,4 +1,4 @@
-package com.girbola.fxml.main.collect;
+package com.girbola.controllers.main.collect;
 
 import com.girbola.controllers.datefixer.DateFixerModel;
 import com.girbola.controllers.main.ModelMain;

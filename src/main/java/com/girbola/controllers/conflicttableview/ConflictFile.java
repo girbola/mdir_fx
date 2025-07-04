@@ -1,4 +1,4 @@
-package com.girbola.fxml.conflicttableview;
+package com.girbola.controllers.conflicttableview;
 
 import com.girbola.fileinfo.FileInfo;
 import javafx.beans.property.SimpleBooleanProperty;

@@ -1,10 +1,10 @@
-package com.girbola.fxml.conflicttableview;
+package com.girbola.controllers.conflicttableview;
 
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.controllers.operate.OperateFiles;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;

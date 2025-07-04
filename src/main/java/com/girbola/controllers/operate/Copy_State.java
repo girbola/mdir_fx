@@ -1,4 +1,4 @@
-package com.girbola.fxml.operate;
+package com.girbola.controllers.operate;
 
 public enum Copy_State { 
 	COPY("COPY"),

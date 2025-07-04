@@ -12,7 +12,7 @@ import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
+import com.girbola.controllers.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
