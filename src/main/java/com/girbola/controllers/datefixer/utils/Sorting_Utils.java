@@ -2,12 +2,10 @@
 package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.messages.Messages;
-import javafx.collections.ObservableList;
-import javafx.scene.Node;
-
 import java.util.Collections;
 import java.util.Comparator;
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
 
 
 public class Sorting_Utils {

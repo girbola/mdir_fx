@@ -1,7 +1,6 @@
 
 package com.girbola.configuration;
 
-import java.io.File;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;

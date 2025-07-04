@@ -261,23 +261,24 @@ public class ModelMain {
         Connection connection = getSqlHandler().getConfigurationSQLHandler().getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
-            Load_FileInfosBackToTableViews load_FileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
-            load_FileInfosBackToTableViews.setOnSucceeded(event -> {
+            Load_FileInfosBackToTableViews loadFileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
+            loadFileInfosBackToTableViews.setOnSucceeded(event -> {
                 Messages.sprintf("load_FileInfosBackToTableViews succeeded");
                 SQL_Utils.closeConnection(connection);
             });
-            load_FileInfosBackToTableViews.setOnFailed(event -> {
+            loadFileInfosBackToTableViews.setOnFailed(event -> {
                 Messages.sprintf("load_FileInfosBackToTableViews failed");
                 SQL_Utils.rollBackConnection(connection);
             });
 
-            load_FileInfosBackToTableViews.setOnCancelled(event -> {
+            loadFileInfosBackToTableViews.setOnCancelled(event -> {
                 Messages.sprintf("load_FileInfosBackToTableViews cancelled");
                 SQL_Utils.rollBackConnection(connection);
             });
 
-            Thread loadFileInfosBackToTableViewsThread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
-            loadFileInfosBackToTableViewsThread.start();
+            loadFileInfosBackToTableViews.start();
+            /*Thread loadFileInfosBackToTableViewsThread = new Thread(load_FileInfosBackToTableViews, "Loading folderinfos Thread");
+            loadFileInfosBackToTableViewsThread.start();*/
         } else {
             Messages.sprintf("Can't load folderinfos back to tables because the database were not connected");
         }

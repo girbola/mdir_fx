@@ -41,6 +41,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -65,7 +66,7 @@ public class Main extends Application {
     private ModelMain model_main = new ModelMain();
     private Scene primaryScene;
     private StageControl stageControl;
-    private Task<Boolean> load_FileInfosBackToTableViews = null;
+    private Service<Boolean> load_FileInfosBackToTableViews = null;
     private Task<Void> mainTask;
     private static AtomicBoolean changed = new AtomicBoolean(false);
     private static AtomicBoolean processCancelled = new AtomicBoolean(false);
@@ -102,7 +103,7 @@ public class Main extends Application {
 
         try {
             locale = Locale.of(lang, country);
-            if(locale == null) {
+            if (locale == null) {
                 Messages.sprintfError("Locale was null");
                 Platform.exit();
                 return;
@@ -177,6 +178,7 @@ public class Main extends Application {
         Messages.sprintf("Locale NOT initialized: country=" + locale.getCountry() + ", language=" + locale.getLanguage());
         return false;
     }
+
     private boolean loadDefaultBundle() {
         try {
             bundle = ResourceBundle.getBundle(BUNDLE_PATH);
@@ -320,23 +322,30 @@ public class Main extends Application {
             Connection configurationLoadedFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
 
             stageControl.setStageBoundarys();
+            VLCJDiscovery.initVlc();
 
             if (SQL_Utils.isDbConnected(configurationLoadedFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
                 load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, configurationLoadedFile);
+                load_FileInfosBackToTableViews.valueProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal != null) {
+                        boolean result = newVal;
+                        if (!result) {
+                            Messages.warningText("Can't load previous session!");
+                            Platform.runLater(() -> {
+                                lpt.closeStage();
+                            });
+                        }
+
+                        // Use the result value here
+                    }
+                });
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
                     Platform.runLater(() -> {
                         lpt.closeStage();
                     });
                     model_main.tables().registerTableView_obs_listener();
                     primaryStage.setOnCloseRequest(model_main.exitProgram);
-                    try {
-                        if (!load_FileInfosBackToTableViews.get()) {
-                            Messages.warningText("Can't load previous session!");
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
 
                     TableUtils.refreshAllTableContent(model_main.tables());
 
@@ -344,7 +353,6 @@ public class Main extends Application {
 
                     model_main.getMonitorExternalDriveConnectivity().restart();
 
-                    VLCJDiscovery.initVlc();
 
                     autoResizeColumns(model_main.tables().getSorted_table());
                     autoResizeColumns(model_main.tables().getSorted_table());
@@ -361,10 +369,12 @@ public class Main extends Application {
                     lpt.closeStage();
                 });
 
-                lpt.setTask(load_FileInfosBackToTableViews);
+                load_FileInfosBackToTableViews.start();
+
+                /*lpt.setTask(load_FileInfosBackToTableViews);
                 Thread load = new Thread(load_FileInfosBackToTableViews, "Load_FileInfosBackToTableViewsThread");
 //                load.setDaemon(true);
-                load.start();
+                load.start();*/
             } else {
                 Messages.sprintfError("11111 Couldn't connect to database");
                 lpt.closeStage();

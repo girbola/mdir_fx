@@ -481,15 +481,14 @@ public class DateFixerController {
         this.modelDatefix = aModel_datefix;
 
         this.modelDatefix.setCurrentFolderPath(currentPath);
+        Messages.sprintf("currentPath: " + currentPath + " isImported: " + isImported + " folderInfo SIZE:::: " + folderInfo.getFileInfoList().size());
         this.modelDatefix.setFolderInfo_full(folderInfo);
         this.modelDatefix.setTilePane(df_tilePane);
-        sprintf(modelDatefix.getTilePane() == null ? "NUUUUU" : modelDatefix.getTilePane().getId());
 
         //this.model_datefix.setGridPane(df_gridPane);
         this.modelDatefix.setScrollPane(df_scrollPane);
         this.modelDatefix.setQuickPick_tilePane(quickPick_tilePane);
         this.modelDatefix.setAnchorPane(df_anchorPane);
-
 
         if (isImported) {
             applyChanges_btn.setDefaultButton(true);

@@ -295,18 +295,52 @@ public class FileInfo_SQL {
 
         List<String> fileHistories = getFileHistoriesData(rs);
 
-        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght, fileHistories);
+        return new FileInfo(
+                orgPath,
+                workDir,
+                workDirDriveSerialNumber,
+                destPath,
+                event,
+                location,
+                tags,
+                camera_model,
+                user,
+                orientation,
+                timeShift,
+                fileInfo_id,
+                bad,
+                good,
+                suggested,
+                confirmed,
+                image,
+                raw,
+                video,
+                ignored,
+                copied,
+                tableDuplicated,
+                date,
+                size,
+                imageDifferenceHash,
+                thumb_offset,
+                thumb_lenght,
+                fileHistories
+        );
     }
 
     private static List<String> getFileHistoriesData(ResultSet rs) throws SQLException {
         List<String> list = new ArrayList<>();
-        while (rs.next()) {
-            String[] fileHistories = rs.getString(FileInfoConstants.FILEHISTORIES).split(",");
-            list.addAll(Arrays.asList(fileHistories));
+        // Remove the while loop - we're already in the correct row from the calling method
+        String fileHistoriesStr = rs.getString(FileInfoConstants.FILEHISTORIES);
+        if (fileHistoriesStr != null && !fileHistoriesStr.isEmpty()) {
+            String[] fileHistories = fileHistoriesStr.trim().split("\\s*,\\s*");
+            for (String history : fileHistories) {
+                if (!history.isEmpty()) {
+                    list.add(history);
+                }
+            }
         }
         return list;
     }
-
     /*
      * FileInfo
      */
@@ -359,40 +393,59 @@ public class FileInfo_SQL {
 	 * @return
 	 */
 	// @formatter:off
-	public static List<FileInfo> loadFileInfoDatabase(Connection connection) {
-		if (connection == null) {
-			return new ArrayList<>();
-		}
-
+    public static List<FileInfo> loadFileInfoDatabase(Connection connection) {
+        if (connection == null) {
+            return new ArrayList<>();
+        }
         Messages.sprintf("loadFileInfoDatabase Started!: " + SQL_Utils.getUrl(connection));
-		if (!SQL_Utils.isDbConnected(connection)) {
-			Messages.sprintf("loadFileInfoDatabase Not Connected!");
-			return new ArrayList<>();
-		}
-		List<FileInfo> list = new ArrayList<>();
-		String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
 
-		try {
-			boolean tableCreated = createFileInfoTable(connection);
-        	Messages.sprintf("tableCreated? " + tableCreated);
-			connection.setAutoCommit(false);
-			Statement stmt = connection.createStatement();
-			ResultSet rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-                if(Main.getProcessCancelled()) {
-                    return null;
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintf("loadFileInfoDatabase Not Connected!");
+            return new ArrayList<>();
+        }
+
+        List<FileInfo> list = new ArrayList<>();
+        String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
+
+        boolean originalAutoCommit = true;
+        try {
+            originalAutoCommit = connection.getAutoCommit();
+            connection.setAutoCommit(false);
+
+            boolean tableCreated = createFileInfoTable(connection);
+            Messages.sprintf("tableCreated? " + tableCreated);
+
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+
+                while (rs.next()) {
+                    if (Main.getProcessCancelled()) {
+                        SQL_Utils.rollBackConnection(connection);
+                        return new ArrayList<>();
+                    }
+
+                    FileInfo finfo = loadFileInfo(rs);
+//                    if (finfo == null) {
+//                        SQL_Utils.rollBackConnection(connection);
+//                        return new ArrayList<>();
+//                    }
+                    list.add(finfo);
                 }
-				FileInfo finfo = loadFileInfo(rs);
-                if(finfo == null) {
-                    return null;
-                }
-				list.add(finfo);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return new ArrayList<>();
-		}
-		return list;
-	}
+
+                connection.commit();
+                return list;
+            }
+        } catch (Exception e) {
+            Messages.sprintfError("Error loading file info database: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
+            return new ArrayList<>();
+        } finally {
+            try {
+                connection.setAutoCommit(originalAutoCommit);
+            } catch (SQLException e) {
+                Messages.sprintfError("Error restoring auto-commit state: " + e.getMessage());
+            }
+        }
+    }
 
 }
