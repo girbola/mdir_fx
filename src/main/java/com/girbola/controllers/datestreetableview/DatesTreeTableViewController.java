@@ -8,13 +8,10 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.date.CreateDateList;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableColumn.CellDataFeatures;
 import javafx.scene.control.TreeTableView;
-import javafx.util.Callback;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -27,7 +24,7 @@ public class DatesTreeTableViewController {
 
     TreeMap<String, List<FileInfo>> filesMap = new TreeMap<>();
 
-    private ModelMain model_main;
+    private ModelMain modelMain;
     //@formatter:off
    @FXML private TreeTableView<TreeFolderInfo> dates_treeTableView;
    @FXML private TreeTableColumn<TreeFolderInfo, String> folders_ttc;
@@ -38,42 +35,18 @@ public class DatesTreeTableViewController {
 	//@formatter:on
     private TreeItem<TreeFolderInfo> root;
 
-    public void init(ModelMain model_main) {
-        this.model_main = model_main;
+    public void init(ModelMain modelMain) {
+        this.modelMain = modelMain;
 
         root = new TreeItem<>();
 
         dates_treeTableView.setRoot(root);
 
-        folders_ttc.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<TreeFolderInfo, String>, ObservableValue<String>>() {
+        folders_ttc.setCellValueFactory(param -> param.getValue().getValue().getYear());
 
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<TreeFolderInfo, String> param) {
-                return param.getValue().getValue().getYear();
-            }
-        });
-
-        rootMonth_ttc.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<TreeFolderInfo, String>, ObservableValue<String>>() {
-
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<TreeFolderInfo, String> param) {
-                return param.getValue().getValue().getMonth();
-            }
-        });
-        dayMonth_ttc.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<TreeFolderInfo, String>, ObservableValue<String>>() {
-
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<TreeFolderInfo, String> param) {
-                return param.getValue().getValue().getDay();
-            }
-        });
-        possibleEvents_ttc.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<TreeFolderInfo, String>, ObservableValue<String>>() {
-
-            @Override
-            public ObservableValue<String> call(CellDataFeatures<TreeFolderInfo, String> param) {
-                return param.getValue().getValue().getYear();
-            }
-        });
+        rootMonth_ttc.setCellValueFactory(param -> param.getValue().getValue().getMonth());
+        dayMonth_ttc.setCellValueFactory(param -> param.getValue().getValue().getDay());
+        possibleEvents_ttc.setCellValueFactory(param -> param.getValue().getValue().getYear());
 
 //		return new ReadOnlyIntegerWrapper(DateUtils.parseLocalDateTimeFromString(param.getValue().getValue().getMinDate()).getYear());
         makeTable();
@@ -86,7 +59,7 @@ public class DatesTreeTableViewController {
 //		TreeItem<>
 
         int counter = 0;
-        for (FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
+        for (FolderInfo folderInfo : modelMain.tables().getSorted_table().getItems()) {
             if (!folderInfo.getJustFolderName().isEmpty()) {
 //				TreeItem<FolderInfo> treeItem = new TreeItem<>();
 //				root.getChildren().add(treeItem);
@@ -99,7 +72,7 @@ public class DatesTreeTableViewController {
             CreateDateList.addToDateMap(filesMap, folderInfo.getFileInfoList(), TableType.SORTED);
 
         }
-        for (FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+        for (FolderInfo folderInfo : modelMain.tables().getSortIt_table().getItems()) {
             CreateDateList.addToDateMap(filesMap, folderInfo.getFileInfoList(), TableType.SORTIT);
         }
         for (Entry<String, List<FileInfo>> entry : filesMap.entrySet()) {

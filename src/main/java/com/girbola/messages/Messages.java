@@ -1,10 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image Files Organizer Tool
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
 
- */
 package com.girbola.messages;
 
 import com.girbola.MDir_Stylesheets_Constants;

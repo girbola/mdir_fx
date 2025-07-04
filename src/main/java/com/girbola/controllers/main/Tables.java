@@ -35,12 +35,7 @@ import java.util.Optional;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 
 public class Tables {
 

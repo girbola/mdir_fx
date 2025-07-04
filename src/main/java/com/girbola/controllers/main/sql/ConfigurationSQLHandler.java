@@ -939,7 +939,10 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
     }*/
     //@formatter:on
 public static Connection getConnection() {
-    checkConnection();
+    if(checkConnection()) {
+        return connection;
+    }
+    createConfigurationDatabase();
     return connection;
 }
 
