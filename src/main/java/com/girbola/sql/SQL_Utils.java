@@ -211,7 +211,17 @@ public class SQL_Utils extends FolderInfo_SQL {
         try {
             return connection.getMetaData().getURL();
         } catch (SQLException e) {
-            Messages.sprintfError("Error getting URL: " + e.getMessage());
+            try {
+                String state = connection.isClosed() ? "closed" : "open";
+                Messages.sprintfError("Error getting URL - Connection state: " + state
+                        + ", Auto-commit: " + connection.getAutoCommit()
+                        + ", Read-only: " + connection.isReadOnly()
+                        + ", Error: " + e.getMessage()
+                        + ", SQL State: " + e.getSQLState()
+                        + ", Error Code: " + e.getErrorCode());
+            } catch (SQLException inner) {
+                Messages.sprintfError("Failed to get connection details: " + inner.getMessage());
+            }
             return null;
         }
     }

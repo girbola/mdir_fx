@@ -4,6 +4,7 @@ package com.girbola.controllers.main;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
+import com.girbola.controllers.main.sql.TablesSQL;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -27,6 +28,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -49,6 +51,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -519,7 +522,6 @@ public class TableController {
         return this.table;
     }
 
-
     public void init(ModelMain aModel_main, String tableName, String tableType) {
         this.model_main = aModel_main;
         this.model_main.tables().setDeleteKeyPressed(table);
@@ -533,6 +535,7 @@ public class TableController {
         });
 
         tableDescription_tf.setText(tableName);
+
 
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         // Listener to keep track of selected items
@@ -648,6 +651,21 @@ public class TableController {
             }
         });
 
+
+        TablesSQL.loadTableColumns(table, table.getId());
+
+        // Listen for column reorder events
+        table.getColumns().addListener((ListChangeListener<TableColumn<FolderInfo, ?>>) change -> {
+            Platform.runLater(() -> {
+                TablesSQL.insertTableColumns(table);
+            });
+//            while (change.next()) {
+//                System.out.println("Column order changed:");
+//                for (TableColumn<?, ?> column : table.getColumns()) {
+//                    System.out.println(column.getText());
+//                }
+//            }
+        });
 //        table.setRowFactory(new Callback<TableView<FolderInfo>, TableRow<FolderInfo>>() {
 //            @Override
 //            public TableRow<FolderInfo> call(TableView<FolderInfo> folderInfoTableView) {

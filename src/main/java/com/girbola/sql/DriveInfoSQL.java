@@ -1,24 +1,22 @@
 package com.girbola.sql;
 
-import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.SQLTableEnums;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
+import com.girbola.controllers.main.sql.TablesSQL;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
-
-import com.girbola.misc.Misc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DriveInfoSQL {
+public class DriveInfoSQL extends TablesSQL {
 
     private final static String ERROR = DriveInfoSQL.class.getSimpleName();
 
-    private static Connection connection;
+    private static Connection connection = null;
 
     private static final String DRIVE_PATH = "drivePath";
     private static final String DRIVE_CONNECTED = "driveConnected";

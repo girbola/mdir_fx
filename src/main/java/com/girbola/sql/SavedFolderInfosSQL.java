@@ -3,7 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
-import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import java.nio.file.Files;
@@ -31,17 +31,17 @@ public class SavedFolderInfosSQL {
                     " VALUES(?,?,?,?)";
 
     //@formatter:on
-    public static boolean insertSavedFolderInfoToDatabase(Connection connection, SavedFolderInfoStatus savedFolderInfoStatus) {
+    public static boolean insertSavedFolderInfoToDatabase(Connection connection, StoredFolderInfoStatus storedFolderInfoStatus) {
         if (connection == null) {
             return false;
         }
         createSavedFolderInfosDatabase(connection);
         try {
             PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, savedFolderInfoStatus.getFolderPath());
-            pstmt.setString(2, savedFolderInfoStatus.getTableType());
-            pstmt.setString(3, savedFolderInfoStatus.getJustFolderName());
-            pstmt.setBoolean(4, savedFolderInfoStatus.isConnected());
+            pstmt.setString(1, storedFolderInfoStatus.getFolderPath());
+            pstmt.setString(2, storedFolderInfoStatus.getTableType());
+            pstmt.setString(3, storedFolderInfoStatus.getJustFolderName());
+            pstmt.setBoolean(4, storedFolderInfoStatus.isConnected());
             pstmt.executeUpdate();
             pstmt.close();
             return true;
@@ -52,7 +52,7 @@ public class SavedFolderInfosSQL {
     }
 
 
-    public static List<SavedFolderInfoStatus> fetchAllSavedFolderInfosFromDatabase(Connection connection, ModelMain model_Main) {
+    public static List<StoredFolderInfoStatus> fetchAllSavedFolderInfosFromDatabase(Connection connection, ModelMain model_Main) {
         if (Main.getProcessCancelled()) {
             return null;
         }
@@ -65,7 +65,7 @@ public class SavedFolderInfosSQL {
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            List<SavedFolderInfoStatus> arrayList = new ArrayList<>();
+            List<StoredFolderInfoStatus> arrayList = new ArrayList<>();
 
             while (rs.next()) {
                 if (Main.getProcessCancelled()) {
@@ -81,10 +81,10 @@ public class SavedFolderInfosSQL {
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
                     return null;
                 }
-                SavedFolderInfoStatus savedFolderInfoStatus = new SavedFolderInfoStatus(path, tableType, justFolderName, isConnected);
-                savedFolderInfoStatus.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + savedFolderInfoStatus.isConnected());
-                arrayList.add(savedFolderInfoStatus);
+                StoredFolderInfoStatus storedFolderInfoStatus = new StoredFolderInfoStatus(path, tableType, justFolderName, isConnected);
+                storedFolderInfoStatus.setConnected(Files.exists(Paths.get(path)));
+                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + storedFolderInfoStatus.isConnected());
+                arrayList.add(storedFolderInfoStatus);
             }
             Messages.sprintf("getALLLLLL size was: " + arrayList.size());
             return arrayList;

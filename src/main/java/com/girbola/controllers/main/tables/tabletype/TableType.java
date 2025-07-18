@@ -1,6 +1,4 @@
-
 package com.girbola.controllers.main.tables.tabletype;
-
 
 public enum TableType {
     SORTIT("SortIt"),

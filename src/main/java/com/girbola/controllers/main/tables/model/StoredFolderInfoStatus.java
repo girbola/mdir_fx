@@ -1,12 +1,12 @@
 package com.girbola.controllers.main.tables.model;
 
-public class SavedFolderInfoStatus {
+public class StoredFolderInfoStatus {
 	private String folderPath;
 	private String tableType;
 	private String justFolderName;
 	private boolean isConnected;
 
-	public SavedFolderInfoStatus(String folderPath, String tableType, String justFolderName, boolean isConnected) {
+	public StoredFolderInfoStatus(String folderPath, String tableType, String justFolderName, boolean isConnected) {
 		this.folderPath = folderPath;
 		this.tableType = tableType;
 		this.justFolderName = justFolderName;

@@ -204,95 +204,118 @@ public class FolderInfo_SQL {
         return loadFolderInfo(path.toAbsolutePath().toString());
     }
 
+
     /**
-     * @param path
-     * @return
+     * Loads folder information from a database file located at the specified path.
+     * If the database file does not exist, or if an error occurs during loading,
+     * an appropriate error message is logged, and null is returned.
+     *
+     * @param path the directory path where the database file is located.
+     *             This must be a non-null, non-empty string.
+     * @return a FolderInfo object containing the folder's details and associated file information
+     *         if successfully loaded; otherwise, returns null.
      */
     public static FolderInfo loadFolderInfo(String path) {
-        Path src = Paths.get(path + File.separator + Main.conf.getMdir_db_fileName());
-        Messages.sprintf("loadFolderInfo src is: " + src);
-        if (!Files.exists(src)) {
-            Messages.sprintfError("1Cannot load FolderInfo from: " + path);
+        if (path == null || path.isEmpty()) {
+            Messages.sprintfError("Invalid path provided");
             return null;
         }
+
+        Path src = Paths.get(path, Main.conf.getMdir_db_fileName());
+        Messages.sprintf("Loading FolderInfo from: " + src);
+
+        if (!Files.exists(src)) {
+            Messages.sprintfError("Database file not found at: " + src);
+            return null;
+        }
+
+        Connection connectionFileInfos = null;
         FolderInfo folderInfo = new FolderInfo();
 
-        Connection connectionFileInfos = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
-        boolean dbConnected = SQL_Utils.isDbConnected(connectionFileInfos);
-        SQL_Utils.setAutoCommit(connectionFileInfos, false);
-        if (dbConnected) {
-            try {
-                String sql = "SELECT id, status, changed, connected, ignored, dateDifference, badFiles, confirmed, copied, " +
-                        "folderFiles, folderImageFiles, folderRawFiles, folderVideoFiles, goodFiles, suggested, " +
-                        "folderSize, justFolderName, folderPath, maxDate, minDate, state, tableType " +
-                        "FROM " + SQLTableEnums.FOLDERINFO.getType();
+        try {
+            connectionFileInfos = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+            if (connectionFileInfos == null || !SQL_Utils.isDbConnected(connectionFileInfos)) {
+                Messages.sprintfError("Failed to establish database connection");
+                return null;
+            }
 
+            SQL_Utils.setAutoCommit(connectionFileInfos, false);
+
+            try {
+                String sql = buildSelectQuery();
                 try (Statement stmt = connectionFileInfos.createStatement();
                      ResultSet rs = stmt.executeQuery(sql)) {
-                    while (rs.next()) {
-                        try {
-                            folderInfo.setBadFiles(rs.getInt(FolderInfoEnum.BAD_FILES.getColumnName()));
-                            folderInfo.setChanged(rs.getBoolean(FolderInfoEnum.CHANGED.getColumnName()));
-                            folderInfo.setConfirmed(rs.getInt(FolderInfoEnum.CONFIRMED.getColumnName()));
-                            folderInfo.setConnected(rs.getBoolean(FolderInfoEnum.CONNECTED.getColumnName()));
-                            folderInfo.setCopied(rs.getInt(FolderInfoEnum.COPIED.getColumnName()));
-                            folderInfo.setDateDifferenceRatio(rs.getDouble(FolderInfoEnum.DATE_DIFFERENCE.getColumnName()));
-                            folderInfo.setFolderFiles(rs.getInt(FolderInfoEnum.FOLDER_FILES.getColumnName()));
-                            folderInfo.setFolderImageFiles(rs.getInt(FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName()));
-                            folderInfo.setFolderPath(rs.getString(FolderInfoEnum.FOLDER_PATH.getColumnName()));
-                            folderInfo.setFolderRawFiles(rs.getInt(FolderInfoEnum.FOLDER_RAW_FILES.getColumnName()));
-                            folderInfo.setFolderSize(rs.getLong(FolderInfoEnum.FOLDER_SIZE.getColumnName()));
-                            folderInfo.setFolderVideoFiles(rs.getInt(FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName()));
-                            folderInfo.setGoodFiles(rs.getInt(FolderInfoEnum.GOOD_FILES.getColumnName()));
-                            folderInfo.setIgnored(rs.getBoolean(FolderInfoEnum.IGNORED.getColumnName()));
-                            folderInfo.setJustFolderName(rs.getString(FolderInfoEnum.JUST_FOLDER_NAME.getColumnName()));
-                            folderInfo.setMaxDate(rs.getString(FolderInfoEnum.MAX_DATE.getColumnName()));
-                            folderInfo.setMinDate(rs.getString(FolderInfoEnum.MIN_DATE.getColumnName()));
-                            folderInfo.setState(rs.getString(FolderInfoEnum.STATE.getColumnName()));
-                            folderInfo.setSuggested(rs.getInt(FolderInfoEnum.SUGGESTED.getColumnName()));
-                            folderInfo.setTableType(rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName()));
 
-                        } catch (Exception ex) {
-                            Messages.sprintfError("Cannot load FolderInfo from: " + path);
-                            return null;
-                        }
+                    if (!rs.next()) {
+                        Messages.sprintfError("No folder information found in database");
+                        return null;
                     }
 
+                    loadFolderInfoFromResultSet(folderInfo, rs);
 
                     List<FileInfo> fileInfos = FileInfo_SQL.loadFileInfoDatabase(connectionFileInfos);
-                    for(FileInfo fileInfo : fileInfos) {
-                        Messages.sprintf("=====fleInfo path:::::: " + fileInfo.getOrgPath());
-                    }
-
                     if (fileInfos == null || fileInfos.isEmpty()) {
-                        Messages.sprintfError("Could not load fileInfos!");
+                        Messages.sprintfError("No file information found in database");
                         return null;
                     }
 
                     folderInfo.setFileInfoList(fileInfos);
 
+                    if (Main.DEBUG) {
+                        for (FileInfo fileInfo : fileInfos) {
+                            Messages.sprintf("Loaded file info: " + fileInfo.getOrgPath());
+                        }
+                    }
 
-                    rs.close();
-
-                    connectionFileInfos.close();
-
+                    SQL_Utils.commitChanges(connectionFileInfos);
                     return folderInfo;
-                } catch (Exception ex) {
-                    Messages.sprintfError("Cannot load FolderInfo from: " + path);
                 }
-
-            } catch (Exception e) {
-                Messages.sprintfError("2Cannot load FolderInfo from: " + path);
-                Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase") + path);
+            } catch (SQLException e) {
+                SQL_Utils.rollBackConnection(connectionFileInfos);
+                Messages.sprintfError("Database error while loading folder info: " + e.getMessage());
                 return null;
-            } finally {
+            }
+        } catch (Exception e) {
+            Messages.sprintfError("Failed to process folder info: " + e.getMessage());
+            return null;
+        } finally {
+            if (connectionFileInfos != null) {
                 SQL_Utils.closeConnection(connectionFileInfos);
             }
-        } else {
-            Messages.sprintfError(Main.bundle.getString("cannotLoadFolderInfoFromDatabase"));
         }
-        return null;
     }
+
+    private static String buildSelectQuery() {
+        return "SELECT id, status, changed, connected, ignored, dateDifference, " +
+                "badFiles, confirmed, copied, folderFiles, folderImageFiles, " +
+                "folderRawFiles, folderVideoFiles, goodFiles, suggested, " +
+                "folderSize, justFolderName, folderPath, maxDate, minDate, " +
+                "state, tableType FROM " + SQLTableEnums.FOLDERINFO.getType();
+    }
+
+    private static void loadFolderInfoFromResultSet(FolderInfo folderInfo, ResultSet rs) throws SQLException {
+        folderInfo.setBadFiles(rs.getInt(FolderInfoEnum.BAD_FILES.getColumnName()));
+        folderInfo.setChanged(rs.getBoolean(FolderInfoEnum.CHANGED.getColumnName()));
+        folderInfo.setConfirmed(rs.getInt(FolderInfoEnum.CONFIRMED.getColumnName()));
+        folderInfo.setConnected(rs.getBoolean(FolderInfoEnum.CONNECTED.getColumnName()));
+        folderInfo.setCopied(rs.getInt(FolderInfoEnum.COPIED.getColumnName()));
+        folderInfo.setDateDifferenceRatio(rs.getDouble(FolderInfoEnum.DATE_DIFFERENCE.getColumnName()));
+        folderInfo.setFolderFiles(rs.getInt(FolderInfoEnum.FOLDER_FILES.getColumnName()));
+        folderInfo.setFolderImageFiles(rs.getInt(FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName()));
+        folderInfo.setFolderPath(rs.getString(FolderInfoEnum.FOLDER_PATH.getColumnName()));
+        folderInfo.setFolderRawFiles(rs.getInt(FolderInfoEnum.FOLDER_RAW_FILES.getColumnName()));
+        folderInfo.setFolderSize(rs.getLong(FolderInfoEnum.FOLDER_SIZE.getColumnName()));
+        folderInfo.setFolderVideoFiles(rs.getInt(FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName()));
+        folderInfo.setGoodFiles(rs.getInt(FolderInfoEnum.GOOD_FILES.getColumnName()));
+        folderInfo.setIgnored(rs.getBoolean(FolderInfoEnum.IGNORED.getColumnName()));
+        folderInfo.setJustFolderName(rs.getString(FolderInfoEnum.JUST_FOLDER_NAME.getColumnName()));
+        folderInfo.setMaxDate(rs.getString(FolderInfoEnum.MAX_DATE.getColumnName()));
+        folderInfo.setMinDate(rs.getString(FolderInfoEnum.MIN_DATE.getColumnName()));
+        folderInfo.setState(rs.getString(FolderInfoEnum.STATE.getColumnName()));
+        folderInfo.setSuggested(rs.getInt(FolderInfoEnum.SUGGESTED.getColumnName()));
+        folderInfo.setTableType(rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName()));
+    }
+
 
     /**
      * Helper method to populate FolderInfo object from ResultSet

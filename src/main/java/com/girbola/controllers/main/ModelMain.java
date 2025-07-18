@@ -11,7 +11,7 @@ import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.SQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -158,9 +158,9 @@ public class ModelMain {
                 folderInfo.setTableType(tableType);
                 try {
 
-                    SavedFolderInfoStatus savedFolderInfoStatus = new SavedFolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    StoredFolderInfoStatus storedFolderInfoStatus = new StoredFolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, savedFolderInfoStatus);
+                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, storedFolderInfoStatus);
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
                     }

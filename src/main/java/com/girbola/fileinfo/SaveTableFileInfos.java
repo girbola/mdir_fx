@@ -6,7 +6,7 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SaveTablesToFolderInfoDatabases;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.model.SavedFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SavedFolderInfosSQL;
@@ -49,8 +49,8 @@ public class SaveTableFileInfos {
 
         for(FolderInfo folderInfo : table.getItems()) {
             try {
-                SavedFolderInfoStatus savedFolderInfoStatus = new SavedFolderInfoStatus(folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
-                SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(ConfigurationSQLHandler.getConnection(), savedFolderInfoStatus);
+                StoredFolderInfoStatus storedFolderInfoStatus = new StoredFolderInfoStatus(folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
+                SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(ConfigurationSQLHandler.getConnection(), storedFolderInfoStatus);
 
             }catch (Exception e) {
                 Messages.sprintfError(Main.bundle.getString("cannotSaveStatus"));

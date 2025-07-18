@@ -76,7 +76,7 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 						e.printStackTrace();
 						Messages.errorSmth(ERROR, "Something went wrong with saving database", e, Misc.getLineNumber(),
 								true);
-						return false;
+						return Boolean.FALSE;
 					}
 				} else {
 					listToRemove.remove(fileInfoToCompare);
@@ -90,7 +90,7 @@ public class CheckSelectedRowForChanges extends Task<Boolean> {
 				Messages.sprintf("cleanFileInfoList were true");
 			}
 		}
-		return true;
+		return Boolean.TRUE;
 	}
 
 	@Override

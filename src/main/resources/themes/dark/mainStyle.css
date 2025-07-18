@@ -23,9 +23,14 @@
     -fx-background-color: -fx-base;
 }
 
-#main_vbox {
+#main_vbox .menu-bar {
     -fx-background-color: -fx-base;
 }
+
+#main_vbox .menu-bar .container {
+    -fx-background-color: transparent;
+}
+
 
 .text {
     -fx-font-size: 1.2em;
@@ -204,14 +209,39 @@
     -fx-background-color: -fx-base;
 }
 
+#tabFolders {
+
+    -fx-text-fill: -fx-light-text-color;
+    -fx-border-width: 0 0 0 1; /* top right bottom left */
+    -fx-border-color: #656565;
+    -fx-padding: 10;
+}
 .tab-pane:left .tab-header-area .tab:left:selected, .tab .tab-label:selected {
     /*-fx-background-color: transparent;*/
+    -fx-text-fill: -fx-light-text-color;
+
 }
 
 /*tab-panes buttons hover*/
 .tab-pane:left > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
     /*-fx-border-color: red;*/
+    /*-fx-background-color: yellow;*/
+    -fx-text-fill: white;
+    -fx-text-fill: -fx-light-text-color;
+
 }
+
+.tab-pane:left > .tab-header-area > .headers-region > .tab:selected .tab-container .focus-indicator {
+    -fx-border-color: transparent;
+    /*-fx-background-color: red;*/
+    -fx-padding: 20px;
+    -fx-text-fill: white;
+    -fx-text-fill: -fx-light-text-color;
+    -fx-background-color: translate;
+    -fx-alignment: center-left;
+    -fx-padding: 7 2 7 2;
+}
+
 
 .tab .tab-label:hover {
     -fx-background-color: derive(-fx-base, 20%);

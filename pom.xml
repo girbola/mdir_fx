@@ -37,18 +37,17 @@
     </developers>
     <properties>
 
-<!--        <apache-common-imaging.version>2.17.0</apache-common-imaging.version>-->
         <apache-common-imaging.version>1.0.0-alpha6</apache-common-imaging.version>
         <ikonli-javafx.version>12.3.1</ikonli-javafx.version>
         <imageio-jpeg.version>3.12.0</imageio-jpeg.version>
         <imageio-tiff.version>3.12.0</imageio-tiff.version>
         <javacv-platform.version>1.5.10</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
-        <javafx.version>22.0.2</javafx.version>
+        <javafx.version>24.0.2</javafx.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <jcodec.version>0.2.5</jcodec.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
-        <lombok.version>1.18.32</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
         <maven.compiler.source>22</maven.compiler.source>
         <maven.compiler.target>22</maven.compiler.target>
@@ -91,7 +90,6 @@
             <artifactId>ikonli-javafx</artifactId>
             <version>${ikonli-javafx.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-core</artifactId>
@@ -256,7 +254,10 @@
                     </execution>
                 </executions>
             </plugin>
-
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
+            </plugin>
             <!--            <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-dependency-plugin</artifactId>
