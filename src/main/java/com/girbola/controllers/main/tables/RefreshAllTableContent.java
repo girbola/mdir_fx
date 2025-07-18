@@ -28,7 +28,7 @@ public class RefreshAllTableContent {
             Messages.sprintfError("refreshTableContent - Table were null at TableUtils. Line: " + Misc.getLineNumber());
             return;
         }
-        if (table.getColumns().get(0) != null) {
+        if (table.getColumns().getFirst() != null) {
             while (tableIT.hasNext()) {
                 FolderInfo folderInfo = tableIT.next();
                 if (folderInfo.getFileInfoList().isEmpty()) {

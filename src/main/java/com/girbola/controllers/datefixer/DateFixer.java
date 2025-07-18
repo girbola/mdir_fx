@@ -5,6 +5,7 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -91,8 +92,13 @@ public class DateFixer extends Task<Void> {
                 });
 
                 sprintf("conf.getThemePath(): " + conf.getThemePath());
-                scene_dateFixer.getStylesheets().add(
-                        Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
+                if(conf.getThemePath().equalsIgnoreCase(ThemeType.DARK.getValue())) {
+                    scene_dateFixer.getStylesheets().add(
+                            Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
+                } else if(conf.getThemePath().equalsIgnoreCase(ThemeType.DARK.getValue())) {
+                    scene_dateFixer.getStylesheets().addAll(
+                            Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MODENA.getType()).toExternalForm(), Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
+                }
 
                 Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
                 Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());

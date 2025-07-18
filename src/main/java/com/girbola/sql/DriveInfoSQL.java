@@ -54,6 +54,16 @@ public class DriveInfoSQL extends TablesSQL {
         }
     }
 
+    public static boolean closeConnection() {
+        try {
+            SQL_Utils.closeConnection(connection); // Ensure connection is closed
+            return true;
+        } catch (Exception e) {
+            Messages.sprintfError("Error closing connection: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static boolean createDriveInfoTable() {
         final String driveInfoTableSchema = "CREATE TABLE IF NOT EXISTS " +
                 SQLTableEnums.DRIVEINFO.getType()
@@ -70,7 +80,7 @@ public class DriveInfoSQL extends TablesSQL {
             stmt.execute(driveInfoTableSchema);
             stmt.close();
             SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
-          //  SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
+            //  SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
             return true;
         } catch (Exception e) {
             Messages.sprintfError("Could not create DriveInfo table: " + e.getMessage());

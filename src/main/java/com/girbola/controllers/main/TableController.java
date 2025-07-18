@@ -652,12 +652,13 @@ public class TableController {
         });
 
 
-        TablesSQL.loadTableColumns(table, table.getId());
+        TablesSQL.restoreColumnOrderFromRow(table);
+
 
         // Listen for column reorder events
         table.getColumns().addListener((ListChangeListener<TableColumn<FolderInfo, ?>>) change -> {
             Platform.runLater(() -> {
-                TablesSQL.insertTableColumns(table);
+                TablesSQL.saveColumnOrderToRow(table);
             });
 //            while (change.next()) {
 //                System.out.println("Column order changed:");

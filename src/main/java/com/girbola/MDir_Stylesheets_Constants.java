@@ -12,6 +12,7 @@ public enum MDir_Stylesheets_Constants {
 	IMAGEVIEWER("imageViewer.css"),
 	LOADINGPROCESS("loadingprocess.css"),
 	MAINSTYLE("mainStyle.css"),
+	MODENA("modena/modena.css"),
 	OPTIONPANE( "option_pane.css"),
 	VLCPLAYER("vlcPlayer.css");
 

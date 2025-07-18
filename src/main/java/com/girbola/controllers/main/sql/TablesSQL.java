@@ -2,12 +2,11 @@ package com.girbola.controllers.main.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQLTableEnums;
-import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.tabletype.FolderInfoEnum;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
+import com.twelvemonkeys.imageio.metadata.Entry;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,19 +14,70 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Pair;
 
 public class TablesSQL {
 
-    final private static String createTableColumnsWidths = " (" + TableColumnEnum.DATE_DIFFERENCE_RATIO_WIDTH.getColumnName() + " " + TableColumnEnum.DATE_DIFFERENCE_RATIO_WIDTH.getSqlType() + "," + TableColumnEnum.BAD_FILES_WIDTH.getColumnName() + " " + TableColumnEnum.BAD_FILES_WIDTH.getSqlType() + "," + TableColumnEnum.COPIED_WIDTH.getColumnName() + " " + TableColumnEnum.COPIED_WIDTH.getSqlType() + "," + TableColumnEnum.FOLDER_FILES_WIDTH.getColumnName() + " " + TableColumnEnum.FOLDER_FILES_WIDTH.getSqlType() + "," + TableColumnEnum.IMAGE_WIDTH.getColumnName() + " " + TableColumnEnum.IMAGE_WIDTH.getSqlType() + "," + TableColumnEnum.MEDIA_WIDTH.getColumnName() + " " + TableColumnEnum.MEDIA_WIDTH.getSqlType() + "," + TableColumnEnum.RAW_WIDTH.getColumnName() + " " + TableColumnEnum.RAW_WIDTH.getSqlType() + "," + TableColumnEnum.STATUS_WIDTH.getColumnName() + " " + TableColumnEnum.STATUS_WIDTH.getSqlType() + "," + TableColumnEnum.SUGGESTED_WIDTH.getColumnName() + " " + TableColumnEnum.SUGGESTED_WIDTH.getSqlType() + "," + TableColumnEnum.VIDEO_WIDTH.getColumnName() + " " + TableColumnEnum.VIDEO_WIDTH.getSqlType() + "," + TableColumnEnum.SIZE_WIDTH.getColumnName() + " " + TableColumnEnum.SIZE_WIDTH.getSqlType() + "," + TableColumnEnum.DATE_FIX_WIDTH.getColumnName() + " " + TableColumnEnum.DATE_FIX_WIDTH.getSqlType() + "," + TableColumnEnum.FULL_PATH_WIDTH.getColumnName() + " " + TableColumnEnum.FULL_PATH_WIDTH.getSqlType() + "," + TableColumnEnum.JUST_FOLDER_NAME_WIDTH.getColumnName() + " " + TableColumnEnum.JUST_FOLDER_NAME_WIDTH.getSqlType() + "," + TableColumnEnum.MAX_DATES_WIDTH.getColumnName() + " " + TableColumnEnum.MAX_DATES_WIDTH.getSqlType() + "," + TableColumnEnum.MIN_DATE_WIDTH.getColumnName() + " " + TableColumnEnum.MIN_DATE_WIDTH.getSqlType();
+    final private static String createTableColumnsWidths = " (" +
+            TableColumnEnum.DATE_DIFFERENCE_RATIO_WIDTH.getColumnName() + " " + TableColumnEnum.DATE_DIFFERENCE_RATIO_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.BAD_FILES_WIDTH.getColumnName() + " " + TableColumnEnum.BAD_FILES_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.COPIED_WIDTH.getColumnName() + " " + TableColumnEnum.COPIED_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.FOLDER_FILES_WIDTH.getColumnName() + " " + TableColumnEnum.FOLDER_FILES_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.IMAGE_WIDTH.getColumnName() + " " + TableColumnEnum.IMAGE_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.MEDIA_WIDTH.getColumnName() + " " + TableColumnEnum.MEDIA_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.RAW_WIDTH.getColumnName() + " " + TableColumnEnum.RAW_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.STATUS_WIDTH.getColumnName() + " " + TableColumnEnum.STATUS_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.SUGGESTED_WIDTH.getColumnName() + " " + TableColumnEnum.SUGGESTED_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.VIDEO_WIDTH.getColumnName() + " " + TableColumnEnum.VIDEO_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.SIZE_WIDTH.getColumnName() + " " + TableColumnEnum.SIZE_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.DATE_FIX_WIDTH.getColumnName() + " " + TableColumnEnum.DATE_FIX_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.FULL_PATH_WIDTH.getColumnName() + " " + TableColumnEnum.FULL_PATH_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.JUST_FOLDER_NAME_WIDTH.getColumnName() + " " + TableColumnEnum.JUST_FOLDER_NAME_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.MAX_DATES_WIDTH.getColumnName() + " " + TableColumnEnum.MAX_DATES_WIDTH.getSqlType() + ", " +
+            TableColumnEnum.MIN_DATE_WIDTH.getColumnName() + " " + TableColumnEnum.MIN_DATE_WIDTH.getSqlType();
 
-    final private static String createTableColumns = " (" + TableColumnEnum.DATE_DIFFERENCE_RATIO.getColumnName() + " " + TableColumnEnum.DATE_DIFFERENCE_RATIO.getSqlType() + "," + TableColumnEnum.BAD_FILES.getColumnName() + " " + TableColumnEnum.BAD_FILES.getSqlType() + "," + TableColumnEnum.COPIED.getColumnName() + " " + TableColumnEnum.COPIED.getSqlType() + "," + TableColumnEnum.FOLDER_FILES.getColumnName() + " " + TableColumnEnum.FOLDER_FILES.getSqlType() + "," + TableColumnEnum.IMAGE.getColumnName() + " " + TableColumnEnum.IMAGE.getSqlType() + "," + TableColumnEnum.MEDIA.getColumnName() + " " + TableColumnEnum.MEDIA.getSqlType() + "," + TableColumnEnum.RAW.getColumnName() + " " + TableColumnEnum.RAW.getSqlType() + "," + TableColumnEnum.STATUS.getColumnName() + " " + TableColumnEnum.STATUS.getSqlType() + "," + TableColumnEnum.SUGGESTED.getColumnName() + " " + TableColumnEnum.SUGGESTED.getSqlType() + "," + TableColumnEnum.VIDEO.getColumnName() + " " + TableColumnEnum.VIDEO.getSqlType() + "," + TableColumnEnum.SIZE.getColumnName() + " " + TableColumnEnum.SIZE.getSqlType() + "," + TableColumnEnum.DATE_FIX.getColumnName() + " " + TableColumnEnum.DATE_FIX.getSqlType() + "," + TableColumnEnum.JUST_FOLDER_NAME.getColumnName() + " " + TableColumnEnum.JUST_FOLDER_NAME.getSqlType() + "," + TableColumnEnum.MAX_DATES.getColumnName() + " " + TableColumnEnum.MAX_DATES.getSqlType() + "," + TableColumnEnum.MIN_DATE.getColumnName() + " " + TableColumnEnum.MIN_DATE.getSqlType() + "," + TableColumnEnum.FULL_PATH.getColumnName() + " " + TableColumnEnum.FULL_PATH.getSqlType() + " PRIMARY KEY)";
+    final private static String createTableColumns = " (" +
+            TableColumnEnum.DATE_DIFFERENCE_RATIO.getColumnName() + " " + TableColumnEnum.DATE_DIFFERENCE_RATIO.getSqlType() + ", " +
+            TableColumnEnum.BAD_FILES.getColumnName() + " " + TableColumnEnum.BAD_FILES.getSqlType() + ", " +
+            TableColumnEnum.COPIED.getColumnName() + " " + TableColumnEnum.COPIED.getSqlType() + ", " +
+            TableColumnEnum.FOLDER_FILES.getColumnName() + " " + TableColumnEnum.FOLDER_FILES.getSqlType() + ", " +
+            TableColumnEnum.IMAGE.getColumnName() + " " + TableColumnEnum.IMAGE.getSqlType() + ", " +
+            TableColumnEnum.MEDIA.getColumnName() + " " + TableColumnEnum.MEDIA.getSqlType() + ", " +
+            TableColumnEnum.RAW.getColumnName() + " " + TableColumnEnum.RAW.getSqlType() + ", " +
+            TableColumnEnum.STATUS.getColumnName() + " " + TableColumnEnum.STATUS.getSqlType() + ", " +
+            TableColumnEnum.SUGGESTED.getColumnName() + " " + TableColumnEnum.SUGGESTED.getSqlType() + ", " +
+            TableColumnEnum.VIDEO.getColumnName() + " " + TableColumnEnum.VIDEO.getSqlType() + ", " +
+            TableColumnEnum.SIZE.getColumnName() + " " + TableColumnEnum.SIZE.getSqlType() + ", " +
+            TableColumnEnum.DATE_FIX.getColumnName() + " " + TableColumnEnum.DATE_FIX.getSqlType() + ", " +
+            TableColumnEnum.JUST_FOLDER_NAME.getColumnName() + " " + TableColumnEnum.JUST_FOLDER_NAME.getSqlType() + ", " +
+            TableColumnEnum.MAX_DATES.getColumnName() + " " + TableColumnEnum.MAX_DATES.getSqlType() + ", " +
+            TableColumnEnum.MIN_DATE.getColumnName() + " " + TableColumnEnum.MIN_DATE.getSqlType() + ", " +
+            TableColumnEnum.FULL_PATH.getColumnName() + " " + TableColumnEnum.FULL_PATH.getSqlType() + " PRIMARY KEY)";
 
-    final private static String insertTableColumns = " (" + TableColumnEnum.DATE_DIFFERENCE_RATIO.getColumnName() + "," + TableColumnEnum.BAD_FILES.getColumnName() + "," + TableColumnEnum.COPIED.getColumnName() + "," + TableColumnEnum.FOLDER_FILES.getColumnName() + "," + TableColumnEnum.IMAGE.getColumnName() + "," + TableColumnEnum.MEDIA.getColumnName() + "," + TableColumnEnum.RAW.getColumnName() + "," + TableColumnEnum.STATUS.getColumnName() + "," + TableColumnEnum.SUGGESTED.getColumnName() + "," + TableColumnEnum.VIDEO.getColumnName() + "," + TableColumnEnum.SIZE.getColumnName() + "," + TableColumnEnum.DATE_FIX.getColumnName() + "," + TableColumnEnum.FULL_PATH.getColumnName();
+//    final private static String insertTableColumns = " (" + String.join(",",
+//            TableColumnEnum.DATE_DIFFERENCE_RATIO.getColumnName(),
+//            TableColumnEnum.BAD_FILES.getColumnName(),
+//            TableColumnEnum.COPIED.getColumnName(),
+//            TableColumnEnum.FOLDER_FILES.getColumnName(),
+//            TableColumnEnum.IMAGE.getColumnName(),
+//            TableColumnEnum.MEDIA.getColumnName(),
+//            TableColumnEnum.RAW.getColumnName(),
+//            TableColumnEnum.STATUS.getColumnName(),
+//            TableColumnEnum.SUGGESTED.getColumnName(),
+//            TableColumnEnum.VIDEO.getColumnName(),
+//            TableColumnEnum.SIZE.getColumnName(),
+//            TableColumnEnum.DATE_FIX.getColumnName(),
+//            TableColumnEnum.FULL_PATH.getColumnName()
+//    );
 
 
     private static final String insertToTable = "INSERT OR REPLACE INTO " + SQLTableEnums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
@@ -109,6 +159,8 @@ public class TablesSQL {
                 return false;
             }
 
+            String dropSql = "DROP TABLE IF EXISTS " + getCorrectTableById(tableId);
+
             Messages.sprintf("TableColumnnnnsnnssnns table ID.:: " + tableId);
             String sql = "CREATE TABLE IF NOT EXISTS " + getCorrectTableById(tableId) + " " + createTableColumns;
 
@@ -117,6 +169,7 @@ public class TablesSQL {
             Messages.sprintf("Table columns: " + createTableColumns);
 
             try (Statement stmt = connection.createStatement()) {
+                stmt.execute(dropSql);
                 stmt.execute(sql);  // Using execute() instead of batch for single statement
                 SQL_Utils.commitChanges(connection);
                 return true;
@@ -144,8 +197,12 @@ public class TablesSQL {
                 Messages.sprintfError("Table not accessible: " + tableName);
                 return false;
             }
-
-            try (PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ?")) {
+/*
+SELECT id, betterQualityThumbs, confirmOnExit, id_counter, showFullPath, showHints, showTooltips, currentTheme, vlcPath, vlcSupport, saveDataToHD, windowStartPosX, windowStartPosY, windowStartWidth, windowStartHeigth, imageViewXPos, imageViewYPos, workDirSerialNumber, workDir, tableShow_sortIt, tableShow_sorted, tableShow_asItIs
+FROM configuration
+WHERE id IN (0);
+ */
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT id, betterQualityThumbs, confirmOnExit, id_counter, showFullPath, showHints, showTooltips, currentTheme, vlcPath, vlcSupport, saveDataToHD, windowStartPosX, windowStartPosY, windowStartWidth, windowStartHeigth, imageViewXPos, imageViewYPos, workDirSerialNumber, workDir, tableShow_sortIt, tableShow_sorted, tableShow_asItIs " + tableName)) {
                 stmt.setString(1, tableName);
 
                 List<TableColumn<FolderInfo, ?>> columnsToAdd = new ArrayList<>();
@@ -153,7 +210,7 @@ public class TablesSQL {
                 try (ResultSet rs = stmt.executeQuery()) {
                     ResultSetMetaData metaData = rs.getMetaData();
                     int columnCount = metaData.getColumnCount();
-
+                    Messages.sprintf("Column count: " + columnCount);
                     while (rs.next()) {
                         for (TableColumnEnum columnEnum : TableColumnEnum.values()) {
                             if (!columnEnum.getColumnName().endsWith("_width")) {
@@ -186,6 +243,9 @@ public class TablesSQL {
 
                 // Update UI in a single operation
                 if (!columnsToAdd.isEmpty()) {
+                    for (TableColumn<FolderInfo, ?> column : columnsToAdd) {
+                        Messages.sprintf("-----OAdding column: " + column.getId());
+                    }
                     Platform.runLater(() -> table.getColumns().addAll(columnsToAdd));
                 }
             }
@@ -263,7 +323,7 @@ public class TablesSQL {
                                         // Width column might not exist, use default width
                                         column.setPrefWidth(100);
                                     }
-                                    Platform.runLater(()-> {
+                                    Platform.runLater(() -> {
                                         table.getColumns().add(column);
                                     });
                                 }
@@ -281,6 +341,7 @@ public class TablesSQL {
             return false;
         } finally {
             SQL_Utils.closeConnection(connection);
+            Messages.sprintf("Closing connection");
         }
     }
 
@@ -372,81 +433,286 @@ public class TablesSQL {
         }
     }
 
-    public static boolean insertTableColumns(TableView<FolderInfo> table) {
+    public static void saveColumnOrderToRow(TableView<FolderInfo> table) {
         connection = ConfigurationSQLHandler.getConnection();
-        Messages.sprintf("insertTableColumns Inserting table columns for: " + table.getId());
-        boolean tableSortItDatabaseAccessible = SQL_Utils.isDatabaseAccessible(connection, tableSortIt);
-        boolean tableSortedDatabaseAccessible = SQL_Utils.isDatabaseAccessible(connection, tableSorted);
-        boolean tableAsItIsDatabaseAccessible = SQL_Utils.isDatabaseAccessible(connection, tableAsItIs);
-        if (!tableSortItDatabaseAccessible) {
-            Messages.sprintfError("tableSortItDatabaseAccessible Could not access database: " + tableSortIt);
-            createTableColumns(table.getId());
-        } else if (!tableSortedDatabaseAccessible) {
-            Messages.sprintfError("tableSortedDatabaseAccessible Could not access database: " + tableSorted);
-            createTableColumns(table.getId());
-        } else if (!tableAsItIsDatabaseAccessible) {
-            Messages.sprintfError("tableAsItIsDatabaseAccessible Could not access database: " + tableAsItIs);
-            createTableColumns(table.getId());
+        String tableName = getCorrectTableById(table.getId());
+
+        if (tableName == null) {
+            Messages.sprintfError("Invalid table ID: " + table.getId());
+            return;
         }
 
-//        if (!tableSortItDatabaseAccessible && !tableSortedDatabaseAccessible && !tableAsItIsDatabaseAccessible) {
-//            Messages.sprintfError("Could not access any database: " + tableSortIt + ", " + tableSorted + ", " + tableAsItIs);
-//        }
+        // Build CREATE TABLE statement dynamically based on actual columns
+        StringBuilder createTableSQL = new StringBuilder();
+        createTableSQL.append("CREATE TABLE ").append(tableName).append(" (");
+
+        // Add standard metadata columns first
+        createTableSQL.append("id INTEGER PRIMARY KEY AUTOINCREMENT, ");
+
+        // Add columns based on TableView structure
+        for (TableColumn<FolderInfo, ?> column : table.getColumns()) {
+            String columnId = column.getId();
+            if (columnId != null && !columnId.isEmpty()) {
+                // Convert JavaFX types to SQL types
+                String sqlType = getSQLTypeForColumn(column);
+                createTableSQL.append(columnId).append(" ").append(sqlType).append(", ");
+                // Add column for storing the order
+                createTableSQL.append(columnId).append("_order INTEGER, ");
+                // Add column for storing the width
+                createTableSQL.append(columnId).append("_width DOUBLE, ");
+            }
+        }
+
+        // Remove the trailing comma and space
+        if (createTableSQL.toString().endsWith(", ")) {
+            createTableSQL.setLength(createTableSQL.length() - 2);
+        }
+        createTableSQL.append(")");
 
         try {
-            // Build the insert statement directly
-            StringBuilder sql = new StringBuilder("INSERT OR REPLACE INTO " + getCorrectTableById(table.getId()) + " " + insertTableColumns + " VALUES ");
-            //INSERT INTO tablesortit
-            //(dateDifference_ratio, badFiles, copied, folderFiles, image, media, raw, status, suggested, video, "size", dateFix, justFolderName, maxDates, minDate, fullPath)
-            //VALUES(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '', '', '');
-            Messages.sprintf("Table id is: " + table.getId());
-            List<String> values = new ArrayList<>();
-            int order = 0;
-            for (TableColumn<FolderInfo, ?> column : table.getColumns()) {
-                values.add(String.format("('%s', %d)", column.getId().toLowerCase(), order++));
-                Messages.sprintf("Processing column: " + column.getText() + " ID: " + column.getId() + " width: " + column.getWidth() + " order: " + order);
-            }
-
-            sql.append(String.join(",", values));
-            Messages.sprintf("FULL sql string: " + sql.toString());
-
-            // Create table if it doesn't exist first
-            String createTableSql = "CREATE TABLE IF NOT EXISTS " + getCorrectTableById(table.getId()) + " (column_name TEXT, column_order INTEGER)";
-            Messages.sprintf("===========Creating table: " + createTableSql);
+            connection.setAutoCommit(false);
 
             try (Statement stmt = connection.createStatement()) {
-                stmt.execute(createTableSql);
+                // Drop existing table
+                stmt.execute("DROP TABLE IF EXISTS " + tableName);
 
-                try (PreparedStatement pstmt = connection.prepareStatement(sql.toString())) {
-                    pstmt.executeUpdate();
-                    Messages.sprintf("Successfully inserted columns for table: " + table.getId());
-                    SQL_Utils.commitChanges(connection);
-                    return true;
-                }
+                // Create new table
+                stmt.execute(createTableSQL.toString());
+
+                // Insert the current column configuration
+                insertColumnConfiguration(table, tableName, connection);
+
+                SQL_Utils.commitChanges(connection);
             }
-        } catch (Exception e) {
-            Messages.sprintfError("Could not insert table columns: " + e.getMessage());
-            return false;
+        } catch (SQLException e) {
+            Messages.sprintfError("Error saving column configuration: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
         } finally {
             SQL_Utils.closeConnection(connection);
         }
     }
-//    public static boolean insertTableColumns(TableView<FolderInfo> table) {
-//        connection = ConfigurationSQLHandler.getConnection();
-//        createTableById(connection, table.getId());
-//        try {
-//            try (PreparedStatement pstmt = connection.prepareStatement(insertAll)) {
-//                insertToTableView(pstmt, table);
-//                SQL_Utils.commitChanges(connection);
-//                return true;
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return false;
-//        } finally {
-//            SQL_Utils.closeConnection(connection);
-//        }
-//    }
+
+    private static String getSQLTypeForColumn(TableColumn<FolderInfo, ?> column) {
+        // Determine SQL type based on the column's value type
+        if (column.getCellData(0) instanceof Number) {
+            if (column.getCellData(0) instanceof Integer) {
+                return "INTEGER";
+            } else if (column.getCellData(0) instanceof Double) {
+                return "DOUBLE";
+            } else if (column.getCellData(0) instanceof Long) {
+                return "BIGINT";
+            }
+        } else if (column.getCellData(0) instanceof Boolean) {
+            return "BOOLEAN";
+        }
+        // Default to TEXT for String and other types
+        return "TEXT";
+    }
+
+    private static void insertColumnConfiguration(TableView<FolderInfo> table, String tableName, Connection connection)
+            throws SQLException {
+        StringBuilder insertSQL = new StringBuilder();
+        insertSQL.append("INSERT INTO ").append(tableName).append(" (");
+
+        // Build column names part
+        List<String> columnNames = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
+
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            TableColumn<FolderInfo, ?> column = table.getColumns().get(i);
+            String columnId = column.getId();
+            if (columnId != null && !columnId.isEmpty()) {
+                columnNames.add(columnId);
+                columnNames.add(columnId + "_order");
+                columnNames.add(columnId + "_width");
+
+                values.add(column.getText());  // or any other relevant column data
+                values.add(i);  // order
+                values.add(column.getWidth());  // width
+            }
+        }
+
+        insertSQL.append(String.join(", ", columnNames));
+        insertSQL.append(") VALUES (");
+        insertSQL.append("?, ".repeat(values.size()));
+
+        // Remove trailing comma and space
+        if (insertSQL.toString().endsWith(", ")) {
+            insertSQL.setLength(insertSQL.length() - 2);
+        }
+        insertSQL.append(")");
+
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL.toString())) {
+            // Set all values
+            for (int i = 0; i < values.size(); i++) {
+                pstmt.setObject(i + 1, values.get(i));
+            }
+            pstmt.executeUpdate();
+        }
+    }
+
+    public static void restoreColumnOrderFromRow(TableView<FolderInfo> table) {
+        connection = ConfigurationSQLHandler.getConnection();
+        String tableName = getCorrectTableById(table.getId());
+
+        if (tableName == null || !SQL_Utils.isDatabaseAccessible(connection, tableName)) {
+            return;
+        }
+
+        try {
+            // Create a map of current columns
+            Map<String, TableColumn<FolderInfo, ?>> columnMap = new HashMap<>();
+            for (TableColumn<FolderInfo, ?> col : table.getColumns()) {
+                columnMap.put(col.getId(), col);
+            }
+
+            // Query the saved configuration
+            String sql = "SELECT * FROM " + tableName + " LIMIT 1";
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(sql)) {
+
+                if (rs.next()) {
+                    // Clear existing columns
+                    table.getColumns().clear();
+
+                    // Create a sorted list of columns based on their order
+                    List<Pair<TableColumn<FolderInfo, ?>, Integer>> orderedColumns = new ArrayList<>();
+
+                    for (String columnId : columnMap.keySet()) {
+                        TableColumn<FolderInfo, ?> column = columnMap.get(columnId);
+                        if (column != null) {
+                            // Get the order and width for this column
+                            int order = rs.getInt(columnId + "_order");
+                            double width = rs.getDouble(columnId + "_width");
+
+                            // Set the width
+                            column.setPrefWidth(width);
+
+                            // Add to ordered list
+                            orderedColumns.add(new Pair<>(column, order));
+                        }
+                    }
+
+                    // Sort columns by their order
+                    orderedColumns.sort(Comparator.comparing(Pair::getValue));
+
+                    // Add columns in the correct order
+                    for (Pair<TableColumn<FolderInfo, ?>, Integer> pair : orderedColumns) {
+                        table.getColumns().add(pair.getKey());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            Messages.sprintfError("Error restoring column configuration: " + e.getMessage());
+        } finally {
+            SQL_Utils.closeConnection(connection);
+        }
+    }
+
+    public static void saveColumnOrderToRow_old(TableView<FolderInfo> table) {
+        connection = ConfigurationSQLHandler.getConnection();
+        String tableName = getCorrectTableById(table.getId());
+
+        if (tableName == null) {
+            Messages.sprintfError("Invalid table ID: " + table.getId());
+            return;
+        }
+
+        boolean isTableAccessible = SQL_Utils.isDatabaseAccessible(connection, tableName);
+        if (!isTableAccessible) {
+            createTableColumns(table.getId());
+        }
+
+        Map<String, Integer> orderMap = new LinkedHashMap<>();
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            TableColumn<FolderInfo, ?> col = table.getColumns().get(i);
+            orderMap.put(col.getId(), i);
+        }
+
+        // Debug logging
+        Messages.sprintf("Saving column order for table: " + table.getId() + " orderMap: " + orderMap);
+        orderMap.forEach((columnId, index) ->
+                Messages.sprintf("Column ID: " + columnId + " at index: " + index));
+
+        String sql = "INSERT OR REPLACE INTO " + tableName + " (" +
+                TableColumnEnum.DATE_DIFFERENCE_RATIO.getColumnName() + ", " +
+                TableColumnEnum.BAD_FILES.getColumnName() + ", " +
+                TableColumnEnum.COPIED.getColumnName() + ", " +
+                TableColumnEnum.FOLDER_FILES.getColumnName() + ", " +
+                TableColumnEnum.IMAGE.getColumnName() + ", " +
+                TableColumnEnum.MEDIA.getColumnName() + ", " +
+                TableColumnEnum.RAW.getColumnName() + ", " +
+                TableColumnEnum.STATUS.getColumnName() + ", " +
+                TableColumnEnum.SUGGESTED.getColumnName() + ", " +
+                TableColumnEnum.VIDEO.getColumnName() + ", " +
+                TableColumnEnum.SIZE.getColumnName() + ", " +
+                TableColumnEnum.DATE_FIX.getColumnName() + ", " +
+                TableColumnEnum.JUST_FOLDER_NAME.getColumnName() + ", " +
+                TableColumnEnum.MAX_DATES.getColumnName() + ", " +
+                TableColumnEnum.MIN_DATE.getColumnName() + ", " +
+                TableColumnEnum.FULL_PATH.getColumnName() +
+                ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            String[] columnIds = {
+                    "dateDifference_ratio", "badFiles", "copied", "folderFiles",
+                    "image", "media", "raw", "status", "suggested", "video",
+                    "size", "dateFix", "justFolderName", "maxDates", "minDate", "fullPath"
+            };
+
+            for (int i = 0; i < columnIds.length; i++) {
+                Integer index = orderMap.get(columnIds[i]);
+                stmt.setInt(i + 1, index != null ? index : 999);
+            }
+
+            stmt.executeUpdate();
+            SQL_Utils.commitChanges(connection);
+
+        } catch (SQLException e) {
+            Messages.sprintfError("SQL error while saving column order: " + e.getMessage());
+        } finally {
+            SQL_Utils.closeConnection(connection);
+        }
+    }
+    public static void restoreColumnOrderFromRow_(TableView<FolderInfo> table) {
+        connection = ConfigurationSQLHandler.getConnection();
+        String tableName = getCorrectTableById(table.getId());
+
+        if (tableName == null || !SQL_Utils.isDatabaseAccessible(connection, tableName)) {
+            return;
+        }
+
+        String sql = "SELECT * FROM " + tableName + " LIMIT 1";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                Map<String, Integer> orderMap = new LinkedHashMap<>();
+                ResultSetMetaData metaData = rs.getMetaData();
+
+                for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                    String columnName = metaData.getColumnName(i);
+                    int order = rs.getInt(i);
+                    orderMap.put(columnName, order);
+                }
+
+                // Sort columns based on saved order
+                table.getColumns().sort((col1, col2) -> {
+                    Integer order1 = orderMap.get(col1.getId());
+                    Integer order2 = orderMap.get(col2.getId());
+                    if (order1 == null) order1 = 999;
+                    if (order2 == null) order2 = 999;
+                    return order1.compareTo(order2);
+                });
+            }
+        } catch (SQLException e) {
+            Messages.sprintfError("Error restoring column order: " + e.getMessage());
+        } finally {
+            SQL_Utils.closeConnection(connection);
+        }
+    }
+
 
     private static boolean createTableById(String tableId) {
         connection = ConfigurationSQLHandler.getConnection();

@@ -55,7 +55,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     public static boolean closeConnection(Connection connection) {
         Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
-            if (!isDbConnected(connection)) {
+            if (isDbConnected(connection)) {
                 connection.close();
                 return true;
             }

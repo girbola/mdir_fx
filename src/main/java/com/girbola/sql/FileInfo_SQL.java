@@ -151,9 +151,7 @@ public class FileInfo_SQL {
         Path folder = null;
         try {
             folder = Paths.get(list.get(0).getOrgPath()).getParent();
-            if (Files.exists(folder)) {
-
-            } else {
+            if (!Files.exists(folder)) {
                 return false;
             }
         } catch (Exception e) {
@@ -191,6 +189,8 @@ public class FileInfo_SQL {
         } catch (Exception ex) {
             Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED: " + ex.getMessage());
             return false;
+        } finally {
+            SQL_Utils.closeConnection(connection);
         }
     }
 
@@ -342,6 +342,7 @@ public class FileInfo_SQL {
         }
         return list;
     }
+
     /*
      * FileInfo
      */

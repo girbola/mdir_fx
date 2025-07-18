@@ -1,8 +1,8 @@
-
 package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.options.OptionsComponent;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.datefixer.DateFixer;
@@ -20,6 +20,8 @@ import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
+import java.util.Arrays;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -63,7 +65,6 @@ public class MenuBarController {
 
     @FXML
     private MenuItem menuItem_tools_options_viewIgnoredList;
-
     @FXML
     private CheckMenuItem menuItem_tools_themes_dark;
     @FXML
@@ -72,10 +73,8 @@ public class MenuBarController {
     private CheckMenuItem menuItem_tools_showFullPath;
     @FXML
     private CheckMenuItem menuItem_tools_findImageDuplicates;
-
     @FXML
     private MenuBar menuBar;
-
     @FXML
     private MenuItem menuItem_file_addFolders;
     @FXML
@@ -99,6 +98,9 @@ public class MenuBarController {
     @FXML
     private MenuItem menuItem_help_update;
 
+    CheckMenuItem[] themeMenuItems = {menuItem_tools_themes_light, menuItem_tools_themes_dark};
+
+
     private DuplicateStatistics duplicateStatistics;
 
     private boolean findDuplicate(DuplicateStatistics duplicateStatistics, FileInfo fileInfoToFind, TableView<FolderInfo> table) {
@@ -106,21 +108,14 @@ public class MenuBarController {
         for (FolderInfo folderInfo : table.getItems()) {
             if (folderInfo.getFolderFiles() > 0) {
                 for (FileInfo fileInfoSearching : folderInfo.getFileInfoList()) {
-                    if (!fileInfoSearching.isTableDuplicated() &&
-                            fileInfoSearching.getOrgPath() != fileInfoToFind.getOrgPath() &&
-                            fileInfoSearching.getSize() == fileInfoToFind.getSize() &&
-                            fileInfoSearching.getDate() == fileInfoToFind.getDate()) {
+                    if (!fileInfoSearching.isTableDuplicated() && fileInfoSearching.getOrgPath() != fileInfoToFind.getOrgPath() && fileInfoSearching.getSize() == fileInfoToFind.getSize() && fileInfoSearching.getDate() == fileInfoToFind.getDate()) {
                         fileInfoSearching.setTableDuplicated(true);
                         duplicateStatistics.getDuplicateCounter().incrementAndGet();
                         duplicateStatistics.getFolderSavedSize().addAndGet(fileInfoSearching.getSize());
                         if (!needsUpdate) {
                             needsUpdate = true;
                         }
-                        Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind
-                                + "  fileInfoToFind.isTableDuplicated() "
-                                + fileInfoToFind.isTableDuplicated() + " DUPLICATED file: "
-                                + fileInfoSearching.getOrgPath() + " fileInfoSearch.isTableDuplicated() "
-                                + fileInfoSearching.isTableDuplicated() + " needsUpdate? " + needsUpdate);
+                        Messages.sprintf("FOUND fileInfoToFind: " + fileInfoToFind + "  fileInfoToFind.isTableDuplicated() " + fileInfoToFind.isTableDuplicated() + " DUPLICATED file: " + fileInfoSearching.getOrgPath() + " fileInfoSearch.isTableDuplicated() " + fileInfoSearching.isTableDuplicated() + " needsUpdate? " + needsUpdate);
                     }
                 }
             }
@@ -136,8 +131,7 @@ public class MenuBarController {
             duplicateStatistics.getFolderCounter().incrementAndGet();
             for (FileInfo fileInfoToFind : folderInfo.getFileInfoList()) {
                 if (!fileInfoToFind.isIgnored() && !fileInfoToFind.isTableDuplicated()) {
-                    Messages.sprintf(
-                            "fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
+                    Messages.sprintf("fileInfoToFind " + fileInfoToFind + " dup? " + fileInfoToFind.isTableDuplicated());
                     boolean duplicated = findDuplicate(duplicateStatistics, fileInfoToFind, tableToSearch);
                     if (duplicated) {
                         folderNeedsToUpdate = true;
@@ -168,8 +162,7 @@ public class MenuBarController {
     private void menuItem_file_addFolders_action(ActionEvent event) {
         Messages.sprintf("menuItem_file_addFolders_action pressed");
         model_main.getMonitorExternalDriveConnectivity().cancel();
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
-                Main.bundle);
+        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"), Main.bundle);
 
         Parent parent = null;
         FolderScannerController folderScannerController = null;
@@ -178,9 +171,7 @@ public class MenuBarController {
             folderScannerController = (FolderScannerController) loader.getController();
         } catch (Exception ex) {
             ex.printStackTrace();
-            Messages.errorSmth(ERROR,
-                    "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex,
-                    Misc.getLineNumber(), true);
+            Messages.errorSmth(ERROR, "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex, Misc.getLineNumber(), true);
         }
         Stage fc_stage = new Stage();
 //		fc_stage.setWidth(conf.getScreenBounds().getWidth());
@@ -194,8 +185,7 @@ public class MenuBarController {
         });
 
         Scene fc_scene = new Scene(parent, 800, 400);
-        fc_scene.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+        fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);
@@ -261,12 +251,9 @@ public class MenuBarController {
             protected Void call() throws Exception {
 
 
-                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSorted_table(),
-                        "Sorted -> Sorted");
-                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(),
-                        "Sorted -> SortIt");
-                removeImageDuplicates(duplicateStatistics, model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(),
-                        "SortIt -> SortIt");
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSorted_table(), "Sorted -> Sorted");
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSorted_table(), model_main.tables().getSortIt_table(), "Sorted -> SortIt");
+                removeImageDuplicates(duplicateStatistics, model_main.tables().getSortIt_table(), model_main.tables().getSortIt_table(), "SortIt -> SortIt");
                 return null;
             }
 
@@ -276,8 +263,7 @@ public class MenuBarController {
             TableUtils.updateAllFolderInfos(model_main.tables());
             TableUtils.cleanTables(model_main.tables());
 
-            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter()
-                    + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
+            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter() + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
 
             duplicateStatistics.getDuplicateCounter().set(0);
             duplicateStatistics.getFileCounter().set(0);
@@ -311,7 +297,7 @@ public class MenuBarController {
 
     @FXML
     private void menuItem_file_import_action(ActionEvent event) {
-        // t�h�n tarvitaan folderinfo creator
+        // thn tarvitaan folderinfo creator
         // srth;
         Stage stage = (Stage) menuBar.getScene().getWindow();
 
@@ -332,8 +318,7 @@ public class MenuBarController {
                 Messages.warningText("noMediaFilesFoundInCurrentDir");
                 return;
             } else {
-                Task<Void> dateFixer = new DateFixer(Paths.get(folderInfo.getFolderPath()), folderInfo, model_main,
-                        true);
+                Task<Void> dateFixer = new DateFixer(Paths.get(folderInfo.getFolderPath()), folderInfo, model_main, true);
                 Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
                 dateFixer_th.start();
                 // new ImportImages(model_main.getScene(), folderInfo, model_main, true);
@@ -360,8 +345,7 @@ public class MenuBarController {
         Messages.sprintf("menuItem_file_load_action");
 //		boolean load = true;
         if (Main.getChanged()) {
-            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
-                    bundle.getString("changesMadeDataLost"));
+            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("changesMadeDataLost"));
             dialog.getDialogPane().getButtonTypes().remove(1);
             Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
             Optional<ButtonType> result = dialog.showAndWait();
@@ -378,10 +362,8 @@ public class MenuBarController {
     }
 
     private void loadTablesContents() {
-        if (Files.exists(
-                Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
-            Messages.sprintf("Folderinfo database foudn at appdata path: "
-                    + (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
+        if (Files.exists(Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()))) {
+            Messages.sprintf("Folderinfo database foudn at appdata path: " + (Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
             model_main.load();
         }
     }
@@ -426,8 +408,7 @@ public class MenuBarController {
                 viewWebPage(programHomePage.getText());
             }
         });
-        root.getChildren().addAll(programName, programVersion, programCopyRight, programUserInfo, programMoreInfo,
-                programHomePage);
+        root.getChildren().addAll(programName, programVersion, programCopyRight, programUserInfo, programMoreInfo, programHomePage);
 
         Dialog dialog = new Dialog();
         DialogPane dialogPane = new DialogPane();
@@ -475,15 +456,28 @@ public class MenuBarController {
 
         menuItem_tools_showFullPath.selectedProperty().bindBidirectional(conf.showFullPathProperty());
         if (conf.getThemePath().endsWith("light/")) {
-            menuItem_tools_themes_light.setSelected(true);
-            menuItem_tools_themes_dark.setSelected(false);
+            switchThemeItemOn("light");
         } else if (conf.getThemePath().endsWith("dark/")) {
-            menuItem_tools_themes_light.setSelected(false);
             menuItem_tools_themes_dark.setSelected(true);
+            menuItem_tools_themes_light.setSelected(false);
         } else {
             sprintf("Cannot find theme:" + conf.getThemePath());
             Messages.errorSmth(ERROR, "Problem by find theme path", null, Misc.getLineNumber(), false);
         }
+    }
+
+    private void switchThemeItemOn(String dark) {
+        Platform.runLater(() -> {
+            for (CheckMenuItem item : themeMenuItems) {
+                Messages.sprintf("item.getText(): " + item.getId());
+                if (item.getId().contains(ThemeType.DARK.getValue())) {
+                    item.setSelected(true);
+                } else {
+                    item.setSelected(false);
+                }
+                Messages.sprintf("item.getText(): " + item.getText());
+            }
+        });
     }
 
     @FXML
@@ -495,8 +489,7 @@ public class MenuBarController {
             // Main.class.getResource(conf.getThemePath() +
             // "dateFixer.css").toExternalForm());
 
-            viewIgnored_scene.getStylesheets()
-                    .add(Main.class.getResource(Main.conf.getThemePath() + "viewignoredlist.css").toExternalForm());
+            viewIgnored_scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + "viewignoredlist.css").toExternalForm());
             Stage viewIgnored_stage = new Stage();
             viewIgnored_stage.setScene(viewIgnored_scene);
             viewIgnored_stage.show();
@@ -508,26 +501,26 @@ public class MenuBarController {
 
     @FXML
     private void menuItem_tools_themes_dark_action(ActionEvent event) {
-        Main.scene_Switcher.getScene_main().getStylesheets().clear();
-        conf.setCurrentTheme("dark");
-        menuItem_tools_themes_light.setSelected(false);
-        Main.scene_Switcher.getScene_main().getStylesheets()
-                .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        ConfigurationSQLHandler.updateConfiguration();
+        Messages.sprintf("menuItem_tools_themes_dark_action pressed: " + conf.getThemePath());
+        Platform.runLater(() -> {
+            Main.scene_Switcher.getScene_main().getStylesheets().clear();
+            conf.setCurrentTheme(ThemeType.DARK.getValue());
+            switchThemeItemOn(ThemeType.DARK.getValue());
+            Main.scene_Switcher.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+            ConfigurationSQLHandler.updateConfiguration();
+        });
     }
 
     @FXML
     private void menuItem_tools_themes_light_action(ActionEvent event) {
-        Main.scene_Switcher.getScene_main().getStylesheets().clear();
-        conf.setCurrentTheme("light");
-        menuItem_tools_themes_dark.setSelected(false);
-        Main.scene_Switcher.getScene_main().getStylesheets()
-                .add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        ConfigurationSQLHandler.updateConfiguration();
+//        Main.scene_Switcher.getScene_main().getStylesheets().clear();
+//        conf.setCurrentTheme(light);
+//        switchThemeItemOn(light);
+//        Main.scene_Switcher.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+//        ConfigurationSQLHandler.updateConfiguration();
     }
 
     private void viewWebPage(String string) {
-
         try {
             Desktop.getDesktop().browse(new URL(string).toURI());
         } catch (IOException e) {
@@ -535,21 +528,5 @@ public class MenuBarController {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        /*
-         * Dialog dialog = new Dialog(); DialogPane dp = new DialogPane();
-         * dialog.setDialogPane(dp);
-         *
-         * WebView wv = new WebView(); WebEngine we = wv.getEngine();
-         * dialog.setResizable(true); VBox vbox = new VBox(wv); we.load(string);
-         * HostServices.getHostServices().showDocument("http://www.yahoo.com");
-         * dp.setContent(vbox); ButtonType buttonTypeYes = new ButtonType("OK",
-         * ButtonBar.ButtonData.OK_DONE);
-         *
-         * dialog.getDialogPane().getButtonTypes().addAll(buttonTypeYes);
-         *
-         * Optional<ButtonType> result = dialog.showAndWait(); if ((result.isPresent())
-         * && (result.get().getText().equals("OK"))) { dialog.close(); }
-         */
     }
-
 }
