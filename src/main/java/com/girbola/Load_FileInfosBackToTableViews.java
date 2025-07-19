@@ -1,27 +1,18 @@
 package com.girbola;
 
-import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DriveInfoUtils;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SavedFolderInfosSQL;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import javafx.application.Platform;
 import javafx.concurrent.Service;
@@ -35,7 +26,6 @@ public class Load_FileInfosBackToTableViews extends Service<Boolean> {
         this.modelMain = modelMain;
         this.connection = connection;
     }
-
 
     @Override
     protected Task<Boolean> createTask() {
@@ -62,8 +52,6 @@ public class Load_FileInfosBackToTableViews extends Service<Boolean> {
                         }
                         Messages.sprintf("=============SavedFolderInfoStatus: " + storedFolderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + storedFolderInfoStatus);
                         FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(storedFolderInfoStatus.getFolderPath());
-
-                        Messages.sprintf("FolderInfo= " + folderInfo.getFolderPath() + " folderInfo.size::::::::. " + folderInfo.getFileInfoList().size());
 
                         try {
 

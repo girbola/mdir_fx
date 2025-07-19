@@ -1,6 +1,4 @@
-
 package com.girbola.controllers.datefixer;
-
 
 import com.girbola.Main;
 import com.girbola.SceneNameType;
@@ -66,36 +64,36 @@ public class DateFixerController {
     private ModelMain model_main;
 
     //@formatter:off
-	@FXML private Button show_only_selected_btn;
-	@FXML private Button show_all_btn;
-	@FXML private MenuButton move_menuBtn;
-	@FXML private TableView<MetaData> metaDataTableView;
-	@FXML private CheckBox ignored_chk;
-	@FXML private CheckBox copied_chk;
-	@FXML private HBox infoTable_container_root;
-	@FXML private VBox vbox_image_test2;
-	@FXML private VBox vbox_image_test21;
-	@FXML private VBox rightInfoPanel;
 	@FXML private AnchorPane df_anchorPane;
-	@FXML private TilePane df_tilePane;
-	@FXML private ScrollPane df_scrollPane;
-	@FXML private TextField filePath_tf;
-	@FXML private TilePane quickPick_tilePane;
-	@FXML private VBox vbox_image_test;
-	@FXML private VBox vbox_image_test1;
+	@FXML private Button addToBatch_btn;
+	@FXML private Button applyChanges_btn;
+	@FXML private Button close_btn;
+	@FXML private Button dateFix_btn;
+	@FXML private Button folderize_btn;
+	@FXML private Button hideInfoTables_btn;
+	@FXML private Button hideRightInfo_btn;
+	@FXML private Button show_all_btn;
+	@FXML private Button show_only_selected_btn;
+	@FXML private CheckBox copied_chk;
+	@FXML private CheckBox ignored_chk;
+	@FXML private HBox infoTable_container_root;
 	@FXML private Label bad_stat;
 	@FXML private Label confirmed_stat;
 	@FXML private Label good_stat;
 	@FXML private Label images_stat;
 	@FXML private Label suggested_stat;
 	@FXML private Label videos_stat;
-	@FXML private Button hideRightInfo_btn;
-	@FXML private Button hideInfoTables_btn;
-	@FXML private Button applyChanges_btn;
-	@FXML private Button addToBatch_btn;
-	@FXML private Button close_btn;
-	@FXML private Button dateFix_btn;
-	@FXML private Button folderize_btn;
+	@FXML private MenuButton move_menuBtn;
+	@FXML private ScrollPane df_scrollPane;
+	@FXML private TableView<MetaData> metaDataTableView;
+	@FXML private TextField filePath_tf;
+	@FXML private TilePane df_tilePane;
+	@FXML private TilePane quickPick_tilePane;
+	@FXML private VBox rightInfoPanel;
+	@FXML private VBox vbox_image_test1;
+	@FXML private VBox vbox_image_test21;
+	@FXML private VBox vbox_image_test2;
+	@FXML private VBox vbox_image_test;
 
 	// MISC TAB==========
 

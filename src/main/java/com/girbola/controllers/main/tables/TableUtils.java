@@ -734,10 +734,12 @@ public class TableUtils {
              * Connection status when this was saved Connects to current folder for existing
              * or creates new one called fileinfo.db
              */
+            // Inserts all data info fileinfo.db
+            FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
+
             Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
             fileList_connection.setAutoCommit(false);
-            // Inserts all data info fileinfo.db
-            FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
+
             FolderInfo_SQL.saveFolderInfoToDatabase(fileList_connection, folderInfo);
             SQL_Utils.commitChanges(fileList_connection);
             SQL_Utils.closeConnection(fileList_connection);

@@ -7,11 +7,12 @@ import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.controllers.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
-import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -22,18 +23,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static common.utils.FileUtils.supportedImage;
 
 public class BottomController {
 
@@ -81,24 +76,6 @@ public class BottomController {
         });
     }
 
-    @FXML
-    private void dates_ttv_btn_action(ActionEvent event) {
-        try {
-            Parent parent = null;
-            FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("fxml/datestreetableview/DatesTreeTableView.fxml"), Main.bundle);
-            parent = loader.load();
-            DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader
-                    .getController();
-            datesTreeTableViewController.init(model_main);
-            Scene scene = new Scene(parent);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     private void collect_action(ActionEvent event) {

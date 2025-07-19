@@ -16,6 +16,8 @@ import javafx.scene.image.ImageView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.scene.paint.Color;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -30,12 +32,25 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 
     public TableCell_DateFixer(ModelMain modelMain) {
         this.modelMain = modelMain;
-        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
-        dateFixerButton.setGraphic(view_iv);
+//        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
+//        dateFixerButton.setGraphic(view_iv);
+//        dateFixerButton.setStyle(null);
+//        dateFixerButton.getStyleClass().add("view_btn");
+//        dateFixerButton.setDisable(false);
+
+
         dateFixerButton.setStyle(null);
+
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.setIconLiteral("far-edit");
+        fontIcon.setIconSize(20);
+        fontIcon.setIconColor(Color.WHITESMOKE);
         dateFixerButton.getStyleClass().add("view_btn");
         dateFixerButton.setDisable(false);
+
+        dateFixerButton.setGraphic(fontIcon);
     }
+
 
     @Override
     public void updateItem(String item, boolean empty) {

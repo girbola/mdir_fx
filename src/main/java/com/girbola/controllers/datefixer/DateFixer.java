@@ -92,13 +92,8 @@ public class DateFixer extends Task<Void> {
                 });
 
                 sprintf("conf.getThemePath(): " + conf.getThemePath());
-                if(conf.getThemePath().equalsIgnoreCase(ThemeType.DARK.getValue())) {
-                    scene_dateFixer.getStylesheets().add(
-                            Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
-                } else if(conf.getThemePath().equalsIgnoreCase(ThemeType.DARK.getValue())) {
-                    scene_dateFixer.getStylesheets().addAll(
-                            Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MODENA.getType()).toExternalForm(), Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
-                }
+                scene_dateFixer.getStylesheets().add(
+                        Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
                 Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
                 Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());

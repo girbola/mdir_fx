@@ -41,6 +41,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
@@ -66,6 +67,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import uk.co.caprica.vlcj.player.list.PlaybackMode;
 
 import static com.girbola.Main.*;
 import static com.girbola.messages.Messages.sprintf;
@@ -102,7 +104,9 @@ public class TableController {
     @FXML private Label selectedLbl;
 	@FXML private Label allFilesCopied_lbl;
 	@FXML private Label allFilesTotal_lbl;
-	@FXML private MenuItem checkChanges_mi;
+    @FXML private MenuButton menuReload;
+    @FXML private MenuButton menuAction;
+    @FXML private MenuItem checkChanges_mi;
 	@FXML private MenuItem mergeMove_MenuItem;
 	@FXML private MenuItem reload_all_mi;
 	@FXML private MenuItem select_dateDifference_btn;
@@ -401,37 +405,49 @@ public class TableController {
         if (visibles <= 1 && table.isVisible()) {
             return;
         }
+
+        Bounds btopMenuButtonFlowPane = topMenuButtonFlowPane.getBoundsInLocal();
+        Messages.sprintf("topMenuButtonFlowPane: " + topMenuButtonFlowPane + " btopMenuButtonFlowPane; " + btopMenuButtonFlowPane);
+
         Messages.sprintf("model_main.tables().tablesParentWidthProperty();: " + model_main.tables().getTablesParentWidth());
+
         table.setVisible(!table.isVisible());
+
         tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
+
+
         //hideablePane.setVisible(!hideablePane.isVisible());
-        tableInformation_flowpane.setVisible(!table.isVisible());
+
+//        tableInformation_flowpane.setVisible(!table.isVisible());
         tableInformation_flowpane.getStyleClass().add("notOk");
         Bounds b = hide_btn.getBoundsInLocal();
 
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
         if (!table.isVisible()) {
-            table_Vbox.setPrefWidth(b.getWidth());
-            table_Vbox.setMinWidth(b.getWidth());
-            table_Vbox.setMaxWidth(b.getWidth());
+
 //            tableInformation_flowpane.setVisible(false);
             for (Node node : topMenuButtonFlowPane.getChildren()) {
                 Messages.sprintf("WHAAAAT: " + node.getId());
                 if (node instanceof Button) {
-
                     Button btn = (Button) node;
                     Messages.sprintf("BUTTON FOUND: " + btn.getId());
                     Platform.runLater(() -> {
                         btn.setVisible(false);
                     });
                 }
+//                else {
+//                    Platform.runLater(() -> {
+//                        node.setVisible(true);
+//                    });
+//                }
             }
-
+//            table.setVisible(false);
+//            table_Vbox.setPrefWidth(b.getWidth());
+//            table_Vbox.setMinWidth(b.getWidth());
+//            table_Vbox.setMaxWidth(b.getWidth());
             Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
         } else {
-            table_Vbox.setPrefWidth(-1);
-            table_Vbox.setMinWidth(-1);
-            table_Vbox.setMaxWidth(-1);
+
             for (Node node : topMenuButtonFlowPane.getChildren()) {
                 Messages.sprintf("222WHAAAAT: " + node.getId());
                 if (node instanceof Button) {
@@ -441,8 +457,16 @@ public class TableController {
                         btn.setVisible(true);
                     });
                 }
+//                else {
+//                    Platform.runLater(() -> {
+//                        node.setVisible(false);
+//                    });
+//                }
             }
-
+//            table.setVisible(true);
+//            table_Vbox.setPrefWidth(-1);
+//            table_Vbox.setMinWidth(-1);
+//            table_Vbox.setMaxWidth(-1);
 //            tableInformation_flowpane.setVisible(true);
             Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
         }
@@ -626,14 +650,11 @@ public class TableController {
                 folderInfo.setChanged(true);
                 FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
-                Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
-                SQL_Utils.isDbConnected(connection);
-                SQL_Utils.setAutoCommit(connection, false);
 
-                FileInfo_SQL.insertFileInfoListToDatabase(connection, folderInfo.getFileInfoList(), false);
+                FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
 
-                SQL_Utils.commitChanges(connection);
-                SQL_Utils.closeConnection(connection);
+//                SQL_Utils.commitChanges(connection);
+//                SQL_Utils.closeConnection(connection);
 
             }
             TableUtils.refreshAllTableContent(model_main.tables());

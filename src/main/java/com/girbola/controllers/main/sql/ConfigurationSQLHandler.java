@@ -4,15 +4,12 @@ import com.girbola.Main;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.Configuration_Type;
 import com.girbola.controllers.main.SQLTableEnums;
-import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.DriveInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import java.util.List;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -47,30 +44,30 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
     public static final String WORK_DIR = "workDir";
     public static final String WORK_DIR_SERIAL_NUMBER = "workDirSerialNumber";
 
-
-    /**
-     * Updates the configuration in the database.
-     */
-    public static synchronized void updateConfiguration() {
-        checkConnection();
-
-        if (!SQL_Utils.isDatabaseAccessible(connection, Main.conf.getConfiguration_db_fileName())) {
-            createConfigurationDatabase();
-        }
-
+    public static boolean checkConnection() {
         try {
-            // Ensure the 'currentTheme' column exists.
-            ensureAllColumnExists(connection);
+            // Check if the connection is valid
+            if (!SQL_Utils.isDbConnected(connection)) {
+                connection = SQL_Utils.createConfigurationConfig();
+                if (connection == null) {
+                    Messages.sprintfError("Failed to create new configuration connection");
+                    return false;
+                }
+                SQL_Utils.setAutoCommit(connection, false);
+                Messages.sprintf("Configuration database opened: " + SQL_Utils.getUrl(connection));
+            }
 
-            insert_Configuration(Main.conf);
-            SQL_Utils.commitChanges(connection);
-            SQL_Utils.closeConnection(connection);
-        } catch (Exception e) {
-            e.printStackTrace();
+            // Ensure AutoCommit is disabled
+            if (connection.getAutoCommit()) {
+                SQL_Utils.setAutoCommit(connection, false);
+            }
+
+            return true;
+        } catch (SQLException e) {
+            Messages.sprintfError("Error checking the database connection: " + e.getMessage());
+            return false;
         }
-        //SQL_Utils.closeConnection(connection);
     }
-
 
     public static boolean createConfigurationDatabase() {
         Messages.sprintfError("createConfiguration_Table: ");
@@ -122,7 +119,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
 
             try (Statement stmt = localConnection.createStatement()) {
                 stmt.execute(sql);
-                boolean result = insert_Configuration(Main.conf);
+                boolean result = insertConfiguration(Main.conf);
                 if (result) {
 
                     createIgnoredListTable(Main.conf);
@@ -150,71 +147,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
 //                }
 //            }
 //        }
-    }
-
-    public static boolean createConfigurationDatabase_() {
-        Messages.sprintfError("createConfiguration_Table: ");
-
-        // Use try-with-resources to ensure connection is properly closed
-        try (Connection connection = getConnection()) {
-            if (connection == null) {
-                Messages.sprintfError("Could not establish database connection");
-                boolean doubleCheck = checkConnection();
-                if (!doubleCheck) {
-                    Messages.sprintfError("Failed to establish database connection");
-                    return false;
-                }
-
-            }
-
-            // Set timeout for busy connections
-            try (Statement timeout = connection.createStatement()) {
-                timeout.execute("PRAGMA busy_timeout = 30000"); // 30 second timeout
-            }
-
-            //@formatter:off
-            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType() + " ("
-                    + ID + " INTEGER PRIMARY KEY,"
-                    + BETTER_THUMBNAIL_QUALITY + " BOOLEAN, "
-                    + CONFIRM_ON_EXIT + " BOOLEAN, "
-                    + ID_COUNTER + " INTEGER UNIQUE, "
-                    + SHOW_FULL_PATH + " BOOLEAN, "
-                    + SHOW_HINTS + " BOOLEAN, "
-                    + SHOW_TOOLTIPS + " BOOLEAN, "
-                    + CURRENTTHEME + " TEXT, "
-                    + VLC_PATH + " TEXT, "
-                    + VLC_SUPPORT + " BOOLEAN, "
-                    + SAVE_DATA_AS_HD + " TEXT, "
-                    + WINDOW_START_POSITION_X + " DOUBLE DEFAULT ( -1), "
-                    + WINDOW_START_POSITION_Y + " DOUBLE DEFAULT ( -1), "
-                    + WINDOW_START_WIDTH + " DOUBLE DEFAULT ( -1), "
-                    + WINDOW_START_HEIGTH + " DOUBLE DEFAULT ( -1), "
-                    + IMAGE_VIEW_X_POSITION + " DOUBLE, "
-                    + IMAGE_VIEW_Y_POSITION + " DOUBLE, "
-                    + WORK_DIR_SERIAL_NUMBER + " TEXT, "
-                    + WORK_DIR + " TEXT)";
-            //@formatter:on
-
-            // Execute all operations within a single transaction
-            connection.setAutoCommit(false);
-
-            try (Statement stmt = connection.createStatement()) {
-                stmt.execute(sql);
-                insert_Configuration(Main.conf);
-                createIgnoredListTable(Main.conf);
-
-                connection.commit();
-                SQL_Utils.closeConnection(connection);
-                return true;
-            } catch (Exception e) {
-                connection.rollback();
-                Messages.sprintfError("Cannot create configuration database: " + e.getMessage());
-                return false;
-            }
-        } catch (Exception e) {
-            Messages.sprintfError("Database connection error: " + e.getMessage());
-            return false;
-        }
     }
 
     /**
@@ -282,37 +214,28 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
     }
 
     /**
-     * Verifies the state of the database connection and, if necessary, re-establishes it.
-     * If the connection is null or not currently open, a new connection to the SQLite database
-     * is created using provided configuration settings.
-     * <p>
-     * This method also sets the database connection to not auto-commit and logs a message
-     * indicating the database file that has been connected.
+     * Updates the configuration in the database.
      */
-    public static boolean checkConnection() {
-        try {
-            // Check if the connection is valid
-            if (!SQL_Utils.isDbConnected(connection)) {
-                connection = SQL_Utils.createConfigurationConfig();
-                if (connection == null) {
-                    Messages.sprintfError("Failed to create new configuration connection");
-                    return false;
-                }
-                SQL_Utils.setAutoCommit(connection, false);
-                Messages.sprintf("Configuration database opened: " + SQL_Utils.getUrl(connection));
-            }
+    public static synchronized void updateConfiguration() {
+        checkConnection();
 
-            // Ensure AutoCommit is disabled
-            if (connection.getAutoCommit()) {
-                SQL_Utils.setAutoCommit(connection, false);
-            }
-
-            return true;
-        } catch (SQLException e) {
-            Messages.sprintfError("Error checking the database connection: " + e.getMessage());
-            return false;
+        if (!SQL_Utils.isDbAccessible(connection, Main.conf.getConfiguration_db_fileName())) {
+            createConfigurationDatabase();
         }
+
+        try {
+            // Ensure the 'currentTheme' column exists.
+            ensureAllColumnExists(connection);
+
+            insertConfiguration(Main.conf);
+            SQL_Utils.commitChanges(connection);
+            SQL_Utils.closeConnection(connection);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //SQL_Utils.closeConnection(connection);
     }
+
 
     /**
      * Ensures that the 'currentTheme' column exists in the configuration table.
@@ -358,50 +281,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             }
         }
     }
-    //   private static void ensureAllColumnExists(Connection connection) throws Exception {
-//        String configTable = SQLTableEnums.CONFIGURATION.getType();
-//        final String[] columnsSettings = {
-//                betterQualityThumbs + " BOOLEAN,",
-//                confirmOnExit + " BOOLEAN,",
-//                currentTheme + " STRING,",
-//                id + " INTEGER PRIMARY KEY CHECK (id = 0),",
-//                id_counter + " INTEGER UNIQUE,",
-//                imageViewXPos + " DOUBLE,",
-//                imageViewYPos + " DOUBLE,",
-//                saveDataToHD + " STRING,",
-//                showFullPath + " BOOLEAN,",
-//                showHints + " BOOLEAN,",
-//                showTooltips + " BOOLEAN,",
-//                tableShow_asItIs + " BOOLEAN",
-//                tableShow_sortIt + " BOOLEAN,",
-//                tableShow_sorted + " BOOLEAN,",
-//                vlcPath + " STRING,",
-//                vlcSupport + " BOOLEAN,",
-//                windowStartHeigth + " DOUBLE DEFAULT ( -1),",
-//                windowStartPosX + " DOUBLE DEFAULT ( -1),",
-//                windowStartPosY + " DOUBLE DEFAULT ( -1),",
-//                windowStartWidth + " DOUBLE DEFAULT ( -1),",
-//                workDir + " STRING,",
-//                workDirSerialNumber + " STRING"
-//        };
-//
-//        try (Statement stmt = connection.createStatement()) {
-//            for (String column : columnsSettings) {
-//                try {
-//                    String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN "
-//                            + column + ";";
-//                    stmt.executeUpdate(alterTableSQL);
-//                } catch (SQLException e) {
-//                    // Column already exists, ignore this error
-//                    if (!e.getMessage().contains("duplicate column name")) {
-//                        throw e;
-//                    }
-//                }
-//            }
-//        }
-//
-//    }
-
 
     /**
      * Loads the configuration from the database.
@@ -413,7 +292,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         Messages.sprintf("loadConfiguration Loading SQL config: " + Main.conf.getAppDataPath() + " - " + Main.conf.getConfiguration_db_fileName());
 
         checkConnection();
-        if (!SQL_Utils.isDatabaseAccessible(connection, SQLTableEnums.CONFIGURATION.getType()) || !SQL_Utils.isDatabaseAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
+        if (!SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType()) || !SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
             Messages.sprintf("loadConfiguration database not accessible: " + SQLTableEnums.CONFIGURATION.getType());
             createConfigurationDatabase();
         }
@@ -529,58 +408,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
     }
 
-    /**
-     * Loads table columns widths from the database for the provided TableView objects.
-     *
-     * @param tables The Tables object containing the TableView objects.
-     * @return true if the table columns widths are successfully loaded from the database, false otherwise.
-     */
-    public static boolean loadTables(Tables tables) {
-        checkConnection();
-        loadTableColumnsWidths(tables.getSorted_table());
-        loadTableColumnsWidths(tables.getSortIt_table());
-        loadTableColumnsWidths(tables.getAsItIs_table());
-
-        return true;
-    }
-
-    /**
-     * Loads table columns widths from the database for the provided TableView object.
-     *
-     * @param table The TableView object to load the columns widths.
-     * @return true if the table columns widths are successfully loaded from the database, false otherwise.
-     */
-    public static boolean loadTableColumnsWidths(TableView<FolderInfo> table) {
-        Messages.sprintf("loadTableColumnsWidths started: " + table.getId());
-//		final String tableId = table.getId();
-
-        String sql = "SELECT tableColumn, width FROM " + SQLTableEnums.TABLES_COLS.getType() + " WHERE tableColumn = ?";
-        PreparedStatement pstmt;
-        try {
-            pstmt = connection.prepareStatement(sql);
-            for (TableColumn tc : table.getColumns()) {
-                Messages.sprintf("Iterating columns: " + tc.getId());
-                pstmt.setString(1, table.getId() + "_" + tc.getId());
-                pstmt.executeQuery();
-                ResultSet rs = pstmt.executeQuery();
-                while (rs.next()) {
-                    String column = rs.getString("tableColumn");
-                    Messages.sprintf("Loading tablecolumn: " + column + " ID: " + tc.getId());
-                    double width = rs.getDouble("width");
-                    tc.setPrefWidth(width);
-                }
-            }
-            pstmt.execute();
-            pstmt.close();
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-
-    public static boolean insert_Configuration(Configuration configuration) {
+    public static boolean insertConfiguration(Configuration configuration) {
         Messages.sprintf("Inserting insert_Configuration");
         Connection localConnection = null;
 
@@ -614,9 +442,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                     "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
             //@formatter:on
 
-            Messages.sprintf("insert_Configuration: " + sql);
             try (PreparedStatement pstmt = localConnection.prepareStatement(sql)) {
-                Messages.sprintf("insert_Configuration: " + sql);
                 pstmt.setInt(1, configuration_id);
                 pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
                 pstmt.setBoolean(3, configuration.isConfirmOnExit());
@@ -636,12 +462,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 pstmt.setDouble(17, configuration.getImageViewYPosition());
                 pstmt.setString(18, configuration.getWorkDirSerialNumber());
                 pstmt.setString(19, configuration.getWorkDir());
-//                pstmt.setBoolean(20, configuration.getTableShowSortIt());
-//                pstmt.setBoolean(21, configuration.getTableShowSorted());
-//                pstmt.setBoolean(22, configuration.getTableShowAsItIs());
 
-
-                Messages.sprintf(" configuration.getWorkDir()" + configuration.getWorkDir());
                 int result = pstmt.executeUpdate();
 
                 if (result > 0) {
@@ -661,90 +482,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             }
             return false;
         }
-//        finally {
-//            if (localConnection != null) {
-//                try {
-//                    localConnection.close();
-//                } catch (SQLException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-    }
-
-    /**
-     * Inserts or replaces the given Configuration object into the specified database connection.
-     *
-     * @param configuration the Configuration object to insert or replace
-     * @return true if the Configuration object is successfully inserted or replaced, false otherwise
-     */
-    public static boolean insert_Configuration_(Configuration configuration) {
-        Messages.sprintf("Inserting insert_Configuration");
-
-        checkConnection();
-
-        if (SQL_Utils.isDbConnected(connection)) {
-            try {
-                //@formatter:off
-                    String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType()
-                            + "('" + ID + "', "
-                            + "'" + BETTER_THUMBNAIL_QUALITY + "',"
-                            + "'" + CONFIRM_ON_EXIT + "', "
-                            + "'" + ID_COUNTER + "', "
-                            + "'" + SHOW_FULL_PATH + "', "
-                            + "'" + SHOW_HINTS + "', "
-                            + "'" + SHOW_TOOLTIPS + "', "
-                            + "'" + CURRENTTHEME + "', "
-                            + "'" + VLC_PATH + "', "
-                            + "'" + VLC_SUPPORT + "', "
-                            + "'" + SAVE_DATA_AS_HD + "', "
-                            + "'" + WINDOW_START_POSITION_X + "', "
-                            + "'" + WINDOW_START_POSITION_Y + "', "
-                            + "'" + WINDOW_START_WIDTH + "', "
-                            + "'" + WINDOW_START_HEIGTH + "', "
-                            + "'" + IMAGE_VIEW_X_POSITION+ "', "
-                            + "'" + IMAGE_VIEW_Y_POSITION+ "', "
-                            + "'" + WORK_DIR_SERIAL_NUMBER + "', "
-                            + "'" + WORK_DIR +"')"
-                            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-                    //@formatter:on
-                Messages.sprintf("insert_Configuration: " + sql);
-                PreparedStatement pstmt = connection.prepareStatement(sql);
-                pstmt.setInt(1, configuration_id);
-                pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
-                pstmt.setBoolean(3, configuration.isConfirmOnExit());
-                pstmt.setInt(4, configuration.getId_counter().get());
-                pstmt.setBoolean(5, configuration.isShowFullPath());
-                pstmt.setBoolean(6, configuration.isShowHints());
-                pstmt.setBoolean(7, configuration.isShowTooltips());
-                pstmt.setString(8, configuration.getCurrentTheme());
-                pstmt.setString(9, configuration.getVlcPath());
-                pstmt.setBoolean(10, configuration.isVlcSupport());
-                pstmt.setBoolean(11, configuration.isSaveDataToHD());
-                pstmt.setDouble(12, configuration.getWindowStartPosX());
-                pstmt.setDouble(13, configuration.getWindowStartPosY());
-                pstmt.setDouble(14, configuration.getWindowStartWidth());
-                pstmt.setDouble(15, configuration.getWindowStartHeight());
-                pstmt.setDouble(16, configuration.getImageViewXPosition());
-                pstmt.setDouble(17, configuration.getImageViewYPosition());
-                pstmt.setString(18, configuration.getWorkDirSerialNumber());
-                pstmt.setString(19, configuration.getWorkDir());
-
-                Messages.sprintf(" configuration.getWorkDiREPLACE INTOr()" + configuration.getWorkDir());
-                pstmt.executeUpdate();
-                pstmt.close();
-
-                SQL_Utils.commitChanges(connection);
-                //SQL_Utils.closeConnection(connection);
-
-                return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return false;
-
     }
 
     /**
@@ -797,52 +534,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
     }
 
-
-    //    /**
-//     * Saves the widths of the table columns for the specified table into the database.
-//     *
-//     * @param pstmt   The prepared statement for executing SQL queries.
-//     * @param columns The list of table columns.
-//     * @param tableId The ID of the table.
-//     */
-    // @formatter:off
-//	private static void saveTableWidths(PreparedStatement pstmt,
-//			ObservableList<TableColumn<FolderInfo, ?>> columns, String tableId) {
-//		try {
-//			for (TableColumn tc : columns) {
-//				addTableColumn(pstmt, tc, tableId);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-/*
-    *//*
-     * FolderInfos
-     *//*
-    public static boolean savedFolderInfos() {
-        checkConnection();
-
-//@formatter:off
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType()
-                + " (path STRING NOT NULL PRIMARY KEY UNIQUE, "
-                + "justFolderName STRING, "
-                + "tableType STRING NOT NULL, "
-                + "connected BOOLEAN)";
-
-        try {
-            Statement stmt = connection.createStatement();
-            stmt.execute(sql);
-            stmt.close();
-            SQL_Utils.commitChanges(connection);
-            SQL_Utils.closeConnection(connection);
-
-            return true;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-    }*/
     //@formatter:on
     public static Connection getConnection() {
         if (checkConnection()) {

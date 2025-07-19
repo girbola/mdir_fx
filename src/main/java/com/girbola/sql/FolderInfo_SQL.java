@@ -140,30 +140,11 @@ public class FolderInfo_SQL {
         } finally {
             SQL_Utils.setAutoCommit(connection, true);
         }
-
-//        try (Statement stmt = connection.createStatement()) {
-//            for (String sql : alterTableCommands) {
-//                try {
-//                    stmt.executeUpdate(sql);
-//                } catch (SQLException e) {
-//                    if (!e.getMessage().contains("duplicate column name")) {
-//                        // Log and rethrow the exception for any issue other than duplicate column
-//                        Messages.sprintfError("Error altering table: " + e.getMessage());
-//                        throw e;
-//                    } else {
-//                        Messages.sprintfError("Error altering table for duplicated column name: " + e.getMessage());
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            // Use a proper logger instead of e.printStackTrace() in production.
-//            Messages.sprintfError("Overall error altering table: " + e.getMessage());
-//        }
     }
 
     private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert);
+        try (PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert)) {
+
             pstmt.setInt(1, 0);
             pstmt.setInt(2, folderInfo.getStatus());
             pstmt.setBoolean(3, folderInfo.getChanged());
@@ -191,11 +172,9 @@ public class FolderInfo_SQL {
             int[] counter = pstmt.executeBatch();
             Messages.sprintf("COUNTER WERE: " + counter.length);
             pstmt.close();
-//			connection.commit();
             return true;
-//			connection.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            Messages.sprintfError("Error inserting folder info: " + e.getMessage());
             return false;
         }
     }
@@ -213,7 +192,7 @@ public class FolderInfo_SQL {
      * @param path the directory path where the database file is located.
      *             This must be a non-null, non-empty string.
      * @return a FolderInfo object containing the folder's details and associated file information
-     *         if successfully loaded; otherwise, returns null.
+     * if successfully loaded; otherwise, returns null.
      */
     public static FolderInfo loadFolderInfo(String path) {
         if (path == null || path.isEmpty()) {
@@ -344,7 +323,7 @@ public class FolderInfo_SQL {
         folderInfo.setTableType(rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName()));
     }
 
-    public static void saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) {
+    public static void saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) throws SQLException {
 
         try {
 
@@ -360,10 +339,8 @@ public class FolderInfo_SQL {
             insertFolderInfo(connectionMdirFile, folderInfo);
             connectionMdirFile.commit();
 
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-
+        } catch (SQLException ex) {
+            Messages.sprintfError("Error saving folder info to database: " + ex.getMessage());
         } finally {
             SQL_Utils.closeConnection(connectionMdirFile);
         }

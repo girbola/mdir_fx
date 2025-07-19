@@ -7,9 +7,9 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox alignment="CENTER_LEFT" prefWidth="1000.0" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
+<HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
    <children>
-      <HBox alignment="CENTER_LEFT">
+      <HBox alignment="CENTER_LEFT" spacing="2.0">
          <children>
             <Button fx:id="options_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true">
                <font>
@@ -49,11 +49,6 @@
                   <Font size="9.0" />
                </font>
             </Button>
-            <Button fx:id="dates_ttv_btn" mnemonicParsing="false" onAction="#dates_ttv_btn_action" styleClass="bottomButton" text="TreeTableView" wrapText="true">
-               <font>
-                  <Font size="9.0" />
-               </font>
-            </Button>
             <Button fx:id="showWorkdir_btn" mnemonicParsing="false" onAction="#showWorkdir_btn_action" styleClass="bottomButton" text="Work dir" wrapText="true">
                <font>
                   <Font size="9.0" />
@@ -62,6 +57,9 @@
             <Label text="Label" />
             <Label fx:id="debug_pref_width" text="Label" />
          </children>
+         <HBox.margin>
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+         </HBox.margin>
       </HBox>
       <HBox alignment="TOP_RIGHT" prefHeight="25.0" HBox.hgrow="ALWAYS">
          <children>
@@ -74,27 +72,32 @@
                      <font>
                         <Font size="9.0" />
                      </font></Label>
-                  <Label fx:id="drive_space" text="Drive size">
+                  <Label fx:id="drive_space" text="%driveSize">
                      <font>
                         <Font size="9.0" />
-                     </font></Label>
-                  <Label fx:id="drive_spaceLeft" text="Drive space left">
+                     </font>
+                  </Label>
+                  <Label text="/">
                      <font>
                         <Font size="9.0" />
-                     </font></Label>
-                  <Label fx:id="drive_connected" text="Drive is connected">
+                     </font>
+                  </Label>
+                  <Label fx:id="drive_spaceLeft" text="%driveSpaceLeft">
                      <font>
                         <Font size="9.0" />
-                     </font></Label>
+                     </font>
+                  </Label>
+                  <Label fx:id="drive_connected" text="   ">
+                     <font>
+                        <Font size="9.0" />
+                     </font>
+                  </Label>
                </children>
             </HBox>
          </children>
          <HBox.margin>
-            <Insets />
+            <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
          </HBox.margin>
-         <padding>
-            <Insets right="1.0" />
-         </padding>
       </HBox>
    </children>
    <padding>

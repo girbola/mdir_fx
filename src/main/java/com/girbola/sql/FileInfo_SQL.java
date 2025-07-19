@@ -140,58 +140,86 @@ public class FileInfo_SQL {
      * otherwise, returns false.
      */
     // @formatter:on
-    public static boolean insertFileInfoListToDatabase(Connection connection, List<FileInfo> list, boolean isWorkDir) {
-        Messages.sprintf("insertFileInfoListToDatabase tableCreated Started");
-//        if (!isWorkDir) {
-//            boolean clearTable = SQL_Utils.clearTable(connection, SQL_Enums.FILEINFO.getType());
-//            if (clearTable) {
-//                Messages.sprintf("FileInfo table cleared");
-//            }
-//        }
+    public static boolean insertFileInfoListToDatabase(FolderInfo folderInfo, boolean isWorkDir) {
+
+        Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+        SQL_Utils.isDbConnected(connection);
+        SQL_Utils.setAutoCommit(connection, false);
+
+        List<FileInfo> list = folderInfo.getFileInfoList();
+
+        if (connection == null || list == null || list.isEmpty()) {
+            Messages.sprintfError("Invalid parameters provided to insertFileInfoListToDatabase");
+            return false;
+        }
+
+        Messages.sprintf("insertFileInfoListToDatabase started");
         Path folder = null;
         try {
             folder = Paths.get(list.get(0).getOrgPath()).getParent();
             if (!Files.exists(folder)) {
+                Messages.sprintfError("Parent folder does not exist: " + folder);
                 return false;
             }
         } catch (Exception e) {
-            Messages.sprintf("Cannot get path for the folder");
+            Messages.sprintfError("Cannot get path for the folder: " + e.getMessage());
             return false;
         }
-        SqliteConnection.connector(folder, Main.conf.getMdir_db_fileName());
-        try {
-            SQL_Utils.setAutoCommit(connection, false);
 
+        try {
             boolean tableCreated = createFileInfoTable(connection);
-            if (tableCreated) {
-                Messages.sprintf("insertFileInfoListToDatabase tableCreated");
-            } else {
-                Messages.sprintfError("insertFileInfoListToDatabase NOT tableCreated");
+            if (!tableCreated) {
+                Messages.sprintfError("Failed to create FileInfo table");
+                SQL_Utils.closeConnection(connection);
+                return false;
             }
+            Messages.sprintf("FileInfo table created/verified");
+
             if (!SQL_Utils.isDbConnected(connection)) {
-                Messages.sprintfError("insertFileInfoListToDatabase were NOT connected");
+                Messages.sprintfError("Database connection lost");
+                SQL_Utils.closeConnection(connection);
                 return false;
             }
 
-            PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert);
+            try (PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert)) {
+                ensureFileInfoColumnsExists(connection);
+                int batchSize = 0;
+                final int BATCH_LIMIT = 1000;
 
-            ensureFileInfoColumnsExists(connection);
+                for (FileInfo fileInfo : list) {
+                    Messages.sprintf("Processing file: {}", fileInfo.getOrgPath());
+                    if (!addToFileInfoDB(pstmt, fileInfo)) {
+                        throw new SQLException("Failed to add file info to database: " + fileInfo.getOrgPath());
+                    }
 
-            for (FileInfo fileInfo : list) {
-                Messages.sprintf("=====addToFileInfoDB started: " + fileInfo.getOrgPath());
-                addToFileInfoDB(pstmt, fileInfo);
+                    batchSize++;
+                    if (batchSize >= BATCH_LIMIT) {
+                        pstmt.executeBatch();
+                        connection.commit();
+                        batchSize = 0;
+                    }
+                }
+
+                if (batchSize > 0) {
+                    pstmt.executeBatch();
+                    connection.commit();
+                }
+
+                Messages.sprintf("Successfully inserted all file info records");
+                return true;
             }
-            pstmt.executeBatch();
-            pstmt.close();
-            SQL_Utils.commitChanges(connection);
-            Messages.sprintf("**insertFileInfoListToDatabase tableCreated DONE");
-            return true;
         } catch (Exception ex) {
-            Messages.sprintfError("insertFileInfoListToDatabase tableCreated FAILED: " + ex.getMessage());
-            return false;
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                Messages.sprintfError("Failed to rollback transaction: " + rollbackEx.getMessage());
+
+            }
+            Messages.sprintfError("Failed to insert file info records: " + ex.getMessage());
         } finally {
             SQL_Utils.closeConnection(connection);
         }
+        return true;
     }
 
     private static void ensureFileInfoColumnsExists(Connection connection) throws SQLException {
@@ -354,8 +382,6 @@ public class FileInfo_SQL {
         }
 
         final String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FILEINFO.getType() + " (" + String.join(",", fileInfoColumnsSQL) +");";
-
-        Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
 
 		try {
 			Statement stmt = connection.createStatement();
