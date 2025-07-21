@@ -9,12 +9,9 @@ import com.girbola.messages.Messages;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class FileInfo_SQL {
-
-    private static final String ERROR = FileInfo_SQL.class.getName();
 
     final static String[] fileInfoColumns = {(
             FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " +
@@ -46,7 +43,6 @@ public class FileInfo_SQL {
                     FileInfoConstants.THUMB_LENGTH + " INTEGER, " +
                     FileInfoConstants.FILEHISTORIES + " STRING"
     )};
-
     final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
             + FileInfoConstants.ORG_PATH + ", "
             + FileInfoConstants.WORK_DIR + ", "
@@ -76,7 +72,7 @@ public class FileInfo_SQL {
             + FileInfoConstants.THUMB_LENGTH + ", "
             + FileInfoConstants.FILEHISTORIES + ")"
             + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-
+    private static final String ERROR = FileInfo_SQL.class.getName();
 
     // @formatter:on
     public static boolean addToFileInfoDB(PreparedStatement pstmt, FileInfo fileInfo) {
@@ -285,8 +281,9 @@ public class FileInfo_SQL {
 			Messages.sprintf("Connection were null!");
 			return false;
 		}
-		final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + "(" + String.join(",", fileInfoColumns) +");";
-Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
+		final String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FILEINFO.getType() + " ("
+                + String.join(",", fileInfoColumns) +");";
+        Messages.sprintf("CREATE TABLE IF NOT EXISTS: " + sql);
 
 		try {
 			Statement stmt = connection.createStatement();

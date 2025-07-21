@@ -25,6 +25,7 @@ package com.girbola;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.ConfigurationUtils;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
@@ -167,7 +168,6 @@ public class Main extends Application {
         };
 
         mainTask.setOnSucceeded(event -> {
-
             ConfigurationUtils.createConfiguration_db();
 
             ConfigurationUtils.loadConfig_GUI(model_main);

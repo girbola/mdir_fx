@@ -44,32 +44,32 @@ public class SelectedFoldersSQL {
         }
     }
 
-    public static boolean loadSelectedFolders(ModelMain model_Main) {
-
-        Connection connection = null;
-        Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
-
-        try {
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-        } catch (Exception e) {
-            Messages.sprintfError("Error connecting to database: " + configFile);
-        }
-
-        if (connection == null) {
-            return false;
-        }
-
-        if (SQL_Utils.isDbConnected(connection)) {
-            Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
-            SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
-            closeConnection(connection);
-            return true;
-        } else {
-            Messages.sprintf("Nothing to load from database");
-            closeConnection(connection);
-            return false;
-        }
-    }
+//    public static boolean loadSelectedFolders(ModelMain model_Main) {
+//
+//        Connection connection = null;
+//        Path configFile = Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
+//
+//        try {
+//            connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//        } catch (Exception e) {
+//            Messages.sprintfError("Error connecting to database: " + configFile);
+//        }
+//
+//        if (connection == null) {
+//            return false;
+//        }
+//
+//        if (SQL_Utils.isDbConnected(connection)) {
+//            Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
+//            SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
+//            closeConnection(connection);
+//            return true;
+//        } else {
+//            Messages.sprintf("Nothing to load from database");
+//            closeConnection(connection);
+//            return false;
+//        }
+//    }
 
 
     public static boolean clearSelectedFolders(ModelMain modelMain) {

@@ -2,6 +2,7 @@ package com.girbola.configuration;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.SQL_Enums;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
@@ -48,6 +49,10 @@ public class ConfigurationUtils {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 
         SQL_Utils.setAutoCommit(connection, false);
+
+        if(SqliteConnection.tableExists(connection, SQL_Enums.TABLES_COLS.getType())) {
+            areG;
+        }
 
         // Create configuration table_cols which keeps tableview's widths
         Configuration_SQL_Utils.createConfigurationTable_properties(connection);

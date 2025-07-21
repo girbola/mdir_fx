@@ -62,16 +62,18 @@ public class SelectedFolderInfoSQL {
 
         if (isDbConnected(connection)) {
             Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
-            SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
-            closeConnection(connection);
-            return true;
+            if (SqliteConnection.tableExists(connection, SQL_Enums.SELECTEDFOLDERS.getType())) {
+                SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
+                closeConnection(connection);
+                return true;
+            }
         } else {
             Messages.sprintf("Nothing to load from database");
             closeConnection(connection);
             return false;
         }
+        return false;
     }
-
 
 
     public static boolean clearSelectedFolders(ModelMain modelMain) {

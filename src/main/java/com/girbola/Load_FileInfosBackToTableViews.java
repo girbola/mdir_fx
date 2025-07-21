@@ -43,7 +43,7 @@ public class Load_FileInfosBackToTableViews extends Task<Boolean> {
         List<SavedFolderInfo> savedFolderInfos = FolderInfosSQL.getAll(connection, modelMain);
 
         if (savedFolderInfos == null || savedFolderInfos.isEmpty()) {
-            Messages.sprintfError("folderInfo_list were empty!!!!" + Load_FileInfosBackToTableViews.class.getName());
+            Messages.sprintf("There were no data available for loading" + Load_FileInfosBackToTableViews.class.getName());
             cancel();
             return false;
         } else {

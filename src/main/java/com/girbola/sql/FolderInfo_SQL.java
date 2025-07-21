@@ -137,24 +137,6 @@ public class FolderInfo_SQL {
             SQL_Utils.setAutoCommit(connection, true);
         }
 
-//        try (Statement stmt = connection.createStatement()) {
-//            for (String sql : alterTableCommands) {
-//                try {
-//                    stmt.executeUpdate(sql);
-//                } catch (SQLException e) {
-//                    if (!e.getMessage().contains("duplicate column name")) {
-//                        // Log and rethrow the exception for any issue other than duplicate column
-//                        Messages.sprintfError("Error altering table: " + e.getMessage());
-//                        throw e;
-//                    } else {
-//                        Messages.sprintfError("Error altering table for duplicated column name: " + e.getMessage());
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            // Use a proper logger instead of e.printStackTrace() in production.
-//            Messages.sprintfError("Overall error altering table: " + e.getMessage());
-//        }
     }
 
     private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
