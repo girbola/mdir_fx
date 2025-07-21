@@ -62,7 +62,7 @@ public class StageControl extends Stage {
                 double sortedWidth = 0;
                 double sortItWidth = 0;
                 double asitisWidth = 0;
-                double hiddenWidths = ((3 - visibles) * 50);
+                double hiddenWidths = ((3-visibles) * 50)+35;
 
                 double divider = Math.floor((double) newValue / (double) visibles);
                 divider -= hiddenWidths;

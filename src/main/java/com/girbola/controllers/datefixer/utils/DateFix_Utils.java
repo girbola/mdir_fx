@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
@@ -17,10 +12,7 @@ import java.util.*;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class DateFix_Utils {
 
 	private ObservableList<EXIF_Data_Selector> cameras_obs = FXCollections.observableArrayList();

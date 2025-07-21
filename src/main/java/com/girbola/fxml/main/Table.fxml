@@ -17,11 +17,11 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <AnchorPane fx:id="hideablePane" style="-fx-border-color: none;" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
-            <VBox layoutX="-1.0" layoutY="-1.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+            <VBox layoutX="-1.0" layoutY="-1.0" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
             		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
             			<children>
@@ -29,9 +29,9 @@
                            <children>
                               <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT">
                                  <children>
-                        				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" styleClass="showAndHide" HBox.hgrow="NEVER">
+                        				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" style="-fx-background-color: red;" styleClass="showAndHide" HBox.hgrow="NEVER">
                         					<padding>
-                        						<Insets bottom="1.0" top="1.0" />
+                        						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                         					</padding>
                                        <tooltip>
                                           <Tooltip text="%showAndHideTableTooltip" />
@@ -40,17 +40,19 @@
                                           <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-down" iconSize="20" />
                                        </graphic>
                                        <HBox.margin>
-                                          <Insets top="2.0" />
+                                          <Insets />
                                        </HBox.margin>
                         				</Button>
                                  </children>
-                                 <padding>
-                                    <Insets bottom="2.0" left="1.0" />
-                                 </padding>
                               </HBox>
+                              <Separator fx:id="buttons_separator11" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
+                                 <FlowPane.margin>
+                                    <Insets bottom="5.0" top="5.0" />
+                                 </FlowPane.margin>
+                              </Separator>
                   				<Button fx:id="updateFolderInfo_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" styleClass="selectSquareButton">
                   					<padding>
-                  						<Insets bottom="1.0" top="1.0" />
+                  						<Insets bottom="1.0" left="5.0" top="1.0" />
                   					</padding>
                                  <tooltip>
                                     <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
@@ -63,7 +65,7 @@
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin></Separator>
-                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
+                              <MenuButton fx:id="menuReload" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
                                 <items>
                                   <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" styleClass="menu-button-reload" text="%reloadAll" />
                                   <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" styleClass="menu-button-reload" text="%checkChanges" />
@@ -75,7 +77,7 @@
                                     <Insets bottom="-1.0" />
                                  </padding>
                               </MenuButton>
-                              <MenuButton maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-action" text="%action" textFill="WHITE">
+                              <MenuButton fx:id="menuAction" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-action" text="%action" textFill="WHITE">
                                 <items>
                                   <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" styleClass="menu-button-action" text="Copy selected to dest" />
                                   <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" styleClass="menu-button-action" text="%add" />
@@ -176,7 +178,7 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                              <HBox alignment="TOP_RIGHT" style="-fx-background-color: red;" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf">
                                        <tooltip>
@@ -219,8 +221,8 @@
             						<TableColumn fx:id="video_col" minWidth="50.0" prefWidth="50.0" text="%video" />
             					</columns>
             				</TableColumn>
-            				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%suggested" />
-            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="350.0" prefWidth="350.0" text="%fullPath" />
+            				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="81.5" text="%suggested" />
+            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="304.5" prefWidth="334.5" text="%fullPath" />
             			</columns>
                      <padding>
                         <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
@@ -268,13 +270,16 @@
                      </children>
                   </FlowPane>
                </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
             </VBox>
          </children>
          <VBox.margin>
             <Insets />
          </VBox.margin>
          <padding>
-            <Insets bottom="5.0" left="2.0" right="5.0" />
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
       </AnchorPane>
 	</children>

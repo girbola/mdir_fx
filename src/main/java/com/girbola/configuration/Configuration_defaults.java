@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.configuration;
 
 import com.girbola.messages.Messages;
@@ -22,10 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Configuration_defaults extends
 		ConfigurationWindow {
 
@@ -142,18 +134,18 @@ public class Configuration_defaults extends
 	public void createProgramPaths() {
 		// Check& create program dat path
 		Path appDataPath = getAppDataPath();
-		sprintf("1Creating appDataPath: " + appDataPath);
+		sprintf("Creating appDataPath os: " + appDataPath);
 		if (!Files.exists(appDataPath)) {
 			try {
-				sprintf("2Creating appDataPath: " + getAppDataPath());
+				sprintf("appDataPath created: " + getAppDataPath());
 				Files.createDirectories(appDataPath);
+
 			} catch (IOException ex) {
 				if (Files.isWritable(appDataPath)) {
-					ex.printStackTrace();
+					Messages.sprintf("Current user might not have permission to write into path: " + appDataPath);
 					Messages.errorSmth(ERROR, bundle.getString("createDataFolderFailed") + "\n" + getAppDataPath(), ex, Misc.getLineNumber(), true);
 					return;
 				} else {
-					ex.printStackTrace();
 					Messages.errorSmth(ERROR,
 							bundle.getString("createDataFolderFailed") + " " + bundle.getString("folderWriteProtected") + "\n" + getAppDataPath(), ex,
 							Misc.getLineNumber(), true);

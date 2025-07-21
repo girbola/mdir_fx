@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package common.utils.date;
 
 import java.text.SimpleDateFormat;
@@ -13,10 +8,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class SimpleDates {
 
 	private final String YMD_HMS_NOSPACES = "yyyyMMddHHmmss";

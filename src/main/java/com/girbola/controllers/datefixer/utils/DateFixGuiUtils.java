@@ -2,7 +2,7 @@ package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.configuration.GuiImageFrame;
 import com.girbola.controllers.datefixer.CssStylesEnum;
-import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.event.ActionEvent;
@@ -235,7 +235,7 @@ public class DateFixGuiUtils {
         return node instanceof VBox && "imageFrame".equals(node.getId());
     }
 
-    public static void processImageFrame(VBox imageFrame, Model_datefix modelDatefix, String style) {
+    public static void processImageFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
         for (Node imageFrameNode : imageFrame.getChildren()) {
             if (imageFrameNode instanceof VBox) {
                 Node fileDateField = imageFrameNode.lookup("#fileDate");
@@ -246,7 +246,7 @@ public class DateFixGuiUtils {
         }
     }
 
-    public static void selectImageFrame(Model_datefix modelDatefix, TilePane parent, String style) {
+    public static void selectImageFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;
@@ -258,7 +258,7 @@ public class DateFixGuiUtils {
         }
     }
 
-    public static void selectVideoImageFrame(Model_datefix modelDatefix, TilePane parent, String style) {
+    public static void selectVideoImageFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;

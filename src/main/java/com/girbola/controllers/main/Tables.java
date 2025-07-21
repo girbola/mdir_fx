@@ -1,7 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.cell.*;
@@ -35,12 +35,7 @@ import java.util.Optional;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 
 public class Tables {
 
@@ -278,7 +273,7 @@ public class Tables {
                     for (FolderInfo folderInfo : listToRemove) {
                         table.getItems().remove(folderInfo);
                     }
-                    Configuration_SQL_Utils.insert_IgnoredList(listToRemove);
+                    ConfigurationSQLHandler.insertIgnoredList(listToRemove);
                     listToRemove.clear();
                     try {
                         connection.close();
@@ -497,13 +492,9 @@ public class Tables {
 
     };
 
-    public TableStatistic getAsItIs_TableStatistic() {
-        return this.asitis_TableStatistic;
-    }
-
-    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
+/*    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {
         this.asitis_TableStatistic = asitis_TableStatistic;
-    }
+    }*/
 
     public TableView<FolderInfo> getTableByType(String tableType) {
         if (tableType.equals(TableType.SORTIT.getType())) {
@@ -522,7 +513,7 @@ public class Tables {
         } else if (tableType.equals(TableType.SORTED.getType())) {
             return getSorted_TableStatistic();
         } else if (tableType.equals(TableType.ASITIS.getType())) {
-            return getAsItIs_TableStatistic();
+            return getAsitis_TableStatistic();
         }
         return null;
     }

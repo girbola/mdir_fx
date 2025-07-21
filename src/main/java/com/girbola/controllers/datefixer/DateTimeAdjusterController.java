@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
@@ -42,7 +37,7 @@ public class DateTimeAdjusterController {
     //private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
     private ModelMain model_main;
-    private Model_datefix model_datefix;
+    private ModelDatefix model_datefix;
 
     //@formatter:off
     @FXML private DatePicker end_datePicker;
@@ -352,12 +347,12 @@ public class DateTimeAdjusterController {
         return sec;
     }
 
-    private void setupDatePickers(Model_datefix model_datefix) {
+    private void setupDatePickers(ModelDatefix model_datefix) {
         model_datefix.setStart_datePicker(start_datePicker);
         model_datefix.setEnd_datePicker(end_datePicker);
     }
 
-    private void setupTimeBindings(Model_datefix model_datefix) {
+    private void setupTimeBindings(ModelDatefix model_datefix) {
         bindTimeField(start_hour, model_datefix.getStart_time().hour_property());
         bindTimeField(start_min, model_datefix.getStart_time().min_property());
         bindTimeField(start_sec, model_datefix.getStart_time().sec_property());
@@ -385,7 +380,7 @@ public class DateTimeAdjusterController {
         field.setText(text);
     }
 
-    public void init(ModelMain aModel_main, Model_datefix aModel_datefix, TilePane aTilePane,
+    public void init(ModelMain aModel_main, ModelDatefix aModel_datefix, TilePane aTilePane,
                      TilePane aQuickPick_tilePane) {
         this.model_main = aModel_main;
         this.model_datefix = aModel_datefix;

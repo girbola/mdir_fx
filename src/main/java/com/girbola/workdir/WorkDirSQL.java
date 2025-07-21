@@ -1,7 +1,7 @@
 package com.girbola.workdir;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.*;
 import com.girbola.messages.Messages;
@@ -73,14 +73,17 @@ public class WorkDirSQL implements WorkDirInterface {
             Messages.warningText("folder were null!!!");
             return;
         }
-        if (!folder.toString().trim().isEmpty() && !Files.exists(folder)) {
-            Messages.warningText(Main.bundle.getString("reconnectDrives") + " at path: " + folder);
+        Messages.sprintf("WorkDirSQL before loadWorkDirDatabase: " + folder);
+
+        if (!Files.exists(folder)) {
+            Messages.warningText("Workdir folder did not exists" + Main.bundle.getString("reconnectDrives") + " at path: " + folder);
         } else {
             this.folder = folder;
             Messages.sprintf("WorkDirSQL before loadWorkDirDatabase: " + this.folder);
             boolean b = loadWorkDirDatabase(this.folder);
             if (!b) {
-                Messages.warningText(Main.bundle.getString("reconnectDrives") + " at path: " + folder);
+
+                Messages.warningText("loading workdir database: " + Main.bundle.getString("reconnectDrives") + " at path: " + folder);
             }
         }
     }
@@ -97,7 +100,7 @@ public class WorkDirSQL implements WorkDirInterface {
             return false;
         }
 
-        workDirConnection = SqliteConnection.connector(workDir, SQL_Enums.WORKDIR.getType());
+        workDirConnection = SqliteConnection.connector(workDir, SQLTableEnums.WORKDIR.getType());
         boolean dbConnected = SQL_Utils.isDbConnected(workDirConnection);
         if (dbConnected) {
             Messages.sprintf("workDir loaded: " + workDir);
@@ -142,7 +145,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
 
             }
 
-            String sql = "INSERT INTO " + SQL_Enums.WORKDIR.getType() + FileInfoEnum.getAllFileInfoEnumValues() + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            String sql = "INSERT INTO " + SQLTableEnums.WORKDIR.getType() + FileInfoEnum.getAllFileInfoEnumValues() + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
                     + "ON CONFLICT(orgPath) DO UPDATE SET fileInfo_id = ?, destination_Path = ?, event = ?, location = ?, orientation = ?, tags = ?, "
                     + "camera_model = ?, bad = ?, good = ?, suggested = ?, confirmed = ?, ignored = ?, tableDuplicated = ?, raw = ?, image = ?, video = ?, "
                     + "date = ?, size = ?, thumb_offset = ?, thumb_length = ?, imageDifferenceHash = ?, user = ?, workDir = ?, workDirDriveSerialNumber = ?, "
@@ -193,7 +196,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
             return false;
         }
         try {
-            String sql = "DELETE FROM " + SQL_Enums.WORKDIR.getType() + " WHERE id = ?";
+            String sql = "DELETE FROM " + SQLTableEnums.WORKDIR.getType() + " WHERE id = ?";
             PreparedStatement pstmt = workDirConnection.prepareStatement(sql);
             pstmt.setInt(1, fileInfo.getFileInfo_id());
             int affectedRows = pstmt.executeUpdate();
@@ -215,7 +218,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
         List<FileInfo> list = new ArrayList<>();
         FileInfo duplicateFileInfo = null;
 
-        String sql = "SELECT " + FileInfoEnum.getAllFileInfoEnumValues() + " FROM " + SQL_Enums.WORKDIR.getType() + " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
+        String sql = "SELECT " + FileInfoEnum.getAllFileInfoEnumValues() + " FROM " + SQLTableEnums.WORKDIR.getType() + " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
         try (PreparedStatement pstmt = workDirConnection.prepareStatement(sql)) {
             pstmt.setString(1, fileInfo.getOrgPath());
             pstmt.setLong(2, fileInfo.getSize());
@@ -284,7 +287,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
 
         List<FileInfo> fileInfoDuplicates = new ArrayList<>();
         String sql =
-                "SELECT " + fileInfoSQL + " FROM " + SQL_Enums.WORKDIR.getType() +
+                "SELECT " + fileInfoSQL + " FROM " + SQLTableEnums.WORKDIR.getType() +
                         " WHERE orgPath = ? AND size = ? AND localDateTime BETWEEN ? AND ?";
 
         try (PreparedStatement pstmt = workDirConnection.prepareStatement(sql)) {
@@ -310,7 +313,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
     public List<FileInfo> findByExactDate(FileInfo fileInfo, String date) {
         String sql = "SELECT changed,connected,ignored,dateDifference,badFiles,confirmed,copied,folderFiles,folderImageFiles," +
                 "folderRawFiles,folderVideoFiles,goodFiles,suggested,folderSize,justFolderName,folderPath,maxDate,minDate,state,tableType FROM "
-                + SQL_Enums.WORKDIR.getType() + "WHERE minDate" + date + " between ";
+                + SQLTableEnums.WORKDIR.getType() + "WHERE minDate" + date + " between ";
 
         return null;
     }
@@ -359,7 +362,7 @@ Messages.sprintf("insertFileInfo starting: " + fileInfo);
 
         SQL_Utils.setAutoCommit(workDirConnection, false);
         try {
-            String sql = "SELECT * FROM " + SQL_Enums.FOLDERINFO.getType();
+            String sql = "SELECT * FROM " + SQLTableEnums.FOLDERINFO.getType();
             Statement smtm = workDirConnection.createStatement();
             ResultSet rs = smtm.executeQuery(sql);
 

@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.importimages;
 
 import javafx.application.Platform;
@@ -21,11 +16,7 @@ import java.util.ArrayList;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * FXML Controller class
- *
- * @author Marko Lokka
- */
+
 public class DateTimeSelectorController {
 
 	private final String ERROR = DateTimeSelectorController.class.getSimpleName();

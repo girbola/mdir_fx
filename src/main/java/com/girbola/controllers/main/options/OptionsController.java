@@ -1,13 +1,8 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.options;
 
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.messages.Messages;
 import common.utils.OSHI_Utils;
@@ -52,7 +47,7 @@ public class OptionsController {
 
 				Main.conf.setWorkDirSerialNumber(OSHI_Utils.getDriveSerialNumber((file.toPath().getRoot()).toString()));
 				workDir_input.setText(Main.conf.getWorkDir());
-				Configuration_SQL_Utils.updateConfiguration();
+				ConfigurationSQLHandler.updateConfiguration();
 
 			} else {
 				Messages.warningText("Can't find current path. Check you folder access");

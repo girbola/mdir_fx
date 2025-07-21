@@ -1,15 +1,11 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -42,7 +38,7 @@ public class DateFixer extends Task<Void> {
     private Path currentPath;
     private FolderInfo folderInfo;
     private ModelMain model_main;
-    private Model_datefix model_datefix;
+    private ModelDatefix model_datefix;
     private Parent parent = null;
     private DateFixerController dateFixerController = null;
     private boolean isImported;
@@ -52,7 +48,7 @@ public class DateFixer extends Task<Void> {
         this.currentPath = aCurrentPath;
         this.model_main = aModel_main;
         this.isImported = isImported;
-        this.model_datefix = new Model_datefix(model_main, currentPath);
+        this.model_datefix = new ModelDatefix(model_main, currentPath);
     }
 
     @Override

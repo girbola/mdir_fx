@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tables;
 
 import javafx.beans.value.ChangeListener;
@@ -14,10 +9,7 @@ import javafx.scene.control.TableCell;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class CheckBoxTree extends TableCell<BatchMap, Boolean> {
 
     private CheckBox checkBox;

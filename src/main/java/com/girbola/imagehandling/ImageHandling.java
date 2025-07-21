@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.  
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.imagehandling;
 
 import com.drew.metadata.Metadata;
@@ -41,10 +36,7 @@ import java.util.logging.Logger;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ImageHandling {
 
 	final private static String ERROR = ImageHandling.class.getName();

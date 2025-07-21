@@ -1,20 +1,22 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
 package com.girbola.utils;
 
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.utils.MetadataField;
+import com.girbola.controllers.folderscanner.SelectedFolder;
+import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.drive.DriveInfo;
+import com.girbola.drive.DriveInfoUtils;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.sql.DriveInfoSQL;
+import com.girbola.sql.SQL_Utils;
 import common.media.DateTaken;
 import common.media.VideoDateFinder;
 import common.utils.FileNameParseUtils;
@@ -36,9 +38,7 @@ import static common.media.DateTaken.getMetaDataCreationDate;
 import static common.media.DateTaken.readMetaData;
 import static common.utils.FileUtils.*;
 
-/**
- * @author Marko Lokka
- */
+
 public class FileInfoUtils {
 
     private final static String ERROR = FileInfoUtils.class.getSimpleName();
@@ -426,11 +426,7 @@ public class FileInfoUtils {
     public static Path renameFileToDate(Path path, FileInfo fileInfo) {
         // C:\Temp\image.jpg C:\Temp + 2019-09-03 12.31.22.jpg
 
-        Path source = Paths
-                .get(path.getParent().toString() + File.separator
-                        + DateUtils.longToLocalDateTime(fileInfo.getDate())
-                        .format(Main.simpleDates.getDtf_ymd_hms_minusDots_default())
-                        + "." + FileUtils.getExtension(path));
+        Path source = Paths.get(path.getParent().toString() + File.separator + DateUtils.longToLocalDateTime(fileInfo.getDate()).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()) + "." + FileUtils.getExtension(path));
         Messages.sprintf("source would be after: " + path + " to: " + source);
         return source;
     }
@@ -448,8 +444,7 @@ public class FileInfoUtils {
     public static int checkWorkDir(FileInfo fileInfo) {
         if (Main.conf.getDrive_connected()) {
             if (!fileInfo.getWorkDir().equals("null")) {
-                if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir().toString())
-                        && Main.conf.getWorkDirSerialNumber().equals(fileInfo.getWorkDirDriveSerialNumber())) {
+                if (fileInfo.getWorkDir().contains(Main.conf.getWorkDir().toString()) && Main.conf.getWorkDirSerialNumber().equals(fileInfo.getWorkDirDriveSerialNumber())) {
                     if (Files.exists(Paths.get(fileInfo.getWorkDir()))) {
                         return 0;
                     } else {
@@ -472,11 +467,9 @@ public class FileInfoUtils {
 
     public static boolean findDuplicates(FileInfo fileInfo, FolderInfo folderInfoList) {
         for (FileInfo fileInfo_dest : folderInfoList.getFileInfoList()) {
-            if (Paths.get(fileInfo.getOrgPath()).getParent().toString()
-                    .equals(Paths.get(fileInfo_dest.getOrgPath()).getParent().toString())) {
+            if (Paths.get(fileInfo.getOrgPath()).getParent().toString().equals(Paths.get(fileInfo_dest.getOrgPath()).getParent().toString())) {
                 if (fileInfo.getSize() == fileInfo_dest.getSize()) {
-                    Messages.sprintf("fileInfo src: " + fileInfo.getOrgPath() + " size = " + fileInfo.getSize()
-                            + " fileInfoDEST: " + fileInfo_dest.getOrgPath() + " size = " + fileInfo_dest.getSize());
+                    Messages.sprintf("fileInfo src: " + fileInfo.getOrgPath() + " size = " + fileInfo.getSize() + " fileInfoDEST: " + fileInfo_dest.getOrgPath() + " size = " + fileInfo_dest.getSize());
                     return true;
                 }
             }
@@ -538,9 +531,7 @@ public class FileInfoUtils {
         Path originalPath = Paths.get(fileInfo.getOrgPath());
 
         // Check initial conditions
-        if (!Files.exists(originalPath)
-                && !Files.exists(Paths.get(fileInfo.getWorkDir()))
-                || Main.getProcessCancelled()) {
+        if (!Files.exists(originalPath) && !Files.exists(Paths.get(fileInfo.getWorkDir())) || Main.getProcessCancelled()) {
             Main.setProcessCancelled(true);
             return false;
         }
@@ -634,9 +625,188 @@ public class FileInfoUtils {
         while (iterator.hasNext()) {
             FileInfo fileInfo = iterator.next();
             Path path = Paths.get(fileInfo.getOrgPath());
-            if(Files.exists(path)) {
+            if (Files.exists(path)) {
                 iterator.remove();
             }
         }
     }
+
+    public static List<Path> checkFolderForChangedFilesAndFolder(FolderInfo folderInfo) {
+        ArrayList<Path> newFilesToAdd = new ArrayList<>();
+        ArrayList<Long> compareFolderInfoContentBySizes = new ArrayList<>();
+        ArrayList<Long> compareMediaFilesContentBySizes = new ArrayList<>();
+
+        Path folderInfoFolderPath = Paths.get(folderInfo.getFolderPath());
+        ArrayList<Path> mediaFilesInCurrentFolder = GetAllMediaFiles.getAllMediaFiles(folderInfoFolderPath);
+
+
+        for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+            compareFolderInfoContentBySizes.add(fileInfo.getSize());
+        }
+        for (Path mediaFile : mediaFilesInCurrentFolder) {
+            compareMediaFilesContentBySizes.add(mediaFile.toFile().length());
+        }
+        if (compareFolderInfoContentBySizes.size() != compareMediaFilesContentBySizes.size()) {
+            Messages.warningText("FolderInfo and mediaFiles size are not equal! FolderInfo: " + compareFolderInfoContentBySizes.size() + " mediaFiles: " + compareMediaFilesContentBySizes.size());
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+
+                for (Path mediaFile : mediaFilesInCurrentFolder) {
+                    if (fileInfo.getOrgPath().equals(mediaFile.toString())) {
+                        Messages.sprintf("checkFolderForChangedFilesAndFolder fileInfo: " + fileInfo);
+                        Messages.sprintf("checkFolderForChangedFilesAndFolder mediaFile: " + mediaFile);
+                        break;
+                    }
+                    newFilesToAdd.add(mediaFile);
+                }
+            }
+        }
+        Messages.sprintf("checkFolderForChangedFilesAndFolder newFilesToAdd: " + newFilesToAdd.size());
+        return newFilesToAdd;
+    }
+
+    private static boolean handleEmptySerialNumber(FolderInfo folderInfo) {
+        boolean isDriveFound = false;
+        try {
+            List<DriveInfo> driveInfos = DriveInfoSQL.loadDriveInfos();
+            if (driveInfos == null || driveInfos.isEmpty()) {
+                return false;
+            }
+
+            Path folderToFindPath = Paths.get(folderInfo.getFolderPath());
+            for (DriveInfo driveInfo : driveInfos) {
+                if (hasPath(driveInfo, folderToFindPath)) {
+                    isDriveFound = true;
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            Messages.sprintfError("Error in handleEmptySerialNumber: " + e.getMessage());
+            return false;
+        } finally {
+            DriveInfoSQL.closeConnection();
+        }
+
+        return isDriveFound;
+    }
+
+    private static boolean hasPath(DriveInfo driveInfo, Path pathToFind) {
+        if (driveInfo == null || driveInfo.getDrive() == null || pathToFind == null) {
+            return false;
+        }
+
+        try {
+            Path rootPath = driveInfo.getDrive().getRoot();
+            Path searchRoot = pathToFind.getRoot();
+
+            if (rootPath == null || searchRoot == null) {
+                return false;
+            }
+
+            Path relativePath = searchRoot.relativize(pathToFind);
+            Path fullPath = rootPath.resolve(relativePath);
+
+            return Files.exists(fullPath);
+        } catch (Exception e) {
+            // Consider proper logging here
+            return false;
+        }
+    }
+
+
+    /**
+     * Checks and updates folder path changes for the given FolderInfo
+     *
+     * @param folderInfo The folder information to check and update
+     */
+    private boolean checkFolderPathChanges(FolderInfo folderInfo) {
+        try {
+            if (folderInfo.getIgnored()) {
+                Messages.sprintf("checkFolderPathChanges was ignored");
+                return false;
+            }
+
+            Messages.sprintf("checkFolderPathChanges started");
+
+            Path folderInfoFolderPath = Paths.get(folderInfo.getFolderPath());
+            if (!Files.exists(folderInfoFolderPath)) {
+                Messages.sprintfError("Folder does not exist: " + folderInfoFolderPath);
+                return false;
+            }
+
+            String sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
+            if (sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
+                boolean hasEmptySerialNumber = handleEmptySerialNumber(folderInfo);
+                if (hasEmptySerialNumber) {
+                    folderInfo.setChanged(true);
+                    return true;
+                }
+                return false;
+            }
+
+            return false;
+        } catch (Exception e) {
+            Messages.sprintfError("Error in checkFolderPathChanges for path " + folderInfo.getFolderPath() + ": " + e.getMessage());
+            return false;
+        } finally {
+            Messages.sprintf("checkFolderPathChanges finished");
+        }
+    }
+
+    private static void checkFolderPathChanges_(ModelMain modelMain, FolderInfo folderInfo) {
+        Messages.sprintf("checkFolderPathChanges started");
+        String folderPath = folderInfo.getFolderPath();
+        List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoList();
+
+        String sourceFolderSerialNumber = "";
+
+        try {
+            sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
+        } catch (Exception e) {
+            Messages.sprintfError("Cannot get source folder serialnumber for recognize actual drive: " + Misc.getLineNumber());
+            return;
+        }
+
+        if (sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
+            Messages.sprintfError("Cannot get source folder serialnumber for recognize actual drive: " + Misc.getLineNumber());
+            Path rootPath = Paths.get(folderInfo.getFolderPath());
+            // D:\UserPicturesUser1\Picture
+            // E:\UserPicturesUser1\Picture
+
+            // /media/
+            SelectedFolderScanner selectedFolders = modelMain.getSelectedFolders();
+            int folders = folderInfo.getFileInfoList().size();
+            int counter = 0;
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                for (SelectedFolder selectedFolderInfo : selectedFolders.getSelectedFolderScanner_obs()) {
+                    String parsedFileInfoPath = fileInfo.getOrgPath().replace(selectedFolderInfo.getFolder(), "");
+                    if (fileInfo.getOrgPath().contains(selectedFolderInfo.getFolder())) {
+                        Path path = Paths.get(selectedFolderInfo.getFolder(), parsedFileInfoPath);
+                        if (Files.exists(path)) {
+                            fileInfo.setOrgPath(path.toString());
+                            folderInfo.setChanged(true);
+                            counter++;
+                        }
+                    }
+                }
+            }
+            if (counter == folders) {
+                Messages.sprintf("All files were renamed to new path");
+                folderInfo.setSourceFolderSerialNumber(rootPath.getFileSystem().toString());
+                folderInfo.setChanged(true);
+            }
+
+        } else {
+            Messages.sprintfError("sourceFolderSerialNumber was null or empty!");
+            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
+                if (!folderPath.equals(fileInfo.getOrgPath())) {
+                    if (DriveInfoUtils.hasDrivePath(driveInfoList, fileInfo.getOrgPath(), sourceFolderSerialNumber)) {
+                        fileInfo.setOrgPath(folderPath);
+                        folderInfo.setChanged(true);
+                    }
+                }
+            }
+        }
+        Messages.sprintf("checkFolderPathChanges finished");
+    }
+
 }

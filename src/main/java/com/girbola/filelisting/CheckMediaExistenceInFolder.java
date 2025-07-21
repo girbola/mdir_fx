@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.filelisting;
 
 import com.girbola.messages.Messages;
@@ -21,8 +16,6 @@ import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 
 /**
  * Get all possible media files under given folder
- *
- * @author Marko Lokka
  */
 public class CheckMediaExistenceInFolder {
     private final static String ERROR = GetAllMediaFiles.class.getSimpleName();

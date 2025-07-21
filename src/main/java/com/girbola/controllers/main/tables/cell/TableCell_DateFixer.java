@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.controllers.datefixer.DateFixer;
@@ -21,6 +16,8 @@ import javafx.scene.image.ImageView;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.scene.paint.Color;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -31,16 +28,29 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
 
     Button dateFixerButton = new Button();
 
-    private ModelMain model_main;
+    private ModelMain modelMain;
 
-    public TableCell_DateFixer(ModelMain model_main) {
-        this.model_main = model_main;
-        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
-        dateFixerButton.setGraphic(view_iv);
+    public TableCell_DateFixer(ModelMain modelMain) {
+        this.modelMain = modelMain;
+//        ImageView view_iv = new ImageView(GUI_Methods.loadImage("view.png", 20));
+//        dateFixerButton.setGraphic(view_iv);
+//        dateFixerButton.setStyle(null);
+//        dateFixerButton.getStyleClass().add("view_btn");
+//        dateFixerButton.setDisable(false);
+
+
         dateFixerButton.setStyle(null);
+
+        FontIcon fontIcon = new FontIcon();
+        fontIcon.setIconLiteral("far-edit");
+        fontIcon.setIconSize(20);
+        fontIcon.setIconColor(Color.WHITESMOKE);
         dateFixerButton.getStyleClass().add("view_btn");
         dateFixerButton.setDisable(false);
+
+        dateFixerButton.setGraphic(fontIcon);
     }
+
 
     @Override
     public void updateItem(String item, boolean empty) {
@@ -64,9 +74,9 @@ public class TableCell_DateFixer extends TableCell<FolderInfo, String> {
                     @Override
                     public void handle(ActionEvent event) {
                         Messages.sprintf("dateFixerButton clicked");
-//						model_main.getRegisterTableActivity().cancel();
-                        model_main.getMonitorExternalDriveConnectivity().cancel();
-                        Task<Void> dateFixer = new DateFixer(path, folderInfo, model_main, false);
+//						modelMain.getRegisterTableActivity().cancel();
+                        modelMain.getMonitorExternalDriveConnectivity().cancel();
+                        Task<Void> dateFixer = new DateFixer(path, folderInfo, modelMain, false);
                         Thread dateFixer_th = new Thread(dateFixer, "dateFixer_th");
                         dateFixer_th.setDaemon(true);
                         sprintf("dateFixer_th.getName(): " + dateFixer_th.getName());

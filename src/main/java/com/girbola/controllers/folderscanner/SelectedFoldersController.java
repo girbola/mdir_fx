@@ -1,15 +1,9 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FolderInfosSQL;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;

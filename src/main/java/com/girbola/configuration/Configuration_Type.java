@@ -1,13 +1,8 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.configuration;
 
 
-enum Configuration_Type {
+public enum Configuration_Type {
 
     SHOWHINTS("showHints"),
     SAVETHUMBS("savingThumbs"),
@@ -19,9 +14,20 @@ enum Configuration_Type {
     SHOWFULLPATH("showFullPath"),
     VLCSUPPORT("vlcSupport"),
     ID_COUNTER("id_counter"),
-    SHOWTOOLTIPS("showTooltip"),
-	BETTERQUALITYTHUMBS("betterQualityThumbs");
-	
+    SHOWTOOLTIPS("showTooltips"),
+    BETTERQUALITYTHUMBS("betterQualityThumbs"),
+    SAVEDATATOHD("saveDataToHD"),
+    WINDOW_START_POS_X("windowStartPosX"),
+    WINDOW_START_POS_Y("windowStartPosY"),
+    WINDOW_START_WIDTH("windowStartWidth"),
+    WINDOW_START_HEIGTH("windowStartHeigth"),
+    IMAGEVIEW_X_POS("imageViewXPos"),
+    IMAGEVIEW_Y_POS("imageViewYPos"),
+    WORKDIR_SERIAL_NUMBER("workDirSerialNumber"),
+    TABLE_SHOW_SORT_IT("tableShow_sortIt"),
+    TABLE_SHOW_SORTED("tableShow_sorted"),
+    TABLE_SHOW_ASITIS("tableShow_asItIs");
+
     private String type;
 
     Configuration_Type(String type) {

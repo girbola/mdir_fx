@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.imagehandling;
 
 import com.girbola.messages.Messages;
@@ -18,10 +13,7 @@ import java.util.concurrent.ExecutionException;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ConvertImage extends Task<Image> {
 
 	private final String ERROR = ConvertImage.class.getSimpleName();

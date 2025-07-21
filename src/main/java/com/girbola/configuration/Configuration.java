@@ -1,13 +1,9 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.configuration;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -15,9 +11,7 @@ import com.girbola.sql.SqliteConnection;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-/**
- * @author Marko Lokka
- */
+
 public class Configuration extends Configuration_defaults {
 
     private static final String ERROR = Configuration.class.getSimpleName();
@@ -37,7 +31,7 @@ public class Configuration extends Configuration_defaults {
 
         if (SQL_Utils.isDbConnected(connection)) {
             connection.setAutoCommit(false);
-            Configuration_SQL_Utils.loadConfiguration(connection, Main.conf);
+            ConfigurationSQLHandler.loadConfiguration(Main.conf);
             Messages.sprintf("Loading stopped. SQL config: " + Main.conf.getWorkDir());
             try {
                 connection.close();

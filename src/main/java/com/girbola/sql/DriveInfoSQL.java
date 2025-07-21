@@ -1,101 +1,117 @@
 package com.girbola.sql;
 
-import com.girbola.controllers.folderscanner.ModelFolderScanner;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
+import com.girbola.controllers.main.sql.TablesSQL;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
-
-import com.girbola.misc.Misc;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
-import static com.girbola.sql.SQL_Utils.isDbConnected;
-
-public class DriveInfoSQL implements SQLInterface {
+public class DriveInfoSQL extends TablesSQL {
 
     private final static String ERROR = DriveInfoSQL.class.getSimpleName();
 
-    private static Connection configurationConnection;
+    private static Connection connection = null;
 
-    public static final String TABLE_NAME = "DriveInfo";
+    private static final String DRIVE_PATH = "drivePath";
+    private static final String DRIVE_CONNECTED = "driveConnected";
+    private static final String DRIVE_SELECTED = "driveSelected";
+    private static final String DRIVE_TOTAL_SIZE = "driveTotalSize";
+    private static final String IDENTIFIER = "identifier";
 
-    private static final String createDriveInfoTable =
-            "CREATE TABLE IF NOT EXISTS " +
-                    SQL_Enums.DRIVEINFO.getType() +
-                    " (" +
-                    "drivePath STRING NOT NULL, " +
-                    "driveTotalSize INTEGER, " +
-                    "identifier STRING, " +
-                    "driveSelected STRING," +
-                    "driveConnected BOOLEAN)";
-
-    private static final String insertDriveInfo =
-            "INSERT OR REPLACE INTO " +
-                    SQL_Enums.DRIVEINFO.getType() +
-                    "('drivePath', " +
-                    "'identifier', " +
-                    "'totalSize', " +
-                    "'connected,' " +
-                    "'selected')" +
-                    " VALUES(?,?,?,?)";
-
-    public DriveInfoSQL(Connection configurationConnection) {
-        this.configurationConnection = configurationConnection;
-    }
+    private static final String insertDriveInfo = "INSERT OR REPLACE INTO " + SQLTableEnums.DRIVEINFO.getType() + "('" + DRIVE_PATH + "', " + "'" + IDENTIFIER + "', " + "'" + DRIVE_TOTAL_SIZE + "', " + "'" + DRIVE_CONNECTED + "', " + "'" + DRIVE_SELECTED + "')" + " VALUES(?,?,?,?,?)";
 
     public static boolean addDriveInfos(List<DriveInfo> driveInfos) {
-        if (isDbConnected(configurationConnection)) {
+        connection = ConfigurationSQLHandler.getConnection();
+        try {
+            createDriveInfoTable(); // Ensure the table exists
+
+            try (PreparedStatement pstmt = connection.prepareStatement(insertDriveInfo)) {
+                for (DriveInfo driveInfo : driveInfos) {
+                    pstmt.setString(1, driveInfo.getDrivePath());
+                    pstmt.setString(2, driveInfo.getIdentifier());
+                    pstmt.setLong(3, driveInfo.getDriveTotalSize());
+                    pstmt.setBoolean(4, driveInfo.isConnected());
+                    pstmt.setBoolean(5, driveInfo.isSelected());
+                    pstmt.addBatch();
+                }
+
+                pstmt.executeBatch(); // Execute batch insert/update
+            }
+
+            SQL_Utils.commitChanges(connection); // Commit changes to the database
+            return true; // Return success
+        } catch (Exception e) {
+            Messages.sprintfError("Error adding list of drive infos: " + e.getMessage());
+            return false;
+        } finally {
+            SQL_Utils.closeConnection(connection); // Ensure connection is closed
+        }
+    }
+
+    public static boolean closeConnection() {
+        try {
+            SQL_Utils.closeConnection(connection); // Ensure connection is closed
+            return true;
+        } catch (Exception e) {
+            Messages.sprintfError("Error closing connection: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean createDriveInfoTable() {
+        final String driveInfoTableSchema = "CREATE TABLE IF NOT EXISTS " +
+                SQLTableEnums.DRIVEINFO.getType()
+                + " (" + DRIVE_PATH + " STRING NOT NULL UNIQUE, "
+                + DRIVE_TOTAL_SIZE + " INTEGER, "
+                + IDENTIFIER + " STRING, "
+                + DRIVE_SELECTED + " STRING, "
+                + DRIVE_CONNECTED + " BOOLEAN)";
+
+        connection = ConfigurationSQLHandler.getConnection();
+
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.execute(driveInfoTableSchema);
+            stmt.close();
+            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
+            //  SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
+            return true;
+        } catch (Exception e) {
+            Messages.sprintfError("Could not create DriveInfo table: " + e.getMessage());
             return false;
         }
 
-        try {
-            boolean driveInfoTable = createDriveInfoTable(configurationConnection);
-            if(!driveInfoTable) {
-                Messages.sprintfError("DriveInfo table was not created!");
-                Messages.errorSmth(ERROR,"", null, Misc.getLineNumber(), false);
-                return false;
-            }
-            PreparedStatement pstmt = configurationConnection.prepareStatement(insertDriveInfo);
-            for (DriveInfo driveInfo : driveInfos) {
-                pstmt.setString(1, driveInfo.getDrivePath());
-                pstmt.setBoolean(2, driveInfo.isConnected());
-                pstmt.setBoolean(3, driveInfo.isSelected());
-                pstmt.setLong(4, driveInfo.getDriveTotalSize());
-                pstmt.setString(5, driveInfo.getIdentifier());
-                pstmt.addBatch();
-            }
-            pstmt.executeBatch();
-            if (pstmt != null) {
-                pstmt.close();
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
     }
 
     // @formatter:on
-    public static List<DriveInfo> loadDriveInfo(Connection connection) {
-        List<DriveInfo> driveInfos = null;
+    public static List<DriveInfo> loadDriveInfos() {
+        connection = ConfigurationSQLHandler.getConnection();
+        List<DriveInfo> driveInfos = new ArrayList<>();
+        final String selectAll = "SELECT " + DRIVE_PATH + ", " + DRIVE_TOTAL_SIZE + ", " + IDENTIFIER + ", " + DRIVE_SELECTED + ", " + DRIVE_CONNECTED + " FROM " + SQLTableEnums.DRIVEINFO.getType();
 
-        String sql = "SELECT * FROM " + SQL_Enums.DRIVEINFO.getType();
         try {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = stmt.executeQuery(selectAll);
 
             while (rs.next()) {
-                String drivePath = rs.getString("drivePath");
-                boolean isConnected = rs.getBoolean("driveConnected");
-                boolean isSelected = rs.getBoolean("driveSelected");
-                long driveTotalSize = rs.getLong("driveTotalSize");
-                String identifier = rs.getString("identifier");
+                // Using constants for column names in ResultSet
+                String drivePath = rs.getString(DRIVE_PATH);
+                boolean isConnected = rs.getBoolean(DRIVE_CONNECTED);
+                boolean isSelected = rs.getBoolean(DRIVE_SELECTED);
+                long driveTotalSize = rs.getLong(DRIVE_TOTAL_SIZE);
+                String identifier = rs.getString(IDENTIFIER);
 
+                // Creating DriveInfo object
                 DriveInfo driveInfo = new DriveInfo(drivePath, driveTotalSize, isConnected, isSelected, identifier);
                 driveInfos.add(driveInfo);
             }
+
             return driveInfos;
         } catch (Exception e) {
             Messages.sprintfError("Failed to load DriveInfo from database");
@@ -103,51 +119,4 @@ public class DriveInfoSQL implements SQLInterface {
         }
     }
 
-
-    /*
-     * DriveInfo
-     */
-    private static boolean createDriveInfoTable(Connection connection) {
-        return false;
-    }
-
-    @Override
-    public boolean save(List<DriveInfo> driveInfos) {
-        return false;
-    }
-
-    @Override
-    public List<DriveInfo> load() {
-        return loadDriveInfo(this.configurationConnection);
-    }
-
-    @Override
-    public boolean delete() {
-        return false;
-    }
-
-    @Override
-    public boolean update(List<DriveInfo> driveInfos) {
-        return addDriveInfos(driveInfos);
-    }
-
-    @Override
-    public boolean create() {
-        return false;
-    }
-
-    @Override
-    public boolean insert() {
-        return false;
-    }
-
-    @Override
-    public Connection getConfigurationConnection() {
-        return this.configurationConnection;
-    }
-
-    @Override
-    public boolean isConnected() {
-        return SQL_Utils.isDbConnected(this.configurationConnection);
-    }
 }

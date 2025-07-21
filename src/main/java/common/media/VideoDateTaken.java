@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package common.media;
 
 import common.utils.FileNameParseUtils;
@@ -17,10 +12,7 @@ import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetadataDateTaken;
 import static common.utils.FileUtils.supportedVideo;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class VideoDateTaken {
 
     /**

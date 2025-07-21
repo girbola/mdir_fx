@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.imagehandling;
 
 import com.girbola.messages.Messages;
@@ -32,10 +27,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
 
 	private final String ERROR = ConvertVideo_Byte.class.getSimpleName();

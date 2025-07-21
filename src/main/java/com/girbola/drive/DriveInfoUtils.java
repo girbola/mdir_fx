@@ -1,31 +1,21 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.drive;
 
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
-import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.messages.Messages;
 import com.girbola.sql.DriveInfoSQL;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import common.utils.OSHI_Utils;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
-import java.sql.Connection;
 
 public class DriveInfoUtils {
 
 	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
-	private ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
+	private static ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
 	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath, String driveSerialNumber) {
 		for(DriveInfo driveInfo : driveInfos) {
@@ -36,14 +26,14 @@ public class DriveInfoUtils {
 		return false;
 	}
 
-	public boolean exists(DriveInfo driveInfoToSearch) {
-		for (DriveInfo driveInfo : drivesList_obs) {
-			if (driveInfo.getDrivePath().equals(driveInfoToSearch.getDrivePath())) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	public boolean exists(DriveInfo driveInfoToSearch) {
+//		for (DriveInfo driveInfo : drivesList_obs) {
+//			if (driveInfo.getDrivePath().equals(driveInfoToSearch.getDrivePath())) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 //
 //	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
 //		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
@@ -61,18 +51,9 @@ public class DriveInfoUtils {
 	}
 
 	public void saveList() {
-		Connection connectionConfiguration = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-		if(!SQL_Utils.isDbConnected(connectionConfiguration)) {
-			Configuration_SQL_Utils.createFolderInfosDatabase(connectionConfiguration);
-			Messages.sprintf("createFolderInfoDatabase created");
-		}
 
 		DriveInfoSQL.addDriveInfos(drivesList_obs);
-		try {
-			connectionConfiguration.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 	}
 
 	public boolean isDriveAlreadyInRegister(String drive) {
@@ -84,7 +65,7 @@ public class DriveInfoUtils {
 		return false;
 	}
 
-	public void createDriveInfo(String path, boolean selected) {
+	public void createDriveInfo_old(String path, boolean selected) {
 		if(Main.getProcessCancelled()) {
 			return;
 		}
@@ -115,5 +96,46 @@ public class DriveInfoUtils {
 			Messages.sprintf("drivesList size: " + drivesList_obs.size());
 
 		}
+	}
+	public void createDriveInfo(String path, boolean selected) {
+		if (Main.getProcessCancelled()) {
+			return;
+		}
+
+		File file = new File(path);
+
+		// Find the drive in the list
+		for (DriveInfo driveInfo : drivesList_obs) {
+			if (driveInfo.getDrivePath().equals(file.toString())) {
+				driveInfo.setSelected(selected);
+				return; // Exit if the drive is found and updated
+			}
+		}
+
+		// If not found, add new DriveInfo
+		addDriveInfo(file, selected);
+	}
+
+	/**
+	 * Helper method to create and add a new DriveInfo object to the drives list.
+	 */
+	private void addDriveInfo(File file, boolean selected) {
+		String drivePath = file.toString();
+		String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(drivePath);
+
+		// Log the path for debugging purposes
+		Messages.sprintf("Adding drive info for path: " + drivePath);
+
+		// Create and add the DriveInfo object to the list
+		drivesList_obs.add(new DriveInfo(
+				drivePath,
+				file.getTotalSpace(),
+				file.exists(),
+				selected,
+				driveSerialNumber
+		));
+
+		// Optional logging for the size of the list
+		Messages.sprintf("drivesList size after addition: " + drivesList_obs.size());
 	}
 }

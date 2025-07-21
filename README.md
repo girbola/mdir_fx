@@ -53,3 +53,30 @@ __Raw__
 This project is not yet ready for public use.
 Any inconvenience caused by this project is in your responsibility.
 
+## Compiling the project
+### Required versions
+GraalVM 22.0.2
+JavaFX 24.0.2
+
+``` IntelliJ Module .iml file should look something like this
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="AdditionalModuleElements">
+    <content url="file://$MODULE_DIR$" dumb="true">
+      <sourceFolder url="file://$MODULE_DIR$/src/main/java/com/girbola/fxml" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/bundle" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/fonts" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/img" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/resources/themes" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/.ideaold" />
+    </content>
+  </component>
+</module>
+```
+
+### Compiling
+#### JVM options
+```
+--module-path C:\Programs\javafx-sdk-24.0.2\lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.media,javafx.swing
+```

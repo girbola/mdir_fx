@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tasks;
 
 import com.girbola.Main;
@@ -29,10 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class AddToTable extends Task<Integer> {
 
 	private final String ERROR = AddToTable.class.getSimpleName();

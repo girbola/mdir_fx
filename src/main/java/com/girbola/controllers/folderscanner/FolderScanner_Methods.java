@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.folderscanner;
 
 import javafx.scene.Node;
@@ -14,10 +9,7 @@ import java.nio.file.Path;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class FolderScanner_Methods {
 
     public static boolean titledPaneExists(VBox listOfRoots_vbox, Path p) {

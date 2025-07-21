@@ -1,6 +1,7 @@
 package com.girbola.fxml.main.merge;
 
 
+import com.girbola.controllers.main.merge.MergeDialogController;
 import org.junit.jupiter.api.Test;
 import java.nio.file.Path;
 import java.nio.file.Paths;

@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tables.model;
 
 import com.girbola.controllers.main.tables.TableUtils;
@@ -16,9 +11,6 @@ import java.util.*;
 
 import static com.girbola.Main.simpleDates;
 
-/**
- * @author Marko Lokka
- */
 public class FolderInfo implements TableValues_inf {
 
     //@formatter:off
@@ -68,7 +60,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
-
+        this.sourceFolderSerialNumber = new SimpleStringProperty("");
         Bindings.subtract(folderFiles, badFiles);
     }
 
@@ -98,6 +90,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty(tableType);
+        this.sourceFolderSerialNumber = new SimpleStringProperty("");
         // Bindings.subtract(folderFiles, copied);
         Bindings.subtract(folderFiles, badFiles);
     }
@@ -128,6 +121,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
+        this.sourceFolderSerialNumber = new SimpleStringProperty("");
         Bindings.subtract(folderFiles, badFiles);
 
     }
@@ -212,4 +206,30 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setTableType(String value) { this.tableType.set(value); }
     @Override public void setStatus(int value) { this.status.set(value); }
 
-}
+    @Override public String toString() {
+    return "FolderInfo{" +
+            "status=" + status.get() +
+            ", fileInfoList.size =" + fileInfoList.size() +
+            ", changed=" + changed.get() +
+            ", connected=" + connected.get() +
+            ", ignored=" + ignored.get() +
+            ", dateDifference=" + dateDifference.get() +
+            ", badFiles=" + badFiles.get() +
+            ", confirmed=" + confirmed.get() +
+            ", copied=" + copied.get() +
+            ", folderFiles=" + folderFiles.get() +
+            ", folderImageFiles=" + folderImageFiles.get() +
+            ", folderRawFiles=" + folderRawFiles.get() +
+            ", folderVideoFiles=" + folderVideoFiles.get() +
+            ", goodFiles=" + goodFiles.get() +
+            ", suggested=" + suggested.get() +
+            ", folderSize=" + folderSize.get() +
+            ", folderPath=" + folderPath.get() +
+            ", justFolderName=" + justFolderName.get() +
+            ", maxDate=" + maxDate.get() +
+            ", minDate=" + minDate.get() +
+            ", state=" + state.get() +
+            ", tableType=" + tableType.get() +
+            ", sourceFolderSerialNumber=" + sourceFolderSerialNumber.get() +
+            '}';
+}}

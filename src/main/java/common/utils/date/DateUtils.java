@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package common.utils.date;
 
 import java.time.*;
@@ -12,10 +7,7 @@ import java.time.temporal.ChronoUnit;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class DateUtils {
 
 	public static LocalDateTime parseLocalDateTimeFromString(String string) {

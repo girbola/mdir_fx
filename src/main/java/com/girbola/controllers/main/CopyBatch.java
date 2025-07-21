@@ -2,7 +2,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.SceneNameType;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.controllers.operate.OperateFiles;
 
 import java.util.ArrayList;
 import java.util.List;

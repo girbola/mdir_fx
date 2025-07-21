@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer;
 
 import com.drew.imaging.ImageMetadataReader;
@@ -60,16 +55,14 @@ import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- * @author Marko Lokka
- */
+
 public class DateFixPopulate extends Task<ObservableList<Node>> {
 
     private final static String ERROR = DateFixPopulate.class.getSimpleName();
 
     private FolderInfo folderInfo;
     private TilePane quickPick_tilePane;
-    private Model_datefix model_dateFix;
+    private ModelDatefix model_dateFix;
     private ScrollPane scrollPane;
     private Scene scene;
     private DoubleProperty node_height = new SimpleDoubleProperty(0);
@@ -80,7 +73,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
 
     private TilePane tilePane;
 
-    public DateFixPopulate(Scene scene, Model_datefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
+    public DateFixPopulate(Scene scene, ModelDatefix aModel_datefix, TilePane aTilePane, LoadingProcessTask loadingProcess_task) {
         this.scene = scene;
         this.model_dateFix = aModel_datefix;
         this.quickPick_tilePane = aModel_datefix.getQuickPick_tilePane();
@@ -100,51 +93,76 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     @Override
     protected ObservableList<Node> call() throws Exception {
         ObservableList<Node> nodes = FXCollections.observableArrayList();
-        Messages.sprintf("DateFixPopulate.call() and size: " + model_dateFix.getFolderInfo_full().getFileInfoList().size());
-        for (FileInfo fi : model_dateFix.getFolderInfo_full().getFileInfoList()) {
-            if (Main.getProcessCancelled()) {
-                cancel();
-                sprintf("Process has been cancelled!");
-                return null;
+        List<FileInfo> fileInfoList = model_dateFix.getFolderInfo_full().getFileInfoList();
+
+        Messages.sprintf("DateFixPopulate.call() and size: " + fileInfoList.size());
+
+        for (FileInfo fileInfo : fileInfoList) {
+            if (!validateAndProcessFile(fileInfo)) {
+                continue;
             }
-            if (Files.exists(Paths.get(fi.getOrgPath()))) {
-                if (fi.isImage() || fi.isVideo() || fi.isRaw()) {
-                    Messages.sprintf("DATEFIX: " + fi.getOrgPath());
 
-                    frame = null;
-                    if (fi.isImage() || fi.isRaw()) {
-                        frame = createImageFrame(fi, counter.get());
-                        setSelectedImageRoutine(fi, frame);
-                    } else if (fi.isVideo()) {
-                        frame = createImageFrame(fi, counter.get());
-                        //setSelectedVideoRoutine(fi, frame);
-                    }
-                    if (frame != null) {
-                        frame.setUserData(fi);
-
-                        Button statusButton = model_dateFix.getQuickPick_Navigator().createStatusButton(node_height.get(), frame);
-                        if (statusButton != null) {
-                            if (quickPick_tilePane == null) {
-                                Messages.errorSmth(ERROR, "quickPick_tilePane were null!!!!", null, Misc.getLineNumber(), true);
-                            }
-                            // TODO Jotain vikaa quickpick navigatorissa. Hmmmmmmmmmmmmmmm
-                            Messages.sprintf("StatusButton were not null: " + statusButton);
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    quickPick_tilePane.getChildren().add(statusButton);
-                                }
-                            });
-                        }
-
-                        nodes.add(frame);
-//                            model_dateFix.getTilePane().getChildren().add(frame);
-                        counter.incrementAndGet();
-                    }
-                }
+            VBox mediaFrame = processMediaFile(fileInfo);
+            if (mediaFrame != null) {
+                nodes.add(mediaFrame);
+                counter.incrementAndGet();
             }
         }
         return nodes;
+    }
+
+    private boolean validateAndProcessFile(FileInfo fileInfo) {
+        if (Main.getProcessCancelled()) {
+            cancel();
+            sprintf("Process has been cancelled!");
+            return false;
+        }
+
+        return Files.exists(Paths.get(fileInfo.getOrgPath())) &&
+                (fileInfo.isImage() || fileInfo.isVideo() || fileInfo.isRaw());
+    }
+
+    private VBox processMediaFile(FileInfo fileInfo) {
+        Messages.sprintf("DATEFIX: " + fileInfo.getOrgPath());
+
+        VBox mediaFrame = createMediaFrame(fileInfo);
+        if (mediaFrame == null) {
+            return null;
+        }
+
+        mediaFrame.setUserData(fileInfo);
+        addStatusButton(mediaFrame);
+
+        return mediaFrame;
+    }
+
+    private VBox createMediaFrame(FileInfo fileInfo) {
+        if (fileInfo.isImage() || fileInfo.isRaw()) {
+            VBox frame = createImageFrame(fileInfo, counter.get());
+            setSelectedImageRoutine(fileInfo, frame);
+            return frame;
+        } else if (fileInfo.isVideo()) {
+            return createImageFrame(fileInfo, counter.get());
+        }
+        return null;
+    }
+
+    private void addStatusButton(VBox mediaFrame) {
+        Button statusButton = model_dateFix.getQuickPick_Navigator()
+                .createStatusButton(node_height.get(), mediaFrame);
+
+        if (statusButton == null) {
+            return;
+        }
+
+        if (quickPick_tilePane == null) {
+            Messages.errorSmth(ERROR, "quickPick_tilePane were null!!!!",
+                    null, Misc.getLineNumber(), true);
+            return;
+        }
+
+        Messages.sprintf("StatusButton were not null: " + statusButton);
+        Platform.runLater(() -> quickPick_tilePane.getChildren().add(statusButton));
     }
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {

@@ -29,7 +29,7 @@ public class TableCell_Status extends TableCell<FolderInfo, Integer> {
 					setText(FolderInfoType.DONE.getType());
 					getStyleClass().add("tableCellStatus_DONE");
 				} else if (folderInfo.getFileInfoList().size() > 0 && folderInfo.getBadFiles() == 0) {
-					setText(FolderInfoType.READY.getType());
+					setText("OK");
 					getStyleClass().add("tableCellStatus_READY");
 				} else {
 					int procentage = (int) Math.floor(

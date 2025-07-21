@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.importimages;
 
 import com.girbola.Main;
@@ -46,9 +41,7 @@ import java.util.TreeMap;
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class DrawImagesToImportImages_Full extends Task<Void> {
 
     private final String ERROR = DrawImagesToImportImages_Full.class.getSimpleName();

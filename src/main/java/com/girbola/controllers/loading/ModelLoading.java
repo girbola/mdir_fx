@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.loading;
 
 import javafx.concurrent.Task;
@@ -11,17 +6,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 
-/**
- *
- * @author Marko Lokka
- */
+
 class ModelLoading {
 
 	private Task<?> task;
 	private Label messages_lbl;
 	private ProgressBar progressBar;
 	private Stage stage_loading;
-	
+
+	public ModelLoading() {
+		// Initialize components in constructor
+		this.messages_lbl = new Label();
+		this.progressBar = new ProgressBar();
+	}
+
+
 	@Override
 	public String toString() {
 		return ("Model_loading{ task= " + task);

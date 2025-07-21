@@ -1,12 +1,7 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer.table;
 
-import com.girbola.controllers.datefixer.Model_datefix;
+import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -29,16 +24,13 @@ import java.util.List;
 import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 
 	private final String ERROR = CheckBoxCell_Dates.class.getSimpleName();
 	private CheckBox checkBox;
-	private Model_datefix model_DateFix;
-	public CheckBoxCell_Dates(Model_datefix model_DateFix) {
+	private ModelDatefix model_DateFix;
+	public CheckBoxCell_Dates(ModelDatefix model_DateFix) {
 		this.model_DateFix = model_DateFix;
 	}
 

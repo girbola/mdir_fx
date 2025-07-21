@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.importimages;
 
 import com.girbola.messages.Messages;
@@ -15,10 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
 	private ComboBox comboBox;

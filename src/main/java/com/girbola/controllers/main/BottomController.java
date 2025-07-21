@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
@@ -12,11 +7,12 @@ import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.workdir.WorkDirController;
-import com.girbola.fxml.datestreetableview.DatesTreeTableViewController;
 import com.girbola.media.collector.Collector;
 import com.girbola.messages.Messages;
-import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,15 +25,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
-import static common.utils.FileUtils.supportedImage;
 
 public class BottomController {
 
@@ -45,40 +36,24 @@ public class BottomController {
     private ModelMain model_main;
     private DuplicateStatistics duplicateStatistics;
 
-    @FXML
-    private Label debug_pref_width;
-    @FXML
-    private Button addFolders_btn;
-    @FXML
-    private Button copy_ok_date_btn;
-    @FXML
-    private Button copySelected_btn;
-    @FXML
-    private Button help_btn;
-    @FXML
-    private Button options_btn;
-    @FXML
-    private Button start_copyBatch_btn;
-    @FXML
-    private Button workDir_btn;
-    @FXML
-    private Button collect;
-    @FXML
-    private Label drive_name;
-    @FXML
-    private Label drive_space;
-    @FXML
-    private Label drive_spaceLeft;
-    @FXML
-    private Label drive_connected;
-    @FXML
-    private HBox drive_pane;
-    @FXML
-    private Button removeDuplicates_btn;
-    @FXML
-    private Button dates_ttv_btn;
-    @FXML
-    private Button showWorkdir_btn;
+    //@formatter:off
+    @FXML private Button addFolders_btn;
+    @FXML private Button collect;
+    @FXML private Button copy_ok_date_btn;
+    @FXML private Button copySelected_btn;
+    @FXML private Button dates_ttv_btn;
+    @FXML private Button options_btn;
+    @FXML private Button removeDuplicates_btn;
+    @FXML private Button showWorkdir_btn;
+    @FXML private Button start_copyBatch_btn;
+    @FXML private Button workDir_btn;
+    @FXML private HBox drive_pane;
+    @FXML private Label debug_pref_width;
+    @FXML private Label drive_connected;
+    @FXML private Label drive_name;
+    @FXML private Label drive_space;
+    @FXML private Label drive_spaceLeft;
+    //@formatter:on
 
     @FXML
     private void showWorkdir_btn_action(ActionEvent event) {
@@ -101,39 +76,6 @@ public class BottomController {
         });
     }
 
-    @FXML
-    private void findImageDuplicatesMenuItemAction(ActionEvent event) {
-
-    }
-
-
-    @FXML
-    private void moveFilesToSortedTable_btn_action(ActionEvent event) {
-//		TableUtils.checkTableDuplicates(null, null)
-    }
-
-
-
-
-
-    @FXML
-    private void dates_ttv_btn_action(ActionEvent event) {
-        try {
-            Parent parent = null;
-            FXMLLoader loader = new FXMLLoader(
-                    Main.class.getResource("fxml/datestreetableview/DatesTreeTableView.fxml"), Main.bundle);
-            parent = loader.load();
-            DatesTreeTableViewController datesTreeTableViewController = (DatesTreeTableViewController) loader
-                    .getController();
-            datesTreeTableViewController.init(model_main);
-            Scene scene = new Scene(parent);
-            Stage stage = new Stage();
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @FXML
     private void collect_action(ActionEvent event) {
@@ -169,7 +111,7 @@ public class BottomController {
     @FXML
     private void addFolders_btn_action(ActionEvent action) {
 
-        Messages.sprintf("locale is: " + Main.bundle.getLocale().toString());
+        Messages.sprintf("addFolders_btn_action pressed");
         FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
                 Main.bundle);
 
@@ -196,6 +138,9 @@ public class BottomController {
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);
         fc_stage.setScene(fc_scene);
+        /*fc_stage.initModality(Modality.WINDOW_MODAL);*//**/
+        fc_stage.setTitle(bundle.getString("folderChooser"));
+        Messages.sprintf("fc_stage.initModality(Modality.WINDOW_MODAL)");
 
         fc_stage.show();
 
@@ -229,13 +174,6 @@ public class BottomController {
     @FXML
     private void copySelected_btn_action(ActionEvent event) {
         Messages.warningText("Under construction");
-    }
-
-    @FXML
-    private void help_btn_action(ActionEvent event) {
-        Messages.warningTextHelp(
-                "Drag and drop folders to left \"SortIt\" which are not created by you or you want them to be sorted manualy",
-                HTMLClass.help_html + "#sorter");
     }
 
     @FXML

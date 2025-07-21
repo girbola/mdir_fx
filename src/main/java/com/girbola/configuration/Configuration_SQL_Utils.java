@@ -535,33 +535,33 @@ public class Configuration_SQL_Utils {
      * @param table The Tables object containing the TableView objects.
      */
     // @formatter:on
-//    public static void saveTableWidths(Tables table) {
-//        try {
-//            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-//            connection.setAutoCommit(false);
-//            PreparedStatement pstmt = null;
-//
-//            String sql = "DELETE FROM " + SQL_Enums.TABLES_COLS.getType();
-//            pstmt = connection.prepareStatement(sql);
-//            pstmt.executeUpdate();
-//            pstmt.close();
-//            pstmt = connection.prepareStatement(tablesColumnsInfoInsert);
-//
-//            createConfigurationTable_properties(connection);
-//            saveTableWidths(connection, pstmt, table.getSortIt_table().getColumns(), table.getSortIt_table().getId());
-//            saveTableWidths(connection, pstmt, table.getSorted_table().getColumns(), table.getSorted_table().getId());
-//            saveTableWidths(connection, pstmt, table.getAsItIs_table().getColumns(), table.getAsItIs_table().getId());
-//
-//
-//            pstmt.executeBatch();
-//            pstmt.close();
-//            connection.commit();
-//            connection.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    public static void saveTableWidths(Tables table) {
+        try {
+            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            connection.setAutoCommit(false);
+            PreparedStatement pstmt = null;
+
+            String sql = "DELETE FROM " + SQL_Enums.TABLES_COLS.getType();
+            pstmt = connection.prepareStatement(sql);
+            pstmt.executeUpdate();
+            pstmt.close();
+            pstmt = connection.prepareStatement(tablesColumnsInfoInsert);
+
+            createConfigurationTable_properties(connection);
+            saveTableWidths(connection, pstmt, table.getSortIt_table().getColumns(), table.getSortIt_table().getId());
+            saveTableWidths(connection, pstmt, table.getSorted_table().getColumns(), table.getSorted_table().getId());
+            saveTableWidths(connection, pstmt, table.getAsItIs_table().getColumns(), table.getAsItIs_table().getId());
+
+
+            pstmt.executeBatch();
+            pstmt.close();
+            connection.commit();
+            connection.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * Saves the widths of the table columns for the specified table into the database.

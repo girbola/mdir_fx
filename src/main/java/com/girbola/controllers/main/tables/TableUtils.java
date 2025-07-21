@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tables;
 
 import com.girbola.MDir_Stylesheets_Constants;
@@ -16,8 +11,8 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.filelisting.GetRootFiles;
-import com.girbola.fxml.conflicttableview.ConflictTableViewController;
-import com.girbola.fxml.operate.OperateFiles;
+import com.girbola.controllers.conflicttableview.ConflictTableViewController;
+import com.girbola.controllers.operate.OperateFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
@@ -71,9 +66,7 @@ import static com.girbola.controllers.main.tables.FolderInfoUtils.calculateFolde
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 @Log
 public class TableUtils {
 
@@ -741,11 +734,13 @@ public class TableUtils {
              * Connection status when this was saved Connects to current folder for existing
              * or creates new one called fileinfo.db
              */
+            // Inserts all data info fileinfo.db
+            FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
+
             Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
             fileList_connection.setAutoCommit(false);
-            // Inserts all data info fileinfo.db
-            FileInfo_SQL.insertFileInfoListToDatabase(fileList_connection, folderInfo.getFileInfoList(), false);
-            FolderInfo_SQL.saveFolderInfoToTable(fileList_connection, folderInfo);
+
+            FolderInfo_SQL.saveFolderInfoToDatabase(fileList_connection, folderInfo);
             SQL_Utils.commitChanges(fileList_connection);
             SQL_Utils.closeConnection(fileList_connection);
         } catch (Exception e) {

@@ -1,7 +1,6 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
@@ -116,7 +115,7 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
                                     try {
                                         byteArrayOS.close();
                                     } catch (IOException ex) {
-                                        Logger.getLogger(Model_datefix.class.getName()).log(Level.SEVERE, null, ex);
+                                        Logger.getLogger(ModelDatefix.class.getName()).log(Level.SEVERE, null, ex);
                                     }
                                     thumbInfo.getThumbs().add(imageByteArray);
                                     thumbInfo_list.add(thumbInfo);

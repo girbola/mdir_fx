@@ -1,10 +1,4 @@
 package com.girbola.filelisting;
-/*
-@(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
-@(#)Author:     Marko Lokka
-@(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
-@(#)Purpose:    To help to organize images and video files in your harddrive with less pain
-*/
 
 import com.girbola.Main;
 import com.girbola.messages.Messages;

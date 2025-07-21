@@ -1,6 +1,7 @@
 package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -28,8 +29,7 @@ public class GUI_Methods {
 		try {
 			file = Main.class.getResource("/img/" + string);
 			if (file != null) {
-				Image image = new Image(file.toString(), buttonWidth, 0, true, true, false);
-				return image;
+                return new Image(file.toString(), buttonWidth, 0, true, true, false);
 			}
 		} catch (Exception e) {
 			Messages.sprintfError(

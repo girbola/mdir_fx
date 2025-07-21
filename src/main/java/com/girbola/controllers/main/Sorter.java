@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
@@ -19,10 +14,7 @@ import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class Sorter extends Task<Integer> {
 
 	private List<Path> selectedList;

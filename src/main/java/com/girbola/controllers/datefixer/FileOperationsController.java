@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer;
 
 import com.girbola.MDir_Stylesheets_Constants;
@@ -14,7 +9,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
-import com.girbola.fxml.move.MoveController;
+import com.girbola.controllers.move.MoveController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
@@ -52,7 +47,7 @@ public class FileOperationsController {
 
 	private final String ERROR = FileOperationsController.class.getSimpleName();
 
-	private Model_datefix model_datefix;
+	private ModelDatefix model_datefix;
 	private ModelMain model_main;
 	private ObservableList<Folder> comboList = FXCollections.observableArrayList();
 
@@ -108,7 +103,7 @@ public class FileOperationsController {
 
 	}
 
-	public void init(Model_datefix aModel_datefix, ModelMain aModel_main) {
+	public void init(ModelDatefix aModel_datefix, ModelMain aModel_main) {
 		this.model_datefix = aModel_datefix;
 		this.model_main = aModel_main;
 

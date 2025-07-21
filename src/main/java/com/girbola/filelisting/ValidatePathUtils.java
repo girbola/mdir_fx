@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.filelisting;
 
 import com.girbola.messages.Messages;
@@ -21,10 +16,7 @@ import java.util.Arrays;
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.misc.Misc.getLineNumber;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ValidatePathUtils {
 
     private final static String ERROR = ValidatePathUtils.class.getSimpleName();

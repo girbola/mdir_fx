@@ -1,7 +1,7 @@
 package com.girbola.utils;
 
 import com.girbola.*;
-import com.girbola.configuration.*;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.messages.*;
 import common.utils.*;
 import java.io.*;
@@ -31,7 +31,7 @@ public class WorkdirUtils {
                 Main.conf.setWorkDir(file.toString());
 
                 Main.conf.setWorkDirSerialNumber(OSHI_Utils.getDriveSerialNumber((file.toPath().getRoot()).toString()));
-                Configuration_SQL_Utils.updateConfiguration();
+                ConfigurationSQLHandler.updateConfiguration();
 
             } else {
                 Messages.warningText("Can't find current path. Check you folder access");

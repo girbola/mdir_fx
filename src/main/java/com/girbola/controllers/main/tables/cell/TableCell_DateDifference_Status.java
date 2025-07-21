@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved. 
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.controllers.main.ModelMain;
@@ -11,10 +6,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class TableCell_DateDifference_Status extends TableCell<FolderInfo, Double> {
 
 	private ModelMain model_main;

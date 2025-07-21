@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.datefixer;
 
 import com.girbola.MDir_Stylesheets_Constants;
@@ -34,10 +29,7 @@ import java.util.List;
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 
-/**
- *
- * @author Marko Lokka
- */
+
 public class ImageUtils {
 
 	private static Scene scene;

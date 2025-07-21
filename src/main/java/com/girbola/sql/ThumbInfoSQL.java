@@ -1,6 +1,6 @@
 package com.girbola.sql;
 
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.thumbinfo.ThumbInfo;
@@ -19,7 +19,7 @@ public class ThumbInfoSQL  {
 
     final static String thumbInfoInsert =
             "INSERT OR REPLACE INTO " +
-                    SQL_Enums.THUMBINFO.getType() +
+                    SQLTableEnums.THUMBINFO.getType() +
                     " ('id',"+
                     "'filepath', " +
                     "'thumb_width', " +
@@ -76,7 +76,7 @@ public class ThumbInfoSQL  {
             Statement stmt = connection.createStatement();
             connection.setAutoCommit(false);
             String sql = "CREATE TABLE IF NOT EXISTS "
-                    + SQL_Enums.THUMBINFO.getType()
+                    + SQLTableEnums.THUMBINFO.getType()
                     + " (id INTEGER PRIMARY KEY,"
                     + " filepath STRING UNIQUE NOT NULL,"
                     + " thumb_width  DOUBLE,"
@@ -136,7 +136,7 @@ public class ThumbInfoSQL  {
             return null;
         }
         try {
-            String sql = "SELECT * FROM " + SQL_Enums.THUMBINFO.getType();
+            String sql = "SELECT * FROM " + SQLTableEnums.THUMBINFO.getType();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -163,7 +163,7 @@ public class ThumbInfoSQL  {
         }
         ThumbInfo thumbInfo = null;
         try {
-            String sql = "SELECT * FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
+            String sql = "SELECT * FROM " + SQLTableEnums.THUMBINFO.getType() + " WHERE id = ?";
 //			String sql = "SELECT id, " + "filename, " + "thumb_width, " + "thumb_height, " + "thumb_fast_width, "
 //					+ "thumb_fast_height, " + "orientation, " + "image_0, " + "image_1, " + "image_2, " + "image_3, "
 //					+ "image_4 FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";

@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.fileinfo;
 
 import com.girbola.controllers.datefixer.utils.MetadataField;
@@ -14,9 +9,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-/**
- * @author Marko Lokka
- */
+
 @Getter
 @Setter
 public class FileInfo extends Metadata implements Cloneable {

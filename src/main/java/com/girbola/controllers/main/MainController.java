@@ -1,9 +1,4 @@
-/*
- @(#)Copyright:  Copyright (c) 2012-2025 All right reserved.
- @(#)Author:     Marko Lokka
- @(#)Product:    Image and Video Files Organizer Tool (Pre-alpha)
- @(#)Purpose:    To help to organize images and video files in your harddrive with less pain
- */
+
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
@@ -22,9 +17,7 @@ import javafx.scene.layout.VBox;
 
 import static com.girbola.messages.Messages.sprintf;
 
-/**
- * @author Marko Lokka
- */
+
 public class MainController {
 
     private final static String ERROR = MainController.class.getSimpleName();
@@ -110,7 +103,7 @@ public class MainController {
 
         this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
         this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
-        this.model_main.tables().setAsItIs_TableStatistic(asitisTableStatistic);
+        this.model_main.tables().setAsitis_TableStatistic(asitisTableStatistic);
     }
 
     private void configureTableActions() {
