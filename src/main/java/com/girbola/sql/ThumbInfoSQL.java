@@ -166,7 +166,7 @@ public class ThumbInfoSQL  {
             String sql = "SELECT * FROM " + SQLTableEnums.THUMBINFO.getType() + " WHERE id = ?";
 //			String sql = "SELECT id, " + "filename, " + "thumb_width, " + "thumb_height, " + "thumb_fast_width, "
 //					+ "thumb_fast_height, " + "orientation, " + "image_0, " + "image_1, " + "image_2, " + "image_3, "
-//					+ "image_4 FROM " + SQL_Enums.THUMBINFO.getType() + " WHERE id = ?";
+//					+ "image_4 FROM " + SQLTableEnums.THUMBINFO.getType() + " WHERE id = ?";
             // @formatter:on
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.setInt(1, thumbInfo_ID);

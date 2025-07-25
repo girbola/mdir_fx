@@ -56,7 +56,7 @@ public class ConfigurationUtils {
         Configuration_SQL_Utils.createConfiguration_Table(connection);
         boolean b = SQL_Utils.commitChanges(connection);
         if (!b) {
-            SQL_Utils.rollBack(connection);
+            SQL_Utils.rollBackConnection(connection);
         }
 
         // Inserts default params to configuration

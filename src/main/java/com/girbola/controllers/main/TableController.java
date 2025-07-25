@@ -4,21 +4,19 @@ package com.girbola.controllers.main;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.controllers.main.sql.TablesSQL;
-import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.FolderInfoUtils;
-import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.controllers.main.collect.Collect_DialogController;
 import com.girbola.controllers.main.collect.Model_CollectDialog;
 import com.girbola.controllers.main.merge.MergeDialogController;
+import com.girbola.controllers.main.sql.TablesSQL;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
-import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import com.girbola.utils.WorkdirUtils;
 import common.utils.Conversion;
 import javafx.application.Platform;
@@ -41,10 +39,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.control.TableColumn.SortType;
 import javafx.scene.control.skin.TableViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
@@ -52,7 +49,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.TransferMode;
 import javafx.scene.layout.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -64,17 +60,19 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import uk.co.caprica.vlcj.player.list.PlaybackMode;
+import java.util.stream.Collectors;
 
-import static com.girbola.Main.*;
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 
 public class TableController {
 
+    private final double buttonHideSize = 35;
     private final String ERROR = TableController.class.getSimpleName();
 
     private Model_CollectDialog model_CollectDialog;
@@ -84,6 +82,7 @@ public class TableController {
     private final SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
     private String tableType;
     private Window owner;
+    private ArrayList<HBox> savedButtonsHBoxList;
 
     // @formatter:off
 	@FXML private AnchorPane table_RootPane;
@@ -141,11 +140,15 @@ public class TableController {
 	@FXML private Tooltip select_none_btn_tooltip;
 	@FXML private Tooltip tableDescription_tf_tooltip;
 	@FXML private Tooltip updateFolderInfo_btn_tooltip;
-	@FXML private VBox group;
 	@FXML private VBox table_Vbox;
 	@FXML public Button hide_btn;
-    @FXML private AnchorPane hideablePane;
     @FXML private Label allFilesSize_lbl;
+    @FXML HBox tableLabelNameHBox;
+    @FXML private Separator buttonsSeparator1;
+    @FXML private Separator buttonsSeparator2;
+    @FXML private Separator buttonsSeparator3;
+    @FXML HBox descriptionHBox;
+    @FXML VBox table_rootVBox;
 	// @formatter:on
 
     public Label getAllFilesCopied_lbl() {
@@ -413,8 +416,7 @@ public class TableController {
 
         table.setVisible(!table.isVisible());
 
-        tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
-
+//        tableInformation_flowpane.setVisible(!tableInformation_flowpane.isVisible());
 
         //hideablePane.setVisible(!hideablePane.isVisible());
 
@@ -423,58 +425,268 @@ public class TableController {
         Bounds b = hide_btn.getBoundsInLocal();
 
         setShowHideTableButtonIcons(hide_btn, table.isVisible());
-        if (!table.isVisible()) {
+        hideSetTableVisible(!table.isVisible());
+//        if (!table.isVisible()) {
+//            Messages.sprintf("Showing the content? " + table.isVisible());
+//            hideSetTableVisible(true);
+//            Messages.sprintf("hidden: table_Vbox.getWidth(); "
+//                    + table_Vbox.getWidth() + " pref width: "
+//                    + table_Vbox.getPrefWidth() + " MIN width: "
+//                    + table_Vbox.getMinWidth() + " MAX width: "
+//                    + table_Vbox.getMaxWidth());
+//        } else {
+//            Messages.sprintf("Hiding the content? " + table.isVisible());
+//            hideSetTableVisible(false);
+//            Messages.sprintf("showing: table_Vbox.getWidth(); "
+//                    + table_Vbox.getWidth() + " pref width: "
+//                    + table_Vbox.getPrefWidth() + " MIN width: "
+//                    + table_Vbox.getMinWidth() + " MAX width: "
+//                    + table_Vbox.getMaxWidth());
+//        }
 
-//            tableInformation_flowpane.setVisible(false);
-            for (Node node : topMenuButtonFlowPane.getChildren()) {
-                Messages.sprintf("WHAAAAT: " + node.getId());
-                if (node instanceof Button) {
-                    Button btn = (Button) node;
-                    Messages.sprintf("BUTTON FOUND: " + btn.getId());
-                    Platform.runLater(() -> {
-                        btn.setVisible(false);
-                    });
-                }
-//                else {
-//                    Platform.runLater(() -> {
-//                        node.setVisible(true);
-//                    });
-//                }
-            }
-//            table.setVisible(false);
-//            table_Vbox.setPrefWidth(b.getWidth());
-//            table_Vbox.setMinWidth(b.getWidth());
-//            table_Vbox.setMaxWidth(b.getWidth());
-            Messages.sprintf("hidden: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
-        } else {
+//        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
+//        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
 
-            for (Node node : topMenuButtonFlowPane.getChildren()) {
-                Messages.sprintf("222WHAAAAT: " + node.getId());
-                if (node instanceof Button) {
-                    Button btn = (Button) node;
-                    Messages.sprintf("BUTTON FOUND: " + btn.getId());
-                    Platform.runLater(() -> {
-                        btn.setVisible(true);
-                    });
-                }
-//                else {
-//                    Platform.runLater(() -> {
-//                        node.setVisible(false);
-//                    });
-//                }
+        Main.getMain_stage().getScene().getRoot().applyCss();
+        Main.getMain_stage().getScene().getRoot().layout();
+
+    }
+
+    private void hideSetTableVisible(boolean hide) {
+        Messages.sprintf("VISIBLE TABLE IS NOW:::::::: " + hide);
+
+        Platform.runLater(() -> {
+            // Hide or show all child elements
+//            toggleVisibilityAndManaged(buttonsSeparator1, hide);
+            if(table.isVisible()) {
+                Messages.sprintf("TABLE IS VISIBLE!!!!!!!!");
+                table_rootVBox.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                table_rootVBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                table_rootVBox.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+                tableLabelNameHBox.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                tableLabelNameHBox.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                tableLabelNameHBox.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                table.setManaged(true);
+
+                topMenuButtonFlowPane.setMinSize(420, buttonHideSize);
+                topMenuButtonFlowPane.setPrefSize(420, buttonHideSize);
+                topMenuButtonFlowPane.setMaxSize(420, buttonHideSize);
+
+                buttonsSeparator1.setMinSize(Region.USE_COMPUTED_SIZE, 0);
+                buttonsSeparator1.setPrefSize(4, 17);
+                buttonsSeparator1.setMaxSize(Region.USE_COMPUTED_SIZE, 0);
+
+                buttonsSeparator2.setMinSize(Region.USE_COMPUTED_SIZE, 0);
+                buttonsSeparator2.setPrefSize(4, 17);
+                buttonsSeparator2.setMaxSize(Region.USE_COMPUTED_SIZE, 0);
+
+                buttonsSeparator3.setMinSize(Region.USE_COMPUTED_SIZE, 0);
+                buttonsSeparator3.setPrefSize(4, 17);
+                buttonsSeparator3.setMaxSize(Region.USE_COMPUTED_SIZE, 0);
+
+                updateFolderInfo_btn.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                updateFolderInfo_btn.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                updateFolderInfo_btn.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+                menuReload.setMinSize(100, buttonHideSize);
+                menuReload.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                menuReload.setMaxSize(100, buttonHideSize);
+
+                menuAction.setMinSize(100, buttonHideSize);
+                menuAction.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                menuAction.setMaxSize(100, buttonHideSize);
+
+                select_all_btn.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_all_btn.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_all_btn.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                select_good_btn.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_good_btn.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_good_btn.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                select_bad_btn.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_bad_btn.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_bad_btn.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                select_none_btn.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_none_btn.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_none_btn.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                select_invert_btn.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_invert_btn.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                select_invert_btn.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                descriptionHBox.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                descriptionHBox.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                descriptionHBox.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+                buttons_hbox.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                buttons_hbox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+                buttons_hbox.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+                tableInformation_flowpane.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                tableInformation_flowpane.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+                tableInformation_flowpane.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
+
+            } else {
+                Messages.sprintf("TABLE  NOOOOT VISIBLE!!!!!!!!");
+                table_rootVBox.setMinSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
+                table_rootVBox.setPrefSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
+                table_rootVBox.setMaxSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
+
+                tableLabelNameHBox.setMinSize(0,0);
+                tableLabelNameHBox.setPrefSize(0,0);
+                tableLabelNameHBox.setMaxSize(0, 0);
+
+                topMenuButtonFlowPane.setMinSize(buttonHideSize,  buttonHideSize);
+                topMenuButtonFlowPane.setPrefSize(buttonHideSize,  buttonHideSize);
+                topMenuButtonFlowPane.setMaxSize(buttonHideSize,  buttonHideSize);
+
+                buttonsSeparator1.setMinSize(0, 0);
+                buttonsSeparator1.setPrefSize(0, 0);
+                buttonsSeparator1.setMaxSize(0, 0);
+
+                buttonsSeparator2.setMinSize(0, 0);
+                buttonsSeparator2.setPrefSize(0, 0);
+                buttonsSeparator2.setMaxSize(0, 0);
+
+                buttonsSeparator3.setMinSize(0, 0);
+                buttonsSeparator3.setPrefSize(0, 0);
+                buttonsSeparator3.setMaxSize(0, 0);
+
+                updateFolderInfo_btn.setMinSize(0, 0);
+                updateFolderInfo_btn.setPrefSize(0, 0);
+                updateFolderInfo_btn.setMaxSize(0, 0);
+
+                menuReload.setMinSize(0, 0);
+                menuReload.setPrefSize(0, 0);
+                menuReload.setMaxSize(0, 0);
+
+                menuAction.setMinSize(0, 0);
+                menuAction.setPrefSize(0, 0);
+                menuAction.setMaxSize(0, 0);
+
+                select_all_btn.setMinSize(0, 0);
+                select_all_btn.setPrefSize(0, 0);
+                select_all_btn.setMaxSize(0, 0);
+
+                select_good_btn.setMinSize(0, 0);
+                select_good_btn.setPrefSize(0, 0);
+                select_good_btn.setMaxSize(0, 0);
+
+                select_bad_btn.setMinSize(0, 0);
+                select_bad_btn.setPrefSize(0, 0);
+                select_bad_btn.setMaxSize(0, 0);
+
+                select_none_btn.setMinSize(0, 0);
+                select_none_btn.setPrefSize(0, 0);
+                select_none_btn.setMaxSize(0, 0);
+
+                select_invert_btn.setMinSize(0, 0);
+                select_invert_btn.setPrefSize(0, 0);
+                select_invert_btn.setMaxSize(0, 0);
+
+                descriptionHBox.setMinSize(0, 0);
+                descriptionHBox.setPrefSize(0, 0);
+                descriptionHBox.setMaxSize(0, 0);
+
+                buttons_hbox.setMinSize(0, 0);
+                buttons_hbox.setPrefSize(0, 0);
+                buttons_hbox.setMaxSize(0, 0);
             }
-//            table.setVisible(true);
-//            table_Vbox.setPrefWidth(-1);
-//            table_Vbox.setMinWidth(-1);
-//            table_Vbox.setMaxWidth(-1);
-//            tableInformation_flowpane.setVisible(true);
-            Messages.sprintf("showing: table_Vbox.getWidth(); " + table_Vbox.getWidth() + " pref width: " + table_Vbox.getPrefWidth() + " MIN width: " + table_Vbox.getMinWidth() + " MAX width: " + table_Vbox.getMaxWidth());
+
+            toggleVisibilityAndManaged(buttonsSeparator1, hide);
+            toggleVisibilityAndManaged(buttonsSeparator2, hide);
+            toggleVisibilityAndManaged(buttonsSeparator3, hide);
+            toggleVisibilityAndManaged(descriptionHBox, hide);
+            toggleVisibilityAndManaged(menuAction, hide);
+            toggleVisibilityAndManaged(menuReload, hide);
+            toggleVisibilityAndManaged(select_all_btn, hide);
+            toggleVisibilityAndManaged(select_bad_btn, hide);
+            toggleVisibilityAndManaged(select_good_btn, hide);
+            toggleVisibilityAndManaged(select_invert_btn, hide);
+            toggleVisibilityAndManaged(select_none_btn, hide);
+            toggleVisibilityAndManaged(updateFolderInfo_btn, hide);
+            toggleVisibilityAndManaged(tableInformation_flowpane, hide);
+            toggleVisibilityAndManaged(tableLabelNameHBox, hide);
+
+//            topMenuButtonFlowPane.setManaged(hide);
+            // Dynamically adjust the size of the parent HBox
+//            adjustParentContainerSize(descriptionHBox, hide);
+//            if (!buttons_hbox.isVisible()) {
+//                Platform.runLater(() -> {
+//                    buttons_hbox.setMinWidth(0);
+//                    buttons_hbox.setMaxWidth(0);
+//                    buttons_hbox.setPrefWidth(0);
+//
+//                    topMenuButtonFlowPane.setMinWidth(0);
+//                    topMenuButtonFlowPane.setMaxWidth(0);
+//
+//                    descriptionHBox.setMinWidth(0);
+//                    descriptionHBox.setMaxWidth(0);
+//                });
+//
+//            } else {
+//                Platform.runLater(() -> {
+//                    Platform.runLater(() -> {
+//                        buttons_hbox.setMinWidth(50);
+//                        buttons_hbox.setMaxWidth(50);
+//                        buttons_hbox.setPrefWidth(50);
+//
+//                        topMenuButtonFlowPane.setMinWidth(50);
+//                        topMenuButtonFlowPane.setMaxWidth(50);
+//
+//                        descriptionHBox.setMinWidth(50);
+//                        descriptionHBox.setMaxWidth(50);
+//                    });
+//                });
+//
+//            }
+        });
+    }
+
+    /**
+     * Helper method to safely toggle visibility and managed state for nodes.
+     *
+     * @param node The JavaFX Node (UI element) to toggle.
+     * @param hide Boolean flag to determine visibility state.
+     */
+    private void toggleVisibilityAndManaged(Node node, boolean hide) {
+        if (node != null) {
+            node.setVisible(!hide);  // Hide or show the element
+            node.setManaged(!hide);  // Include or exclude it from layout calculations
         }
+    }
 
+    /**
+     * Adjust the parent container's size dynamically based on the visibility state.
+     * If all child elements are hidden, shrink the container to minimum dimensions.
+     *
+     * @param parent The parent container (e.g., HBox).
+     * @param hide   Boolean flag for whether to shrink or expand the container.
+     */
+    private void adjustParentContainerSize(Region parent, boolean hide) {
+        if (parent != null) {
+            if (hide) {
+                // Shrink the parent container to minimal size when hiding all children
+                parent.setMinWidth(0);
+                parent.setMinHeight(0);
+                parent.setPrefWidth(0);
+                parent.setPrefHeight(0);
+            } else {
+                // Restore the parent container's default size rules
+                parent.setMinWidth(Region.USE_COMPUTED_SIZE);
+                parent.setMinHeight(Region.USE_COMPUTED_SIZE);
+                parent.setPrefWidth(Region.USE_COMPUTED_SIZE);
+                parent.setPrefHeight(Region.USE_COMPUTED_SIZE);
+            }
 
-        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
-        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
-
+            // Force the layout to update dynamically
+            parent.applyCss();
+            parent.layout();
+        }
     }
 
     private Pane getPaneFromParent(Parent parent, String id) {
@@ -559,7 +771,6 @@ public class TableController {
         });
 
         tableDescription_tf.setText(tableName);
-
 
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         // Listener to keep track of selected items
@@ -705,6 +916,10 @@ public class TableController {
         if (hide_btn == null) {
             Messages.errorSmth(ERROR, "model_main.tables().getHideButtons(). were null", null, Misc.getLineNumber(), true);
         }
+        savedButtonsHBoxList = buttons_hbox.getChildren().stream()
+                .filter(node -> node instanceof HBox)
+                .map(node -> (HBox) node)
+                .collect(Collectors.toCollection(ArrayList::new));
 
         /*
          * Disabling buttons

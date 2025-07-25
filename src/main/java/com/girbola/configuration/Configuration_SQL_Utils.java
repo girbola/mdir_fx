@@ -1,7 +1,7 @@
 package com.girbola.configuration;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.SQL_Enums;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
@@ -22,7 +22,7 @@ public class Configuration_SQL_Utils {
     private static final String ERROR = Configuration_SQL_Utils.class.getName();
     public static final String id = "id";
 
-    private static final String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQL_Enums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
+    private static final String tablesColumnsInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.TABLES_COLS.getType() + " ('tableColumn', " + "'width')" + " VALUES(?, ?)";
     private static int configuration_id = 0;
 
     public static final String betterQualityThumbs = "betterQualityThumbs";
@@ -46,7 +46,7 @@ public class Configuration_SQL_Utils {
     public static final String windowStartWidth = "windowStartWidth";
     public static final String workDir = "workDir";
     public static final String workDirSerialNumber = "workDirSerialNumber";
-    private static final String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
+    private static final String ignoredListTable = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.IGNOREDLIST.getType() + " (path STRING UNIQUE)";
 
     /**
      * Ensures that the 'currentTheme' column exists in the configuration table.
@@ -56,7 +56,7 @@ public class Configuration_SQL_Utils {
      */
     private static void ensureCurrentThemeColumnExists(Connection connection) throws Exception {
 
-        String configTable = SQL_Enums.CONFIGURATION.getType();
+        String configTable = SQLTableEnums.CONFIGURATION.getType();
         String[] columns = {
                 "betterQualityThumbs BOOLEAN",
                 "confirmOnExit BOOLEAN",
@@ -102,7 +102,7 @@ public class Configuration_SQL_Utils {
      */
     public static synchronized void updateConfiguration() {
         Connection configurationConnection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-        if(!SQL_Utils.isDatabaseAccessible(configurationConnection,  Main.conf.getConfiguration_db_fileName())) {
+        if(!SQL_Utils.isDbAccessible(configurationConnection,  Main.conf.getConfiguration_db_fileName())) {
             createConfiguration_Table(configurationConnection);
         }
 
@@ -148,7 +148,7 @@ public class Configuration_SQL_Utils {
                 return false;
             }
 
-            String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.TABLES_COLS.getType() + " (tableColumn STRING UNIQUE, " + "	width DOUBLE)";
+            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.TABLES_COLS.getType() + " (tableColumn STRING UNIQUE, " + "	width DOUBLE)";
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
         } catch (Exception e) {
@@ -172,7 +172,7 @@ public class Configuration_SQL_Utils {
                 return false;
             }
             //@formatter:off
-			String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.CONFIGURATION.getType()+ " ("
+			String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType()+ " ("
 					+ id + " INTEGER PRIMARY KEY CHECK (id = 0),"
 					+ betterQualityThumbs + " BOOLEAN, "
 		        	+ confirmOnExit + " BOOLEAN,"
@@ -232,13 +232,13 @@ public class Configuration_SQL_Utils {
      * @return true if the configuration is successfully loaded, false otherwise
      */
     public static boolean loadConfiguration(Connection connection, Configuration configuration) {
-        if(!SQL_Utils.isDatabaseAccessible(connection, SQL_Enums.CONFIGURATION.getType())) {
-           Messages.sprintf("Configuration database were not connected while loading loadConfiguration. Creating configuration database: " + SQL_Enums.CONFIGURATION.getType());
+        if(!SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
+           Messages.sprintf("Configuration database were not connected while loading loadConfiguration. Creating configuration database: " + SQLTableEnums.CONFIGURATION.getType());
             createConfiguration_Table(connection);
         }
         Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
 
-        String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQL_Enums.CONFIGURATION.getType();
+        String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.executeQuery();
@@ -310,7 +310,7 @@ public class Configuration_SQL_Utils {
             return false;
         }
         try {
-            String sql = "SELECT * FROM " + SQL_Enums.IGNOREDLIST.getType();
+            String sql = "SELECT * FROM " + SQLTableEnums.IGNOREDLIST.getType();
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
             while (rs.next()) {
@@ -343,7 +343,7 @@ public class Configuration_SQL_Utils {
             return false;
         }
         Messages.sprintf("loadTables connection were connected: " + SQL_Utils.getUrl(connection));
-//		String sql = "SELECT * FROM " + SQL_Enums.TABLES_COLS.getType();
+//		String sql = "SELECT * FROM " + SQLTableEnums.TABLES_COLS.getType();
         Messages.sprintf("Loading table column loading");
         loadTableColumnsWidths(connection, tables.getSorted_table());
         loadTableColumnsWidths(connection, tables.getSortIt_table());
@@ -363,7 +363,7 @@ public class Configuration_SQL_Utils {
         Messages.sprintf("loadTableColumnsWidths started: " + table.getId());
 //		final String tableId = table.getId();
 
-        String sql = "SELECT tableColumn, width FROM " + SQL_Enums.TABLES_COLS.getType() + " WHERE tableColumn = ?";
+        String sql = "SELECT tableColumn, width FROM " + SQLTableEnums.TABLES_COLS.getType() + " WHERE tableColumn = ?";
         PreparedStatement pstmt;
         try {
             pstmt = connection.prepareStatement(sql);
@@ -401,7 +401,7 @@ public class Configuration_SQL_Utils {
                 Messages.sprintf("insertAllProgram_config connection were connected: " + SQL_Utils.getUrl(connection));
                 try {
                     //@formatter:off
-                    String sql = "INSERT OR REPLACE INTO " + SQL_Enums.CONFIGURATION.getType()
+                    String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType()
                             + "('" + id + "', "
                             + "'" + betterQualityThumbs + "',"
                             + "'" + confirmOnExit + "', "
@@ -485,7 +485,7 @@ public class Configuration_SQL_Utils {
         SQL_Utils.setAutoCommit(connection, false);
 
         try {
-            String sql = "INSERT OR REPLACE INTO " + SQL_Enums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
+            String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.IGNOREDLIST.getType() + " ('path') VALUES(?)";
             PreparedStatement pstmt = connection.prepareStatement(sql);
             for (FolderInfo folderInfo : listToRemove) {
                 pstmt.setString(1, folderInfo.getFolderPath());
@@ -514,7 +514,7 @@ public class Configuration_SQL_Utils {
             connection = connection_open;
         }
 
-        String sql = "DELETE FROM " + SQL_Enums.IGNOREDLIST.getType() + " WHERE path = ?";
+        String sql = "DELETE FROM " + SQLTableEnums.IGNOREDLIST.getType() + " WHERE path = ?";
         Messages.sprintf("removeFromIgnoredList SQL= " + sql);
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
@@ -541,7 +541,7 @@ public class Configuration_SQL_Utils {
             connection.setAutoCommit(false);
             PreparedStatement pstmt = null;
 
-            String sql = "DELETE FROM " + SQL_Enums.TABLES_COLS.getType();
+            String sql = "DELETE FROM " + SQLTableEnums.TABLES_COLS.getType();
             pstmt = connection.prepareStatement(sql);
             pstmt.executeUpdate();
             pstmt.close();
@@ -594,7 +594,7 @@ public class Configuration_SQL_Utils {
             return false;
         }
 
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQL_Enums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
 
         try {
             Statement stmt = connection.createStatement();

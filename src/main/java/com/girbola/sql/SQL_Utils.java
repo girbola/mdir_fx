@@ -19,7 +19,6 @@ public class SQL_Utils extends FolderInfo_SQL {
             Messages.sprintfError("Error connecting to database: " + Main.conf.getConfiguration_db_fileName());
             return null;
         }
-
     }
 
     public static boolean clearTable(Connection connection, String table) {

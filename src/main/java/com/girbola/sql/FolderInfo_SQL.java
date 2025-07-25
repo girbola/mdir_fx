@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.FolderInfoEnum;
 import com.girbola.fileinfo.FileInfo;

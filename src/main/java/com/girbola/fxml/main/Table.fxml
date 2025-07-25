@@ -17,15 +17,15 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <AnchorPane fx:id="hideablePane" style="-fx-border-color: none;" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
-            <VBox layoutX="-1.0" layoutY="-1.0" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+            <VBox fx:id="table_rootVBox" layoutX="-1.0" layoutY="-1.0" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
-            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
+            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" style="-fx-border-color: white;" styleClass="topButtons" VBox.vgrow="NEVER">
             			<children>
-                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="35.0" maxWidth="420.0" minHeight="35.0" minWidth="420.0" prefHeight="35.0" prefWidth="420.0" prefWrapLength="0.0" styleClass="flow-pane" vgap="1.0" HBox.hgrow="ALWAYS">
+                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="35.0" maxWidth="420.0" minHeight="35.0" minWidth="420.0" prefHeight="35.0" prefWidth="420.0" prefWrapLength="0.0" style="-fx-background-color: blue;" styleClass="flow-pane" vgap="1.0" HBox.hgrow="ALWAYS">
                            <children>
                               <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT">
                                  <children>
@@ -45,7 +45,7 @@
                         				</Button>
                                  </children>
                               </HBox>
-                              <Separator fx:id="buttons_separator11" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
+                              <Separator fx:id="buttonsSeparator1" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin>
@@ -61,7 +61,7 @@
                                     <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-clockwise" iconSize="22" />
                                  </graphic>
                   				</Button>
-                              <Separator fx:id="buttons_separator1" layoutX="249.0" layoutY="12.0" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
+                              <Separator fx:id="buttonsSeparator2" layoutX="249.0" layoutY="12.0" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin></Separator>
@@ -96,7 +96,7 @@
                                     <Insets bottom="-1.0" />
                                  </padding>
                               </MenuButton>
-                              <Separator fx:id="buttons_separator" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
+                              <Separator fx:id="buttonsSeparator3" orientation="VERTICAL" prefHeight="17.0" prefWidth="4.0" styleClass="buttons-separator">
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin>
@@ -164,21 +164,21 @@
                               <Insets />
                            </HBox.margin>
                         </FlowPane>
-                        <HBox alignment="CENTER_LEFT" fillHeight="false" styleClass="topButtons" HBox.hgrow="ALWAYS">
+                        <HBox fx:id="descriptionHBox" alignment="CENTER_LEFT" fillHeight="false" style="-fx-background-color: yellow;" styleClass="topButtons" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets bottom="1.0" top="1.0" />
                            </HBox.margin>
                            <children>
-                              <HBox alignment="CENTER_LEFT">
+                              <HBox alignment="CENTER" maxHeight="35.0" minHeight="35.0" prefHeight="35.0">
                                  <children>
-                                    <Label fx:id="selectedLbl">
+                                    <Label fx:id="selectedLbl" textAlignment="CENTER">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
                                     </Label>
                                  </children>
                               </HBox>
-                              <HBox alignment="TOP_RIGHT" style="-fx-background-color: red;" HBox.hgrow="ALWAYS">
+                              <HBox fx:id="tableLabelNameHBox" alignment="TOP_RIGHT" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" style="-fx-background-color: red;" HBox.hgrow="ALWAYS">
                                  <children>
                                     <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf">
                                        <tooltip>

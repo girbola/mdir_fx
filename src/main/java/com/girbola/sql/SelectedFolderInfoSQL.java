@@ -62,7 +62,7 @@ public class SelectedFolderInfoSQL {
 
         if (isDbConnected(connection)) {
             Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
-            if (SqliteConnection.tableExists(connection, SQL_Enums.SELECTEDFOLDERS.getType())) {
+            if (SqliteConnection.tableExists(connection, SQLTableEnums.SELECTEDFOLDERS.getType())) {
                 SelectedFolderInfoSQL.loadFolders_list(connection, model_Main);
                 closeConnection(connection);
                 return true;
