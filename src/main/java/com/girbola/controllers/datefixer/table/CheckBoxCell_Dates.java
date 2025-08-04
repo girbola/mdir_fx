@@ -80,7 +80,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 							if (listOfDates.isEmpty()) {
 								return theList;
 							}
-							if (newValue == true) {
+							if (newValue) {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
@@ -90,7 +90,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 										}
 									}
 								}
-							} else if (newValue == false) {
+							} else {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();

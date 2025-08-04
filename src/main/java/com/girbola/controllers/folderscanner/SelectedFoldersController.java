@@ -55,7 +55,7 @@ public class SelectedFoldersController {
 
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        model_main.populate().populateTablesFolderScannerList(Main.scene_Switcher.getWindow());
+        model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
         stage.close();

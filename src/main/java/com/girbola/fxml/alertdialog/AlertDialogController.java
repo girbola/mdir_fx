@@ -32,8 +32,8 @@ public class AlertDialogController {
 
         AlertDialog.handleExitAlert(window, exit);
 
-//        Main.scene_Switcher.getWindow().getOnCloseRequest()
-//                .handle(new WindowEvent(Main.scene_Switcher.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+//        Main.sceneManager.getWindow().getOnCloseRequest()
+//                .handle(new WindowEvent(Main.sceneManager.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
 
     }
 

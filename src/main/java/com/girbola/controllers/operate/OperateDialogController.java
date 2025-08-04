@@ -1,7 +1,7 @@
 package com.girbola.controllers.operate;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_operate;
+import com.girbola.controllers.main.ModelOperate;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -34,9 +34,9 @@ public class OperateDialogController {
    @FXML private Button listOfWorkDir;
    @FXML private ProgressBar copyProgressBar;
 
-	private Model_operate model_operate;
+	private ModelOperate model_operate;
 
-	public void init(Model_operate aModel_operate) {
+	public void init(ModelOperate aModel_operate) {
 		this.model_operate = aModel_operate;
 
 		Main.setProcessCancelled(false);

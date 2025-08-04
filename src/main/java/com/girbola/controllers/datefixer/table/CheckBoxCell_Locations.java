@@ -86,10 +86,9 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 								sprintf("List of locations were empty");
 								return theList;
 							}
-							// sprintf("Cameras selected: " +
-							// data.getInfo());
+
 							int counter = 0;
-							if (newValue == true) {
+							if (newValue) {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
@@ -103,7 +102,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 									}
 								}
 
-							} else if (newValue == false) {
+							} else {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
 									if (node instanceof VBox && node.getId().equals("imageFrame")) {
 										FileInfo fi = (FileInfo) node.getUserData();
@@ -144,7 +143,7 @@ public class CheckBoxCell_Locations extends TableCell<EXIF_Data_Selector, Boolea
 						if (str.equals(format)) {
 							return true;
 						}
-						if (str.isEmpty() || str.length() <= 0) {
+						if (str.isEmpty()) {
 							if (str.equals(MetadataField.UNKNOWN.getType())) {
 								return true;
 							}

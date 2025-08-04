@@ -301,7 +301,7 @@ public class DateTimeAdjusterController {
 
         Task<Integer> changeDates = new MakeChanges(model_datefix, ldt_start, ldt_end, files);
 
-        LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
+        LoadingProcessTask lpt = new LoadingProcessTask(Main.sceneManager.getWindow());
         changeDates.setOnSucceeded(event -> {
             model_datefix.getSelectionModel().clearAll(df_tilePane);
             lpt.closeStage();

@@ -5,7 +5,6 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -67,7 +66,7 @@ public class DateFixer extends Task<Void> {
 
                 scene_dateFixer.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ENTER && event.isAltDown()) {
-                        Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
+                        Stage stage = (Stage) Main.sceneManager.getScene_dateFixer().getWindow();
                         stage.setFullScreen(true);
                     }
                 });
@@ -82,7 +81,7 @@ public class DateFixer extends Task<Void> {
                                 if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
                                         || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
                                     ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
-                                            Main.scene_Switcher.getScene_dateFixer().getWindow());
+                                            Main.sceneManager.getScene_dateFixer().getWindow());
                                 } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
                                     ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
                                 }
@@ -95,8 +94,8 @@ public class DateFixer extends Task<Void> {
                 scene_dateFixer.getStylesheets().add(
                         Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
-                Main.scene_Switcher.setScene_dateFixer(scene_dateFixer);
-                Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
+                Main.sceneManager.setScene_dateFixer(scene_dateFixer);
+                Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_dateFixer());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -120,13 +119,13 @@ public class DateFixer extends Task<Void> {
     protected void succeeded() {
         sprintf("dateFixLoader.setOnSucceeded");
 
-        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.scene_Switcher.getWindow());
+        LoadingProcessTask loadingProcess_task = new LoadingProcessTask(Main.sceneManager.getWindow());
         Messages.sprintf("folderinfo size: " + folderInfo.getFileInfoList().size());
         model_datefix.setFolderInfo_full(folderInfo);
         model_datefix.setFolderInfo_filtered(folderInfo);
         Messages.sprintf("Folderinfo test: " + model_datefix.getFolderInfo_full().getFileInfoList().size() + " filter: " + model_datefix.getFolderInfo_filtered().getFileInfoList().size());
 
-        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulate(Main.scene_Switcher.getScene_dateFixer(),
+        Task<ObservableList<Node>> dateFixPopulateTask = new DateFixPopulate(Main.sceneManager.getScene_dateFixer(),
                 model_datefix, model_datefix.getTilePane(), loadingProcess_task);
         dateFixPopulateTask.setOnCancelled(event -> {
             sprintf("dateFixPopulateGridPane.setOnCancelled");

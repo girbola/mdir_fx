@@ -445,8 +445,8 @@ public class DateFixerController {
     @FXML
     private void close_btn_action(ActionEvent event) {
         sprintf("Close button pressed");
-        Main.scene_Switcher.getWindow().getOnCloseRequest()
-                .handle(new WindowEvent(Main.scene_Switcher.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
+        Main.sceneManager.getWindow().getOnCloseRequest()
+                .handle(new WindowEvent(Main.sceneManager.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
         model_main.getMonitorExternalDriveConnectivity().restart();
     }
 
@@ -535,10 +535,10 @@ public class DateFixerController {
         modelDatefix.setQuickPick_Navigator(quickPick_Navigator);
 
 
-        Main.scene_Switcher.getWindow().setOnCloseRequest(e -> {
+        Main.sceneManager.getWindow().setOnCloseRequest(e -> {
             sprintf("Close request pressed");
             modelDatefix.getSelector_exec().shutdownNow();
-            modelDatefix.exitDateFixerWindow(modelDatefix.getTilePane(), Main.scene_Switcher.getWindow(), e);
+            modelDatefix.exitDateFixerWindow(modelDatefix.getTilePane(), Main.sceneManager.getWindow(), e);
             // TODO KORJAA TÄMÄ EXITDATEFIXERWINDOW!
 
         });

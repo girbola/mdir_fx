@@ -16,7 +16,6 @@ import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.DriveInfoSQL;
-import com.girbola.sql.SQL_Utils;
 import common.media.DateTaken;
 import common.media.VideoDateFinder;
 import common.utils.FileNameParseUtils;
@@ -755,7 +754,8 @@ public class FileInfoUtils {
     private static void checkFolderPathChanges_(ModelMain modelMain, FolderInfo folderInfo) {
         Messages.sprintf("checkFolderPathChanges started");
         String folderPath = folderInfo.getFolderPath();
-        List<DriveInfo> driveInfoList = modelMain.getSqlHandler().getDriveInfoList();
+        List<DriveInfo> driveInfoList = DriveInfoSQL.loadDriveInfos();
+//        modelMain.getSqlConfigurationHandler().getDriveInfoList();
 
         String sourceFolderSerialNumber = "";
 

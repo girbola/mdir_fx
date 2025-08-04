@@ -1,3 +1,5 @@
 Manifest-Version: 1.0
-Sealed: true
-Main.class: org.girbola.Main
+Main-Class: com.girbola.Main
+Class-Path: .
+JavaFX-Version: 21
+JavaFX-Application-Class: org.girbola.Main

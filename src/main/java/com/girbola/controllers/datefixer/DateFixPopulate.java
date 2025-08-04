@@ -261,7 +261,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
                         Messages.sprintf("Clickcount were 2");
                         List<FileInfo> list = getFileList(tilePane.getChildren());
                         if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
-                            ImageUtils.view(list, fileInfo, Main.scene_Switcher.getScene_dateFixer().getWindow());
+                            ImageUtils.view(list, fileInfo, Main.sceneManager.getScene_dateFixer().getWindow());
                         } else {
                             Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + fileInfo.getOrgPath(), null, getLineNumber(), true);
                         }

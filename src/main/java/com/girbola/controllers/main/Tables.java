@@ -245,7 +245,7 @@ public class Tables {
         table.setOnKeyPressed((KeyEvent event) -> {
             if (event.getCode() == (KeyCode.DELETE)) {
                 ObservableList<FolderInfo> table_row_list = table.getSelectionModel().getSelectedItems();
-                Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+                Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.sceneManager.getWindow(),
                         bundle.getString("removePermanently"));
                 dialog.initStyle(StageStyle.UNDECORATED);
                 Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();

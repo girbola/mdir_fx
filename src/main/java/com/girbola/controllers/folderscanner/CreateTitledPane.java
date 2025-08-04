@@ -1,6 +1,7 @@
 
 package com.girbola.controllers.folderscanner;
 
+import com.girbola.Main;
 import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -56,13 +57,14 @@ public class CreateTitledPane extends Task<Void> {
         root.setExpanded(true);
 
         TreeTableView<FolderInfoTable> treeTableView = new TreeTableView<>();
-        treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+        treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         treeTableView.setRoot(root);
 
-        TreeTableColumn<FolderInfoTable, String> path_col = new TreeTableColumn<>("Folder");
-        TreeTableColumn<FolderInfoTable, Integer> folders_col = new TreeTableColumn<>("Folders");
-        TreeTableColumn<FolderInfoTable, Integer> files_col = new TreeTableColumn<>("Files");
-        TreeTableColumn<FolderInfoTable, Integer> media_col = new TreeTableColumn<>("Media");
+
+        TreeTableColumn<FolderInfoTable, String> path_col = new TreeTableColumn<>(Main.bundle.getString("folder"));
+        TreeTableColumn<FolderInfoTable, Integer> folders_col = new TreeTableColumn<>(Main.bundle.getString("folders"));
+        TreeTableColumn<FolderInfoTable, Integer> files_col = new TreeTableColumn<>(Main.bundle.getString("files"));
+        TreeTableColumn<FolderInfoTable, Integer> media_col = new TreeTableColumn<>(Main.bundle.getString("media"));
         treeTableView.getColumns().addAll(path_col, folders_col, files_col, media_col);
 
         setColumnMaxWidth(path_col, 70);

@@ -72,7 +72,7 @@ import static com.girbola.messages.Messages.warningText;
 
 public class TableController {
 
-    private final double buttonHideSize = 35;
+    private final double buttonHideSize = 26;
     private final String ERROR = TableController.class.getSimpleName();
 
     private Model_CollectDialog model_CollectDialog;
@@ -245,7 +245,7 @@ public class TableController {
             root = loader.load();
             Stage stage = new Stage();
             Scene scene = new Scene(root);
-            stage.initOwner(Main.scene_Switcher.getScene_main().getWindow());
+            stage.initOwner(Main.sceneManager.getScene_main().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
 
             Main.centerWindowDialog(stage);
@@ -299,7 +299,7 @@ public class TableController {
             warningText(bundle.getString("cannotFindWorkDir"));
             return;
         }
-        Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+        Dialog<ButtonType> iHaveCheckedEverythingAndAcceptAllChanges_dialog = Dialogs.createDialog_YesNo(Main.sceneManager.getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
         Optional<ButtonType> result = iHaveCheckedEverythingAndAcceptAllChanges_dialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
             Messages.sprintf("Starting moving files from sortit to sorted");
@@ -340,8 +340,8 @@ public class TableController {
     @FXML
     private void reload_all_mi_action(ActionEvent event) {
         sprintf("Reload All");
-        LoadingProcessTask lpt = new LoadingProcessTask(Main.scene_Switcher.getWindow());
-        Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table, Main.scene_Switcher.getWindow());
+        LoadingProcessTask lpt = new LoadingProcessTask(Main.sceneManager.getWindow());
+        Task<Void> updateTableValuesUsingFileInfo_task = new CreateFileInfoRow(model_main, table, Main.sceneManager.getWindow());
         updateTableValuesUsingFileInfo_task.setOnSucceeded(event1 -> {
             sprintf("updateTableValuesFileInfo done successfully");
             lpt.closeStage();
@@ -444,8 +444,8 @@ public class TableController {
 //                    + table_Vbox.getMaxWidth());
 //        }
 
-//        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
-//        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
+        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() - 1);
+        Main.getMain_stage().setWidth(Main.getMain_stage().getWidth() + 1);
 
         Main.getMain_stage().getScene().getRoot().applyCss();
         Main.getMain_stage().getScene().getRoot().layout();
@@ -460,6 +460,9 @@ public class TableController {
 //            toggleVisibilityAndManaged(buttonsSeparator1, hide);
             if(table.isVisible()) {
                 Messages.sprintf("TABLE IS VISIBLE!!!!!!!!");
+                hide_btn.setManaged(true);
+                table.setManaged(true);
+
                 table_rootVBox.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
                 table_rootVBox.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
                 table_rootVBox.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -468,7 +471,6 @@ public class TableController {
                 tableLabelNameHBox.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
                 tableLabelNameHBox.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
 
-                table.setManaged(true);
 
                 topMenuButtonFlowPane.setMinSize(420, buttonHideSize);
                 topMenuButtonFlowPane.setPrefSize(420, buttonHideSize);
@@ -532,6 +534,8 @@ public class TableController {
 
             } else {
                 Messages.sprintf("TABLE  NOOOOT VISIBLE!!!!!!!!");
+                hide_btn.setManaged(false);
+
                 table_rootVBox.setMinSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
                 table_rootVBox.setPrefSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
                 table_rootVBox.setMaxSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);

@@ -17,6 +17,10 @@ public class Configuration_GetsSets extends ConfigurationGui {
 	private Path appDataPath = Paths.get(userHome + File.separator + ".mdir");
 	private Path ignoreListPath = Paths.get(appDataPath + File.separator + "ignoredList.dat");
 	private final String configuration_db_fileName = "configuration.db";
+
+	public String getWorkDir_db_fileName() {return workDir_db_fileName;}
+
+	private final String workDir_db_fileName = "workDir.db";
 	private final String mdir_db_fileName = "mdir.db";
 	private final String selectedFolders_db_fileName = "selectedFolders.db";
 

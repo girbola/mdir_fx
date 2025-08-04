@@ -199,9 +199,9 @@ public class FolderInfoUtils {
     public static boolean hasBadFiles(FolderInfo folderInfo) {
         if (folderInfo.getBadFiles() >= 1) {
             Messages.warningText(Main.bundle.getString("badDatesFound"));
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     public static boolean moveEntireFolderInfoSourceToDestination(Tables tables, List<FolderInfo> selected, FolderInfo folderInfoSrc, String destinationPath) throws IOException {
@@ -308,84 +308,84 @@ public class FolderInfoUtils {
         return false;
     }
 
-    public static boolean moveFolderInfoToDestination(List<FolderInfo> folderInfoSrcList, FolderInfo folderInfoDest) {
-
-        /*
-        event    =      hiking
-        location =      mount everest
-        C:\temp <-      absolutePath
-        C:\kala\temp\a1 to be moved. Move files. Remove if empty
-        C:\lohi\1       to be moved. Move files. Remove if empty
-
-        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
-        Path newAbsolutePath = C:\temp\hiking\mount everest\
-
-        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
-        Path path1ToMove = C:\kala\temp\a1 # Move files
-        Path path2ToMove = C:\lohi\1       # Move files
-
-         */
-
-
-
-
-        Iterator<FolderInfo> folderInfoSrcIt = folderInfoSrcList.iterator();
-        while(folderInfoSrcIt.hasNext()) {
-            FolderInfo folderInfoSrc = folderInfoSrcIt.next();
-            if (folderInfoSrc.getFolderPath().equals(folderInfoDest.getFolderPath())) {
-                Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame"));
-                return false;
-            }
-            Iterator<FileInfo> fileInfoSrcIt = folderInfoSrc.getFileInfoList().iterator();
-            while(fileInfoSrcIt.hasNext()) {
-                FileInfo fileInfoSrc = fileInfoSrcIt.next();
-
-                boolean duplicates = FileInfoUtils.findDuplicates(fileInfoSrc, folderInfoDest);
-                if(duplicates) {
-
-                }
-            }
-
-
-        }
-
-        /*
-        Iterator<FileInfo> sourceFileInfoList = folderInfoSrc.getFileInfoList().iterator();
-
-        List<FileInfo> destFileInfoList = folderInfoDest.getFileInfoList();
-        List<FileInfo> sourceFileInfoListRemove = new ArrayList<>();
-
-        for (Iterator<FileInfo> it = sourceFileInfoList; it.hasNext(); ) {
-            FileInfo sourceFileInfo = it.next();
-            String sourceFileName = Paths.get(sourceFileInfo.getOrgPath()).getFileName().toString();
-            Path destFolderPath = Paths.get(folderInfoDest.getFolderPath(), sourceFileName);
-
-            try {
-                Path renamedFilePath = FileUtils.renameFile(Paths.get(sourceFileInfo.getOrgPath()), destFolderPath);
-                if (renamedFilePath != null && Files.exists(renamedFilePath)) {
-                    sourceFileInfo.setOrgPath(renamedFilePath.toString());
-                    destFileInfoList.add(sourceFileInfo);
-                    sourceFileInfoList.remove(sourceFileInfo);
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-
-        }
-
-        for (FileInfo fileInfo : sourceFileInfoList) {
-            boolean found = findDuplicate(folderInfoDest, fileInfo);
-            if (!found) {
-                destFileInfoList.add(fileInfo);
-                destFileInfoListRemove.add(fileInfo);
-            }
-        }*/
-        //sourceFileInfoList.removeAll(sourceFileInfoListRemove);
-
-
-        return true;
-    }
+//    public static boolean moveFolderInfoToDestination(List<FolderInfo> folderInfoSrcList, FolderInfo folderInfoDest) {
+//
+//        /*
+//        event    =      hiking
+//        location =      mount everest
+//        C:\temp <-      absolutePath
+//        C:\kala\temp\a1 to be moved. Move files. Remove if empty
+//        C:\lohi\1       to be moved. Move files. Remove if empty
+//
+//        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
+//        Path newAbsolutePath = C:\temp\hiking\mount everest\
+//
+//        Path absolutePath = C:\temp <- create new path to this. Move files under this folder.
+//        Path path1ToMove = C:\kala\temp\a1 # Move files
+//        Path path2ToMove = C:\lohi\1       # Move files
+//
+//         */
+//
+//
+//
+//
+//        Iterator<FolderInfo> folderInfoSrcIt = folderInfoSrcList.iterator();
+//        while(folderInfoSrcIt.hasNext()) {
+//            FolderInfo folderInfoSrc = folderInfoSrcIt.next();
+//            if (folderInfoSrc.getFolderPath().equals(folderInfoDest.getFolderPath())) {
+//                Messages.warningText(Main.bundle.getString("sourceDestinationWereTheSame"));
+//                return false;
+//            }
+//            Iterator<FileInfo> fileInfoSrcIt = folderInfoSrc.getFileInfoList().iterator();
+//            while(fileInfoSrcIt.hasNext()) {
+//                FileInfo fileInfoSrc = fileInfoSrcIt.next();
+//
+//                boolean duplicates = FileInfoUtils.findDuplicates(fileInfoSrc, folderInfoDest);
+//                if(duplicates) {
+//
+//                }
+//            }
+//
+//
+//        }
+//
+//        /*
+//        Iterator<FileInfo> sourceFileInfoList = folderInfoSrc.getFileInfoList().iterator();
+//
+//        List<FileInfo> destFileInfoList = folderInfoDest.getFileInfoList();
+//        List<FileInfo> sourceFileInfoListRemove = new ArrayList<>();
+//
+//        for (Iterator<FileInfo> it = sourceFileInfoList; it.hasNext(); ) {
+//            FileInfo sourceFileInfo = it.next();
+//            String sourceFileName = Paths.get(sourceFileInfo.getOrgPath()).getFileName().toString();
+//            Path destFolderPath = Paths.get(folderInfoDest.getFolderPath(), sourceFileName);
+//
+//            try {
+//                Path renamedFilePath = FileUtils.renameFile(Paths.get(sourceFileInfo.getOrgPath()), destFolderPath);
+//                if (renamedFilePath != null && Files.exists(renamedFilePath)) {
+//                    sourceFileInfo.setOrgPath(renamedFilePath.toString());
+//                    destFileInfoList.add(sourceFileInfo);
+//                    sourceFileInfoList.remove(sourceFileInfo);
+//                }
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//
+//        }
+//
+//        for (FileInfo fileInfo : sourceFileInfoList) {
+//            boolean found = findDuplicate(folderInfoDest, fileInfo);
+//            if (!found) {
+//                destFileInfoList.add(fileInfo);
+//                destFileInfoListRemove.add(fileInfo);
+//            }
+//        }*/
+//        //sourceFileInfoList.removeAll(sourceFileInfoListRemove);
+//
+//
+//        return true;
+//    }
 
     public static void cleanTables(Tables tables) {
         Iterator<FolderInfo> sorttIterator = tables.getSortIt_table().getItems().iterator();

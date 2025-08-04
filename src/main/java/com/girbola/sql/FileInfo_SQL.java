@@ -77,6 +77,7 @@ public class FileInfo_SQL {
             + FileInfoConstants.THUMB_LENGTH + ", "
             + FileInfoConstants.FILEHISTORIES + ")"
             + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
     private static final String ERROR = FileInfo_SQL.class.getName();
 
     // @formatter:on
@@ -123,19 +124,6 @@ public class FileInfo_SQL {
         return String.join(",", fileHistories);
     }
 
-
-    /**
-     * Inserts a list of FileInfo objects into the database. If the isWorkDir parameter is false,
-     * the method clears the existing data in the file information table before insertion.
-     *
-     * @param connection The database connection to use for the operation.
-     * @param list       A list of FileInfo objects to be inserted into the database.
-     * @param isWorkDir  A boolean indicating whether the operation relates to a working directory.
-     *                   If false, the table is cleared prior to insertion.
-     * @return A boolean indicating whether the operation was successful. Returns true if the
-     * records were inserted successfully and the database operations completed without errors;
-     * otherwise, returns false.
-     */
     // @formatter:on
     public static boolean insertFileInfoListToDatabase(FolderInfo folderInfo, boolean isWorkDir) {
 

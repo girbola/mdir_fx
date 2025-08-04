@@ -52,15 +52,15 @@ public class LoadingProcessController {
 		Main.setProcessCancelled(true);
 		Timeline timeline = new Timeline();
 		sprintf("MODELLL: " + model_loading.toString());
-		if (Main.scene_Switcher.getWindow_loadingprogress().getScene() == null) {
+		if (Main.sceneManager.getWindow_loadingprogress().getScene() == null) {
 			sprintf("model.getStage().getScene(). WERE nULL");
 		}
-		KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
+		KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.sceneManager.getWindow_loadingprogress().getScene().getRoot().opacityProperty(), 0));
 		timeline.getKeyFrames().add(key);
 		timeline.setOnFinished(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent event) {
-				Main.scene_Switcher.getWindow_loadingprogress().close();
+				Main.sceneManager.getWindow_loadingprogress().close();
 			}
 		});
 		timeline.play();

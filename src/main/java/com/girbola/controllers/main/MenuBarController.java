@@ -7,7 +7,6 @@ import com.girbola.controllers.main.options.OptionsComponent;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.folderscanner.FolderScannerController;
-import com.girbola.controllers.main.options.OptionsController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
@@ -20,7 +19,6 @@ import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
-import java.util.Arrays;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
@@ -345,7 +343,7 @@ public class MenuBarController {
         Messages.sprintf("menuItem_file_load_action");
 //		boolean load = true;
         if (Main.getChanged()) {
-            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(), bundle.getString("changesMadeDataLost"));
+            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.sceneManager.getWindow(), bundle.getString("changesMadeDataLost"));
             dialog.getDialogPane().getButtonTypes().remove(1);
             Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
             Optional<ButtonType> result = dialog.showAndWait();
@@ -371,10 +369,10 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         sprintf("menuItem_file_save_action");
-        SaveTableFileInfos saveFileInfos = new SaveTableFileInfos(model_main, Main.scene_Switcher.getWindow(), null, true);
+        SaveTableFileInfos saveFileInfos = new SaveTableFileInfos(model_main, Main.sceneManager.getWindow(), null, true);
         saveFileInfos.readTables();
 
-        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.scene_Switcher.getWindow(), null, true);
+        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.sceneManager.getWindow(), null, true);
 
         saveTablesToDatabases.setOnSucceeded(event2 -> {
             Messages.sprintfError("saveTablesToDatabases succeeded");
@@ -503,20 +501,20 @@ public class MenuBarController {
     private void menuItem_tools_themes_dark_action(ActionEvent event) {
         Messages.sprintf("menuItem_tools_themes_dark_action pressed: " + conf.getThemePath());
         Platform.runLater(() -> {
-            Main.scene_Switcher.getScene_main().getStylesheets().clear();
+            Main.sceneManager.getScene_main().getStylesheets().clear();
             conf.setCurrentTheme(ThemeType.DARK.getValue());
             switchThemeItemOn(ThemeType.DARK.getValue());
-            Main.scene_Switcher.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+            Main.sceneManager.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
             ConfigurationSQLHandler.updateConfiguration();
         });
     }
 
     @FXML
     private void menuItem_tools_themes_light_action(ActionEvent event) {
-//        Main.scene_Switcher.getScene_main().getStylesheets().clear();
+//        Main.sceneManager.getScene_main().getStylesheets().clear();
 //        conf.setCurrentTheme(light);
 //        switchThemeItemOn(light);
-//        Main.scene_Switcher.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+//        Main.sceneManager.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 //        ConfigurationSQLHandler.updateConfiguration();
     }
 

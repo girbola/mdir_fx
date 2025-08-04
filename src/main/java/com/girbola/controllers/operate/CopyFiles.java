@@ -2,18 +2,21 @@
 package com.girbola.controllers.operate;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.Model_operate;
+import com.girbola.controllers.main.ModelOperate;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -25,7 +28,7 @@ public class CopyFiles {
     private Path source;
     private Path dest;
     private long currentFileByte;
-    private Model_operate model_operate;
+    private ModelOperate model_operate;
     private FileInfo fileInfo;
     private boolean copy = false;
     private String STATE = "";
@@ -34,7 +37,7 @@ public class CopyFiles {
     private Task<Integer> task;
     private boolean duplicated;
 
-    public CopyFiles(Task<Integer> aTask, Path aSource, Path aDest, FileInfo aFileInfo, Model_operate aModel_operate) {
+    public CopyFiles(Task<Integer> aTask, Path aSource, Path aDest, FileInfo aFileInfo, ModelOperate aModel_operate) {
         this.task = aTask;
         this.source = aSource;
         this.dest = aDest;
@@ -73,13 +76,13 @@ public class CopyFiles {
 
                 if (dest != null) {
                     copy = true;
-                    STATE = Copy_State.RENAME.getType();
+                    STATE = CopyState.RENAME.getType();
                     sprintf("2STATE IS: " + STATE);
                     Platform.runLater(() -> model_operate.getCopyProcess_values().setCopyTo(dest.toString()));
 
                 } else {
                     copy = false;
-                    STATE = Copy_State.DUPLICATE.getType();
+                    STATE = CopyState.DUPLICATE.getType();
                     sprintf("4STATE IS DUPLICATED? : " + STATE);
                     setDuplicated(true);
 
@@ -91,7 +94,7 @@ public class CopyFiles {
                 }
             } else {
                 copy = false;
-                STATE = Copy_State.DUPLICATE.getType();
+                STATE = CopyState.DUPLICATE.getType();
                 sprintf("5STATE IS DUPLICATED? : " + STATE);
                 if (!fileInfo.isCopied()) {
                     fileInfo.setCopied(true);
@@ -101,7 +104,7 @@ public class CopyFiles {
             }
         } else {
             copy = true;
-            STATE = Copy_State.COPY.getType();
+            STATE = CopyState.COPY.getType();
             sprintf("3STATE IS: " + STATE);
 
         }
@@ -115,7 +118,7 @@ public class CopyFiles {
                 Platform.runLater(() -> {
                     model_operate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
                     model_operate.getCopyProcess_values().setCopyTo_tmp(dest.toString());
-//						model_operate.getCopyProcess_values().setCopyProgress_lbl(0);
+//						modelOperate.getCopyProcess_values().setCopyProgress_lbl(0);
                     model_operate.getCopyProcess_values().setFilesCopyProgress_MAX_tmp(source.toFile().length());
                 });
 
@@ -153,12 +156,12 @@ public class CopyFiles {
                         Messages.sprintfError(ex.getMessage());
                     }
                 }
-                if (STATE.equals(Copy_State.COPY.getType())) {
+                if (STATE.equals(CopyState.COPY.getType())) {
                     Platform.runLater(() -> {
                         model_operate.getCopyProcess_values().increaseCopied_tmp();
                     });
                     fileInfo.setCopied(true);
-                } else if (STATE.equals(Copy_State.RENAME.getType())) {
+                } else if (STATE.equals(CopyState.RENAME.getType())) {
                     Platform.runLater(() -> model_operate.getCopyProcess_values().increaseRenamed_tmp());
                     fileInfo.setCopied(true);
                 } else {

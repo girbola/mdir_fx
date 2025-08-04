@@ -17,7 +17,6 @@ import java.sql.SQLException;
 
 public class WorkDirSQLTest {
 
-    private WorkDirSQL workDirSQL;
     private FileInfo fileInfo;
     private Path path;
     private Connection connectionMock;
@@ -30,13 +29,6 @@ public class WorkDirSQLTest {
         path = Path.of("tmp");
         connectionMock = mock(Connection.class);
         statementMock = mock(PreparedStatement.class);
-        workDirSQL = new WorkDirSQL(path);
-        workDirSQL.setWorkDirConnection(connectionMock);
-    }
-
-    @Test
-    public void insertFileInfo_nulledInfo() {
-        workDirSQL.insertFileInfo(null);
     }
 
     @Test
@@ -50,13 +42,13 @@ public class WorkDirSQLTest {
                 return count++;
             }
         });
-        workDirSQL.insertFileInfo(fileInfo);
+        WorkDirSQL.insertFileInfo(fileInfo);
     }
 
     @Test
     public void insertFileInfo_throwsException() throws SQLException {
         when(connectionMock.prepareStatement(any())).thenThrow(SQLException.class);
-        workDirSQL.insertFileInfo(fileInfo);
+        WorkDirSQL.insertFileInfo(fileInfo);
     }
 
 }

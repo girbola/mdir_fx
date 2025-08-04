@@ -97,7 +97,7 @@ public class Collector {
 
 //			}
 //			if (!listOfPossibleFolders.isEmpty()) {
-//				Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getWindow(),
+//				Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.sceneManager.getWindow(),
 //						" There were possible foldernames. Choose oneee\n");
 //				changesDialog.setWidth(500);
 //				changesDialog.setHeight(500);

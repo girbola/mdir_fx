@@ -17,22 +17,19 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
-      <AnchorPane fx:id="hideablePane" style="-fx-border-color: none;" styleClass="hideablePane" VBox.vgrow="ALWAYS">
+      <AnchorPane fx:id="hideablePane" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
             <VBox fx:id="table_rootVBox" layoutX="-1.0" layoutY="-1.0" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                <children>
-            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" style="-fx-border-color: white;" styleClass="topButtons" VBox.vgrow="NEVER">
+            		<HBox fx:id="buttons_hbox" alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" styleClass="topButtons" VBox.vgrow="NEVER">
             			<children>
-                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="35.0" maxWidth="420.0" minHeight="35.0" minWidth="420.0" prefHeight="35.0" prefWidth="420.0" prefWrapLength="0.0" style="-fx-background-color: blue;" styleClass="flow-pane" vgap="1.0" HBox.hgrow="ALWAYS">
+                        <FlowPane fx:id="topMenuButtonFlowPane" alignment="CENTER_LEFT" hgap="3.0" maxHeight="30.0" maxWidth="420.0" minHeight="30.0" minWidth="420.0" prefHeight="30.0" prefWidth="420.0" prefWrapLength="0.0" styleClass="flow-pane" vgap="1.0" HBox.hgrow="ALWAYS">
                            <children>
                               <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT">
                                  <children>
-                        				<Button fx:id="hide_btn" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" style="-fx-background-color: red;" styleClass="showAndHide" HBox.hgrow="NEVER">
-                        					<padding>
-                        						<Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                        					</padding>
+                        				<Button fx:id="hide_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: red;" styleClass="showAndHide" HBox.hgrow="NEVER">
                                        <tooltip>
                                           <Tooltip text="%showAndHideTableTooltip" />
                                        </tooltip>
@@ -50,10 +47,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin>
                               </Separator>
-                  				<Button fx:id="updateFolderInfo_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" styleClass="selectSquareButton">
-                  					<padding>
-                  						<Insets bottom="1.0" left="5.0" top="1.0" />
-                  					</padding>
+                  				<Button fx:id="updateFolderInfo_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#updateFolderInfo_btn_action" prefHeight="26.0" prefWidth="26.0" styleClass="selectSquareButton">
                                  <tooltip>
                                     <Tooltip fx:id="updateFolderInfo_btn_tooltip" text="%reloadsSelectedRow" />
                                  </tooltip>
@@ -65,7 +59,7 @@
                                  <FlowPane.margin>
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin></Separator>
-                              <MenuButton fx:id="menuReload" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
+                              <MenuButton fx:id="menuReload" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefHeight="26.0" styleClass="menu-button-reload" text="%reload" textFill="WHITE">
                                 <items>
                                   <MenuItem fx:id="reload_all_mi" mnemonicParsing="false" onAction="#reload_all_mi_action" styleClass="menu-button-reload" text="%reloadAll" />
                                   <MenuItem fx:id="checkChanges_mi" mnemonicParsing="false" onAction="#checkChanges_mi_action" styleClass="menu-button-reload" text="%checkChanges" />
@@ -77,7 +71,7 @@
                                     <Insets bottom="-1.0" />
                                  </padding>
                               </MenuButton>
-                              <MenuButton fx:id="menuAction" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" styleClass="menu-button-action" text="%action" textFill="WHITE">
+                              <MenuButton fx:id="menuAction" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" prefHeight="26.0" styleClass="menu-button-action" text="%action" textFill="WHITE">
                                 <items>
                                   <MenuItem mnemonicParsing="false" onAction="#copySelected_btn_action" styleClass="menu-button-action" text="Copy selected to dest" />
                                   <MenuItem mnemonicParsing="false" onAction="#addToBatch_btn_action" styleClass="menu-button-action" text="%add" />
@@ -101,7 +95,7 @@
                                     <Insets bottom="5.0" top="5.0" />
                                  </FlowPane.margin>
                               </Separator>
-                  				<Button fx:id="select_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_all_btn_action" styleClass="selectSquareButton">
+                  				<Button fx:id="select_all_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_all_btn_action" prefHeight="20.0" prefWidth="20.0" styleClass="selectSquareButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
@@ -112,7 +106,7 @@
                                     <FontIcon iconColor="#cddeff" iconLiteral="bi-square-fill" iconSize="18" />
                                  </graphic>
                   				</Button>
-                  				<Button fx:id="select_invert_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_invert_btn_action" styleClass="selectCircleButton">
+                  				<Button fx:id="select_invert_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_invert_btn_action" prefHeight="20.0" prefWidth="20.0" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
@@ -123,7 +117,7 @@
                                     <FontIcon iconColor="#4d4d4d" iconLiteral="bi-slash-circle-fill" iconSize="18" />
                                  </graphic>
                   				</Button>
-                  				<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_none_btn_action" styleClass="selectCircleButton">
+                  				<Button fx:id="select_none_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_none_btn_action" prefHeight="20.0" prefWidth="20.0" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
@@ -134,7 +128,7 @@
                                     <FontIcon iconColor="WHITE" iconLiteral="bi-circle" iconSize="18" />
                                  </graphic>
                   				</Button>
-                  				<Button fx:id="select_bad_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_bad_btn_action" styleClass="selectCircleButton">
+                  				<Button fx:id="select_bad_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="20.0" prefWidth="20.0" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets bottom="1.0" top="1.0" />
                   					</padding>
@@ -145,7 +139,7 @@
                                     <FontIcon iconColor="#b51515" iconLiteral="bi-circle-fill" iconSize="18" />
                                  </graphic>
                   				</Button>
-                  				<Button fx:id="select_good_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_good_btn_action" styleClass="selectCircleButton">
+                  				<Button fx:id="select_good_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="20.0" prefWidth="20.0" styleClass="selectCircleButton">
                   					<padding>
                   						<Insets top="1.0" />
                   					</padding>
@@ -157,14 +151,11 @@
                                  </graphic>
                   				</Button>
                            </children>
-                           <padding>
-                              <Insets bottom="1.0" left="4.0" top="1.0" />
-                           </padding>
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
                         </FlowPane>
-                        <HBox fx:id="descriptionHBox" alignment="CENTER_LEFT" fillHeight="false" style="-fx-background-color: yellow;" styleClass="topButtons" HBox.hgrow="ALWAYS">
+                        <HBox fx:id="descriptionHBox" alignment="CENTER_LEFT" fillHeight="false" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="topButtons" HBox.hgrow="ALWAYS">
                            <HBox.margin>
                               <Insets bottom="1.0" top="1.0" />
                            </HBox.margin>
@@ -178,9 +169,9 @@
                                     </Label>
                                  </children>
                               </HBox>
-                              <HBox fx:id="tableLabelNameHBox" alignment="TOP_RIGHT" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" style="-fx-background-color: red;" HBox.hgrow="ALWAYS">
+                              <HBox fx:id="tableLabelNameHBox" alignment="TOP_RIGHT" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" HBox.hgrow="ALWAYS">
                                  <children>
-                                    <Label fx:id="tableDescription_tf" styleClass="textfield-info" text="tableDescription_tf">
+                                    <Label fx:id="tableDescription_tf" alignment="CENTER" contentDisplay="TEXT_ONLY" styleClass="textfield-info" text="tableDescription_tf">
                                        <tooltip>
                                           <Tooltip fx:id="tableDescription_tf_tooltip">
                                              <font>
@@ -224,9 +215,6 @@
             				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="81.5" text="%suggested" />
             				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="304.5" prefWidth="334.5" text="%fullPath" />
             			</columns>
-                     <padding>
-                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                     </padding>
                      <contextMenu>
                         <ContextMenu>
                           <items>
@@ -270,9 +258,6 @@
                      </children>
                   </FlowPane>
                </children>
-               <padding>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </padding>
             </VBox>
          </children>
          <VBox.margin>

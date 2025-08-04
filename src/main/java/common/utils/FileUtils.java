@@ -60,6 +60,37 @@ public class FileUtils {
     }
 
     /**
+     * Renames a file from source path to destination path.
+     *
+     * @param srcFile the source file path
+     * @param destFile the destination file path
+     * @return the new path after renaming
+     * @throws IOException if an I/O error occurs
+     * @throws IllegalArgumentException if source or destination paths are null
+     */
+    public static Path renameFile(Path srcFile, Path destFile) throws IOException {
+        if (srcFile == null || destFile == null) {
+            throw new IllegalArgumentException("Source or destination file path cannot be null");
+        }
+
+        Path parentPath = destFile.getParent();
+        if (parentPath == null || !Files.exists(parentPath)) {
+            throw new IOException("Destination parent directory does not exist");
+        }
+
+        Messages.sprintf("Renaming file - source: " +  srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
+
+        if (Files.exists(destFile)) {
+            if (Files.size(srcFile) == Files.size(destFile)) {
+                throw new IOException(String.format("File already exists at destination: %s", destFile));
+            }
+            return rename(srcFile, destFile);
+        }
+
+        return Files.move(srcFile, destFile);
+    }
+
+    /**
      * Rename file to new file name if file exists and it is different size example:
      * IMG_2000.jpg would be IMG_2000_1.jpg or IMG_2000_2.jpg and so on
      *
@@ -68,7 +99,7 @@ public class FileUtils {
      * @return
      * @throws java.io.IOException
      */
-    public static Path renameFile(Path srcFile, Path destFile) throws IOException {
+    public static Path renameFile_(Path srcFile, Path destFile) throws IOException {
 
         Messages.sprintf("Renaming srcFile: " + srcFile.toFile().length() + " destFile: " + destFile.toFile().length());
 
@@ -80,14 +111,25 @@ public class FileUtils {
             // Get FolderInfo
             // If not exists return null
         }
+        Messages.sprintf("srcFile: " + srcFile + " destFile: " + destFile + "");
 
-        if (Files.size(srcFile) != Files.size(destFile) && Files.size(destFile)>0) {
-            Messages.sprintf("Files have same name but they differ with sizes");
-            return rename(srcFile, destFile);
-        } else {
-            Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
-            return null;
+        if(Files.exists(destFile)) {
+            if(Files.size(srcFile) == Files.size(destFile)) {
+                Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
+                return null;
+            } else {
+                Messages.sprintf("Files have same name but they differ with sizes");
+                return rename(srcFile, destFile);
+            }
         }
+//        if (Files.size(srcFile) != Files.size(destFile) && Files.size(destFile)>0) {
+//            Messages.sprintf("Files have same name but they differ with sizes");
+//            return rename(srcFile, destFile);
+//        } else {
+//            Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
+//            return null;
+//        }
+        return null;
     }
 
     private static Path rename(Path srcFile, Path destFile) {

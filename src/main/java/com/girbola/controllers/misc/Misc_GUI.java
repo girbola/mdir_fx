@@ -3,7 +3,6 @@ package com.girbola.controllers.misc;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
-import com.girbola.controllers.main.sql.SQLHandler;
 import javafx.application.Platform;
 
 import static com.girbola.messages.Messages.sprintf;

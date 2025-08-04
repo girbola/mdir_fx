@@ -169,8 +169,8 @@ public class Misc {
 	public static Rectangle2D getScreenBounds() {
 		Messages.sprintf("getScreenBounds started");
 		ObservableList<Screen> screensForRectangle = Screen.getScreensForRectangle(
-				Main.scene_Switcher.getScene_main().getX(), Main.scene_Switcher.getScene_main().getY(),
-				Main.scene_Switcher.getScene_main().getWidth(), Main.scene_Switcher.getScene_main().getHeight());
+				Main.sceneManager.getScene_main().getX(), Main.sceneManager.getScene_main().getY(),
+				Main.sceneManager.getScene_main().getWidth(), Main.sceneManager.getScene_main().getHeight());
 		return screensForRectangle.get(0).getBounds();
 //			return Screen.getPrimary().getBounds();
 	}

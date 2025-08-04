@@ -5,6 +5,7 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.workdir.WorkDirSQL;
 import common.utils.FileUtils;
 
 import java.io.*;
@@ -72,7 +73,7 @@ public class OperateFilesUtils {
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
             fileInfo.setCopied(true);
             listCopiedFiles.add(fileInfo);
-            model_main.getWorkDirSQL().insertFileInfo(fileInfo);
+            WorkDirSQL.insertFileInfo(fileInfo);
 
         } catch (Exception ex) {
             ex.printStackTrace();

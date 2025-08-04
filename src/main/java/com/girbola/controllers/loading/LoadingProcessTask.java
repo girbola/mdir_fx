@@ -65,8 +65,8 @@ public class LoadingProcessTask {
 //            try {
 //                modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
 //                if (!Main.getProcessCancelled()) {
-//                    if (Main.scene_Switcher.getWindow_loadingprogress() != null
-//                            && Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+//                    if (Main.sceneManager.getWindow_loadingprogress() != null
+//                            && Main.sceneManager.getWindow_loadingprogress().isShowing()) {
 //                        modelLoading.setTask(current_Task);
 //                        bind();
 //                    } else {
@@ -177,8 +177,8 @@ public class LoadingProcessTask {
     }
 
     private void updateSceneSwitcher() {
-        Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
-        Main.scene_Switcher.setScene_loading(loadingScene);
+        Main.sceneManager.setWindow_loadingprogress(loadingStage);
+        Main.sceneManager.setScene_loading(loadingScene);
     }
     public void loadGUI_() {
         Platform.runLater(() -> {
@@ -244,8 +244,8 @@ public class LoadingProcessTask {
             loadingStage.setAlwaysOnTop(true);
 
             loadingStage.show();
-            Main.scene_Switcher.setWindow_loadingprogress(loadingStage);
-            Main.scene_Switcher.setScene_loading(loadingScene);
+            Main.sceneManager.setWindow_loadingprogress(loadingStage);
+            Main.sceneManager.setScene_loading(loadingScene);
         });
 
     }
@@ -275,17 +275,17 @@ public class LoadingProcessTask {
         unbind();
 
         Platform.runLater(() -> {
-            if (Main.scene_Switcher.getScene_loading() != null && Main.scene_Switcher.getScene_loading().getRoot() != null && Main.scene_Switcher.getWindow_loadingprogress() != null) {
+            if (Main.sceneManager.getScene_loading() != null && Main.sceneManager.getScene_loading().getRoot() != null && Main.sceneManager.getWindow_loadingprogress() != null) {
 
                 Timeline timeline = new Timeline();
-                KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.scene_Switcher.getScene_loading().getRoot().opacityProperty(), 0));
+                KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.sceneManager.getScene_loading().getRoot().opacityProperty(), 0));
                 timeline.getKeyFrames().add(key);
-                timeline.setOnFinished(event -> Main.scene_Switcher.getWindow_loadingprogress().close());
+                timeline.setOnFinished(event -> Main.sceneManager.getWindow_loadingprogress().close());
                 timeline.play();
             } else {
                 // Fallback if scene or root is null
-                if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
-                    Main.scene_Switcher.getWindow_loadingprogress().close();
+                if (Main.sceneManager.getWindow_loadingprogress() != null) {
+                    Main.sceneManager.getWindow_loadingprogress().close();
                 }
             }
         });
@@ -300,7 +300,7 @@ public class LoadingProcessTask {
     }
 
     public void showLoadStage() {
-        if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+        if (Main.sceneManager.getWindow_loadingprogress().isShowing()) {
             Messages.sprintf("Window is already showing!!");
             return;
         }
@@ -313,7 +313,7 @@ public class LoadingProcessTask {
 
         Messages.sprintf("Showing stage!");
 
-        Stage stage = Main.scene_Switcher.getWindow_loadingprogress();
+        Stage stage = Main.sceneManager.getWindow_loadingprogress();
         /*
          * if (owner != null) { stage.initOwner(owner); }
          */
@@ -329,8 +329,8 @@ public class LoadingProcessTask {
 
     public void setMessage(String message) {
         Messages.sprintf("LoadingProcess_Task message= " + message);
-        if (Main.scene_Switcher.getWindow_loadingprogress() != null) {
-            if (Main.scene_Switcher.getWindow_loadingprogress().isShowing()) {
+        if (Main.sceneManager.getWindow_loadingprogress() != null) {
+            if (Main.sceneManager.getWindow_loadingprogress().isShowing()) {
                 Platform.runLater(() -> {
                     modelLoading.getMessages_lbl().setText(message);
                 });

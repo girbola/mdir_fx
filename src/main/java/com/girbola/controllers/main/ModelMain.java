@@ -5,21 +5,26 @@ package com.girbola.controllers.main;
 import com.girbola.Load_FileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
-/*import com.girbola.controllers.main.sql.SQLHandler;*/
-import com.girbola.controllers.main.sql.SQLHandler;
-import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.*;
-import com.girbola.workdir.WorkDirSQL;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SavedFolderInfosSQL;
+import com.girbola.sql.SelectedFolderInfoSQL;
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -33,12 +38,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -59,8 +58,8 @@ public class ModelMain {
     private TablePositionHolder tablePositionHolder;
     private Tables tables;
     private VBox main_vbox;
-    private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
-    private SQLHandler sqlHandler;
+//    private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
+//    private SQLConfigurationHandler sqlConfigurationHandler;
 
     private List<DriveInfo> driveInfos = new ArrayList<>();
 
@@ -72,8 +71,8 @@ public class ModelMain {
         if(conf == null) {
             Messages.sprintfError("conf were null!!!!!!!!!!!!!!!!!!");
         }
-        workDirSQL = new WorkDirSQL();
-        sqlHandler = new SQLHandler(conf);
+//        workDirSQL = new WorkDirSQL();
+//        sqlConfigurationHandler = new SQLConfigurationHandler(conf);
         buttons = new Buttons(this);
         monitorExternalDriveConnectivity = new MonitorExternalDriveConnectivity(this);
         monitorExternalDriveConnectivity.setPeriod(Duration.seconds(15));
@@ -219,10 +218,11 @@ public class ModelMain {
         // saveTablePositions();
         // erg;
         Messages.sprintf("Exiting program");
-        getSqlHandler().getConfigurationSQLHandler().updateConfiguration();
+        ConfigurationSQLHandler.updateConfiguration();
+//        getSqlConfigurationHandler().getConfigurationSQLHandler().updateConfiguration();
 
         if (Main.getChanged()) {
-            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.scene_Switcher.getWindow(),
+            Dialog<ButtonType> dialog = Dialogs.createDialog_YesNoCancel(Main.sceneManager.getWindow(),
                     bundle.getString("saveBeforeExit"));
             Messages.sprintf("dialog changesDialog width: " + dialog.getWidth());
             Iterator<ButtonType> iterator = dialog.getDialogPane().getButtonTypes().iterator();
@@ -258,7 +258,8 @@ public class ModelMain {
     }
 
     public void load() {
-        Connection connection = getSqlHandler().getConfigurationSQLHandler().getConnection();
+        Connection connection = ConfigurationSQLHandler.getConnection();
+//        Connection connection = getSqlConfigurationHandler().getConfigurationSQLHandler().getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
             Load_FileInfosBackToTableViews loadFileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
@@ -284,9 +285,9 @@ public class ModelMain {
         }
     }
 
-    public SQLHandler getSqlHandler() {return this.sqlHandler;}
-
-    public WorkDirSQL getWorkDirSQL() {return this.workDirSQL;}
+//    public SQLConfigurationHandler getSqlConfigurationHandler() {return this.sqlConfigurationHandler;}
+//
+//    public WorkDirSQL getWorkDirSQL() {return this.workDirSQL;}
 
     public ScheduledService<Void> getMonitorExternalDriveConnectivity() {
         return monitorExternalDriveConnectivity;

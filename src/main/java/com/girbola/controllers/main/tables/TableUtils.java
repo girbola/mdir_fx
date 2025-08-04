@@ -865,7 +865,7 @@ public class TableUtils {
         control.getTooltip().hide();
     }
 
-    public static void copySelectedTableRows(ModelMain model_main, TableView<FolderInfo> table, String tableType) {
+    public static void copySelectedTableRows(ModelMain modelMain, TableView<FolderInfo> table, String tableType) {
         if (Main.conf.getWorkDir() == null) {
             Messages.warningText("copySelectedTableRows Workdir were null");
             return;
@@ -908,7 +908,7 @@ public class TableUtils {
             list.addAll(folderInfo.getFileInfoList());
         }
 
-        OperateFiles operateFiles = new OperateFiles(list, true, model_main, SceneNameType.MAIN.getType());
+        OperateFiles operateFiles = new OperateFiles(list, true, modelMain, SceneNameType.MAIN.getType());
 //
 //        operate.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
 //            @Override

@@ -223,7 +223,7 @@ public class ModelDatefix extends DateFixerModel {
     public void acceptEverything(TilePane tilePane) {
         boolean changed = false;
         // CssStylesController css = new CssStylesController();
-        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.scene_Switcher.getScene_dateFixer().getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
+        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.sceneManager.getScene_dateFixer().getWindow(), bundle.getString("iHaveCheckedEverythingAndAcceptAllChanges"));
 
         Optional<ButtonType> result = changesDialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
@@ -413,8 +413,8 @@ public class ModelDatefix extends DateFixerModel {
 
             Optional<ButtonType> result = dialog.showAndWait();
             if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-                Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-                stage.setScene(Main.scene_Switcher.getScene_dateFixer());
+                Stage stage = (Stage) Main.sceneManager.getScene_dateFixer().getWindow();
+                stage.setScene(Main.sceneManager.getScene_dateFixer());
 
                 if (Main.conf.isSavingThumb()) {
 
@@ -462,13 +462,13 @@ public class ModelDatefix extends DateFixerModel {
             Optional<ButtonType> result = changesDialog.showAndWait();
             if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
                 acceptEverything(tilePane);
-                Stage stage = (Stage) Main.scene_Switcher.getScene_dateFixer().getWindow();
-                stage.setScene(Main.scene_Switcher.getScene_dateFixer());
-                Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                Stage stage = (Stage) Main.sceneManager.getScene_dateFixer().getWindow();
+                stage.setScene(Main.sceneManager.getScene_dateFixer());
+                Main.sceneManager.getWindow().setOnCloseRequest(model_Main.exitProgram);
                 model_Main.getMonitorExternalDriveConnectivity().restart();
                 Platform.runLater(() -> {
-                    Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+                    Main.sceneManager.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                    Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_main());
                 });
 
                 event.consume();
@@ -476,11 +476,11 @@ public class ModelDatefix extends DateFixerModel {
             } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
                 Messages.sprintf("No PRESSED: NO changes saved");
 
-                Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                Main.sceneManager.getWindow().setOnCloseRequest(model_Main.exitProgram);
                 model_Main.getMonitorExternalDriveConnectivity().restart();
                 Platform.runLater(() -> {
-                    Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
-                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+                    Main.sceneManager.getWindow().setOnCloseRequest(model_Main.exitProgram);
+                    Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_main());
                 });
                 event.consume();
             } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
@@ -490,15 +490,15 @@ public class ModelDatefix extends DateFixerModel {
             }
         } else {
             Messages.sprintf("No changes made");
-            Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
-            Main.scene_Switcher.getWindow().setOnCloseRequest(model_Main.exitProgram);
+            Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_dateFixer());
+            Main.sceneManager.getWindow().setOnCloseRequest(model_Main.exitProgram);
 
             event.consume();
         }
         getSelectionModel().clearAll(tilePane);
         selector_exec.shutdownNow();
         Platform.runLater(() -> {
-            Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+            Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_main());
             Messages.sprintf("Changing back to main");
         });
 

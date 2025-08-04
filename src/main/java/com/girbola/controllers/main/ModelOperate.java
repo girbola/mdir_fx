@@ -16,8 +16,8 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class Model_operate {
-    private final String ERROR = Model_operate.class.getSimpleName();
+public class ModelOperate {
+    private final String ERROR = ModelOperate.class.getSimpleName();
 
     private CopyProcess_Properties copyProcess_values = new CopyProcess_Properties();
 
@@ -28,7 +28,7 @@ public class Model_operate {
 
     private Timeline timeline;
 
-    public Model_operate() {
+    public ModelOperate() {
 
         timeline = new Timeline(new KeyFrame(Duration.seconds(1), new EventHandler<ActionEvent>() {
             @Override
@@ -145,7 +145,7 @@ public class Model_operate {
             public void handle(ActionEvent event) {
                 Messages.sprintf("done button done_btnEvent_scene_dateFixer");
                 Platform.runLater(() -> {
-                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_dateFixer());
+                    Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_dateFixer());
                 });
             }
         };
@@ -157,7 +157,7 @@ public class Model_operate {
 
             @Override
             public void handle(ActionEvent event) {
-                ((Stage) Main.scene_Switcher.getScene_operate().getWindow()).close();
+                ((Stage) Main.sceneManager.getScene_operate().getWindow()).close();
             }
         };
 
@@ -170,8 +170,8 @@ public class Model_operate {
             public void handle(ActionEvent event) {
                 Messages.sprintf("done button activated");
                 Platform.runLater(() -> {
-                    Main.scene_Switcher.getWindow_loadingprogress().close();
-                    Main.scene_Switcher.getWindow().setScene(Main.scene_Switcher.getScene_main());
+                    Main.sceneManager.getWindow_loadingprogress().close();
+                    Main.sceneManager.getWindow().setScene(Main.sceneManager.getScene_main());
 
                 });
             }
@@ -183,7 +183,7 @@ public class Model_operate {
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                ((Stage) Main.scene_Switcher.getScene_operate().getWindow()).close();
+                ((Stage) Main.sceneManager.getScene_operate().getWindow()).close();
             }
         };
 

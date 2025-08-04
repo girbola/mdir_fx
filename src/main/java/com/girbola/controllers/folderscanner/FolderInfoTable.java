@@ -18,7 +18,7 @@ public class FolderInfoTable {
         this.files = new SimpleIntegerProperty(0);
         this.checked = new SimpleBooleanProperty(false);
         this.media = new SimpleIntegerProperty(0);
-//        Fil§e[] list = new File(path).listFiles();
+//        File[] list = new File(path).listFiles();
 //        int folder = 0;
 //
 //        findFiles(new File(path));

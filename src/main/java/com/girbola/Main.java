@@ -16,8 +16,6 @@ package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
-import com.girbola.configuration.ConfigurationUtils;
-import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
@@ -73,7 +71,7 @@ public class Main extends Application {
     public static LoadingProcessTask lpt;
     public static Locale locale;
     public static ResourceBundle bundle;
-    public static SceneSwitcher scene_Switcher = new SceneSwitcher();
+    public static SceneSwitcher sceneManager = new SceneSwitcher();
     public static SimpleDates simpleDates = new SimpleDates();
 
     public static final boolean DEBUG = true;
@@ -285,14 +283,14 @@ public class Main extends Application {
                 MainController mainController = (MainController) main_loader.getController();
                 mainController.initialize(model_main);
                 Platform.runLater(() -> {
-                    scene_Switcher.setWindow(primaryStage);
-                    scene_Switcher.setScene_main(primaryScene);
+                    sceneManager.setWindow(primaryStage);
+                    sceneManager.setScene_main(primaryScene);
                     primaryStage.setScene(primaryScene);
                     primaryStage.show();
                     model_main.getBottomController().initBottomWorkdirMonitors();
                 });
 
-//                lpt = new LoadingProcessTask(scene_Switcher.getWindow());
+//                lpt = new LoadingProcessTask(sceneManager.getWindow());
 //
 //                Platform.runLater(() -> {
 //                    lpt.setTask(mainTask);
@@ -405,7 +403,7 @@ public class Main extends Application {
 
 // Modify where lpt is initialized in the mainTask
 // Move this initialization earlier in the task, before any UI operations
-        lpt = new LoadingProcessTask(scene_Switcher.getWindow());
+        lpt = new LoadingProcessTask(sceneManager.getWindow());
         Platform.runLater(() -> {
             if (lpt != null) {
                 lpt.setTask(mainTask);
@@ -505,7 +503,8 @@ public class Main extends Application {
         Messages.sprintf("Stopping app");
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        model_main.getSqlHandler().closeAll();
+        ConfigurationSQLHandler.closeConnection();
+//        model_main.getSqlConfigurationHandler().closeConfigurationConnection();
 
         Messages.sprintf("Configuration connection closed");
 

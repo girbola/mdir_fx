@@ -1,6 +1,6 @@
 package com.girbola.controllers.operate;
 
-public enum Copy_State { 
+public enum CopyState {
 	COPY("COPY"),
     RENAME("RENAME"),
     DUPLICATE("DUPLICATE"),
@@ -8,7 +8,7 @@ public enum Copy_State {
 	
     private String type;
 
-    Copy_State(String type) {
+    CopyState(String type) {
         this.type = type;
     }
 
