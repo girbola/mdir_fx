@@ -10,11 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class FileInfo_SQL {
 
@@ -48,6 +44,38 @@ public class FileInfo_SQL {
                     FileInfoConstants.THUMB_LENGTH + " INTEGER, " +
                     FileInfoConstants.FILEHISTORIES + " STRING"
     )};
+
+    final static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
+        put(FileInfoConstants.BAD, "BOOLEAN");
+        put(FileInfoConstants.CAMERA_MODEL, "STRING");
+        put(FileInfoConstants.CONFIRMED, "BOOLEAN");
+        put(FileInfoConstants.COPIED, "BOOLEAN");
+        put(FileInfoConstants.DATE, "NUMERIC");
+        put(FileInfoConstants.DESTINATIONPATH, "STRING");
+        put(FileInfoConstants.EVENT, "STRING");
+        put(FileInfoConstants.FILEHISTORIES, "STRING");
+        put(FileInfoConstants.FILEINFOID, "INTEGER PRIMARY KEY");
+        put(FileInfoConstants.GOOD, "BOOLEAN");
+        put(FileInfoConstants.IGNORED, "BOOLEAN");
+        put(FileInfoConstants.IMAGE, "BOOLEAN");
+        put(FileInfoConstants.IMAGE_DIFFERENCE_HASH, "INTEGER");
+        put(FileInfoConstants.LOCATION, "STRING");
+        put(FileInfoConstants.ORG_PATH, "STRING UNIQUE");
+        put(FileInfoConstants.ORIENTATION, "INTEGER");
+        put(FileInfoConstants.RAW, "BOOLEAN");
+        put(FileInfoConstants.SIZE, "NUMERIC");
+        put(FileInfoConstants.SUGGESTED, "BOOLEAN");
+        put(FileInfoConstants.TABLE_DUPLICATED, "BOOLEAN");
+        put(FileInfoConstants.TAGS, "STRING");
+        put(FileInfoConstants.THUMB_LENGTH, "INTEGER");
+        put(FileInfoConstants.THUMB_OFFSET, "INTEGER");
+        put(FileInfoConstants.TIMESHIFT, "INTEGER");
+        put(FileInfoConstants.USER, "STRING");
+        put(FileInfoConstants.VIDEO, "BOOLEAN");
+        put(FileInfoConstants.WORK_DIR, "STRING");
+        put(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER, "STRING");
+    }};
+
     final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
             + FileInfoConstants.ORG_PATH + ", "
             + FileInfoConstants.WORK_DIR + ", "
@@ -165,9 +193,10 @@ public class FileInfo_SQL {
                 SQL_Utils.closeConnection(connection);
                 return false;
             }
+            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
 
             try (PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert)) {
-                ensureFileInfoColumnsExists(connection);
+
                 int batchSize = 0;
                 final int BATCH_LIMIT = 1000;
 
@@ -207,7 +236,7 @@ public class FileInfo_SQL {
         return true;
     }
 
-    private static void ensureFileInfoColumnsExists(Connection connection) throws SQLException {
+    private static void ensureFileInfoColumnsExists_(Connection connection, Map<String, String> map) throws SQLException {
         DatabaseMetaData meta = connection.getMetaData();
         String fileInfoTable = SQLTableEnums.FILEINFO.getType();
 
@@ -379,16 +408,17 @@ public class FileInfo_SQL {
 		}
 	}
 
-	/**
-	 * Loads List<FileInfo> using SQL and adds it into FolderInfo
-	 * 
-	 * @param folderInfo
-	 * @return
-	 */
+    /**
+     * Loads the file info database for a given folder.
+     *
+     * @param folderInfo The folder information containing the path to the database.
+     * @return true if the file info database was loaded successfully, false otherwise.
+     */
 	public static boolean loadFileInfoDatabase(FolderInfo folderInfo) {
 		boolean loaded = false;
 		Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
 				Main.conf.getMdir_db_fileName());
+
 		if (SQL_Utils.isDbConnected(connection)) {
 			List<FileInfo> fileInfo_list = loadFileInfoDatabase(connection);
 			if (!fileInfo_list.isEmpty()) {
@@ -396,6 +426,7 @@ public class FileInfo_SQL {
 				loaded = true;
 			}
 		}
+
         SQL_Utils.closeConnection(connection);
 
 		return loaded;
@@ -417,7 +448,6 @@ public class FileInfo_SQL {
             Messages.sprintf("loadFileInfoDatabase Not Connected!");
             return new ArrayList<>();
         }
-
         List<FileInfo> list = new ArrayList<>();
         String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
 

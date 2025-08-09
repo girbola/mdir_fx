@@ -68,8 +68,7 @@ public class WorkDirSQL {
 
     public static List<FileInfo> findDuplicatesByDateRange(String startDate, String endDate) {
         List<FileInfo> duplicates = new ArrayList<>();
-        String sql = "SELECT * FROM " + SQLTableEnums.WORKDIR.getType() +
-                " WHERE date_range BETWEEN ? AND ?";
+        String sql = "SELECT * FROM " + SQLTableEnums.WORKDIR.getType() + " WHERE date_range BETWEEN ? AND ?";
 
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, startDate);
@@ -115,8 +114,10 @@ public class WorkDirSQL {
     }
 
     public static CopyState findDuplicates(FileInfo fileInfo) {
-        CopyState copyState = findDuplicatesByDateRange(simpleDates.getSdf_ymd_minus().format(fileInfo.getDate()), simpleDates.getSdf_ymd_minus().format(fileInfo.getDate()));
 
+       findDuplicatesByDateRange(simpleDates.getSdf_ymd_minus().format(fileInfo.getDate()), simpleDates.getSdf_ymd_minus().format(fileInfo.getDate()));
+
+       return CopyState.COPY; // Default state, should be replaced with actual logic to determine the state
     }
 }
 

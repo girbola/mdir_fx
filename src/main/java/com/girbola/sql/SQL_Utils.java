@@ -5,9 +5,10 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 
 import java.nio.file.Path;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SQL_Utils extends FolderInfo_SQL {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
@@ -121,7 +122,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 
     public static String getUrl(Connection connection) {
-        if(connection == null) {
+        if (connection == null) {
             return null;
         }
         try {
@@ -142,4 +143,29 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
+
+    public static void ensureColumnsExist(Connection conn, String tableName, Map<String, String> requiredColumns) throws SQLException {
+        // Get existing columns
+        Set<String> existingColumns = new HashSet<>();
+        DatabaseMetaData meta = conn.getMetaData();
+        try (ResultSet rs = meta.getColumns(null, null, tableName, null)) {
+            while (rs.next()) {
+                existingColumns.add(rs.getString("COLUMN_NAME"));
+            }
+        }
+
+        // Add missing columns
+        for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
+            String columnName = entry.getKey();
+            String columnType = entry.getValue();
+
+            if (!existingColumns.contains(columnName)) {
+                String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s;", tableName, columnName, columnType);
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute(alterSQL);
+                    System.out.println("Added missing column: " + columnName + " (" + columnType + ")");
+                }
+            }
+        }
+    }
 }

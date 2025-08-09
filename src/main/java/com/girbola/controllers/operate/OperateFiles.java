@@ -121,11 +121,31 @@ public class OperateFiles {
 
                 WorkDirSQL.loadWorkDir();
 
+/*
+if(sortedTable) {
+2024-01-01 - 2024-01-02 ratio event place
+ find duplicates in the workdir and get folder path
+ - if sortedTable set the destination by date range
+ - if sortItTable find destination by date range
+}
+ - find destination by date range 2010/01/01 - 2010/01/01 +1 day ratio
+ - if sortedTable set the destination by date range
+ - if sortItTable find destination by date range
+}
+
+find duplicates in the workdir
+ - if duplicates found, set the fileInfo state accordingly
+find destination by date range 2010/01/01 - 2010/01/01 +1 day ratio
+ - if sortedTable set the destination by date range
+ - if sortItTable find destination by date range
+
+
+
+ */
+
                 for (FileInfo fileInfo : list) {
-                    WorkDirSQL.findDuplicates(fileInfo);
+                    CopyState duplicates = WorkDirSQL.findDuplicates(fileInfo);
                 }
-
-
 
                 Task<Integer> copy = new Copy(list, modelOperate, modelMain, sceneNameType, close);
                 copy.setOnSucceeded((WorkerStateEvent eventWorker) -> Messages.sprintf("copy succeeded"));

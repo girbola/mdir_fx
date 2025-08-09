@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <AnchorPane fx:id="hideablePane" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
@@ -213,7 +213,7 @@
             					</columns>
             				</TableColumn>
             				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="81.5" text="%suggested" />
-            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="304.5" prefWidth="334.5" text="%fullPath" />
+            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="%fullPath" />
             			</columns>
                      <contextMenu>
                         <ContextMenu>

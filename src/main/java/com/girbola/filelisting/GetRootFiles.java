@@ -20,8 +20,7 @@ import static com.girbola.messages.Messages.sprintf;
 import static java.nio.file.FileVisitResult.*;
 
 /**
- * List only media files in root folder. Subfolder scan will be ignored 
- * @author marko_000
+ * List only media files in root folder. Subfolder scan will be ignored
  *
  */
 public class GetRootFiles {

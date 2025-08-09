@@ -83,7 +83,7 @@ public class Main extends Application {
     public static final String APP_VERSION = "1.0.0";
     public static final String APP_AUTHOR = "<NAME>";
     public static final String APP_EMAIL = "<EMAIL>";
-    public static final String APP_WEBSITE = "https://github.com/MarkoLokka/MDir";
+    public static final String APP_WEBSITE = "https://github.com//MDir";
     public static final String APP_COPYRIGHT = "Copyright (c) 2012-2025 All right reserved.";
     public static final String APP_LICENSE = "Apache License, Version 2.0";
 
@@ -336,6 +336,7 @@ public class Main extends Application {
                     }
                 });
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
+                  Messages.sprintf("load_FileInfosBackToTableViews succeeded");
                     Platform.runLater(() -> {
                         lpt.closeStage();
                     });
@@ -355,10 +356,12 @@ public class Main extends Application {
                 });
 
                 load_FileInfosBackToTableViews.setOnCancelled(event12 -> {
+                    Messages.sprintfError(("load_FileInfosBackToTableViews cancelled"));
                     primaryStage.setOnCloseRequest(event14 -> model_main.exitProgram_NOSAVE());
                     Platform.runLater(() -> lpt.closeStage());
                 });
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
+                    Messages.sprintfError("load_FileInfosBackToTableViews failed");
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
                     lpt.closeStage();
                 });

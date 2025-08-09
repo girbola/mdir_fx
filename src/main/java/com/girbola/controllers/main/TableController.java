@@ -33,6 +33,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -470,7 +471,6 @@ public class TableController {
                 tableLabelNameHBox.setMinSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
                 tableLabelNameHBox.setPrefSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
                 tableLabelNameHBox.setMaxSize(Region.USE_COMPUTED_SIZE, buttonHideSize);
-
 
                 topMenuButtonFlowPane.setMinSize(420, buttonHideSize);
                 topMenuButtonFlowPane.setPrefSize(420, buttonHideSize);

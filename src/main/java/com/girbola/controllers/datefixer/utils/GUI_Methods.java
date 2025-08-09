@@ -96,19 +96,19 @@ public class GUI_Methods {
 		return null;
 	}
 
-	/**
-	 * getCameraModel will get cameraModel from Node getUserDatas
-	 * 
-	 * @param children
-	 * @return
-	 */
-	public static String getLocations(Node children) {
-		if (children instanceof VBox && children.getId().equals("imageFrame")) {
-			FileInfo fi = (FileInfo) children.getUserData();
-			return fi.getLocation();
-		}
-		return null;
-	}
+//	/**
+//	 * getCameraModel will get cameraModel from Node getUserDatas
+//	 *
+//	 * @param children
+//	 * @return
+//	 */
+//	public static String getLocations(Node children) {
+//		if (children instanceof VBox && children.getId().equals("imageFrame")) {
+//			FileInfo fi = (FileInfo) children.getUserData();
+//			return fi.getLocation();
+//		}
+//		return null;
+//	}
 
 	public static Button getShowHideButtonFromTableView(TableView<FolderInfo> table) {
 		Node parent = table.getParent();

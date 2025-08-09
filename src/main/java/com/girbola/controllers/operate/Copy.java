@@ -49,20 +49,20 @@ public class Copy extends Task<Integer> {
     private Path dest = null;
     private SimpleStringProperty rememberAnswer = new SimpleStringProperty(CopyAnswerType.ASK);
 
+//    @Override
+//    protected Integer call() throws Exception {
+//        if (!initializeWorkDirectory()) {
+//            return null;
+//        }
+//
+//        removeDuplicates();
+//        processRemainingFiles();
+//        modelOperate.getCopyProcess_values().update();
+//        return null;
+//    }
+
     @Override
     protected Integer call() throws Exception {
-        if (!initializeWorkDirectory()) {
-            return null;
-        }
-
-        removeDuplicates();
-        processRemainingFiles();
-        modelOperate.getCopyProcess_values().update();
-        return null;
-    }
-
-
-    protected Integer call_bad() throws Exception {
 
         Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
 

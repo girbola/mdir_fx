@@ -6,6 +6,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
+import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.beans.property.IntegerProperty;
@@ -16,9 +17,7 @@ import javafx.stage.Window;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -42,7 +41,7 @@ public class Populate {
     }
 
     public void populateTablesFolderScannerList(Window owner) {
-        sprintf("SorterTest action started");
+        sprintf("populateTablesFolderScannerList action started");
         Main.setProcessCancelled(false);
         modelMain.getMonitorExternalDriveConnectivity().cancel();
         if (modelMain.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
@@ -67,6 +66,19 @@ public class Populate {
         }
 
         if (selectedFolders.isEmpty()) return;
+
+        Set<Path> acceptedFolders = new HashSet<>();
+        for(Path path : selectedFolders) {
+            sprintf("Selected folder: " + path);
+            List<Path> paths = SubFolders.subFolders(path);// This is just to initialize the SubFolders class, if needed.
+            if(paths.isEmpty()) {
+                acceptedFolders.addAll(acceptedFolders);
+            }
+        }
+
+        for(Path path : acceptedFolders) {
+            sprintf("acceptedFolders initialized with path: " + path);
+        }
 
         Thread createFileListThread = getThread(owner, selectedFolders);
         sprintf("createFileListThread.getName(): " + createFileListThread.getName());

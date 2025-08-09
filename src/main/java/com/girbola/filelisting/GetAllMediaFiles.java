@@ -17,7 +17,6 @@ import static java.nio.file.FileVisitResult.CONTINUE;
 import static java.nio.file.FileVisitResult.SKIP_SUBTREE;
 /**
  * Get all possible media files under given folder
- * @author marko_000
  *
  */
 public class GetAllMediaFiles {

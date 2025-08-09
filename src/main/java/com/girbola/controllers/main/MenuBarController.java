@@ -2,15 +2,15 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixer;
+import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.options.OptionsComponent;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
-import com.girbola.controllers.datefixer.DateFixer;
-import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
-import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.SaveTableFileInfos;
@@ -395,18 +395,13 @@ public class MenuBarController {
         root.setAlignment(Pos.CENTER);
         Label programName = new Label("Organizer tool for backing up image & video files");
         Label programVersion = new Label(conf.getProgramVersion());
-        Label programCopyRight = new Label("Copyright © 2012-2020");
-        Label programUserInfo = new Label("Marko Lokka. marko.lokka@gmail.com");
+        Label programUserInfo = new Label("girbola9@gmail.com");
         Label programMoreInfo = new Label("NOT FOR PUBLIC DISTRIBUTION");
         Hyperlink programHomePage = new Hyperlink(HTMLClass.programHomePage);
-        programHomePage.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
 
-                viewWebPage(programHomePage.getText());
-            }
-        });
-        root.getChildren().addAll(programName, programVersion, programCopyRight, programUserInfo, programMoreInfo, programHomePage);
+        programHomePage.setOnAction(event1 -> viewWebPage(programHomePage.getText()));
+
+        root.getChildren().addAll(programName, programVersion, programUserInfo, programMoreInfo, programHomePage);
 
         Dialog dialog = new Dialog();
         DialogPane dialogPane = new DialogPane();
