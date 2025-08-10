@@ -10,10 +10,22 @@ The project has been written with OpenJDK 14 and OpenJFX 14.
 * Avoid duplicates to save space
 * Batch copy
 
+### 📦 Third-Party Libraries and Licenses
 
-External libraries used in this project
+This project uses the following third-party libraries:
 
+### Metadata-extractor `v2.14.0`
+- **License**: Apache License Version 2.0
+- **Repository**: github.com/drewnoakes/metadata-extractor
+
+---
+
+### JCodec `v0.2.3`
+- **License**: *(Please verify — likely BSD or custom license)*
+- **Repository**: [github.com/jcodec/jcodec](https://github.com/jcodec/jicense**: *(Please verify — typically GPL or LGPL)*
+- **Repository**: [github.com/caprica/vlcj](https://github.com
 ##### Metadata-extractor 2.14.0
+###### License - Apache License Version 2.0 http://www.apache.org/licenses/
 https://github.com/drewnoakes/metadata-extractor
 
 ##### JCodec 0.2.3

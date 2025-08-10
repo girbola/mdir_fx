@@ -145,11 +145,13 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 
     public static void ensureColumnsExist(Connection conn, String tableName, Map<String, String> requiredColumns) throws SQLException {
+        boolean committed = false;
         // Get existing columns
         Set<String> existingColumns = new HashSet<>();
         DatabaseMetaData meta = conn.getMetaData();
         try (ResultSet rs = meta.getColumns(null, null, tableName, null)) {
             while (rs.next()) {
+                Messages.sprintf("------------Column found: " + rs.getString("COLUMN_NAME") + " of type: " + rs.getString("TYPE_NAME"));
                 existingColumns.add(rs.getString("COLUMN_NAME"));
             }
         }
@@ -163,7 +165,8 @@ public class SQL_Utils extends FolderInfo_SQL {
                 String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s;", tableName, columnName, columnType);
                 try (Statement stmt = conn.createStatement()) {
                     stmt.execute(alterSQL);
-                    System.out.println("Added missing column: " + columnName + " (" + columnType + ")");
+                    conn.commit();
+                    Messages.sprintf("Added missing column: " + columnName + " (" + columnType + ")");
                 }
             }
         }

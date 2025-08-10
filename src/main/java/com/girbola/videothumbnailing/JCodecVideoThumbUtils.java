@@ -4,7 +4,6 @@ import com.girbola.Main;
 import com.girbola.imagehandling.jcodec.AWTUtil;
 import com.girbola.messages.Messages;
 import net.coobird.thumbnailator.Thumbnails;
-//import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.jcodec.api.FrameGrab;
 import org.jcodec.common.*;
 import org.jcodec.common.io.NIOUtils;
@@ -29,7 +28,6 @@ public class JCodecVideoThumbUtils {
             return null;
         }
     }
-
 
     public static double getVideoLenght(File file) {
         log.info("getVideoLenght: " + file);

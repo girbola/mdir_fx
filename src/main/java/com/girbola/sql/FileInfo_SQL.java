@@ -448,6 +448,13 @@ public class FileInfo_SQL {
             Messages.sprintf("loadFileInfoDatabase Not Connected!");
             return new ArrayList<>();
         }
+
+        try {
+            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);}
+        catch (SQLException e) {
+            Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
         List<FileInfo> list = new ArrayList<>();
         String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
 

@@ -12,20 +12,8 @@
     <name>MDir Image &amp; Video organizer tool 2025</name>
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>GNU General Public License (GPL) version 2, or any later version</name>
-            <url>https://www.gnu.org/licenses/</url>
-            <distribution>repo</distribution>
-        </license>
-        <license>
-            <name>GPLv2 with Classpath exception</name>
-            <url>https://www.gnu.org/software/
-                classpath/license.html
-            </url>
+            <name>GNU General Public License (GPL) version 3, or any later version</name>
+            <url>https://www.gnu.org/licenses/gpl-3.0.html</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -48,8 +36,8 @@
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
         <lombok.version>1.18.38</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>24.0.2</maven.compiler.source>
+        <maven.compiler.target>24.0.2</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <oshi-core.version>6.8.2</oshi-core.version>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
@@ -114,7 +102,6 @@
             <artifactId>ikonli-material2-pack</artifactId>
             <version>${ikonli-javafx.version}</version>
         </dependency>
-
 
         <!-- JavaFX deps -->
         <dependency>
@@ -245,9 +232,9 @@
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
-                <!--                <configuration>
-                                    <mainClass>MDir_FX</mainClass>
-                                </configuration>-->
+                <configuration>
+                    <mainClass>MDir_FX</mainClass>
+                </configuration>
                 <executions>
                     <execution>
                         <!-- Default configuration for running with: mvn clean javafx:run -->
@@ -268,18 +255,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.8.1</version>
             </plugin>
-            <!--            <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-dependency-plugin</artifactId>
-                            <executions>
-                                <execution>
-                                    <goals>
-                                        <goal>properties</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>-->
-
         </plugins>
         <resources>
             <resource>
@@ -292,14 +267,12 @@
             <resource>
                 <directory>src/main/resources</directory>
                 <includes>
-
                     <include>**/*.css</include>
                     <include>**/*.jp*g</include>
                     <include>**/*.png</include>
                     <include>**/*.properties</include>
                 </includes>
             </resource>
-
         </resources>
     </build>
 </project>

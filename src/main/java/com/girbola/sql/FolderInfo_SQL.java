@@ -326,12 +326,12 @@ public class FolderInfo_SQL {
     public static void saveFolderInfoToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) throws SQLException {
 
         try {
-
             boolean create = createFolderInfoTable(connectionMdirFile);
             if (create) {
                 insertFolderInfo(connectionMdirFile, folderInfo);
                 return;
             }
+            // Ensure the table exists and has the correct structure
             ensureFolderInfoTable(connectionMdirFile);
 
             Statement stmt = connectionMdirFile.createStatement();
