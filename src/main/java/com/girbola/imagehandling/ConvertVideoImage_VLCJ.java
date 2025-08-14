@@ -5,7 +5,6 @@ import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.videothumbnailing.JCodecVideoThumbUtils;
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -118,7 +117,7 @@ public class ConvertVideoImage_VLCJ extends Task<List<BufferedImage>>  {
 		BufferedImage buf = null;
 		if (mediaPlayer.media().start(mrl)) {
 			long duration = mediaPlayer.status().length();
-			List<Double> doubles = JCodecVideoThumbUtils.grabListOfTimeLine(duration);
+			List<Double> doubles = MFFmpegFrameGrabber.grabListOfTimeLine(duration);
 			for(Double d : doubles) {
 				Messages.sprintf("grabListOfTimeLine: " + d);
 				mediaPlayer.controls().setPosition(d.floatValue());

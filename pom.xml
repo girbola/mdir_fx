@@ -32,7 +32,6 @@
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <javafx.version>24.0.2</javafx.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
-        <jcodec.version>0.2.5</jcodec.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
         <lombok.version>1.18.38</lombok.version>
         <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
@@ -144,11 +143,6 @@
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj-javafx</artifactId>
             <version>${vlcj-javafx.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jcodec</groupId>
-            <artifactId>jcodec</artifactId>
-            <version>${jcodec.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bytedeco</groupId>

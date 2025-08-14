@@ -1,5 +1,8 @@
 package com.girbola.videothumbnailing;
 
+import com.girbola.messages.Messages;
+import java.awt.image.BufferedImage;
+import java.util.List;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.junit.jupiter.api.Test;
@@ -18,9 +21,9 @@ public class JavaCvVideoThumbUtilsTest {
     public void testGetFrames() throws Exception {
 
         // Arrange
-        Path file = Paths.get("/Users/lokkamarko/Movies/2025-02-19 14-04-30.mkv");
+        Path file = Paths.get("C:\\Users\\marko\\OneDrive\\Kuvat\\Ruotsin reissu\\VID_20220412_232520.mp4");
 
-    JavaCvVideoThumbUtils.getFrames(file);
-
+        List<BufferedImage> list = JavaCvVideoThumbUtils.getList(file);
+        Messages.sprintf("list size: " + list.size());
     }
 }

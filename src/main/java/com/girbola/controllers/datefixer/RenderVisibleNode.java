@@ -2,14 +2,12 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.Main;
-import com.girbola.configuration.GuiImageFrame;
-import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
+import com.girbola.configuration.UIContants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.imagehandling.*;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
-import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.ThumbInfoSQL;
 import com.girbola.thumbinfo.ThumbInfo;
 import common.utils.FileUtils;
@@ -155,43 +153,43 @@ public class RenderVisibleNode {
                                     case 0:
                                         if (FileUtils.supportedImage(file)) {
                                             Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
 
                                         }
                                         if (FileUtils.supportedRaw(file)) {
                                             Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
 
                                         } else if (FileUtils.supportedVideo(file)) {
                                             Task<List<BufferedImage>> convertByte_thumb_fast = new ConvertVideo_Byte(
-                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, GuiImageFrame.thumb_x_MAX,
+                                                    Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
                                         }
                                         break;
                                     case 1:
                                         if (FileUtils.supportedVideo(file)) {
-                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (GuiImageFrame.thumb_x_MAX - 2));
+                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
                                             needToConvert_Video_list.add(convertVideo_task);
                                         } else if (FileUtils.supportedImage(file)) {
                                             if (FileUtils.isTiff(file.toFile())) {
                                                 Messages.sprintf("Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
+                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             } else {
                                                 Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = handleImageThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
+                                                Task<Image> imageThumb = handleImageThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
                                             }
                                         } else if (FileUtils.supportedRaw(file)) {
                                             Messages.sprintf("3_Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, GuiImageFrame.thumb_x_MAX, imageView);
+                                            Task<Image> imageThumb = handleRawImageThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
                                             imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                             needToConvert_Image_list.add(imageThumb);
                                         }

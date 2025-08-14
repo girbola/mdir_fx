@@ -1,6 +1,12 @@
 package com.girbola.videothumbnailing;
 
+import com.girbola.configuration.UIContants;
 import com.girbola.messages.Messages;
+import common.utils.ImageUtils;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import net.coobird.thumbnailator.Thumbnails;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -10,8 +16,12 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class JavaCvVideoThumbUtils {
+    private static final int THUMBNAIL_COUNT = 5;
+    private static final Logger logger = LoggerFactory.getLogger(JavaCvVideoThumbUtils.class);
 
 //    public static List<BufferedImage> getList(String fileName) {
 //        try {
@@ -29,63 +39,53 @@ public class JavaCvVideoThumbUtils {
 //    }
 
 
-    public static List<BufferedImage> getList(File file) throws Exception {
+    public static List<BufferedImage> getList(String path) throws IOException {
+        return getList(Paths.get(path));
+    }
 
-        FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file);
-        if(grabber.getLengthInFrames() <= 0) {
-            Messages.sprintfError("No frames found in the video file: " + file);
+
+    public static List<BufferedImage> getList(Path path) throws IOException {
+        return getList(path.toFile());
+    }
+
+    public static List<BufferedImage> getList(File file) throws IOException {
+
+        List<BufferedImage> listOfVideoThumbnails = new ArrayList<>();
+        try (FFmpegFrameGrabber grabber = new FFmpegFrameGrabber(file)) {
+            grabber.start();
+
+            int totalFrames = grabber.getLengthInFrames();
+            if (totalFrames <= 0) {
+                Messages.sprintfError("No frames found in the video file: " + file);
+                return null;
+            }
+
+            int step = Math.max(1, totalFrames / THUMBNAIL_COUNT);
+
+            for (int i = 0; i < THUMBNAIL_COUNT; i++) {
+                int frameIndex = Math.min(i * step, Math.max(0, totalFrames - 1));
+
+                grabber.setFrameNumber(frameIndex);
+
+                Frame frame = grabber.grabImage();
+                if (frame == null) {
+                    logger.error("Grabbing did not work on this file because frame were null at index: " + frameIndex);
+                    continue;
+                }
+
+                BufferedImage scaled = ImageUtils.convertFrameToBufferedImageWithScalingThumbnail(frame, (int) UIContants.THUMBNAIL_MAX_HEIGHT);
+                if (scaled != null) {
+                    listOfVideoThumbnails.add(scaled);
+                }
+            }
+
+            grabber.stop();
+
+            return listOfVideoThumbnails;
+
+        } catch (Exception e) {
+            logger.error("Error while grabbing video for file {}", file, e);
             return null;
         }
-
-        for (Map.Entry<String, String> stringStringEntry : grabber.getMetadata().entrySet()) {
-            Messages.sprintf("Metadata: " + stringStringEntry.getKey() + " = " + stringStringEntry.getValue());
-        }
-
-        grabber.start();
-
-        int totalFrames = grabber.getLengthInFrames();
-        int step = totalFrames / 5;
-
-        for (int i = 0; i < 5; i++) {
-            long startTime = System.currentTimeMillis();
-
-            int targetFrame = i * step;
-            grabber.setFrameNumber(targetFrame);
-            Messages.sprintf("startTime: + " + startTime);
-            Frame frame = grabber.grabImage();
-
-            Messages.sprintf("----GRABBING took: " + (System.currentTimeMillis() - startTime) + " ms for frame: " + targetFrame);
-            startTime = System.currentTimeMillis();
-
-            frame.imageWidth = 640; // Set desired width
-            frame.imageHeight = 480; // Set desired height
-
-            Messages.sprintf("---RESIZING took: " + (System.currentTimeMillis() - startTime) + " ms for frame: " + targetFrame);
-            startTime = System.currentTimeMillis();
-
-            BufferedImage bufferedImage = convert(frame);
-            Messages.sprintf("--bufferedImage convert took: " + (System.currentTimeMillis() - startTime) + " ms for frame: " + targetFrame);
-
-            if (bufferedImage == null) {
-                System.out.println("Failed to grab frame at position: " + targetFrame);
-                continue;
-            } else {
-                System.out.println("Successfully grabbed frame at position: " + bufferedImage.getWidth() + " height::: " + bufferedImage.getHeight());
-            }
-            if (frame != null) {
-                System.out.println("Grabbed frame at position: " + targetFrame);
-                // You can save or process the frame here
-            }
-        }
-
-        grabber.stop();
     }
-
-
-    public static BufferedImage convert(Frame frame) {
-        Java2DFrameConverter converter = new Java2DFrameConverter();
-        return converter.convert(frame);
-    }
-
-
 }

@@ -1,7 +1,7 @@
 
 package com.girbola.controllers.closerlook;
 
-import com.girbola.configuration.GuiImageFrame;
+import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.misc.DateCollectionUtils;
 import com.girbola.fileinfo.FileInfo;
@@ -146,8 +146,8 @@ public class CloserLookController {
                 tilePane.getChildren().add(datePane);
                 for (FileInfo fi : entry.getValue()) {
                     Messages.sprintf("------FIIIIII: " + fi);
-                    ImageView iv = createImageView(fi, GuiImageFrame.thumb_x_MAX - 2, GuiImageFrame.thumb_y_MAX - 2);
-                    StackPane pane = createStackPane(fi, GuiImageFrame.thumb_x_MAX, GuiImageFrame.thumb_y_MAX);
+                    ImageView iv = createImageView(fi, UIContants.THUMBNAIL_MAX_WIDTH - 2, UIContants.THUMBNAIL_MAX_HEIGHT - 2);
+                    StackPane pane = createStackPane(fi, UIContants.THUMBNAIL_MAX_WIDTH, UIContants.THUMBNAIL_MAX_HEIGHT);
                     pane.getChildren().add(iv);
                     tilePane.getChildren().add(pane);
                 }

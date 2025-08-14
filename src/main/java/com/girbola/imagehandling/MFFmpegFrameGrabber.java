@@ -3,33 +3,25 @@ package com.girbola.imagehandling;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.ImageUtils;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.embed.swing.SwingFXUtils;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.util.Duration;
-import org.bytedeco.javacv.FFmpegFrameGrabber;
-import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.Java2DFrameConverter;
-
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import static com.girbola.videothumbnailing.JCodecVideoThumbUtils.grabListOfTimeLine;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.util.Duration;
+import org.bytedeco.javacv.FFmpegFrameGrabber;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
     private FileInfo fileInfo;
@@ -43,6 +35,29 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
         this.image_width = ((int) image_width);
     }
 
+    public static List<Double> grabListOfTimeLine(double duration) {
+        List<Double> list = new ArrayList<>();
+        if (duration <= 5) {
+            list.add(0.0);
+        } else if (duration <= 10 && duration >= 6) {
+            double startPos = 0;
+            double ratio = (duration / 2); //
+            list.add(startPos);
+            for (int i = 0; i < 1; i++) {
+                startPos += ratio;
+                list.add(startPos);
+            }
+        } else {
+            double startPos = (duration / 10); // = 3. 10% from duration. This could avoid black screen as a start image
+            double ratio = ((duration - startPos) / 5); //
+            list.add(startPos);
+            for (int i = 0; i < 4; i++) {
+                startPos += ratio;
+                list.add(startPos);
+            }
+        }
+        return list;
+    }
     public List<BufferedImage> frameGrabber(Path path) {
         //final int thumbnailCount = 5; // Number of thumbnails to generate
 

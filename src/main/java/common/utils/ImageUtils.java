@@ -3,15 +3,12 @@ package common.utils;
 import com.drew.imaging.ImageMetadataReader;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
-import com.girbola.configuration.GuiImageFrame;
+import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.messages.Messages;
 
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
@@ -25,10 +22,34 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.coobird.thumbnailator.Thumbnails;
+import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 import static com.girbola.messages.Messages.sprintf;
 
 public class ImageUtils {
+
+    public static BufferedImage convertFrameToBufferedImageWithScalingThumbnail(Frame frame, int height) throws IOException {
+        if (frame == null) {
+            return null;
+        }
+        if (height <= 0) {
+            return null;
+        }
+        BufferedImage converted = convertToBufferedImage(frame);
+        if (frame.imageHeight > height) {
+            return Thumbnails.of(converted).height(UIContants.IMAGE_FRAME_HEIGHT).keepAspectRatio(true).asBufferedImage();
+        }
+        return null;
+    }
+
+
+    private static BufferedImage convertToBufferedImage(Frame frame) {
+        Java2DFrameConverter converter = new Java2DFrameConverter();
+        return converter.convert(frame);
+    }
+
 
     public static String calculateRAWImagePHash(Path imagePath) {
         try {
@@ -310,20 +331,20 @@ public class ImageUtils {
         double ratio = 0;
 
         // Calculate the new dimensions while maintaining the aspect ratio
-        double newWidth = GuiImageFrame.thumb_x_MAX;
-        double newHeight = GuiImageFrame.thumb_y_MAX;
+        double newWidth = UIContants.THUMBNAIL_MAX_WIDTH;
+        double newHeight = UIContants.THUMBNAIL_MAX_HEIGHT;
 
         // Horizontal image
         if (originalWidth > originalHeight) {
-            newWidth = GuiImageFrame.thumb_x_MAX;
+            newWidth = UIContants.THUMBNAIL_MAX_WIDTH;
             ratio = (double) originalHeight / originalWidth;
-            newHeight = (ratio * GuiImageFrame.thumb_y_MAX);
+            newHeight = (ratio * UIContants.THUMBNAIL_MAX_HEIGHT);
         }
         //Vertical image
         else if (originalWidth < originalHeight) {
-            newHeight = GuiImageFrame.thumb_x_MAX;
+            newHeight = UIContants.THUMBNAIL_MAX_WIDTH;
             ratio = (double) originalWidth / originalHeight;
-            newWidth = (ratio *  GuiImageFrame.thumb_y_MAX);
+            newWidth = (ratio * UIContants.THUMBNAIL_MAX_HEIGHT);
         }
 
         // Create a new BufferedImage with the calculated dimensions
@@ -342,24 +363,24 @@ public class ImageUtils {
     public static String processImagesOneAtATime(Path file) {
         String hash = "";
 
-            System.out.println("Processing file: " + file);
-            try {
-                // Read image from file
-                BufferedImage imagee = ImageIO.read(file.toFile());
-                if (imagee == null) {
-                    throw new IOException("Unsupported or corrupted file: " + file);
-                }
-                // Generate hash for the image
-                hash = getString(imagee);
-
-
-                // Output the result for the current file
-                System.out.println("File: " + file + " -> Hash: " + hash);
-            } catch (IOException e) {
-                // Log error and skip invalid file
-                System.err.println("Error processing file: " + file + ". Skipping.");
+        System.out.println("Processing file: " + file);
+        try {
+            // Read image from file
+            BufferedImage imagee = ImageIO.read(file.toFile());
+            if (imagee == null) {
+                throw new IOException("Unsupported or corrupted file: " + file);
             }
-            return hash;
+            // Generate hash for the image
+            hash = getString(imagee);
+
+
+            // Output the result for the current file
+            System.out.println("File: " + file + " -> Hash: " + hash);
+        } catch (IOException e) {
+            // Log error and skip invalid file
+            System.err.println("Error processing file: " + file + ". Skipping.");
+        }
+        return hash;
     }
 
     private static String getString(BufferedImage image) {

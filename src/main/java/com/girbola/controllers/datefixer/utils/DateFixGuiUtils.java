@@ -1,6 +1,6 @@
 package com.girbola.controllers.datefixer.utils;
 
-import com.girbola.configuration.GuiImageFrame;
+import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
@@ -62,11 +62,11 @@ public class DateFixGuiUtils {
         iv.setPreserveRatio(true);
         iv.setMouseTransparent(true);
 
-//        if (iv.getFitWidth() >= GuiImageFrame.thumb_x_MAX) {
-//            iv.setFitWidth(GuiImageFrame.thumb_x_MAX - 50);
+//        if (iv.getFitWidth() >= GuiImageFrame.THUMBNAIL_MAX_WIDTH) {
+//            iv.setFitWidth(GuiImageFrame.THUMBNAIL_MAX_WIDTH - 50);
 //        }
-//        if (iv.getFitHeight() >= GuiImageFrame.thumb_y_MAX) {
-//            iv.setFitHeight(GuiImageFrame.thumb_y_MAX - 50);
+//        if (iv.getFitHeight() >= GuiImageFrame.THUMBNAIL_MAX_HEIGHT) {
+//            iv.setFitHeight(GuiImageFrame.THUMBNAIL_MAX_HEIGHT - 50);
 //        }
 
         Messages.sprintf("FileInfo: " + fi.getOrgPath() + " IMAGEVIEW: " + iv.getFitWidth() + " " + iv.getFitHeight());
@@ -214,9 +214,9 @@ public class DateFixGuiUtils {
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
 
-        bottomContainer.setMinSize(GuiImageFrame.imageFrame_x - 6, 40);
-        bottomContainer.setMaxSize(GuiImageFrame.imageFrame_x - 6, 40);
-        bottomContainer.setPrefSize(GuiImageFrame.imageFrame_x - 6, 40);
+        bottomContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
+        bottomContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
+        bottomContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
         return bottomContainer;
     }
 
@@ -224,9 +224,9 @@ public class DateFixGuiUtils {
         HBox buttonDateTimeContainer = new HBox();
         buttonDateTimeContainer.setAlignment(Pos.TOP_LEFT);
         buttonDateTimeContainer.setId("bottom");
-        buttonDateTimeContainer.setMaxSize(GuiImageFrame.imageFrame_x - hGap, 20);
-        buttonDateTimeContainer.setPrefSize(GuiImageFrame.imageFrame_x - hGap, 20);
-        buttonDateTimeContainer.setMinSize(GuiImageFrame.imageFrame_x - hGap, 20);
+        buttonDateTimeContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
+        buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
+        buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
         buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
         return buttonDateTimeContainer;
     }

@@ -1,6 +1,6 @@
 package com.girbola.controllers.importimages;
 
-import com.girbola.configuration.GuiImageFrame;
+import com.girbola.configuration.UIContants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.beans.property.BooleanProperty;
@@ -27,8 +27,8 @@ import static com.girbola.rotate.Rotate.rotate;
 
 public class GUIUtils {
 	private Model_importImages model_importImages;
-	private double width = (GuiImageFrame.thumb_x_MAX + 2);
-	private double height = (GuiImageFrame.thumb_x_MAX + 2);
+	private double width = (UIContants.THUMBNAIL_MAX_WIDTH + 2);
+	private double height = (UIContants.THUMBNAIL_MAX_WIDTH + 2);
 
 	public double getWidth() {
 		return width;

@@ -6,7 +6,7 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.Tag;
 import com.girbola.Main;
-import com.girbola.configuration.GuiImageFrame;
+import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
@@ -166,7 +166,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     }
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {
-        VBox frame_vbox = DateFixGuiUtils.createImageFrame(GuiImageFrame.imageFrame_x, GuiImageFrame.imageFrame_y);
+        VBox frame_vbox = DateFixGuiUtils.createImageFrame(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
 
         GridPane topContainer = DateFixGuiUtils.createTopGridPane();
 
@@ -183,8 +183,8 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         GridPane.setHalignment(imageFrameNumber, HPos.CENTER);
         GridPane.setHalignment(fileExtension, HPos.CENTER);
 
-        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer(fileInfo, "imageViewContainer", GuiImageFrame.imageFrame_y);
-        ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (GuiImageFrame.thumb_x_MAX), GuiImageFrame.thumb_y_MAX);
+        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer(fileInfo, "imageViewContainer", UIContants.IMAGE_FRAME_HEIGHT);
+        ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (UIContants.THUMBNAIL_MAX_WIDTH), UIContants.THUMBNAIL_MAX_HEIGHT);
         imageViewContainer.getChildren().add(iv);
 
         VBox bottomContainer = DateFixGuiUtils.createBottomContainer();

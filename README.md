@@ -1,6 +1,8 @@
-**This project is not fully completed. Any harm caused by this program is at your own risk**
+# MDir_FX — Smart Media Organizer
 
+Organize photos and videos effortlessly with deduplication, batch copy, and timestamp editing.
 
+## **This project is not yet complete. Use at your own risk; you are responsible for any damage caused.**
 # MDir_FX
 MDir_FX helps organize pictures and videos to an external hard drive.
 The project has been written with OpenJDK 14 and OpenJFX 14.
@@ -10,57 +12,28 @@ The project has been written with OpenJDK 14 and OpenJFX 14.
 * Avoid duplicates to save space
 * Batch copy
 
-### 📦 Third-Party Libraries and Licenses
+### License
+This program is not ready for public use, but  GPLv3 will be used.
 
-This project uses the following third-party libraries:
+### 📦 Third-Party repositories
 
-### Metadata-extractor `v2.14.0`
-- **License**: Apache License Version 2.0
-- **Repository**: github.com/drewnoakes/metadata-extractor
+| Library               | Version    | License                                  | Project URL                                           | Notes                          |
+|-----------------------|------------|-------------------------------------------|--------------------------------------------------------|---------------------------------|
+| Metadata-extractor    | 2.14.0     | Apache License 2.0                        | https://github.com/drewnoakes/metadata-extractor       | —                               |
+| JavaCV                | 1.5.10     | Apache License 2.0                        | https://github.com/bytedeco/javacv                     | Version not specified           |
+| VLCJ                  | 4.5.2      | GPLv3                                     | https://github.com/caprica/vlcj                        | —                               |
+| TwelveMonkeys ImageIO | 3.5        | BSD 3-Clause                              | https://github.com/haraldk/TwelveMonkeys               | Modules: imageio-jpeg, imageio-tiff |
 
----
+</br>
+</br>
 
-### JCodec `v0.2.3`
-- **License**: *(Please verify — likely BSD or custom license)*
-- **Repository**: [github.com/jcodec/jcodec](https://github.com/jcodec/jicense**: *(Please verify — typically GPL or LGPL)*
-- **Repository**: [github.com/caprica/vlcj](https://github.com
-##### Metadata-extractor 2.14.0
-###### License - Apache License Version 2.0 http://www.apache.org/licenses/
-https://github.com/drewnoakes/metadata-extractor
+## Supported file formats
 
-##### JCodec 0.2.3
-https://github.com/jcodec/jcodec
-
-##### VLCJ 4.5.2
-https://github.com/caprica/vlcj
-
-##### TwelveMonkeys
-###### imageio-jpeg 3.5
-###### imageio-tiff 3.5
-https://github.com/haraldk/TwelveMonkeys
-
-Supported file formats for thumbnail creation
-
-__Video__
-- 3GP
-- AVI
-- MKV
-- MOV
-- MP4
-- MPG
-
- __Picture__
-- BMP
-- GIF
-- JPG
-- JPEG
-- PNG
-- TIF
-- TIFF
-
-__Raw__
-- CR2
-- NEF
+| Category  | Formats                               |
+|-----------|----------------------------------------|
+| 🎬 Video  | 3GP • AVI • MKV • MOV • MP4 • MPG      |
+| 🖼️ Picture | BMP • GIF • JPG/JPEG • PNG • TIF/TIFF  |
+| 📷 Raw    | CR2 • NEF                              |
 
 This project is not yet ready for public use.
 Any inconvenience caused by this project is in your responsibility.

@@ -2,7 +2,7 @@ package com.girbola.imagehandling;
 
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.videothumbnailing.JCodecVideoThumbUtils;
+import com.girbola.videothumbnailing.JavaCvVideoThumbUtils;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -41,12 +41,12 @@ public class VideoThumbMaker extends Task<List<BufferedImage>> {
         Messages.sprintf("Processing VideoThumbmaker: " + fileInfo.getOrgPath());
         List<BufferedImage> list = null;
         try {
-            list = JCodecVideoThumbUtils.getList(new File(fileInfo.getOrgPath()));
+            list = JavaCvVideoThumbUtils.getList(new File(fileInfo.getOrgPath()));
             if (list == null) {
                 return null;
             }
         } catch (Exception ex) {
-            System.err.println("Exception ex: " + ex.getMessage());
+            log.error("Trouble to get video thumbnails. Exception: " + ex.getMessage());
             cancelled();
             return null;
         }
