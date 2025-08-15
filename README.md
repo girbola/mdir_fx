@@ -17,12 +17,16 @@ This program is not ready for public use, but  GPLv3 will be used.
 
 ### 📦 Third-Party repositories
 
-| Library               | Version    | License                                  | Project URL                                           | Notes                          |
-|-----------------------|------------|-------------------------------------------|--------------------------------------------------------|---------------------------------|
-| Metadata-extractor    | 2.14.0     | Apache License 2.0                        | https://github.com/drewnoakes/metadata-extractor       | —                               |
-| JavaCV                | 1.5.10     | Apache License 2.0                        | https://github.com/bytedeco/javacv                     | Version not specified           |
-| VLCJ                  | 4.5.2      | GPLv3                                     | https://github.com/caprica/vlcj                        | —                               |
-| TwelveMonkeys ImageIO | 3.5        | BSD 3-Clause                              | https://github.com/haraldk/TwelveMonkeys               | Modules: imageio-jpeg, imageio-tiff |
+| Library                | Version      | License            | Project URL                                      | Notes                               |
+|------------------------|--------------|--------------------|--------------------------------------------------|-------------------------------------|
+| Apache Commons Imaging | 1.0.0-alpha6 | Apache License 2.0 | https://github.com/apache/commons-imaging        | Previously Sanselan                 |
+| Ikonli                 | 12.4.0       | Apache License 2.0 | https://github.com/kordamp/ikonli                | —                                   |
+| Metadata-extractor     | 2.14.0       | Apache License 2.0 | https://github.com/drewnoakes/metadata-extractor | —                                   |
+| OpenJFX                | 24.0.2       | GPLv2              | https://github.com/openjdk/jfx                   | —                                   |
+| OSHI                   | 6.8.2        | MIT License        | https://github.com/oshi/oshi                     | —                                   |
+| JavaCV                 | 1.5.10       | Apache License 2.0 | https://github.com/bytedeco/javacv               | Version not specified               |
+| VLCJ                   | 4.5.2        | GPLv3              | https://github.com/caprica/vlcj                  | —                                   |
+| TwelveMonkeys ImageIO  | 3.5          | BSD 3-Clause       | https://github.com/haraldk/TwelveMonkeys         | Modules: imageio-jpeg, imageio-tiff |
 
 </br>
 </br>
