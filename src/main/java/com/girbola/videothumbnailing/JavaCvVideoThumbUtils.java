@@ -48,6 +48,11 @@ public class JavaCvVideoThumbUtils {
         return getList(path.toFile());
     }
 
+    private static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(value, max));
+    }
+
+
     public static List<BufferedImage> getList(File file) throws IOException {
 
         List<BufferedImage> listOfVideoThumbnails = new ArrayList<>();
@@ -63,7 +68,7 @@ public class JavaCvVideoThumbUtils {
             int step = Math.max(1, totalFrames / THUMBNAIL_COUNT);
 
             for (int i = 0; i < THUMBNAIL_COUNT; i++) {
-                int frameIndex = Math.min(i * step, Math.max(0, totalFrames - 1));
+                int frameIndex = clamp(i * step, 0, totalFrames - 1);
 
                 grabber.setFrameNumber(frameIndex);
 

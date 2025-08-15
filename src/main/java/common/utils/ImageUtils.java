@@ -37,19 +37,19 @@ public class ImageUtils {
         if (height <= 0) {
             return null;
         }
+
         BufferedImage converted = convertToBufferedImage(frame);
         if (frame.imageHeight > height) {
-            return Thumbnails.of(converted).height(UIContants.IMAGE_FRAME_HEIGHT).keepAspectRatio(true).asBufferedImage();
+            return Thumbnails.of(converted).height((int) UIContants.THUMBNAIL_MAX_HEIGHT).keepAspectRatio(true).asBufferedImage();
+        } else {
+            return Thumbnails.of(converted).height(height).keepAspectRatio(true).asBufferedImage();
         }
-        return null;
     }
-
 
     private static BufferedImage convertToBufferedImage(Frame frame) {
         Java2DFrameConverter converter = new Java2DFrameConverter();
         return converter.convert(frame);
     }
-
 
     public static String calculateRAWImagePHash(Path imagePath) {
         try {
