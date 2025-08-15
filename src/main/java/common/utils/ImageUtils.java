@@ -40,9 +40,9 @@ public class ImageUtils {
 
         BufferedImage converted = convertToBufferedImage(frame);
         if (frame.imageHeight > height) {
-            return Thumbnails.of(converted).height((int) UIContants.THUMBNAIL_MAX_HEIGHT).keepAspectRatio(true).asBufferedImage();
-        } else {
             return Thumbnails.of(converted).height(height).keepAspectRatio(true).asBufferedImage();
+        } else {
+            return Thumbnails.of(converted).height(frame.imageHeight).keepAspectRatio(true).asBufferedImage();
         }
     }
 
