@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="500.0" maxWidth="600.0" minHeight="150.0" minWidth="350.0" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.move.MoveController">
+   <children>
+      <VBox layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <GridPane>
+               <columnConstraints>
+                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="ALWAYS" minWidth="-Infinity" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <children>
+                  <Label fx:id="folderName_lbl" text="%folderName" />
+                  <ComboBox fx:id="folderName_cmb" editable="true" maxWidth="600" promptText="%folderName" GridPane.columnIndex="1" />
+                  <Label fx:id="location_lbl" text="%location" GridPane.rowIndex="1" />
+                  <ComboBox fx:id="location_cmb" editable="true" maxWidth="600" promptText="Location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Label fx:id="event_lbl" text="%event" GridPane.rowIndex="2" />
+                  <ComboBox fx:id="event_cmb" editable="true" maxWidth="600" promptText="Event" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <Label fx:id="event_lbl1" layoutX="10.0" layoutY="47.0" text="%user" GridPane.rowIndex="3" />
+                  <ComboBox fx:id="user_cmb" editable="true" layoutX="110.0" layoutY="43.0" maxWidth="600" promptText="User" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+               </children>
+            </GridPane>
+            <HBox alignment="CENTER_RIGHT" spacing="5.0" VBox.vgrow="NEVER">
+               <children>
+                  <CheckBox fx:id="addEverythingInsameDir_chb" mnemonicParsing="false" text="Add everything under the same directory">
+                     <HBox.margin>
+                        <Insets left="15.0" />
+                     </HBox.margin>
+                  </CheckBox>
+               </children>
+            </HBox>
+            <HBox alignment="BOTTOM_RIGHT" spacing="5.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button fx:id="apply_btn" mnemonicParsing="false" onAction="#apply_btn_action" text="%apply" HBox.hgrow="NEVER" />
+                  <Button fx:id="apply_and_copy_btn" mnemonicParsing="false" onAction="#apply_and_copy_btn_action" text="%applyAndMove" />
+                  <Button fx:id="cancel_btn" cancelButton="true" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -1,0 +1,170 @@
+/*
+Main /theme/light/main.css
+*/
+
+.root {
+       -fx-primary: #FFFFFF;
+    -fx-background-color: derive(-fx-primary, 90%);
+    -fx-dark-border-color: derive(-fx-primary, 70%);
+    -fx-mid-border-color: derive(-fx-primary, 50%);
+    -fx-light-border-color: derive(-fx-primary, 10%);
+
+    /* One of these colors will be chosen based upon a ladder calculation
+ * that uses the brightness of a background color.  Instead of using these
+ * colors directly as -fx-text-fill values, the sections in this file should
+ * use a derived color to match the background in use.  See also:
+ *
+ * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+ * -fx-text-background-color for text on top of -fx-background
+ * -fx-text-inner-color for text on top of -fx-control-inner-color
+ * -fx-selection-bar-text for text on top of -fx-selection-bar
+ */
+    -fx-dark-text-color: black;
+    -fx-mid-text-color: #aaaaaa;
+    -fx-light-text-color: white;
+
+}
+
+.button {
+    -fx-background-color: 
+        -fx-primary,
+        transparent,
+        transparent,
+        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
+    /*-fx-background-insets: 1;*/
+    /*-fx-background-radius: 1;*/
+    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    /*-fx-insets: 0;*/
+    /*-fx-padding: 3;*/
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, white, -fx-primary);
+}
+.main_rootPane {
+    -fx-background-color: -fx-primary;
+    -fx-border-color: -fx-dark-border-color;
+    -fx-background-insets: 0;
+}
+
+.table_vbox {
+    -fx-border-color: derive(-fx-primary, 15%);
+    /*-fx-border-width: 0.125em;*/
+    -fx-padding: 3;
+    -fx-background-color: -fx-primary;
+}
+.menu:hover {
+    -fx-text-fill: cyan;
+}
+.menu-bar {
+    -fx-background-insets: 0, 0, 3, 0;
+    -fx-background-color: -fx-primary;
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;;
+    /*-fx-font-smoothing-type: lcd;*/
+}
+.menu-bar .label {
+    -fx-text-fill: -fx-light-text-color;
+    -fx-font-smoothing-type: lcd;
+}
+.menu-item {
+    -fx-background-color: -fx-primary;
+}
+.menu-item .label {
+    /*-fx-background-color: grey;*/
+    -fx-text-fill: -fx-light-text-color;
+    -fx-font-smoothing-type: lcd;
+}
+.menu-item:hover .label {
+    /*-fx-background-color: grey;*/
+    /*-fx-text-fill: yellow;*/
+    /*-fx-font-weight: bold;*/
+    /*-fx-font: 11pt "Gaduci";*/
+    -fx-font-smoothing-type: lcd;
+}
+.menu-item:hover {
+    -fx-background-color: derive(blue, 50%);
+    /*-fx-border-color: yellow;*/
+    /*-fx-font-style: bold;*/
+    /*-fx-text-fill: yellow;*/
+    -fx-opacity: 0.5;
+    -fx-font-smoothing-type: lcd;
+}
+
+.table-view {
+    -fx-background-color: #1d1d1d;
+    -fx-background-padding: 2;
+    -fx-base: #1d1d1d;
+    -fx-control-inner-background: #1d1d1d;
+    -fx-padding: 5;
+    -fx-border-color:  -fx-dark-border-color;
+    /*    -fx-table-header-border-color: cyan;*/
+    /*-fx-border-color: red;*/
+    /*-fx-border-width: 0.125em;*/
+}
+.table-view .column-header.table_media .label {
+    -fx-background-color: linear-gradient(to bottom, red, orange);
+    -fx-text-fill: -fx-primary;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+}
+.table-view .column-header-background {
+    -fx-background-color: transparent;
+}
+.table-view .column-header .label {
+    -fx-font-size: 8pt;
+    -fx-font-family: "Gaduci";
+    -fx-text-fill: -fx-light-text-color;
+    -fx-alignment: center-left;
+    -fx-opacity: 1;
+}
+.table-view .column-header, .table-view .filler {
+    -fx-size: 15;
+    -fx-border-width: 0 0 1 0;
+    /*-fx-background-color: transparent;*/
+    -fx-border-color: 
+        transparent,
+        transparent,
+        -fx-light-border-color,
+        transparent;
+}
+
+.table-view:focused {
+    -fx-border-color:  -fx-light-border-color;
+    -fx-border-width: 0.125em;
+
+}
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: -fx-focus-color;
+}
+
+.table-view .scroll-bar:horizontal, .scroll-bar:vertical {
+    -fx-background-color: derive(#444444, 20%);
+    -fx-background-radius: 5;
+}
+.table-view .scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
+    -fx-background-color: derive(darkgray, 20%);
+    -fx-background-radius: 0.2em;
+}
+.text-field {
+    -fx-background-color: derive(whitesmoke, 30%);
+    -fx-background-radius: 2;
+    -fx-border-color:  -fx-dark-border-color;
+    -fx-border-radius: 2;
+    -fx-text-fill:  -fx-dark-border-color;
+}
+.textfield-info {
+    -fx-background-color: -fx-primary;
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 8pt;
+    -fx-text-fill: white;
+}
+.topButtons {
+    -fx-background-color: -fx-primary;
+}
+.view_btn {
+    -fx-background-color: orange;
+}

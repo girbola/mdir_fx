@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.*?>
+<AnchorPane minHeight="100.0" minWidth="200.0" prefHeight="100.0" prefWidth="200.0" styleClass="loadingPane" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
+   <children>
+      <VBox layoutX="2.0" layoutY="2.0" styleClass="shadowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+               <children>
+                  <Label graphicTextGap="0.0" text="%status" HBox.hgrow="NEVER">
+                     <HBox.margin>
+                        <Insets left="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Label>
+                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </HBox>
+            <HBox alignment="CENTER_LEFT" mouseTransparent="true" VBox.vgrow="ALWAYS">
+               <children>
+                  <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="0.35" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER">
+                     <padding>
+                        <Insets left="3.0" right="3.0" />
+                     </padding>
+                  </ProgressBar>
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+               <children>
+                  <Button fx:id="cancel_btn" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER" />
+               </children>
+               <VBox.margin>
+                  <Insets bottom="5.0" right="5.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets top="5.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

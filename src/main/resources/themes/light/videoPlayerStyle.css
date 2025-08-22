@@ -1,0 +1,56 @@
+
+/* 
+    Created on : 6.8.2016, 19:07:08
+
+*/
+
+.borderPane {
+    -fx-background-color: blue;
+}
+.button{
+    -fx-background-color: 
+        grey,
+        transparent,
+        transparent,
+        linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
+    -fx-background-insets: 1, 2, 1 ,2;
+    -fx-background-radius: 5,5,5,5,3;
+    -fx-padding: 5 5 5 5;
+    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 0.625em;
+    -fx-text-fill: white;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+}
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, darkgray, lightgray);
+}
+
+.playerHolder {
+    -fx-background-color: black;
+}
+.buttons  {
+    -fx-background-color: black;
+}
+
+.progress-bar .bar{
+    -fx-background-color: red;
+    -fx-padding: 2; 
+    -fx-background-insets: 0; 
+}
+.slider .fill {
+    -fx-background-color: red;
+    -fx-padding: 2; 
+}
+.slider {
+    -fx-background-color: transparent;
+    -fx-padding: 2;
+}
+.slider .track {
+    -fx-background-color: null;
+    /*-fx-padding: 2;*/
+    -fx-background-insets: 0; 
+}
+.slider .thumb {
+    -fx-background-color: linear-gradient(to bottom, orange, grey);
+    /*-fx-background-radius: 0.2em;*/
+}

@@ -1,0 +1,31 @@
+.root {
+	-fx-primary: #393639;
+}
+.bottom_controls {
+    -fx-background-color: derive(black, 50%);
+    -fx-border-color: white;
+}
+
+.placeHolder {
+    -fx-background-color: black;
+    -fx-border-color: white;
+}
+
+.root {
+    -fx-background-color: derive(orange, 30%);
+}
+
+.button {
+    -fx-background-color: derive(orange, 50%);
+    -fx-background-radius: 4;
+
+}
+
+.exit_button {
+    -fx-background-radius: 0;
+}
+
+.top_controls {
+    -fx-background-color: derive(black, 50%);
+    -fx-border-color: white;
+}

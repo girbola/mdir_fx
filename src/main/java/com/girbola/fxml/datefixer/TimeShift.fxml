@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.TimeShiftController">
+   <children>
+      <GridPane alignment="CENTER_LEFT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <columnConstraints>
+          <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+          <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+            <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
+            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
+          <RowConstraints valignment="CENTER" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="timeShift_hour" maxWidth="55.0" minWidth="45.0" onAction="#timeShift_hour_action" prefWidth="45.0" promptText="%hour" HBox.hgrow="NEVER" />
+                  <VBox alignment="TOP_CENTER" fillWidth="false" spacing="1.0" HBox.hgrow="NEVER">
+                     <children>
+                        <Button fx:id="timeShift_hour_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_hour_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="timeShift_hour_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_hour_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="1.0" top="1.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="timeShift_min" maxWidth="55.0" minWidth="45.0" onAction="#timeShift_min_action" prefWidth="45.0" promptText="%min" HBox.hgrow="NEVER" />
+                  <VBox fillWidth="false" spacing="1.0" HBox.hgrow="NEVER">
+                     <children>
+                        <Button fx:id="timeShift_min_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_min_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="timeShift_min_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_min_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="1.0" top="1.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER" fillHeight="false" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="1" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+               <children>
+                  <TextField fx:id="timeShift_sec" maxWidth="55.0" minWidth="45.0" onAction="#timeShift_sec_action" prefWidth="45.0" promptText="%sec" HBox.hgrow="NEVER" />
+                  <VBox fillWidth="false" spacing="1.0" HBox.hgrow="NEVER">
+                     <children>
+                        <Button fx:id="timeShift_sec_btn_up" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_sec_btn_up_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_up.png" />
+                                 </image>
+                                 <viewport>
+                                    <Rectangle2D />
+                                 </viewport>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="timeShift_sec_btn_down" maxHeight="12.0" maxWidth="12.0" minHeight="12.0" minWidth="12.0" mnemonicParsing="false" onAction="#timeShift_sec_btn_down_action" prefHeight="12.0" prefWidth="12.0" VBox.vgrow="NEVER">
+                           <graphic>
+                              <ImageView fitHeight="12.0" fitWidth="12.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../../../../resources/img/arrow_down.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="1.0" top="1.0" />
+                     </padding>
+                  </VBox>
+               </children>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+            <Label focusTraversable="false" text="%hour" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Label focusTraversable="false" text="%minute" GridPane.columnIndex="2" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <Label focusTraversable="false" text="%second" GridPane.columnIndex="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+            <VBox spacing="1.0" GridPane.rowIndex="1" GridPane.rowSpan="2">
+               <children>
+                  <RadioButton mnemonicParsing="false" selected="true" text="+" GridPane.columnIndex="2" GridPane.rowIndex="1" VBox.vgrow="NEVER">
+                     <toggleGroup>
+                        <ToggleGroup fx:id="plusMinus" />
+                     </toggleGroup>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding></RadioButton>
+                  <RadioButton mnemonicParsing="false" text="-" toggleGroup="$plusMinus">
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding></RadioButton>
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
+      </GridPane>
+   </children>
+</AnchorPane>

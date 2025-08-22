@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="com.girbola.fxml.possiblefolderchooser.PossibleFolderChooserController">
+   <children>
+      <VBox spacing="5.0">
+         <children>
+            <ListView fx:id="possibleFoldersList" prefHeight="200.0" prefWidth="200.0" styleClass="possibleFoldersList" />
+            <HBox>
+               <children>
+                  <Button fx:id="ok_btn" mnemonicParsing="false" onAction="#ok_btn_action" text="%ok" />
+                  <Button fx:id="cancel_btn" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" />
+               </children>
+               <padding>
+                  <Insets bottom="1.0" left="2.0" top="1.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="3.0" left="1.0" right="1.0" top="3.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

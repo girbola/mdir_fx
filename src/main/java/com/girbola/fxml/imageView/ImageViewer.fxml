@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="anchor_main" minHeight="200.0" minWidth="200.0" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.imageViewer.ImageViewerController">
+   <children>
+      <StackPane fx:id="stackPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <AnchorPane fx:id="image_anchor" styleClass="placeHolder" StackPane.alignment="CENTER">
+               <children>
+                  <StackPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                     <children>
+                        <ImageView fx:id="imageView" pickOnBounds="true" preserveRatio="true" />
+                     </children>
+                  </StackPane>
+               </children>
+            </AnchorPane>
+            <HBox fx:id="bottom_controls" alignment="CENTER" fillHeight="false" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" spacing="2.0" styleClass="bottom_controls" StackPane.alignment="BOTTOM_CENTER">
+               <children>
+                  <Button fx:id="view_prev" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#view_prev_action" prefHeight="25.0" prefWidth="25.0" text="&lt;" HBox.hgrow="NEVER">
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="zoom_out" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#zoom_out_action" prefHeight="25.0" prefWidth="25.0" text="-" HBox.hgrow="NEVER">
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="zoom_in" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#zoom_in_action" prefHeight="25.0" prefWidth="25.0" text="+" HBox.hgrow="NEVER">
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Button>
+                  <Button fx:id="view_next" maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" onAction="#view_next_action" prefHeight="25.0" prefWidth="25.0" text="&gt;" HBox.hgrow="NEVER">
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Button>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+               </padding>
+            </HBox>
+            <HBox fx:id="top_bar" alignment="TOP_RIGHT" fillHeight="false" maxHeight="25.0" minHeight="-Infinity" spacing="3.0" styleClass="top_controls" StackPane.alignment="TOP_RIGHT">
+               <children>
+                  <Label text="%pressEscToExit" textFill="WHITE" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Label>
+                  <Button fx:id="close" mnemonicParsing="false" onAction="#close_button" HBox.hgrow="ALWAYS">
+                     <graphic>
+                        <ImageView fitHeight="15.0" fitWidth="15.0" pickOnBounds="true" preserveRatio="true" styleClass="exit_button">
+                           <image>
+                              <Image url="@../../../../../resources/img/quit.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </StackPane>
+   </children>
+</AnchorPane>

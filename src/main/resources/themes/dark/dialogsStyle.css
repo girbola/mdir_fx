@@ -1,0 +1,101 @@
+.root {
+	-fx-primary: #6a6a6a;
+    -fx-background-color: derive(-fx-primary, 90%);
+    -fx-dark-border-color: derive(-fx-primary, 70%);
+    -fx-mid-border-color: derive(-fx-primary, 50%);
+    -fx-light-border-color: derive(-fx-primary, 10%);
+
+    /* One of these colors will be chosen based upon a ladder calculation
+ * that uses the brightness of a background color.  Instead of using these
+ * colors directly as -fx-text-fill values, the sections in this file should
+ * use a derived color to match the background in use.  See also:
+ *
+ * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
+ * -fx-text-background-color for text on top of -fx-background
+ * -fx-text-inner-color for text on top of -fx-control-inner-color
+ * -fx-selection-bar-text for text on top of -fx-selection-bar
+ */
+    -fx-dark-text-color: black;
+    -fx-mid-text-color: white;
+    -fx-light-text-color: white;
+}
+.text {
+	-fx-font-smoothing-type: lcd;
+    -fx-font-size: 1.3em;
+    -fx-font-family: "Segoe UI Light";
+    -fx-text-fill: white;
+
+}
+
+.button{
+	-fx-background-color: derive(black, 95%), white, darkgrey, derive(black, 60%);
+	-fx-background-insets: 1, 2, 1 ,2;
+    -fx-background-radius: 5,5,5,5,3;
+    -fx-padding: 5 5 5 5;
+    -fx-effect: dropshadow( three-pass-box , rgba(100,100,100,0.9) , 1, 0.0 , 0 , 1);
+
+}
+.button .text {
+    -fx-font-size: 1.1em;
+}
+.button:hover {
+    -fx-background-color: derive(-fx-primary, 10%);
+}
+
+.dialog-pane {
+	/*-fx-background-color: derive(-fx-primary,90%);*/
+    -fx-background-color: black;
+	-fx-border-color: -fx-mid-border-color;
+	-fx-border-size: 0.125em;
+}
+
+.dialog-pane > *.button-bar > *.container{
+    -fx-background-color: derive(-fx-primary, 80%);
+}
+
+.dialog-pane > .label .content{
+    -fx-font-size: 0.8em;
+    -fx-font-weight: bold;
+	-fx-text-fill: -fx-light-text-color;
+}
+
+.dialog-pane:header .header-panel{
+	-fx-border-color: black;
+	-fx-background-color: derive(-fx-primary, 60%);
+}
+
+.dialog-pane:header .header-panel .label{
+    -fx-font-size: 1.125em;
+    -fx-text-fill: -fx-light-text-color;
+}
+
+/*Edit The control itself*/
+.combo-box{
+    -fx-background-color:purple;
+}
+
+/*Edit Normal Cell color */
+.combo-box .list-cell{
+    -fx-background-color: #d1a6a6;
+    -fx-text-fill: black;
+}
+
+/*Edit Cell Color Only when cursor hover cell */
+.combo-box .list-cell:hover{
+    -fx-background-color:green;
+}
+
+/*Edit Cell Color Only when selected */
+.combo-box .list-cell:selected{
+    -fx-background-color:blue;
+}
+
+.combo-box .combo-box-popup .list-view, .combo-box .combo-box-popup .list-cell {
+    -fx-background-color: black ;
+    -fx-text-fill: white ;
+    -fx-font-family: "Calibri" ;
+}
+.combo-box .combo-box-popup .list-cell:hover {
+    -fx-text-fill: yellow ;
+    -fx-background-color: green ;
+}

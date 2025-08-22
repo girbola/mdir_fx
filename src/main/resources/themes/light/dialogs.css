@@ -1,0 +1,72 @@
+/*
+    Theme:  themes/dark/dialogs.css
+*/
+.loadingPane {
+    /*-fx-background-color: gold;*/
+    -fx-background-color:orange;
+    -fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
+    -fx-border-width:  0.0625em;;  
+    -fx-padding: 2;
+}
+.loadingPane_hbox{
+    -fx-background-color: red;
+    -fx-padding: 2;
+}
+
+.borderPane {
+    -fx-background-color: transparent
+}
+
+.button{
+    -fx-background-color: 
+        grey,
+        transparent,
+        transparent,
+        linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
+    -fx-background-insets: 1, 2, 1 ,2;
+    -fx-background-radius: 5,5,5,5,3;
+    -fx-padding: 5 5 5 5;
+    -fx-font-family: "Segoe UI Light";
+    -fx-font-size: 0.625em;
+    -fx-text-fill: white;
+    /*-fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);*/
+
+}
+
+.cancelLoading {
+    -fx-background-color: yellow;
+    -fx-opacity: 1;
+    -fx-padding: 2;
+}
+
+.dialog-pane {
+    -fx-background-color: #555555;
+}
+.dialog-pane .label {
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+  
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: black;
+}
+.dialog-pane:header .header-panel .label {
+    -fx-font-style: italic;
+    -fx-font-size: 2em;
+}
+
+.progress-bar .bar {
+    -fx-background-color: derive(red, 50%);
+
+}
+.progress-bar .track {
+    -fx-background-color: derive(black, 50%);
+}
+
+.shadowPane {
+    -fx-background-color: darkgrey;
+    -fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);
+    -fx-background-insets: 5
+}
+

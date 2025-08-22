@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane minHeight="200.0" minWidth="400.0" styleClass="yesNoCancelDialog" stylesheets="@../../../../resources/themes/dark/dialogs.css" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.dialogs.YesNoCancelDialogController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="400.0" styleClass="yesNoCancelDialog" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox layoutX="10.0" layoutY="10.0" maxHeight="50.0" minHeight="50.0" VBox.vgrow="NEVER">
+               <children>
+                  <TextArea fx:id="header_ta" editable="false" prefHeight="200.0" prefWidth="200.0" styleClass="header" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+               <padding>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </padding>
+            </HBox>
+            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+               <children>
+                  <TextArea fx:id="content_ta" editable="false" prefHeight="200.0" prefWidth="200.0" styleClass="content" wrapText="true" HBox.hgrow="ALWAYS" />
+               </children>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" layoutX="10.0" layoutY="10.0" styleClass="buttonBar" VBox.vgrow="NEVER">
+               <children>
+                  <HBox alignment="CENTER_LEFT" fillHeight="false" HBox.hgrow="ALWAYS">
+                     <children>
+                        <CheckBox fx:id="checkBox" graphicTextGap="0.0" mnemonicParsing="false" text="%rememberMySelection" />
+                     </children>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </HBox>
+                  <Button fx:id="yes_btn" minWidth="50.0" mnemonicParsing="false" onAction="#yes_btn_action" text="%yes" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="no_btn" layoutX="10.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" onAction="#no_btn_action" text="%no" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button fx:id="abort_btn" layoutX="60.0" layoutY="10.0" minWidth="50.0" mnemonicParsing="false" onAction="#abort_btn_action" text="%cancel" HBox.hgrow="ALWAYS">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+               </VBox.margin>
+               <padding>
+                  <Insets left="2.0" right="2.0" />
+               </padding>
+            </HBox>
+         </children>
+         <padding>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

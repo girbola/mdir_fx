@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+
+<MenuBar fx:id="menuBar" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MenuBarController">
+   <menus>
+      <Menu mnemonicParsing="false" text="%file">
+         <items>
+            <MenuItem fx:id="menuItem_file_clear" mnemonicParsing="false" onAction="#menuItem_file_clear_action" text="%clear" />
+            <MenuItem fx:id="menuItem_file_import" mnemonicParsing="false" onAction="#menuItem_file_import_action" text="%import" />
+            <MenuItem fx:id="menuItem_file_load" mnemonicParsing="false" onAction="#menuItem_file_load_action" text="%load" />
+            <MenuItem fx:id="menuItem_file_save" mnemonicParsing="false" onAction="#menuItem_file_save_action" text="%save" />
+            <MenuItem fx:id="menuItem_file_addFolders" mnemonicParsing="false" onAction="#menuItem_file_addFolders_action" text="%addFolders" />
+            <MenuItem fx:id="menuItem_file_close" mnemonicParsing="false" onAction="#menuItem_file_close_action" text="%close" />
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="%show">
+         <items>
+            <CheckMenuItem fx:id="menuItem_tools_showFullPath" mnemonicParsing="false" text="%fullPath" />
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="%tools">
+         <items>
+            <MenuItem fx:id="menuItem_tools_options" mnemonicParsing="false" onAction="#menuItem_tools_options_action" text="%options" />
+            <Menu mnemonicParsing="false" text="%themes">
+              <items>
+                <CheckMenuItem fx:id="menuItem_tools_themes_dark" mnemonicParsing="false" onAction="#menuItem_tools_themes_dark_action" text="%dark" />
+                  <CheckMenuItem fx:id="menuItem_tools_themes_light" mnemonicParsing="false" onAction="#menuItem_tools_themes_light_action" text="%light" />
+              </items>
+            </Menu>
+            <MenuItem fx:id="menuItem_tools_options_viewIgnoredList" mnemonicParsing="false" onAction="#menuItem_tools_options_viewIgnoredList_action" text="View Ignoredlist" />
+            <Menu mnemonicParsing="false" text="%debug">
+               <items>
+                  <CheckMenuItem fx:id="menuItem_tools_findImageDuplicates" mnemonicParsing="false" onAction="#menuItem_tools_findImageDuplicatesAction" text="Find Duplicates" />
+                  <CheckMenuItem mnemonicParsing="false" text="Unspecified Action" />
+               </items>
+            </Menu>
+         </items>
+      </Menu>
+      <Menu mnemonicParsing="false" text="%help">
+         <items>
+            <MenuItem fx:id="menuItem_help_help" mnemonicParsing="false" onAction="#menuItem_help_help_action" text="%help" />
+            <MenuItem fx:id="menuItem_help_supportUs" mnemonicParsing="false" onAction="#menuItem_help_supportUs_action" text="%supportUs" />
+            <MenuItem fx:id="menuItem_help_update" mnemonicParsing="false" onAction="#menuItem_help_update_action" text="%update" />
+            <MenuItem fx:id="menuItem_help_about" mnemonicParsing="false" onAction="#menuItem_help_about_action" text="%about" />
+         </items>
+      </Menu>
+   </menus>
+   <padding>
+      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+   </padding>
+</MenuBar>

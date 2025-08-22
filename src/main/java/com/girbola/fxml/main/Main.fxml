@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <HBox prefHeight="100.0" prefWidth="200.0" spacing="2.0" VBox.vgrow="ALWAYS"> -->
+<!-- <children> -->
+<!-- <fx:include fx:id="sortit" source="SortIt_Table.fxml" /> -->
+<!-- <fx:include fx:id="sorted" source="Sorted_Table.fxml" /> -->
+<!-- <fx:include fx:id="asitis" source="AsItIs_Table.fxml" /> -->
+<!-- </children> -->
+<!-- </HBox> -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane fx:id="main_container" maxHeight="800.0" maxWidth="1800.0" prefHeight="800.0" styleClass="main" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
+    <children>
+        <VBox fx:id="main_vbox" styleClass="main_vbox" spacing="5.0" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+            <children>
+                <fx:include fx:id="menuBar_top" source="MenuBar.fxml" VBox.vgrow="NEVER" />
+            <AnchorPane VBox.vgrow="ALWAYS">
+               <children>
+                      <TabPane fx:id="tablesTabPane" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                          <tabs>
+                              <Tab fx:id="tabFolders" closable="false" text="%folders">
+                                  <content>
+                                      <AnchorPane fx:id="tables_rootPane">
+                                          <children>
+                                    <VBox AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" VBox.vgrow="ALWAYS">
+                                       <children>
+                                                    <HBox fx:id="tables_hbox" styleClass="table_parent" VBox.vgrow="ALWAYS">
+                                                        <children>
+                                                            <AnchorPane fx:id="sortit_table_parent">
+                                                                <children>
+                                                                    <fx:include fx:id="sortit" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                                                </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane fx:id="sorted_table_parent">
+                                                                <children>
+                                                                    <fx:include fx:id="sorted" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                                                </children>
+                                                            </AnchorPane>
+                                                            <AnchorPane fx:id="asitis_table_parent">
+                                                                <children>
+                                                                    <fx:include fx:id="asitis" source="Table.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />
+                                                                </children>
+                                                            </AnchorPane>
+                                                        </children>
+                                             <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </padding>
+                                             <VBox.margin>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                             </VBox.margin>
+                                                    </HBox>
+                                       </children>
+                                    </VBox>
+                                          </children>
+                                      </AnchorPane>
+                                  </content>
+                              </Tab>
+                              <Tab closable="false" text="%batch">
+                                  <content>
+                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                  </content>
+                              </Tab>
+                          </tabs>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                      </TabPane>
+               </children>
+            </AnchorPane>
+
+
+                <fx:include fx:id="bottom" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" source="Bottom.fxml" VBox.vgrow="NEVER" />
+            </children>
+        </VBox>
+    </children>
+   <padding>
+      <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+   </padding>
+</AnchorPane>

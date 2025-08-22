@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="400.0" maxWidth="640.0" minHeight="400.0" minWidth="640.0" prefHeight="400.0" prefWidth="640.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/19" fx:controller="com.girbola.fxml.funnel.controller.FunnelController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <TreeTableView>
+              <columns>
+                  <TreeTableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" />
+                <TreeTableColumn maxWidth="50.0" minWidth="50.0" prefWidth="50.0" text="%year" />
+                <TreeTableColumn maxWidth="150.0" minWidth="150.0" prefWidth="150.0" text="%date" />
+                  <TreeTableColumn prefWidth="75.0" text="%event" />
+              </columns>
+               <columnResizePolicy>
+                  <TreeTableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <padding>
+                  <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
+               </padding>
+            </TreeTableView>
+            <HBox>
+               <children>
+                  <Button mnemonicParsing="false" text="%start" />
+               </children>
+               <padding>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

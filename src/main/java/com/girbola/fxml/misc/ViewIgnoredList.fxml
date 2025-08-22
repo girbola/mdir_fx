@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.misc.ViewIgnoredListController">
+   <children>
+      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <ScrollPane fitToHeight="true" fitToWidth="true" prefViewportHeight="400.0" prefViewportWidth="541.0">
+               <content>
+                  <ListView fx:id="ignoredList_lv" BorderPane.alignment="CENTER" />
+               </content>
+            </ScrollPane>
+         </center>
+         <right>
+            <VBox spacing="2.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="apply_btn" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#apply_btn_action" prefWidth="100.0" text="%apply" VBox.vgrow="NEVER" />
+                  <Button fx:id="remove_btn" contentDisplay="GRAPHIC_ONLY" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#remove_btn_action" prefWidth="100.0" VBox.vgrow="NEVER">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../resources/img/remove.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+                  <Button fx:id="cancel_btn" maxWidth="100.0" minWidth="100.0" mnemonicParsing="false" onAction="#cancel_btn_action" prefWidth="100.0">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../resources/img/close.png" />
+                           </image>
+                        </ImageView>
+                     </graphic></Button>
+               </children>
+               <padding>
+                  <Insets bottom="3.0" left="3.0" right="3.0" top="5.0" />
+               </padding>
+            </VBox>
+         </right>
+      </BorderPane>
+   </children>
+</AnchorPane>

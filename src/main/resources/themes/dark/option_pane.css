@@ -1,0 +1,119 @@
+.root {
+	-fx-base: #393939;
+}
+.label {
+	-fx-text-fill: white;
+}
+.workDir_label {
+    -fx-background-color: transparent;
+    -fx-text-fill: red; 
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    -fx-alignment: center;
+    -fx-padding: 3;
+}
+.button {
+    -fx-background-color: derive(-fx-base, 60%);
+    /*-fx-background-insets: 3;*/
+    -fx-background-radius: 3;
+    -fx-background-padding: 3;
+    -fx-border-color: derive(-fx-base, 90%);
+    -fx-border-radius: 3;
+    /*-fx-border-insets: 3;*/
+    /*-fx-border-radius: 3;*/
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    /*-fx-insets: 5px;*/
+    -fx-padding: 5px;
+    -fx-text-fill: white;  
+}
+.optionPane {
+    -fx-background-color: red;
+    /*-fx-background-color: #393939;*/
+}
+.bottomButtons {
+     -fx-background-color: #393939;
+     -fx-border-color: derive(#363639, 40%);
+}
+.option_Tab_general_checkBoxes_vbox {
+    -fx-background-color: #393939;
+    -fx-text-fill: white;
+    -fx-border-color: black;
+    -fx-background-padding: 3;
+}
+.check-box {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+.check-box *.box{
+    -fx-background-padding: 4;
+    -fx-border-color: darkgrey;
+    -fx-background-color: grey;
+    -fx-text-fill: white;
+    /*    -fx-effect: innershadow(three-pass-box, #424242 ,2,0,0,0); 
+        -fx-border-color: #949494;*/
+}
+.tab-pane {
+    /*-fx-backgound-color: transparent;*/
+    -fx-tab-min-width: 90px;
+    -fx-tab-min-height: 20px;
+    -fx-tab-max-height: 20px;
+    /*-fx-border-color: transparent transparent transparent derive(-fx-base, 20%);*/
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 1;
+    -fx-background-color: transparent;
+    /*-fx-backgound-color: yellow;*/
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+.tab-pane .tab:selected {
+    -fx-alignment: center;
+    -fx-background-color: grey, transparent, derive(orange, 60%);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    -fx-font-weight: bold;
+    -fx-insets: 4;
+    -fx-text-fill: derive(grey, 60%);
+    -fx-padding: 2 1 4 5;
+}
+
+.tab:selected .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+}
+
+.tab-content-area {
+    -fx-background-color: grey;
+    -fx-padding: 2 2 2 2;
+}
+.tab .tab-label {
+    -fx-alignment: center;
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    -fx-font-weight: none;
+    -fx-insets: 5;
+    -fx-text-fill: black;
+}
+.text-field {
+    -fx-background-color: derive(-fx-base, 50%);
+    -fx-background-padding: 1;
+    /*-fx-background-insets: 3;*/
+    -fx-border-color: derive(-fx-base, 70%);
+    -fx-border-color: white;
+    
+    -fx-text-fill: black;
+    /*-fx-padding: 3;*/
+
+}
+.bottomBar_hbox {
+    -fx-border-color: derive(cyan, 40%);
+    -fx-background-color: transparent;
+    /*-fx-insets: 2;*/
+    -fx-background-insets: 3;
+    /*-fx-padding: 2;*/
+
+}

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="620.0" prefHeight="600.0" prefWidth="620.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.closerlook.CloserLookController">
+   <children>
+      <VBox prefHeight="600.0" prefWidth="620.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ToolBar>
+              <items>
+                <Button fx:id="viewByDate" mnemonicParsing="false" onAction="#viewByDate_action" prefWidth="100.0" text="Date" />
+                  <Button fx:id="viewByHour" mnemonicParsing="false" onAction="#viewByHour_action" prefWidth="100.0" text="Hour" />
+                  <Button fx:id="viewByMinute" mnemonicParsing="false" onAction="#viewByMinute_action" prefWidth="100.0" text="Min" />
+              </items>
+            </ToolBar>
+            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+               <content>
+                  <VBox fx:id="images_root" />
+               </content>
+            </ScrollPane>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

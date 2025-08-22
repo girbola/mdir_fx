@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="481.0" prefWidth="932.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.fxml.conflicttableview.ConflictTableViewController">
+	<children>
+		<VBox AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+			<children>
+				<TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+					<columns>
+						<TableColumn fx:id="canCopy" prefWidth="63.0" text="O" />
+						<TableColumn fx:id="workDir" prefWidth="63.0" text="%status" />
+						<TableColumn fx:id="folderName" prefWidth="380.0" text="%folderName" />
+						<TableColumn fx:id="destination" prefWidth="944.0" text="%destination" />
+					</columns>
+				</TableView>
+				<HBox fillHeight="false" spacing="3.0" VBox.vgrow="NEVER">
+					<children>
+						<Button fx:id="fixConflicts_btn" mnemonicParsing="false" onAction="#fixConflicts_btn_action" text="Fix conflicts" />
+						<Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#apply_btn_action" text="Apply" />
+                  <Button layoutX="121.0" layoutY="10.0" mnemonicParsing="false" onAction="#copy_btn_action" text="Copy" />
+            						<Button mnemonicParsing="false" onAction="#close_btn_action" text="Close" />
+					</children>
+					<VBox.margin>
+						<Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+					</VBox.margin>
+				</HBox>
+			</children>
+		</VBox>
+	</children>
+</AnchorPane>

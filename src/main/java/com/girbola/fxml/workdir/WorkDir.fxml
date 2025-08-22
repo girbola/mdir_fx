@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.workdir.WorkDirController">
+   <children>
+      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <center>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" VBox.vgrow="ALWAYS">
+                     <content>
+                        <FlowPane />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </center>
+         <top>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="Filter" />
+                  <GridPane>
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="NEVER" />
+                      <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="NEVER" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                        <ColumnConstraints hgrow="ALWAYS" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <ComboBox fx:id="combBox_Day" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="combBox_Month" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <ComboBox fx:id="combBox_Year" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" GridPane.rowIndex="1" />
+                        <Label text="Year" />
+                        <Label text="Month" GridPane.columnIndex="1" />
+                        <Label text="Day" GridPane.columnIndex="2" />
+                        <ComboBox fx:id="combBox_Event" maxWidth="1.7976931348623157E308" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+                        <Label text="Event" GridPane.columnIndex="4" />
+                        <ComboBox fx:id="combBox_Location" maxWidth="1.7976931348623157E308" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Label text="Location" GridPane.columnIndex="3" />
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+         </top>
+         <left>
+            <VBox BorderPane.alignment="CENTER">
+               <children>
+                  <ScrollPane>
+                     <content>
+                        <TreeTableView fx:id="treeTableView" prefHeight="200.0" prefWidth="200.0">
+                           <columns>
+                              <TreeTableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                              <TreeTableColumn fx:id="sizeColumn" prefWidth="75.0" text="Size" />
+                              <TreeTableColumn fx:id="lastModifiedColumn" prefWidth="75.0" text="Size" />
+                           </columns>
+                        </TreeTableView>
+                     </content>
+                  </ScrollPane>
+                  <Label fx:id="label" text="Label" />
+               </children>
+            </VBox>
+         </left>
+      </BorderPane>
+   </children>
+</AnchorPane>

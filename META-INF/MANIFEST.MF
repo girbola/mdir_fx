@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Main-Class: com.girbola.Main
+Class-Path: .
+JavaFX-Version: 21
+JavaFX-Application-Class: org.girbola.Main
