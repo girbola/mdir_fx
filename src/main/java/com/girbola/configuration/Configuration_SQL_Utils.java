@@ -100,24 +100,24 @@ public class Configuration_SQL_Utils {
     /**
      * Updates the configuration in the database.
      */
-    public static synchronized void updateConfiguration() {
-        Connection configurationConnection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-        if(!SQL_Utils.isDbAccessible(configurationConnection,  Main.conf.getConfiguration_db_fileName())) {
-            createConfiguration_Table(configurationConnection);
-        }
-
-        try {
-            // Ensure the 'currentTheme' column exists.
-            ensureCurrentThemeColumnExists(configurationConnection);
-
-            configurationConnection.setAutoCommit(false);
-            insert_Configuration(configurationConnection, Main.conf);
-            configurationConnection.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        SQL_Utils.closeConnection(configurationConnection);
-    }
+//    public static synchronized void updateConfiguration() {
+//        Connection configurationConnection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//        if(!SQL_Utils.isDbAccessible(configurationConnection,  Main.conf.getConfiguration_db_fileName())) {
+//            createConfiguration_Table(configurationConnection);
+//        }
+//
+//        try {
+//            // Ensure the 'currentTheme' column exists.
+//            ensureCurrentThemeColumnExists(configurationConnection);
+//
+//            configurationConnection.setAutoCommit(false);
+//            insert_Configuration(configurationConnection, Main.conf);
+//            configurationConnection.commit();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        SQL_Utils.closeConnection(configurationConnection);
+//    }
 
 
     private static boolean addTableColumn(Connection connection, PreparedStatement pstmt, TableColumn tc, String tableId) {
@@ -594,7 +594,7 @@ public class Configuration_SQL_Utils {
             return false;
         }
 
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
 
         try {
             Statement stmt = connection.createStatement();

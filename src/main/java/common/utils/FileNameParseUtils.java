@@ -249,7 +249,7 @@ public class FileNameParseUtils {
 		return 0;
 	}
 
-	protected static long tryFileNameDate(Path path, String dateDelim) {
+	public static long tryFileNameDate(Path path, String dateDelim) {
 		Messages.sprintf("tryFileNameDate: " + path);
 		String result = "";
 		Pattern p = Pattern.compile(dateDelim);

@@ -58,6 +58,10 @@ public class SqliteConnection {
     }
 
     public static void addConnection(Connection conn) {
+//
+//        if (!SQL_Utils.isDbConnected(conn)) {
+//            return;
+//        }
 
         try {
             for(Connection c : connectionList) {

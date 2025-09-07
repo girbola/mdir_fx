@@ -6,6 +6,7 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.messages.Messages;
 
+import com.girbola.misc.Misc;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -35,6 +36,7 @@ public class SelectedFoldersSQL {
             return false;
         }
         try {
+            Messages.sprintf("createSelectedFoldersTable executing");
             Statement stmt = connection.createStatement();
             stmt.execute(selectedFolderTable);
             return true;
@@ -102,7 +104,7 @@ public class SelectedFoldersSQL {
         return true;
     }
 
-    public static void saveSelectedFolder(ModelMain modelMain) {
+    public static void saveSelectedFolder_(ModelMain modelMain) {
         Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
@@ -152,8 +154,12 @@ public class SelectedFoldersSQL {
 
     public static boolean insertSelectedFoldersListToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
         Messages.sprintf("insertSelectedFolders_List_ToDB: " + insertSelectedFolders);
-       boolean success = true;
-        createSelectedFoldersDBTable(connection);
+        boolean success = true;
+        boolean dbConnected = SQL_Utils.isDbConnected(connection);
+        if (!dbConnected) {
+            Messages.sprintfError("insertSelectedFolders_List_ToDB: Not connected to database!");
+        }
+
         try {
             connection.setAutoCommit(false);
             PreparedStatement pstmt = connection.prepareStatement(insertSelectedFolders);
@@ -173,10 +179,10 @@ public class SelectedFoldersSQL {
             pstmt.executeBatch();
             SQL_Utils.commitChanges(connection);
             pstmt.close();
-            success=true;
+            success = true;
         } catch (Exception ex) {
-            Messages.sprintfError("Insert SElected Folders list to database has failed: " + ex.getMessage());
-            success=false;
+            Messages.sprintfError(Misc.getLineNumber() + " at line - Insert SElected Folders list to database has failed: " + ex.getMessage());
+            success = false;
         } finally {
             SQL_Utils.closeConnection(connection);
         }

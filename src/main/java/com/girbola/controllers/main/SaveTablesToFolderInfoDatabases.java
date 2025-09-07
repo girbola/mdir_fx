@@ -34,35 +34,41 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
     @Override
     protected Integer call() throws Exception {
 
-        boolean dbConnected = SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection());
-        if (!dbConnected) {
-            Messages.sprintf("Cannot get connected with database at: " + ConfigurationSQLHandler.getConnection().getMetaData().getURL());
+        try {
+            boolean dbConnected = SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection());
+            if (!dbConnected) {
+                Messages.sprintfError("Cannot get connected with database at: " + ConfigurationSQLHandler.getConnection().getMetaData().getURL());
+            }
+
+//        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQLTableEnums.SAVED_FOLDERS.getType());
+
+            long start = System.currentTimeMillis();
+            updateMessage("Loading Sorted");
+            boolean sorted = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
+            if (sorted) {
+                Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
+            }
+
+            start = System.currentTimeMillis();
+            updateMessage("Loading SortIt");
+            boolean sortit = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
+            if (sortit) {
+                Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
+            }
+
+            start = System.currentTimeMillis();
+            updateMessage("Loading AsItIs");
+            boolean asitis = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
+            if (asitis) {
+                Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
+            }
+            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
+        } catch (Exception e) {
+            Messages.sprintfError("Error saving tables to databases: " + e.getMessage());
+        } finally {
+            SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
         }
 
-        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQLTableEnums.FOLDERINFOS.getType());
-
-        long start = System.currentTimeMillis();
-        updateMessage("Loading Sorted");
-        boolean sorted = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
-        if (sorted) {
-            Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
-        }
-
-        start = System.currentTimeMillis();
-        updateMessage("Loading SortIt");
-        boolean sortit = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
-        if (sortit) {
-            Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
-        }
-
-        start = System.currentTimeMillis();
-        updateMessage("Loading AsItIs");
-        boolean asitis = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
-        if (asitis) {
-            Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
-        }
-        SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
-        //SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
 
         return null;
     }

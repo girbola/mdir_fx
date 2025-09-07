@@ -144,31 +144,56 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
+    // ... existing code ...
     public static void ensureColumnsExist(Connection conn, String tableName, Map<String, String> requiredColumns) throws SQLException {
-        boolean committed = false;
-        // Get existing columns
-        Set<String> existingColumns = new HashSet<>();
-        DatabaseMetaData meta = conn.getMetaData();
-        try (ResultSet rs = meta.getColumns(null, null, tableName, null)) {
-            while (rs.next()) {
-                Messages.sprintf("------------Column found: " + rs.getString("COLUMN_NAME") + " of type: " + rs.getString("TYPE_NAME"));
-                existingColumns.add(rs.getString("COLUMN_NAME"));
+        boolean originalAutoCommit = conn.getAutoCommit();
+        try {
+            if (originalAutoCommit) {
+                conn.setAutoCommit(false);
             }
-        }
 
-        // Add missing columns
-        for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
-            String columnName = entry.getKey();
-            String columnType = entry.getValue();
+            // Get existing columns (normalize to lower-case for comparison)
+            Set<String> existingColumns = new HashSet<>();
+            DatabaseMetaData meta = conn.getMetaData();
+            try (ResultSet rs = meta.getColumns(null, null, tableName, null)) {
+                while (rs.next()) {
+                    String colName = rs.getString("COLUMN_NAME");
+                    if (colName != null) {
+                        existingColumns.add(colName.toLowerCase());
+                    } else {
+                        Messages.sprintf("Column NOT found: " + colName + " ===of type===: " + rs.getString("TYPE_NAME"));
+                    }
 
-            if (!existingColumns.contains(columnName)) {
-                String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s;", tableName, columnName, columnType);
-                try (Statement stmt = conn.createStatement()) {
-                    stmt.execute(alterSQL);
-                    conn.commit();
-                    Messages.sprintf("Added missing column: " + columnName + " (" + columnType + ")");
+                }
+            }
+
+            // Add missing columns (compare in lower-case)
+            try (Statement stmt = conn.createStatement()) {
+                for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
+                    String columnName = entry.getKey();
+                    String columnType = entry.getValue();
+
+                    if (!existingColumns.contains(columnName.toLowerCase())) {
+                        String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s;", tableName, columnName, columnType);
+                        stmt.execute(alterSQL);
+                        Messages.sprintf("Added missing column: " + columnName + " (" + columnType + ")");
+                    }
+                }
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            SQL_Utils.rollBackConnection(conn);
+            throw e;
+        } finally {
+            if (originalAutoCommit) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException ignore) {
+                    // best-effort restore
                 }
             }
         }
     }
+// ... existing code ...
 }

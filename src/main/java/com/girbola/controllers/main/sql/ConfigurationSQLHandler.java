@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 
+import static com.girbola.sql.SelectedFolderInfoSQL.loadSelectedFolders;
+
 public class ConfigurationSQLHandler extends DriveInfoSQL {
 
     private static final String ERROR = ConfigurationSQLHandler.class.getName();
@@ -374,26 +376,9 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
     }
 
-    /**
-     * Loads the configuration from the database.
-     *
-     * @param configuration the Configuration object to load the values into
-     * @return true if the configuration is successfully loaded, false otherwise
-     */
-    public static boolean loadConfiguration(Configuration configuration) {
-        Messages.sprintf("loadConfiguration Loading SQL config: " + Main.conf.getAppDataPath() + " - " + Main.conf.getConfiguration_db_fileName());
+    private static boolean loadTableSQL(Configuration configuration) {
 
-        checkConnection();
-        if (!SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType()) || !SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
-            Messages.sprintf("loadConfiguration database not accessible: " + SQLTableEnums.CONFIGURATION.getType());
-            createConfigurationDatabase();
-        }
-
-        Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
-
-        //String sql_ = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
-
-        String sql = "SELECT id, " +
+        String tableSQL = "SELECT id, " +
                 Configuration_Type.BETTERQUALITYTHUMBS.getType() + ", " +
                 Configuration_Type.CONFIRMONEXIT.getType() + ", " +
                 Configuration_Type.ID_COUNTER.getType() + ", " +
@@ -416,9 +401,9 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 Configuration_Type.TABLE_SHOW_SORTED.getType() + ", " +
                 Configuration_Type.TABLE_SHOW_ASITIS.getType() + " " +
                 " FROM " + SQLTableEnums.CONFIGURATION.getType();
-        Messages.sprintf("loadConfiguration: " + sql);
+        Messages.sprintf("loadConfiguration: " + tableSQL);
         try {
-            PreparedStatement pstmt = connection.prepareStatement(sql);
+            PreparedStatement pstmt = connection.prepareStatement(tableSQL);
             pstmt.executeQuery();
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
@@ -460,16 +445,40 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 //return true;
             }
             SQL_Utils.commitChanges(connection);
-            //SQL_Utils.closeConnection(connection);
+            SQL_Utils.closeConnection(connection);
             return true;
         } catch (Exception e) {
             System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
+        } finally {
+            SQL_Utils.closeConnection(connection);
+            return true;
         }
-//        finally {
-//            SQL_Utils.closeConnection(connection);
-//            return true;
-//        }
+    }
+
+    /**
+     * Loads the configuration from the database.
+     *
+     * @param configuration the Configuration object to load the values into
+     * @return true if the configuration is successfully loaded, false otherwise
+     */
+    public static boolean loadConfiguration(Configuration configuration) {
+        Messages.sprintf("loadConfiguration Loading SQL config: " + Main.conf.getAppDataPath() + " - " + Main.conf.getConfiguration_db_fileName());
+
+        checkConnection();
+        if (!SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType()) || !SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
+            Messages.sprintf("loadConfiguration database not accessible: " + SQLTableEnums.CONFIGURATION.getType());
+            createConfigurationDatabase();
+        }
+
+        Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
+
+        //String sql_ = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips,
+        // " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
+        loadTableSQL(configuration);
+
+
+        return true;
     }
 
     /**

@@ -12,7 +12,7 @@ public enum SQLTableEnums {
 	IGNOREDLIST("ignoredlist"),
 	CONFIG("config"),
 	TABLES_COLS("tables_cols"),
-	FOLDERINFOS("folderinfos");
+	SAVED_FOLDERS("saved_folders");
 
 	private String type;
 

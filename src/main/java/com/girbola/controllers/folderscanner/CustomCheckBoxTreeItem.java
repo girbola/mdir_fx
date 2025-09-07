@@ -36,8 +36,9 @@ public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
     }
 
     private void handleSelection(boolean hasMedia) {
+        Messages.sprintf("handleSelection Selected: " + path.toFile().getAbsolutePath());
         modelMain.getSelectedFolders().add(new SelectedFolder(true, true, path.toString(), hasMedia));
-        Messages.sprintf("Selected: " + path.toFile().getAbsolutePath());
+
 
         if (!hasSelectedFolder(path)) {
             modelMain.getSelectedFolders().add(new SelectedFolder(true, true, path.toString(), FileUtils.getHasMedia(path.toString())));

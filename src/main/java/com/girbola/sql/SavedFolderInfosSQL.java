@@ -3,7 +3,7 @@ package com.girbola.sql;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
-import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import java.nio.file.Files;
@@ -22,7 +22,7 @@ public class SavedFolderInfosSQL {
     //@formatter:off
     private static final String insertToFolderInfos =
             "INSERT OR REPLACE INTO " +
-                    SQLTableEnums.FOLDERINFOS.getType() +
+                    SQLTableEnums.SAVED_FOLDERS.getType() +
                     " (" +
                     "'path', " +
                     "'tableType', " +
@@ -30,29 +30,44 @@ public class SavedFolderInfosSQL {
                     "'connected')" +
                     " VALUES(?,?,?,?)";
 
-    //@formatter:on
-    public static boolean insertSavedFolderInfoToDatabase(Connection connection, StoredFolderInfoStatus storedFolderInfoStatus) {
-        if (connection == null) {
+    /**
+     * Inserts the information of a saved folder into the database.
+     *
+     * @param configurationDatabaseConnection the database connection object used for the operation.
+     *                   This must not be null to perform the insertion.
+     * @param folderInfoStatus an object containing folder details such as the folder path,
+     *                                table type, folder name, and connection status.
+     * @return true if the folder information was successfully inserted into the database,
+     *         false otherwise (e.g., in case of null connection, database creation failure, or errors during insertion).
+     */
+ //@formatter:on
+    public static boolean insertSavedFolderInfoToDatabase(Connection configurationDatabaseConnection, FolderInfoStatus folderInfoStatus) {
+        if (configurationDatabaseConnection == null) {
+            Messages.sprintfError("insertSavedFolderInfoToDatabase Connection was null!");
             return false;
         }
-        createSavedFolderInfosDatabase(connection);
-        try {
-            PreparedStatement pstmt = connection.prepareStatement(insertToFolderInfos);
-            pstmt.setString(1, storedFolderInfoStatus.getFolderPath());
-            pstmt.setString(2, storedFolderInfoStatus.getTableType());
-            pstmt.setString(3, storedFolderInfoStatus.getJustFolderName());
-            pstmt.setBoolean(4, storedFolderInfoStatus.isConnected());
+        boolean savedFolderInfosDatabase = createSavedFolderInfosDatabase(configurationDatabaseConnection);
+        if(!savedFolderInfosDatabase) {
+            Messages.sprintfError("insertSavedFolderInfoToDatabase Could not create FolderInfos database!");
+            return false;
+        }
+        try (PreparedStatement pstmt = configurationDatabaseConnection.prepareStatement(insertToFolderInfos)) {
+            pstmt.setString(1, folderInfoStatus.getFolderPath());
+            pstmt.setString(2, folderInfoStatus.getTableType());
+            pstmt.setString(3, folderInfoStatus.getJustFolderName());
+            pstmt.setBoolean(4, folderInfoStatus.isConnected());
             pstmt.executeUpdate();
-            pstmt.close();
+            SQL_Utils.commitChanges(configurationDatabaseConnection);
             return true;
         } catch (Exception e) {
+            Messages.sprintfError("insertSavedFolderInfoToDatabase error: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
     }
 
 
-    public static List<StoredFolderInfoStatus> fetchAllSavedFolderInfosFromDatabase(Connection connection, ModelMain model_Main) {
+    public static List<FolderInfoStatus> fetchAllSavedFolderInfosFromDatabase(Connection connection, ModelMain model_Main) {
         if (Main.getProcessCancelled()) {
             return null;
         }
@@ -61,11 +76,11 @@ public class SavedFolderInfosSQL {
             Messages.sprintf("NOT Connected!");
         }
 
-        String sql = "SELECT * FROM " + SQLTableEnums.FOLDERINFOS.getType();
+        String sql = "SELECT * FROM " + SQLTableEnums.SAVED_FOLDERS.getType();
         try {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
-            List<StoredFolderInfoStatus> arrayList = new ArrayList<>();
+            List<FolderInfoStatus> arrayList = new ArrayList<>();
 
             while (rs.next()) {
                 if (Main.getProcessCancelled()) {
@@ -81,10 +96,10 @@ public class SavedFolderInfosSQL {
                     Messages.errorSmth(ERROR, "Something went terrible wrong at: " + path, null, Misc.getLineNumber(), true);
                     return null;
                 }
-                StoredFolderInfoStatus storedFolderInfoStatus = new StoredFolderInfoStatus(path, tableType, justFolderName, isConnected);
-                storedFolderInfoStatus.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + storedFolderInfoStatus.isConnected());
-                arrayList.add(storedFolderInfoStatus);
+                FolderInfoStatus folderInfoStatus = new FolderInfoStatus(path, tableType, justFolderName, isConnected);
+                folderInfoStatus.setConnected(Files.exists(Paths.get(path)));
+                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + folderInfoStatus.isConnected());
+                arrayList.add(folderInfoStatus);
             }
             Messages.sprintf("getALLLLLL size was: " + arrayList.size());
             return arrayList;
@@ -107,7 +122,7 @@ public class SavedFolderInfosSQL {
             return false;
         }
 
-        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFOS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
 
         try {
             Statement stmt = connection.createStatement();

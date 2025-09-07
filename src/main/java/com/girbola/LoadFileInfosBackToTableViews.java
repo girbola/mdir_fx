@@ -3,7 +3,7 @@ package com.girbola;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -18,11 +18,11 @@ import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
-public class Load_FileInfosBackToTableViews extends Service<Boolean> {
+public class LoadFileInfosBackToTableViews extends Service<Boolean> {
     private ModelMain modelMain;
     private Connection connection;
 
-    public Load_FileInfosBackToTableViews(ModelMain modelMain, Connection connection) {
+    public LoadFileInfosBackToTableViews(ModelMain modelMain, Connection connection) {
         this.modelMain = modelMain;
         this.connection = connection;
     }
@@ -32,29 +32,34 @@ public class Load_FileInfosBackToTableViews extends Service<Boolean> {
         return new Task<Boolean>() {
             @Override
             protected Boolean call() throws Exception {
-                Messages.sprintf("Load_FileInfosBackToTableViews starts " + Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
+                Messages.sprintf("LoadFileInfosBackToTableViews starts " + Paths.get(Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName()));
 
                 if (!SQL_Utils.isDbConnected(connection)) {
                     ConfigurationSQLHandler.checkConnection();
                 }
 
-                List<StoredFolderInfoStatus> storedFolderInfoStatuses = SavedFolderInfosSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
-                Messages.sprintf("Load_FileInfosBackToTableViews savedFolderInfoStatuses: " + storedFolderInfoStatuses.size());
-                if (storedFolderInfoStatuses == null || storedFolderInfoStatuses.isEmpty()) {
-                    Messages.sprintf("There were no data available for loading" + Load_FileInfosBackToTableViews.class.getName());
+                List<FolderInfoStatus> folderInfoStatuses = SavedFolderInfosSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
+                Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + folderInfoStatuses.size());
+                if (folderInfoStatuses == null || folderInfoStatuses.isEmpty()) {
+                    Messages.sprintf("There were no data available for loading" + LoadFileInfosBackToTableViews.class.getName());
                     cancel();
                     return false;
                 } else {
-                    for (StoredFolderInfoStatus storedFolderInfoStatus : storedFolderInfoStatuses) {
+                    for (FolderInfoStatus folderInfoStatus : folderInfoStatuses) {
+                        Messages.sprintf("-----folderInfoStatus: " + folderInfoStatus.getFolderPath());
                         if (Main.getProcessCancelled()) {
                             cancel();
                             return false;
                         }
-                        Messages.sprintf("=============SavedFolderInfoStatus: " + storedFolderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + storedFolderInfoStatus);
-                        FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(storedFolderInfoStatus.getFolderPath());
+                        Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+
+                        FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfoStatus.getFolderPath());
+                        if (folderInfo == null) {
+                            continue;
+                        }
+                        Messages.sprintf("-----------------folderInfo table type:::: " + folderInfo.getTableType());
 
                         try {
-
                             if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTIT.getType())) {
                                 modelMain.tables().getSortIt_table().getItems().add(folderInfo);
                             } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTED.getType())) {

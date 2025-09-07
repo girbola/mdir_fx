@@ -5,7 +5,6 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
-import common.utils.FileUtils;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -51,7 +50,7 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        SelectedFolderInfoSQL.saveSelectedFolder(model_main);
+        SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
 
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
@@ -71,13 +70,29 @@ public class SelectedFoldersController {
     private void selectedFolders_select_folder_action(ActionEvent event) {
         DirectoryChooser dc = new DirectoryChooser();
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
+        dc.setTitle(Main.bundle.getString("selectFolderForScanning"));
         File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
+
+        if (Main.conf.getWorkDir().contains(folder.toString())) {
+            Messages.warningText(Main.bundle.getString("workDirConflict"));
+            return;
+        }
+
         if (folder != null) {
-            if(Main.conf.getWorkDir().contains(folder.toString())) {
-                Messages.warningText(Main.bundle.getString("workDirConflict"));
-            } else {
-                model_main.getSelectedFolders().add(new SelectedFolder(true, true,folder.getAbsolutePath(), FileUtils.getHasMedia(folder)));
+            if (!model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
+                Messages.sprintf("model_main.getSelectedFolders():::::::::: " + model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
+                for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    if (selectedFolder.getFolder().equals(folder.getAbsolutePath())) {
+                        Messages.sprintf("Folder already exists: " + folder.getAbsolutePath());
+                    }
+                }
+
+
+
             }
+            SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+        } else {
+            Messages.warningText(Main.bundle.getString("folderNotFound"));
         }
     }
 
@@ -94,7 +109,7 @@ public class SelectedFoldersController {
         Messages.warningText("RemoveFromTable option is NOT READY");
 
         Iterator<SelectedFolder> selectedFolderScannerObs = model_main.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
-        while(selectedFolderScannerObs.hasNext()) {
+        while (selectedFolderScannerObs.hasNext()) {
             SelectedFolder selectedFolder = selectedFolderScannerObs.next();
         }
         Connection connection = null;
@@ -135,7 +150,7 @@ public class SelectedFoldersController {
         hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
 
       /*  scanner = new ScheduledService<Void>() {
 

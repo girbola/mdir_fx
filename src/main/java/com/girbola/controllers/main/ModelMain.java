@@ -2,14 +2,14 @@
 package com.girbola.controllers.main;
 
 
-import com.girbola.Load_FileInfosBackToTableViews;
+import com.girbola.LoadFileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.model.StoredFolderInfoStatus;
+import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -65,10 +65,10 @@ public class ModelMain {
 
     public ModelMain() {
         sprintf("Model instantiated...");
-        if(Main.conf.getWorkDir().trim().isEmpty()) {
+        if (Main.conf.getWorkDir().trim().isEmpty()) {
             Messages.sprintfError("workdir were empty");
         }
-        if(conf == null) {
+        if (conf == null) {
             Messages.sprintfError("conf were null!!!!!!!!!!!!!!!!!!");
         }
 //        workDirSQL = new WorkDirSQL();
@@ -97,7 +97,9 @@ public class ModelMain {
         return this.buttons;
     }
 
-    void setMainContainer(AnchorPane main_container) {this.main_container = main_container;}
+    void setMainContainer(AnchorPane main_container) {
+        this.main_container = main_container;
+    }
 
     void setMainVBox(VBox main_vbox) {
         this.main_vbox = main_vbox;
@@ -114,23 +116,29 @@ public class ModelMain {
     public boolean saveAllTableContents() {
         Messages.sprintf("saveAllTableContents started");
         Connection connection = ConfigurationSQLHandler.getConnection();
-        if(SQL_Utils.isDbConnected(connection)) {
+        if (SQL_Utils.isDbConnected(connection)) {
             Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
             return false;
         }
         SQL_Utils.setAutoCommit(connection, false);
 
-        SQL_Utils.clearTable(connection, SQLTableEnums.FOLDERINFOS.getType()); // clear table folderInfo.db
+        SQL_Utils.clearTable(connection, SQLTableEnums.SAVED_FOLDERS.getType()); // clear table folderInfo.db
         SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection); // create new folderinfodatabase folderInfo.db
 
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
-        if (sorted) { Messages.sprintf("sorted were saved successfully"); }
+        if (sorted) {
+            Messages.sprintf("sorted were saved successfully");
+        }
 
         boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
-        if (sortit) { Messages.sprintf("sortit were saved successfully"); }
+        if (sortit) {
+            Messages.sprintf("sortit were saved successfully");
+        }
 
         boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
-        if (asitis) { Messages.sprintf("asitis were saved successfully"); }
+        if (asitis) {
+            Messages.sprintf("asitis were saved successfully");
+        }
 
         SQL_Utils.commitChanges(connection);
 
@@ -143,23 +151,35 @@ public class ModelMain {
 
     }
 
+    /**
+     * Saves the content of the provided folder information list into the database based on the specified table type.
+     * This method handles saving each folder's information, inserts associated file information into the database,
+     * and commits the changes to the database.
+     *
+     * @param connectionConfiguration the database connection configuration to be used for saving the data
+     * @param items the list of {@code FolderInfo} objects representing folder details to be saved
+     * @param tableType the type of table where the data should be saved
+     * @return {@code true} if the data was saved and committed successfully, {@code false} otherwise
+     */
     public boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
         if (items.isEmpty()) {
             Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
         }
 
-        Connection fileListConnection = null;
         for (FolderInfo folderInfo : items) {
-            Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath());
-            if (folderInfo.getFolderFiles() > 0) {
-                Messages.sprintf("saveTableContent folderInfo: " + folderInfo.getFolderPath());
+            Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath() + " folder size: " + folderInfo.getFileInfoList().size());
+            if (!folderInfo.getFileInfoList().isEmpty()) {
+                Messages.sprintf("Saving table content: " + folderInfo.getFolderPath());
                 folderInfo.setTableType(tableType);
                 try {
 
-                    StoredFolderInfoStatus storedFolderInfoStatus = new StoredFolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    FolderInfoStatus folderInfoStatus = new FolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, storedFolderInfoStatus);
+                    Messages.sprintf("Saving folderInfo: " + folderInfoStatus.getFolderPath() + " tableType: " + folderInfoStatus.getTableType() + " justFolderName: " + folderInfoStatus.getJustFolderName() + " connected: " + folderInfoStatus.isConnected() + " size: " + folderInfo.getFileInfoList().size());
+
+
+                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
                     }
@@ -169,32 +189,24 @@ public class ModelMain {
                      * Connection status when this was saved Connects to current folder for existing
                      * or creates new one called fileinfo.db
                      */
-//                    fileListConnection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-//                    SQL_Utils.setAutoCommit(fileListConnection, false);
-
-                    // Inserts all data info fileinfo.db
+//                    // Inserts all data info fileinfo.db
                     FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
-                    FolderInfo_SQL.saveFolderInfoToDatabase(fileListConnection, folderInfo);
-//                    SQL_Utils.commitChanges(fileListConnection);
-                    //SQL_Utils.closeConnection(fileListConnection);
+                    FolderInfo_SQL.saveFolderInfoToDatabase(connectionConfiguration, folderInfo);
+                    SQL_Utils.commitChanges(connectionConfiguration);
+//                    SQL_Utils.closeConnection(fileListConnection);
 
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong with writing folderinfo into database at line: "
                             + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
                     return false;
                 }
+            } else {
+                Messages.sprintf("No stuff to print");
             }
         }
-
-        try {
-            SQL_Utils.commitChanges(connectionConfiguration);
-            return true;
-        } catch (Exception e) {
-            Messages.sprintfError("Cannot commit to SQL database");
-            Messages.errorSmth(ERROR, "Cannot commit to SQL database", e, Misc.getLineNumber(), true);
-            return false;
-        }
-
+        SQL_Utils.commitChanges(connectionConfiguration);
+        SQL_Utils.closeConnection(connectionConfiguration);
+        return true;
     }
 
     public void exitProgram_NOSAVE() {
@@ -262,18 +274,18 @@ public class ModelMain {
 //        Connection connection = getSqlConfigurationHandler().getConfigurationSQLHandler().getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables());
-            Load_FileInfosBackToTableViews loadFileInfosBackToTableViews = new com.girbola.Load_FileInfosBackToTableViews(this, connection);
+            LoadFileInfosBackToTableViews loadFileInfosBackToTableViews = new LoadFileInfosBackToTableViews(this, connection);
             loadFileInfosBackToTableViews.setOnSucceeded(event -> {
-                Messages.sprintf("load_FileInfosBackToTableViews succeeded");
+                Messages.sprintf("LoadFileInfosBackToTableViews succeeded");
                 SQL_Utils.closeConnection(connection);
             });
             loadFileInfosBackToTableViews.setOnFailed(event -> {
-                Messages.sprintf("load_FileInfosBackToTableViews failed");
+                Messages.sprintf("LoadFileInfosBackToTableViews failed");
                 SQL_Utils.rollBackConnection(connection);
             });
 
             loadFileInfosBackToTableViews.setOnCancelled(event -> {
-                Messages.sprintf("load_FileInfosBackToTableViews cancelled");
+                Messages.sprintf("LoadFileInfosBackToTableViews cancelled");
                 SQL_Utils.rollBackConnection(connection);
             });
 
@@ -301,6 +313,8 @@ public class ModelMain {
         return this.bottomController;
     }
 
-    public List<DriveInfo> driveInfos() { return this.driveInfos; }
+    public List<DriveInfo> driveInfos() {
+        return this.driveInfos;
+    }
 
 }

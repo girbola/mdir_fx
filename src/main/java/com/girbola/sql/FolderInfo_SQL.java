@@ -84,6 +84,12 @@ public class FolderInfo_SQL {
     //@formatter:on
     private static boolean createFolderInfoTable(Connection connectionMdirFileStatement) {
         try {
+            boolean dbConnected = SQL_Utils.isDbConnected(connectionMdirFileStatement);
+            if (!dbConnected) {
+                Messages.sprintfError("Error creating folder info table!");
+                return false;
+            }
+
             Statement stmt = connectionMdirFileStatement.createStatement();
             stmt.execute(folderInfoTable);
             return true;
@@ -214,7 +220,7 @@ public class FolderInfo_SQL {
         try {
             connectionFileInfos = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
             if (!SQL_Utils.isDbConnected(connectionFileInfos)) {
-                Messages.sprintfError("Failed to establish database connection");
+                Messages.sprintfError("Failed to establish database connection: " + path);
                 return null;
             }
 
@@ -224,7 +230,6 @@ public class FolderInfo_SQL {
                 String sql = buildSelectQuery();
                 try (Statement stmt = connectionFileInfos.createStatement();
                      ResultSet rs = stmt.executeQuery(sql)) {
-
                     if (!rs.next()) {
                         Messages.sprintfError("No folder information found in database");
                         return null;
@@ -328,7 +333,11 @@ public class FolderInfo_SQL {
         try {
             boolean create = createFolderInfoTable(connectionMdirFile);
             if (create) {
-                insertFolderInfo(connectionMdirFile, folderInfo);
+                boolean insertedFolderInfo = insertFolderInfo(connectionMdirFile, folderInfo);
+                if (!insertedFolderInfo) {
+                    Messages.sprintfError("Error inserting folder info!: " + folderInfo.getFolderPath());
+
+                }
             } else {
                 Messages.sprintfError("Error creating folder info table!");
                 return;

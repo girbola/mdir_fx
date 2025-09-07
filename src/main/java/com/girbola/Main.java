@@ -84,7 +84,7 @@ public class Main extends Application {
     public static final String APP_AUTHOR = "<NAME>";
     public static final String APP_EMAIL = "<EMAIL>";
     public static final String APP_WEBSITE = "https://github.com//MDir";
-    public static final String APP_COPYRIGHT = "Copyright (c) 2012-2025 All right reserved.";
+    public static final String APP_COPYRIGHT = "Copyright (c) 2025 All right reserved.";
     public static final String APP_LICENSE = "Apache License, Version 2.0";
 
     private static final String BUNDLE_PATH = "bundle/lang";
@@ -321,7 +321,7 @@ public class Main extends Application {
 
             if (SQL_Utils.isDbConnected(configurationLoadedFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
-                load_FileInfosBackToTableViews = new Load_FileInfosBackToTableViews(model_main, configurationLoadedFile);
+                load_FileInfosBackToTableViews = new LoadFileInfosBackToTableViews(model_main, configurationLoadedFile);
                 load_FileInfosBackToTableViews.valueProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal != null) {
                         boolean result = newVal;
