@@ -1,13 +1,14 @@
 package com.girbola.sql;
 
 import com.girbola.messages.Messages;
+import lombok.Getter;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import lombok.Getter;
 
 public class SqliteConnection {
 
@@ -64,11 +65,11 @@ public class SqliteConnection {
 //        }
 
         try {
-            for(Connection c : connectionList) {
-                if(c.getMetaData().getURL().equals(conn.getMetaData().getURL())) {
+            for (Connection c : connectionList) {
+                if (c.getMetaData().getURL().equals(conn.getMetaData().getURL())) {
                     return;
                 }
-                if(c == null || c.isClosed()) {
+                if (c == null || c.isClosed()) {
                     connectionList.remove(c);
                 }
             }
@@ -165,16 +166,25 @@ public class SqliteConnection {
      * @return
      */
     public static boolean tableExists(Connection connection, String tableName) {
-        if (connection == null) {
-            return false;
-        }
+        Messages.sprintf("tableExists() tableName: " + tableName);
         try {
+            if (connection == null) {
+                return false;
+            }
+            if (!SQL_Utils.isDbConnected(connection)) {
+                Messages.sprintfError("Database connection is not valid!");
+                return false;
+            }
             DatabaseMetaData md = connection.getMetaData();
             ResultSet rs = md.getTables(null, null, tableName, null);
-            rs.last();
-            return rs.getRow() > 0;
+            boolean exists = rs.next(); // Checks if there's at least one row
+            if (!exists) {
+                Messages.sprintf("Table does not exist: " + tableName);
+            }
+            rs.close(); // Always close the ResultSet to avoid resource leaks
+            return exists;
         } catch (SQLException ex) {
-//			ex.printStackTrace();
+            Messages.sprintfError("tableExists() Error: " + ex.getMessage());
             return false;
         }
     }

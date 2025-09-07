@@ -18,7 +18,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SavedFolderInfosSQL;
+import com.girbola.sql.SavedFolderIntoConfigurationSQL;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -179,7 +179,7 @@ public class ModelMain {
                     Messages.sprintf("Saving folderInfo: " + folderInfoStatus.getFolderPath() + " tableType: " + folderInfoStatus.getTableType() + " justFolderName: " + folderInfoStatus.getJustFolderName() + " connected: " + folderInfoStatus.isConnected() + " size: " + folderInfo.getFileInfoList().size());
 
 
-                    boolean addingToFolderInfos = SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
+                    boolean addingToFolderInfos = SavedFolderIntoConfigurationSQL.insertSavedFoldersIntoConfigurationDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
                     if (!addingToFolderInfos) {
                         Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
                     }
@@ -190,8 +190,8 @@ public class ModelMain {
                      * or creates new one called fileinfo.db
                      */
 //                    // Inserts all data info fileinfo.db
-                    FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
-                    FolderInfo_SQL.saveFolderInfoToDatabase(connectionConfiguration, folderInfo);
+                    FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+                    FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo);
                     SQL_Utils.commitChanges(connectionConfiguration);
 //                    SQL_Utils.closeConnection(fileListConnection);
 

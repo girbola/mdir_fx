@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -11,6 +12,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
+
+import static com.girbola.controllers.main.tables.TableUtils.saveChangesContentsToTables;
 
 public class FileInfo_SQL {
 
@@ -153,7 +156,7 @@ public class FileInfo_SQL {
     }
 
     // @formatter:on
-    public static boolean insertFileInfoListToDatabase(FolderInfo folderInfo, boolean isWorkDir) {
+    public static boolean insertFileInfoListToFileInfoDatabase(FolderInfo folderInfo, boolean isWorkDir) {
 
         Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
         SQL_Utils.isDbConnected(connection);
@@ -201,7 +204,7 @@ public class FileInfo_SQL {
                 final int BATCH_LIMIT = 1000;
 
                 for (FileInfo fileInfo : list) {
-                    Messages.sprintf("Processing file: {}", fileInfo.getOrgPath());
+                    Messages.sprintf("Processing file: " + fileInfo.getOrgPath());
                     if (!addToFileInfoDB(pstmt, fileInfo)) {
                         throw new SQLException("Failed to add file info to database: " + fileInfo.getOrgPath());
                     }

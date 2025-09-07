@@ -9,11 +9,11 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
-import com.girbola.sql.SavedFolderInfosSQL;
+import com.girbola.sql.SavedFolderIntoConfigurationSQL;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
-public class SaveTableFileInfos {
+public class SavedFoldersIntoConfigurationTable {
 
     private final String ERROR = SaveTablesToFolderInfoDatabases.class.getName();
 
@@ -22,7 +22,7 @@ public class SaveTableFileInfos {
     private boolean closeLoadingStage;
     private ModelMain model_main;
 
-    public SaveTableFileInfos(ModelMain modelMain, Stage stage, LoadingProcessTask loadingProcessTask, boolean closeLoadingStage) {
+    public SavedFoldersIntoConfigurationTable(ModelMain modelMain, Stage stage, LoadingProcessTask loadingProcessTask, boolean closeLoadingStage) {
         this.model_main = modelMain;
         this.stage = stage;
 
@@ -54,7 +54,7 @@ public class SaveTableFileInfos {
         for (FolderInfo folderInfo : table.getItems()) {
             try {
                 FolderInfoStatus folderInfoStatus = new FolderInfoStatus(folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
-                SavedFolderInfosSQL.insertSavedFolderInfoToDatabase(ConfigurationSQLHandler.getConnection(), folderInfoStatus);
+                SavedFolderIntoConfigurationSQL.insertSavedFoldersIntoConfigurationDatabase(ConfigurationSQLHandler.getConnection(), folderInfoStatus);
 
             } catch (Exception e) {
                 Messages.sprintfError(Main.bundle.getString("cannotSaveStatus"));

@@ -179,12 +179,13 @@ public class SelectedFolderInfoSQL {
 
                 boolean exists = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().stream().anyMatch(sf -> Objects.equals(sf.getFolder(), selectedFolder.getFolder()));
                 if (!exists) {
-                    Messages.sprintf("Added selected folder: " + selectedFolder.getFolder());
-                    for(SelectedFolder selectedFolderExists : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                        if(selectedFolderExists.getFolder().equals(selectedFolder.getFolder())) {
-                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-                        }
-                    }
+                    modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
+//                    Messages.sprintf("Added selected folder: " + selectedFolder.getFolder());
+//                    for(SelectedFolder selectedFolderExists : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+//                        if(selectedFolderExists.getFolder().equals(selectedFolder.getFolder())) {
+//                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
+//                        }
+//                    }
                 } else {
                     Messages.sprintf("Skipped duplicate selected folder: " + selectedFolder.getFolder());
                 }

@@ -6,6 +6,7 @@ import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -15,9 +16,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SavedFolderInfosSQL {
+public class SavedFolderIntoConfigurationSQL {
 
-    private static final String ERROR = SavedFolderInfosSQL.class.getSimpleName();
+    private static final String ERROR = SavedFolderIntoConfigurationSQL.class.getSimpleName();
 
     //@formatter:off
     private static final String insertToFolderInfos =
@@ -41,13 +42,13 @@ public class SavedFolderInfosSQL {
      *         false otherwise (e.g., in case of null connection, database creation failure, or errors during insertion).
      */
  //@formatter:on
-    public static boolean insertSavedFolderInfoToDatabase(Connection configurationDatabaseConnection, FolderInfoStatus folderInfoStatus) {
+    public static boolean insertSavedFoldersIntoConfigurationDatabase(Connection configurationDatabaseConnection, FolderInfoStatus folderInfoStatus) {
         if (configurationDatabaseConnection == null) {
             Messages.sprintfError("insertSavedFolderInfoToDatabase Connection was null!");
             return false;
         }
-        boolean savedFolderInfosDatabase = createSavedFolderInfosDatabase(configurationDatabaseConnection);
-        if(!savedFolderInfosDatabase) {
+        boolean savedFolderInfosDatabase = createSavedFoldersIntoConfigurationDatabase(configurationDatabaseConnection);
+        if (!savedFolderInfosDatabase) {
             Messages.sprintfError("insertSavedFolderInfoToDatabase Could not create FolderInfos database!");
             return false;
         }
@@ -114,16 +115,16 @@ public class SavedFolderInfosSQL {
     /*
      * FolderInfos
      */
-    public static boolean createSavedFolderInfosDatabase(Connection connection) {
+    public static boolean createSavedFoldersIntoConfigurationDatabase(Connection connection) {
         Messages.sprintf("createFolderInfosDatabase: " + SQL_Utils.getUrl(connection));
 
         if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.errorSmth(SavedFolderInfosSQL.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
+            Messages.errorSmth(SavedFolderIntoConfigurationSQL.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
             return false;
         }
 
         String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
-
+        Messages.sprintf("###########createFolderInfosDatabase sql: " + sql);
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);

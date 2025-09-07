@@ -9,7 +9,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SavedFolderInfosSQL;
+import com.girbola.sql.SavedFolderIntoConfigurationSQL;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -38,7 +38,7 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                     ConfigurationSQLHandler.checkConnection();
                 }
 
-                List<FolderInfoStatus> folderInfoStatuses = SavedFolderInfosSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
+                List<FolderInfoStatus> folderInfoStatuses = SavedFolderIntoConfigurationSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
                 Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + folderInfoStatuses.size());
                 if (folderInfoStatuses == null || folderInfoStatuses.isEmpty()) {
                     Messages.sprintf("There were no data available for loading" + LoadFileInfosBackToTableViews.class.getName());
@@ -55,6 +55,7 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
 
                         FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfoStatus.getFolderPath());
                         if (folderInfo == null) {
+                            Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " " + Misc.getLineNumber());
                             continue;
                         }
                         Messages.sprintf("-----------------folderInfo table type:::: " + folderInfo.getTableType());

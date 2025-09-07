@@ -33,7 +33,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -865,8 +864,7 @@ public class TableController {
                 folderInfo.setChanged(true);
                 FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
-
-                FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
+                FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
 //                SQL_Utils.commitChanges(connection);
 //                SQL_Utils.closeConnection(connection);

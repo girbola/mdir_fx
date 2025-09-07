@@ -705,21 +705,21 @@ public class TableUtils {
     public static void saveChangesContentsToTables(Tables tables) {
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
             if (folderInfo.getChanged()) {
-                saveFolderInfoToDatabase(folderInfo);
+                saveFolderInfoIntoFileInfoDatabase(folderInfo);
                 folderInfo.setChanged(false);
             }
         }
 
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
             if (folderInfo.getChanged()) {
-                saveFolderInfoToDatabase(folderInfo);
+                saveFolderInfoIntoFileInfoDatabase(folderInfo);
                 folderInfo.setChanged(false);
             }
         }
 
         for (FolderInfo folderInfo : tables.getAsItIs_table().getItems()) {
             if (folderInfo.getChanged()) {
-                saveFolderInfoToDatabase(folderInfo);
+                saveFolderInfoIntoFileInfoDatabase(folderInfo);
                 folderInfo.setChanged(false);
             }
         }
@@ -727,7 +727,7 @@ public class TableUtils {
         Main.setChanged(false);
     }
 
-    private static void saveFolderInfoToDatabase(FolderInfo folderInfo) {
+    private static void saveFolderInfoIntoFileInfoDatabase(FolderInfo folderInfo) {
         try {
             /*
              * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
@@ -735,14 +735,15 @@ public class TableUtils {
              * or creates new one called fileinfo.db
              */
             // Inserts all data info fileinfo.db
-            FileInfo_SQL.insertFileInfoListToDatabase(folderInfo, false);
+            FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
-            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-            fileList_connection.setAutoCommit(false);
+//            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+            Connection configurationConnection = SqliteConnection.connector(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
+            configurationConnection.setAutoCommit(false);
 
-            FolderInfo_SQL.saveFolderInfoToDatabase(fileList_connection, folderInfo);
-            SQL_Utils.commitChanges(fileList_connection);
-            SQL_Utils.closeConnection(fileList_connection);
+            FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo);
+            SQL_Utils.commitChanges(configurationConnection);
+            SQL_Utils.closeConnection(configurationConnection);
         } catch (Exception e) {
             Messages.warningText(Main.bundle.getString("cannotSaveFoldernfoToDatabase"));
         }
