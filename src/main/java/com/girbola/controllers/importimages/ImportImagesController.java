@@ -88,6 +88,7 @@ public class ImportImagesController {
 		this.currentPath = Paths.get(this.folderInfo.getFolderPath());
 		this.importer = importer;
 		container.getChildren().clear();
+
 		List<FileInfo> fileInfo_list = folderInfo.getFileInfoList();
 		model_importImages = new Model_importImages(currentPath);
 		model_importImages.setScrollPane(scrollPane);
