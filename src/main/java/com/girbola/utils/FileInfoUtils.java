@@ -65,7 +65,7 @@ public class FileInfoUtils {
                 String imageDifferenceHash = "";
                 long start = System.currentTimeMillis();
                 Metadata metaData = DateTaken.getMetaData(fileName);
-                Messages.sprintf("***********metaData: " + fileName);
+                //Messages.sprintf("***********metaData: " + fileName);
 
                 if(metaData == null) {
                     Messages.sprintf("metaData were null!");
@@ -83,8 +83,6 @@ public class FileInfoUtils {
 
                         }
 
-                    } else {
-                        Messages.sprintf("ELLLSEEE::::: directory: " + directory.getName());
                     }
 
 //                    if (directory.containsTag(FileSystemDirectory.TAG_FILE_NAME)) {
@@ -278,7 +276,7 @@ public class FileInfoUtils {
 
             try {
                 if (ValidatePathUtils.validFile(path)) {
-                    Messages.sprintf("validFile: " + path.toString());
+                   // Messages.sprintf("validFile: " + path.toString());
 
                     FileInfo fileInfo = createFileInfo(path);
                     if (fileInfo != null) {

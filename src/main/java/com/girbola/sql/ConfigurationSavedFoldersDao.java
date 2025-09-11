@@ -16,9 +16,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SavedFolderIntoConfigurationSQL {
+public class ConfigurationSavedFoldersDao {
 
-    private static final String ERROR = SavedFolderIntoConfigurationSQL.class.getSimpleName();
+    private static final String ERROR = ConfigurationSavedFoldersDao.class.getSimpleName();
 
     //@formatter:off
     private static final String insertToFolderInfos =
@@ -68,7 +68,7 @@ public class SavedFolderIntoConfigurationSQL {
     }
 
 
-    public static List<FolderInfoStatus> fetchAllSavedFolderInfosFromDatabase(Connection connection, ModelMain model_Main) {
+    public static List<FolderInfoStatus> loadSavedFolderDetails(Connection connection, ModelMain model_Main) {
         if (Main.getProcessCancelled()) {
             return null;
         }
@@ -119,7 +119,7 @@ public class SavedFolderIntoConfigurationSQL {
         Messages.sprintf("createFolderInfosDatabase: " + SQL_Utils.getUrl(connection));
 
         if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.errorSmth(SavedFolderIntoConfigurationSQL.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
+            Messages.errorSmth(ConfigurationSavedFoldersDao.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
             return false;
         }
 

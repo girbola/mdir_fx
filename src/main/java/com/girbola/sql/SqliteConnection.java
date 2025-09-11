@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.messages.Messages;
+import java.util.Objects;
 import lombok.Getter;
 
 import java.io.File;
@@ -58,25 +59,70 @@ public class SqliteConnection {
         }
     }
 
-    public static void addConnection(Connection conn) {
-//
-//        if (!SQL_Utils.isDbConnected(conn)) {
-//            return;
-//        }
-
+    public static synchronized void addConnection(Connection conn) {
+        // Validate input connection early
+        if (conn == null) {
+            Messages.sprintfError("addConnection called with null connection");
+            return;
+        }
         try {
-            for (Connection c : connectionList) {
-                if (c.getMetaData().getURL().equals(conn.getMetaData().getURL())) {
-                    return;
-                }
-                if (c == null || c.isClosed()) {
-                    connectionList.remove(c);
-                }
+            if (conn.isClosed()) {
+                Messages.sprintfError("addConnection called with a closed connection");
+                return;
             }
-            Messages.sprintf("Adding connection database: " + conn.getMetaData().getURL());
-            connectionList.add(conn);
-        } catch (Exception e) {
-            Messages.sprintfError("Error adding connection: " + e.getMessage());
+        } catch (SQLException e) {
+            Messages.sprintfError("Cannot verify connection state: " + e.getMessage());
+            return;
+        }
+
+        // Cache URL of the incoming connection (may be null for some drivers)
+        String newUrl = safeGetUrl(conn);
+
+        // Clean list and detect duplicates using an iterator
+        Iterator<Connection> it = connectionList.iterator();
+        while (it.hasNext()) {
+            Connection c = it.next();
+
+            if (c == null) {
+                it.remove();
+                continue;
+            }
+
+            try {
+                if (c.isClosed()) {
+                    it.remove();
+                    continue;
+                }
+            } catch (SQLException e) {
+                // If we cannot determine state, err on the side of removing it
+                it.remove();
+                continue;
+            }
+
+            // Compare target database identity safely
+            String existingUrl = safeGetUrl(c);
+            if (Objects.equals(existingUrl, newUrl)) {
+                // Already tracked
+                return;
+            }
+        }
+
+        // Add the new connection
+        if (newUrl != null) {
+            Messages.sprintf("Adding connection database: " + newUrl);
+        } else {
+            Messages.sprintf("Adding connection database");
+        }
+        connectionList.add(conn);
+    }
+
+    private static String safeGetUrl(Connection c) {
+        if (c == null) return null;
+        try {
+            DatabaseMetaData md = c.getMetaData();
+            return (md != null) ? md.getURL() : null;
+        } catch (SQLException ignored) {
+            return null;
         }
     }
 
@@ -87,8 +133,9 @@ public class SqliteConnection {
     public static Connection connector(Path path, String tableName) {
         Messages.sprintf("Connection to path: " + path.toFile().getAbsolutePath() + " tableName: " + tableName);
 
-        if (path.startsWith("")) {
-            Messages.sprintf("Path is empty and its absolutely path is: " + path.toFile().getAbsolutePath() + ". TableName is: " + tableName);
+        // Fix: do not use path.startsWith("") which is always true for Path and incorrectly returns null
+        if (path == null || tableName == null || tableName.trim().isEmpty()) {
+            Messages.sprintf("Invalid database path or tableName. path=" + path + " tableName=" + tableName);
             return null;
         }
 
@@ -110,6 +157,7 @@ public class SqliteConnection {
         }
         return conn;
     }
+
 
     private static Connection hasDatabase(String databasePath) {
         for (Connection conn : connectionList) {

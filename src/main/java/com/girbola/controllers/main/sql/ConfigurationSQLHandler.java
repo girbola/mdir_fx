@@ -396,13 +396,30 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 Configuration_Type.IMAGEVIEW_X_POS.getType() + ", " +
                 Configuration_Type.IMAGEVIEW_Y_POS.getType() + ", " +
                 Configuration_Type.WORKDIR_SERIAL_NUMBER.getType() + ", " +
-                Configuration_Type.WORKDIR.getType() + ", " +
+//                Configuration_Type.WORKDIR.getType() + ", " +
                 Configuration_Type.TABLE_SHOW_SORT_IT.getType() + ", " +
                 Configuration_Type.TABLE_SHOW_SORTED.getType() + ", " +
-                Configuration_Type.TABLE_SHOW_ASITIS.getType() + " " +
+                Configuration_Type.TABLE_SHOW_ASITIS.getType() + ", " +
+                Configuration_Type.WORKDIR.getType() + " " +
                 " FROM " + SQLTableEnums.CONFIGURATION.getType();
         Messages.sprintf("loadConfiguration: " + tableSQL);
+
+        if (!SQL_Utils.isDbConnected(connection) || !SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
+            Messages.sprintf("loadConfiguration database not accessible: " + SQLTableEnums.CONFIGURATION.getType());
+            return false;
+        }
+
         try {
+
+            if (!tableExists(connection, SQLTableEnums.CONFIGURATION.getType())) {
+                Messages.sprintf("loadConfiguration table not exists: " + SQLTableEnums.CONFIGURATION.getType());
+                return false;
+            }
+
+            // Ensure required columns (including tableShow_* ones) exist before selecting
+            ensureAllColumnExists(connection);
+
+
             PreparedStatement pstmt = connection.prepareStatement(tableSQL);
             pstmt.executeQuery();
             ResultSet rs = pstmt.executeQuery();
@@ -448,13 +465,24 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             SQL_Utils.closeConnection(connection);
             return true;
         } catch (Exception e) {
-            System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
+            System.err.println("ConfigurationSQLHAndler RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
         } finally {
             SQL_Utils.closeConnection(connection);
             return true;
         }
     }
+
+    private static boolean tableExists(Connection conn, String tableName) {
+        if (conn == null) return false;
+        try (ResultSet rs = conn.getMetaData().getTables(null, null, tableName, null)) {
+            return rs.next();
+        } catch (SQLException e) {
+            Messages.sprintfError("tableExists() error: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     /**
      * Loads the configuration from the database.

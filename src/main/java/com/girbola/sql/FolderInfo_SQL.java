@@ -23,32 +23,56 @@ public class FolderInfo_SQL {
     private Connection connection = null;
 
     //@formatter:off
-	private static final String folderInfoTable = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType()
-			+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ "status INTEGER, "
-			+ "changed BOOLEAN, "
-			+ "connected BOOLEAN, "
-			+ "ignored BOOLEAN, "
-			+ "dateDifference DOUBLE, "
-			+ "badFiles INTEGER, "
-			+ "confirmed INTEGER, "
-			+ "copied INTEGER, "
-			+ "folderFiles INTEGER, "
-			+ "folderImageFiles INTEGER, "
-			+ "folderRawFiles INTEGER, "
-			+ "folderVideoFiles INTEGER, "
-			+ "goodFiles INTEGER, "
-			+ "suggested INTEGER, "
-			+ "folderSize INTEGER, "
-			+ "justFolderName TEXT, "
-			+ "folderPath TEXT, "
-			+ "maxDate TEXT, "
-			+ "minDate TEXT, "
-			+ "state TEXT, "
-			+ "tableType TEXT)";
+//	private static final String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType()
+//			+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
+//			+ "status INTEGER, "
+//			+ "changed BOOLEAN, "
+//			+ "connected BOOLEAN, "
+//			+ "ignored BOOLEAN, "
+//			+ "dateDifference DOUBLE, "
+//			+ "badFiles INTEGER, "
+//			+ "confirmed INTEGER, "
+//			+ "copied INTEGER, "
+//			+ "folderFiles INTEGER, "
+//			+ "folderImageFiles INTEGER, "
+//			+ "folderRawFiles INTEGER, "
+//			+ "folderVideoFiles INTEGER, "
+//			+ "goodFiles INTEGER, "
+//			+ "suggested INTEGER, "
+//			+ "folderSize INTEGER, "
+//			+ "justFolderName TEXT, "
+//			+ "folderPath TEXT, "
+//			+ "maxDate TEXT, "
+//			+ "minDate TEXT, "
+//			+ "state TEXT, "
+//			+ "tableType TEXT)";
 
-	//@formatter:on
-    private static final String folderInfoInsert = "INSERT OR REPLACE INTO "
+    final static String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType() + " ("
+            + "'id' INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "'status' INTEGER, "
+            + "'" + FolderInfoEnum.CHANGED.getColumnName() + "' BOOLEAN, "
+            + "'" + FolderInfoEnum.CONNECTED.getColumnName() + "' BOOLEAN, "
+            + "'" + FolderInfoEnum.IGNORED.getColumnName() + "' BOOLEAN, "
+            + "'" + FolderInfoEnum.DATE_DIFFERENCE.getColumnName() + "' DOUBLE, "
+            + "'" + FolderInfoEnum.BAD_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.CONFIRMED.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.COPIED.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.FOLDER_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.FOLDER_RAW_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.GOOD_FILES.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.SUGGESTED.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.FOLDER_SIZE.getColumnName() + "' INTEGER, "
+            + "'" + FolderInfoEnum.JUST_FOLDER_NAME.getColumnName() + "' TEXT, "
+            + "'" + FolderInfoEnum.FOLDER_PATH.getColumnName() + "' TEXT, "
+            + "'" + FolderInfoEnum.MAX_DATE.getColumnName() + "' TEXT, "
+            + "'" + FolderInfoEnum.MIN_DATE.getColumnName() + "' TEXT, "
+            + "'" + FolderInfoEnum.STATE.getColumnName() + "' TEXT, "
+            + "'" + FolderInfoEnum.TABLE_TYPE.getColumnName() + "' TEXT)";
+
+
+    private static final String insertFolderInfo = "INSERT OR REPLACE INTO "
             + SQLTableEnums.FOLDERINFO.getType()
             + " ("
             + "'id', "
@@ -76,35 +100,35 @@ public class FolderInfo_SQL {
             + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     //@formatter:on
-    private static boolean createFolderInfoTable(Connection connection) {
-        Messages.sprintf("createFolderInfoTable folderInfoTable is: " + folderInfoTable);
+    private static boolean createFolderInfoTable(Connection mdirDatabaseConnection) {
+        Messages.sprintf("createFolderInfoTable createFolderInfoSQL is: " + createFolderInfoSQL);
 
-        if (connection == null) {
+        if (mdirDatabaseConnection == null) {
             throw new IllegalArgumentException("Connection must not be null");
         }
 
-        String url = SQL_Utils.getUrl(connection);
+        String url = SQL_Utils.getUrl(mdirDatabaseConnection);
         Messages.sprintf("------------------Creating folder info table in database: " + url);
 
         try {
-            boolean dbConnected = SQL_Utils.isDbConnected(connection);
+            boolean dbConnected = SQL_Utils.isDbConnected(mdirDatabaseConnection);
             if (!dbConnected) {
                 Messages.sprintfError("Error: Database connection is not active while creating folder info table!");
                 return false;
             }
 
             // Setting Auto-Commit to false for transactional safety
-            connection.setAutoCommit(false);
+            mdirDatabaseConnection.setAutoCommit(false);
 
             // Creating the folder info table
-            try (Statement stmt = connection.createStatement()) {
-                stmt.execute(folderInfoTable); // Ensure folderInfoTable contains valid SQL
-                connection.commit();  // Commit the transaction
+            try (Statement stmt = mdirDatabaseConnection.createStatement()) {
+                stmt.execute(createFolderInfoSQL); // Ensure createFolderInfoSQL contains valid SQL
+                mdirDatabaseConnection.commit();  // Commit the transaction
                 return true;
             }
         } catch (SQLException e) {
             // Roll back the transaction in case of an exception
-            SQL_Utils.rollBackConnection(connection);
+            SQL_Utils.rollBackConnection(mdirDatabaseConnection);
             Messages.sprintfError("SQL Exception while creating folder info table: " + e.getMessage());
             return false;
         }
@@ -153,14 +177,12 @@ public class FolderInfo_SQL {
         } catch (SQLException e) {
             Messages.sprintfError("Overall error altering table: " + e.getMessage());
             SQL_Utils.rollBackConnection(connection);
-
-        } finally {
-            SQL_Utils.setAutoCommit(connection, true);
         }
     }
 
     private static boolean insertFolderInfo(Connection connection, FolderInfo folderInfo) {
-        try (PreparedStatement pstmt = connection.prepareStatement(folderInfoInsert)) {
+        Messages.sprintf("insertFolderInfo: " + folderInfo.getFolderPath() + " folderInfo INSERT:::::::::\n" + insertFolderInfo);
+        try (PreparedStatement pstmt = connection.prepareStatement(insertFolderInfo)) {
 
             pstmt.setInt(1, 0);
             pstmt.setInt(2, folderInfo.getStatus());
@@ -187,8 +209,9 @@ public class FolderInfo_SQL {
             pstmt.addBatch();
 
             int[] counter = pstmt.executeBatch();
-            Messages.sprintf("COUNTER WERE: " + counter.length);
+            connection.commit();
             pstmt.close();
+            Messages.sprintf("COUNTER WERE: " + counter.length);
             return true;
         } catch (SQLException e) {
             Messages.sprintfError("Error inserting folder info: " + e.getMessage());
@@ -346,26 +369,12 @@ public class FolderInfo_SQL {
         Messages.sprintf("saveConfigurationFolderInfoStateToDatabase saving folder info to database: " + folderInfo.getFolderPath() + " connection is: " + SQL_Utils.getUrl(connectionMdirFile));
 
         try {
-//            boolean create = createFolderInfoTable(connectionMdirFile);
-
-//            createConfigurationFolderInfoStateToDatabase(connectionMdirFile, folderInfo);
-
-//
-//            if (create) {
-//                boolean insertedFolderInfo = insertFolderInfo(connectionMdirFile, folderInfo);
-//                if (!insertedFolderInfo) {
-//                    Messages.sprintfError("Error inserting folder info!: " + folderInfo.getFolderPath());
-//
-//                }
-//            } else {
-//                Messages.sprintfError("Error creating folder info table!");
-//                return;
-//            }
             // Ensure the table exists and has the correct structure
             ensureFolderInfoTable(connectionMdirFile);
 
-            Statement stmt = connectionMdirFile.createStatement();
-            stmt.execute(folderInfoTable);
+//            Statement stmt = connectionMdirFile.createStatement();
+//            stmt.execute(createFolderInfoSQL);
+
             insertFolderInfo(connectionMdirFile, folderInfo);
             connectionMdirFile.commit();
 
@@ -376,4 +385,31 @@ public class FolderInfo_SQL {
         }
     }
 
+    public static boolean saveFolderInfo(Connection mdirDatabaseConnection, FolderInfo folderInfo) {
+        try {
+            if (!SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
+                Messages.sprintfError("Error: Database connection is not active while writing folder info! " + folderInfo.getFolderPath());
+                return false;
+            }
+
+            FolderInfo_SQL.createFolderInfoTable(mdirDatabaseConnection);
+
+            ensureFolderInfoTable(mdirDatabaseConnection);
+
+            boolean insertingFolderInfo = insertFolderInfo(mdirDatabaseConnection, folderInfo);
+            if (!insertingFolderInfo) {
+                Messages.sprintfError("Error inserting folder info!: " + folderInfo.getFolderPath());
+                return false;
+            }
+            SQL_Utils.commitChanges(mdirDatabaseConnection);
+            Messages.sprintf("Folder info inserted: " + folderInfo.getFolderPath());
+            return true;
+        } catch (Exception ex) {
+            Messages.sprintfError("Error writing folder info to database: " + ex.getMessage());
+            return false;
+        }
+//        finally {
+//            SQL_Utils.closeConnection(mdirDatabaseConnection);
+//        }
+    }
 }

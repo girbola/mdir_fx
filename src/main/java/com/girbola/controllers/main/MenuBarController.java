@@ -17,6 +17,7 @@ import com.girbola.fileinfo.SavedFoldersIntoConfigurationTable;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
 import javafx.application.Platform;
@@ -372,18 +373,17 @@ public class MenuBarController {
         SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
         saveFileInfos.readTables();
 
-        Task<Integer> saveTablesToDatabases = new SaveTablesToFolderInfoDatabases(model_main, Main.sceneManager.getWindow(), null, true);
-
-        saveTablesToDatabases.setOnSucceeded(event2 -> {
+        Task<Integer> writeTablesFolderInfoToConfigurationDatabase = new WriteTablesFolderInfoToConfigurationDatabase(model_main, Main.sceneManager.getWindow(), null, true);
+        writeTablesFolderInfoToConfigurationDatabase.setOnSucceeded(event2 -> {
             Messages.sprintfError("saveTablesToDatabases succeeded");
         });
-        saveTablesToDatabases.setOnFailed(event2 -> {
+        writeTablesFolderInfoToConfigurationDatabase.setOnFailed(event2 -> {
             Messages.sprintfError("saveTablesToDatabases failed");
         });
-        saveTablesToDatabases.setOnCancelled(event2 -> {
+        writeTablesFolderInfoToConfigurationDatabase.setOnCancelled(event2 -> {
             Messages.sprintfError("saveTablesToDatabases cancelled");
         });
-        Thread thread = new Thread(saveTablesToDatabases, "Saving data MenuBarConctroller Thread");
+        Thread thread = new Thread(writeTablesFolderInfoToConfigurationDatabase, "Saving data MenuBarConctroller Thread");
         thread.setDaemon(true);
         thread.start();
 

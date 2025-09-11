@@ -288,7 +288,7 @@ public class Configuration_SQL_Utils {
             connection.close();
             return true;
         } catch (Exception e) {
-            System.err.println("RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
+            System.err.println("Configuration_SQL_UTILS RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
         }
     }

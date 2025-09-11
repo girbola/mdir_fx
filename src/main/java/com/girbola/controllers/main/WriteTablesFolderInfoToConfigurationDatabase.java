@@ -9,9 +9,9 @@ import com.girbola.sql.SQL_Utils;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
 
-public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
+public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> {
 
-    private final String ERROR = SaveTablesToFolderInfoDatabases.class.getName();
+    private final String ERROR = WriteTablesFolderInfoToConfigurationDatabase.class.getName();
 
     private Stage stage;
     private LoadingProcessTask loadingProcess_Task;
@@ -19,8 +19,8 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
     private ModelMain model_main;
 
 
-    public SaveTablesToFolderInfoDatabases(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
-                                           boolean closeLoadingStage) {
+    public WriteTablesFolderInfoToConfigurationDatabase(ModelMain model_main, Stage stage, LoadingProcessTask loadingProcess_Task,
+                                                        boolean closeLoadingStage) {
         this.model_main = model_main;
         this.stage = stage;
         if (loadingProcess_Task == null) {
@@ -33,11 +33,12 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
 
     @Override
     protected Integer call() throws Exception {
-
         try {
-            boolean dbConnected = SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection());
-            if (!dbConnected) {
+
+            if (!SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection())) {
                 Messages.sprintfError("Cannot get connected with database at: " + ConfigurationSQLHandler.getConnection().getMetaData().getURL());
+                cancel();
+                return null;
             }
 
 //        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQLTableEnums.SAVED_FOLDERS.getType());
@@ -62,7 +63,7 @@ public class SaveTablesToFolderInfoDatabases extends Task<Integer> {
             if (asitis) {
                 Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
             }
-            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
+            //SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
         } catch (Exception e) {
             Messages.sprintfError("Error saving tables to databases: " + e.getMessage());
         } finally {

@@ -9,7 +9,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SavedFolderIntoConfigurationSQL;
+import com.girbola.sql.ConfigurationSavedFoldersDao;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -38,14 +38,14 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                     ConfigurationSQLHandler.checkConnection();
                 }
 
-                List<FolderInfoStatus> folderInfoStatuses = SavedFolderIntoConfigurationSQL.fetchAllSavedFolderInfosFromDatabase(connection, modelMain);
-                Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + folderInfoStatuses.size());
-                if (folderInfoStatuses == null || folderInfoStatuses.isEmpty()) {
+                List<FolderInfoStatus> savedFolders = ConfigurationSavedFoldersDao.loadSavedFolderDetails(connection, modelMain);
+                Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + savedFolders.size());
+                if (savedFolders == null || savedFolders.isEmpty()) {
                     Messages.sprintf("There were no data available for loading" + LoadFileInfosBackToTableViews.class.getName());
                     cancel();
                     return false;
                 } else {
-                    for (FolderInfoStatus folderInfoStatus : folderInfoStatuses) {
+                    for (FolderInfoStatus folderInfoStatus : savedFolders) {
                         Messages.sprintf("-----folderInfoStatus: " + folderInfoStatus.getFolderPath());
                         if (Main.getProcessCancelled()) {
                             cancel();

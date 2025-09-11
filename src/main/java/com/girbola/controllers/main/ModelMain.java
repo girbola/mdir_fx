@@ -18,7 +18,7 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SavedFolderIntoConfigurationSQL;
+import com.girbola.sql.ConfigurationSavedFoldersDao;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -116,13 +116,13 @@ public class ModelMain {
     public boolean saveAllTableContents() {
         Messages.sprintf("saveAllTableContents started");
         Connection connection = ConfigurationSQLHandler.getConnection();
-        if (SQL_Utils.isDbConnected(connection)) {
+        if (!SQL_Utils.isDbConnected(connection)) {
             Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
             return false;
         }
         SQL_Utils.setAutoCommit(connection, false);
 
-        SQL_Utils.clearTable(connection, SQLTableEnums.SAVED_FOLDERS.getType()); // clear table folderInfo.db
+//        SQL_Utils.clearTable(connection, SQLTableEnums.SAVED_FOLDERS.getType()); // clear table folderInfo.db
         SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection); // create new folderinfodatabase folderInfo.db
 
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
@@ -157,13 +157,13 @@ public class ModelMain {
      * and commits the changes to the database.
      *
      * @param connectionConfiguration the database connection configuration to be used for saving the data
-     * @param items the list of {@code FolderInfo} objects representing folder details to be saved
-     * @param tableType the type of table where the data should be saved
+     * @param items                   the list of {@code FolderInfo} objects representing folder details to be saved
+     * @param tableType               the type of table where the data should be saved
      * @return {@code true} if the data was saved and committed successfully, {@code false} otherwise
      */
     public boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
         if (items.isEmpty()) {
-            Messages.sprintfError("saveTableContent items list were empty. tabletype: " + tableType);
+            Messages.sprintf("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
         }
 
@@ -178,34 +178,39 @@ public class ModelMain {
 
                     Messages.sprintf("Saving folderInfo: " + folderInfoStatus.getFolderPath() + " tableType: " + folderInfoStatus.getTableType() + " justFolderName: " + folderInfoStatus.getJustFolderName() + " connected: " + folderInfoStatus.isConnected() + " size: " + folderInfo.getFileInfoList().size());
 
-
-                    boolean addingToFolderInfos = SavedFolderIntoConfigurationSQL.insertSavedFoldersIntoConfigurationDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
+                    boolean addingToFolderInfos = ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
                     if (!addingToFolderInfos) {
-                        Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
+                        Platform.runLater(() -> {
+                            Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());
+                        });
                     }
+                    SQL_Utils.commitChanges(connectionConfiguration);
 
                     /*
                      * Adds FolderInfo into table folderInfo.db. Stores: FolderPath, TableType and
                      * Connection status when this was saved Connects to current folder for existing
                      * or creates new one called fileinfo.db
                      */
-//                    // Inserts all data info fileinfo.db
-                    FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+
                     FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo);
-                    SQL_Utils.commitChanges(connectionConfiguration);
-//                    SQL_Utils.closeConnection(fileListConnection);
+
+                    // Inserts all data info fileinfo.db
+                    FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+//                    SQL_Utils.commitChanges(connectionConfiguration);
 
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong with writing folderinfo into database at line: "
-                            + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath());
+                            + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath() + " exception: " + e.getMessage());
                     return false;
                 }
             } else {
                 Messages.sprintf("No stuff to print");
             }
         }
-        SQL_Utils.commitChanges(connectionConfiguration);
-        SQL_Utils.closeConnection(connectionConfiguration);
+        if (SQL_Utils.isDbConnected(connectionConfiguration)) {
+            SQL_Utils.closeConnection(connectionConfiguration);
+        }
+//        SQL_Utils.closeConnection(connectionConfiguration);
         return true;
     }
 

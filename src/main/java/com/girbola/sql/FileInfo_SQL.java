@@ -1,8 +1,8 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -13,40 +13,9 @@ import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
 
-import static com.girbola.controllers.main.tables.TableUtils.saveChangesContentsToTables;
-
 public class FileInfo_SQL {
 
-    final static String[] fileInfoColumnsSQL = {(
-            FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " +
-                    FileInfoConstants.ORG_PATH + " STRING UNIQUE, " +
-                    FileInfoConstants.WORK_DIR + " STRING, " +
-                    FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING, " +
-                    FileInfoConstants.DESTINATIONPATH + " STRING, " +
-                    FileInfoConstants.EVENT + " STRING, " +
-                    FileInfoConstants.LOCATION + " STRING, " +
-                    FileInfoConstants.TAGS + " STRING, " +
-                    FileInfoConstants.CAMERA_MODEL + " STRING, " +
-                    FileInfoConstants.USER + " STRING, " +
-                    FileInfoConstants.ORIENTATION + " INTEGER, " +
-                    FileInfoConstants.TIMESHIFT + " INTEGER, " +
-                    FileInfoConstants.BAD + " BOOLEAN, " +
-                    FileInfoConstants.GOOD + " BOOLEAN, " +
-                    FileInfoConstants.SUGGESTED + " BOOLEAN, " +
-                    FileInfoConstants.CONFIRMED + " BOOLEAN, " +
-                    FileInfoConstants.COPIED + " BOOLEAN, " +
-                    FileInfoConstants.IGNORED + " BOOLEAN, " +
-                    FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN, " +
-                    FileInfoConstants.IMAGE + " BOOLEAN, " +
-                    FileInfoConstants.VIDEO + " BOOLEAN, " +
-                    FileInfoConstants.RAW + " BOOLEAN, " +
-                    FileInfoConstants.DATE + " NUMERIC, " +
-                    FileInfoConstants.SIZE + " NUMERIC, " +
-                    FileInfoConstants.IMAGE_DIFFERENCE_HASH + " INTEGER, " +
-                    FileInfoConstants.THUMB_OFFSET + " INTEGER, " +
-                    FileInfoConstants.THUMB_LENGTH + " INTEGER, " +
-                    FileInfoConstants.FILEHISTORIES + " STRING"
-    )};
+    final static String[] fileInfoColumnsSQL = {(FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " + FileInfoConstants.ORG_PATH + " STRING UNIQUE, " + FileInfoConstants.WORK_DIR + " STRING, " + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING, " + FileInfoConstants.DESTINATIONPATH + " STRING, " + FileInfoConstants.EVENT + " STRING, " + FileInfoConstants.LOCATION + " STRING, " + FileInfoConstants.TAGS + " STRING, " + FileInfoConstants.CAMERA_MODEL + " STRING, " + FileInfoConstants.USER + " STRING, " + FileInfoConstants.ORIENTATION + " INTEGER, " + FileInfoConstants.TIMESHIFT + " INTEGER, " + FileInfoConstants.BAD + " BOOLEAN, " + FileInfoConstants.GOOD + " BOOLEAN, " + FileInfoConstants.SUGGESTED + " BOOLEAN, " + FileInfoConstants.CONFIRMED + " BOOLEAN, " + FileInfoConstants.COPIED + " BOOLEAN, " + FileInfoConstants.IGNORED + " BOOLEAN, " + FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN, " + FileInfoConstants.IMAGE + " BOOLEAN, " + FileInfoConstants.VIDEO + " BOOLEAN, " + FileInfoConstants.RAW + " BOOLEAN, " + FileInfoConstants.DATE + " NUMERIC, " + FileInfoConstants.SIZE + " NUMERIC, " + FileInfoConstants.IMAGE_DIFFERENCE_HASH + " INTEGER, " + FileInfoConstants.THUMB_OFFSET + " INTEGER, " + FileInfoConstants.THUMB_LENGTH + " INTEGER, " + FileInfoConstants.FILEHISTORIES + " STRING")};
 
     final static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
         put(FileInfoConstants.BAD, "BOOLEAN");
@@ -79,35 +48,7 @@ public class FileInfo_SQL {
         put(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER, "STRING");
     }};
 
-    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", "
-            + FileInfoConstants.ORG_PATH + ", "
-            + FileInfoConstants.WORK_DIR + ", "
-            + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + ", "
-            + FileInfoConstants.DESTINATIONPATH + ", "
-            + FileInfoConstants.CAMERA_MODEL + ", "
-            + FileInfoConstants.USER + ", "
-            + FileInfoConstants.ORIENTATION + ", "
-            + FileInfoConstants.BAD + ", "
-            + FileInfoConstants.GOOD + ", "
-            + FileInfoConstants.CONFIRMED + ", "
-            + FileInfoConstants.COPIED + ", "
-            + FileInfoConstants.IGNORED + ", "
-            + FileInfoConstants.SUGGESTED + ", "
-            + FileInfoConstants.IMAGE + ", "
-            + FileInfoConstants.RAW + ", "
-            + FileInfoConstants.VIDEO + ", "
-            + FileInfoConstants.TIMESHIFT + ", "
-            + FileInfoConstants.DATE + ", "
-            + FileInfoConstants.SIZE + ", "
-            + FileInfoConstants.TABLE_DUPLICATED + ", "
-            + FileInfoConstants.TAGS + ", "
-            + FileInfoConstants.EVENT + ", "
-            + FileInfoConstants.LOCATION + ", "
-            + FileInfoConstants.IMAGE_DIFFERENCE_HASH + ", "
-            + FileInfoConstants.THUMB_OFFSET + ", "
-            + FileInfoConstants.THUMB_LENGTH + ", "
-            + FileInfoConstants.FILEHISTORIES + ")"
-            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" + FileInfoConstants.FILEINFOID + ", " + FileInfoConstants.ORG_PATH + ", " + FileInfoConstants.WORK_DIR + ", " + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + ", " + FileInfoConstants.DESTINATIONPATH + ", " + FileInfoConstants.CAMERA_MODEL + ", " + FileInfoConstants.USER + ", " + FileInfoConstants.ORIENTATION + ", " + FileInfoConstants.BAD + ", " + FileInfoConstants.GOOD + ", " + FileInfoConstants.CONFIRMED + ", " + FileInfoConstants.COPIED + ", " + FileInfoConstants.IGNORED + ", " + FileInfoConstants.SUGGESTED + ", " + FileInfoConstants.IMAGE + ", " + FileInfoConstants.RAW + ", " + FileInfoConstants.VIDEO + ", " + FileInfoConstants.TIMESHIFT + ", " + FileInfoConstants.DATE + ", " + FileInfoConstants.SIZE + ", " + FileInfoConstants.TABLE_DUPLICATED + ", " + FileInfoConstants.TAGS + ", " + FileInfoConstants.EVENT + ", " + FileInfoConstants.LOCATION + ", " + FileInfoConstants.IMAGE_DIFFERENCE_HASH + ", " + FileInfoConstants.THUMB_OFFSET + ", " + FileInfoConstants.THUMB_LENGTH + ", " + FileInfoConstants.FILEHISTORIES + ")" + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private static final String ERROR = FileInfo_SQL.class.getName();
 
@@ -157,14 +98,17 @@ public class FileInfo_SQL {
 
     // @formatter:on
     public static boolean insertFileInfoListToFileInfoDatabase(FolderInfo folderInfo, boolean isWorkDir) {
+        Messages.sprintf("--------------insertFileInfoListToDatabase started: " + folderInfo.getFolderPath() + " isWorkDir: " + isWorkDir);
+        Connection mdirDatabaseConnection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
 
-        Connection connection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
-        SQL_Utils.isDbConnected(connection);
-        SQL_Utils.setAutoCommit(connection, false);
+        FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
+
+        SQL_Utils.isDbConnected(mdirDatabaseConnection);
+        SQL_Utils.setAutoCommit(mdirDatabaseConnection, false);
 
         List<FileInfo> list = folderInfo.getFileInfoList();
 
-        if (connection == null || list == null || list.isEmpty()) {
+        if (mdirDatabaseConnection == null || list == null || list.isEmpty()) {
             Messages.sprintfError("Invalid parameters provided to insertFileInfoListToDatabase");
             return false;
         }
@@ -183,28 +127,38 @@ public class FileInfo_SQL {
         }
 
         try {
-            boolean tableCreated = createFileInfoTable(connection);
+            boolean tableCreated = createFileInfoTable(mdirDatabaseConnection);
             if (!tableCreated) {
                 Messages.sprintfError("Failed to create FileInfo table");
-                SQL_Utils.closeConnection(connection);
+                SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
             Messages.sprintf("FileInfo table created/verified");
 
-            if (!SQL_Utils.isDbConnected(connection)) {
+            if (!SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
                 Messages.sprintfError("Database connection lost");
-                SQL_Utils.closeConnection(connection);
+                SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
-            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
+            SQL_Utils.ensureColumnsExist(mdirDatabaseConnection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
+            // IMPORTANT: perform any other writes (which may commit/rollback/DDL) BEFORE preparing the statement
+            FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
+            SQL_Utils.commitChanges(mdirDatabaseConnection);
 
-            try (PreparedStatement pstmt = connection.prepareStatement(fileInfoInsert)) {
+            // Re-check connection state after external call
+            if (!SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
+                Messages.sprintfError("Database connection lost after writing folder info");
+                SQL_Utils.closeConnection(mdirDatabaseConnection);
+                return false;
+            }
+
+            try (PreparedStatement pstmt = mdirDatabaseConnection.prepareStatement(fileInfoInsert)) {
 
                 int batchSize = 0;
                 final int BATCH_LIMIT = 1000;
 
                 for (FileInfo fileInfo : list) {
-                    Messages.sprintf("Processing file: " + fileInfo.getOrgPath());
+                    Messages.sprintf("FIQ - Processing file: " + fileInfo.getOrgPath());
                     if (!addToFileInfoDB(pstmt, fileInfo)) {
                         throw new SQLException("Failed to add file info to database: " + fileInfo.getOrgPath());
                     }
@@ -212,14 +166,14 @@ public class FileInfo_SQL {
                     batchSize++;
                     if (batchSize >= BATCH_LIMIT) {
                         pstmt.executeBatch();
-                        connection.commit();
+                        mdirDatabaseConnection.commit();
                         batchSize = 0;
                     }
                 }
 
                 if (batchSize > 0) {
                     pstmt.executeBatch();
-                    connection.commit();
+                    mdirDatabaseConnection.commit();
                 }
 
                 Messages.sprintf("Successfully inserted all file info records");
@@ -227,16 +181,16 @@ public class FileInfo_SQL {
             }
         } catch (Exception ex) {
             try {
-                connection.rollback();
+                mdirDatabaseConnection.rollback();
             } catch (SQLException rollbackEx) {
                 Messages.sprintfError("Failed to rollback transaction: " + rollbackEx.getMessage());
 
             }
             Messages.sprintfError("Failed to insert file info records: " + ex.getMessage());
+            return false;
         } finally {
-            SQL_Utils.closeConnection(connection);
+            SQL_Utils.closeConnection(mdirDatabaseConnection);
         }
-        return true;
     }
 
     private static void ensureFileInfoColumnsExists_(Connection connection, Map<String, String> map) throws SQLException {
@@ -340,36 +294,7 @@ public class FileInfo_SQL {
 
         List<String> fileHistories = getFileHistoriesData(rs);
 
-        return new FileInfo(
-                orgPath,
-                workDir,
-                workDirDriveSerialNumber,
-                destPath,
-                event,
-                location,
-                tags,
-                camera_model,
-                user,
-                orientation,
-                timeShift,
-                fileInfo_id,
-                bad,
-                good,
-                suggested,
-                confirmed,
-                image,
-                raw,
-                video,
-                ignored,
-                copied,
-                tableDuplicated,
-                date,
-                size,
-                imageDifferenceHash,
-                thumb_offset,
-                thumb_lenght,
-                fileHistories
-        );
+        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght, fileHistories);
     }
 
     private static List<String> getFileHistoriesData(ResultSet rs) throws SQLException {
