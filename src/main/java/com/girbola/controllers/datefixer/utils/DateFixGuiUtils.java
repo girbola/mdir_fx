@@ -246,6 +246,15 @@ public class DateFixGuiUtils {
         }
     }
 
+    public static void selectAnyMediaFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
+        for (Node childNode : parent.getChildren()) {
+            if (isImageFrame(childNode)) {
+                VBox imageFrame = (VBox) childNode;
+                processImageFrame(imageFrame, modelDatefix, style);
+            }
+        }
+    }
+
     public static void selectImageFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
