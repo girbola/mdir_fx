@@ -22,7 +22,7 @@ public class DateFixLoadingProcessLoader {
     }
 
     private static void changeImageNumberOfNode(Node node, int counter) {
-        if (node instanceof VBox vbox && node.getId().equals("imageFrame")) {
+        if (node instanceof VBox vbox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
             Label imageFrameImageNumber = DateFixGuiUtils.getImageFrameNumberLabel(vbox);
             if (imageFrameImageNumber != null) {
                 Messages.sprintf("imageFrameImageNumber: " + imageFrameImageNumber.getText() + " Counter: " + counter);

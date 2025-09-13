@@ -1,6 +1,7 @@
 package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.messages.Messages;
 import javafx.scene.Node;
@@ -26,7 +27,7 @@ public class MakeChangesUtils {
     protected static List<Node> create_listOfSelectedNodes(ModelDatefix model_datefix) {
         List<Node> list = new ArrayList<>();
         for (Node node_main : model_datefix.getSelectionModel().getSelectionList()) {
-            if (node_main instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
+            if (node_main instanceof VBox vbox && vbox.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 Messages.sprintf("Inside imageFrame: " + node_main);
                 list.add(node_main);
             }

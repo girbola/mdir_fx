@@ -163,7 +163,7 @@ public class FileOperationsController {
 		// Created selected files list from nodes fileinfos
 		for (Node node : model_datefix.getSelectionModel().getSelectionList()) {
 			if (node instanceof VBox) {
-				if (node.getId().equals("imageFrame")) {
+				if (node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 					FileInfo fileInfo = (FileInfo) node.getUserData();
 					selectedFileInfoList.add(fileInfo);
 

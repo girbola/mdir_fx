@@ -32,7 +32,7 @@ public class SelectByTableModel extends Task<Boolean> {
         Messages.sprintf("SelectByTableModel ===============" + type + " tableView");
         while (it.hasNext()) {
             Node node = it.next();
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (hasNewValue(fileInfo)) {
                     Platform.runLater(() -> {

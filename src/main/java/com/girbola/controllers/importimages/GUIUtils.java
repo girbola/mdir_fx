@@ -1,6 +1,7 @@
 package com.girbola.controllers.importimages;
 
 import com.girbola.configuration.UIContants;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import javafx.beans.property.BooleanProperty;
@@ -107,12 +108,12 @@ public class GUIUtils {
 //		stackPane.setMouseTransparent(true);
 		stackPane.setUserData(fi);
 		stackPane.setAlignment(Pos.TOP_CENTER);
-		stackPane.setId("imageFrame");
+		stackPane.setId(DateFixConstants.IMAGEFRAME.getType());
 		stackPane.setPrefSize(width, height);
 		stackPane.setMinSize(width, height);
 		stackPane.setMaxSize(width, height);
 
-		stackPane.getStyleClass().add("imageFrame");
+		stackPane.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
 		// Scale scale = new Scale();
 		// scale.pivotYProperty().bind(stackPane.heightProperty());
 		//

@@ -2,6 +2,7 @@
 package com.girbola.controllers.closerlook;
 
 import com.girbola.configuration.UIContants;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.misc.DateCollectionUtils;
 import com.girbola.fileinfo.FileInfo;
@@ -123,8 +124,8 @@ public class CloserLookController {
     private StackPane createStackPane(FileInfo fileInfo, double width, double height) {
         StackPane stackPane = new StackPane();
         stackPane.setAlignment(Pos.CENTER);
-        stackPane.setId("imageFrame");
-        stackPane.getStyleClass().add("imageFrame");
+        stackPane.setId(DateFixConstants.IMAGEFRAME.getType());
+        stackPane.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
         stackPane.setUserData(fileInfo);
         stackPane.setMaxSize(Math.floor(width / 3), Math.floor(height / 3));
         stackPane.setMinSize(Math.floor(width / 3), Math.floor(height / 3));

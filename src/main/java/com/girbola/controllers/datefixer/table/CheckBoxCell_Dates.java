@@ -1,6 +1,7 @@
 
 package com.girbola.controllers.datefixer.table;
 
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -82,7 +83,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 							}
 							if (newValue) {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
-									if (node instanceof VBox && node.getId().equals("imageFrame")) {
+									if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {
 											theList.add(node);
@@ -92,7 +93,7 @@ public class CheckBoxCell_Dates extends TableCell<EXIF_Data_Selector, Boolean> {
 								}
 							} else {
 								for (Node node : model_DateFix.getTilePane().getChildren()) {
-									if (node instanceof VBox && node.getId().equals("imageFrame")) {
+									if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 										FileInfo fi = (FileInfo) node.getUserData();
 										if (hasDate(simpleDates.getSdf_ymd_minus().format(fi.getDate()), listOfDates)) {
 											theList.remove(node);

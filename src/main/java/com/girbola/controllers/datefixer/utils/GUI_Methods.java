@@ -1,6 +1,7 @@
 package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -75,7 +76,7 @@ public class GUI_Methods {
 	 * @return
 	 */
 	public static String getCameraModel(Node children) {
-		if (children instanceof VBox && children.getId().equals("imageFrame")) {
+		if (children instanceof VBox && children.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 			FileInfo fi = (FileInfo) children.getUserData();
 			return fi.getCamera_model();
 		}
@@ -89,7 +90,7 @@ public class GUI_Methods {
 	 * @return
 	 */
 	public static String getEvents(Node children) {
-		if (children instanceof VBox && children.getId().equals("imageFrame")) {
+		if (children instanceof VBox && children.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 			FileInfo fi = (FileInfo) children.getUserData();
 			return fi.getEvent();
 		}
@@ -103,7 +104,7 @@ public class GUI_Methods {
 //	 * @return
 //	 */
 //	public static String getLocations(Node children) {
-//		if (children instanceof VBox && children.getId().equals("imageFrame")) {
+//		if (children instanceof VBox && children.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 //			FileInfo fi = (FileInfo) children.getUserData();
 //			return fi.getLocation();
 //		}

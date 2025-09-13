@@ -1,6 +1,7 @@
 
 package com.girbola.controllers.datefixer.table;
 
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.controllers.datefixer.utils.MetadataField;
 import com.girbola.fileinfo.FileInfo;
@@ -103,7 +104,7 @@ public class CheckBoxCell_Cameras extends TableCell<EXIF_Data_Selector, Boolean>
         }
 
         for (Node node : modelDateFix.getTilePane().getChildren()) {
-            if (node instanceof VBox && "imageFrame".equals(node.getId())) {
+            if (node instanceof VBox && DateFixConstants.IMAGEFRAME.getType().equals(node.getId())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 initializeCameraModel(fileInfo);
                 if (cameraList.contains(fileInfo.getCamera_model())) {

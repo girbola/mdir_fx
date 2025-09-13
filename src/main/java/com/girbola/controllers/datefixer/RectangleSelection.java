@@ -229,7 +229,7 @@ public class RectangleSelection {
                     if (n.getId() != null) {
                         int number = -1;
                         try {
-                            number = Integer.parseInt(n.getId().replace("imageFrame", ""));
+                            number = Integer.parseInt(n.getId().replace(DateFixConstants.IMAGEFRAME.getType(), ""));
                         } catch (Exception e) {
                             Main.setProcessCancelled(true);
                             sprintf("number parse error: " + e.getMessage());

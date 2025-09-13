@@ -281,7 +281,7 @@ public class RenderVisibleNode {
         if (mainNode instanceof TilePane && mainNode.getId().equals("dateFixer")) {
             Messages.sprintf("datefixer. mainNode is: " + ((TilePane) mainNode).getChildren().size());
             for (Node tilePane : ((TilePane) mainNode).getChildren()) {
-                if (tilePane instanceof VBox && tilePane.getId().equals("imageFrame")) {
+                if (tilePane instanceof VBox && tilePane.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                     Bounds nodeBounds = tilePane.localToScene(tilePane.getBoundsInLocal());
                     if (paneBounds.intersects(nodeBounds)) {
                         for (Node imageFrame_vbox : ((VBox) tilePane).getChildren()) {

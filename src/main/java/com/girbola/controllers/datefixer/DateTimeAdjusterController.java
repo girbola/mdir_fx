@@ -87,7 +87,7 @@ public class DateTimeAdjusterController {
 
         model_datefix.getSelectionModel().clearAll(df_tilePane);
         for (Node node : model_datefix.getTilePane().getChildren()) {
-            if (node instanceof VBox imageFrame && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox imageFrame && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 int imageFrameImageNumber = DateFixGuiUtils.getImageFrameImageNumber(imageFrame);
 
                 if (imageFrameImageNumber >= 0 && startFrom <= imageFrameImageNumber && endTo >= imageFrameImageNumber) {
@@ -286,7 +286,7 @@ public class DateTimeAdjusterController {
         }
         Messages.sprintf("s: " + ldt_start + " e; " + ldt_end);
         for (Node node : model_datefix.getTilePane().getChildren()) {
-            if (node instanceof VBox vbox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox vbox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 Label fileDateLabel = DateFixGuiUtils.getFileDateLabel(vbox);
                 LocalDateTime fileDate = DateUtils.stringDateToLocalDateTime(fileDateLabel.getText());
                 Messages.sprintf("fileDate= " + fileDate);

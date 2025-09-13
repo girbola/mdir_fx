@@ -207,7 +207,7 @@ public class ModelDatefix extends DateFixerModel {
     public void updateDatesInfos(TilePane tilePane) {
         List<FileInfo> fileInfo_list = new ArrayList<>();
         for (Node node : tilePane.getChildren()) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (fileInfo != null) {
                     fileInfo_list.add(fileInfo);
@@ -228,7 +228,7 @@ public class ModelDatefix extends DateFixerModel {
         Optional<ButtonType> result = changesDialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
             for (Node node : tilePane.getChildren()) {
-                if (node instanceof VBox && node.getId().equals("imageFrame")) {
+                if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                     HBox bottom = DateFixGuiUtils.getBottomHBox(node);
                     Label tf = DateFixGuiUtils.getFileDateLabel(node);
                     if (tf != null) {
@@ -276,7 +276,7 @@ public class ModelDatefix extends DateFixerModel {
             return;
         }
         for (Node node : getSelectionModel().getSelectionList()) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (fileInfo != null) {
                     long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
@@ -295,7 +295,7 @@ public class ModelDatefix extends DateFixerModel {
 
     private HBox getFileDateHBox(Node node) {
         if (node instanceof VBox) {
-            if (node.getId().equals("imageFrame")) {
+            if (node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 for (Node node2 : ((VBox) node).getChildren()) {
                     if (node2 instanceof HBox) {
                         return (HBox) node2;
@@ -313,7 +313,7 @@ public class ModelDatefix extends DateFixerModel {
             return;
         }
         for (Node node : getSelectionModel().getSelectionList()) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
                 HBox bottomHBox = DateFixGuiUtils.getBottomHBox(node);
                 Label tf = DateFixGuiUtils.getFileDateLabel(node);
@@ -341,7 +341,7 @@ public class ModelDatefix extends DateFixerModel {
         }
         for (Node node : getSelectionModel().getSelectionList()) {
             sprintf("Node is: " + node.getId() + " NODE ALL INFO: " + node.toString());
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (fileInfo != null) {
                     File file = new File(fileInfo.getOrgPath());
@@ -507,7 +507,7 @@ public class ModelDatefix extends DateFixerModel {
     public List<FileInfo> observableNode_toList(ObservableList<Node> filterlist) {
         ArrayList<FileInfo> arrayList = new ArrayList<>();
         for (Node node : filterlist) {
-            if (node instanceof VBox && node.getId().equals("imageFrame")) {
+            if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 arrayList.add(fileInfo);
             }
@@ -613,7 +613,7 @@ public class ModelDatefix extends DateFixerModel {
         int counter = 0;
         for (Node n : tilePane.getChildren()) {
             if (n instanceof VBox) {
-                if (n.getId().contains("imageFrame")) {
+                if (n.getId().contains(DateFixConstants.IMAGEFRAME.getType())) {
                     for (Node vbox : ((VBox) n).getChildren()) {
                         if (vbox instanceof HBox) {
                             for (Node hbox : ((HBox) vbox).getChildren()) {

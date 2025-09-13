@@ -2,6 +2,7 @@ package com.girbola.controllers.datefixer.tasks;
 
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.CssStylesEnum;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.controllers.datefixer.utils.DateFixCommonUtils;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
@@ -96,7 +97,7 @@ public class MakeChanges extends Task<Integer> {
         }
         while (it.hasNext() && it2.hasNext()) {
             Node imageFrame = it.next();
-            if (imageFrame instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
+            if (imageFrame instanceof VBox vbox && vbox.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 HBox bottomHBox = DateFixGuiUtils.getBottomHBox(vbox);
                 Label fileDateLabel = DateFixGuiUtils.getFileDateLabel(vbox);
                 Platform.runLater(() -> {

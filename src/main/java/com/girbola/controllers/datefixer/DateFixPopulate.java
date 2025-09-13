@@ -330,7 +330,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
             // If this would be VBox it would give JavaFX Thread errors, so this is the way to avoid that issue. 2024-09-25
             Node sourceNode = (Node) event.getTarget();
 
-            if (sourceNode instanceof VBox imageFrame && "imageFrame".equals(imageFrame.getId())) {
+            if (sourceNode instanceof VBox imageFrame && DateFixConstants.IMAGEFRAME.getType().equals(imageFrame.getId())) {
                 model_dateFix.getRightInfoPanel().getChildren().clear();
                 model_dateFix.getMetaDataTableView_obs().clear();
                 model_dateFix.getSelectionModel().addWithToggle(imageFrame);

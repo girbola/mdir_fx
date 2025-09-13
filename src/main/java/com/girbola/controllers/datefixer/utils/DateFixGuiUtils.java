@@ -2,6 +2,7 @@ package com.girbola.controllers.datefixer.utils;
 
 import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.CssStylesEnum;
+import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -34,14 +35,14 @@ public class DateFixGuiUtils {
     public static VBox createImageFrame(int imageFrameX, int imageFrameY) {
         VBox frame_vbox = new VBox();
         frame_vbox.setAlignment(Pos.TOP_CENTER);
-        frame_vbox.setId("imageFrame");
+        frame_vbox.setId(DateFixConstants.IMAGEFRAME.getType());
         frame_vbox.setAlignment(Pos.CENTER);
         frame_vbox.setFillWidth(true);
         frame_vbox.setPrefSize(imageFrameX, imageFrameY);
         frame_vbox.setMinSize(imageFrameX, imageFrameY);
         frame_vbox.setMaxSize(imageFrameX, imageFrameY);
         frame_vbox.setFillWidth(true);
-        frame_vbox.getStyleClass().add("imageFrame");
+        frame_vbox.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
         return frame_vbox;
     }
 
@@ -232,7 +233,7 @@ public class DateFixGuiUtils {
     }
 
     public static boolean isImageFrame(Node node) {
-        return node instanceof VBox && "imageFrame".equals(node.getId());
+        return node instanceof VBox && DateFixConstants.IMAGEFRAME.getType().equals(node.getId());
     }
 
     public static void processImageFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
@@ -247,6 +248,23 @@ public class DateFixGuiUtils {
     }
 
     public static void selectAnyMediaFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
+        for (Node root : parent.getChildren()) {
+            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+                VBox imageFrame = (VBox) root;
+                FileInfo fileInfo = (FileInfo) root.getUserData();
+                if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+                    if (fileInfo.isGood()) {
+                        modelDatefix.getSelectionModel().addWithToggle(root);
+                    }
+                } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+                    if (fileInfo.isBad()) {
+                        modelDatefix.getSelectionModel().addWithToggle(root);
+                    }
+                } else {
+                    processImageFrame(imageFrame, modelDatefix, style);
+                }
+            }
+        }
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;
@@ -281,14 +299,14 @@ public class DateFixGuiUtils {
 
     /**
      * Retrieves the bottom HBox from a given Node if the Node structure corresponds to specific criteria.
-     * The method navigates through a VBox with id "imageFrame", finds a nested VBox with id "bottomContainer",
+     * The method navigates through a VBox with id DateFixConstants.IMAGEFRAME.getType(), finds a nested VBox with id "bottomContainer",
      * and then searches for an HBox with id "bottom" inside it.
      *
      * @param node the root Node from which the search process starts, expected to be a VBox containing specific sub-nodes
      * @return the HBox with id "bottom" if found, or null if the structure doesn't match the expected criteria
      */
     public static HBox getBottomHBox(Node node) {
-        if (node instanceof VBox && node.getId().equals("imageFrame")) {
+        if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
             for (Node node2 : ((VBox) node).getChildren()) {
                 if (node2 instanceof VBox bottomContainer && bottomContainer.getId().equals("bottomContainer")) {
                     for (Node node3 : bottomContainer.getChildren()) {
@@ -304,7 +322,7 @@ public class DateFixGuiUtils {
     }
 
     public static Label getFileDateLabel(Node node) {
-        if (node instanceof VBox vbox && vbox.getId().equals("imageFrame")) {
+        if (node instanceof VBox vbox && vbox.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
             for (Node imageFrame : vbox.getChildren()) {
                 if (imageFrame instanceof VBox bottomContainer && bottomContainer.getId().equals("bottomContainer")) {
                     for (Node bottomVBox : bottomContainer.getChildren()) {

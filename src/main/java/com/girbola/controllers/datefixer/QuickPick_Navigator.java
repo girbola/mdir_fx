@@ -65,7 +65,7 @@ public class QuickPick_Navigator {
 		for (Node n : tilePane.getChildren()) {
 			sprintf("checkIfRedDates node: " + n);
 			if (n instanceof VBox) {
-				if (n.getId().contains("imageFrame")) {
+				if (n.getId().contains(DateFixConstants.IMAGEFRAME.getType())) {
 					if (y != GridPane.getColumnIndex(n)) {
 						y = GridPane.getColumnIndex(n);
 						list.add(n);

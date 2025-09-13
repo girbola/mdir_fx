@@ -1,4 +1,3 @@
-
 package com.girbola.controllers.datefixer;
 
 import com.girbola.fileinfo.FileInfo;
@@ -59,7 +58,7 @@ public class SelectionModel {
      */
     public synchronized boolean addWithToggle(Node node) {
 
-        if(node.getId() == null || !node.getId().equals("imageFrame")) {
+        if(node.getId() == null || !node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
             return false;
         }
         if (!contains(node)) {
@@ -97,7 +96,7 @@ public class SelectionModel {
     public synchronized void clearAll(Pane parent) {
         sprintf("clearing all");
         for(Node pane : parent.getChildren()) {
-            if(pane instanceof VBox && pane.getId().equals("imageFrame")) {
+            if(pane instanceof VBox && pane.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 Platform.runLater(() -> {
                     remove(pane);
                 });
@@ -115,7 +114,6 @@ public class SelectionModel {
             }
         }
         return false;
-
     }
 
     public synchronized void remove(Node node) {
@@ -147,9 +145,10 @@ public class SelectionModel {
         }
         clearAll(pane);
         for (Node n : list) {
+            Messages.sprintf("Adding to list: " + n.getId());
             addWithToggle(n);
         }
-        list.clear();
+        //list.clear();
 
     }
 
