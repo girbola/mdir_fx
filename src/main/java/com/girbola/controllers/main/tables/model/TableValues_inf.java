@@ -36,13 +36,13 @@ interface TableValues_inf {
     public SimpleIntegerProperty badImageFiles_prop();
     public SimpleIntegerProperty goodImageFiles_prop();
     public SimpleIntegerProperty suggestedImageFiles_prop();
-    public SimpleIntegerProperty acceptedImageFiles_prop();
+    public SimpleIntegerProperty confirmedImageFiles_prop();
 
     // Aggregate file counters (videos)
     public SimpleIntegerProperty badVideoFiles_prop();
     public SimpleIntegerProperty goodVideoFiles_prop();
     public SimpleIntegerProperty suggestedVideoFiles_prop();
-    public SimpleIntegerProperty acceptedVideoFiles_prop();
+    public SimpleIntegerProperty confirmedVideoFiles_prop();
 
     // Workflow/status counters
     public SimpleIntegerProperty confirmed_property();
@@ -86,13 +86,13 @@ interface TableValues_inf {
     public int getBadImageFiles();
     public int getGoodImageFiles();
     public int getSuggestedImageFiles();
-    public int getAcceptedImageFiles();
+    public int getConfirmedImageFiles();
 
     // Aggregates (videos)
     public int getBadVideoFiles();
     public int getGoodVideoFiles();
     public int getSuggestedVideoFiles();
-    public int getAcceptedVideoFiles();
+    public int getConfirmedVideoFiles();
 
     // Workflow/status counters
     public int getConfirmed();
@@ -113,13 +113,13 @@ interface TableValues_inf {
     public void setBadImageFiles(int value);
     public void setGoodImageFiles(int value);
     public void setSuggestedImageFiles(int value);
-    public void setAcceptedImageFiles(int value);
+    public void setConfirmedImageFiles(int value);
 
     // Video aggregates
     public void setBadVideoFiles(int value);
     public void setGoodVideoFiles(int value);
     public void setSuggestedVideoFiles(int value);
-    public void setAcceptedVideoFiles(int value);
+    public void setConfirmedVideoFiles(int value);
 
     // State/workflow flags and counters
     public void setChanged(boolean changed);

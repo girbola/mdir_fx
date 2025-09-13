@@ -8,17 +8,14 @@ import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.datefixer.utils.DestinationResolver;
 import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
-import com.girbola.fileinfo.FileInfo;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.operate.OperateFiles;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
-
-import java.util.*;
-
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -37,7 +34,10 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
@@ -45,6 +45,10 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,12 +93,12 @@ public class DateFixerController {
     @FXML private Label bad_image_stat;
     @FXML private Label good_image_stat;
     @FXML private Label suggested_image_stat;
-    @FXML private Label accepted_image_stat;
+    @FXML private Label confirmed_image_stat;
 
     @FXML private Label bad_video_stat;
     @FXML private Label good_video_stat;
     @FXML private Label suggested_video_stat;
-    @FXML private Label accepted_video_stat;
+    @FXML private Label confirmed_video_stat;
 
     @FXML private MenuButton move_menuBtn;
 	@FXML private ScrollPane df_scrollPane;
@@ -120,7 +124,7 @@ public class DateFixerController {
 
 	@FXML private Button select_btn;
 	@FXML private Button copyToMisc_btn;
-	@FXML private Button select_acceptable_btn;
+	@FXML private Button select_confirmed_btn;
 	@FXML private TableColumn<MetaData, String> info_column;
 	@FXML private TableColumn<MetaData, String> value_column;
 	@FXML private Button remove_btn;
@@ -512,12 +516,47 @@ public class DateFixerController {
         bad_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().badImageFiles_prop().asString());
         good_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().goodImageFiles_prop().asString());
         suggested_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().suggestedImageFiles_prop().asString());
-        accepted_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().acceptedImageFiles_prop().asString());
+        confirmed_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().confirmedImageFiles_prop().asString());
 
         bad_video_stat.textProperty().bind(modelDatefix.getFolderInfo_full().badVideoFiles_prop().asString());
         good_video_stat.textProperty().bind(modelDatefix.getFolderInfo_full().goodVideoFiles_prop().asString());
         suggested_video_stat.textProperty().bind(modelDatefix.getFolderInfo_full().suggestedVideoFiles_prop().asString()); 
-        accepted_video_stat.textProperty().bind(modelDatefix.getFolderInfo_full().acceptedVideoFiles_prop().asString());
+        confirmed_video_stat.textProperty().bind(modelDatefix.getFolderInfo_full().confirmedVideoFiles_prop().asString());
+
+        int imageGoodFiles = 0;
+        int imageBadFiles = 0;
+        int imageSuggestedFiles = 0;
+        int videoGoodFiles = 0;
+        int videoBadFiles = 0;
+        int videoConfirmedFiles = 0;
+
+        for(FileInfo fi : folderInfo.getFileInfoList()) {
+            if (fi.isImage()) {
+                if (fi.isGood()) {
+                    imageGoodFiles++;
+                } else if (fi.isBad()) {
+                    imageBadFiles++;
+                } else if (fi.isConfirmed()) {
+                    imageSuggestedFiles++;
+                }
+            }
+            if (fi.isVideo()) {
+                if (fi.isGood()) {
+                    videoGoodFiles++;
+                } else if (fi.isBad()) {
+                    videoBadFiles++;
+                } else if (fi.isConfirmed()) {
+                    videoConfirmedFiles++;
+                }
+            }
+        }
+
+        modelDatefix.getFolderInfo_full().setGoodImageFiles(imageGoodFiles);
+        modelDatefix.getFolderInfo_full().setBadImageFiles(imageBadFiles);
+        modelDatefix.getFolderInfo_full().setSuggestedImageFiles(imageSuggestedFiles);
+        modelDatefix.getFolderInfo_full().setGoodVideoFiles(videoGoodFiles);
+        modelDatefix.getFolderInfo_full().setBadVideoFiles(videoBadFiles);
+        modelDatefix.getFolderInfo_full().setSuggestedVideoFiles(videoConfirmedFiles);
 
         quickPick_Navigator = new QuickPick_Navigator(modelDatefix, df_scrollPane, df_tilePane, quickPick_tilePane);
         modelDatefix.setQuickPick_Navigator(quickPick_Navigator);
@@ -730,9 +769,9 @@ public class DateFixerController {
 //        }
 
     }
-    @FXML private void select_acceptable_btn_action(ActionEvent event) {
-        sprintf("select_acceptable_btn_action");
-        DateFixGuiUtils.selectAnyMediaFrame(modelDatefix, df_tilePane, CssStylesEnum.ACCEPTED_STYLE.getStyle());
+    @FXML private void select_confirmed_btn_action(ActionEvent event) {
+        sprintf("select_confirmed_btn_action");
+        DateFixGuiUtils.selectAnyMediaFrame(modelDatefix, df_tilePane, CssStylesEnum.CONFIRMED_STYLE.getStyle());
     }
 
     // Images ============================================================================
@@ -780,9 +819,9 @@ public class DateFixerController {
         }
         DateFixGuiUtils.selectImageFrame(modelDatefix, df_tilePane, CssStylesEnum.MODIFIED_STYLE.getStyle());
     }
-    @FXML private void select_acceptable_image_btn_action(ActionEvent event) {
-        sprintf("select_acceptable_image_btn_action");
-        DateFixGuiUtils.selectImageFrame(modelDatefix, df_tilePane, CssStylesEnum.ACCEPTED_STYLE.getStyle());
+    @FXML private void select_confirmed_image_btn_action(ActionEvent event) {
+        sprintf("select_confirmed_image_btn_action");
+        DateFixGuiUtils.selectImageFrame(modelDatefix, df_tilePane, CssStylesEnum.CONFIRMED_STYLE.getStyle());
     }
 
     // Videos ===========================================================================
@@ -815,9 +854,9 @@ public class DateFixerController {
         sprintf("select_modified_video_btn_action");
         DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.MODIFIED_STYLE.getStyle());
     }
-    @FXML private void select_acceptable_video_btn_action(ActionEvent event) {
-        sprintf("select_acceptable_video_btn_action");
-        DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.ACCEPTED_STYLE.getStyle());
+    @FXML private void select_confirmed_video_btn_action(ActionEvent event) {
+        sprintf("select_confirmed_video_btn_action");
+        DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.CONFIRMED_STYLE.getStyle());
     }
 
 //  ===================================================== Selection buttons============== ENDS

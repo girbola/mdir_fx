@@ -16,8 +16,8 @@ public class FolderInfo implements TableValues_inf {
     // Fields (alphabetical)
     private SimpleIntegerProperty badFiles;
     // Image/Video category properties (alphabetical within the subgroup)
-    private SimpleIntegerProperty acceptedImageFiles;
-    private SimpleIntegerProperty acceptedVideoFiles;
+    private SimpleIntegerProperty confirmedImageFiles;
+    private SimpleIntegerProperty confirmedVideoFiles;
     private SimpleIntegerProperty badImageFiles;
     private SimpleIntegerProperty badVideoFiles;
     private SimpleIntegerProperty goodImageFiles;
@@ -93,11 +93,11 @@ public class FolderInfo implements TableValues_inf {
         this.badImageFiles = new SimpleIntegerProperty(0);
         this.goodImageFiles = new SimpleIntegerProperty(0);
         this.suggestedImageFiles = new SimpleIntegerProperty(0);
-        this.acceptedImageFiles = new SimpleIntegerProperty(0);
+        this.confirmedImageFiles = new SimpleIntegerProperty(0);
         this.badVideoFiles = new SimpleIntegerProperty(0);
         this.goodVideoFiles = new SimpleIntegerProperty(0);
         this.suggestedVideoFiles = new SimpleIntegerProperty(0);
-        this.acceptedVideoFiles = new SimpleIntegerProperty(0);
+        this.confirmedVideoFiles = new SimpleIntegerProperty(0);
 
         Bindings.subtract(folderFiles, badFiles);
     }
@@ -141,11 +141,11 @@ public class FolderInfo implements TableValues_inf {
         this.badImageFiles = new SimpleIntegerProperty(0);
         this.goodImageFiles = new SimpleIntegerProperty(0);
         this.suggestedImageFiles = new SimpleIntegerProperty(0);
-        this.acceptedImageFiles = new SimpleIntegerProperty(0);
+        this.confirmedImageFiles = new SimpleIntegerProperty(0);
         this.badVideoFiles = new SimpleIntegerProperty(0);
         this.goodVideoFiles = new SimpleIntegerProperty(0);
         this.suggestedVideoFiles = new SimpleIntegerProperty(0);
-        this.acceptedVideoFiles = new SimpleIntegerProperty(0);
+        this.confirmedVideoFiles = new SimpleIntegerProperty(0);
 
         Bindings.subtract(folderFiles, badFiles);
     }
@@ -185,11 +185,11 @@ public class FolderInfo implements TableValues_inf {
         this.badImageFiles = new SimpleIntegerProperty(0);
         this.goodImageFiles = new SimpleIntegerProperty(0);
         this.suggestedImageFiles = new SimpleIntegerProperty(0);
-        this.acceptedImageFiles = new SimpleIntegerProperty(0);
+        this.confirmedImageFiles = new SimpleIntegerProperty(0);
         this.badVideoFiles = new SimpleIntegerProperty(0);
         this.goodVideoFiles = new SimpleIntegerProperty(0);
         this.suggestedVideoFiles = new SimpleIntegerProperty(0);
-        this.acceptedVideoFiles = new SimpleIntegerProperty(0);
+        this.confirmedVideoFiles = new SimpleIntegerProperty(0);
 
         Bindings.subtract(folderFiles, badFiles);
     }
@@ -221,11 +221,11 @@ public class FolderInfo implements TableValues_inf {
     @Override public int               getBadImageFiles()            { return this.badImageFiles.get(); }
     @Override public int               getGoodImageFiles()           { return this.goodImageFiles.get(); }
     @Override public int               getSuggestedImageFiles()      { return this.suggestedImageFiles.get(); }
-    @Override public int               getAcceptedImageFiles()       { return this.acceptedImageFiles.get(); }
+    @Override public int               getConfirmedImageFiles()       { return this.confirmedImageFiles.get(); }
     @Override public int               getBadVideoFiles()            { return this.badVideoFiles.get(); }
     @Override public int               getGoodVideoFiles()           { return this.goodVideoFiles.get(); }
     @Override public int               getSuggestedVideoFiles()      { return this.suggestedVideoFiles.get(); }
-    @Override public int               getAcceptedVideoFiles()       { return this.acceptedVideoFiles.get(); }
+    @Override public int               getConfirmedVideoFiles()       { return this.confirmedVideoFiles.get(); }
     @Override public String            getTableType()                { return tableType.get(); }
 
     // Property accessors (…_prop and …_property)
@@ -253,8 +253,8 @@ public class FolderInfo implements TableValues_inf {
     @Override public SimpleIntegerProperty suggestedImageFiles_prop()      { return suggestedImageFiles; }
     @Override public SimpleIntegerProperty suggestedVideoFiles_prop()      { return suggestedVideoFiles; }
     @Override public SimpleStringProperty  state_property()                { return state; }
-    @Override public SimpleIntegerProperty acceptedImageFiles_prop()       { return acceptedImageFiles; }
-    @Override public SimpleIntegerProperty acceptedVideoFiles_prop()       { return acceptedVideoFiles; }
+    @Override public SimpleIntegerProperty confirmedImageFiles_prop()       { return confirmedImageFiles; }
+    @Override public SimpleIntegerProperty confirmedVideoFiles_prop()       { return confirmedVideoFiles; }
     @Override public SimpleStringProperty  tableType_property()            { return tableType; }
     @Override public IntegerProperty       status_property()               { return status; }
 
@@ -262,12 +262,12 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setBadImageFiles(int value)        { this.badImageFiles.set(value); }
     @Override public void setGoodImageFiles(int value)       { this.goodImageFiles.set(value); }
     @Override public void setSuggestedImageFiles(int value)  { this.suggestedImageFiles.set(value); }
-    @Override public void setAcceptedImageFiles(int value)   { this.acceptedImageFiles.set(value); }
+    @Override public void setConfirmedImageFiles(int value)   { this.confirmedImageFiles.set(value); }
 
     @Override public void setBadVideoFiles(int value)        { this.badVideoFiles.set(value); }
     @Override public void setGoodVideoFiles(int value)       { this.goodVideoFiles.set(value); }
     @Override public void setSuggestedVideoFiles(int value)  { this.suggestedVideoFiles.set(value); }
-    @Override public void setAcceptedVideoFiles(int value)   { this.acceptedVideoFiles.set(value); }
+    @Override public void setConfirmedVideoFiles(int value)   { this.confirmedVideoFiles.set(value); }
 
     @Override public void setChanged(boolean changed)        { this.changed.set(changed); }
     @Override public void setConfirmed(int value)                { this.confirmed.set(value); }

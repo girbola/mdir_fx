@@ -115,7 +115,7 @@
                                                         <Tooltip text="%selectAllModifiedFilesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button fx:id="select_acceptable_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_acceptable_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button fx:id="select_confirmed_btn" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#ee8c8c" iconLiteral="bi-square-fill" iconSize="20" />
                                                     </graphic>
@@ -147,7 +147,7 @@
                                                         <Tooltip text="%selectAllModifiedImagesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_acceptable" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_acceptable_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_acceptable" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#ee8c8c" iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_suggested" />
                                                     </graphic>
@@ -183,7 +183,7 @@
                                           <String fx:value="selection_btns_modified" />
                                        </styleClass>
                                                 </Button>
-                                                <Button id="selection-btns_acceptable" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_acceptable_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_acceptable" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#ee8c8c" iconLiteral="bi-camera-video" iconSize="25" styleClass="selection_btns_suggested" />
                                                     </graphic>
