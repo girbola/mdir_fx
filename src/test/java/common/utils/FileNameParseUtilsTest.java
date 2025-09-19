@@ -1,19 +1,36 @@
 package common.utils;
 
-import com.girbola.Main;
-import common.utils.date.DateUtils;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class FileNameParseUtilsTest {
+
+    @Test
+    void testTryParseDateTimeAsLongWithValidDateTime() {
+        FileInfo fileInfo = new FileInfo("IMG_20230915_120101.jpg", 1);
+        long timestamp = FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
+        Messages.sprintf("timestamp: " + timestamp);
+        //assertNotEquals(0L, timestamp);
+        assertEquals(1694768461000L, timestamp); // Ensure the date is parsed
+    }
+
+    @Test
+    void testTryParseDateTimeAsLongWithValidDateOnly() {
+        FileInfo fileInfo = new FileInfo("IMG_20230915.jpg", 1);
+        long timestamp = FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
+        assertEquals(1694768400000L, timestamp); // Ensure the date is parsed
+    }
+
+    @Test
+    void testTryParseDateTimeAsLongWithNoDate() {
+        FileInfo fileInfo = new FileInfo("IMG_no_date.jpg", 1);
+        long timestamp = FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
+        assertEquals(0L, timestamp); // Ensure no date returns 0L
+    }
 
     @Test
     void testGetFileNameRunningNumber() {

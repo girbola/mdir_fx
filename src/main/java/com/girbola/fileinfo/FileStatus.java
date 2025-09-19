@@ -11,6 +11,7 @@ public class FileStatus extends MediaInformation {
     private boolean copied;
     private boolean good;
     private boolean ignored;
+    private boolean modified;
     private boolean suggested;
     private boolean tableDuplicated;
 }

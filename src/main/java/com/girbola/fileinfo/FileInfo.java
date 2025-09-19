@@ -42,6 +42,7 @@ public class FileInfo extends Metadata implements Cloneable {
                 ", imageDifferenceHash=" + getImageDifferenceHash() +
                 ", localDateTime=" + getLocalDateTime() +
                 ", location='" + getLocation() + '\'' +
+                ", modified=" + isModified() +
                 ", orientation=" + getOrientation() +
                 ", orgPath='" + getOrgPath() + '\'' +
                 ", raw=" + isRaw() +
@@ -81,6 +82,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setGood(false);
         this.setSuggested(false);
         this.setConfirmed(false);
+        this.setModified(false);
 
         this.setIgnored(false);
         this.setTableDuplicated(false);
@@ -104,7 +106,7 @@ public class FileInfo extends Metadata implements Cloneable {
      *
      */
     public FileInfo() {
-        this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false,
+        this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false, false,
                 false, false, false, false, 0, 0L, "", 0, 0, new ArrayList<String>());
     }
 
@@ -114,7 +116,7 @@ public class FileInfo extends Metadata implements Cloneable {
      */
     public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
                     String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
-                    long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
+                    long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed, boolean aModified,
                     boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
                     long aDate, long aSize, String aImageDifferenceHash, int aThumb_offset, int aThumb_length, List<String> fileInfoHistories) {
         this.setBad(aBad);
@@ -131,6 +133,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setImage(aImage);
         this.setImageDifferenceHash(aImageDifferenceHash);
         this.setLocation(aLocation);
+        this.setModified(aModified);
         this.setOrgPath(aOrgPath);
         this.setOrientation(aOrientation);
         this.setRaw(aRaw);

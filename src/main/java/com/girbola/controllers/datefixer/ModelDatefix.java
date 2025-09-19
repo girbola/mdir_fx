@@ -279,7 +279,8 @@ public class ModelDatefix extends DateFixerModel {
             if (node instanceof VBox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (fileInfo != null) {
-                    long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
+                    //long date = FileNameParseUtils.hasFileNameDate(Paths.get(fileInfo.getOrgPath()));
+                    long date = FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
                     HBox bottom = DateFixGuiUtils.getBottomHBox(node);
                     Label tf = DateFixGuiUtils.getFileDateLabel(node);
                     tf.setText("" + DateUtils.longToLocalDateTime(date).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));

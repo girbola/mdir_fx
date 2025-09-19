@@ -29,6 +29,8 @@ public class FileInfoConstants {
     public static final String SUGGESTED = "suggested";
     public static final String CONFIRMED = "confirmed";
     public static final String IMAGE = "image";
+    public static final String MODIFIED = "modified";
+
     public static final String RAW = "raw";
     public static final String VIDEO = "video";
     public static final String IGNORED = "ignored";

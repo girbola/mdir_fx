@@ -827,36 +827,29 @@ public class DateFixerController {
     // Videos ===========================================================================
     @FXML private void select_good_video_btn_action(ActionEvent event) {
         sprintf("select_video_good_btn_action");
-        DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.GOOD_STYLE.getStyle());
+        DateFixGuiUtils.selectVideoFrame(modelDatefix, df_tilePane, CssStylesEnum.GOOD_STYLE.getStyle());
     }
     @FXML private void select_bad_video_btn_action(ActionEvent event) {
         sprintf("select_bad_video_btn_action");
-        for (Node root : df_tilePane.getChildren()) {
-            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
-                FileInfo fileInfo = (FileInfo) root.getUserData();
-                if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                    for (Node hbox : ((VBox) root).getChildren()) {
-                        if (hbox instanceof HBox) {
-                            for (Node tff : ((HBox) hbox).getChildren()) {
-                                if (tff instanceof TextField tf) {
-                                    if (tf.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
-                                        modelDatefix.getSelectionModel().addWithToggle(root);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        DateFixGuiUtils.selectVideoFrame(modelDatefix, df_tilePane, CssStylesEnum.BAD_STYLE.getStyle());
+//        for (Node root : df_tilePane.getChildren()) {
+//            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+//                FileInfo fileInfo = (FileInfo) root.getUserData();
+//                if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+//                    if(fileInfo.isBad()) {
+//                        modelDatefix.getSelectionModel().addWithToggle(root);
+//                    }
+//                }
+//            }
+//        }
     }
     @FXML private void select_modified_video_btn_action(ActionEvent event) {
         sprintf("select_modified_video_btn_action");
-        DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.MODIFIED_STYLE.getStyle());
+        DateFixGuiUtils.selectVideoFrame(modelDatefix, df_tilePane, CssStylesEnum.MODIFIED_STYLE.getStyle());
     }
     @FXML private void select_confirmed_video_btn_action(ActionEvent event) {
         sprintf("select_confirmed_video_btn_action");
-        DateFixGuiUtils.selectVideoImageFrame(modelDatefix, df_tilePane, CssStylesEnum.CONFIRMED_STYLE.getStyle());
+        DateFixGuiUtils.selectVideoFrame(modelDatefix, df_tilePane, CssStylesEnum.CONFIRMED_STYLE.getStyle());
     }
 
 //  ===================================================== Selection buttons============== ENDS

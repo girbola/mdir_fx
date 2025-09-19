@@ -236,13 +236,73 @@ public class DateFixGuiUtils {
         return node instanceof VBox && DateFixConstants.IMAGEFRAME.getType().equals(node.getId());
     }
 
-    public static void processImageFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
+    public static void processVideoFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
+
         for (Node imageFrameNode : imageFrame.getChildren()) {
             if (imageFrameNode instanceof VBox) {
+                FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
+                if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle()) && fileInfo.isGood()) {
+                    Messages.sprintf("111processImageFrame found: " + fileInfo.getOrgPath());
+                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle()) && fileInfo.isBad()) {
+                    Messages.sprintf("2222processImageFrame found: " + fileInfo.getOrgPath());
+                } else if (style.equals(CssStylesEnum.VIDEO_STYLE.getStyle()) && fileInfo.isVideo()) {
+                }
                 Node fileDateField = imageFrameNode.lookup("#fileDate");
+                Messages.sprintf("111processImageFrame found: " + fileDateField + " imageFrame.getStyle()::: " + imageFrame.getStyle());
+//                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
                 if (fileDateField instanceof Label && style.equals(fileDateField.getStyle())) {
+                    Messages.sprintf("2222processImageFrame found: " + fileInfo.getOrgPath());
                     modelDatefix.getSelectionModel().addWithToggle(imageFrame);
                 }
+            }
+        }
+    }
+
+    public static void processImageFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
+
+        if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+        } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+        }
+
+        for (Node imageFrameNode : imageFrame.getChildren()) {
+            if (imageFrameNode instanceof VBox) {
+                FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
+
+                if (fileInfo.isImage()) {
+                    if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+                        if (fileInfo.isGood()) {
+                            Messages.sprintf("3333processImageFrame found GOOOOD: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        }
+                    } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+                        if (fileInfo.isBad()) {
+                            Messages.sprintf("4444processImageFrame found BAD: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        }
+                    } else if (style.equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
+                        if (fileInfo.isModified()) {
+                            Messages.sprintf("5555processImageFrame found MODIFIED: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        }
+                    } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE.getStyle())) {
+                        if (fileInfo.isConfirmed()) {
+                            Messages.sprintf("6666processImageFrame found CONFIRMED: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        }
+                    }
+                }
+
+
+                if (fileInfo.isImage() && fileInfo.isBad()) {
+                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                }
+                if (fileInfo.isImage() && fileInfo.isGood()) {
+                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                }
+
             }
         }
     }
@@ -265,12 +325,12 @@ public class DateFixGuiUtils {
                 }
             }
         }
-        for (Node childNode : parent.getChildren()) {
-            if (isImageFrame(childNode)) {
-                VBox imageFrame = (VBox) childNode;
-                processImageFrame(imageFrame, modelDatefix, style);
-            }
-        }
+//        for (Node childNode : parent.getChildren()) {
+//            if (isImageFrame(childNode)) {
+//                VBox imageFrame = (VBox) childNode;
+//                processImageFrame(imageFrame, modelDatefix, style);
+//            }
+//        }
     }
 
     public static void selectImageFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
@@ -285,12 +345,24 @@ public class DateFixGuiUtils {
         }
     }
 
-    public static void selectVideoImageFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
+    /**
+     * Selects video image frames within the given TilePane and processes them.
+     * The method iterates through the children of the TilePane, identifies nodes
+     * representing video frames, and applies specific styling or modifications
+     * as provided.
+     *
+     * @param modelDatefix the data model that provides contextual information
+     *                     or operations required for processing the video frames
+     * @param parent       the TilePane containing child nodes that may represent video image frames
+     * @param style        the style to be applied to the selected video image frames
+     */
+    public static void selectVideoFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
                 VBox imageFrame = (VBox) childNode;
                 FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
                 if (fileInfo.isVideo()) {
+                    Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
                     processImageFrame(imageFrame, modelDatefix, style);
                 }
             }

@@ -38,6 +38,7 @@ import java.util.*;
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
 import static common.media.DateTaken.readMetaData;
+import static common.utils.FileNameParseUtils.tryParseDateTime;
 import static common.utils.FileUtils.*;
 
 
@@ -46,7 +47,7 @@ public class FileInfoUtils {
     private final static String ERROR = FileInfoUtils.class.getSimpleName();
 
     public static FileInfo createFileInfo(Path fileName) throws IOException {
-
+        Messages.sprintf("--------------createFileInfo: " + fileName);
         if (!Files.isRegularFile(fileName)) {
             Messages.sprintf("File were not a regular file: " + fileName);
             return null;
@@ -59,20 +60,31 @@ public class FileInfoUtils {
                 setImage(fileInfo);
 // Get Size FileName Date ModifiredDate TakenDate
 
-                        tryToGetCreationDateTime(fileName, fileInfo);
+                tryToGetCreationDateTime(fileName, fileInfo);
 
+                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
+
+                boolean tryParseDateTime = tryParseDateTime(fileInfo);
 //                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
                 String imageDifferenceHash = "";
                 long start = System.currentTimeMillis();
                 Metadata metaData = DateTaken.getMetaData(fileName);
-                //Messages.sprintf("***********metaData: " + fileName);
-
-                if(metaData == null) {
+                if (metaData == null) {
                     Messages.sprintf("metaData were null!");
+                    fileInfo.setBad(true);
+                    boolean found = tryFileNameDate(fileInfo);
+                    Messages.sprintf("found???: " + found);
+                    if (found) {
+                        FileInfoUtils.setSuggested(fileInfo);
+                    } else {
+                        FileInfoUtils.setBad(fileInfo);
+                    }
+
+
                     return null;
                 }
                 for (Directory directory : metaData.getDirectories()) {
-                    if(directory.getName().equals("File")) {
+                    if (directory.getName().equals("File")) {
                         Messages.sprintf("directory: " + directory.getName());
                         try {
                             String fileNameeee = directory.getString(FileSystemDirectory.TAG_FILE_NAME);
@@ -82,21 +94,10 @@ public class FileInfoUtils {
                         } catch (Exception e) {
 
                         }
-
                     }
-
-//                    if (directory.containsTag(FileSystemDirectory.TAG_FILE_NAME)) {
-//                        for (Tag tag : directory.getTags()) {
-//                            Messages.sprintf("=====================tag: " + tag + " DIRECTORY::: " + directory.toString());
-//                        }
-//
-//                    }
                 }
 
-//                Messages.sprintf("fileName.toAbsolutePath(): " + fileName.toAbsolutePath() + " 333imageDifferenceHash: " + imageDifferenceHash);
-//                fileInfo.setMetadata(metaData);
                 fileInfo.setSize(Files.size(fileName));
-//                fileInfo.setImageDifferenceHash(imageDifferenceHash);
             } else if (FileUtils.supportedVideo(fileName)) {
                 setVideo(fileInfo);
                 fileInfo.setSize(Files.size(fileName));
@@ -129,7 +130,7 @@ public class FileInfoUtils {
         try {
             boolean metaDataFound = setImageMetadata(fileName, fileInfo);
             if (!metaDataFound) {
-                boolean tryFileNameDate = tryFileNameDate(fileName, fileInfo);
+                boolean tryFileNameDate = FileNameParseUtils.tryParseDateTime(fileName, fileInfo);
                 if (!tryFileNameDate) {
                     setBad(fileInfo);
                     fileInfo.setDate(0);
@@ -245,6 +246,11 @@ public class FileInfoUtils {
         return false;
     }
 
+    private static boolean tryFileNameDate(FileInfo fileInfo) {
+        Path file = Paths.get(fileInfo.getOrgPath());
+        return tryFileNameDate(file, fileInfo);
+    }
+
     private static boolean tryFileNameDate(Path path, FileInfo fileInfo) {
         long fileNameDate = FileNameParseUtils.hasFileNameDate(path);
         if (fileNameDate != 0) {
@@ -258,6 +264,7 @@ public class FileInfoUtils {
             return false;
         }
     }
+
 
     public static List<FileInfo> createFileInfo_list(FolderInfo folderInfo) {
         long start = System.currentTimeMillis();
@@ -276,7 +283,7 @@ public class FileInfoUtils {
 
             try {
                 if (ValidatePathUtils.validFile(path)) {
-                   // Messages.sprintf("validFile: " + path.toString());
+                    // Messages.sprintf("validFile: " + path.toString());
 
                     FileInfo fileInfo = createFileInfo(path);
                     if (fileInfo != null) {
@@ -296,28 +303,32 @@ public class FileInfoUtils {
         return fileInfo_list;
     }
 
-    public static void setSuggested(FileInfo fileInfo) {
-        fileInfo.setSuggested(true);
-        fileInfo.setBad(false);
+    public static void setBad(FileInfo fileInfo) {
+        fileInfo.setBad(true);
         fileInfo.setGood(false);
+        fileInfo.setModified(false);
+        fileInfo.setSuggested(false);
     }
 
     public static void setGood(FileInfo fileInfo) {
-        fileInfo.setSuggested(false);
         fileInfo.setBad(false);
         fileInfo.setGood(true);
+        fileInfo.setModified(false);
         fileInfo.setSuggested(false);
     }
 
-    public static void setConfirmable(FileInfo fileInfo) {
-        // srth;
-    }
-
-    public static void setBad(FileInfo fileInfo) {
-        fileInfo.setSuggested(false);
+    public static void setModified(FileInfo fileInfo) {
         fileInfo.setBad(true);
         fileInfo.setGood(false);
+        fileInfo.setModified(true);
         fileInfo.setSuggested(false);
+    }
+
+    public static void setSuggested(FileInfo fileInfo) {
+        fileInfo.setBad(true);
+        fileInfo.setGood(false);
+        fileInfo.setModified(false);
+        fileInfo.setSuggested(true);
     }
 
     public static void setVideo(FileInfo fileInfo) {
