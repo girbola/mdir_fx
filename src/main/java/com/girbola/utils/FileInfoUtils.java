@@ -59,8 +59,10 @@ public class FileInfoUtils {
 // Get Size FileName Date ModifiredDate TakenDate
 
                 long dateTime = tryToGetCreationDateTime(fileName, fileInfo);
-                fileInfo.setDate(dateTime);
-                setSuggested(fileInfo);
+//                if(dateTime != null) {
+//                    fileInfo.setDate(dateTime);
+//                }
+//                setSuggested(fileInfo);
 
 //                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
 //
@@ -158,8 +160,11 @@ public class FileInfoUtils {
                     getImageThumb_Offset_Length(metaData, fileInfo);
                     return true;
                 } else {
-                    FileInfoUtils.setBad(fileInfo);
-                    fileInfo.setDate(0);
+                    boolean fileNameDateFound = tryFileNameDate(fileInfo);
+                    if(!fileNameDateFound){
+                        FileInfoUtils.setBad(fileInfo);
+                    }
+
                 }
                 // getImageThumb_Offset_Length(metaData, fileInfo);
             }
@@ -432,6 +437,7 @@ public class FileInfoUtils {
                 FileInfoUtils.setBad(fileInfo);
                 fileInfo.setDate(0);
             }
+
             orientation = DateTaken.getMetaDataOrientation(metaData);
             if (orientation != 0) {
                 fileInfo.setOrientation(orientation);

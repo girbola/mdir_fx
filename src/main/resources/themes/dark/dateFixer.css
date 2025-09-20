@@ -74,13 +74,6 @@
 .buttonDateTimeContainer {
     -fx-margin: 0;
     -fx-padding: 0;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-border-insets: 0;
-    -fx-background-insets: 0;
 }
 
 .closeButton {

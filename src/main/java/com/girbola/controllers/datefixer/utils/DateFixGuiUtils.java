@@ -14,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.OverrunStyle;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import org.kordamp.ikonli.javafx.FontIcon;
@@ -99,34 +100,30 @@ public class DateFixGuiUtils {
         label.getStyleClass().add("fileDate_tf");
         label.setFocusTraversable(false);
         label.setId("fileDate");
-        label.setMaxHeight(23);
-        label.setMinHeight(23);
-        label.setPrefHeight(23);
+        label.setMaxHeight(Region.USE_COMPUTED_SIZE);
+        label.setMinHeight(Region.USE_COMPUTED_SIZE);
+        label.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        label.setMinWidth(Region.USE_COMPUTED_SIZE);
+        label.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        label.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(label, Priority.ALWAYS);
 
-        if(FileInfoUtils.isGood(fileInfo)){
+        label.setTextOverrun(OverrunStyle.ELLIPSIS);
+        label.setWrapText(false);
+        // Truncate text if it's wider than the parent
+
+        if (FileInfoUtils.isGood(fileInfo)) {
             label.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
-        } else if(FileInfoUtils.isBad(fileInfo)){
+        } else if (FileInfoUtils.isBad(fileInfo)) {
             label.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
-        } else if(FileInfoUtils.isModified(fileInfo)){
+        } else if (FileInfoUtils.isModified(fileInfo)) {
             label.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
-        } else if(FileInfoUtils.isConfirmed(fileInfo)){
+        } else if (FileInfoUtils.isConfirmed(fileInfo)) {
             label.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
-        } else if(FileInfoUtils.isSuggested(fileInfo)){
+        } else if (FileInfoUtils.isSuggested(fileInfo)) {
             label.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
         }
 
-//
-//        if (fileInfo.isBad()) {
-//            hbox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
-//        } else if (fileInfo.isGood()) {
-//            hbox.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
-//        } else if (fileInfo.isConfirmed()) {
-//            hbox.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
-//        } else if (fileInfo.isVideo()) {
-//            hbox.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
-//        } else if (fileInfo.isSuggested()) {
-//            hbox.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
-//        }
         return label;
     }
 
