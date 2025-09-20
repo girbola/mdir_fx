@@ -306,11 +306,6 @@ public class FileNameParseUtils {
         return true;
     }
 
-    public static boolean tryParseDateTime(FileInfo fileInfo) {
-        Path fileName = Paths.get(fileInfo.getOrgPath());
-        return tryParseDateTime(fileName, fileInfo);
-    }
-
     public static long tryParseDateTimeAsLong(FileInfo fileInfo) {
         Path filename = Paths.get(fileInfo.getOrgPath());
         String datePart = extractDatePart(filename.toAbsolutePath().toString());
@@ -319,31 +314,31 @@ public class FileNameParseUtils {
             return 0L;
         }
 
-        DateTimeFormatter defineDateTimeFormatter = getDateTimeFormatterIfFound(dateTimeFormats, datePart);
-        if(defineDateTimeFormatter != null) {
+        DateTimeFormatter defineDateTimeFormatter = getDateTimeFormatterIfFound(dateTimeFormats, datePart, fileInfo);
+        if (defineDateTimeFormatter != null) {
             LocalDateTime localDateTime = LocalDateTime.parse(datePart, defineDateTimeFormatter);
-
             String format = simpleDates.getDtf_ymd_hms_minusDots_default().format(localDateTime);
             try {
                 java.time.LocalDateTime ldt = DateUtils.stringDateToLocalDateTime(format);
                 if (ldt != null) {
                     return ldt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         defineDateTimeFormatter = getDateFormatterIfFound(dateFormats, datePart);
-        if(defineDateTimeFormatter != null) {
-            LocalDateTime localDateTime = LocalDate.parse(datePart, defineDateTimeFormatter).atTime(12,0,0);
+        if (defineDateTimeFormatter != null) {
+            LocalDateTime localDateTime = LocalDate.parse(datePart, defineDateTimeFormatter).atTime(12, 0, 0);
             String format = simpleDates.getDtf_ymd_hms_minusDots_default().format(localDateTime);
             try {
                 java.time.LocalDateTime ldt = DateUtils.stringDateToLocalDateTime(format);
                 if (ldt != null) {
                     return ldt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return 0L;
-
     }
 
     private static DateTimeFormatter getDateTimeFromString(Map<String, DateTimeFormatter> dateFormats, String datePart) {
@@ -359,32 +354,18 @@ public class FileNameParseUtils {
         return null;
     }
 
-
-    public static boolean tryParseDateTime(Path filename, FileInfo fileInfo) {
-        Messages.sprintf("#####################tryParseDateTime: " + filename);
-        String datePart = extractDatePart(filename.toAbsolutePath().toString());
-        if (isDateTime(datePart)) {
-            System.out.println(filename + " -> datetime detected: " + datePart + " DATAETAKETHAET:H::::::::::: " + fileInfo.getOrgPath() );
-            FileInfoUtils.setSuggested(fileInfo);
-        } else if (isDate(datePart)) {
-            System.out.println(filename + " -> date only detected " + datePart);
-            FileInfoUtils.setSuggested(fileInfo);
-        } else {
-            System.out.println(filename + " -> not recognizable date/datetime " + datePart);
-        }
-
-        return false;
-    }
-
     private static String extractDatePart(String filename) {
         // Capture anything that looks like a date or datetime
         return filename.replaceAll(".*?(\\d{4}[-/]\\d{2}[-/]\\d{2}([ T_]\\d{2}[-:]\\d{2}[-:]\\d{2}( [APMapm]{2})?)?|\\d{8}(_\\d{6})?|\\d{14}).*", "$1");
     }
 
-    private static DateTimeFormatter getDateTimeFormatterIfFound(Map<String, DateTimeFormatter> dateTimeFormats, String text) {
+    private static DateTimeFormatter getDateTimeFormatterIfFound(Map<String, DateTimeFormatter> dateTimeFormats, String text, FileInfo fileInfo) {
         for (DateTimeFormatter fmt : dateTimeFormats.values()) {
             try {
-                LocalDateTime.parse(text, fmt);
+                LocalDateTime parsedDate = LocalDateTime.parse(text, fmt);
+//                DateUtils.parseLocalDateTimeToEpochMillis(parsedDate, fmt);
+                long epochMillis = DateUtils.parseLocalDateTimeToEpochMillis(parsedDate.format(fmt), fmt);
+                fileInfo.setDate(epochMillis);
                 return fmt;
             } catch (DateTimeParseException ignored) {
             }

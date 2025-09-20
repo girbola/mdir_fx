@@ -105,7 +105,6 @@ public class DateTaken {
         Iterable<Directory> directories = metaData.getDirectories();
 
         if (FileUtils.supportedImage(path.toFile()) || FileUtils.supportedRaw(path.toFile())) {
-
             ExifSubIFDDirectory directory2 = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 // create a descriptor
             Date date = null;
@@ -117,11 +116,6 @@ public class DateTaken {
             } catch (Exception ex) {
 
             }
-// get tag description
-
-
-// create a descriptor
-
 
             for (Directory directory : directories) {
                 if (directory != null) {
@@ -153,7 +147,6 @@ public class DateTaken {
     }
 
     public static Metadata readMetaData(Path path) {
-
         try {
             return ImageMetadataReader.readMetadata(path.toFile());
         } catch (Exception e) {

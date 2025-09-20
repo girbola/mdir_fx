@@ -4,14 +4,22 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileInfoTestUtil;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import org.slf4j.*;
+import java.util.ArrayList;
+import java.util.List;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class FileInfoUtilsTest {
 
@@ -42,11 +50,14 @@ public class FileInfoUtilsTest {
     void createFileInfo() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
         fileInfo.setFileInfo_id(1);
+        List<String> list = new ArrayList<>();
+        list.add("2025-09-20T12:04:11.840611300 FileInfo created. PATH=src\\test\\resources\\in\\20220413_160023.jpg");
+        fileInfo.setFileHistories(list);
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
         Messages.sprintf("fileInfo1giihgo: " + fileInfo.getImageDifferenceHash());
         Path path = Paths.get("src","test","resources", "in","20220413_160023.jpg");
 
-        String expected = "FileInfo{bad=false, camera_model='SM-A515F', confirmed=false, copied=false, date=1649865623000, destination_Path='', event='', fileInfo_id=9, fileInfo_version=1, good=true, ignored=false, image=true, imageDifferenceHash=9024515497931845856, localDateTime=null, location='', orientation=1, orgPath='src\\test\\resources\\in\\20220413_160023.jpg', raw=false, size=0, suggested=false, tableDuplicated=false, tags='', thumb_length=51503, thumb_offset=916, timeShift=0, user='', video=false, workDir='', workDirDriveSerialNumber=''}";
+        String expected = "FileInfo{bad=false, camera_model='SM-A515F', confirmed=false, copied=false, date=1649865623000, destination_Path='', event='', fileInfo_id=1, fileInfo_version=1, good=true, ignored=false, image=true, imageDifferenceHash=, localDateTime=null, location='', modified=false, orientation=1, orgPath='src\\test\\resources\\in\\20220413_160023.jpg', raw=false, size=3515984, suggested=false, tableDuplicated=false, tags='', thumb_length=51503, thumb_offset=916, timeShift=0, user='', video=false, workDir='', workDirDriveSerialNumber='', fileInfoHistories='[2025-09-20T12:04:11.840611300 FileInfo created. PATH=src\\test\\resources\\in\\20220413_160023.jpg]'}";
         String expected2 = "FileInfo{fileInfo_version=1, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false," +
                 " suggested=false, tableDuplicated=false, video=false, localDateTime=null, camera_model='SM-A515F', destination_Path='', event='', location=''," +
                 " orgPath=" + path + "', tags='', user='', workDir='', workDirDriveSerialNumber='', fileInfo_id=2, orientation=1, thumb_length=51503, thumb_offset=916, date=1649865623000, imageDifferenceHash=9024515497931845856, size=3515984, timeShift=0}";
@@ -54,6 +65,54 @@ public class FileInfoUtilsTest {
         Messages.sprintf("ACTUAL Fileinfo from file length= " + fileInfo.showAllValues().length() + " Expected length: " + expected.length());
         assertEquals(expected, fileInfo.showAllValues());
     }
+
+
+    @Test
+    void createFileInfo_with_goodDate() throws IOException {
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20220413-blaa.jpg"));
+        fileInfo.setFileInfo_id(1);
+        if(fileInfo.isSuggested()) {
+            Messages.sprintf("Suggested date: " + fileInfo.getDate());
+        }
+        assertEquals(true, fileInfo.isGood());
+        assertEquals(false, fileInfo.isBad());
+        assertEquals(false, fileInfo.isSuggested());
+        assertEquals(false, fileInfo.isConfirmed());
+        assertEquals(false, fileInfo.isModified());
+    }
+
+    @Test
+    void createFileInfo_with_badDate() throws IOException {
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "IMG.jpg"));
+        fileInfo.setFileInfo_id(1);
+        if(fileInfo.isSuggested()) {
+            Messages.sprintf("Suggested date: " + fileInfo.getDate());
+        }
+        Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
+        assertEquals(true, fileInfo.isBad());
+        assertEquals(false, fileInfo.isGood());
+        assertEquals(false, fileInfo.isSuggested());
+        assertEquals(false, fileInfo.isConfirmed());
+        assertEquals(false, fileInfo.isModified());
+    }
+
+    @Test
+    void createFileInfo_with_suggestedDate() throws IOException {
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20250920-tidii.jpg"));
+        fileInfo.setFileInfo_id(1);
+        if(fileInfo.isSuggested()) {
+            Messages.sprintf("Suggested date: " + fileInfo.getDate());
+        }
+        Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
+        assertEquals(true, fileInfo.isSuggested());
+        assertEquals(true, fileInfo.isBad());
+        assertEquals(false, fileInfo.isGood());
+        assertEquals(false, fileInfo.isConfirmed());
+        assertEquals(false, fileInfo.isModified());
+        assertEquals(1758358800000L, fileInfo.getDate());
+    }
+
+
 
     @Test
     public void testRenameFile() throws IOException {

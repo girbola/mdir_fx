@@ -2,6 +2,7 @@
 package common.utils.date;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
 import static com.girbola.Main.simpleDates;
@@ -91,5 +92,18 @@ public class DateUtils {
 		}
 		return 0;
 	}
+
+    public static long parseLocalDateTimeToEpochMillis(String text, java.time.format.DateTimeFormatter formatter) {
+        if (text == null || text.isEmpty() || formatter == null) {
+            return 0L;
+        }
+        try {
+            LocalDateTime ldt = LocalDateTime.parse(text, formatter);
+            return ldt.toInstant(ZoneOffset.UTC).toEpochMilli();
+        } catch (Exception ex) {
+            return 0L;
+        }
+    }
+
 
 }

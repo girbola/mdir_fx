@@ -142,7 +142,9 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
             setSelectedImageRoutine(fileInfo, frame);
             return frame;
         } else if (fileInfo.isVideo()) {
-            return createImageFrame(fileInfo, counter.get());
+            VBox imageFrame = createImageFrame(fileInfo, counter.get());
+            setSelectedVideoRoutine(fileInfo, imageFrame);
+            return imageFrame;
         }
         return null;
     }
@@ -293,6 +295,15 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
             if (event.getButton().equals(MouseButton.PRIMARY)) {
                 if (event.getClickCount() == 1) {
                     handleImageFrameSelected(event, fileInfo);
+                    ObservableList<EXIF_Data_Selector> items = model_dateFix.getCameras_TableView().getItems();
+                    if (items != null && !items.isEmpty()) {
+                        items.forEach(item -> {
+                            item.setIsShowing(false);
+                        });
+                    }
+                    Platform.runLater(() -> {
+                        model_dateFix.getCameras_TableView().getSelectionModel().clearSelection();
+                    });
                 }
                 if (event.getClickCount() == 2) {
                     Path path = Paths.get(fileInfo.getOrgPath());

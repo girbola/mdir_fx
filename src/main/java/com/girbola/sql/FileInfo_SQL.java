@@ -191,7 +191,9 @@ public class FileInfo_SQL {
             Messages.sprintfError("Failed to insert file info records: " + ex.getMessage());
             return false;
         } finally {
-            SQL_Utils.closeConnection(mdirDatabaseConnection);
+            if(SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
+                SQL_Utils.closeConnection(mdirDatabaseConnection);
+            }
         }
     }
 

@@ -102,6 +102,29 @@ public class DateFixGuiUtils {
         label.setMinHeight(23);
         label.setPrefHeight(23);
 
+        if (style.equals(CssStylesEnum.GOOD_STYLE)) {
+            if (fileInfo.isGood() && !fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
+                modelDatefix.getSelectionModel().addWithToggle(root);
+            }
+        } else if (style.equals(CssStylesEnum.MODIFIED_STYLE)) {
+            if (fileInfo.isGood() && fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
+                modelDatefix.getSelectionModel().addWithToggle(root);
+            }
+        } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE)) {
+            if (fileInfo.isGood() && fileInfo.isSuggested() && !fileInfo.isConfirmed()) {
+                modelDatefix.getSelectionModel().addWithToggle(root);
+            }
+        } else if (style.equals(CssStylesEnum.BAD_STYLE)) {
+            if (fileInfo.isBad()) {
+                modelDatefix.getSelectionModel().addWithToggle(root);
+            }
+        } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE)) {
+            if (fileInfo.isConfirmed()) {
+                modelDatefix.getSelectionModel().addWithToggle(root);
+            }
+        }
+
+
         if (fileInfo.isBad()) {
             hbox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
         } else if (fileInfo.isGood()) {
@@ -229,6 +252,7 @@ public class DateFixGuiUtils {
         buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
         buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
         buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
+
         return buttonDateTimeContainer;
     }
 
@@ -312,17 +336,40 @@ public class DateFixGuiUtils {
             if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                 VBox imageFrame = (VBox) root;
                 FileInfo fileInfo = (FileInfo) root.getUserData();
-                if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
-                    if (fileInfo.isGood()) {
+                Messages.sprintf("fileInfoooooo:::::::::: " + fileInfo.toString());
+                if (style.equals(CssStylesEnum.GOOD_STYLE)) {
+                    if (fileInfo.isGood() && !fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+                } else if (style.equals(CssStylesEnum.MODIFIED_STYLE)) {
+                    if (fileInfo.isGood() && fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
+                        modelDatefix.getSelectionModel().addWithToggle(root);
+                    }
+                } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE)) {
+                    if (fileInfo.isGood() && fileInfo.isSuggested() && !fileInfo.isConfirmed()) {
+                        modelDatefix.getSelectionModel().addWithToggle(root);
+                    }
+                } else if (style.equals(CssStylesEnum.BAD_STYLE)) {
                     if (fileInfo.isBad()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else {
-                    processImageFrame(imageFrame, modelDatefix, style);
+                } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE)) {
+                    if (fileInfo.isConfirmed()) {
+                        modelDatefix.getSelectionModel().addWithToggle(root);
+                    }
                 }
+
+//                if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+//                    if (fileInfo.isGood()) {
+//                        modelDatefix.getSelectionModel().addWithToggle(root);
+//                    }
+//                } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+//                    if (fileInfo.isBad()) {
+//                        modelDatefix.getSelectionModel().addWithToggle(root);
+//                    }
+//                } else {
+//                    processImageFrame(imageFrame, modelDatefix, style);
+//                }
             }
         }
 //        for (Node childNode : parent.getChildren()) {

@@ -2,7 +2,6 @@ package com.girbola.utils;
 
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
-import com.drew.metadata.Tag;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 import com.girbola.Main;
@@ -38,7 +37,6 @@ import java.util.*;
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
 import static common.media.DateTaken.readMetaData;
-import static common.utils.FileNameParseUtils.tryParseDateTime;
 import static common.utils.FileUtils.*;
 
 
@@ -60,29 +58,31 @@ public class FileInfoUtils {
                 setImage(fileInfo);
 // Get Size FileName Date ModifiredDate TakenDate
 
-                tryToGetCreationDateTime(fileName, fileInfo);
+                long dateTime = tryToGetCreationDateTime(fileName, fileInfo);
+                fileInfo.setDate(dateTime);
+                setSuggested(fileInfo);
 
-                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
-
-                boolean tryParseDateTime = tryParseDateTime(fileInfo);
-//                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
-                String imageDifferenceHash = "";
-                long start = System.currentTimeMillis();
+//                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
+//
+//                boolean tryParseDateTime = tryParseDateTime(fileInfo);
+////                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
+//                String imageDifferenceHash = "";
+//                long start = System.currentTimeMillis();
                 Metadata metaData = DateTaken.getMetaData(fileName);
-                if (metaData == null) {
-                    Messages.sprintf("metaData were null!");
-                    fileInfo.setBad(true);
-                    boolean found = tryFileNameDate(fileInfo);
-                    Messages.sprintf("found???: " + found);
-                    if (found) {
-                        FileInfoUtils.setSuggested(fileInfo);
-                    } else {
-                        FileInfoUtils.setBad(fileInfo);
-                    }
-
-
-                    return null;
-                }
+//                if (metaData == null) {
+//                    Messages.sprintf("metaData were null!");
+//                    fileInfo.setBad(true);
+//                    boolean found = tryFileNameDate(fileInfo);
+//                    Messages.sprintf("found???: " + found);
+//                    if (found) {
+//                        FileInfoUtils.setSuggested(fileInfo);
+//                    } else {
+//                        FileInfoUtils.setBad(fileInfo);
+//                    }
+//
+//
+//                    return null;
+//                }
                 for (Directory directory : metaData.getDirectories()) {
                     if (directory.getName().equals("File")) {
                         Messages.sprintf("directory: " + directory.getName());
@@ -126,19 +126,17 @@ public class FileInfoUtils {
         }
     }
 
-    public static void tryToGetCreationDateTime(Path fileName, FileInfo fileInfo) {
+    public static long tryToGetCreationDateTime(Path fileName, FileInfo fileInfo) {
         try {
-            boolean metaDataFound = setImageMetadata(fileName, fileInfo);
+            boolean metaDataFound = handleMetadataInformation(fileName, fileInfo);
             if (!metaDataFound) {
-                boolean tryFileNameDate = FileNameParseUtils.tryParseDateTime(fileName, fileInfo);
-                if (!tryFileNameDate) {
-                    setBad(fileInfo);
-                    fileInfo.setDate(0);
-                }
+                return FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
             }
+            return metaDataFound ? fileInfo.getDate() : 0L;
         } catch (Exception e) {
             setBad(fileInfo);
             fileInfo.setDate(0);
+            return 0L;
         }
     }
 
@@ -200,7 +198,7 @@ public class FileInfoUtils {
                 return false;
             }
             if (Files.exists(THM_path)) {
-                boolean metaDataFound = setImageMetadata(THM_path, fileInfo);
+                boolean metaDataFound = handleMetadataInformation(THM_path, fileInfo);
                 if (metaDataFound) {
                     return true;
                 }
@@ -328,6 +326,7 @@ public class FileInfoUtils {
         fileInfo.setBad(true);
         fileInfo.setGood(false);
         fileInfo.setModified(false);
+        fileInfo.setConfirmed(false);
         fileInfo.setSuggested(true);
     }
 
@@ -366,7 +365,7 @@ public class FileInfoUtils {
         // TODO Auto-generated method stub
     }
 
-    public static boolean setImageMetadata(Path path, FileInfo fileInfo) {
+    public static boolean handleMetadataInformation(Path path, FileInfo fileInfo) {
 
         long creationDate = 0;
         int orientation = 0;
