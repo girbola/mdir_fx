@@ -3,7 +3,6 @@ package common.utils;
 
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.utils.FileInfoUtils;
 import common.utils.date.DateUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +13,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -308,7 +306,7 @@ public class FileNameParseUtils {
 
     public static long tryParseDateTimeAsLong(FileInfo fileInfo) {
         Path filename = Paths.get(fileInfo.getOrgPath());
-        String datePart = extractDatePart(filename.toAbsolutePath().toString());
+        String datePart = extractDateFromFileName(filename.toAbsolutePath().toString());
 
         if (datePart == null || datePart.isBlank()) {
             return 0L;
@@ -356,7 +354,30 @@ public class FileNameParseUtils {
 
     private static String extractDatePart(String filename) {
         // Capture anything that looks like a date or datetime
-        return filename.replaceAll(".*?(\\d{4}[-/]\\d{2}[-/]\\d{2}([ T_]\\d{2}[-:]\\d{2}[-:]\\d{2}( [APMapm]{2})?)?|\\d{8}(_\\d{6})?|\\d{14}).*", "$1");
+        String date = filename.replaceAll(".*?(\\d{4}[-/]\\d{2}[-/]\\d{2}([ T_]\\d{2}[-:]\\d{2}[-:]\\d{2}( [APMapm]{2})?)?|\\d{8}(_\\d{6})?|\\d{14}).*", "$1");
+        if (date != null && !date.isBlank() && !date.equals(filename)) {
+            return date.replaceAll("[_T]", " ").replaceAll("[.:]", "-").trim();
+        }
+        return null;
+    }
+// extractDateFromFileName
+
+    public static String extractDateFromFileName(String fileName) {
+        // Match the flexible date-time pattern with "at" allowing additional text
+        String regex = "(\\d{4}-\\d{2}-\\d{2})\\s+.*?\\s+(\\d{2}\\.\\d{2}\\.\\d{2})";
+
+        Matcher matcher = java.util.regex.Pattern.compile(regex).matcher(fileName);
+
+        if (matcher.find()) {
+            // Combine the captured group to form the full date and time
+            return matcher.group(1) + " " + matcher.group(2);
+        }
+        String date = extractDatePart(fileName);
+        if( date != null && !date.isBlank()) {
+            return date;
+        }
+
+        return null;
     }
 
     private static DateTimeFormatter getDateTimeFormatterIfFound(Map<String, DateTimeFormatter> dateTimeFormats, String text, FileInfo fileInfo) {

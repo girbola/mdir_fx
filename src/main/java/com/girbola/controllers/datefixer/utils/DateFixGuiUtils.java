@@ -6,6 +6,7 @@ import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.utils.FileInfoUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -102,40 +103,30 @@ public class DateFixGuiUtils {
         label.setMinHeight(23);
         label.setPrefHeight(23);
 
-        if (style.equals(CssStylesEnum.GOOD_STYLE)) {
-            if (fileInfo.isGood() && !fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
-                modelDatefix.getSelectionModel().addWithToggle(root);
-            }
-        } else if (style.equals(CssStylesEnum.MODIFIED_STYLE)) {
-            if (fileInfo.isGood() && fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
-                modelDatefix.getSelectionModel().addWithToggle(root);
-            }
-        } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE)) {
-            if (fileInfo.isGood() && fileInfo.isSuggested() && !fileInfo.isConfirmed()) {
-                modelDatefix.getSelectionModel().addWithToggle(root);
-            }
-        } else if (style.equals(CssStylesEnum.BAD_STYLE)) {
-            if (fileInfo.isBad()) {
-                modelDatefix.getSelectionModel().addWithToggle(root);
-            }
-        } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE)) {
-            if (fileInfo.isConfirmed()) {
-                modelDatefix.getSelectionModel().addWithToggle(root);
-            }
+        if(FileInfoUtils.isGood(fileInfo)){
+            label.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
+        } else if(FileInfoUtils.isBad(fileInfo)){
+            label.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+        } else if(FileInfoUtils.isModified(fileInfo)){
+            label.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+        } else if(FileInfoUtils.isConfirmed(fileInfo)){
+            label.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
+        } else if(FileInfoUtils.isSuggested(fileInfo)){
+            label.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
         }
 
-
-        if (fileInfo.isBad()) {
-            hbox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
-        } else if (fileInfo.isGood()) {
-            hbox.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
-        } else if (fileInfo.isConfirmed()) {
-            hbox.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
-        } else if (fileInfo.isVideo()) {
-            hbox.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
-        } else if (fileInfo.isSuggested()) {
-            hbox.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
-        }
+//
+//        if (fileInfo.isBad()) {
+//            hbox.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+//        } else if (fileInfo.isGood()) {
+//            hbox.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
+//        } else if (fileInfo.isConfirmed()) {
+//            hbox.setStyle(CssStylesEnum.CONFIRMED_STYLE.getStyle());
+//        } else if (fileInfo.isVideo()) {
+//            hbox.setStyle(CssStylesEnum.VIDEO_STYLE.getStyle());
+//        } else if (fileInfo.isSuggested()) {
+//            hbox.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
+//        }
         return label;
     }
 

@@ -306,13 +306,30 @@ public class FileInfoUtils {
         fileInfo.setGood(false);
         fileInfo.setModified(false);
         fileInfo.setSuggested(false);
+        fileInfo.setConfirmed(false);
+    }
+
+    public static boolean isBad(FileInfo fileInfo) {
+        return fileInfo.isBad() &&
+                !fileInfo.isGood() &&
+                !fileInfo.isModified() &&
+                !fileInfo.isSuggested();
     }
 
     public static void setGood(FileInfo fileInfo) {
         fileInfo.setBad(false);
         fileInfo.setGood(true);
         fileInfo.setModified(false);
+        fileInfo.setConfirmed(false);
         fileInfo.setSuggested(false);
+    }
+
+    public static boolean isGood(FileInfo fileInfo) {
+        return fileInfo.isGood() &&
+                !fileInfo.isBad() &&
+                !fileInfo.isModified() &&
+                !fileInfo.isSuggested() &&
+                !fileInfo.isConfirmed();
     }
 
     public static void setModified(FileInfo fileInfo) {
@@ -320,14 +337,41 @@ public class FileInfoUtils {
         fileInfo.setGood(false);
         fileInfo.setModified(true);
         fileInfo.setSuggested(false);
+        fileInfo.setConfirmed(false);
+    }
+
+    public static boolean isModified(FileInfo fileInfo) {
+        return fileInfo.isModified() &&
+                !fileInfo.isSuggested() &&
+                !fileInfo.isConfirmed();
     }
 
     public static void setSuggested(FileInfo fileInfo) {
         fileInfo.setBad(true);
         fileInfo.setGood(false);
         fileInfo.setModified(false);
-        fileInfo.setConfirmed(false);
         fileInfo.setSuggested(true);
+        fileInfo.setConfirmed(false);
+    }
+
+    public static boolean isSuggested(FileInfo fileInfo) {
+        return !fileInfo.isModified() &&
+                fileInfo.isSuggested() &&
+                !fileInfo.isConfirmed();
+    }
+
+    public static void setConfirmed(FileInfo fileInfo) {
+        fileInfo.setBad(false);
+        fileInfo.setGood(true);
+        fileInfo.setModified(false);
+        fileInfo.setSuggested(false);
+        fileInfo.setConfirmed(true);
+    }
+
+    public static boolean isConfirmed(FileInfo fileInfo) {
+        return !fileInfo.isModified() &&
+                !fileInfo.isSuggested() &&
+                fileInfo.isConfirmed();
     }
 
     public static void setVideo(FileInfo fileInfo) {
