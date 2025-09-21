@@ -65,6 +65,7 @@
     -fx-border-color: grey;
     -fx-border-radius: 3;
     -fx-text-fill: white;
+    -fx-padding: 10;
 }
 .fileName_ta {
     -fx-background-color: transparent;
@@ -92,8 +93,8 @@
 }
 .imageNumber {
     -fx-font-family: Gaduci;
-    -fx-font-size: 40;
-    -fx-fill: white;
+    -fx-font-size: 40px;
+    -fx-fill: red;
     /*-fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);*/
     -fx-stroke: grey;
     -fx-stroke-width: 1;
