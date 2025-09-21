@@ -7,8 +7,7 @@ public enum CssStylesEnum {
     CONFIRMED_STYLE(Styles.CONFIRMED_BACKGROUND_COLOR),
     GOOD_STYLE(Styles.GOOD_BACKGROUND_COLOR),
     MODIFIED_STYLE(Styles.MODIFIED_BACKGROUND_COLOR),
-    SUGGESTED_STYLE(Styles.SUGGESTED_BACKGROUND_STYLE),
-    VIDEO_STYLE(Styles.VIDEO_BACKGROUND_STYLE);
+    SUGGESTED_STYLE(Styles.SUGGESTED_BACKGROUND_STYLE);
 
 
     private final String style;
@@ -22,13 +21,11 @@ public enum CssStylesEnum {
     }
 
     private static class Styles {
-        private static final String BAD_BACKGROUND_COLOR = "-fx-background-color: derive(red, 50%)";
-        private static final String CONFIRMED_BACKGROUND_COLOR = "-fx-background-color: derive(green, 50%)";
-        private static final String GOOD_BACKGROUND_COLOR = "-fx-background-color: derive(-fx-base, 50%)";
-        private static final String MODIFIED_BACKGROUND_COLOR = "-fx-background-color: derive(blue, 50%)";
-        private static final String SUGGESTED_BACKGROUND_STYLE = "-fx-background-color: derive(pink, 50%); -fx-text-fill: black;";
-        private static final String VIDEO_BACKGROUND_STYLE = "-fx-background-color: orange; -fx-text-fill: black;";
-//        private static final String ACCEPTED_BACKGROUND_STYLE = "-fx-background-color: derive(#ee8c8c, 50%); -fx-text-fill: black;";
+        private static final String BAD_BACKGROUND_COLOR = "-fx-background-color: #AA4F4F";
+        private static final String CONFIRMED_BACKGROUND_COLOR = "-fx-background-color: #42B242";
+        private static final String GOOD_BACKGROUND_COLOR = "-fx-background-color: transparent;";
+        private static final String MODIFIED_BACKGROUND_COLOR = "-fx-background-color: #5151A5;";
+        private static final String SUGGESTED_BACKGROUND_STYLE = "-fx-background-color: #A3AB4D; -fx-text-fill: #000000;";
     }
 
 }

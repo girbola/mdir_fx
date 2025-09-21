@@ -74,13 +74,6 @@
 .buttonDateTimeContainer {
     -fx-margin: 0;
     -fx-padding: 0;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-border-width: 0;
-    -fx-border-radius: 0;
-    -fx-background-radius: 0;
-    -fx-border-insets: 0;
-    -fx-background-insets: 0;
 }
 
 .closeButton {
@@ -191,14 +184,20 @@
     /*-fx-border-width: 0.0625em;*/
     -fx-background-color: black;
 }
-
 .imageNumber {
-    -fx-font-size: 40px;
+    -fx-alignment: top-left;   /* or center-right / bottom-right, etc. */
+    -fx-padding: 6 6 6 6;      /* inset from edges to avoid overlap */
+}
+
+.imageNumber *.text {
+    -fx-font-size: 20px;
     -fx-fill: -fx-light-text-color;
     /*-fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);*/
     -fx-stroke: grey;
     -fx-stroke-width: 1;
     -fx-font-smoothing-type: lcd;
+    -fx-view-order: -1;
+
 }
 
 .jump_Button {
