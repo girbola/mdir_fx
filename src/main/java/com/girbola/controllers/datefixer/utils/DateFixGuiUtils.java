@@ -168,9 +168,9 @@ public class DateFixGuiUtils {
         topContainer.getStyleClass().add("imageFrameTop");
         topContainer.setMouseTransparent(true);
 
-        topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, 25);
-        topContainer.setMinSize(Region.USE_COMPUTED_SIZE, 25);
-        topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, 25);
+        topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        topContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
         ColumnConstraints cc1 = new ColumnConstraints();
         cc1.setPercentWidth(20);
@@ -200,9 +200,9 @@ public class DateFixGuiUtils {
         return topContainer;
     }
 
-    public static HBox createImageViewContainer(FileInfo fileInfo, String name, int imageFrame_y) {
+    public static HBox createImageViewContainer() {
         HBox imageViewContainer = new HBox();
-        imageViewContainer.getStyleClass().add(name);
+        imageViewContainer.getStyleClass().add("imageViewContainer");
         imageViewContainer.setId("imageViewContainer");
         imageViewContainer.setMouseTransparent(true);
         imageViewContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
@@ -215,7 +215,6 @@ public class DateFixGuiUtils {
 
         imageViewContainer.setAlignment(Pos.CENTER);
         imageViewContainer.setFillHeight(true);
-        imageViewContainer.setId(name);
 
         VBox.setVgrow(imageViewContainer, Priority.ALWAYS);
 

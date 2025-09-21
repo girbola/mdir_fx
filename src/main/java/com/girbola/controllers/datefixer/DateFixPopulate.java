@@ -185,7 +185,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         GridPane.setHalignment(imageFrameNumber, HPos.CENTER);
         GridPane.setHalignment(fileExtension, HPos.CENTER);
 
-        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer(fileInfo, "imageViewContainer", UIContants.IMAGE_FRAME_HEIGHT);
+        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer();
         ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (UIContants.THUMBNAIL_MAX_WIDTH), UIContants.THUMBNAIL_MAX_HEIGHT);
         imageViewContainer.getChildren().add(iv);
 
