@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -168,26 +169,67 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     }
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {
-        VBox frame_vbox = DateFixGuiUtils.createImageFrame(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
 
-        GridPane topContainer = DateFixGuiUtils.createTopGridPane();
+
+        VBox frame_vbox = DateFixGuiUtils.createImageFrame();
+        VBox.setVgrow(frame_vbox, Priority.ALWAYS);
+        frame_vbox.setFillWidth(true);
+
+        VBox topVBox = new VBox();
+        topVBox.setFillWidth(true);
+        topVBox.setPrefHeight(Region.USE_COMPUTED_SIZE);
+        topVBox.setMinHeight(Region.USE_PREF_SIZE);
+        topVBox.setMaxHeight(Region.USE_PREF_SIZE);
+        VBox.setVgrow(topVBox, Priority.NEVER);
+
+        HBox topContainer = DateFixGuiUtils.createTopContainer(30);
+        HBox.setHgrow(topContainer, Priority.ALWAYS); // let top bar grow in parent
+        topContainer.setMaxWidth(Double.MAX_VALUE);    // no max width limit
+
+        HBox topContainerSplitter = DateFixGuiUtils.createTopContainer(10);
+        topContainerSplitter.setAlignment(Pos.CENTER);
+        HBox.setHgrow(topContainerSplitter, Priority.ALWAYS);
+//        topContainerSplitter.setMinWidth(100);
+//        topContainerSplitter.setMaxWidth(100);
+//        topContainerSplitter.setPrefWidth(100);
+        topContainerSplitter.setSpacing(10);
+
+        // Expanding spacers to distribute space evenly
+        Label leftSpacer = new Label();
+        leftSpacer.setMinHeight(30);
+        leftSpacer.setMaxHeight(30);
+        leftSpacer.setPrefHeight(30);
+
+        Label rightSpacer = new Label();
+        rightSpacer.setMinHeight(30);
+        rightSpacer.setMaxHeight(30);
+        rightSpacer.setPrefHeight(30);
+
+        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+        VBox.setVgrow(leftSpacer, Priority.ALWAYS);
+        VBox.setVgrow(rightSpacer, Priority.ALWAYS);
 
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
-        imageFrameNumber.setAlignment(Pos.TOP_RIGHT);
 
         Label fileExtension = new Label(FileUtils.getExtension(Paths.get(fileInfo.getOrgPath())).toUpperCase());
+        fileExtension.setAlignment(Pos.CENTER_LEFT);
         fileExtension.getStyleClass().add("fileExtension");
         fileExtension.setId("fileExtension");
+        fileExtension.setPadding(new Insets(5, 0, 0, 5));
 
-        topContainer.add(imageFrameNumber, 4, 0);
-        topContainer.add(fileExtension, 0, 0);
+        topContainer.getChildren().setAll(fileExtension, leftSpacer, topContainerSplitter, rightSpacer, imageFrameNumber);
 
-        GridPane.setHalignment(imageFrameNumber, HPos.CENTER);
-        GridPane.setHalignment(fileExtension, HPos.CENTER);
+
+//        GridPane.setHalignment(imageFrameNumber, HPos.CENTER);
+//        GridPane.setHalignment(fileExtension, HPos.CENTER);
 
         HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer();
         ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (UIContants.THUMBNAIL_MAX_WIDTH), UIContants.THUMBNAIL_MAX_HEIGHT);
         imageViewContainer.getChildren().add(iv);
+
+        // Ensure the top bar has a definite width to distribute to spacers
+        topContainer.prefWidthProperty().bind(imageViewContainer.widthProperty());
 
         VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
 
@@ -204,9 +246,9 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         VBox.setVgrow(bottomContainer, Priority.NEVER);
         VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
         VBox.setVgrow(iv, Priority.NEVER);
-        VBox.setVgrow(topContainer, Priority.NEVER);
 
-        frame_vbox.getChildren().addAll(topContainer, imageViewContainer, bottomContainer);
+        topVBox.getChildren().add(topContainer);
+        frame_vbox.getChildren().addAll(topVBox, imageViewContainer, bottomContainer);
 
         return frame_vbox;
     }

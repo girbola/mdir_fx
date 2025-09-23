@@ -609,17 +609,17 @@
                     <children>
                         <AnchorPane focusTraversable="true" styleClass="imagesContainer" HBox.hgrow="ALWAYS">
                             <children>
-                                <ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" styleClass="imagesContainer" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <ScrollPane fx:id="df_scrollPane" fitToHeight="true" fitToWidth="true" pannable="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <content>
                                         <TilePane fx:id="df_tilePane" styleClass="imagesContainer" tileAlignment="TOP_LEFT">
                                             <children>
-                                                <VBox alignment="CENTER" fillWidth="false" maxHeight="250.0" maxWidth="250.0" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-border-color: red;" styleClass="imageFrame" TilePane.alignment="CENTER">
+                                                <VBox alignment="CENTER" maxHeight="250.0" maxWidth="250.0" minHeight="250.0" minWidth="250.0" prefHeight="250.0" prefWidth="250.0" style="-fx-border-color: red;" styleClass="imageFrame" TilePane.alignment="CENTER">
                                                     <children>
-                                                        <HBox fillHeight="false" VBox.vgrow="ALWAYS">
-                                                            <children>
-                                                                <GridPane gridLinesVisible="true" maxHeight="20.0" minHeight="20.0" prefHeight="20.0" styleClass="imageFrameTop">
+                                          <VBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                                <GridPane gridLinesVisible="true" styleClass="imageFrameTop">
                                                                     <columnConstraints>
-                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                                         <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" minWidth="40.0" prefWidth="40.0" />
@@ -628,29 +628,30 @@
                                                                         <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                         <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                                                                     </rowConstraints>
                                                                     <children>
-                                                                        <Label alignment="TOP_LEFT" text="99999" GridPane.columnIndex="3" GridPane.halignment="RIGHT" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                                        <Label alignment="TOP_LEFT" styleClass="imageNumber" text="99999" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
+                                                      <Label styleClass="fileExtension" text="jpeg" />
                                                                     </children>
                                                                 </GridPane>
-                                                            </children>
-                                                        </HBox>
-                                                        <HBox alignment="CENTER" fillHeight="false" VBox.vgrow="ALWAYS">
+                                             </children>
+                                          </VBox>
+                                                        <HBox alignment="CENTER" fillHeight="false" styleClass="imageViewContainer" VBox.vgrow="ALWAYS">
                                                             <children>
-                                                                <ImageView fitHeight="137.0" fitWidth="157.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
+                                                                <ImageView fitHeight="137.0" fitWidth="157.0" pickOnBounds="true" preserveRatio="true" styleClass="imageView" HBox.hgrow="NEVER">
                                                                     <image>
                                                                         <Image url="@../../../../../resources/img/brokenImage.png" />
                                                                     </image>
                                                                 </ImageView>
                                                             </children>
                                                         </HBox>
-                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" maxHeight="40.0" maxWidth="246.0" minHeight="40.0" minWidth="246.0" prefHeight="40.0" prefWidth="246.0" VBox.vgrow="NEVER">
+                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                                                             <VBox.margin>
                                                                 <Insets bottom="1.0" />
                                                             </VBox.margin>
                                                             <children>
-                                                                <Label id="fileNae_ta" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER">
+                                                                <Label id="fileName_ta" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" minWidth="-Infinity" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER">
                                                    <font>
                                                       <Font size="11.0" />
                                                    </font></Label>
@@ -683,7 +684,7 @@
             <bottom>
                 <HBox BorderPane.alignment="TOP_LEFT">
                     <children>
-                        <TextField fx:id="filePath_tf" editable="false" styleClass="rootPath" text="aergaerg" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER">
+                        <TextField fx:id="filePath_tf" editable="false" styleClass="rootPath" text="textfield" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER">
                             <padding>
                                 <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                             </padding>

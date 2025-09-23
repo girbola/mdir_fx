@@ -19,7 +19,7 @@ public class UIContants {
      * Ratio is 0,75
      */
     final public static int IMAGE_FRAME_WIDTH = 250;
-    final public static int IMAGE_FRAME_HEIGHT = 250;
+    final public static int IMAGE_FRAME_HEIGHT = 300;
 
     /**
      * The maximum width allowed for a thumbnail image in the graphical user interface.

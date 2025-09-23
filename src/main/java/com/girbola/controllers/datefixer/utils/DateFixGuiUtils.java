@@ -28,25 +28,23 @@ public class DateFixGuiUtils {
 
     public static Label createImageNumberLbl(int index) {
         Label label = new Label("" + index);
-//        label.setTextOverrun(OverrunStyle.ELLIPSIS);
         label.setWrapText(false);
-        label.getStyleClass().add("imageNumber");
         label.setId("imageNumber");
+        label.getStyleClass().add("imageNumber");
         label.setMouseTransparent(true);
         return label;
     }
 
-    public static VBox createImageFrame(int imageFrameX, int imageFrameY) {
+    public static VBox createImageFrame() {
         VBox frame_vbox = new VBox();
         frame_vbox.setAlignment(Pos.TOP_CENTER);
         frame_vbox.setId(DateFixConstants.IMAGEFRAME.getType());
+        frame_vbox.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
         frame_vbox.setAlignment(Pos.CENTER);
         frame_vbox.setFillWidth(true);
-        frame_vbox.setPrefSize(imageFrameX, imageFrameY);
-        frame_vbox.setMinSize(imageFrameX, imageFrameY);
-        frame_vbox.setMaxSize(imageFrameX, imageFrameY);
-        frame_vbox.setFillWidth(true);
-        frame_vbox.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
+        frame_vbox.setPrefSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
+        frame_vbox.setMinSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
+        frame_vbox.setMaxSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
         return frame_vbox;
     }
 
@@ -160,6 +158,16 @@ public class DateFixGuiUtils {
         column.setPrefWidth(width);
     }
 
+    public static HBox createTopContainer(double hGap) {
+        HBox topContainer = new HBox();
+        topContainer.setSpacing(hGap);
+        topContainer.setAlignment(Pos.TOP_LEFT);
+        topContainer.setId("topContainer");
+        topContainer.getStyleClass().add("imageFrameTop");
+        topContainer.setMouseTransparent(true);
+        return topContainer;
+    }
+
     public static GridPane createTopGridPane() {
         GridPane topContainer = new GridPane();
         topContainer.setAlignment(Pos.TOP_LEFT);
@@ -167,9 +175,16 @@ public class DateFixGuiUtils {
         topContainer.getStyleClass().add("imageFrameTop");
         topContainer.setMouseTransparent(true);
 
-        topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        topContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+
+//        topContainer.parentProperty().addListener((obs, oldParent, newParent) -> {
+//            if (newParent instanceof Region region) {
+//                topContainer.prefWidthProperty().bind(region.widthProperty());
+//            }
+//        });
+
+//        topContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+//        topContainer.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+//        topContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
         ColumnConstraints cc1 = new ColumnConstraints();
         cc1.setPercentWidth(20);
@@ -193,8 +208,10 @@ public class DateFixGuiUtils {
 
         RowConstraints r1 = new RowConstraints(10);
         RowConstraints r2 = new RowConstraints(10);
+        RowConstraints r3 = new RowConstraints(10);
+        RowConstraints r4 = new RowConstraints(10);
 
-        topContainer.getRowConstraints().addAll(r1, r2);
+        topContainer.getRowConstraints().addAll(r1, r2, r3, r4);
 
         return topContainer;
     }
@@ -208,9 +225,9 @@ public class DateFixGuiUtils {
         imageViewContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         imageViewContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
-        imageViewContainer.setMinHeight(175);
-        imageViewContainer.setMaxHeight(175);
-        imageViewContainer.setPrefHeight(175);
+        imageViewContainer.setMinHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
+        imageViewContainer.setMaxHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
+        imageViewContainer.setPrefHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
 
         imageViewContainer.setAlignment(Pos.CENTER);
         imageViewContainer.setFillHeight(true);

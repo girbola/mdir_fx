@@ -89,10 +89,33 @@
 
 .fileExtension .text {
     -fx-font-size: 1em;
+    -fx-padding: 0 0 0 3
+}
+
+.imageViewContainer {
+    -fx-padding: 3;
+    -fx-margin: 3;
+    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.imageView {
+ -fx-padding: 10px;
 }
 
 .imageFrame {
     -fx-background-color: #202020;
+    /*-fx-background-color:*/
+    /*        -fx-primary,*/
+    /*        transparent,*/
+    /*        transparent,*/
+    /*        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));*/
+    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-font-family: "Gaduci";
+    -fx-font-size: 0.625em;
+    -fx-text-fill: -fx-light-text-color;
     -fx-border-insets: 1 1 1 1;
     -fx-border-width: 1px;
     -fx-border-color: derive(-fx-base, 10%);
@@ -186,7 +209,8 @@
 }
 .imageNumber {
     -fx-alignment: top-left;   /* or center-right / bottom-right, etc. */
-    -fx-padding: 6 6 6 6;      /* inset from edges to avoid overlap */
+    /*-fx-padding: 6 6 6 6;      !* inset from edges to avoid overlap *!*/
+    -fx-padding: 0 5 0 0;
 }
 
 .imageNumber *.text {
