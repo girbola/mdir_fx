@@ -244,9 +244,9 @@ public class DateFixGuiUtils {
         bottomContainer.setFillWidth(true);
         bottomContainer.setAlignment(Pos.CENTER);
 
-        bottomContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
-        bottomContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
-        bottomContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - 6, 40);
+        bottomContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - 6, Region.USE_COMPUTED_SIZE);
+        bottomContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - 6, Region.USE_COMPUTED_SIZE);
+        bottomContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - 6, Region.USE_COMPUTED_SIZE);
         return bottomContainer;
     }
 
@@ -255,9 +255,9 @@ public class DateFixGuiUtils {
         buttonDateTimeContainer.setSpacing(hGap);
         buttonDateTimeContainer.setAlignment(Pos.CENTER_LEFT);
         buttonDateTimeContainer.setId("bottom");
-        buttonDateTimeContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
-        buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
-        buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 20);
+        buttonDateTimeContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
+        buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
+        buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
         buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
 
         return buttonDateTimeContainer;

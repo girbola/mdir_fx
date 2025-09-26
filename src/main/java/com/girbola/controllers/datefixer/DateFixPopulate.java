@@ -169,8 +169,6 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     }
 
     private VBox createImageFrame(FileInfo fileInfo, int index) {
-
-
         VBox frame_vbox = DateFixGuiUtils.createImageFrame();
         VBox.setVgrow(frame_vbox, Priority.ALWAYS);
         frame_vbox.setFillWidth(true);
@@ -234,6 +232,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
 
         HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer(6);
+        VBox.setVgrow(buttonDateTimeContainer, Priority.ALWAYS);
 
         Label fileName_tf = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
         Label fileDate_tf = DateFixGuiUtils.createFileDate_tf(fileInfo, buttonDateTimeContainer);
@@ -243,6 +242,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         bottomContainer.getChildren().addAll(fileName_tf, buttonDateTimeContainer);
 
         HBox.setHgrow(fileDate_tf, Priority.ALWAYS);
+        VBox.setVgrow(fileDate_tf, Priority.ALWAYS);
         VBox.setVgrow(bottomContainer, Priority.NEVER);
         VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
         VBox.setVgrow(iv, Priority.NEVER);

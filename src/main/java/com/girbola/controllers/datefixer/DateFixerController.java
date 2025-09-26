@@ -85,6 +85,9 @@ public class DateFixerController {
     @FXML private Label images_stat;
     @FXML private Label videos_stat;
 
+    @FXML private Button select_good_btn;
+    @FXML private Button select_bad_btn;
+
     @FXML private Label bad_stat;
     @FXML private Label good_stat;
     @FXML private Label confirmed_stat;
@@ -507,8 +510,12 @@ public class DateFixerController {
         sprintf("quickPick_tilePane= " + quickPick_tilePane);
 
         df_scrollPane.vmaxProperty().bind(df_tilePane.heightProperty());
-        bad_stat.textProperty().bind(modelDatefix.getFolderInfo_full().badFiles_prop().asString());
+        select_bad_btn.textProperty().bind(modelDatefix.getFolderInfo_full().badFiles_prop().asString());
+
         good_stat.textProperty().bind(modelDatefix.getFolderInfo_full().goodFiles_prop().asString());
+
+        select_good_btn.textProperty().bind(modelDatefix.getFolderInfo_full().goodFiles_prop().asString());
+
         images_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderImageFiles_prop().asString());
         videos_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderVideoFiles_prop().asString());
         suggested_stat.textProperty().bind(modelDatefix.getFolderInfo_full().suggested_prop().asString());

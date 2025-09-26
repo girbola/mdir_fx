@@ -29,15 +29,15 @@
 
 <AnchorPane minHeight="650.0" minWidth="2000.0" prefHeight="1000.0" prefWidth="2000.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
     <children>
-        <BorderPane id="imagesContainerScrollPane" layoutX="1.0" layoutY="1.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <BorderPane id="imagesContainerScrollPane" layoutX="1.0" layoutY="1.0" style="-fx-background-color: -fx-base;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
                 <VBox BorderPane.alignment="TOP_LEFT">
                     <children>
-                        <HBox style="-fx-border-color: cyan;" styleClass="selection" VBox.vgrow="NEVER">
+                        <HBox style="-fx-background-color: -fx-base;" styleClass="selection" VBox.vgrow="NEVER">
                             <children>
                                 <VBox spacing="3.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <GridPane hgap="4.0" maxHeight="1.7976931348623157E308" style="-fx-border-color: yellow;" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
+                                        <GridPane hgap="4.0" maxHeight="1.7976931348623157E308" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="ALWAYS" />
                                                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
@@ -48,7 +48,8 @@
                                     <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
                                                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
                                     <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
-                                                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
+                                    <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints fillHeight="false" valignment="CENTER" vgrow="NEVER" />
@@ -89,20 +90,18 @@
                                                         <Tooltip text="%selectInvertTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button fx:id="select_good_btn" alignment="TOP_CENTER" contentDisplay="TEXT_ONLY" focusTraversable="false" graphicTextGap="1.0" maxHeight="30.0" maxWidth="60.0" minHeight="25.0" minWidth="60.0" mnemonicParsing="false" onAction="#select_good_btn_action" prefHeight="25.0" prefWidth="60.0" styleClass="selection_btns" text="999999999999999999999999" textFill="#e4e400" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
 
                                                     <tooltip>
-                                                        <Tooltip text="%selectAllGoodFilesTooltip" />
+                                                        <Tooltip autoHide="true" text="%selectAllGoodFilesTooltip" />
                                                     </tooltip>
+                                       <font>
+                                          <Font size="5.0" />
+                                       </font>
 
-                                                    <graphic>
-                                                        <FontIcon iconColor="#50ff35" iconLiteral="bi-square-fill" iconSize="20" />
-                                                    </graphic>
+
                                                 </Button>
-                                                <Button alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
-                                                    <graphic>
-                                                        <FontIcon iconColor="#e4290d" iconLiteral="bi-square-fill" iconSize="20" />
-                                                    </graphic>
+                                                <Button fx:id="select_bad_btn" alignment="CENTER" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" text="AAAAA" textFill="#bf1f1f" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%selectAllBadFilesTooltip" />
                                                     </tooltip>
@@ -123,7 +122,7 @@
                                                         <Tooltip text="%selectAllSuggestedFilesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_good" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_good" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="159.0" layoutY="28.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#50ff35" iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_ok" />
                                                     </graphic>
@@ -131,7 +130,7 @@
                                                         <Tooltip text="%selectAllGoodImagesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_bad" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="52.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_bad" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="52.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#e4290d" iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_bad" />
                                                     </graphic>
@@ -139,7 +138,7 @@
                                                         <Tooltip text="%selectAllBadImagesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="76.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" layoutX="159.0" layoutY="76.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#1afff0" iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_modified" />
                                                     </graphic>
@@ -147,7 +146,7 @@
                                                         <Tooltip text="%selectAllModifiedImagesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_acceptable" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_acceptable" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_image_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="6" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#ee8c8c" iconLiteral="bi-camera" iconSize="20" styleClass="selection_btns_suggested" />
                                                     </graphic>
@@ -155,7 +154,7 @@
                                                         <Tooltip text="%selectAllSuggestedImagesTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_good" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_good" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_good_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#50ff35" iconLiteral="bi-camera-video" iconSize="25" styleClass="selection_btns_ok" />
                                                     </graphic>
@@ -163,7 +162,7 @@
                                                         <Tooltip text="%selectAllGoodVideosTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_bad" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_bad" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" graphicTextGap="0.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_bad_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#e4290d" iconLiteral="bi-camera-video" iconSize="25" styleClass="selection_btns_bad" />
                                                     </graphic>
@@ -171,7 +170,7 @@
                                                         <Tooltip text="%selectAllBadVideosTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_modified" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" layoutX="83.0" layoutY="75.0" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_modified_video_btn_action" prefHeight="25.0" prefWidth="25.0" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#1afff0" iconLiteral="bi-camera-video" iconSize="25" styleClass="selection_btns_modified" />
                                                     </graphic>
@@ -183,7 +182,7 @@
                                           <String fx:value="selection_btns_modified" />
                                        </styleClass>
                                                 </Button>
-                                                <Button id="selection-btns_acceptable" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="7" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="selection-btns_acceptable" contentDisplay="GRAPHIC_ONLY" focusTraversable="false" maxHeight="30.0" maxWidth="30.0" minHeight="30.0" minWidth="30.0" mnemonicParsing="false" onAction="#select_confirmed_video_btn_action" prefHeight="25.0" prefWidth="25.0" styleClass="selection_btns" GridPane.columnIndex="8" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="#ee8c8c" iconLiteral="bi-camera-video" iconSize="25" styleClass="selection_btns_suggested" />
                                                     </graphic>
@@ -191,7 +190,7 @@
                                                         <Tooltip text="%selectAllSuggestedVideosTooltip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label fx:id="good_stat" focusTraversable="false" text="99999" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                                                <Label fx:id="good_stat" focusTraversable="false" text="99999" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="3">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
@@ -199,7 +198,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                                 </Label>
-                                                <Label fx:id="bad_stat" focusTraversable="false" text="0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="4">
+                                                <Label fx:id="bad_stat" focusTraversable="false" text="0" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="4">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
@@ -207,7 +206,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                                 </Label>
-                                                <Label fx:id="confirmed_stat" focusTraversable="false" text="0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="5">
+                                                <Label fx:id="confirmed_stat" focusTraversable="false" text="0" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="5">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
@@ -215,7 +214,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                                 </Label>
-                                                <Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="4" GridPane.halignment="LEFT" GridPane.rowIndex="6">
+                                                <Label fx:id="suggested_stat" focusTraversable="false" text="0" GridPane.columnIndex="5" GridPane.halignment="LEFT" GridPane.rowIndex="6">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
@@ -223,12 +222,12 @@
                                           <Insets left="1.0" />
                                        </padding>
                                                 </Label>
-                                                <Label fx:id="images_stat" focusTraversable="false" text="0" GridPane.columnIndex="6">
+                                                <Label fx:id="images_stat" focusTraversable="false" text="0" GridPane.columnIndex="7">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Label>
-                                                <Label fx:id="videos_stat" focusTraversable="false" text="0" GridPane.columnIndex="8">
+                                                <Label fx:id="videos_stat" focusTraversable="false" text="0" GridPane.columnIndex="9">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
@@ -252,12 +251,12 @@
                                           <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                        </padding>
                                                 </Button>
-                                                  <Label text="%selected" GridPane.columnIndex="5">
+                                                  <Label text="%selected" GridPane.columnIndex="6">
                                                       <font>
                                                           <Font size="12.0" />
                                                       </font>
                                                   </Label>
-                                    <Label fx:id="good_image_stat" focusTraversable="false" text="99999" GridPane.columnIndex="6" GridPane.rowIndex="3">
+                                    <Label fx:id="good_image_stat" focusTraversable="false" text="99999" GridPane.columnIndex="7" GridPane.rowIndex="3">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -265,7 +264,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="good_video_stat" focusTraversable="false" text="99999" GridPane.columnIndex="8" GridPane.rowIndex="3">
+                                    <Label fx:id="good_video_stat" focusTraversable="false" text="99999" GridPane.columnIndex="9" GridPane.rowIndex="3">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -273,7 +272,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="bad_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="6" GridPane.rowIndex="4">
+                                    <Label fx:id="bad_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="7" GridPane.rowIndex="4">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -281,7 +280,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="bad_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="8" GridPane.rowIndex="4">
+                                    <Label fx:id="bad_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="9" GridPane.rowIndex="4">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -289,7 +288,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="confirmed_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="6" GridPane.rowIndex="5">
+                                    <Label fx:id="confirmed_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="7" GridPane.rowIndex="5">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -297,7 +296,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="confirmed_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="8" GridPane.rowIndex="5">
+                                    <Label fx:id="confirmed_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="9" GridPane.rowIndex="5">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -305,7 +304,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="suggested_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="6" GridPane.rowIndex="6">
+                                    <Label fx:id="suggested_image_stat" focusTraversable="false" text="0" GridPane.columnIndex="7" GridPane.rowIndex="6">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -313,7 +312,7 @@
                                           <Insets left="1.0" />
                                        </padding>
                                     </Label>
-                                    <Label fx:id="suggested_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="8" GridPane.rowIndex="6">
+                                    <Label fx:id="suggested_video_stat" focusTraversable="false" text="0" GridPane.columnIndex="9" GridPane.rowIndex="6">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
@@ -340,9 +339,9 @@
                                 </HBox>
                                 <VBox spacing="1.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <HBox style="-fx-border-color: red;" VBox.vgrow="ALWAYS">
+                                        <HBox style="-fx-background-color: -fx-base;" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <TabPane focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+                                                <TabPane focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: transparent; -fx-padding: 0;" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                                                     <tabs>
                                                         <Tab closable="false" text="%dateTime">
                                                             <content>
@@ -456,7 +455,7 @@
                         </VBox>
                                 <VBox HBox.hgrow="ALWAYS">
                                     <children>
-                                        <GridPane hgap="5.0" vgap="2.0" VBox.vgrow="NEVER">
+                                        <GridPane hgap="5.0" vgap="2.0" VBox.vgrow="ALWAYS">
                                             <columnConstraints>
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />

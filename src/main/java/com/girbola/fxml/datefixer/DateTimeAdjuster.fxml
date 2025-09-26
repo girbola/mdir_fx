@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
+<VBox style="-fx-background-color: -fx-base;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
     <children>
         <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" VBox.vgrow="ALWAYS">
             <columnConstraints>
@@ -27,7 +27,7 @@
                 <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
-                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
+                <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" minWidth="10.0" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
@@ -357,9 +357,9 @@
                 </HBox>
                 <Label text="%dateTimeSelector" GridPane.columnIndex="7" GridPane.halignment="LEFT" GridPane.rowIndex="3" />
             </children>
-            <padding>
-                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-            </padding>
+         <VBox.margin>
+            <Insets right="3.0" />
+         </VBox.margin>
         </GridPane>
     </children>
 </VBox>
