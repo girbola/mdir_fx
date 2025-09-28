@@ -2,6 +2,7 @@ package com.girbola.utils;
 
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
 import com.girbola.Main;
@@ -161,7 +162,7 @@ public class FileInfoUtils {
                     return true;
                 } else {
                     boolean fileNameDateFound = tryFileNameDate(fileInfo);
-                    if(!fileNameDateFound){
+                    if (!fileNameDateFound) {
                         FileInfoUtils.setBad(fileInfo);
                     }
 
@@ -451,6 +452,8 @@ public class FileInfoUtils {
                 }
             }
             getImageThumb_Offset_Length(metaData, fileInfo);
+            // Get width and height
+            getImageThumbDimensions(metaData, fileInfo);
 
             if (creationDate != 0) {
                 creationDate = 0;
@@ -467,6 +470,46 @@ public class FileInfoUtils {
         creationDate = 0;
         orientation = 0;
         camera_model = null;
+        return false;
+    }
+
+    private static boolean getImageThumbDimensions(Metadata metaData, FileInfo fileInfo) {
+
+        if (metaData == null) {
+            return false;
+        }
+        ExifSubIFDDirectory subIfd = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+
+        if (subIfd != null) {
+            Integer width = subIfd.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH);
+            Integer height = subIfd.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT);
+            if (width != 0 && height != 0) {
+                int roundedWidth = Math.round(width.intValue());
+                int roundedHeight = Math.round(height.intValue());
+                fileInfo.setWidth(roundedWidth);
+                fileInfo.setHeight(roundedHeight);
+                Messages.sprintf("roundedWidth: " + roundedWidth + ", roundedHeight: " + roundedHeight);
+                return true;
+            }
+
+        } else {
+            System.out.println("ExifSubIFDDirectory not found.");
+        }
+//
+//        if (directory != null) {
+//            try {
+//                int width = directory.getInt(ExifDirectoryBase.TAG_IMAGE_WIDTH);
+//                int height = directory.getInt(ExifDirectoryBase.TAG_IMAGE_HEIGHT);
+//                if (width != 0 && height != 0) {
+//                    fileInfo.setWidth(width);
+//                    fileInfo.setHeight(height);
+//                    return true;
+//                }
+//            } catch (Exception e) {
+//                fileInfo.setWidth(0);
+//                fileInfo.setHeight(0);
+//            }
+//        }
         return false;
     }
 

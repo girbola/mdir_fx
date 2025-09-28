@@ -23,7 +23,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -180,9 +179,15 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         topVBox.setMaxHeight(Region.USE_PREF_SIZE);
         VBox.setVgrow(topVBox, Priority.NEVER);
 
-        HBox topContainer = DateFixGuiUtils.createTopContainer(30);
+        HBox topContainer = DateFixGuiUtils.createTopContainer(10);
         HBox.setHgrow(topContainer, Priority.ALWAYS); // let top bar grow in parent
         topContainer.setMaxWidth(Double.MAX_VALUE);    // no max width limit
+
+        HBox topContainerInformation = DateFixGuiUtils.createTopContainer(10);
+        Label dimensions = DateFixGuiUtils.createDimensionsLabel(fileInfo);
+
+        topContainerInformation.getChildren().add(dimensions);
+        HBox.setHgrow(dimensions, Priority.ALWAYS);
 
         HBox topContainerSplitter = DateFixGuiUtils.createTopContainer(10);
         topContainerSplitter.setAlignment(Pos.CENTER);
@@ -247,7 +252,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
         VBox.setVgrow(iv, Priority.NEVER);
 
-        topVBox.getChildren().add(topContainer);
+        topVBox.getChildren().addAll(topContainer, topContainerInformation);
         frame_vbox.getChildren().addAll(topVBox, imageViewContainer, bottomContainer);
 
         return frame_vbox;

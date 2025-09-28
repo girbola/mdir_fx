@@ -504,4 +504,14 @@ public class DateFixGuiUtils {
         }
         return null;
     }
+
+    public static Label createDimensionsLabel(FileInfo fileInfo) {
+        int width = (int) fileInfo.getWidth();
+        int height = (int) fileInfo.getHeight();
+        Label dimensionsLabel = new Label(width + " x " + height);
+        dimensionsLabel.getStyleClass().add("dimensionsLabel");
+        dimensionsLabel.setId("dimensionsLabel");
+        dimensionsLabel.setMouseTransparent(true);
+        return dimensionsLabel;
+    }
 }
