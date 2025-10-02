@@ -396,13 +396,14 @@ public class FileNameParseUtils {
 
     private static DateTimeFormatter getDateFormatterIfFound(Map<String, DateTimeFormatter> dateFormats, String text) {
         for (DateTimeFormatter fmt : dateFormats.values()) {
-            Messages.sprintf("Date detected: " + text + " fmt:::: " + fmt);
             try {
                 LocalDate.parse(text, fmt);
+                Messages.sprintf("Date detected: " + text + " fmt:::: " + fmt.toString());
                 return fmt;
             } catch (DateTimeParseException ignored) {
             }
         }
+        Messages.sprintf("Date not detected: " + text);
         return null;
     }
 

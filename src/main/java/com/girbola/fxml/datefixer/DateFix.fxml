@@ -37,7 +37,7 @@
                             <children>
                                 <VBox spacing="3.0" HBox.hgrow="ALWAYS">
                                     <children>
-                                        <GridPane hgap="4.0" maxHeight="1.7976931348623157E308" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
+                                        <GridPane hgap="4.0" maxHeight="191.0" maxWidth="450.0" minHeight="180.0" minWidth="380.0" vgap="4.0" HBox.hgrow="NEVER" VBox.vgrow="SOMETIMES">
                                             <columnConstraints>
                                                 <ColumnConstraints hgrow="ALWAYS" />
                                                 <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="ALWAYS" />
@@ -341,7 +341,7 @@
                                     <children>
                                         <HBox style="-fx-background-color: -fx-base;" VBox.vgrow="ALWAYS">
                                             <children>
-                                                <TabPane focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: transparent; -fx-padding: 0;" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="70.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+                                                <TabPane focusTraversable="false" maxHeight="200.0" maxWidth="710.0" minHeight="-Infinity" minWidth="-Infinity" style="-fx-border-color: transparent; -fx-padding: 0;" tabClosingPolicy="UNAVAILABLE" tabMaxWidth="100.0" tabMinHeight="10.0" tabMinWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-39.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
                                                     <tabs>
                                                         <Tab closable="false" text="%dateTime">
                                                             <content>
@@ -407,7 +407,7 @@
                                 </VBox>
                         <VBox HBox.hgrow="ALWAYS">
                            <children>
-                                      <GridPane hgap="3.0" vgap="3.0" VBox.vgrow="ALWAYS">
+                                      <GridPane hgap="3.0" maxWidth="180.0" minWidth="180.0" vgap="3.0" VBox.vgrow="ALWAYS">
                                           <columnConstraints>
                                               <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
                                               <ColumnConstraints hgrow="NEVER" maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
@@ -527,7 +527,7 @@
                                         <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
                                     </padding>
                                 </VBox>
-                                <HBox alignment="TOP_RIGHT" HBox.hgrow="ALWAYS">
+                                <HBox alignment="TOP_RIGHT" maxHeight="191.0" maxWidth="350.0" minHeight="191.0" minWidth="200.0" HBox.hgrow="ALWAYS">
                                     <children>
                                         <GridPane alignment="TOP_RIGHT" hgap="2.0" maxHeight="-Infinity" maxWidth="-Infinity" vgap="2.0" HBox.hgrow="ALWAYS">
                                             <children>
@@ -571,7 +571,7 @@
                                                 <Insets left="10.0" />
                                             </HBox.margin>
                                         </GridPane>
-                                        <VBox alignment="BOTTOM_RIGHT" fillWidth="false" maxWidth="-Infinity" spacing="2.0" HBox.hgrow="ALWAYS">
+                                        <VBox alignment="BOTTOM_RIGHT" spacing="2.0" HBox.hgrow="ALWAYS">
                                             <children>
                                                 <Button fx:id="hideRightInfo_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideRightInfo_btn_action" prefHeight="35.0" prefWidth="35.0" VBox.vgrow="NEVER">
                                                     <graphic>
