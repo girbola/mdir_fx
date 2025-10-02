@@ -7,6 +7,9 @@ import com.girbola.controllers.datefixer.ModelDatefix;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.FileInfoUtils;
+import common.utils.FileUtils;
+import java.nio.file.Paths;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
@@ -36,16 +39,15 @@ public class DateFixGuiUtils {
     }
 
     public static VBox createImageFrame() {
-        VBox frame_vbox = new VBox();
-        frame_vbox.setAlignment(Pos.TOP_CENTER);
-        frame_vbox.setId(DateFixConstants.IMAGEFRAME.getType());
-        frame_vbox.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
-        frame_vbox.setAlignment(Pos.CENTER);
-        frame_vbox.setFillWidth(true);
-        frame_vbox.setPrefSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
-        frame_vbox.setMinSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
-        frame_vbox.setMaxSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
-        return frame_vbox;
+        VBox imageFrameContainer = new VBox();
+        imageFrameContainer.setAlignment(Pos.TOP_CENTER);
+        imageFrameContainer.setId(DateFixConstants.IMAGEFRAME.getType());
+        imageFrameContainer.getStyleClass().add(DateFixConstants.IMAGEFRAME.getType());
+        imageFrameContainer.setFillWidth(true);
+        imageFrameContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
+//        imageFrameContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
+//        imageFrameContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH, UIContants.IMAGE_FRAME_HEIGHT);
+        return imageFrameContainer;
     }
 
     public static StackPane createImageFrameStackPane(int index) {
@@ -87,9 +89,9 @@ public class DateFixGuiUtils {
         fileNameLabel.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         fileNameLabel.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         fileNameLabel.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        fileNameLabel.setMaxHeight(23);
-        fileNameLabel.setMinHeight(23);
-        fileNameLabel.setPrefHeight(23);
+//        fileNameLabel.setMaxHeight(23);
+//        fileNameLabel.setMinHeight(23);
+//        fileNameLabel.setPrefHeight(23);
 
         fileNameLabel.setText(path.getFileName().toString());
         return fileNameLabel;
@@ -98,6 +100,7 @@ public class DateFixGuiUtils {
     public static Label createFileDate_tf(FileInfo fileInfo, HBox hbox) {
         Label label = new Label(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
         label.getStyleClass().add("fileDate_tf");
+
         label.setFocusTraversable(false);
         label.setId("fileDate");
         label.setMaxHeight(Region.USE_COMPUTED_SIZE);
@@ -129,25 +132,32 @@ public class DateFixGuiUtils {
 
     public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
         Button button = new Button();
+        button.getStylesheets().add("button");
+
         FontIcon fontIcon = new FontIcon();
         fontIcon.setIconLiteral("bi-check");
-        fontIcon.setIconSize(15);
-        fontIcon.setIconColor(javafx.scene.paint.Color.GREEN);
+        fontIcon.setIconSize(20);
+//        fontIcon.setIconColor(javafx.scene.paint.Color.GREEN);
         //ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
         button.setGraphic(fontIcon);
-        button.setId("accept");
-        button.getStyleClass().add("acceptButton");
+//        button.setId("accept");
+//        button.getStyleClass().add("acceptButton");
         if (!fi.isGood()) {
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    String date = tf.getText();
-                    tf.setText(date);
-                    hbox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                    Platform.runLater(() -> {
+                        fontIcon.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                        String date = tf.getText();
+                        tf.setText(date);
+                        hbox.setStyle(CssStylesEnum.MODIFIED_STYLE.getStyle());
+                    });
+
                 }
             });
         } else {
             button.setDisable(true);
+            button.setVisible(false);
         }
         return button;
     }
@@ -158,13 +168,29 @@ public class DateFixGuiUtils {
         column.setPrefWidth(width);
     }
 
-    public static HBox createTopContainer(double hGap) {
+    public static VBox createInfoContainer(double spacing) {
+        VBox vbox = new VBox();
+        vbox.setSpacing(spacing);
+        vbox.setAlignment(Pos.TOP_LEFT);
+        vbox.setId("topInfoContainer");
+        vbox.getStyleClass().add("imageFrameTop");
+        vbox.setMouseTransparent(true);
+        vbox.setMaxWidth(Double.MAX_VALUE);
+
+        vbox.setFillWidth(true);
+        vbox.getStyleClass().add("imageFrameTopContainer");
+
+        return vbox;
+    }
+
+    public static HBox createTopContainer(double spacing) {
         HBox topContainer = new HBox();
-        topContainer.setSpacing(hGap);
+        topContainer.setSpacing(spacing);
         topContainer.setAlignment(Pos.TOP_LEFT);
         topContainer.setId("topContainer");
         topContainer.getStyleClass().add("imageFrameTop");
         topContainer.setMouseTransparent(true);
+
         return topContainer;
     }
 
@@ -280,7 +306,8 @@ public class DateFixGuiUtils {
 //                }
 //                Node fileDateField = imageFrameNode.lookup("#fileDate");
 //                Messages.sprintf("111processImageFrame found: " + fileDateField + " imageFrame.getStyle()::: " + imageFrame.getStyle());
-////                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+
+    /// /                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
 //                if (fileDateField instanceof Label && style.equals(fileDateField.getStyle())) {
 //                    Messages.sprintf("2222processImageFrame found: " + fileInfo.getOrgPath());
 //                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
@@ -288,14 +315,13 @@ public class DateFixGuiUtils {
 //            }
 //        }
 //    }
-
     public static void processImageFrame(VBox imageFrame, ModelDatefix modelDatefix, String style) {
 
-        if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
-            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
-        } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
-            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
-        }
+//        if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+//            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+//        } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle()) && imageFrame.getStyle().equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+//            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+//        }
 
         for (Node imageFrameNode : imageFrame.getChildren()) {
             if (imageFrameNode instanceof VBox) {
@@ -312,26 +338,27 @@ public class DateFixGuiUtils {
                             Messages.sprintf("4444processImageFrame found BAD: " + fileInfo.getOrgPath());
                             modelDatefix.getSelectionModel().addWithToggle(imageFrame);
                         }
-                    } else if (style.equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
-                        if (fileInfo.isModified()) {
-                            Messages.sprintf("5555processImageFrame found MODIFIED: " + fileInfo.getOrgPath());
-                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
-                        }
-                    } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE.getStyle())) {
-                        if (fileInfo.isConfirmed()) {
-                            Messages.sprintf("6666processImageFrame found CONFIRMED: " + fileInfo.getOrgPath());
-                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        if (style.equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
+                            if (fileInfo.isModified()) {
+                                Messages.sprintf("5555processImageFrame found MODIFIED: " + fileInfo.getOrgPath());
+                                modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                            }
+                        } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE.getStyle())) {
+                            if (fileInfo.isConfirmed()) {
+                                Messages.sprintf("6666processImageFrame found CONFIRMED: " + fileInfo.getOrgPath());
+                                modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                            }
                         }
                     }
                 }
 
-
-                if (fileInfo.isImage() && fileInfo.isBad()) {
-                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
-                }
-                if (fileInfo.isImage() && fileInfo.isGood()) {
-                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
-                }
+//
+//                if (fileInfo.isImage() && fileInfo.isBad()) {
+//                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+//                }
+//                if (fileInfo.isImage() && fileInfo.isGood()) {
+//                    modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+//                }
 
             }
         }
@@ -343,23 +370,23 @@ public class DateFixGuiUtils {
                 VBox imageFrame = (VBox) root;
                 FileInfo fileInfo = (FileInfo) root.getUserData();
                 Messages.sprintf("fileInfoooooo:::::::::: " + fileInfo.toString());
-                if (style.equals(CssStylesEnum.GOOD_STYLE)) {
+                if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
                     if (fileInfo.isGood() && !fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else if (style.equals(CssStylesEnum.MODIFIED_STYLE)) {
+                } else if (style.equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
                     if (fileInfo.isGood() && fileInfo.isConfirmed() && !fileInfo.isSuggested()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE)) {
+                } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE.getStyle())) {
                     if (fileInfo.isGood() && fileInfo.isSuggested() && !fileInfo.isConfirmed()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else if (style.equals(CssStylesEnum.BAD_STYLE)) {
+                } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
                     if (fileInfo.isBad()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
-                } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE)) {
+                } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE.getStyle())) {
                     if (fileInfo.isConfirmed()) {
                         modelDatefix.getSelectionModel().addWithToggle(root);
                     }
@@ -412,11 +439,27 @@ public class DateFixGuiUtils {
     public static void selectVideoFrame(ModelDatefix modelDatefix, TilePane parent, String style) {
         for (Node childNode : parent.getChildren()) {
             if (isImageFrame(childNode)) {
+                Messages.sprintf("selectVideoFrame found VIDEO: " + childNode.getId());
                 VBox imageFrame = (VBox) childNode;
                 FileInfo fileInfo = (FileInfo) imageFrame.getUserData();
                 if (fileInfo.isVideo()) {
-                    Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
-                    processImageFrame(imageFrame, modelDatefix, style);
+                    if (style.equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+                        Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
+                        modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                    } else if (style.equals(CssStylesEnum.BAD_STYLE.getStyle())) {
+                        Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
+                        modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        if (style.equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
+                            Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        } else if (style.equals(CssStylesEnum.CONFIRMED_STYLE.getStyle())) {
+                            Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        } else if (style.equals(CssStylesEnum.SUGGESTED_STYLE.getStyle())) {
+                            Messages.sprintf("selectVideoFrame found VIDEO: " + fileInfo.getOrgPath());
+                            modelDatefix.getSelectionModel().addWithToggle(imageFrame);
+                        }
+                    }
                 }
             }
         }
@@ -513,5 +556,22 @@ public class DateFixGuiUtils {
         dimensionsLabel.setId("dimensionsLabel");
         dimensionsLabel.setMouseTransparent(true);
         return dimensionsLabel;
+    }
+
+    public static Label createFileExtension(FileInfo fileInfo) {
+        Label label = new Label(FileUtils.getExtension(Paths.get(fileInfo.getOrgPath())).toUpperCase());
+        label.setAlignment(Pos.CENTER_LEFT);
+        label.getStyleClass().add("fileExtension");
+        label.setId("fileExtension");
+//        label.setPadding(new Insets(5, 0, 0, 5));
+        return label;
+    }
+
+    public static Label createSpacer(double height) {
+        Label label = new Label("");
+        label.setMinHeight(height);
+        label.setMaxHeight(height);
+        label.setPrefHeight(height);
+        return label;
     }
 }

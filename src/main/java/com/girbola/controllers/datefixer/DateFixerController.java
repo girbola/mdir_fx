@@ -784,26 +784,27 @@ public class DateFixerController {
     // Images ============================================================================
     @FXML private void select_good_image_btn_action(ActionEvent event) {
         sprintf("select_good_image_btn_action");
-        for (Node root : df_tilePane.getChildren()) {
-            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
-                FileInfo fileInfo = (FileInfo) root.getUserData();
-                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))) {
-                    for (Node vbox : ((VBox) root).getChildren()) {
-                        if (vbox instanceof HBox) {
-                            for (Node hbox : ((HBox) vbox).getChildren()) {
-                                if (hbox instanceof TextField) {
-                                    if (hbox.getId().contains("fileDate")) {
-                                        if (hbox.getStyle().equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
-                                            modelDatefix.getSelectionModel().addWithToggle(root);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        DateFixGuiUtils.selectImageFrame(modelDatefix, df_tilePane, CssStylesEnum.GOOD_STYLE.getStyle());
+//        for (Node root : df_tilePane.getChildren()) {
+//            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+//                FileInfo fileInfo = (FileInfo) root.getUserData();
+//                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))) {
+//                    for (Node vbox : ((VBox) root).getChildren()) {
+//                        if (vbox instanceof HBox) {
+//                            for (Node hbox : ((HBox) vbox).getChildren()) {
+//                                if (hbox instanceof TextField) {
+//                                    if (hbox.getId().contains("fileDate")) {
+//                                        if (hbox.getStyle().equals(CssStylesEnum.GOOD_STYLE.getStyle())) {
+//                                            modelDatefix.getSelectionModel().addWithToggle(root);
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
     @FXML private void select_bad_image_btn_action(ActionEvent event) {
         sprintf("select_bad_image_btn_action");
@@ -811,20 +812,21 @@ public class DateFixerController {
     }
     @FXML private void select_modified_image_btn_action(ActionEvent event) {
         sprintf("select_modified_image_btn_action");
-        for (Node root : df_tilePane.getChildren()) {
-            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
-                Node hboxi = root.lookup("#fileDate");
-                if (hboxi instanceof TextField) {
-                    TextField tf = (TextField) hboxi;
-                    if (tf != null) {
-                        if (tf.getStyle().equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
-                            modelDatefix.getSelectionModel().addWithToggle(root);
-                        }
-                    }
-                }
-            }
-        }
         DateFixGuiUtils.selectImageFrame(modelDatefix, df_tilePane, CssStylesEnum.MODIFIED_STYLE.getStyle());
+//        for (Node root : df_tilePane.getChildren()) {
+//            if (root instanceof VBox && root.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+//                Node hboxi = root.lookup("#fileDate");
+//                if (hboxi instanceof TextField) {
+//                    TextField tf = (TextField) hboxi;
+//                    if (tf != null) {
+//                        if (tf.getStyle().equals(CssStylesEnum.MODIFIED_STYLE.getStyle())) {
+//                            modelDatefix.getSelectionModel().addWithToggle(root);
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        ;
     }
     @FXML private void select_confirmed_image_btn_action(ActionEvent event) {
         sprintf("select_confirmed_image_btn_action");

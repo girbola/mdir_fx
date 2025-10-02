@@ -18,14 +18,14 @@ public class UIContants {
      * This value is used to set or adjust the X-coordinate of the image frame.
      * Ratio is 0,75
      */
-    final public static int IMAGE_FRAME_WIDTH = 250;
-    final public static int IMAGE_FRAME_HEIGHT = 300;
+    final public static int IMAGE_FRAME_WIDTH = 300;
+    final public static int IMAGE_FRAME_HEIGHT = 350;
 
     /**
      * The maximum width allowed for a thumbnail image in the graphical user interface.
      * Ratio is 0,565
      */
-    final public static double THUMBNAIL_MAX_WIDTH = 200;
-    final public static double THUMBNAIL_MAX_HEIGHT = 200;
+    final public static double THUMBNAIL_MAX_WIDTH = 240;
+    final public static double THUMBNAIL_MAX_HEIGHT = 240;
 
 }

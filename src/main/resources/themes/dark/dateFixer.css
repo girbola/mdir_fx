@@ -76,9 +76,11 @@
 .buttonDateTimeContainer {
     -fx-margin: 0;
     -fx-padding: 0;
-    -fx-background-color: derive(-fx-base, 10%);
-    -fx-border-color: derive(fx-base, 20%);
-    -fx-border-width: 0.0625em;
+    -fx-background-color: trasparent;
+    -fx-effect: innershadow(gaussian, rgba(78, 77, 77, 0.3), 6, 0.0, 2, 2);
+    -fx-border-color: grey;
+    -fx-border-width: 2px;
+    /*-fx-border-width: 0.0625em;*/
 }
 
 .closeButton {
@@ -92,22 +94,32 @@
     -fx-margin: 0;
 }
 
+.dimensionsLabel {
+    -fx-font-size: 0.625em;
+    -fx-padding: 5;
+}
+
+.fileExtension {
+    -fx-padding: 5;
+}
+
 .fileExtension .text {
-    -fx-font-size: 1em;
-    -fx-padding: 0 0 0 3
+    -fx-padding: 5;
+    -fx-text-fill: -fx-light-text-color;
+    -fx-alignment: center;
 }
 
 .imageViewContainer {
     -fx-padding: 3;
     -fx-margin: 3;
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0.0, 0, 1);
     -fx-font-family: "Gaduci";
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
 }
 
 .imageView {
- -fx-padding: 10px;
+    -fx-padding: 10px;
 }
 
 .imageFrame {
@@ -117,7 +129,7 @@
     /*        transparent,*/
     /*        transparent,*/
     /*        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));*/
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0.0, 0, 1);
     -fx-font-family: "Gaduci";
     -fx-font-size: 0.625em;
     -fx-text-fill: -fx-light-text-color;
@@ -141,9 +153,10 @@
 .date-picker .text-field,
 .fileDate_tf {
     /*-fx-font-size: 1em;*/
-    -fx-background-color: transparent;
+    -fx-background-color: orange;
     -fx-border-radius: 3;
     -fx-text-fill: -fx-light-text-color;
+    -fx-alignment: center;
 
 }
 
@@ -158,18 +171,20 @@
     -fx-background-color: transparent;
     -fx-font-size: 0.8em;
     -fx-text-fill: -fx-light-text-color;
+    -fx-alignment: center;
 }
 
-.fileName_ta *.text {
-    -fx-text-alignment: left;
-}
+/*.fileName_ta *.text {*/
+/*    -fx-text-alignment: center;*/
+/*    -fx-background-color: red;*/
+/*}*/
 
-.fileName_ta .content {
-    -fx-background-color: transparent;
-}
+/*.fileName_ta .content {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
 
-.imageFrameTop Line {
-    -fx-background-color: -fx-base-orange;
+.imageFrameTop {
+    -fx-background-color: derive(-fx-base, 50%);
     -fx-stroke: -fx-base-red;
 }
 
@@ -208,20 +223,24 @@
     /*-fx-border-width: 0.0625em;*/
     -fx-background-color: black;
 }
+
+.imageFrameTopContainer {
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 6, 0.0, 2, 2);
+}
+
 .imageNumber {
-    -fx-alignment: top-left;   /* or center-right / bottom-right, etc. */
+    /*-fx-alignment: top-left; !* or center-right / bottom-right, etc. *!*/
     /*-fx-padding: 6 6 6 6;      !* inset from edges to avoid overlap *!*/
-    -fx-padding: 0 5 0 0;
+    -fx-padding: 5;
 }
 
 .imageNumber *.text {
-    -fx-font-size: 20px;
+    /*-fx-font-size: 20px;*/
     -fx-fill: -fx-light-text-color;
     /*-fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);*/
-    -fx-stroke: grey;
-    -fx-stroke-width: 1;
     -fx-font-smoothing-type: lcd;
-    -fx-view-order: -1;
+    /*-fx-view-order: -1;*/
+
 
 }
 

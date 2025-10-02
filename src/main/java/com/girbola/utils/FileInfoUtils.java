@@ -26,6 +26,7 @@ import common.utils.FileUtils;
 import common.utils.ImageUtils;
 import common.utils.date.DateUtils;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -34,6 +35,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
+import javax.imageio.ImageIO;
 
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
@@ -143,7 +145,7 @@ public class FileInfoUtils {
         }
     }
 
-    public static boolean getVideoDateTaken(Path path, FileInfo fileInfo) {
+    public static boolean getVideoDateTaken(Path path, FileInfo fileInfo) throws IOException {
         if (!Files.exists(path)) {
             sprintf("File does not exists: " + path + " returning....");
             return false;
@@ -197,7 +199,7 @@ public class FileInfoUtils {
      * @return
      */
 
-    public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) {
+    public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) throws IOException {
         if (supportedVideo(path)) {
             Path THM_path = VideoDateFinder.hasTHMFile(path);
             if (THM_path == null) {
@@ -415,7 +417,7 @@ public class FileInfoUtils {
         // TODO Auto-generated method stub
     }
 
-    public static boolean handleMetadataInformation(Path path, FileInfo fileInfo) {
+    public static boolean handleMetadataInformation(Path path, FileInfo fileInfo) throws IOException {
 
         long creationDate = 0;
         int orientation = 0;
@@ -473,7 +475,7 @@ public class FileInfoUtils {
         return false;
     }
 
-    private static boolean getImageThumbDimensions(Metadata metaData, FileInfo fileInfo) {
+    private static boolean getImageThumbDimensions(Metadata metaData, FileInfo fileInfo) throws IOException {
 
         if (metaData == null) {
             return false;
@@ -490,6 +492,17 @@ public class FileInfoUtils {
                 fileInfo.setHeight(roundedHeight);
                 Messages.sprintf("roundedWidth: " + roundedWidth + ", roundedHeight: " + roundedHeight);
                 return true;
+            } else {
+                BufferedImage bufferedImage = ImageIO.read(new File(fileInfo.getOrgPath()));
+                if (bufferedImage != null) {
+
+                    double imageWidth = bufferedImage.getWidth();
+                    double imageHeight = bufferedImage.getHeight();
+
+                    fileInfo.setWidth((int)imageWidth);
+                    fileInfo.setHeight((int)imageHeight);
+
+                }
             }
 
         } else {
