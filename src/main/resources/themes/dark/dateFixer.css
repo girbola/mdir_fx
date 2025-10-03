@@ -76,10 +76,13 @@
 .buttonDateTimeContainer {
     -fx-margin: 0;
     -fx-padding: 0;
-    -fx-background-color: trasparent;
-    -fx-effect: innershadow(gaussian, rgba(78, 77, 77, 0.3), 6, 0.0, 2, 2);
-    -fx-border-color: grey;
-    -fx-border-width: 2px;
+    -fx-background-color: tranparent;
+
+    /*-fx-effect: innershadow(gaussian, rgba(78, 77, 77, 0.3), 6, 0.0, 2, 2);*/
+    /*-fx-effect: innershadow(gaussian, darkgrey, 3, 0, 2, 2);*/
+
+    /*-fx-border-color: grey;*/
+    /*-fx-border-width: 2px;*/
     /*-fx-border-width: 0.0625em;*/
 }
 
@@ -150,14 +153,23 @@
     -fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
 }
 
-.date-picker .text-field,
-.fileDate_tf {
+.date-picker .text-field {
     /*-fx-font-size: 1em;*/
-    -fx-background-color: orange;
-    -fx-border-radius: 3;
+    /*-fx-background-color: orange;*/
+    /*-fx-effect: innershadow(gaussian, white, 30, 21, 21, 21);*/
+    /*-fx-border-radius: 3;*/
+    -fx-font-size: 0.9em;
     -fx-text-fill: -fx-light-text-color;
+    -fx-font-smoothing-type: lcd;
     -fx-alignment: center;
 
+}
+.centered-content {
+    -fx-alignment: center;
+}
+
+.fileDate_tf .text{
+    -fx-font-size: 0.9em;
 }
 
 .date-picker:editable .arrow-button {

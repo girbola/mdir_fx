@@ -24,11 +24,11 @@ public class SelectionModel {
             "-fx-border-color: transparent;" +
                     "-fx-border-radius: 1 1 1 1;" +
                     "-fx-border-style: none;" +
-                    "-fx-border-width: 3px;";
+                    "-fx-border-width: 1px;";
 
     final private String style_selected =
             "-fx-border-color: #ba1d1d;" +
-                    "-fx-border-width: 3px;";
+                    "-fx-border-width: 1px;";
 
     private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
 

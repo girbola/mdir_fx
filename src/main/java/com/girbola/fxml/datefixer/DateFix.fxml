@@ -638,22 +638,23 @@
                                           </VBox>
                                                         <HBox alignment="CENTER" fillHeight="false" styleClass="imageViewContainer" VBox.vgrow="ALWAYS">
                                                             <children>
-                                                                <ImageView fitHeight="290.0" fitWidth="290.0" pickOnBounds="true" preserveRatio="true" styleClass="imageView" HBox.hgrow="ALWAYS">
+                                                                <ImageView fitHeight="290.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true" styleClass="imageView" HBox.hgrow="ALWAYS">
                                                                     <image>
                                                                         <Image url="@../../../../../../test/resources/in/20220413_160023_2.jpg" />
                                                                     </image>
                                                                 </ImageView>
                                                             </children>
                                                         </HBox>
-                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                                                        <VBox id="bottomContainer" alignment="CENTER_LEFT" style="-fx-border-color: red;" VBox.vgrow="ALWAYS">
                                                             <VBox.margin>
                                                                 <Insets bottom="1.0" />
                                                             </VBox.margin>
                                                             <children>
-                                                                <Label id="fileName_ta" graphicTextGap="0.0" styleClass="fileName_ta" text="iubiubiubiubiubiu" textFill="WHITE" VBox.vgrow="NEVER">
+                                                                <Label id="fileName_ta" graphicTextGap="0.0" styleClass="fileName_ta" text="iubiubiubiubiubiu" textAlignment="CENTER" textFill="WHITE">
                                                    <font>
                                                       <Font size="11.0" />
-                                                   </font></Label>
+                                                   </font>
+                                                </Label>
                                                                 <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" maxWidth="1.7976931348623157E308" styleClass="buttonDateTimeContainer">
                                                                     <children>
                                                                         <Button contentDisplay="GRAPHIC_ONLY" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="acceptButton" HBox.hgrow="NEVER">
@@ -661,13 +662,22 @@
                                                                                 <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="25" />
                                                                             </graphic>
                                                                         </Button>
-                                                                        <Label maxWidth="1.7976931348623157E308" styleClass="fileDate_tf" text="20200202020202" HBox.hgrow="ALWAYS">
+                                                                        <Label maxWidth="1.7976931348623157E308" text="20200202020202" HBox.hgrow="ALWAYS">
                                                          <font>
                                                             <Font size="11.0" />
-                                                         </font></Label>
+                                                         </font>
+                                                         <styleClass>
+                                                            <String fx:value="fileDate_tf," />
+                                                            <String fx:value="centered-content" />
+                                                         </styleClass></Label>
+                                                      <Button contentDisplay="GRAPHIC_ONLY" maxHeight="35.0" maxWidth="35.0" minHeight="35.0" minWidth="35.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="acceptButton" />
                                                                     </children>
                                                                 </HBox>
                                                             </children>
+                                             <styleClass>
+                                                <String fx:value="fileName_ta" />
+                                                <String fx:value="centered-content" />
+                                             </styleClass>
                                                         </VBox>
                                                     </children>
                                                 </VBox>
