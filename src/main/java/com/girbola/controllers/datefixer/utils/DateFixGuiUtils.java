@@ -20,6 +20,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.OverrunStyle;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.nio.file.Path;
@@ -132,11 +133,12 @@ public class DateFixGuiUtils {
 
     public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
         Button button = new Button();
-        button.getStylesheets().add("button");
+//        button.getStylesheets().add("button");
 
         FontIcon fontIcon = new FontIcon();
+        fontIcon.setIconColor(Color.RED);
         fontIcon.setIconLiteral("bi-check");
-        fontIcon.setIconSize(20);
+        fontIcon.setIconSize(10);
 //        fontIcon.setIconColor(javafx.scene.paint.Color.GREEN);
         //ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
         button.setGraphic(fontIcon);
@@ -183,16 +185,16 @@ public class DateFixGuiUtils {
         return vbox;
     }
 
-    public static HBox createTopContainer(double spacing) {
-        HBox topContainer = new HBox();
-        topContainer.setSpacing(spacing);
-        topContainer.setAlignment(Pos.TOP_LEFT);
-        topContainer.setId("topContainer");
-        topContainer.getStyleClass().add("imageFrameTop");
-        topContainer.setMouseTransparent(true);
-
-        return topContainer;
-    }
+//    public static HBox createTopContainer(double spacing) {
+//        HBox topContainer = new HBox();
+//        topContainer.setSpacing(spacing);
+//        topContainer.setAlignment(Pos.TOP_LEFT);
+//        topContainer.setId("topContainer");
+//        topContainer.getStyleClass().add("imageFrameTop");
+//        topContainer.setMouseTransparent(true);
+//
+//        return topContainer;
+//    }
 
     public static GridPane createTopGridPane() {
         GridPane topContainer = new GridPane();

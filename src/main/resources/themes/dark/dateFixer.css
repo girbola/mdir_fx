@@ -8,6 +8,8 @@
     -fx-base-orange: #cf6418;
     -fx-base-blue: #355091;
     -fx-base-red: #c14545;
+    -fx-base-green: #2d8022;
+    -fx-base-pink: #c94578;
 
     -fx-light-text-color: #e4e1e1;
     -fx-dark-text-color: #000000;
@@ -64,19 +66,46 @@
 }
 
 .acceptButton {
-    -fx-background-color: transparent;
+    /*-fx-background-color: transparent;*/
+    -fx-border-radius: 0;
+    -fx-border-insets: 0;
+    -fx-border-width: 1;
+    -fx-padding: 0 3 0 3;
+    -fx-margin: 30;
+
+    -fx-min-width: 25px;
+    -fx-min-height: 25px;
+    -fx-icon-size: 25px;
+    -fx-icon-color: white;
 }
+
+.acceptButton .ikonli-font-icon {
+    -fx-icon-size: 20px;
+    -fx-icon-color: #ee8c8c;
+}
+
 
 .bottomContainer {
     -fx-padding: 0;
     -fx-margin: 0;
     -fx-text-alignment: center;
+    -fx-border-color: red;
+}
+
+.bottomContainer .button {
+    /*-fx-background-color: red;*/
+
+    /*-fx-border-radius: 0;*/
+    /*-fx-border-insets: 0;*/
+    /*-fx-border-width: 1;*/
+    /*-fx-padding: 0 3 0 3;*/
+    /*-fx-margin: 0;*/
 }
 
 .buttonDateTimeContainer {
     -fx-margin: 0;
     -fx-padding: 0;
-    -fx-background-color: tranparent;
+    /*-fx-background-color: tranparent;*/
 
     /*-fx-effect: innershadow(gaussian, rgba(78, 77, 77, 0.3), 6, 0.0, 2, 2);*/
     /*-fx-effect: innershadow(gaussian, darkgrey, 3, 0, 2, 2);*/
@@ -479,19 +508,19 @@
 /*}*/
 
 .selection_btns_ok {
-    -fx-fill: #50ff35;
+    -fx-fill: -fx-base-green;
 }
 
 .selection_btns_bad {
-    -fx-fill: #e4290d;
+    -fx-fill: -fx-base-red;
 }
 
 .selection_btns_modified {
-    -fx-fill: #33b19d;
+    -fx-fill: -fx-base-cyan;
 }
 
 .selection_btns_suggested {
-    -fx-fill: #ee8c8c;
+    -fx-fill: -fx-base-pink;
 }
 
 .selection_text {

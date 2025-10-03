@@ -174,7 +174,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         VBox.setVgrow(imageFrameVBox, Priority.NEVER);
 
         // Create top section with file info
-        VBox topSection = createTopSection(fileInfo, index);
+        Node topSection = createTopSection(fileInfo, index);
 
         // Create middle section with image
         HBox imageSection = createImageSection(fileInfo);
@@ -188,63 +188,47 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         return imageFrameVBox;
     }
 
-    private VBox createTopSection(FileInfo fileInfo, int index) {
-        VBox topVBox = DateFixGuiUtils.createInfoContainer(2);
-        VBox.setVgrow(topVBox, Priority.NEVER);
+    private Node createTopSection(FileInfo fileInfo, int index) {
+        GridPane infoGridPane = new GridPane();
+//        infoGridPane.setMouseTransparent(true);
+        infoGridPane.getStyleClass().add("imageFrameTop");
+//        infoGridPane.setGridLinesVisible(true);
+//        infoGridPane.setStyle("-fx-background-color: orange; -fx-grid-lines-visible: true");
 
         // First row: file extension and frame number
-        HBox topInfo1 = createTopInfoRow1(fileInfo, index);
+        createTopInfoRow1(infoGridPane, fileInfo, index);
 
         // Second row: dimensions
-        HBox topInfo2 = createTopInfoRow2(fileInfo);
+        createTopInfoRow2(infoGridPane, fileInfo);
 
-        topVBox.getChildren().addAll(topInfo1, topInfo2);
-        return topVBox;
+        createTopInfoRow3(infoGridPane, fileInfo);
+
+        return infoGridPane;
     }
 
-    private HBox createTopInfoRow1(FileInfo fileInfo, int index) {
-        HBox topInfo1 = DateFixGuiUtils.createTopContainer(2);
-        HBox.setHgrow(topInfo1, Priority.ALWAYS);
+    private void createTopInfoRow1(GridPane gridPane, FileInfo fileInfo, int index) {
+        Label fileNameTextField = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
+        gridPane.add(fileNameTextField, 0, 0);
+        GridPane.setColumnSpan(fileNameTextField, 2);
+        HBox.setHgrow(fileNameTextField, Priority.ALWAYS);
 
-        Label fileExtension = DateFixGuiUtils.createFileExtension(fileInfo);
-
-        // Create labels
-        if(fileInfo.isVideo()) {
-            fileExtension.setText("");
-            FontIcon videoIcon = new FontIcon("bi-camera-reels");
-            videoIcon.setIconSize(26);
-            fileExtension.setGraphic(videoIcon);
-        }
-        Label leftSpacer = DateFixGuiUtils.createSpacer(30);
-        Label rightSpacer = DateFixGuiUtils.createSpacer(30);
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
-
-        // Create center splitter
-        HBox topContainerSplitter = DateFixGuiUtils.createTopContainer(10);
-        topContainerSplitter.setAlignment(Pos.CENTER);
-        HBox.setHgrow(topContainerSplitter, Priority.ALWAYS);
-
-        // Configure spacers to grow
-        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
-        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
-        VBox.setVgrow(leftSpacer, Priority.ALWAYS);
-        VBox.setVgrow(rightSpacer, Priority.ALWAYS);
-
-        // Add all elements
-        topInfo1.getChildren().setAll(fileExtension, leftSpacer, topContainerSplitter, rightSpacer, imageFrameNumber);
-
-        return topInfo1;
+        gridPane.add(imageFrameNumber, 1, 0);
+        HBox.setHgrow(imageFrameNumber, Priority.NEVER);
     }
 
-    private HBox createTopInfoRow2(FileInfo fileInfo) {
-        HBox topInfo2 = DateFixGuiUtils.createTopContainer(10);
+    private void createTopInfoRow2(GridPane gridPane, FileInfo fileInfo) {
+        Label cameraInfo = new Label(fileInfo.getCamera_model());
+        gridPane.add(cameraInfo, 0, 1);
+    }
+
+    private void createTopInfoRow3(GridPane gridPane, FileInfo fileInfo) {
 
         Label dimensions = DateFixGuiUtils.createDimensionsLabel(fileInfo);
-        HBox.setHgrow(dimensions, Priority.ALWAYS);
-
-        topInfo2.getChildren().add(dimensions);
-
-        return topInfo2;
+        Label fileSize = new Label("Size: " + fileInfo.getSize());
+//        HBox hbox = createButtonDateTimeContainer(fileInfo);
+        gridPane.add(dimensions, 0, 2);
+        gridPane.add(fileSize, 1, 2);
     }
 
     private HBox createImageSection(FileInfo fileInfo) {
@@ -263,17 +247,10 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     }
 
     private VBox createBottomSection(FileInfo fileInfo) {
-        VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
-        VBox.setVgrow(bottomContainer, Priority.NEVER);
-
-        // File name label
-        Label fileNameTextField = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
-
-        // Date/time container with button and date field
         HBox buttonDateTimeContainer = createButtonDateTimeContainer(fileInfo);
+        VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
 
-        bottomContainer.getChildren().addAll(fileNameTextField, buttonDateTimeContainer);
-
+        bottomContainer.getChildren().add(buttonDateTimeContainer);
         return bottomContainer;
     }
 
@@ -291,7 +268,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
 
         // Create right filling region to balance layout
         Region rightFilling = createFillingRegion(accept);
-Messages.sprintf("rightFilling WIDTH::::  " + rightFilling.getWidth());
+        Messages.sprintf("rightFilling WIDTH::::  " + rightFilling.getWidth());
         buttonDateTimeContainer.getChildren().addAll(accept, fileDateTextField, rightFilling);
 
         return buttonDateTimeContainer;
@@ -305,80 +282,80 @@ Messages.sprintf("rightFilling WIDTH::::  " + rightFilling.getWidth());
         return rightFilling;
     }
 
-    private VBox createImageFrame_(FileInfo fileInfo, int index) {
-        VBox imageFrameVBox = DateFixGuiUtils.createImageFrame();
-//        VBox.setVgrow(imageFrameVBox, Priority.ALWAYS);
-//        imageFrameVBox.setFillWidth(true);
+//    private VBox createImageFrame_(FileInfo fileInfo, int index) {
+//        VBox imageFrameVBox = DateFixGuiUtils.createImageFrame();
+////        VBox.setVgrow(imageFrameVBox, Priority.ALWAYS);
+////        imageFrameVBox.setFillWidth(true);
+//
+//        VBox topVBox = DateFixGuiUtils.createInfoContainer(2);
+//
 
-        VBox topVBox = DateFixGuiUtils.createInfoContainer(2);
-
-//        topVBox.setPrefHeight(50);
-//        topVBox.setMinHeight(50);
-//        topVBox.setMaxHeight(50);
-        VBox.setVgrow(topVBox, Priority.NEVER);
-
-        HBox topInfo1 = DateFixGuiUtils.createTopContainer(2);
-        HBox.setHgrow(topInfo1, Priority.ALWAYS); // let top bar grow in parent
-
-        Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
-        Label fileExtension = DateFixGuiUtils.createFileExtension(fileInfo);
-
-        Label leftSpacer = DateFixGuiUtils.createSpacer(30);
-        Label rightSpacer = DateFixGuiUtils.createSpacer(30);
-
-        HBox topContainerSplitter = DateFixGuiUtils.createTopContainer(10);
-        topContainerSplitter.setAlignment(Pos.CENTER);
-
-        topInfo1.getChildren().setAll(fileExtension, leftSpacer, topContainerSplitter, rightSpacer, imageFrameNumber);
-
-        HBox topInfo2 = DateFixGuiUtils.createTopContainer(10);
-        Label dimensions = DateFixGuiUtils.createDimensionsLabel(fileInfo);
-
-        topInfo2.getChildren().add(dimensions);
-        HBox.setHgrow(dimensions, Priority.ALWAYS);
-        HBox.setHgrow(topContainerSplitter, Priority.ALWAYS);
-        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
-        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
-        VBox.setVgrow(leftSpacer, Priority.ALWAYS);
-        VBox.setVgrow(rightSpacer, Priority.ALWAYS);
-
-        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer();
-        ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (UIContants.THUMBNAIL_MAX_WIDTH), UIContants.THUMBNAIL_MAX_HEIGHT);
-        imageViewContainer.getChildren().add(iv);
-
-        // Ensure the top bar has a definite width to distribute to spacers
-        topInfo1.prefWidthProperty().bind(imageViewContainer.widthProperty());
-
-        VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
-
-        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer(6);
-        VBox.setVgrow(buttonDateTimeContainer, Priority.ALWAYS);
-
-        Label fileNameTextField = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
-        Label fileDateTextField = DateFixGuiUtils.createFileDate_tf(fileInfo, buttonDateTimeContainer);
-
-        Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, buttonDateTimeContainer, fileDateTextField);
-
-        Region rightFilling = new Region();
-        rightFilling.minWidthProperty().bind(accept.widthProperty());
-        rightFilling.prefWidthProperty().bind(accept.widthProperty());
-        rightFilling.maxWidthProperty().bind(accept.widthProperty());
-
-        buttonDateTimeContainer.getChildren().addAll(accept, fileDateTextField, rightFilling);
-        bottomContainer.getChildren().addAll(fileNameTextField, buttonDateTimeContainer);
-
-        HBox.setHgrow(fileDateTextField, Priority.ALWAYS);
-        VBox.setVgrow(fileDateTextField, Priority.ALWAYS);
-        VBox.setVgrow(bottomContainer, Priority.NEVER);
-        VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
-        VBox.setVgrow(iv, Priority.NEVER);
-
-        topVBox.getChildren().addAll(topInfo1, topInfo2);
-        imageFrameVBox.getChildren().addAll(topVBox, imageViewContainer, bottomContainer);
-
-        return imageFrameVBox;
-    }
-
+    /// /        topVBox.setPrefHeight(50);
+    /// /        topVBox.setMinHeight(50);
+    /// /        topVBox.setMaxHeight(50);
+//        VBox.setVgrow(topVBox, Priority.NEVER);
+//
+//        HBox topInfo1 = DateFixGuiUtils.createTopContainer(2);
+//        HBox.setHgrow(topInfo1, Priority.ALWAYS); // let top bar grow in parent
+//
+//        Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
+//        Label fileExtension = DateFixGuiUtils.createFileExtension(fileInfo);
+//
+//        Label leftSpacer = DateFixGuiUtils.createSpacer(30);
+//        Label rightSpacer = DateFixGuiUtils.createSpacer(30);
+//
+//        HBox topContainerSplitter = DateFixGuiUtils.createTopContainer(10);
+//        topContainerSplitter.setAlignment(Pos.CENTER);
+//
+//        topInfo1.getChildren().setAll(fileExtension, leftSpacer, topContainerSplitter, rightSpacer, imageFrameNumber);
+//
+//        HBox topInfo2 = DateFixGuiUtils.createTopContainer(10);
+//        Label dimensions = DateFixGuiUtils.createDimensionsLabel(fileInfo);
+//
+//        topInfo2.getChildren().add(dimensions);
+//        HBox.setHgrow(dimensions, Priority.ALWAYS);
+//        HBox.setHgrow(topContainerSplitter, Priority.ALWAYS);
+//        HBox.setHgrow(leftSpacer, Priority.ALWAYS);
+//        HBox.setHgrow(rightSpacer, Priority.ALWAYS);
+//        VBox.setVgrow(leftSpacer, Priority.ALWAYS);
+//        VBox.setVgrow(rightSpacer, Priority.ALWAYS);
+//
+//        HBox imageViewContainer = DateFixGuiUtils.createImageViewContainer();
+//        ImageView iv = DateFixGuiUtils.createImageView(fileInfo, (UIContants.THUMBNAIL_MAX_WIDTH), UIContants.THUMBNAIL_MAX_HEIGHT);
+//        imageViewContainer.getChildren().add(iv);
+//
+//        // Ensure the top bar has a definite width to distribute to spacers
+//        topInfo1.prefWidthProperty().bind(imageViewContainer.widthProperty());
+//
+//        VBox bottomContainer = DateFixGuiUtils.createBottomContainer();
+//
+//        HBox buttonDateTimeContainer = DateFixGuiUtils.createButtonDateTimeContainer(6);
+//        VBox.setVgrow(buttonDateTimeContainer, Priority.ALWAYS);
+//
+//        Label fileNameTextField = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
+//        Label fileDateTextField = DateFixGuiUtils.createFileDate_tf(fileInfo, buttonDateTimeContainer);
+//
+//        Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, buttonDateTimeContainer, fileDateTextField);
+//
+//        Region rightFilling = new Region();
+//        rightFilling.minWidthProperty().bind(accept.widthProperty());
+//        rightFilling.prefWidthProperty().bind(accept.widthProperty());
+//        rightFilling.maxWidthProperty().bind(accept.widthProperty());
+//
+//        buttonDateTimeContainer.getChildren().addAll(accept, fileDateTextField, rightFilling);
+//        bottomContainer.getChildren().addAll(fileNameTextField, buttonDateTimeContainer);
+//
+//        HBox.setHgrow(fileDateTextField, Priority.ALWAYS);
+//        VBox.setVgrow(fileDateTextField, Priority.ALWAYS);
+//        VBox.setVgrow(bottomContainer, Priority.NEVER);
+//        VBox.setVgrow(buttonDateTimeContainer, Priority.NEVER);
+//        VBox.setVgrow(iv, Priority.NEVER);
+//
+//        topVBox.getChildren().addAll(topInfo1, topInfo2);
+//        imageFrameVBox.getChildren().addAll(topVBox, imageViewContainer, bottomContainer);
+//
+//        return imageFrameVBox;
+//    }
     private Node createSpacer() {
         final Region spacer = new Region();
         // Make it always grow or shrink according to the available space
