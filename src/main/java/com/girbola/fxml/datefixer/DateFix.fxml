@@ -21,6 +21,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
@@ -236,7 +237,7 @@
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Label>
-                                                <Button id="showAndHideButton" fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                                                <Button id="showAndHideButton" fx:id="hideInfoTables_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#hideInfoTables_btn_action" styleClass="showAndHideButton" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.vgrow="NEVER">
                                                     <graphic>
                                                         <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-down" iconSize="20" />
                                                     </graphic>
@@ -650,7 +651,7 @@
                                                                     <children>
                                                                         <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="acceptButton" HBox.hgrow="NEVER">
                                                                             <graphic>
-                                                                                <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="15" />
+                                                                                <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="20" />
                                                                             </graphic>
                                                                         </Button>
                                                                         <Label maxWidth="1.7976931348623157E308" text="2025-06-20 12:00:00" HBox.hgrow="ALWAYS">
@@ -662,7 +663,7 @@
                                                             <String fx:value="centered-content" />
                                                          </styleClass>
                                                       </Label>
-                                                      <Button contentDisplay="GRAPHIC_ONLY" minHeight="25.0" minWidth="25.0" mnemonicParsing="false" styleClass="acceptButton" />
+                                                      <Region maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="25.0" />
                                                                     </children>
                                                                 </HBox>
                                              </children>
@@ -679,13 +680,9 @@
                 </HBox>
             </center>
             <bottom>
-                <HBox BorderPane.alignment="TOP_LEFT">
+                <HBox styleClass="rootBottomBar" BorderPane.alignment="TOP_LEFT">
                     <children>
-                        <TextField fx:id="filePath_tf" editable="false" styleClass="rootPath" text="textfield" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER">
-                            <padding>
-                                <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
-                            </padding>
-                        </TextField>
+                        <TextField fx:id="filePath_tf" editable="false" styleClass="rootPath" text="textfield" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER" />
                         <MenuButton mnemonicParsing="false" text="Map">
                             <items>
                                 <MenuItem mnemonicParsing="false">

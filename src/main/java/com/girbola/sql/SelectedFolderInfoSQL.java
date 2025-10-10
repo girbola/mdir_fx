@@ -13,7 +13,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javafx.collections.ObservableList;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
 import static com.girbola.sql.SQL_Utils.isDbConnected;
@@ -63,7 +62,7 @@ public class SelectedFolderInfoSQL {
         Path configFile = Paths.get(Main.conf.getAppDataPath().toString(), Main.conf.getConfiguration_db_fileName());
 
         Messages.sprintf("configFile.getParent().toString(), configFile.getFileName().toString() " + configFile.getParent().toString() + " DATABASE NAMEEEE:::::::::::: " +  configFile.getFileName().toString());
-        try (Connection connection = SqliteConnection.connector(configFile.getParent().toString(), configFile.getFileName().toString())) {
+        try (Connection connection = SqliteConnection.connectToDatabase(configFile.getParent().toString(), configFile.getFileName().toString())) {
 
             if (!isDbConnected(connection)) {
                 Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
@@ -93,7 +92,7 @@ public class SelectedFolderInfoSQL {
 
 
     public static boolean clearSelectedFolders(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
         }
@@ -123,7 +122,7 @@ public class SelectedFolderInfoSQL {
     }
 
     public static void saveSelectedFoldersToConfigDb(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
             return;

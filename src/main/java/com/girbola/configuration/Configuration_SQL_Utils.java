@@ -474,7 +474,7 @@ public class Configuration_SQL_Utils {
      * @param listToRemove the ArrayList of FolderInfo objects representing the folders to insert or replace in the ignored list
      */
     public static void insert_IgnoredList(ArrayList<FolderInfo> listToRemove) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (SQL_Utils.isDbConnected(connection)) {
             Messages.sprintf("insert_IgnoredList connection were connected: " + SQL_Utils.getUrl(connection));
         } else {
@@ -509,7 +509,7 @@ public class Configuration_SQL_Utils {
         Connection connection = null;
 
         if (connection_open == null) {
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } else {
             connection = connection_open;
         }
@@ -537,7 +537,7 @@ public class Configuration_SQL_Utils {
     // @formatter:on
     public static void saveTableWidths(Tables table) {
         try {
-            Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
             connection.setAutoCommit(false);
             PreparedStatement pstmt = null;
 

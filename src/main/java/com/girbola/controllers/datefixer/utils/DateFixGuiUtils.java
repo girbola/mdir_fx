@@ -133,15 +133,17 @@ public class DateFixGuiUtils {
 
     public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
         Button button = new Button();
-//        button.getStylesheets().add("button");
+        button.getStyleClass().add("acceptButton");
 
         FontIcon fontIcon = new FontIcon();
-        fontIcon.setIconColor(Color.RED);
-        fontIcon.setIconLiteral("bi-check");
-        fontIcon.setIconSize(10);
+        button.setGraphic(fontIcon);
+//        fontIcon.setStyle("-fx-background-color: red;");
+//        fontIcon.setIconColor(Color.RED);
+//        fontIcon.setIconLiteral("bi-check");
+//        fontIcon.setIconSize(15);
 //        fontIcon.setIconColor(javafx.scene.paint.Color.GREEN);
         //ImageView imageView = new ImageView(GUI_Methods.loadImage("confirm.png", GuiImageFrame.BUTTON_WIDTH));
-        button.setGraphic(fontIcon);
+
 //        button.setId("accept");
 //        button.getStyleClass().add("acceptButton");
         if (!fi.isGood()) {

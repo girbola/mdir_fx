@@ -105,7 +105,7 @@ public class ModelDatefix extends DateFixerModel {
     public ModelDatefix(ModelMain model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
         this.model_Main = model_Main;
-        this.connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
+        this.connection = SqliteConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
     }
 
     public void instantiateRenderVisibleNodes() {

@@ -738,7 +738,7 @@ public class TableUtils {
             FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
 //            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-            Connection configurationConnection = SqliteConnection.connector(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
+            Connection configurationConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
             configurationConnection.setAutoCommit(false);
 
             FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo);

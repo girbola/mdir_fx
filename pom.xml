@@ -34,7 +34,7 @@
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
         <lombok.version>1.18.38</lombok.version>
-        <maven.compiler.plugin.version>3.13.0</maven.compiler.plugin.version>
+        <maven.compiler.plugin.version>4.0.0-beta-2</maven.compiler.plugin.version>
         <maven.compiler.source>24.0.2</maven.compiler.source>
         <maven.compiler.target>24.0.2</maven.compiler.target>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>

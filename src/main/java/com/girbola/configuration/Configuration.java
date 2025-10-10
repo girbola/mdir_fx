@@ -27,7 +27,7 @@ public class Configuration extends Configuration_defaults {
 
     public boolean loadConfig_SQL() throws SQLException {
         Messages.sprintf("Loading SQL config: " + Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 
         if (SQL_Utils.isDbConnected(connection)) {
             connection.setAutoCommit(false);

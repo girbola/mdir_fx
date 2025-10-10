@@ -68,7 +68,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 		tryToReconnect.setOnAction(event -> {
 			if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
 				setGood();
-				Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+				Connection connection = SqliteConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
 				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
 				FolderInfoUtils.calculateFolderInfoStatus(folderInfo);

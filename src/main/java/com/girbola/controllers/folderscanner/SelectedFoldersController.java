@@ -52,7 +52,7 @@ public class SelectedFoldersController {
 
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
 
-        model_main.getMonitorExternalDriveConnectivity().cancel();
+
 
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
 
@@ -111,13 +111,14 @@ public class SelectedFoldersController {
         Iterator<SelectedFolder> selectedFolderScannerObs = model_main.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
         while (selectedFolderScannerObs.hasNext()) {
             SelectedFolder selectedFolder = selectedFolderScannerObs.next();
+            Messages.sprintf("RemoveFromTable selectedFolder: " + selectedFolder.getFolder());
         }
         Connection connection = null;
 
         ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
         for (SelectedFolder selectedItem : selectedItems) {
-
+Messages.sprintf("RemoveFromTable selectedItem: " + selectedItem.getFolder());
         }
 
         SelectedFolderInfoSQL.clearSelectedFolders(model_main);

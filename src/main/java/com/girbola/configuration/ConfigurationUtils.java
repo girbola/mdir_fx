@@ -7,7 +7,6 @@ import com.girbola.misc.Misc;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 
-import common.utils.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -45,7 +44,7 @@ public class ConfigurationUtils {
 
     public static boolean createConfiguration_db() {
         Messages.sprintf("creatingConfiguration_DB at: " + Main.conf.getAppDataPath() + File.separator + Main.conf.getConfiguration_db_fileName());
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 
         SQL_Utils.setAutoCommit(connection, false);
 
@@ -92,7 +91,7 @@ public class ConfigurationUtils {
             } catch (IOException e1) {
                 Messages.sprintf("Something went wrong: " + e1.getMessage());
             }
-            connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+            connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(),
                     Main.conf.getConfiguration_db_fileName());
 
             if (createDatabase) {

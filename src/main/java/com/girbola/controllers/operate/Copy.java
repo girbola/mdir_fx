@@ -7,7 +7,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.workdir.WorkDirSQL;
+import com.girbola.controllers.main.sql.WorkDirSQL;
 import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,21 +26,7 @@ public class Copy extends Task<Integer> {
     private CopyHelper copyHelper;
 
     private final String ERROR = Copy.class.getSimpleName();
-
-    List<FileInfo> list = new ArrayList<>();
-    ModelOperate modelOperate;
-    ModelMain modelMain;
-    String sceneNameType;
-    boolean close;
-
-    public Copy(List<FileInfo> list, ModelOperate modelOperate, ModelMain modelMain, String sceneNameType, boolean close) {
-        this.list = list;
-        this.modelOperate = modelOperate;
-        this.modelMain = modelMain;
-        this.sceneNameType = sceneNameType;
-        this.close = close;
-        copyHelper = new CopyHelper(modelMain, modelOperate, this);
-    }
+    private WorkDirSQL workDirSQL;
     private AtomicInteger counter;
     private int byteRead;
     private long currentSize;
@@ -48,6 +34,22 @@ public class Copy extends Task<Integer> {
     private Path source = null;
     private Path dest = null;
     private SimpleStringProperty rememberAnswer = new SimpleStringProperty(CopyAnswerType.ASK);
+
+    List<FileInfo> list = new ArrayList<>();
+    ModelOperate modelOperate;
+    ModelMain modelMain;
+    String sceneNameType;
+    boolean close;
+
+    public Copy(List<FileInfo> list, ModelOperate modelOperate, ModelMain modelMain, String sceneNameType, boolean close, WorkDirSQL workDirSQL) {
+        this.list = list;
+        this.modelOperate = modelOperate;
+        this.modelMain = modelMain;
+        this.sceneNameType = sceneNameType;
+        this.close = close;
+        this.workDirSQL = workDirSQL;
+        copyHelper = new CopyHelper(modelMain, modelOperate, this);
+    }
 
 //    @Override
 //    protected Integer call() throws Exception {
@@ -66,7 +68,8 @@ public class Copy extends Task<Integer> {
 
         Path workDir = Paths.get(Main.conf.getWorkDir()).toRealPath();
 
-        copyHelper.handleWorkDirCheck(workDir);
+        //copyHelper.handleWorkDirCheck(workDir);
+
 
         if (copyHelper.checkProcessCancellation()) {
             return null;
@@ -81,7 +84,7 @@ public class Copy extends Task<Integer> {
         while (fileInfoIterator.hasNext()) {
             FileInfo fileInfo = fileInfoIterator.next();
             Messages.sprintf(fileInfo.getOrgPath() + " getWorkDir file: " + fileInfo.getWorkDir());
-            List<FileInfo> duplicateByExactDate = WorkDirSQL.findDuplicateByExactDate(fileInfo);
+            List<FileInfo> duplicateByExactDate = workDirSQL.findDuplicateByExactDate(fileInfo);
 //                if(duplicateByExactDate == null) {
 //                    break;
 //                }
@@ -137,7 +140,7 @@ public class Copy extends Task<Integer> {
                                 copyHelper.updateIncreaseCopyingProcessValues();
                                 if (!fileInfo.isCopied()) {
                                     fileInfo.setCopied(true);
-                                    WorkDirSQL.insertFileInfo(fileInfo);
+                                    workDirSQL.insertFileInfo(fileInfo);
                                 }
                             }
                         } else {
@@ -152,7 +155,7 @@ public class Copy extends Task<Integer> {
                             if (!fileInfo.isCopied()) {
                                 fileInfo.setCopied(true);
                             }
-                            WorkDirSQL.insertFileInfo(fileInfo);
+                            workDirSQL.insertFileInfo(fileInfo);
 //                                modelMain.getWorkDirSQL().insertFileInfo(fileInfo);
                         }
                         break;
@@ -213,15 +216,8 @@ public class Copy extends Task<Integer> {
         Task<Void> saveWorkDirToDatabase = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                Messages.sprintf("Step1");
-                boolean saveWorkDirList = WorkDirSQL.saveWorkDirDatabase();
-                Messages.sprintf("Step2");
-                TableUtils.refreshAllTableContent(modelMain.tables());
-                if (saveWorkDirList) {
-                    Messages.sprintf("saveWorkDirList DONE!!!");
-                } else {
-                    Messages.sprintf("saveWorkDirList FAILED");
-                }
+                Messages.sprintf("Closing workdir connection");
+                workDirSQL.closeConnection();
                 TableUtils.updateAllFolderInfos(modelMain.tables());
                 TableUtils.refreshAllTableContent(modelMain.tables());
                 return null;
@@ -230,15 +226,18 @@ public class Copy extends Task<Integer> {
         // @formatter:on
         saveWorkDirToDatabase.setOnSucceeded((eventti) -> {
             Messages.sprintf("saveWorkDirListToDatabase finished success!");
+            workDirSQL.closeConnection();
 //				writeToDatabase();
         });
         saveWorkDirToDatabase.setOnCancelled((eventti) -> {
             Messages.sprintfError("saveWorkDirListToDatabase finished success!");
+            workDirSQL.closeConnection();
 //				writeToDatabase();
 
         });
         saveWorkDirToDatabase.setOnFailed((eventti) -> {
             Messages.sprintf("saveWorkDirToDatabase Task failed!");
+            workDirSQL.closeConnection();
 //				writeToDatabase();
 
         });

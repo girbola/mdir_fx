@@ -3,19 +3,27 @@ package com.girbola.workdir;
 import com.girbola.Main;
 import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.fileinfo.*;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
-import com.girbola.sql.*;
-
-import com.girbola.utils.*;
-import java.nio.file.*;
-import java.sql.*;
-import java.time.*;
+import com.girbola.sql.FileInfoConstants;
+import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.sql.SqliteConnection;
+import com.girbola.utils.FileInfoUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
-
-import static com.girbola.sql.FileInfo_SQL.createFileInfoTable;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -102,7 +110,7 @@ public class WorkDirSQL {
             return false;
         }
 
-        workDirConnection = SqliteConnection.connector(workDir, SQLTableEnums.WORKDIR.getType());
+        workDirConnection = SqliteConnection.connectToDatabase(workDir, SQLTableEnums.WORKDIR.getType());
         boolean dbConnected = SQL_Utils.isDbConnected(workDirConnection);
         if (dbConnected) {
             Messages.sprintf("workDir loaded: " + workDir);
@@ -127,8 +135,7 @@ public class WorkDirSQL {
         return false;
     }
 
-
-    private static boolean createWorkDirTable(Connection connection) {
+    public static boolean createWorkDirTable(Connection connection) {
         try {
             Statement stmt = connection.createStatement();
             String createTableSql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.WORKDIR.getType() + " ("
@@ -178,7 +185,7 @@ public class WorkDirSQL {
         try {
             // Try to get or create connection if needed
             if (workDirConnection == null || workDirConnection.isClosed()) {
-                workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), SQLTableEnums.WORKDIR.getType());
+                workDirConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getWorkDir()), SQLTableEnums.WORKDIR.getType());
                 if (workDirConnection == null) {
                     throw new SQLException("Could not create database connection");
                 }
@@ -237,83 +244,6 @@ public class WorkDirSQL {
             Messages.sprintfError("Error inserting/updating FileInfo: " + e.getMessage());
         } finally {
             // Don't close the connection here since it may be needed for other operations
-            try {
-                if (workDirConnection != null && workDirConnection.isClosed()) {
-                    SQL_Utils.closeConnection(workDirConnection);
-                    workDirConnection = null;
-                }
-            } catch (SQLException e) {
-                Messages.sprintfError("Error closing connection: " + e.getMessage());
-            }
-        }
-    }
-
-
-    public static void insertFileInfo_(FileInfo fileInfo) {
-        Messages.sprintf("insertFileInfo starting: " + fileInfo);
-        if (fileInfo == null) {
-            Messages.warningText("Cannot insert null FileInfo");
-            return;
-        }
-
-        try {
-            // Try to get or create connection if needed
-            if (workDirConnection == null || workDirConnection.isClosed()) {
-                workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), SQLTableEnums.WORKDIR.getType());
-                if (workDirConnection == null) {
-                    throw new SQLException("Could not create database connection");
-                }
-
-                // Verify connection is valid
-                if (!SQL_Utils.isDbConnected(workDirConnection)) {
-                    throw new SQLException("Database connection validation failed");
-                }
-            }
-
-            final String sql = "INSERT INTO " + SQLTableEnums.WORKDIR.getType() + FileInfoEnum.getAllFileInfoEnumValues() + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
-                    + "ON CONFLICT(orgPath) DO UPDATE SET fileInfo_id = ?, destination_Path = ?, event = ?, location = ?, orientation = ?, tags = ?, "
-                    + "camera_model = ?, bad = ?, good = ?, suggested = ?, confirmed = ?, ignored = ?, tableDuplicated = ?, raw = ?, image = ?, video = ?, "
-                    + "date = ?, size = ?, thumb_offset = ?, thumb_length = ?, imageDifferenceHash = ?, user = ?, workDir = ?, workDirDriveSerialNumber = ?, "
-                    + "localDateTime = ?, timeShift = ?";
-
-            PreparedStatement pstmt = workDirConnection.prepareStatement(sql);
-            int index = 1;
-
-            // Update values
-            pstmt.setInt(index++, fileInfo.getFileInfo_id());
-            pstmt.setString(index++, fileInfo.getDestination_Path());
-            pstmt.setString(index++, fileInfo.getEvent());
-            pstmt.setString(index++, fileInfo.getLocation());
-            pstmt.setInt(index++, fileInfo.getOrientation());
-            pstmt.setString(index++, fileInfo.getTags());
-            pstmt.setString(index++, fileInfo.getCamera_model());
-            pstmt.setBoolean(index++, fileInfo.isBad());
-            pstmt.setBoolean(index++, fileInfo.isGood());
-            pstmt.setBoolean(index++, fileInfo.isSuggested());
-            pstmt.setBoolean(index++, fileInfo.isConfirmed());
-            pstmt.setBoolean(index++, fileInfo.isIgnored());
-            pstmt.setBoolean(index++, fileInfo.isTableDuplicated());
-            pstmt.setBoolean(index++, fileInfo.isRaw());
-            pstmt.setBoolean(index++, fileInfo.isImage());
-            pstmt.setBoolean(index++, fileInfo.isVideo());
-            pstmt.setLong(index++, fileInfo.getDate());
-            pstmt.setLong(index++, fileInfo.getSize());
-            pstmt.setInt(index++, fileInfo.getThumb_offset());
-            pstmt.setInt(index++, fileInfo.getThumb_length());
-            pstmt.setString(index++, fileInfo.getImageDifferenceHash());
-            pstmt.setString(index++, fileInfo.getUser());
-            pstmt.setString(index++, fileInfo.getWorkDir());
-            pstmt.setString(index++, fileInfo.getWorkDirDriveSerialNumber());
-            pstmt.setObject(index++, fileInfo.getLocalDateTime());
-            pstmt.setLong(index++, fileInfo.getTimeShift());
-
-            pstmt.executeUpdate();
-            Messages.sprintf("FileInfo inserted/updated successfully");
-        } catch (SQLException e) {
-            Messages.sprintfError("Error inserting/updating FileInfo: " + e.getMessage());
-        } finally {
-            // Don't close the connection here since it may be needed for other operations
-            // Instead, let the connection pool or application lifecycle manage the connection
             try {
                 if (workDirConnection != null && workDirConnection.isClosed()) {
                     SQL_Utils.closeConnection(workDirConnection);
@@ -406,7 +336,7 @@ public class WorkDirSQL {
             return new ArrayList<>();
         }
 
-        workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), Main.conf.getWorkDir_db_fileName());
+        workDirConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getWorkDir()), Main.conf.getWorkDir_db_fileName());
 
         // If connection failed or database doesn't exist, return empty list
         if (workDirConnection == null || !SQL_Utils.isDbConnected(workDirConnection)) {
@@ -449,7 +379,7 @@ public class WorkDirSQL {
     }
     public  static List<FileInfo> findDuplicateByExactDate_(FileInfo fileInfo) {
         LocalDateTime date = fileInfo.getLocalDateTime();
-        workDirConnection = SqliteConnection.connector(Paths.get(Main.conf.getWorkDir()), Main.conf.getWorkDir_db_fileName());
+        workDirConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getWorkDir()), Main.conf.getWorkDir_db_fileName());
         boolean fileInfoTable = createFileInfoTable(workDirConnection);
         if(!fileInfoTable) {
             Messages.sprintf("WorkDirSQL work dir connection findDuplicateByExactDate: " +Main.conf.getWorkDir_db_fileName());

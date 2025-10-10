@@ -130,7 +130,7 @@ public class SqliteConnection {
         connectionList.remove(conn);
     }
 
-    public static Connection connector(Path path, String tableName) {
+    public static Connection connectToDatabase(Path path, String tableName) {
         Messages.sprintf("Connection to path: " + path.toFile().getAbsolutePath() + " tableName: " + tableName);
 
         // Fix: do not use path.startsWith("") which is always true for Path and incorrectly returns null
@@ -193,7 +193,7 @@ public class SqliteConnection {
     }
 
 
-    public static Connection connector(String path, String tableName) {
+    public static Connection connectToDatabase(String path, String tableName) {
         Connection conn = null;
         try {
             Class.forName("org.sqlite.JDBC");

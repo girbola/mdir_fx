@@ -15,3 +15,4 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 /.apt_generated/
 /.apt_generated_tests/
 /identifier.sqlite
+/workDir.db

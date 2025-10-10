@@ -37,7 +37,9 @@ public class SubList extends Task<List<Path>> {
 
 //        SubFolders subFolders = new SubFolders();
         List<Path> list = SubFolders.subFolders(p);
-
+        for(Path path : list) {
+            Messages.sprintf("----path:::: " + path);
+        }
 //		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
 //		if(ds == null) {
 //			Messages.sprintfError("Calculate has failed. Cannot read folder: " + p);
@@ -101,7 +103,7 @@ public class SubList extends Task<List<Path>> {
                 System.out.println("Hidden: " + Files.isHidden(path));
 
             } else {
-                System.out.println("The file " + path + " does not exist.");
+                System.out.println("The file " + path);
             }
 
         } catch (IOException e) {
@@ -111,6 +113,7 @@ public class SubList extends Task<List<Path>> {
 
     @Override
     protected List<Path> call() throws Exception {
+        Messages.sprintf("SubList.call()");
         for (Path p : selectedFolderScanner_list) {
             Messages.sprintf("PATHHHTHTH: " + p.toString());
             if (Main.getProcessCancelled()) {
@@ -118,13 +121,35 @@ public class SubList extends Task<List<Path>> {
             }
             if (ValidatePathUtils.hasMediaFilesInFolder(p)) {
                 list.add(p);
+                Messages.sprintf("SubList.call() added to list: " + p);
             }
             try {
+                Messages.sprintf("SubList.call() calculating: " + p);
                 calculate(p);
+                Messages.sprintf("SubList.call() calculated: " + p);
             } catch (IOException ex) {
+                Messages.sprintfError("SubList.call() IOException: " + ex.getMessage());
                 Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
             }
         }
         return list;
+    }
+
+    @Override
+    protected void succeeded() {
+        Messages.sprintf("SubList.succeeded()");
+        super.succeeded();
+  }
+
+    @Override
+    protected void cancelled() {
+        Messages.sprintf("SubList.cancelled()");
+        super.cancelled();
+    }
+
+    @Override
+    protected void failed() {
+        Messages.sprintf("SubList.failed()");
+        super.failed();
     }
 }

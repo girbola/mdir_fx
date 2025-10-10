@@ -7,9 +7,6 @@ import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.messages.Messages;
 
 import com.girbola.misc.Misc;
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +72,7 @@ public class SelectedFoldersSQL {
 
 
     public static boolean clearSelectedFolders(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
         }
@@ -105,7 +102,7 @@ public class SelectedFoldersSQL {
     }
 
     public static void saveSelectedFolder_(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
             return;

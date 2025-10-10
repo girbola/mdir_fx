@@ -4,6 +4,7 @@ package com.girbola.controllers.main;
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
+import com.girbola.controllers.main.options.OptionsComponent;
 import com.girbola.controllers.main.tables.DuplicateStatistics;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.workdir.WorkDirController;
@@ -77,15 +78,6 @@ public class BottomController {
     }
 
 
-    @FXML
-    private void collect_action(ActionEvent event) {
-        Collector collector = new Collector();
-        collector.collectAll(model_main.tables());
-        collector.listMap(model_main.tables());
-
-//		drive_pane.visibleProperty().model_main
-
-    }
 
     @FXML
     private void workDir_btn_action(ActionEvent event) {
@@ -147,38 +139,8 @@ public class BottomController {
     }
 
     @FXML
-    private void copy_ok_date_btn_action(ActionEvent event) {
-        Main.setProcessCancelled(false);
-        try {
-            if (!Files.exists(Paths.get(conf.getWorkDir()).toRealPath())) {
-                warningText(bundle.getString("cannotFindWorkDir"));
-                return;
-            }
-        } catch (IOException ex) {
-            warningText(bundle.getString("cannotFindWorkDir"));
-            return;
-        }
-    }
-
-    /*
-     *
-     * Check if file exists: - Workdir - Check if file exists already in different
-     * time - Copy to destination
-     */
-
-    /**
-     * Copy selected files
-     *
-     * @param event
-     */
-    @FXML
-    private void copySelected_btn_action(ActionEvent event) {
-        Messages.warningText("Under construction");
-    }
-
-    @FXML
     private void options_btn_action(ActionEvent event) {
-
+        OptionsComponent.openOptions();
     }
 
     @FXML

@@ -24,12 +24,15 @@ public class OperateFiles {
     private ModelMain modelMain;
     private String sceneNameType;
 
+    WorkDirSQL workDirSQL;
+
     public OperateFiles(List<FileInfo> list, boolean close, ModelMain modelMain, String sceneNameType) {
         Messages.sprintf("OperateFiles starting...");
         this.list = list;
         this.close = close;
         this.modelMain = modelMain;
         this.sceneNameType = sceneNameType;
+        workDirSQL = new WorkDirSQL(Paths.get(Main.conf.getWorkDir()));
         try {
             init();
         } catch (Exception e) {
@@ -102,7 +105,6 @@ public class OperateFiles {
         modelOperate.getCopyProcess_values().setTotalFiles(String.valueOf(list.size()));
 
 
-
         long totalSize = 0;
         for (FileInfo fileInfo : list) {
             totalSize += fileInfo.getSize();
@@ -119,7 +121,7 @@ public class OperateFiles {
                 }
                 modelMain.getMonitorExternalDriveConnectivity().cancel();
 
-                WorkDirSQL.loadWorkDir();
+                workDirSQL.loadWorkDir();
 
 /*
 if(sortedTable) {
@@ -144,10 +146,10 @@ find destination by date range 2010/01/01 - 2010/01/01 +1 day ratio
  */
 
                 for (FileInfo fileInfo : list) {
-                    CopyState duplicates = WorkDirSQL.findDuplicates(fileInfo);
+                    CopyState duplicates = workDirSQL.findDuplicates(fileInfo);
                 }
 
-                Task<Integer> copy = new Copy(list, modelOperate, modelMain, sceneNameType, close);
+                Task<Integer> copy = new Copy(list, modelOperate, modelMain, sceneNameType, close, workDirSQL);
                 copy.setOnSucceeded((WorkerStateEvent eventWorker) -> Messages.sprintf("copy succeeded"));
                 copy.setOnFailed((WorkerStateEvent eventWorker) -> Messages.sprintf("copy failed"));
                 copy.setOnCancelled((WorkerStateEvent eventWorker) -> {

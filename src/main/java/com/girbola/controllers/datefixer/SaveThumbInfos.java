@@ -141,7 +141,7 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
         }
 
         Messages.sprintf("Thumbinfo list size is: " + thumbInfos.size());
-        connection = SqliteConnection.connector(currentFolderPath, Main.conf.getMdir_db_fileName());
+        connection = SqliteConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
         ThumbInfoSQL.insertThumbInfoListToDatabase(connection, thumbInfos);
         try {
             connection.commit();

@@ -15,7 +15,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     public static Connection createConfigurationConfig() {
         try {
-            return SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            return SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } catch (Exception e) {
             Messages.sprintfError("Error connecting to database: " + Main.conf.getConfiguration_db_fileName());
             return null;

@@ -7,11 +7,11 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
+<HBox alignment="CENTER_LEFT" spacing="3.0" styleClass="bottomBar" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.BottomController">
    <children>
       <HBox alignment="CENTER_LEFT" spacing="2.0">
          <children>
-            <Button fx:id="options_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#options_btn_action" text="Options" wrapText="true">
+            <Button fx:id="options_btn" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" onAction="#options_btn_action" styleClass="optionsButton" text="Options" wrapText="true">
                <font>
                   <Font size="9.0" />
                </font>
@@ -24,22 +24,7 @@
                   <Font size="9.0" />
                </font>
             </Button>
-            <Button fx:id="copySelected_btn" mnemonicParsing="false" onAction="#copySelected_btn_action" styleClass="bottomButton" text="Copy selected" wrapText="true">
-               <font>
-                  <Font size="9.0" />
-               </font>
-            </Button>
-            <Button fx:id="copy_ok_date_btn" mnemonicParsing="false" onAction="#copy_ok_date_btn_action" styleClass="bottomButton" text="Copy good" wrapText="true">
-               <font>
-                  <Font size="9.0" />
-               </font>
-            </Button>
             <Button fx:id="workDir_btn" mnemonicParsing="false" onAction="#workDir_btn_action" styleClass="bottomButton" text="GOTO WorkDir" wrapText="true">
-               <font>
-                  <Font size="9.0" />
-               </font>
-            </Button>
-            <Button fx:id="collect" mnemonicParsing="false" onAction="#collect_action" styleClass="bottomButton" text="Collect" wrapText="true">
                <font>
                   <Font size="9.0" />
                </font>

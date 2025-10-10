@@ -520,4 +520,8 @@ public class FileUtils {
     public  static boolean setReadable(Path createFile, boolean b) {
         return createFile.toFile().setReadable(true);
     }
+
+    public static boolean checkFilePermissions(File file) {
+         return (file.canWrite() && file.canRead());
+    }
 }

@@ -61,7 +61,7 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
         this.vbox = aVbox;
         this.list = new TreeMap<>(aList);
         if (connection == null) {
-            this.connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+            this.connection = SqliteConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()),
                     Main.conf.getMdir_db_fileName());
         } else {
             this.connection = connection;

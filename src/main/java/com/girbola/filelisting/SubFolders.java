@@ -39,15 +39,15 @@ public class SubFolders {
         List<Path> foundFiles = subFolders.foundPaths;
 
         if (!Files.exists(path) || path == null || path.toString().length() <= 0) {
-            Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+            return null;
         }
 
-//        try {
-//            Files.walkFileTree(path, subFolders);
-//        } catch (Exception ex) {
-//            sprintf("walking file tree: " + ex + " path: " + path);
-//            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-//        }
+        try {
+            Files.walkFileTree(path, subFolders);
+        } catch (Exception ex) {
+            sprintf("walking file tree: " + ex + " path: " + path);
+            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        }
 
 //        if (foundFiles.isEmpty()) {
 //            errorSmth(ERROR, "", null, getLineNumber(), true);
@@ -60,7 +60,7 @@ public class SubFolders {
 
 class Folders extends SimpleFileVisitor<Path> {
 
-    public ArrayList<Path> foundPaths = new ArrayList<>();
+    public List<Path> foundPaths = new ArrayList<>();
 
     @Override
     public FileVisitResult postVisitDirectory(Path t, IOException ioe) throws IOException {

@@ -252,7 +252,7 @@ public class FolderInfo_SQL {
         FolderInfo folderInfo = new FolderInfo();
 
         try {
-            connectionFileInfos = SqliteConnection.connector(path, Main.conf.getMdir_db_fileName());
+            connectionFileInfos = SqliteConnection.connectToDatabase(path, Main.conf.getMdir_db_fileName());
             if (!SQL_Utils.isDbConnected(connectionFileInfos)) {
                 Messages.sprintfError("Failed to establish database connection: " + path);
                 return null;

@@ -122,7 +122,7 @@ public class ScanDrives {
     private void handleSelectionChange(CheckBoxTreeItem<File> cb, Boolean isSelected) {
         Path selectedPath = Paths.get(cb.getValue().toString());
         sprintf("cb.selectedProperty path is: " + selectedPath);
-        if(cb.isIndeterminate()) {
+        if (cb.isIndeterminate()) {
             return;
         }
         if (Boolean.TRUE.equals(isSelected)) {
@@ -157,8 +157,10 @@ public class ScanDrives {
 
     private void processDeselectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
         sprintf("cb.selectedProperty de-selected path is: " + selectedPath);
-        remove(cb.getValue().toString());
-        driveListSelectedObs.remove(selectedPath);
+        Platform.runLater(() -> {
+//            remove(cb.getValue().toString());
+            driveListSelectedObs.remove(selectedPath);
+        });
     }
 
     private void initializeCheckBoxSelection(CheckBoxTreeItem<File> cb, File fileName) {
@@ -190,13 +192,13 @@ public class ScanDrives {
     }
 
     private void redrawRootFolders() throws IOException {
-        if(Main.getProcessCancelled()) {
+        if (Main.getProcessCancelled()) {
             Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
             return;
         }
         for (DriveInfo driveInfo : rootDrives) {
 
-            if(Main.getProcessCancelled()) {
+            if (Main.getProcessCancelled()) {
                 Messages.sprintfError("Iterating driveInfo were stopped. Process cancelled");
                 break;
             }
@@ -208,7 +210,7 @@ public class ScanDrives {
 
             CheckBoxTreeItem<File> checkBoxTreeItem = createBranch(drive);
             DirectoryStream<Path> stream = FileUtils.createDirectoryStream(Paths.get(driveInfo.getDrivePath()));
-            if(stream == null) {
+            if (stream == null) {
                 Messages.sprintfError("Stream were null");
                 return;
             }
@@ -232,7 +234,7 @@ public class ScanDrives {
                     }
                     checkBoxTreeItem2.selectedProperty().addListener((observable, oldValue, newValue) -> {
                         if (Boolean.TRUE.equals(newValue)) {
-                            processSelectedPath(checkBoxTreeItem2,f);
+                            processSelectedPath(checkBoxTreeItem2, f);
                         } else {
                             processDeselectedPath(checkBoxTreeItem2, f);
                         }
@@ -255,7 +257,7 @@ public class ScanDrives {
             if (Main.getProcessCancelled()) {
                 break;
             }
-    //TODO driveinfos ei huomioi olemassa olevia lisättyjä drivejnfoja vaan se lisää listaan kokoajan uutta.
+            //TODO driveinfos ei huomioi olemassa olevia lisättyjä drivejnfoja vaan se lisää listaan kokoajan uutta.
             String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
 
             Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());

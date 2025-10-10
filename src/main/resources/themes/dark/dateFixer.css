@@ -43,17 +43,17 @@
 
 .button,
 .toggle-button {
-    -fx-background-color: -fx-base, transparent, transparent,
-    linear-gradient(to bottom, derive(-fx-base, 20%), derive(-fx-base, 3%), derive(-fx-base, 3%), derive(-fx-base, 7%));
+    /*-fx-background-color: -fx-base, transparent, transparent,*/
+    /*linear-gradient(to bottom, derive(-fx-base, 20%), derive(-fx-base, 3%), derive(-fx-base, 3%), derive(-fx-base, 7%));*/
     -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.2), 1, 0, 0, 1);
-    -fx-font-size: 0.8em;
+    /*-fx-font-size: 0.8em;*/
     -fx-text-fill: -fx-light-text-color;
 
-    -fx-border-width: 0;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
+    /*-fx-border-width: 0;*/
+    /*-fx-border-radius: 4;*/
+    /*-fx-background-radius: 4;*/
 
-    -fx-border-insets: 1 1 0 1;
+    /*-fx-border-insets: 1 1 0 1;*/
 }
 
 .button:disabled {
@@ -69,21 +69,18 @@
     /*-fx-background-color: transparent;*/
     -fx-border-radius: 0;
     -fx-border-insets: 0;
-    -fx-border-width: 1;
-    -fx-padding: 0 3 0 3;
-    -fx-margin: 30;
-
-    -fx-min-width: 25px;
-    -fx-min-height: 25px;
-    -fx-icon-size: 25px;
-    -fx-icon-color: white;
 }
 
 .acceptButton .ikonli-font-icon {
+    -fx-icon-code: "bi-check";
+    -fx-icon-color: #ee8c8c;
+    -fx-icon-size: 20;
+}
+
+.acceptButton .button {
     -fx-icon-size: 20px;
     -fx-icon-color: #ee8c8c;
 }
-
 
 .bottomContainer {
     -fx-padding: 0;
@@ -124,6 +121,10 @@
     -fx-border-radius: 0.7em;
     -fx-border-width: 0.2em;
     -fx-margin: 0;
+}
+
+.dateTimeAdjuster {
+    -fx-background-color: -fx-base;
 }
 
 .dimensionsLabel {
@@ -437,10 +438,13 @@
     -fx-padding: 0 0.15em;
 }
 
-.rootPath {
-    -fx-background-color: derive(-fx-base, 50%);
-    -fx-font-size: 0.625em;
-    -fx-text-fill: -fx-light-text-color;
+.rootBottomBar {
+    -fx-background-color: red;
+}
+.rootPath *.text{
+    -fx-background-color: red;
+    -fx-font-size: 1.0em;
+    -fx-text-fill: black;
 }
 
 .separator {
@@ -578,11 +582,15 @@
 
 #showHideMediaBasedOnSelectionButton {
     -fx-background-color: -fx-base, transparent, transparent,
-    linear-gradient(whitesmoke 0%, white 25%, white 75%, whitesmoke 100%);
+    linear-gradient(grey 0%, -fx-base-blue 55%, -fx-base-blue 75%, grey 100%);
 }
 
-#showAndHideButton {
-    -fx-pref-height: 50px;
+.showAndHideButton .ikonli-font-icon {
+    -fx-icon-code: "bi-arrow-down";
+    -fx-icon-color: red;
+    -fx-icon-size: 15;
+
+    /*-fx-pref-height: 50px;*/
 }
 
 .split-pane {

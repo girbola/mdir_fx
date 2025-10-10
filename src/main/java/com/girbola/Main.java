@@ -314,7 +314,7 @@ public class Main extends Application {
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
-            Connection configurationLoadedFile = SqliteConnection.connector(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+            Connection configurationLoadedFile = SqliteConnection.connectToDatabase(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
 
             stageControl.setStageBoundarys();
             VLCJDiscovery.initVlc();

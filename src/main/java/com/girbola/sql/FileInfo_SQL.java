@@ -2,7 +2,6 @@ package com.girbola.sql;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.SQLTableEnums;
-import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -15,9 +14,9 @@ import java.util.*;
 
 public class FileInfo_SQL {
 
-    final static String[] fileInfoColumnsSQL = {(FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " + FileInfoConstants.ORG_PATH + " STRING UNIQUE, " + FileInfoConstants.WORK_DIR + " STRING, " + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING, " + FileInfoConstants.DESTINATIONPATH + " STRING, " + FileInfoConstants.EVENT + " STRING, " + FileInfoConstants.LOCATION + " STRING, " + FileInfoConstants.TAGS + " STRING, " + FileInfoConstants.CAMERA_MODEL + " STRING, " + FileInfoConstants.USER + " STRING, " + FileInfoConstants.ORIENTATION + " INTEGER, " + FileInfoConstants.TIMESHIFT + " INTEGER, " + FileInfoConstants.BAD + " BOOLEAN, " + FileInfoConstants.GOOD + " BOOLEAN, " + FileInfoConstants.SUGGESTED + " BOOLEAN, " + FileInfoConstants.CONFIRMED + " BOOLEAN, " + FileInfoConstants.COPIED + " BOOLEAN, " + FileInfoConstants.IGNORED + " BOOLEAN, " + FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN, " + FileInfoConstants.IMAGE + " BOOLEAN, " + FileInfoConstants.VIDEO + " BOOLEAN, " + FileInfoConstants.RAW + " BOOLEAN, " + FileInfoConstants.DATE + " NUMERIC, " + FileInfoConstants.SIZE + " NUMERIC, " + FileInfoConstants.IMAGE_DIFFERENCE_HASH + " INTEGER, " + FileInfoConstants.THUMB_OFFSET + " INTEGER, " + FileInfoConstants.THUMB_LENGTH + " INTEGER, " + FileInfoConstants.FILEHISTORIES + " STRING")};
+    final public static String[] fileInfoColumnsSQL = {(FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " + FileInfoConstants.ORG_PATH + " STRING UNIQUE, " + FileInfoConstants.WORK_DIR + " STRING, " + FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING, " + FileInfoConstants.DESTINATIONPATH + " STRING, " + FileInfoConstants.EVENT + " STRING, " + FileInfoConstants.LOCATION + " STRING, " + FileInfoConstants.TAGS + " STRING, " + FileInfoConstants.CAMERA_MODEL + " STRING, " + FileInfoConstants.USER + " STRING, " + FileInfoConstants.ORIENTATION + " INTEGER, " + FileInfoConstants.TIMESHIFT + " INTEGER, " + FileInfoConstants.BAD + " BOOLEAN, " + FileInfoConstants.GOOD + " BOOLEAN, " + FileInfoConstants.SUGGESTED + " BOOLEAN, " + FileInfoConstants.CONFIRMED + " BOOLEAN, " + FileInfoConstants.COPIED + " BOOLEAN, " + FileInfoConstants.IGNORED + " BOOLEAN, " + FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN, " + FileInfoConstants.IMAGE + " BOOLEAN, " + FileInfoConstants.VIDEO + " BOOLEAN, " + FileInfoConstants.RAW + " BOOLEAN, " + FileInfoConstants.DATE + " NUMERIC, " + FileInfoConstants.SIZE + " NUMERIC, " + FileInfoConstants.IMAGE_DIFFERENCE_HASH + " INTEGER, " + FileInfoConstants.THUMB_OFFSET + " INTEGER, " + FileInfoConstants.THUMB_LENGTH + " INTEGER, " + FileInfoConstants.FILEHISTORIES + " STRING")};
 
-    final static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
+    final public static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
         put(FileInfoConstants.BAD, "BOOLEAN");
         put(FileInfoConstants.CAMERA_MODEL, "STRING");
         put(FileInfoConstants.CONFIRMED, "BOOLEAN");
@@ -101,7 +100,7 @@ public class FileInfo_SQL {
     // @formatter:on
     public static boolean insertFileInfoListToFileInfoDatabase(FolderInfo folderInfo, boolean isWorkDir) {
         Messages.sprintf("--------------insertFileInfoListToDatabase started: " + folderInfo.getFolderPath() + " isWorkDir: " + isWorkDir);
-        Connection mdirDatabaseConnection = SqliteConnection.connector(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+        Connection mdirDatabaseConnection = SqliteConnection.connectToDatabase(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
 
         FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
 
@@ -348,7 +347,7 @@ public class FileInfo_SQL {
      */
 	public static boolean loadFileInfoDatabase(FolderInfo folderInfo) {
 		boolean loaded = false;
-		Connection connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()),
+		Connection connection = SqliteConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()),
 				Main.conf.getMdir_db_fileName());
 
 		if (SQL_Utils.isDbConnected(connection)) {

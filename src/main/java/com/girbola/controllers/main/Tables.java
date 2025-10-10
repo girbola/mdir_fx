@@ -257,7 +257,7 @@ public class Tables {
                 if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
                     ArrayList<FolderInfo> listToRemove = new ArrayList<>();
-                    Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(),
+                    Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(),
                             Main.conf.getConfiguration_db_fileName());
 
                     for (FolderInfo folderInfo : table_row_list) {
