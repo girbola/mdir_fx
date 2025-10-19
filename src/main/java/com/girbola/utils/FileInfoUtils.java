@@ -53,9 +53,16 @@ public class FileInfoUtils {
             Messages.sprintf("File were not a regular file: " + fileName);
             return null;
         }
+        int fileInfoId = -1;
+
+        if (Main.conf.getId_counter() != null) {
+            fileInfoId = Main.conf.getId_counter().incrementAndGet();
+        } else { // for the test cases
+            fileInfoId = 1;
+        }
 
         try {
-            FileInfo fileInfo = new FileInfo(fileName.toString(), Main.conf.getId_counter().incrementAndGet());
+            FileInfo fileInfo = new FileInfo(fileName.toString(), fileInfoId);
 
             if (FileUtils.supportedImage(fileName)) {
                 setImage(fileInfo);
@@ -70,7 +77,7 @@ public class FileInfoUtils {
 //                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
 //
 //                boolean tryParseDateTime = tryParseDateTime(fileInfo);
-////                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
+//                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
 //                String imageDifferenceHash = "";
 //                long start = System.currentTimeMillis();
                 Metadata metaData = DateTaken.getMetaData(fileName);

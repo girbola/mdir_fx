@@ -16,7 +16,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox styleClass="dateTimeAdjuster" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
+<VBox styleClass="dateTimeAdjuster"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
     <children>
         <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" VBox.vgrow="ALWAYS">
             <columnConstraints>

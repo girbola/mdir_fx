@@ -124,7 +124,8 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
 
         String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
-                " (" + ID + ", " +
+                " (" +
+                ID + ", " +
                 BETTER_THUMBNAIL_QUALITY + ", " +
                 CONFIRM_ON_EXIT + ", " +
                 ID_COUNTER + ", " +
@@ -143,28 +144,29 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 IMAGE_VIEW_Y_POSITION + ", " +
                 WORK_DIR_SERIAL_NUMBER + ", " +
                 WORK_DIR + ") " +
-                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
+        int index = 0;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, configuration_id);
-            pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
-            pstmt.setBoolean(3, configuration.isConfirmOnExit());
-            pstmt.setInt(4, configuration.getId_counter().get());
-            pstmt.setBoolean(5, configuration.isShowFullPath());
-            pstmt.setBoolean(6, configuration.isShowHints());
-            pstmt.setBoolean(7, configuration.isShowTooltips());
-            pstmt.setString(8, configuration.getCurrentTheme());
-            pstmt.setString(9, configuration.getVlcPath());
-            pstmt.setBoolean(10, configuration.isVlcSupport());
-            pstmt.setBoolean(11, configuration.isSaveDataToHD());
-            pstmt.setDouble(12, configuration.getWindowStartPosX());
-            pstmt.setDouble(13, configuration.getWindowStartPosY());
-            pstmt.setDouble(14, configuration.getWindowStartWidth());
-            pstmt.setDouble(15, configuration.getWindowStartHeight());
-            pstmt.setDouble(16, configuration.getImageViewXPosition());
-            pstmt.setDouble(17, configuration.getImageViewYPosition());
-            pstmt.setString(18, configuration.getWorkDirSerialNumber());
-            pstmt.setString(19, configuration.getWorkDir());
+            pstmt.setBoolean(index++, configuration.isBetterQualityThumbs());
+            pstmt.setBoolean(index++, configuration.isConfirmOnExit());
+            pstmt.setInt(index++, configuration.getId_counter().get());
+            pstmt.setBoolean(index++, configuration.isShowFullPath());
+            pstmt.setBoolean(index++, configuration.isShowHints());
+            pstmt.setBoolean(index++, configuration.isShowTooltips());
+            pstmt.setString(index++, configuration.getCurrentTheme());
+            pstmt.setString(index++, configuration.getVlcPath());
+            pstmt.setBoolean(index++, configuration.isVlcSupport());
+            pstmt.setBoolean(index++, configuration.isSaveDataToHD());
+            pstmt.setDouble(index++, configuration.getWindowStartPosX());
+
+            pstmt.setDouble(index++, configuration.getWindowStartPosY());
+            pstmt.setDouble(index++, configuration.getWindowStartWidth());
+            pstmt.setDouble(index++, configuration.getWindowStartHeight());
+            pstmt.setDouble(index++, configuration.getImageViewXPosition());
+            pstmt.setDouble(index++, configuration.getImageViewYPosition());
+            pstmt.setString(index++, configuration.getWorkDirSerialNumber());
+            pstmt.setString(index++, configuration.getWorkDir());
 
             int result = pstmt.executeUpdate();
             return result > 0;
@@ -184,13 +186,14 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             }
 
             // Set timeout for busy connections
-            try (Statement stmt = localConnection.createStatement()) {
-                stmt.execute("PRAGMA busy_timeout = 30000");
-            }
+//            try (Statement stmt = localConnection.createStatement()) {
+//                stmt.execute("PRAGMA busy_timeout = 30000");
+//            }
 
-            localConnection.setAutoCommit(false);
+            SQL_Utils.setAutoCommit(localConnection, false);
 
-            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType() + " ("
+            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType()
+                    + " ("
                     + ID + " INTEGER PRIMARY KEY,"
                     + BETTER_THUMBNAIL_QUALITY + " BOOLEAN, "
                     + CONFIRM_ON_EXIT + " BOOLEAN, "
@@ -211,6 +214,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                     + WORK_DIR_SERIAL_NUMBER + " TEXT, "
                     + WORK_DIR + " TEXT)";
 
+            Messages.sprintf("CreateConfiguration database: " + sql);
             try (Statement stmt = localConnection.createStatement()) {
                 stmt.execute(sql);
 
@@ -219,7 +223,11 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                     localConnection.commit();
                     return true;
                 }
-                localConnection.rollback();
+                //localConnection.rollback();
+                return false;
+            } catch (SQLException e) {
+                Messages.sprintfError("CREATING table did won't well: " + e.getMessage());
+                e.printStackTrace();
                 return false;
             }
         } catch (Exception e) {
@@ -230,7 +238,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                     ex.printStackTrace();
                 }
             }
-            Messages.sprintfError("Database error: " + e.getMessage());
+            Messages.sprintfError("11111Database error: " + e.getMessage());
             return false;
         } finally {
             if (localConnection != null) {
@@ -337,7 +345,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
      * @param connection the connection to the database.
      * @throws Exception if any SQL error occurs.
      */
-    private static void ensureAllColumnExists(Connection connection) throws Exception {
+    private static void ensureAllColumnExists(Connection connection) throws SQLException {
         String configTable = SQLTableEnums.CONFIGURATION.getType();
         final String[] columnsSettings = {
                 BETTER_THUMBNAIL_QUALITY + " BOOLEAN",
@@ -378,7 +386,8 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
 
     private static boolean loadTableSQL(Configuration configuration) {
 
-        String tableSQL = "SELECT id, " +
+        String tableSQL = "SELECT " +
+                Configuration_Type.ID.getType() + ", " +
                 Configuration_Type.BETTERQUALITYTHUMBS.getType() + ", " +
                 Configuration_Type.CONFIRMONEXIT.getType() + ", " +
                 Configuration_Type.ID_COUNTER.getType() + ", " +
@@ -396,15 +405,12 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 Configuration_Type.IMAGEVIEW_X_POS.getType() + ", " +
                 Configuration_Type.IMAGEVIEW_Y_POS.getType() + ", " +
                 Configuration_Type.WORKDIR_SERIAL_NUMBER.getType() + ", " +
-//                Configuration_Type.WORKDIR.getType() + ", " +
-                Configuration_Type.TABLE_SHOW_SORT_IT.getType() + ", " +
-                Configuration_Type.TABLE_SHOW_SORTED.getType() + ", " +
-                Configuration_Type.TABLE_SHOW_ASITIS.getType() + ", " +
-                Configuration_Type.WORKDIR.getType() + " " +
+                Configuration_Type.WORKDIR.getType() +
                 " FROM " + SQLTableEnums.CONFIGURATION.getType();
-        Messages.sprintf("loadConfiguration: " + tableSQL);
+        Messages.sprintf("-----------loadConfiguration: " + tableSQL);
 
         if (!SQL_Utils.isDbConnected(connection) || !SQL_Utils.isDbAccessible(connection, SQLTableEnums.CONFIGURATION.getType())) {
+            checkConnection();
             Messages.sprintf("loadConfiguration database not accessible: " + SQLTableEnums.CONFIGURATION.getType());
             return false;
         }
@@ -420,9 +426,11 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             ensureAllColumnExists(connection);
 
 
-            PreparedStatement pstmt = connection.prepareStatement(tableSQL);
-            pstmt.executeQuery();
-            ResultSet rs = pstmt.executeQuery();
+            ResultSet rs;
+            try (PreparedStatement pstmt = connection.prepareStatement(tableSQL)) {
+                pstmt.executeQuery();
+                rs = pstmt.executeQuery();
+
             while (rs.next()) {
                 configuration_id = (Integer.parseInt(rs.getString(ID)));
                 configuration.setBetterQualityThumbs(Boolean.parseBoolean(rs.getString(BETTER_THUMBNAIL_QUALITY)));
@@ -464,6 +472,9 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             SQL_Utils.commitChanges(connection);
             SQL_Utils.closeConnection(connection);
             return true;
+            } catch (SQLException e) {
+                Messages.sprintfError("SQL Exception: " + e.getMessage());
+            }
         } catch (Exception e) {
             System.err.println("ConfigurationSQLHAndler RETURNING FALSE 1conf.workDir_property(): " + configuration.getWorkDir() + " ERROR: " + e.getMessage());
             return false;
@@ -516,102 +527,103 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
      * @param obs        the ObservableList to which the paths will be added
      * @return true if the ignored list is successfully loaded, false otherwise
      */
-    public static boolean loadIgnoredList(Connection connection, ObservableList<Path> obs) {
-        checkConnection();
+//    public static boolean loadIgnoredList(Connection connection, ObservableList<Path> obs) {
+//        checkConnection();
+//
+//        try {
+//            String sql = "SELECT * FROM " + SQLTableEnums.IGNOREDLIST.getType();
+//            Statement stmt = connection.createStatement();
+//            ResultSet rs = stmt.executeQuery(sql);
+//            while (rs.next()) {
+//                Messages.sprintf("loadIgnored_list starting: " + sql);
+//                String path = rs.getString("path");
+//                obs.add(Paths.get(path));
+//            }
+//            stmt.close();
+//
+//            Messages.sprintf("loadIgnored_listsize of sel obs= " + obs.size());
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
 
-        try {
-            String sql = "SELECT * FROM " + SQLTableEnums.IGNOREDLIST.getType();
-            Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery(sql);
-            while (rs.next()) {
-                Messages.sprintf("loadIgnored_list starting: " + sql);
-                String path = rs.getString("path");
-                obs.add(Paths.get(path));
-            }
-            stmt.close();
-
-            Messages.sprintf("loadIgnored_listsize of sel obs= " + obs.size());
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public static boolean insertConfiguration(Configuration configuration) {
-        Messages.sprintf("Inserting insert_Configuration");
-        Connection localConnection = null;
-
-        try {
-            localConnection = getConnection();
-            if (!SQL_Utils.isDbConnected(localConnection)) {
-                return false;
-            }
-
-            //@formatter:off
-            String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
-                    " (" + ID + ", " +
-                    BETTER_THUMBNAIL_QUALITY + ", " +
-                    CONFIRM_ON_EXIT + ", " +
-                    ID_COUNTER + ", " +
-                    SHOW_FULL_PATH + ", " +
-                    SHOW_HINTS + ", " +
-                    SHOW_TOOLTIPS + ", " +
-                    CURRENTTHEME + ", " +
-                    VLC_PATH + ", " +
-                    VLC_SUPPORT + ", " +
-                    SAVE_DATA_AS_HD + ", " +
-                    WINDOW_START_POSITION_X + ", " +
-                    WINDOW_START_POSITION_Y + ", " +
-                    WINDOW_START_WIDTH + ", " +
-                    WINDOW_START_HEIGTH + ", " +
-                    IMAGE_VIEW_X_POSITION + ", " +
-                    IMAGE_VIEW_Y_POSITION + ", " +
-                    WORK_DIR_SERIAL_NUMBER + ", " +
-                    WORK_DIR + ") " +
-                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-            //@formatter:on
-
-            try (PreparedStatement pstmt = localConnection.prepareStatement(sql)) {
-                pstmt.setInt(1, configuration_id);
-                pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
-                pstmt.setBoolean(3, configuration.isConfirmOnExit());
-                pstmt.setInt(4, configuration.getId_counter().get());
-                pstmt.setBoolean(5, configuration.isShowFullPath());
-                pstmt.setBoolean(6, configuration.isShowHints());
-                pstmt.setBoolean(7, configuration.isShowTooltips());
-                pstmt.setString(8, configuration.getCurrentTheme());
-                pstmt.setString(9, configuration.getVlcPath());
-                pstmt.setBoolean(10, configuration.isVlcSupport());
-                pstmt.setBoolean(11, configuration.isSaveDataToHD());
-                pstmt.setDouble(12, configuration.getWindowStartPosX());
-                pstmt.setDouble(13, configuration.getWindowStartPosY());
-                pstmt.setDouble(14, configuration.getWindowStartWidth());
-                pstmt.setDouble(15, configuration.getWindowStartHeight());
-                pstmt.setDouble(16, configuration.getImageViewXPosition());
-                pstmt.setDouble(17, configuration.getImageViewYPosition());
-                pstmt.setString(18, configuration.getWorkDirSerialNumber());
-                pstmt.setString(19, configuration.getWorkDir());
-
-                int result = pstmt.executeUpdate();
-
-                if (result > 0) {
-                    localConnection.commit();
-                    return true;
-                }
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (localConnection != null) {
-                try {
-                    localConnection.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            return false;
-        }
-    }
+//    public static boolean insertConfiguration(Configuration configuration) {
+//        Messages.sprintf("Inserting insert_Configuration");
+//        Connection localConnection = null;
+//
+//        try {
+//            localConnection = getConnection();
+//            if (!SQL_Utils.isDbConnected(localConnection)) {
+//                return false;
+//            }
+//
+//            //@formatter:off
+//            String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
+//                    " (" +
+//                    ID + ", " +
+//                    BETTER_THUMBNAIL_QUALITY + ", " +
+//                    CONFIRM_ON_EXIT + ", " +
+//                    ID_COUNTER + ", " +
+//                    SHOW_FULL_PATH + ", " +
+//                    SHOW_HINTS + ", " +
+//                    SHOW_TOOLTIPS + ", " +
+//                    CURRENTTHEME + ", " +
+//                    VLC_PATH + ", " +
+//                    VLC_SUPPORT + ", " +
+//                    SAVE_DATA_AS_HD + ", " +
+//                    WINDOW_START_POSITION_X + ", " +
+//                    WINDOW_START_POSITION_Y + ", " +
+//                    WINDOW_START_WIDTH + ", " +
+//                    WINDOW_START_HEIGTH + ", " +
+//                    IMAGE_VIEW_X_POSITION + ", " +
+//                    IMAGE_VIEW_Y_POSITION + ", " +
+//                    WORK_DIR_SERIAL_NUMBER + ", " +
+//                    WORK_DIR + ") " +
+//                    "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//            //@formatter:on
+//
+//            try (PreparedStatement pstmt = localConnection.prepareStatement(sql)) {
+//                pstmt.setInt(1, configuration_id);
+//                pstmt.setBoolean(2, configuration.isBetterQualityThumbs());
+//                pstmt.setBoolean(3, configuration.isConfirmOnExit());
+//                pstmt.setInt(4, configuration.getId_counter().get());
+//                pstmt.setBoolean(5, configuration.isShowFullPath());
+//                pstmt.setBoolean(6, configuration.isShowHints());
+//                pstmt.setBoolean(7, configuration.isShowTooltips());
+//                pstmt.setString(8, configuration.getCurrentTheme());
+//                pstmt.setString(9, configuration.getVlcPath());
+//                pstmt.setBoolean(10, configuration.isVlcSupport());
+//                pstmt.setBoolean(11, configuration.isSaveDataToHD());
+//                pstmt.setDouble(12, configuration.getWindowStartPosX());
+//                pstmt.setDouble(13, configuration.getWindowStartPosY());
+//                pstmt.setDouble(14, configuration.getWindowStartWidth());
+//                pstmt.setDouble(15, configuration.getWindowStartHeight());
+//                pstmt.setDouble(16, configuration.getImageViewXPosition());
+//                pstmt.setDouble(17, configuration.getImageViewYPosition());
+//                pstmt.setString(18, configuration.getWorkDirSerialNumber());
+//                pstmt.setString(19, configuration.getWorkDir());
+//
+//                int result = pstmt.executeUpdate();
+//
+//                if (result > 0) {
+//                    localConnection.commit();
+//                    return true;
+//                }
+//                return false;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            if (localConnection != null) {
+//                try {
+//                    localConnection.rollback();
+//                } catch (SQLException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//            return false;
+//        }
+//    }
 
     /**
      * Inserts or replaces the paths of the folders in the ignored list into the database.

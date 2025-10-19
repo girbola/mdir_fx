@@ -253,6 +253,7 @@ public class Main extends Application {
                     parent = main_loader.load();
                 } catch (Exception ex) {
                     Messages.sprintf("error loading parent= " + ex.getMessage());
+                    ex.printStackTrace();
                     cancel();
                 }
                 primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));

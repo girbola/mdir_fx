@@ -1,51 +1,89 @@
 package com.girbola.fileinfo;
 
-import java.util.*;
-import java.util.stream.*;
+import com.girbola.messages.Messages;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public enum FileInfoEnum {
-    BAD("bad"),
-    CAMERA_MODEL("camera_model"),
-    CONFIRMED("confirmed"),
-    DATE("date"),
-    DESTINATION_PATH("destination_Path"),
-    EVENT("event"),
-    FILE_INFO_ID("fileInfo_id"),
-    GOOD("good"),
-    IGNORED("ignored"),
-    IMAGE("image"),
-    IMAGE_DIFFERENCE_HASH("imageDifferenceHash"),
-    LOCAL_DATE_TIME("localDateTime"),
-    LOCATION("location"),
-    ORG_PATH("org_path"),
-    ORIENTATION("orientation"),
-    RAW("raw"),
-    SIZE("size"),
-    SUGGESTED("suggested"),
-    TABLE_DUPLICATED("tableDuplicated"),
-    TAGS("tags"),
-    THUMB_LENGTH("thumb_length"),
-    THUMB_OFFSET("thumb_offset"),
-    TIME_SHIFT("timeShift"),
-    USER("user"),
-    VIDEO("video"),
-    WORK_DIR("workDir"),
-    WORK_DIR_DRIVE_SERIAL_NUMBER("workDirDriveSerialNumber");
+    BAD("bad", "BOOLEAN"),
+    CAMERA_MODEL("camera_model", "TEXT"),
+    CONFIRMED("confirmed", "BOOLEAN"),
+    DESTINATION_PATH("destination_Path", "TEXT"),
+    EVENT("event", "TEXT"),
+    FILEINFO_ID("fileInfo_id", "INTEGER PRIMARY KEY"),
+    FILEHISTORIES("fileHistories", "TEXT"),
+    GOOD("good", "BOOLEAN"),
+    COPIED("copied", "BOOLEAN"),
+    IGNORED("ignored", "BOOLEAN"),
+    IMAGE("image", "BOOLEAN"),
+    IMAGE_DIFFERENCE_HASH("imageDifferenceHash", "TEXT"),
+    LOCATION("location", "TEXT"),
+    MODIFIED("modified", "BOOLEAN"),
+    ORGPATH("orgPath", "TEXT UNIQUE"),
+    ORIENTATION("orientation", "INTEGER"),
+    RAW("raw", "BOOLEAN"),
+    SIZE("size", "NUMERIC"),
+    SUGGESTED("suggested", "BOOLEAN"),
+    TABLE_DUPLICATED("tableDuplicated", "BOOLEAN"),
+    TAGS("tags", "TEXT"),
+    THUMB_LENGTH("thumb_length", "INTEGER"),
+    THUMB_OFFSET("thumb_offset", "INTEGER"),
+    TIME_SHIFT("timeShift", "INTEGER"),
+    USER("user", "TEXT"),
+    VIDEO("video", "BOOLEAN"),
+    WORK_DIR("workDir", "TEXT"),
+    WORK_DIR_DRIVE_SERIAL_NUMBER("workDirDriveSerialNumber", "TEXT");
 
     private final String columnName;
+    private final String sqlType;
 
-    FileInfoEnum(String columnName) {
+    FileInfoEnum(String columnName, String sqlType) {
         this.columnName = columnName;
+        this.sqlType = sqlType;
     }
 
     public String getColumnName() {
         return columnName;
     }
 
-    public static String getAllFileInfoEnumValues() {
-        return Arrays.stream(FileInfoEnum.values())
-                .map(FileInfoEnum::name)
-                .collect(Collectors.joining(", "));
+    public String getSqlType() {
+        return sqlType;
     }
 
+    public String getColumnDefinition() {
+        return columnName + " " + sqlType;
+    }
+
+    public static String getCreateTableSQL(String tableName) {
+        StringBuilder createTableSQLBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
+
+        boolean first = true;
+        for (FileInfoEnum e : values()) {
+            if (!first) {
+                createTableSQLBuilder.append(", ");
+            }
+            createTableSQLBuilder.append(e.getColumnDefinition());
+            first = false;
+        }
+
+        createTableSQLBuilder.append(")");
+        return createTableSQLBuilder.toString();
+    }
+
+    public static String getAllColumnNames() {
+        int counter = 0;
+        Messages.sprintf("##################################### values count: " + values().length);
+        StringBuilder columnNamesBuilder = new StringBuilder();
+
+        for (FileInfoEnum e : values()) {
+            if (!columnNamesBuilder.isEmpty()) {
+                columnNamesBuilder.append(", ");
+                counter++;
+            }
+            columnNamesBuilder.append(e.getColumnName());
+            //Messages.sprintf("C::::::::::::::::::: " + counter + " --- eee: " + columnNamesBuilder);
+        }
+
+        return columnNamesBuilder.toString();
+    }
 }

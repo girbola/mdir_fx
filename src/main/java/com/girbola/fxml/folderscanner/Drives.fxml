@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox fx:id="drives_treeView_vbox" alignment="TOP_CENTER" minWidth="100.0" spacing="1.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.DrivesController">
+<VBox fx:id="drives_treeView_vbox" alignment="TOP_CENTER" minWidth="100.0" spacing="1.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.DrivesController">
    <children>
       <Label text="%drives" VBox.vgrow="NEVER" />
       <ScrollPane VBox.vgrow="ALWAYS">

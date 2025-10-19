@@ -18,9 +18,8 @@ public class FileInfo extends Metadata implements Cloneable {
         return super.clone();
     }
 
-    private final int fileInfo_version = 1;
 
-    private LocalDateTime localDateTime;
+//    private LocalDateTime localDateTime;
 
     private long timeShift;
 
@@ -28,37 +27,35 @@ public class FileInfo extends Metadata implements Cloneable {
 
 
             return "FileInfo{" +
-                    "bad=" + isBad() +
-                    ", camera_model='" + getCamera_model() + '\'' +
-                    ", confirmed=" + isConfirmed() +
-                    ", copied=" + isCopied() +
-                    ", date=" + getDate() +
-                    ", destination_Path='" + getDestination_Path() + '\'' +
-                    ", event='" + getEvent() + '\'' +
-                    ", fileInfo_id=" + getFileInfo_id() +
-                    ", fileInfo_version=" + getFileInfo_version() +
-                    ", good=" + isGood() +
-                    ", ignored=" + isIgnored() +
-                    ", image=" + isImage() +
-                    ", imageDifferenceHash=" + getImageDifferenceHash() +
-                    ", localDateTime=" + getLocalDateTime() +
-                    ", location='" + getLocation() + '\'' +
-                    ", modified=" + isModified() +
-                    ", orientation=" + getOrientation() +
-                    ", orgPath='" + getOrgPath() + '\'' +
-                    ", raw=" + isRaw() +
-                    ", size=" + getSize() +
-                    ", suggested=" + isSuggested() +
-                    ", tableDuplicated=" + isTableDuplicated() +
-                    ", tags='" + getTags() + '\'' +
-                    ", thumb_length=" + getThumb_length() +
-                    ", thumb_offset=" + getThumb_offset() +
-                    ", timeShift=" + getTimeShift() +
-                    ", user='" + getUser() + '\'' +
-                    ", video=" + isVideo() +
-                    ", workDir='" + getWorkDir() + '\'' +
-                    ", workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() + '\'' +
-                    ", fileInfoHistories='" + getFileHistories() + '\'' +
+                    "  \n bad=" + isBad() +
+                    ", \n camera_model='" + getCamera_model() + '\'' +
+                    ", \n confirmed=" + isConfirmed() +
+                    ", \n copied=" + isCopied() +
+                    ", \n date=" + getDate() +
+                    ", \n destination_Path='" + getDestination_Path() + '\'' +
+                    ", \n event='" + getEvent() + '\'' +
+                    ", \n fileInfo_id=" + getFileInfo_id() +
+                    ", \n good=" + isGood() +
+                    ", \n ignored=" + isIgnored() +
+                    ", \n image=" + isImage() +
+                    ", \n imageDifferenceHash=" + getImageDifferenceHash() +
+                    ", \n location='" + getLocation() + '\'' +
+                    ", \n modified=" + isModified() +
+                    ", \n orientation=" + getOrientation() +
+                    ", \n orgPath='" + getOrgPath() + '\'' +
+                    ", \n raw=" + isRaw() +
+                    ", \n size=" + getSize() +
+                    ", \n suggested=" + isSuggested() +
+                    ", \n tableDuplicated=" + isTableDuplicated() +
+                    ", \n tags='" + getTags() + '\'' +
+                    ", \n thumb_length=" + getThumb_length() +
+                    ", \n thumb_offset=" + getThumb_offset() +
+                    ", \n timeShift=" + getTimeShift() +
+                    ", \n user='" + getUser() + '\'' +
+                    ", \n video=" + isVideo() +
+                    ", \n workDir='" + getWorkDir() + '\'' +
+                    ", \n workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() + '\'' +
+                    ", \n fileInfoHistories='" + getFileHistories() + '\'' +
                     '}';
         }
 
@@ -106,53 +103,110 @@ public class FileInfo extends Metadata implements Cloneable {
         /**
          *
          */
+    /**
+     * Default no-argument constructor that initializes all fields with default values.
+     */
     public FileInfo() {
-            this(null, null, null, null, null, null, null, null, null, 0, 0, 0, false, false, false, false, false, false, false,
-                    false, false, false, false, 0, 0L, "", 0, 0, new ArrayList<String>());
-        }
+        this(
+                null,                     // aOrgPath - Original file path
+                null,                     // aWorkDir - Working directory path
+                null,                     // aWorkDirDriveSerialNumber - Serial number of the work directory drive
+                null,                     // aDestinationStructure - Destination path structure
+                null,                     // aEvent - Event name/identifier
+                null,                     // aLocation - Location information
+                null,                     // aTags - File tags
+                null,                     // aCamera_model - Camera model name
+                null,                     // user - User identifier
+                0,                        // aOrientation - Image orientation value
+                0,                        // aTimeShift - Time shift value in milliseconds
+                0,                        // aFileInfo_id - Unique file info identifier
+                false,                    // aBad - Bad file flag
+                false,                    // aGood - Good file flag
+                false,                    // aSuggested - Suggested file flag
+                false,                    // aConfirmed - Confirmed file flag
+                false,                    // aModified - Modified file flag
+                false,                    // aImage - Is image file flag
+                false,                    // aRaw - Is RAW image file flag
+                false,                    // aVideo - Is video file flag
+                false,                    // aIgnored - Ignored file flag
+                false,                    // aCopied - Copied file flag
+                false,                    // aTableDuplicated - Table duplicated flag
+                0,                        // aDate - File date timestamp
+                0L,                       // aSize - File size in bytes
+                "",                       // aImageDifferenceHash - Image difference hash value
+                0,                        // aThumb_offset - Thumbnail offset in file
+                0,                        // aThumb_length - Thumbnail length in bytes
+                new ArrayList<String>()   // fileInfoHistories - List of file history records
+        );
+    }
 
 
         /**
          * Represents information about a file.
          */
-    public FileInfo(String aOrgPath, String aWorkDir, String aWorkDirDriveSerialNumber, String aDestinationStructure,
-                String aEvent, String aLocation, String aTags, String aCamera_model, String user, int aOrientation,
-        long aTimeShift, int aFileInfo_id, boolean aBad, boolean aGood, boolean aSuggested, boolean aConfirmed,
-        boolean aModified,
-        boolean aImage, boolean aRaw, boolean aVideo, boolean aIgnored, boolean aCopied, boolean aTableDuplicated,
-        long aDate, long aSize, String aImageDifferenceHash,int aThumb_offset, int aThumb_length, List<
-        String > fileInfoHistories){
-            this.setBad(aBad);
-            this.setCamera_model(aCamera_model);
-            this.setConfirmed(aConfirmed);
-            this.setCopied(aCopied);
-            this.setDate(aDate);
-            this.setDestination_Path(aDestinationStructure);
-            this.setEvent(aEvent);
-            this.setFileHistories(fileInfoHistories);
-            this.setFileInfo_id(aFileInfo_id);
-            this.setGood(aGood);
-            this.setIgnored(aIgnored);
-            this.setImage(aImage);
-            this.setImageDifferenceHash(aImageDifferenceHash);
-            this.setLocation(aLocation);
-            this.setModified(aModified);
-            this.setOrgPath(aOrgPath);
-            this.setOrientation(aOrientation);
-            this.setRaw(aRaw);
-            this.setSize(aSize);
-            this.setSuggested(aSuggested);
-            this.setTableDuplicated(aTableDuplicated);
-            this.setTags(aTags);
-            this.setThumb_length(aThumb_length);
-            this.setThumb_offset(aThumb_offset);
-            this.setTimeShift(aTimeShift);
-            this.setUser(user);
-            this.setVideo(aVideo);
-            this.setWorkDir(aWorkDir);
-            this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
-        }
-
+    /**
+     * Represents information about a file.
+     */
+    public FileInfo(
+            String aOrgPath,
+            String aWorkDir,
+            String aWorkDirDriveSerialNumber,
+            String aDestinationStructure,
+            String aEvent,
+            String aLocation,
+            String aTags,
+            String aCamera_model,
+            String user,
+            int aOrientation,
+            long aTimeShift,
+            int aFileInfo_id,
+            boolean aBad,
+            boolean aGood,
+            boolean aSuggested,
+            boolean aConfirmed,
+            boolean aModified,
+            boolean aImage,
+            boolean aRaw,
+            boolean aVideo,
+            boolean aIgnored,
+            boolean aCopied,
+            boolean aTableDuplicated,
+            long aDate,
+            long aSize,
+            String aImageDifferenceHash,
+            int aThumb_offset,
+            int aThumb_length,
+            List<String> fileInfoHistories) {
+        this.setBad(aBad);
+        this.setCamera_model(aCamera_model);
+        this.setConfirmed(aConfirmed);
+        this.setCopied(aCopied);
+        this.setDate(aDate);
+        this.setDestination_Path(aDestinationStructure);
+        this.setEvent(aEvent);
+        this.setFileHistories(fileInfoHistories);
+        this.setFileInfo_id(aFileInfo_id);
+        this.setGood(aGood);
+        this.setIgnored(aIgnored);
+        this.setImage(aImage);
+        this.setImageDifferenceHash(aImageDifferenceHash);
+        this.setLocation(aLocation);
+        this.setModified(aModified);
+        this.setOrgPath(aOrgPath);
+        this.setOrientation(aOrientation);
+        this.setRaw(aRaw);
+        this.setSize(aSize);
+        this.setSuggested(aSuggested);
+        this.setTableDuplicated(aTableDuplicated);
+        this.setTags(aTags);
+        this.setThumb_length(aThumb_length);
+        this.setThumb_offset(aThumb_offset);
+        this.setTimeShift(aTimeShift);
+        this.setUser(user);
+        this.setVideo(aVideo);
+        this.setWorkDir(aWorkDir);
+        this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
+    }
 
         @Override
         public String toString () {

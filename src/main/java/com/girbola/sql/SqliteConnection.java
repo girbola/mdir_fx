@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.messages.Messages;
+import java.nio.file.Paths;
 import java.util.Objects;
 import lombok.Getter;
 
@@ -139,7 +140,7 @@ public class SqliteConnection {
             return null;
         }
 
-        Connection conn = SqliteConnection.hasDatabase(path.toString() + File.separator + tableName);
+        Connection conn = SqliteConnection.hasDatabase(Paths.get(path.toString(), tableName).toString());
         if (conn == null) {
             try {
                 Class.forName("org.sqlite.JDBC");

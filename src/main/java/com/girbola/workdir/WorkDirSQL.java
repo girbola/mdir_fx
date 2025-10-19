@@ -19,7 +19,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -41,17 +40,15 @@ public class WorkDirSQL {
             FileInfoEnum.BAD.getColumnName() + ", " +
                     FileInfoEnum.CAMERA_MODEL.getColumnName() + ", " +
                     FileInfoEnum.CONFIRMED.getColumnName() + ", " +
-                    FileInfoEnum.DATE.getColumnName() + ", " +
                     FileInfoEnum.DESTINATION_PATH.getColumnName() + ", " +
                     FileInfoEnum.EVENT.getColumnName() + ", " +
-                    FileInfoEnum.FILE_INFO_ID.getColumnName() + ", " +
+                    FileInfoEnum.FILEINFO_ID.getColumnName() + ", " +
                     FileInfoEnum.GOOD.getColumnName() + ", " +
                     FileInfoEnum.IGNORED.getColumnName() + ", " +
                     FileInfoEnum.IMAGE.getColumnName() + ", " +
                     FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + ", " +
-                    FileInfoEnum.LOCAL_DATE_TIME.getColumnName() + ", " +
                     FileInfoEnum.LOCATION.getColumnName() + ", " +
-                    FileInfoEnum.ORG_PATH.getColumnName() + ", " +
+                    FileInfoEnum.ORGPATH.getColumnName() + ", " +
                     FileInfoEnum.ORIENTATION.getColumnName() + ", " +
                     FileInfoEnum.RAW.getColumnName() + ", " +
                     FileInfoEnum.SIZE.getColumnName() + ", " +
@@ -139,33 +136,32 @@ public class WorkDirSQL {
         try {
             Statement stmt = connection.createStatement();
             String createTableSql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.WORKDIR.getType() + " ("
-                    + "fileInfo_id INTEGER PRIMARY KEY, "
-                    + "orgPath STRING UNIQUE, "
+                    + "bad BOOLEAN, "
+                    + "camera_model STRING, "
+                    + "confirmed BOOLEAN, "
+                    + "date INTEGER, "
                     + "destination_Path STRING, "
                     + "event STRING, "
-                    + "location STRING, "
-                    + "orientation INTEGER, "
-                    + "tags STRING, "
-                    + "camera_model STRING, "
-                    + "bad BOOLEAN, "
+                    + "fileInfo_id INTEGER PRIMARY KEY, "
                     + "good BOOLEAN, "
-                    + "suggested BOOLEAN, "
-                    + "confirmed BOOLEAN, "
                     + "ignored BOOLEAN, "
-                    + "tableDuplicated BOOLEAN, "
-                    + "raw BOOLEAN, "
                     + "image BOOLEAN, "
-                    + "video BOOLEAN, "
-                    + "date INTEGER, "
-                    + "size INTEGER, "
-                    + "thumb_offset INTEGER, "
-                    + "thumb_length INTEGER, "
                     + "imageDifferenceHash STRING, "
+                    + "location STRING, "
+                    + "orgPath STRING UNIQUE, "
+                    + "orientation INTEGER, "
+                    + "raw BOOLEAN, "
+                    + "size INTEGER, "
+                    + "suggested BOOLEAN, "
+                    + "tableDuplicated BOOLEAN, "
+                    + "tags STRING, "
+                    + "thumb_length INTEGER, "
+                    + "thumb_offset INTEGER, "
+                    + "timeShift INTEGER"
                     + "user STRING, "
+                    + "video BOOLEAN, "
                     + "workDir STRING, "
                     + "workDirDriveSerialNumber STRING, "
-                    + "localDateTime TEXT, "
-                    + "timeShift INTEGER"
                     + ")";
             stmt.execute(createTableSql);
             return true;
@@ -201,7 +197,7 @@ public class WorkDirSQL {
                 }
             }
 
-            final String sql = "INSERT INTO " + SQLTableEnums.WORKDIR.getType() + FileInfoEnum.getAllFileInfoEnumValues() + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
+            final String sql = "INSERT INTO " + SQLTableEnums.WORKDIR.getType() + FileInfoEnum.getAllColumnNames() + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) "
                     + "ON CONFLICT(orgPath) DO UPDATE SET fileInfo_id = ?, destination_Path = ?, event = ?, location = ?, orientation = ?, tags = ?, "
                     + "camera_model = ?, bad = ?, good = ?, suggested = ?, confirmed = ?, ignored = ?, tableDuplicated = ?, raw = ?, image = ?, video = ?, "
                     + "date = ?, size = ?, thumb_offset = ?, thumb_length = ?, imageDifferenceHash = ?, user = ?, workDir = ?, workDirDriveSerialNumber = ?, "
@@ -235,13 +231,13 @@ public class WorkDirSQL {
             pstmt.setString(index++, fileInfo.getUser());
             pstmt.setString(index++, fileInfo.getWorkDir());
             pstmt.setString(index++, fileInfo.getWorkDirDriveSerialNumber());
-            pstmt.setObject(index++, fileInfo.getLocalDateTime());
+//            pstmt.setObject(index++, fileInfo.getLocalDateTime());
             pstmt.setLong(index++, fileInfo.getTimeShift());
 
             pstmt.executeUpdate();
-            Messages.sprintf("FileInfo inserted/updated successfully");
+            Messages.sprintf("2FileInfo inserted/updated successfully");
         } catch (SQLException e) {
-            Messages.sprintfError("Error inserting/updating FileInfo: " + e.getMessage());
+            Messages.sprintfError("22Error inserting/updating FileInfo: " + e.getMessage());
         } finally {
             // Don't close the connection here since it may be needed for other operations
             try {
@@ -276,7 +272,7 @@ public class WorkDirSQL {
         }
     }
 
-    final static String[] fileInfoColumnsSQL = {(
+    public final static String[] fileInfoColumnsSQL = {(
             FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY, " +
                     FileInfoConstants.ORG_PATH + " STRING UNIQUE, " +
                     FileInfoConstants.WORK_DIR + " STRING, " +
@@ -352,15 +348,15 @@ public class WorkDirSQL {
 
         List<FileInfo> list = new ArrayList<>();
 
-        String sql = "SELECT " + FileInfoEnum.getAllFileInfoEnumValues() +
+        String sql = "SELECT " + FileInfoEnum.getAllColumnNames() +
                 " FROM " + SQLTableEnums.WORKDIR.getType() +
                 " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
 
         try (PreparedStatement pstmt = workDirConnection.prepareStatement(sql)) {
             pstmt.setString(1, fileInfo.getOrgPath());
             pstmt.setLong(2, fileInfo.getSize());
-            pstmt.setObject(3, fileInfo.getLocalDateTime());
-            pstmt.setString(4, fileInfo.getImageDifferenceHash());
+//            pstmt.setObject(3, fileInfo.getLocalDateTime());
+            pstmt.setString(3, fileInfo.getImageDifferenceHash());
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -378,7 +374,7 @@ public class WorkDirSQL {
         return list;
     }
     public  static List<FileInfo> findDuplicateByExactDate_(FileInfo fileInfo) {
-        LocalDateTime date = fileInfo.getLocalDateTime();
+//        LocalDateTime date = fileInfo.getLocalDateTime();
         workDirConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getWorkDir()), Main.conf.getWorkDir_db_fileName());
         boolean fileInfoTable = createFileInfoTable(workDirConnection);
         if(!fileInfoTable) {
@@ -397,11 +393,11 @@ public class WorkDirSQL {
         List<FileInfo> list = new ArrayList<>();
         FileInfo duplicateFileInfo = null;
 
-        String sql = "SELECT " + FileInfoEnum.getAllFileInfoEnumValues() + " FROM " + SQLTableEnums.WORKDIR.getType() + " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
+        String sql = "SELECT " + FileInfoEnum.getAllColumnNames() + " FROM " + SQLTableEnums.WORKDIR.getType() + " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
         try (PreparedStatement pstmt = workDirConnection.prepareStatement(sql)) {
             pstmt.setString(1, fileInfo.getOrgPath());
             pstmt.setLong(2, fileInfo.getSize());
-            pstmt.setObject(3, fileInfo.getLocalDateTime());
+//            pstmt.setObject(3, fileInfo.getLocalDateTime());
             pstmt.setString(4, fileInfo.getImageDifferenceHash());
 
             try (ResultSet rs = pstmt.executeQuery()) {
@@ -435,17 +431,16 @@ public class WorkDirSQL {
         fileInfo.setBad(rs.getBoolean(FileInfoEnum.BAD.getColumnName()));
         fileInfo.setCamera_model(rs.getString(FileInfoEnum.CAMERA_MODEL.getColumnName()));
         fileInfo.setConfirmed(rs.getBoolean(FileInfoEnum.CONFIRMED.getColumnName()));
-        fileInfo.setDate(rs.getLong(FileInfoEnum.DATE.getColumnName()));
         fileInfo.setDestination_Path(rs.getString(FileInfoEnum.DESTINATION_PATH.getColumnName()));
         fileInfo.setEvent(rs.getString(FileInfoEnum.EVENT.getColumnName()));
-        fileInfo.setFileInfo_id(rs.getInt(FileInfoEnum.FILE_INFO_ID.getColumnName()));
+        fileInfo.setFileInfo_id(rs.getInt(FileInfoEnum.FILEINFO_ID.getColumnName()));
         fileInfo.setGood(rs.getBoolean(FileInfoEnum.GOOD.getColumnName()));
         fileInfo.setIgnored(rs.getBoolean(FileInfoEnum.IGNORED.getColumnName()));
         fileInfo.setImage(rs.getBoolean(FileInfoEnum.IMAGE.getColumnName()));
         fileInfo.setImageDifferenceHash(rs.getString(FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName()));
-        fileInfo.setLocalDateTime(rs.getObject(FileInfoEnum.LOCAL_DATE_TIME.getColumnName(), LocalDateTime.class));
+//        fileInfo.setLocalDateTime(rs.getObject(FileInfoEnum.LOCAL_DATE_TIME.getColumnName(), LocalDateTime.class));
         fileInfo.setLocation(rs.getString(FileInfoEnum.LOCATION.getColumnName()));
-        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORG_PATH.getColumnName()));
+        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORGPATH.getColumnName()));
         fileInfo.setOrientation(rs.getInt(FileInfoEnum.ORIENTATION.getColumnName()));
         fileInfo.setRaw(rs.getBoolean(FileInfoEnum.RAW.getColumnName()));
         fileInfo.setSize(rs.getLong(FileInfoEnum.SIZE.getColumnName()));
@@ -515,17 +510,16 @@ public class WorkDirSQL {
         fileInfo.setBad(rs.getBoolean(FileInfoEnum.BAD.getColumnName()));
         fileInfo.setCamera_model(rs.getString(FileInfoEnum.CAMERA_MODEL.getColumnName()));
         fileInfo.setConfirmed(rs.getBoolean(FileInfoEnum.CONFIRMED.getColumnName()));
-        fileInfo.setDate(rs.getLong(FileInfoEnum.DATE.getColumnName()));
         fileInfo.setDestination_Path(rs.getString(FileInfoEnum.DESTINATION_PATH.getColumnName()));
         fileInfo.setEvent(rs.getString(FileInfoEnum.EVENT.getColumnName()));
-        fileInfo.setFileInfo_id(rs.getInt(FileInfoEnum.FILE_INFO_ID.getColumnName()));
+        fileInfo.setFileInfo_id(rs.getInt(FileInfoEnum.FILEINFO_ID.getColumnName()));
         fileInfo.setGood(rs.getBoolean(FileInfoEnum.GOOD.getColumnName()));
         fileInfo.setIgnored(rs.getBoolean(FileInfoEnum.IGNORED.getColumnName()));
         fileInfo.setImage(rs.getBoolean(FileInfoEnum.IMAGE.getColumnName()));
         fileInfo.setImageDifferenceHash(rs.getString(FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName()));
-        fileInfo.setLocalDateTime(rs.getObject(FileInfoEnum.LOCAL_DATE_TIME.getColumnName(), LocalDateTime.class));
+//        fileInfo.setLocalDateTime(rs.getObject(FileInfoEnum.LOCAL_DATE_TIME.getColumnName(), LocalDateTime.class));
         fileInfo.setLocation(rs.getString(FileInfoEnum.LOCATION.getColumnName()));
-        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORG_PATH.getColumnName()));
+        fileInfo.setOrgPath(rs.getString(FileInfoEnum.ORGPATH.getColumnName()));
         fileInfo.setOrientation(rs.getInt(FileInfoEnum.ORIENTATION.getColumnName()));
         fileInfo.setRaw(rs.getBoolean(FileInfoEnum.RAW.getColumnName()));
         fileInfo.setSize(rs.getLong(FileInfoEnum.SIZE.getColumnName()));

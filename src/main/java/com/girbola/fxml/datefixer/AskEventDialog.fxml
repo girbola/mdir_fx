@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane maxHeight="500.0" maxWidth="600.0" minHeight="150.0" minWidth="350.0" prefHeight="200.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.AskEventDialogController">
+<AnchorPane maxHeight="500.0" maxWidth="600.0" minHeight="150.0" minWidth="350.0" prefHeight="200.0" prefWidth="400.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.AskEventDialogController">
    <children>
       <VBox prefHeight="200.0" prefWidth="400.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

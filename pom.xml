@@ -28,18 +28,19 @@
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <imageio-jpeg.version>3.12.0</imageio-jpeg.version>
         <imageio-tiff.version>3.12.0</imageio-tiff.version>
+        <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <javacv-platform.version>1.5.10</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <javafx.version>24.0.2</javafx.version>
-        <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
+        <jackson.version>3.0.0</jackson.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
         <lombok.version>1.18.38</lombok.version>
-        <maven.compiler.plugin.version>4.0.0-beta-2</maven.compiler.plugin.version>
-        <maven.compiler.source>24.0.2</maven.compiler.source>
-        <maven.compiler.target>24.0.2</maven.compiler.target>
+        <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
+        <maven.compiler.target.release>24</maven.compiler.target.release>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
-        <oshi-core.version>6.8.2</oshi-core.version>
+        <mockito-inline-release>5.2.0</mockito-inline-release>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
+        <oshi-core.version>6.8.2</oshi-core.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.17</slf4j.version>
         <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
@@ -49,6 +50,12 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
@@ -194,6 +201,13 @@
             <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>${mockito-inline-release}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -202,8 +216,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>
                 <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
+                    <release>${maven.compiler.target.release}</release>
                 </configuration>
             </plugin>
             <plugin>

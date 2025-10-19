@@ -25,11 +25,11 @@ public class FileInfoConstants {
 
     // Boolean constants
     public static final String BAD = "bad";
-    public static final String GOOD = "good";
-    public static final String SUGGESTED = "suggested";
     public static final String CONFIRMED = "confirmed";
+    public static final String GOOD = "good";
     public static final String IMAGE = "image";
     public static final String MODIFIED = "modified";
+    public static final String SUGGESTED = "suggested";
 
     public static final String RAW = "raw";
     public static final String VIDEO = "video";

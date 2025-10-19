@@ -75,6 +75,7 @@ class ConfigurationGui {
     public double getWindowStartPosX() {return this.windowStartPosX.get();}
     public double getWindowStartPosY() {return this.windowStartPosY.get();}
     public double getWindowStartWidth() {return this.windowStartWidth.get();}
+
     public String getCurrentTheme() {return currentTheme;}
     public String getThemePath() {return this.themePath;}
     public String getWorkDir() {return this.workDir.get();}

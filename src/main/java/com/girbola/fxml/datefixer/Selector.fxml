@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
+<AnchorPane  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
     <children>
         <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
             <content>

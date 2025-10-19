@@ -4,6 +4,7 @@ package com.girbola.configuration;
 
 public enum Configuration_Type {
 
+    ID("id"),
     SHOWHINTS("showHints"),
     SAVETHUMBS("savingThumbs"),
     WORKDIR("workDir"),

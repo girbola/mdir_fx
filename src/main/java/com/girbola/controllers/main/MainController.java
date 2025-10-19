@@ -5,6 +5,7 @@ import com.girbola.Main;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import common.utils.ui.UI_Tools;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -78,14 +79,21 @@ public class MainController {
     }
 
     private void initControllers() {
-        menuBar_topController.init(model_main);
-        sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
-        sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
-        asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
+        Platform.runLater(() -> {
 
-        sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
-        sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);
-        asitisController.setShowHideTableButtonIcons(asitisController.hide_btn, true);
+            menuBar_topController.init(model_main);
+            sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
+            sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
+            if (asitisController == null) {
+                Messages.sprintf("asitisController WAS NULL!!!L!L!!!L");
+            }
+            asitisController.init(model_main, Main.bundle.getString("asitis"), TableType.ASITIS.getType());
+
+            sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
+            sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);
+            asitisController.setShowHideTableButtonIcons(asitisController.hide_btn, true);
+
+        });
     }
 
     private void initStatistics() {
