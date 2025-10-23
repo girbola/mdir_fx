@@ -123,6 +123,12 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             return false;
         }
 
+        String allColumnNames = ConfigurationEnum.getAllColumnNames();
+
+        String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
+                " (" + String.join(", ", allColumnNames) + ") " +
+                "VALUES(" + "?,".repeat(allColumnNames.length - 1) + "?" + ")";
+
         String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
                 " (" +
                 ID + ", " +
@@ -144,10 +150,11 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                 IMAGE_VIEW_Y_POSITION + ", " +
                 WORK_DIR_SERIAL_NUMBER + ", " +
                 WORK_DIR + ") " +
-                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         int index = 0;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(index++, configuration_id);
             pstmt.setBoolean(index++, configuration.isBetterQualityThumbs());
             pstmt.setBoolean(index++, configuration.isConfirmOnExit());
             pstmt.setInt(index++, configuration.getId_counter().get());
@@ -159,7 +166,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             pstmt.setBoolean(index++, configuration.isVlcSupport());
             pstmt.setBoolean(index++, configuration.isSaveDataToHD());
             pstmt.setDouble(index++, configuration.getWindowStartPosX());
-
             pstmt.setDouble(index++, configuration.getWindowStartPosY());
             pstmt.setDouble(index++, configuration.getWindowStartWidth());
             pstmt.setDouble(index++, configuration.getWindowStartHeight());
@@ -176,80 +182,55 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
     }
 
-    public static boolean createConfigurationDatabase() {
-        Connection localConnection = null;
-        try {
-            localConnection = getConnection();
-            if (localConnection == null) {
-                Messages.sprintfError("Could not establish database connection");
+public static boolean createConfigurationDatabase() {
+                try (Connection localConnection = getConnection()) {
+                    if (localConnection == null) {
+                        Messages.sprintfError("Could not establish database connection");
+                        return false;
+                    }
+
+                    SQL_Utils.setAutoCommit(localConnection, false);
+
+                    String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType() + " ("
+                            + ID + " INTEGER PRIMARY KEY, "
+                            + BETTER_THUMBNAIL_QUALITY + " BOOLEAN, "
+                            + CONFIRM_ON_EXIT + " BOOLEAN, "
+                            + ID_COUNTER + " INTEGER UNIQUE, "
+                            + SHOW_FULL_PATH + " BOOLEAN, "
+                            + SHOW_HINTS + " BOOLEAN, "
+                            + SHOW_TOOLTIPS + " BOOLEAN, "
+                            + CURRENTTHEME + " TEXT, "
+                            + VLC_PATH + " TEXT, "
+                            + VLC_SUPPORT + " BOOLEAN, "
+                            + SAVE_DATA_AS_HD + " BOOLEAN, "
+                            + WINDOW_START_POSITION_X + " DOUBLE, "
+                            + WINDOW_START_POSITION_Y + " DOUBLE, "
+                            + WINDOW_START_WIDTH + " DOUBLE, "
+                            + WINDOW_START_HEIGTH + " DOUBLE, "
+                            + IMAGE_VIEW_X_POSITION + " DOUBLE, "
+                            + IMAGE_VIEW_Y_POSITION + " DOUBLE, "
+                            + WORK_DIR_SERIAL_NUMBER + " TEXT, "
+                            + WORK_DIR + " TEXT)";
+
+                    Messages.sprintf("CreateConfiguration database: " + sql);
+
+                    try (Statement stmt = localConnection.createStatement()) {
+                        stmt.execute(sql);
+
+                        if (insertConfiguration(localConnection, Main.conf)) {
+                            createIgnoredListTable(Main.conf);
+                            localConnection.commit();
+                            return true;
+                        }
+                        localConnection.rollback();
+                    } catch (SQLException e) {
+                        Messages.sprintfError("Error creating table: " + e.getMessage());
+                    }
+                } catch (Exception e) {
+                    Messages.sprintfError("Database error: " + e.getMessage());
+                }
                 return false;
             }
-
-            // Set timeout for busy connections
-//            try (Statement stmt = localConnection.createStatement()) {
-//                stmt.execute("PRAGMA busy_timeout = 30000");
-//            }
-
-            SQL_Utils.setAutoCommit(localConnection, false);
-
-            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType()
-                    + " ("
-                    + ID + " INTEGER PRIMARY KEY,"
-                    + BETTER_THUMBNAIL_QUALITY + " BOOLEAN, "
-                    + CONFIRM_ON_EXIT + " BOOLEAN, "
-                    + ID_COUNTER + " INTEGER UNIQUE, "
-                    + SHOW_FULL_PATH + " BOOLEAN, "
-                    + SHOW_HINTS + " BOOLEAN, "
-                    + SHOW_TOOLTIPS + " BOOLEAN, "
-                    + CURRENTTHEME + " TEXT, "
-                    + VLC_PATH + " TEXT, "
-                    + VLC_SUPPORT + " BOOLEAN, "
-                    + SAVE_DATA_AS_HD + " BOOLEAN, "
-                    + WINDOW_START_POSITION_X + " DOUBLE, "
-                    + WINDOW_START_POSITION_Y + " DOUBLE, "
-                    + WINDOW_START_WIDTH + " DOUBLE, "
-                    + WINDOW_START_HEIGTH + " DOUBLE, "
-                    + IMAGE_VIEW_X_POSITION + " DOUBLE, "
-                    + IMAGE_VIEW_Y_POSITION + " DOUBLE, "
-                    + WORK_DIR_SERIAL_NUMBER + " TEXT, "
-                    + WORK_DIR + " TEXT)";
-
-            Messages.sprintf("CreateConfiguration database: " + sql);
-            try (Statement stmt = localConnection.createStatement()) {
-                stmt.execute(sql);
-
-                if (insertConfiguration(localConnection, Main.conf)) {
-                    createIgnoredListTable(Main.conf);
-                    localConnection.commit();
-                    return true;
-                }
-                //localConnection.rollback();
-                return false;
-            } catch (SQLException e) {
-                Messages.sprintfError("CREATING table did won't well: " + e.getMessage());
-                e.printStackTrace();
-                return false;
-            }
-        } catch (Exception e) {
-            if (localConnection != null) {
-                try {
-                    localConnection.rollback();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-            Messages.sprintfError("11111Database error: " + e.getMessage());
-            return false;
-        } finally {
-            if (localConnection != null) {
-                try {
-                    localConnection.close();
-                } catch (SQLException e) {
-                    Messages.sprintfError("Error closing connection: " + e.getMessage());
-                }
-            }
-        }
-    }
 
     /**
      * Creates the ignored list table in the database.

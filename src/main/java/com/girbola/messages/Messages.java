@@ -5,26 +5,13 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.messages.html.HTMLClass;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.io.PrintStream;
-import java.net.URL;
-import java.util.Formatter;
-import java.util.Locale;
-import java.util.Optional;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -33,9 +20,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
-import static com.girbola.Main.DEBUG;
-import static com.girbola.Main.DEBUG_CONF;
-import static com.girbola.Main.conf;
+import java.net.URL;
+import java.util.Optional;
+
+import static com.girbola.Main.*;
 import static com.girbola.controllers.misc.Misc_GUI.fastExit;
 
 /**
