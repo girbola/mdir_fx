@@ -53,7 +53,6 @@ public class SelectedFoldersController {
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
 
 
-
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
@@ -82,16 +81,16 @@ public class SelectedFoldersController {
             if (!model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
                 Messages.sprintf("model_main.getSelectedFolders():::::::::: " + model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
                 for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                    if (selectedFolder.getFolder().equals(folder.getAbsolutePath())) {
-                        Messages.sprintf("Folder already exists: " + folder.getAbsolutePath());
+                    Messages.sprintf("Selected folder in the list: " + selectedFolder.getFolder());
+                    if (!selectedFolder.getFolder().equals(folder.getAbsolutePath())) {
+                        Messages.sprintf("Adding folder: " + folder.getAbsolutePath());
                     }
                 }
-
-
-
+                model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
             }
             SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
         } else {
+            Messages.sprintfError("Folder is null");
             Messages.warningText(Main.bundle.getString("folderNotFound"));
         }
     }
@@ -118,7 +117,7 @@ public class SelectedFoldersController {
         ObservableList<SelectedFolder> selectedItems = table.getSelectionModel().getSelectedItems();
 
         for (SelectedFolder selectedItem : selectedItems) {
-Messages.sprintf("RemoveFromTable selectedItem: " + selectedItem.getFolder());
+            Messages.sprintf("RemoveFromTable selectedItem: " + selectedItem.getFolder());
         }
 
         SelectedFolderInfoSQL.clearSelectedFolders(model_main);

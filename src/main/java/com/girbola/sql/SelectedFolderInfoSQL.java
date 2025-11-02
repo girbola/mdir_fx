@@ -109,6 +109,7 @@ public class SelectedFolderInfoSQL {
                 pstmt.addBatch();
             }
             int[] counter = pstmt.executeBatch();
+            connection.commit();
             Messages.sprintf("removeSelectedFolders counted rows: " + counter.length);
             pstmt.close();
 
