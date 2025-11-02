@@ -1,14 +1,13 @@
 package com.girbola.fileinfo;
 
 import com.girbola.messages.Messages;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public enum FileInfoEnum {
     BAD("bad", "BOOLEAN"),
     CAMERA_MODEL("camera_model", "TEXT"),
     CONFIRMED("confirmed", "BOOLEAN"),
     DESTINATION_PATH("destination_Path", "TEXT"),
+    DATE("date", "INTEGER"),
     EVENT("event", "TEXT"),
     FILEINFO_ID("fileInfo_id", "INTEGER PRIMARY KEY"),
     FILEHISTORIES("fileHistories", "TEXT"),
@@ -66,8 +65,10 @@ public enum FileInfoEnum {
             createTableSQLBuilder.append(e.getColumnDefinition());
             first = false;
         }
-
         createTableSQLBuilder.append(")");
+
+        Messages.sprintf("create table sql: " + createTableSQLBuilder);
+
         return createTableSQLBuilder.toString();
     }
 
@@ -85,7 +86,7 @@ public enum FileInfoEnum {
             columnNamesBuilder.append(e.getColumnName());
             //Messages.sprintf("C::::::::::::::::::: " + counter + " --- eee: " + columnNamesBuilder);
         }
-
+    Messages.sprintf("----------------columnNamesBuilder: " + columnNamesBuilder);
         return columnNamesBuilder.toString();
     }
 }

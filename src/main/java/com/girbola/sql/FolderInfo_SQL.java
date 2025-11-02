@@ -167,7 +167,7 @@ public class FolderInfo_SQL {
                     stmt.executeUpdate(sql);
                 } catch (SQLException e) {
                     if (!e.getMessage().contains("duplicate column name")) {
-                        Messages.sprintfError("Error altering table: {}" + e.getMessage());
+                        Messages.sprintfError("Duplicated column name found! Error altering table: {}" + e.getMessage());
                         connection.rollback(); // rollback on any non-recoverable error
                         throw e;
                     }
@@ -214,7 +214,7 @@ public class FolderInfo_SQL {
             Messages.sprintf("COUNTER WERE: " + counter.length);
             return true;
         } catch (SQLException e) {
-            Messages.sprintfError("Error inserting folder info: " + e.getMessage());
+            Messages.sprintfError("PSTMT::: Error inserting folder info: " + e.getMessage());
             return false;
         }
     }
