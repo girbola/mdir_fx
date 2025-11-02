@@ -9,42 +9,39 @@ import com.girbola.messages.Messages;
 import com.girbola.sql.DriveInfoSQL;
 import com.girbola.sql.SQL_Utils;
 import java.util.List;
-import javafx.collections.ObservableList;
-
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 
-import static com.girbola.sql.SelectedFolderInfoSQL.loadSelectedFolders;
+import static com.girbola.controllers.main.sql.ConfigurationEnum.*;
 
 public class ConfigurationSQLHandler extends DriveInfoSQL {
 
     private static final String ERROR = ConfigurationSQLHandler.class.getName();
-    public static final String ID = "id";
+//    public static final String ID = "id";
 
     private static Connection connection;
 
     private static int configuration_id = 0;
 
-    public static final String BETTER_THUMBNAIL_QUALITY = "betterQualityThumbs";
-    public static final String CONFIRM_ON_EXIT = "confirmOnExit";
-    public static final String ID_COUNTER = "id_counter";
-    public static final String IMAGE_VIEW_X_POSITION = "imageViewXPos";
-    public static final String IMAGE_VIEW_Y_POSITION = "imageViewYPos";
-    public static final String SAVE_DATA_AS_HD = "saveDataToHD";
-    public static final String SHOW_FULL_PATH = "showFullPath";
-    public static final String SHOW_HINTS = "showHints";
-    public static final String SHOW_TOOLTIPS = "showTooltips";
-
-    public static final String CURRENTTHEME = "currentTheme";
-    public static final String VLC_PATH = "vlcPath";
-    public static final String VLC_SUPPORT = "vlcSupport";
-    public static final String WINDOW_START_HEIGTH = "windowStartHeigth";
-    public static final String WINDOW_START_POSITION_X = "windowStartPosX";
-    public static final String WINDOW_START_POSITION_Y = "windowStartPosY";
-    public static final String WINDOW_START_WIDTH = "windowStartWidth";
-    public static final String WORK_DIR = "workDir";
-    public static final String WORK_DIR_SERIAL_NUMBER = "workDirSerialNumber";
+//    public static final String BETTER_THUMBNAIL_QUALITY = "betterQualityThumbs";
+//    public static final String CONFIRM_ON_EXIT = "confirmOnExit";
+//    public static final String ID_COUNTER = "id_counter";
+//    public static final String IMAGE_VIEW_X_POSITION = "imageViewXPos";
+//    public static final String IMAGE_VIEW_Y_POSITION = "imageViewYPos";
+//    public static final String SAVE_DATA_AS_HD = "saveDataToHD";
+//    public static final String SHOW_FULL_PATH = "showFullPath";
+//    public static final String SHOW_HINTS = "showHints";
+//    public static final String SHOW_TOOLTIPS = "showTooltips";
+//
+//    public static final String CURRENTTHEME = "currentTheme";
+//    public static final String VLC_PATH = "vlcPath";
+//    public static final String VLC_SUPPORT = "vlcSupport";
+//    public static final String WINDOW_START_HEIGTH = "windowStartHeigth";
+//    public static final String WINDOW_START_POSITION_X = "windowStartPosX";
+//    public static final String WINDOW_START_POSITION_Y = "windowStartPosY";
+//    public static final String WINDOW_START_WIDTH = "windowStartWidth";
+//    public static final String WORK_DIR = "workDir";
+//    public static final String WORK_DIR_SERIAL_NUMBER = "workDirSerialNumber";
 
     public static boolean checkConnection() {
         try {
@@ -94,22 +91,28 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             if (insertConfiguration(localConnection, Main.conf)) {
                 localConnection.commit();
             } else {
+                Messages.sprintfError("Rolling back configuration");
                 localConnection.rollback();
             }
         } catch (Exception e) {
             if (localConnection != null) {
                 try {
+                    Messages.sprintfError("No connection to configuration. Rolling back configuration");
                     localConnection.rollback();
                 } catch (SQLException ex) {
+                    Messages.sprintfError("Error rolling back configuration stacktrace: " + ex);
                     ex.printStackTrace();
                 }
             }
-            e.printStackTrace();
         } finally {
             if (localConnection != null) {
                 try {
                     localConnection.close();
                 } catch (SQLException e) {
+
+                    if(!SQL_Utils.isDbConnected(localConnection)){
+                        Messages.sprintfError("Cannot close connection. " +  e.getMessage());
+                    }
                     e.printStackTrace();
                 }
             }
@@ -119,42 +122,56 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
     public static boolean insertConfiguration(Connection conn, Configuration configuration) {
         Messages.sprintf("Inserting configuration");
 
-        if (conn == null || configuration == null) {
-            return false;
+        boolean dbConnected = SQL_Utils.isDbConnected(conn);
+
+        if (!dbConnected) {
+            boolean configurationDatabase = createConfigurationDatabase();
+            if(!configurationDatabase) {
+                return false;
+            }
         }
 
-        String allColumnNames = ConfigurationEnum.getAllColumnNames();
+        StringBuilder questionMarks = new StringBuilder();
 
+        for (String col : ConfigurationEnum.getAllColumnNames().split(",")) {
+            Messages.sprintf("QQQQQQQQQQQQQQQQQQQ" + questionMarks.toString() + "\n");
+            if (questionMarks.toString().length() == 0) {
+                questionMarks.append("?");
+            } else {
+                questionMarks.append(",?");
+            }
+        }
         String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
-                " (" + String.join(", ", allColumnNames) + ") " +
-                "VALUES(" + "?,".repeat(allColumnNames.length - 1) + "?" + ")";
+                " (" + String.join(", ", getAllColumnNames()) + ") " +
+                "VALUES(" + questionMarks + ")";
+        Messages.sprintf("sql::::::::::::::: insert " + sql + " VALUES:::: " + questionMarks);
 
-        String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
-                " (" +
-                ID + ", " +
-                BETTER_THUMBNAIL_QUALITY + ", " +
-                CONFIRM_ON_EXIT + ", " +
-                ID_COUNTER + ", " +
-                SHOW_FULL_PATH + ", " +
-                SHOW_HINTS + ", " +
-                SHOW_TOOLTIPS + ", " +
-                CURRENTTHEME + ", " +
-                VLC_PATH + ", " +
-                VLC_SUPPORT + ", " +
-                SAVE_DATA_AS_HD + ", " +
-                WINDOW_START_POSITION_X + ", " +
-                WINDOW_START_POSITION_Y + ", " +
-                WINDOW_START_WIDTH + ", " +
-                WINDOW_START_HEIGTH + ", " +
-                IMAGE_VIEW_X_POSITION + ", " +
-                IMAGE_VIEW_Y_POSITION + ", " +
-                WORK_DIR_SERIAL_NUMBER + ", " +
-                WORK_DIR + ") " +
-                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+//        String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
+//                " (" +
+//                ID + ", " +
+//                BETTER_THUMBNAIL_QUALITY + ", " +
+//                CONFIRM_ON_EXIT + ", " +
+//                ID_COUNTER + ", " +
+//                SHOW_FULL_PATH + ", " +
+//                SHOW_HINTS + ", " +
+//                SHOW_TOOLTIPS + ", " +
+//                CURRENTTHEME + ", " +
+//                VLC_PATH + ", " +
+//                VLC_SUPPORT + ", " +
+//                SAVE_DATA_AS_HD + ", " +
+//                WINDOW_START_POSITION_X + ", " +
+//                WINDOW_START_POSITION_Y + ", " +
+//                WINDOW_START_WIDTH + ", " +
+//                WINDOW_START_HEIGTH + ", " +
+//                IMAGE_VIEW_X_POSITION + ", " +
+//                IMAGE_VIEW_Y_POSITION + ", " +
+//                WORK_DIR_SERIAL_NUMBER + ", " +
+//                WORK_DIR + ") " +
+//                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-        int index = 0;
+        int index = 1;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(index++, configuration_id);
+            pstmt.setInt(index++, 0);
             pstmt.setBoolean(index++, configuration.isBetterQualityThumbs());
             pstmt.setBoolean(index++, configuration.isConfirmOnExit());
             pstmt.setInt(index++, configuration.getId_counter().get());
@@ -175,6 +192,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             pstmt.setString(index++, configuration.getWorkDir());
 
             int result = pstmt.executeUpdate();
+            conn.commit();
             return result > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -182,55 +200,56 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         }
     }
 
-public static boolean createConfigurationDatabase() {
-                try (Connection localConnection = getConnection()) {
-                    if (localConnection == null) {
-                        Messages.sprintfError("Could not establish database connection");
-                        return false;
-                    }
-
-                    SQL_Utils.setAutoCommit(localConnection, false);
-
-                    String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType() + " ("
-                            + ID + " INTEGER PRIMARY KEY, "
-                            + BETTER_THUMBNAIL_QUALITY + " BOOLEAN, "
-                            + CONFIRM_ON_EXIT + " BOOLEAN, "
-                            + ID_COUNTER + " INTEGER UNIQUE, "
-                            + SHOW_FULL_PATH + " BOOLEAN, "
-                            + SHOW_HINTS + " BOOLEAN, "
-                            + SHOW_TOOLTIPS + " BOOLEAN, "
-                            + CURRENTTHEME + " TEXT, "
-                            + VLC_PATH + " TEXT, "
-                            + VLC_SUPPORT + " BOOLEAN, "
-                            + SAVE_DATA_AS_HD + " BOOLEAN, "
-                            + WINDOW_START_POSITION_X + " DOUBLE, "
-                            + WINDOW_START_POSITION_Y + " DOUBLE, "
-                            + WINDOW_START_WIDTH + " DOUBLE, "
-                            + WINDOW_START_HEIGTH + " DOUBLE, "
-                            + IMAGE_VIEW_X_POSITION + " DOUBLE, "
-                            + IMAGE_VIEW_Y_POSITION + " DOUBLE, "
-                            + WORK_DIR_SERIAL_NUMBER + " TEXT, "
-                            + WORK_DIR + " TEXT)";
-
-                    Messages.sprintf("CreateConfiguration database: " + sql);
-
-                    try (Statement stmt = localConnection.createStatement()) {
-                        stmt.execute(sql);
-
-                        if (insertConfiguration(localConnection, Main.conf)) {
-                            createIgnoredListTable(Main.conf);
-                            localConnection.commit();
-                            return true;
-                        }
-                        localConnection.rollback();
-                    } catch (SQLException e) {
-                        Messages.sprintfError("Error creating table: " + e.getMessage());
-                    }
-                } catch (Exception e) {
-                    Messages.sprintfError("Database error: " + e.getMessage());
-                }
+    public static boolean createConfigurationDatabase() {
+        try (Connection localConnection = getConnection()) {
+            if (localConnection == null) {
+                Messages.sprintfError("Could not establish database connection");
                 return false;
             }
+
+            SQL_Utils.setAutoCommit(localConnection, false);
+            String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.CONFIGURATION.getType() + " ("
+                    + ID.getColumnDefinition() + ", "
+                    + BETTER_THUMBNAIL_QUALITY.getColumnDefinition() + ", "
+                    + CONFIRM_ON_EXIT.getColumnDefinition() + ", "
+                    + ID_COUNTER.getColumnDefinition() + ", "
+                    + SHOW_FULL_PATH.getColumnDefinition() + ", "
+                    + SHOW_HINTS.getColumnDefinition() + ", "
+                    + SHOW_TOOLTIPS.getColumnDefinition() + ", "
+                    + CURRENTTHEME.getColumnDefinition() + ", "
+                    + VLC_PATH.getColumnDefinition() + ", "
+                    + VLC_SUPPORT.getColumnDefinition() + ", "
+                    + SAVE_DATA_AS_HD.getColumnDefinition() + ", "
+                    + WINDOW_START_POSITION_X.getColumnDefinition() + ", "
+                    + WINDOW_START_POSITION_Y.getColumnDefinition() + ", "
+                    + WINDOW_START_WIDTH.getColumnDefinition() + ", "
+                    + WINDOW_START_HEIGHT.getColumnDefinition() + ", "
+                    + IMAGE_VIEW_X_POSITION.getColumnDefinition() + ", "
+                    + IMAGE_VIEW_Y_POSITION.getColumnDefinition() + ", "
+                    + WORK_DIR_SERIAL_NUMBER.getColumnDefinition() + ", "
+                    + WORK_DIR.getColumnDefinition() + ")";
+
+
+            Messages.sprintf("CreateConfiguration database: " + sql);
+
+            try (Statement stmt = localConnection.createStatement()) {
+                stmt.execute(sql);
+                connection.commit();
+
+                if (insertConfiguration(localConnection, Main.conf)) {
+                    createIgnoredListTable(Main.conf);
+                    localConnection.commit();
+                    return true;
+                }
+                localConnection.rollback();
+            } catch (SQLException e) {
+                Messages.sprintfError("Error creating table: " + e.getMessage());
+            }
+        } catch (Exception e) {
+            Messages.sprintfError("Database error: " + e.getMessage());
+        }
+        return false;
+    }
 
     /**
      * Creates the ignored list table in the database.
@@ -328,30 +347,30 @@ public static boolean createConfigurationDatabase() {
      */
     private static void ensureAllColumnExists(Connection connection) throws SQLException {
         String configTable = SQLTableEnums.CONFIGURATION.getType();
-        final String[] columnsSettings = {
-                BETTER_THUMBNAIL_QUALITY + " BOOLEAN",
-                CONFIRM_ON_EXIT + " BOOLEAN",
-                CURRENTTHEME + " STRING",
-                ID + " INTEGER PRIMARY KEY CHECK (id = 0)",
-                ID_COUNTER + " INTEGER UNIQUE",
-                IMAGE_VIEW_X_POSITION + " DOUBLE",
-                IMAGE_VIEW_Y_POSITION + " DOUBLE",
-                SAVE_DATA_AS_HD + " STRING",
-                SHOW_FULL_PATH + " BOOLEAN",
-                SHOW_HINTS + " BOOLEAN",
-                SHOW_TOOLTIPS + " BOOLEAN",
-                VLC_PATH + " STRING",
-                VLC_SUPPORT + " BOOLEAN",
-                WINDOW_START_HEIGTH + " DOUBLE DEFAULT (-1)",
-                WINDOW_START_POSITION_X + " DOUBLE DEFAULT (-1)",
-                WINDOW_START_POSITION_Y + " DOUBLE DEFAULT (-1)",
-                WINDOW_START_WIDTH + " DOUBLE DEFAULT (-1)",
-                WORK_DIR + " STRING",
-                WORK_DIR_SERIAL_NUMBER + " STRING"
-        };
+//        final String[] columnsSettings = {
+//                BETTER_THUMBNAIL_QUALITY + " BOOLEAN",
+//                CONFIRM_ON_EXIT + " BOOLEAN",
+//                CURRENTTHEME + " STRING",
+//                ID + " INTEGER PRIMARY KEY CHECK (id = 0)",
+//                ID_COUNTER + " INTEGER UNIQUE",
+//                IMAGE_VIEW_X_POSITION + " DOUBLE",
+//                IMAGE_VIEW_Y_POSITION + " DOUBLE",
+//                SAVE_DATA_AS_HD + " STRING",
+//                SHOW_FULL_PATH + " BOOLEAN",
+//                SHOW_HINTS + " BOOLEAN",
+//                SHOW_TOOLTIPS + " BOOLEAN",
+//                VLC_PATH + " STRING",
+//                VLC_SUPPORT + " BOOLEAN",
+//                WINDOW_START_HEIGTH + " DOUBLE DEFAULT (-1)",
+//                WINDOW_START_POSITION_X + " DOUBLE DEFAULT (-1)",
+//                WINDOW_START_POSITION_Y + " DOUBLE DEFAULT (-1)",
+//                WINDOW_START_WIDTH + " DOUBLE DEFAULT (-1)",
+//                WORK_DIR + " STRING",
+//                WORK_DIR_SERIAL_NUMBER + " STRING"
+//        };
 
         try (Statement stmt = connection.createStatement()) {
-            for (String column : columnsSettings) {
+            for (String column : ConfigurationEnum.getAllColumnNames().split(",")) {
                 try {
                     String alterTableSQL = "ALTER TABLE " + configTable + " ADD COLUMN " + column;
                     stmt.executeUpdate(alterTableSQL);
@@ -412,47 +431,47 @@ public static boolean createConfigurationDatabase() {
                 pstmt.executeQuery();
                 rs = pstmt.executeQuery();
 
-            while (rs.next()) {
-                configuration_id = (Integer.parseInt(rs.getString(ID)));
-                configuration.setBetterQualityThumbs(Boolean.parseBoolean(rs.getString(BETTER_THUMBNAIL_QUALITY)));
-                configuration.setConfirmOnExit(Boolean.parseBoolean(rs.getString(CONFIRM_ON_EXIT)));
-                configuration.setId_counter(Integer.parseInt(rs.getString(ID_COUNTER)));
-                configuration.setShowFullPath(Boolean.parseBoolean(rs.getString(SHOW_FULL_PATH)));
-                configuration.setShowHints(Boolean.parseBoolean(rs.getString(SHOW_HINTS)));
-                configuration.setShowTooltips(Boolean.parseBoolean(rs.getString(SHOW_TOOLTIPS)));
-                configuration.setCurrentTheme(rs.getString(CURRENTTHEME)); // e.x. dark
-                configuration.setThemePath("/" + configuration.getCurrentTheme() + "/");
-                configuration.setVlcPath(rs.getString(VLC_PATH));
-                configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(VLC_SUPPORT)));
-                configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(SAVE_DATA_AS_HD)));
-                configuration.setWindowStartPosX(Double.parseDouble(rs.getString(WINDOW_START_POSITION_X)));
-                configuration.setWindowStartPosY(Double.parseDouble(rs.getString(WINDOW_START_POSITION_Y)));
-                configuration.setWindowStartWidth(Double.parseDouble(rs.getString(WINDOW_START_WIDTH)));
-                configuration.setWindowStartHeight(Double.parseDouble(rs.getString(WINDOW_START_HEIGTH)));
+                while (rs.next()) {
+                    configuration_id = (Integer.parseInt(rs.getString(ID.getSqlType())));
+                    configuration.setBetterQualityThumbs(Boolean.parseBoolean(rs.getString(BETTER_THUMBNAIL_QUALITY.getSqlType())));
+                    configuration.setConfirmOnExit(Boolean.parseBoolean(rs.getString(CONFIRM_ON_EXIT.getSqlType())));
+                    configuration.setId_counter(Integer.parseInt(rs.getString(ID_COUNTER.getSqlType())));
+                    configuration.setShowFullPath(Boolean.parseBoolean(rs.getString(SHOW_FULL_PATH.getSqlType())));
+                    configuration.setShowHints(Boolean.parseBoolean(rs.getString(SHOW_HINTS.getSqlType())));
+                    configuration.setShowTooltips(Boolean.parseBoolean(rs.getString(SHOW_TOOLTIPS.getSqlType())));
+                    configuration.setCurrentTheme(rs.getString(CURRENTTHEME.getSqlType())); // e.x. dark
+                    configuration.setThemePath("/" + configuration.getCurrentTheme() + "/");
+                    configuration.setVlcPath(rs.getString(VLC_PATH.getSqlType()));
+                    configuration.setVlcSupport(Boolean.parseBoolean(rs.getString(VLC_SUPPORT.getSqlType())));
+                    configuration.setSaveDataToHD(Boolean.parseBoolean(rs.getString(SAVE_DATA_AS_HD.getSqlType())));
+                    configuration.setWindowStartPosX(Double.parseDouble(rs.getString(WINDOW_START_POSITION_X.getSqlType())));
+                    configuration.setWindowStartPosY(Double.parseDouble(rs.getString(WINDOW_START_POSITION_Y.getSqlType())));
+                    configuration.setWindowStartWidth(Double.parseDouble(rs.getString(WINDOW_START_WIDTH.getSqlType())));
+                    configuration.setWindowStartHeight(Double.parseDouble(rs.getString(WINDOW_START_HEIGHT.getSqlType())));
 
-                String imageViewXPosTemp = (rs.getString(IMAGE_VIEW_X_POSITION));
-                Messages.sprintf("imageViewXPosTemp: " + imageViewXPosTemp);
+                    String imageViewXPosTemp = (rs.getString(IMAGE_VIEW_X_POSITION.getSqlType()));
+                    Messages.sprintf("imageViewXPosTemp: " + imageViewXPosTemp);
 
-                String imageViewYPosTemp = (rs.getString(IMAGE_VIEW_Y_POSITION));
-                Messages.sprintf("imageViewYPosTemp: " + imageViewYPosTemp);
-                configuration.setImageViewXProperty(Double.parseDouble(rs.getString(IMAGE_VIEW_X_POSITION)));
-                configuration.setImageViewYProperty(Double.parseDouble(rs.getString(IMAGE_VIEW_Y_POSITION)));
+                    String imageViewYPosTemp = (rs.getString(IMAGE_VIEW_Y_POSITION.getSqlType()));
+                    Messages.sprintf("imageViewYPosTemp: " + imageViewYPosTemp);
+                    configuration.setImageViewXProperty(Double.parseDouble(rs.getString(IMAGE_VIEW_X_POSITION.getSqlType())));
+                    configuration.setImageViewYProperty(Double.parseDouble(rs.getString(IMAGE_VIEW_Y_POSITION.getSqlType())));
 
-                configuration.setWorkDirSerialNumber(rs.getString(WORK_DIR_SERIAL_NUMBER));
-                String workDirTemp = rs.getString(WORK_DIR);
-                Messages.sprintfError("workDirTemp= " + workDirTemp);
-                if (workDirTemp != null && !workDirTemp.isEmpty()) {
-                    configuration.setWorkDir(rs.getString(WORK_DIR));
+                    configuration.setWorkDirSerialNumber(rs.getString(WORK_DIR_SERIAL_NUMBER.getSqlType()));
+                    String workDirTemp = rs.getString(WORK_DIR.getSqlType());
+                    Messages.sprintfError("workDirTemp= " + workDirTemp);
+                    if (workDirTemp != null && !workDirTemp.isEmpty()) {
+                        configuration.setWorkDir(rs.getString(WORK_DIR.getSqlType()));
+                    }
+                    //System.err.println("1conf.workDir_property(): " + configuration.getWorkDir().hashCode());
+                    Messages.sprintf("Workdir loaded: " + rs.getString(WORK_DIR.getSqlType()) + " serial number = " + rs.getString(WORK_DIR_SERIAL_NUMBER.getSqlType()) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
+
+
+                    //return true;
                 }
-                //System.err.println("1conf.workDir_property(): " + configuration.getWorkDir().hashCode());
-                Messages.sprintf("Workdir loaded: " + rs.getString(WORK_DIR) + " serial number = " + rs.getString(WORK_DIR_SERIAL_NUMBER) + " show tooltips " + configuration.isShowTooltips() + " configuration.: " + configuration.getWorkDir());
-
-
-                //return true;
-            }
-            SQL_Utils.commitChanges(connection);
-            SQL_Utils.closeConnection(connection);
-            return true;
+                SQL_Utils.commitChanges(connection);
+                SQL_Utils.closeConnection(connection);
+                return true;
             } catch (SQLException e) {
                 Messages.sprintfError("SQL Exception: " + e.getMessage());
             }

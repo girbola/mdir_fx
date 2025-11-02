@@ -16,77 +16,76 @@ import java.util.*;
 public class FileInfo_SQL {
 
 
-    final public static String[] fileInfoColumnsSQL_ = {
-            FileInfoConstants.BAD + " BOOLEAN",
-            FileInfoConstants.CAMERA_MODEL + " STRING",
-            FileInfoConstants.CONFIRMED + " BOOLEAN",
-            FileInfoConstants.DATE + " NUMERIC",
-            FileInfoConstants.DESTINATIONPATH + " STRING",
-            FileInfoConstants.EVENT + " STRING",
-            FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY",
-            FileInfoConstants.FILEHISTORIES + " STRING",
-            FileInfoConstants.GOOD + " BOOLEAN",
-            FileInfoConstants.COPIED + " BOOLEAN",
-            FileInfoConstants.IGNORED + " BOOLEAN",
-            FileInfoConstants.IMAGE + " BOOLEAN",
-            FileInfoConstants.IMAGE_DIFFERENCE_HASH + " STRING",
-            FileInfoConstants.LOCATION + " STRING",
-            FileInfoConstants.MODIFIED + " BOOLEAN",
-            FileInfoConstants.ORG_PATH + " STRING UNIQUE",
-            FileInfoConstants.ORIENTATION + " INTEGER",
-            FileInfoConstants.RAW + " BOOLEAN",
-            FileInfoConstants.SIZE + " NUMERIC",
-            FileInfoConstants.SUGGESTED + " BOOLEAN",
-            FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN",
-            FileInfoConstants.TAGS + " STRING",
-            FileInfoConstants.THUMB_LENGTH + " INTEGER",
-            FileInfoConstants.THUMB_OFFSET + " INTEGER",
-            FileInfoConstants.TIMESHIFT + " INTEGER",
-            FileInfoConstants.USER + " STRING",
-            FileInfoConstants.VIDEO + " BOOLEAN",
-            FileInfoConstants.WORK_DIR + " STRING",
-            FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING"
-    };
+//    final public static String[] fileInfoColumnsSQL_ = {
+//            FileInfoConstants.BAD + " BOOLEAN",
+//            FileInfoConstants.CAMERA_MODEL + " STRING",
+//            FileInfoConstants.CONFIRMED + " BOOLEAN",
+//            FileInfoConstants.DATE + " NUMERIC",
+//            FileInfoConstants.DESTINATIONPATH + " STRING",
+//            FileInfoConstants.EVENT + " STRING",
+//            FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY",
+//            FileInfoConstants.FILEHISTORIES + " STRING",
+//            FileInfoConstants.GOOD + " BOOLEAN",
+//            FileInfoConstants.COPIED + " BOOLEAN",
+//            FileInfoConstants.IGNORED + " BOOLEAN",
+//            FileInfoConstants.IMAGE + " BOOLEAN",
+//            FileInfoConstants.IMAGE_DIFFERENCE_HASH + " STRING",
+//            FileInfoConstants.LOCATION + " STRING",
+//            FileInfoConstants.MODIFIED + " BOOLEAN",
+//            FileInfoConstants.ORG_PATH + " STRING UNIQUE",
+//            FileInfoConstants.ORIENTATION + " INTEGER",
+//            FileInfoConstants.RAW + " BOOLEAN",
+//            FileInfoConstants.SIZE + " NUMERIC",
+//            FileInfoConstants.SUGGESTED + " BOOLEAN",
+//            FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN",
+//            FileInfoConstants.TAGS + " STRING",
+//            FileInfoConstants.THUMB_LENGTH + " INTEGER",
+//            FileInfoConstants.THUMB_OFFSET + " INTEGER",
+//            FileInfoConstants.TIMESHIFT + " INTEGER",
+//            FileInfoConstants.USER + " STRING",
+//            FileInfoConstants.VIDEO + " BOOLEAN",
+//            FileInfoConstants.WORK_DIR + " STRING",
+//            FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING"
+//    };
 
-    final public static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
-        put(FileInfoConstants.BAD, "BOOLEAN");
-        put(FileInfoConstants.CAMERA_MODEL, "STRING");
-        put(FileInfoConstants.CONFIRMED, "BOOLEAN");
-        put(FileInfoConstants.DATE, "NUMERIC");
-        put(FileInfoConstants.DESTINATIONPATH, "STRING");
-        put(FileInfoConstants.EVENT, "STRING");
-        put(FileInfoConstants.FILEINFOID, "INTEGER PRIMARY KEY");
-        put(FileInfoConstants.FILEHISTORIES, "STRING");
-        put(FileInfoConstants.GOOD, "BOOLEAN");
-        put(FileInfoConstants.COPIED, "BOOLEAN");
-        put(FileInfoConstants.IGNORED, "BOOLEAN");
-        put(FileInfoConstants.IMAGE, "BOOLEAN");
-        put(FileInfoConstants.IMAGE_DIFFERENCE_HASH, "STRING");
-        put(FileInfoConstants.LOCATION, "STRING");
-        put(FileInfoConstants.MODIFIED, "BOOLEAN");
-        put(FileInfoConstants.ORG_PATH, "STRING UNIQUE");
-        put(FileInfoConstants.ORIENTATION, "INTEGER");
-        put(FileInfoConstants.RAW, "BOOLEAN");
-        put(FileInfoConstants.SIZE, "NUMERIC");
-        put(FileInfoConstants.SUGGESTED, "BOOLEAN");
-        put(FileInfoConstants.TABLE_DUPLICATED, "BOOLEAN");
-        put(FileInfoConstants.TAGS, "STRING");
-        put(FileInfoConstants.THUMB_LENGTH, "INTEGER");
-        put(FileInfoConstants.THUMB_OFFSET, "INTEGER");
-        put(FileInfoConstants.TIMESHIFT, "INTEGER");
-        put(FileInfoConstants.USER, "STRING");
-        put(FileInfoConstants.VIDEO, "BOOLEAN");
-        put(FileInfoConstants.WORK_DIR, "STRING");
-        put(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER, "STRING");
-    }};
+//    final public static Map<String, String> fileInfoColumnsMap = new LinkedHashMap<String, String>() {{
+//        put(FileInfoConstants.BAD, "BOOLEAN");
+//        put(FileInfoConstants.CAMERA_MODEL, "STRING");
+//        put(FileInfoConstants.CONFIRMED, "BOOLEAN");
+//        put(FileInfoConstants.DATE, "NUMERIC");
+//        put(FileInfoConstants.DESTINATIONPATH, "STRING");
+//        put(FileInfoConstants.EVENT, "STRING");
+//        put(FileInfoConstants.FILEINFOID, "INTEGER PRIMARY KEY");
+//        put(FileInfoConstants.FILEHISTORIES, "STRING");
+//        put(FileInfoConstants.GOOD, "BOOLEAN");
+//        put(FileInfoConstants.COPIED, "BOOLEAN");
+//        put(FileInfoConstants.IGNORED, "BOOLEAN");
+//        put(FileInfoConstants.IMAGE, "BOOLEAN");
+//        put(FileInfoConstants.IMAGE_DIFFERENCE_HASH, "STRING");
+//        put(FileInfoConstants.LOCATION, "STRING");
+//        put(FileInfoConstants.MODIFIED, "BOOLEAN");
+//        put(FileInfoConstants.ORG_PATH, "STRING UNIQUE");
+//        put(FileInfoConstants.ORIENTATION, "INTEGER");
+//        put(FileInfoConstants.RAW, "BOOLEAN");
+//        put(FileInfoConstants.SIZE, "NUMERIC");
+//        put(FileInfoConstants.SUGGESTED, "BOOLEAN");
+//        put(FileInfoConstants.TABLE_DUPLICATED, "BOOLEAN");
+//        put(FileInfoConstants.TAGS, "STRING");
+//        put(FileInfoConstants.THUMB_LENGTH, "INTEGER");
+//        put(FileInfoConstants.THUMB_OFFSET, "INTEGER");
+//        put(FileInfoConstants.TIMESHIFT, "INTEGER");
+//        put(FileInfoConstants.USER, "STRING");
+//        put(FileInfoConstants.VIDEO, "BOOLEAN");
+//        put(FileInfoConstants.WORK_DIR, "STRING");
+//        put(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER, "STRING");
+//    }};
 
-    final static String fileInfoInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " " +
+    final static String fileInfoInsert_ = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " " +
             "(" + FileInfoConstants.FILEINFOID + ", " +
             FileInfoConstants.BAD + ", " +
             FileInfoConstants.CAMERA_MODEL + ", " +
             FileInfoConstants.COPIED + ", " +
             FileInfoConstants.CONFIRMED + ", " +
-            FileInfoConstants.DATE + ", " +
             FileInfoConstants.DESTINATIONPATH + ", " +
             FileInfoConstants.EVENT + ", " +
             FileInfoConstants.FILEHISTORIES + ", " +
@@ -203,7 +202,7 @@ public class FileInfo_SQL {
                 SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
-            SQL_Utils.ensureColumnsExist(mdirDatabaseConnection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
+//            SQL_Utils.ensureColumnsExist(mdirDatabaseConnection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
             // IMPORTANT: perform any other writes (which may commit/rollback/DDL) BEFORE preparing the statement
             FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
             SQL_Utils.commitChanges(mdirDatabaseConnection);
@@ -214,8 +213,16 @@ public class FileInfo_SQL {
                 SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
+            String sqlInsert =
+                    "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" +
+                            FileInfoEnum.getAllColumnNames() +
+                            ") VALUES (" +
+                            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?" +
+                            ");";
 
-            try (PreparedStatement pstmt = mdirDatabaseConnection.prepareStatement(fileInfoInsert)) {
+
+            Messages.sprintf("FileInfoEnum.getAllColumnNames():::::::::: " + sqlInsert);
+            try (PreparedStatement pstmt = mdirDatabaseConnection.prepareStatement(sqlInsert)) {
 
                 int batchSize = 0;
                 final int BATCH_LIMIT = 1000;
@@ -390,7 +397,7 @@ public class FileInfo_SQL {
         }
 
         String createTableSQL = FileInfoEnum.getCreateTableSQL(SQLTableEnums.FILEINFO.getType());
-
+Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
 		try {
 			Statement stmt = connection.createStatement();
 			stmt.execute(createTableSQL);
@@ -442,12 +449,12 @@ public class FileInfo_SQL {
             return new ArrayList<>();
         }
 
-        try {
-            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);}
-        catch (SQLException e) {
-            Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
-            throw new RuntimeException(e);
-        }
+//        try {
+//            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);}
+//        catch (SQLException e) {
+//            Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
+//            throw new RuntimeException(e);
+//        }
         List<FileInfo> list = new ArrayList<>();
         String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
 

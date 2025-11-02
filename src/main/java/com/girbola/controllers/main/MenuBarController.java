@@ -370,8 +370,8 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         sprintf("menuItem_file_save_action");
-        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
-        saveFileInfos.readTables();
+//        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
+//        saveFileInfos.readTables();
 
         Task<Integer> writeTablesFolderInfoToConfigurationDatabase = new WriteTablesFolderInfoToConfigurationDatabase(model_main, Main.sceneManager.getWindow(), null, true);
         writeTablesFolderInfoToConfigurationDatabase.setOnSucceeded(event2 -> {

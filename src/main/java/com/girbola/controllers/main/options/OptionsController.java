@@ -2,6 +2,7 @@
 package com.girbola.controllers.main.options;
 
 import com.girbola.Main;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.sql.WorkDirSQL;
@@ -92,6 +93,7 @@ public class OptionsController {
 
     public void init() {
         sprintf("OptionsController init...");
+
         confirmOnExit.selectedProperty().bindBidirectional(conf.confirmOnExitProperty());
         showHints.selectedProperty().bindBidirectional(conf.showHintsProperties());
         showTooltips.selectedProperty().bindBidirectional(conf.showTooltipsProperty());

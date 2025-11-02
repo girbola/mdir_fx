@@ -6,6 +6,7 @@ import com.girbola.controllers.operate.CopyState;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
@@ -380,7 +381,7 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
                 }
             }
         } catch (SQLException e) {
-            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage());
+            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
             return new ArrayList<>();
         }
 

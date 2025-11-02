@@ -6,6 +6,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfoConstants;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.SQL_Utils;
@@ -367,7 +368,7 @@ public class WorkDirSQL {
                 }
             }
         } catch (SQLException e) {
-            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage());
+            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
             return new ArrayList<>();
         }
 
@@ -412,7 +413,7 @@ public class WorkDirSQL {
                 }
             }
         } catch (SQLException e) {
-            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage());
+            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
             return null;
         }
         if (duplicateFileInfo != null) {
@@ -482,7 +483,7 @@ public class WorkDirSQL {
                 }
             }
         } catch (SQLException e) {
-            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage());
+            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
             return new ArrayList<>();
         }
 

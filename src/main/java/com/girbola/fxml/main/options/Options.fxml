@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.options.OptionsController">
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.options.OptionsController">
   
    <children>
       <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -37,10 +38,14 @@
                                        </font>
                                     </Label>
                                     <TextField fx:id="workDir_input" editable="false" promptText="label" text="label" HBox.hgrow="ALWAYS" />
-                                    <Button fx:id="chooseFolder_workDir" mnemonicParsing="false" onAction="#chooseFolder_workDir_action" text="%choose" HBox.hgrow="NEVER">
+                                    <Button fx:id="chooseFolder_workDir" mnemonicParsing="false" onAction="#chooseFolder_workDir_action" HBox.hgrow="NEVER">
                                        <font>
                                           <Font size="10.0" />
                                        </font>
+                                        <graphic>
+<!--                                            <FontIcon iconColor="WHITE" iconLiteral="bi-folder2-open" iconSize="20" />-->
+                                            <FontIcon iconColor="WHITE" iconLiteral="bi-arrow-down" iconSize="20" />
+                                        </graphic>
                                     </Button>
                                  </children>
                                  <padding>

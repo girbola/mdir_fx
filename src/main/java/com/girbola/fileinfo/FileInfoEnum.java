@@ -59,6 +59,7 @@ public enum FileInfoEnum {
 
         boolean first = true;
         for (FileInfoEnum e : values()) {
+            Messages.sprintf("creating fileInfo table " + e);
             if (!first) {
                 createTableSQLBuilder.append(", ");
             }
@@ -76,6 +77,7 @@ public enum FileInfoEnum {
         StringBuilder columnNamesBuilder = new StringBuilder();
 
         for (FileInfoEnum e : values()) {
+            Messages.sprintf("fileinfo enum value: " + e.toString());
             if (!columnNamesBuilder.isEmpty()) {
                 columnNamesBuilder.append(", ");
                 counter++;

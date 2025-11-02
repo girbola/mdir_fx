@@ -18,7 +18,7 @@ public class SelectedFoldersSQL {
     private static final String selectedFolderTable =
             "CREATE TABLE IF NOT EXISTS " +
                     SQLTableEnums.SELECTEDFOLDERS.getType() +
-                    " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN)";
+                    " (selected BOOLEAN, path STRING PRIMARY KEY, connected BOOLEAN, media BOOLEAN, drive)";
 
     static final String insertSelectedFolders = "INSERT OR REPLACE INTO " + SQLTableEnums.SELECTEDFOLDERS.getType()
             + " ('selected', 'connected', 'path', 'media') VALUES(?,?,?,?)";

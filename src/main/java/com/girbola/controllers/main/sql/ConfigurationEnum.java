@@ -1,6 +1,5 @@
 package com.girbola.controllers.main.sql;
 
-import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
 
 public enum ConfigurationEnum {

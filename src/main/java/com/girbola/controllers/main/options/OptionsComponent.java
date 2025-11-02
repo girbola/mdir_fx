@@ -2,6 +2,7 @@ package com.girbola.controllers.main.options;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -38,7 +39,7 @@ public class OptionsComponent {
 
         Scene scene_opt = new Scene(parent);
         scene_opt.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.OPTIONPANE.getType()).toExternalForm());
+                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
         stage_opt.setScene(scene_opt);
         stage_opt.setOnCloseRequest(closeEvent -> {

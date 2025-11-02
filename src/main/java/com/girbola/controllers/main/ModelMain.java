@@ -161,10 +161,14 @@ public class ModelMain {
      * @param tableType               the type of table where the data should be saved
      * @return {@code true} if the data was saved and committed successfully, {@code false} otherwise
      */
-    public boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
+    public synchronized boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
         if (items.isEmpty()) {
             Messages.sprintf("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
+        }
+
+        for (FolderInfo folderInfo : items) {
+
         }
 
         for (FolderInfo folderInfo : items) {

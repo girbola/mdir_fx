@@ -371,7 +371,7 @@ public class FolderInfo_SQL {
         try {
             // Ensure the table exists and has the correct structure
             ensureFolderInfoTable(connectionMdirFile);
-
+//            aergaerg;
 //            Statement stmt = connectionMdirFile.createStatement();
 //            stmt.execute(createFolderInfoSQL);
 
