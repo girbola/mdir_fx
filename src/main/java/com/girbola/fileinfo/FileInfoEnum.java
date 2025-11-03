@@ -52,6 +52,38 @@ public enum FileInfoEnum {
     public String getColumnDefinition() {
         return columnName + " " + sqlType;
     }
+    private static final String[] BINDING_ORDER = {
+            "fileInfo_id",
+            "orgPath",
+            "workDir",
+            "workDirDriveSerialNumber",
+            "destination_Path",
+            "camera_model",
+            "user",
+            "orientation",
+            "bad",
+            "good",
+            "confirmed",
+            "copied",
+            "ignored",
+            "modified",
+            "suggested",
+            "image",
+            "raw",
+            "video",
+            "timeShift",
+            "date",
+            "size",
+            "tableDuplicated",
+            "tags",
+            "event",
+            "location",
+            "imageDifferenceHash",
+            "thumb_offset",
+            "thumb_length",
+            "fileHistories"
+    };
+
 
     public static String getCreateTableSQL(String tableName) {
         StringBuilder createTableSQLBuilder = new StringBuilder("CREATE TABLE IF NOT EXISTS " + tableName + " (");
@@ -72,21 +104,16 @@ public enum FileInfoEnum {
         return createTableSQLBuilder.toString();
     }
 
-    public static String getAllColumnNames() {
-        int counter = 0;
-        Messages.sprintf("##################################### values count: " + values().length);
-        StringBuilder columnNamesBuilder = new StringBuilder();
 
-        for (FileInfoEnum e : values()) {
-            Messages.sprintf("fileinfo enum value: " + e.toString());
-            if (!columnNamesBuilder.isEmpty()) {
+    public static String getAllColumnNames() {
+        StringBuilder columnNamesBuilder = new StringBuilder();
+        for (int i = 0; i < BINDING_ORDER.length; i++) {
+            if (i > 0) {
                 columnNamesBuilder.append(", ");
-                counter++;
             }
-            columnNamesBuilder.append(e.getColumnName());
-            //Messages.sprintf("C::::::::::::::::::: " + counter + " --- eee: " + columnNamesBuilder);
+            columnNamesBuilder.append(BINDING_ORDER[i]);
         }
-    Messages.sprintf("----------------columnNamesBuilder: " + columnNamesBuilder);
+        Messages.sprintf("Binding-order columns: " + columnNamesBuilder);
         return columnNamesBuilder.toString();
     }
 }

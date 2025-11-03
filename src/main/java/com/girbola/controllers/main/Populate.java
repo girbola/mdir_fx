@@ -9,6 +9,7 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
@@ -93,7 +94,6 @@ public class Populate {
 //        }
 
         Thread createFileListThread = getThread(owner, selectedFolders);
-        sprintf("createFileListThread.getName(): " + createFileListThread.getName());
         createFileListThread.start();
     }
 
@@ -114,7 +114,9 @@ public class Populate {
                 fileList = createFileList.get();
 
                 if (fileList == null || fileList.isEmpty()) {
-                    Messages.warningText("List is empty at Populate class. Cancelling");
+                    Messages.sprintf("List is empty at Populate class. Cancelling");
+                    Platform.runLater(loadingProcessTask::closeStage);
+                    createFileList.cancel();
                     return;
                 }
 
