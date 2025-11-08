@@ -1,13 +1,13 @@
 package com.girbola.controllers.folderscanner;
 
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class TableCell_Connected extends TableCell<SelectedFolder, Boolean> {
 
-    private Button mediaButton = new Button();
+    private Label mediaButton = new Label();
     FontIcon fontIcon = new FontIcon();
 
     public TableCell_Connected() {

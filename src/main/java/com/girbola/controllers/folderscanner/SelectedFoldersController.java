@@ -3,24 +3,25 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.cell.TableCell_Connected;
-import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
+import java.io.File;
+import java.sql.Connection;
+import java.util.Iterator;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-
-import java.io.File;
-import java.sql.Connection;
-import java.util.Iterator;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -186,7 +187,7 @@ public class SelectedFoldersController {
     public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> connected = new Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>>() {
         @Override
         public TableCell<SelectedFolder, Boolean> call(TableColumn<SelectedFolder, Boolean> selectedFolderBooleanTableColumn) {
-            return new TableCell_Connected();
+            return new com.girbola.controllers.folderscanner.TableCell_Connected();
         }
     };
 

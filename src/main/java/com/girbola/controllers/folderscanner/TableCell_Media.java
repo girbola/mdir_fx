@@ -1,15 +1,13 @@
 package com.girbola.controllers.folderscanner;
 
-import com.girbola.controllers.datefixer.utils.GUI_Methods;
-import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
-import javax.swing.text.html.ImageView;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 public class TableCell_Media extends TableCell<SelectedFolder, Boolean> {
 
-    private Button mediaButton = new Button();
+    private Label mediaButton = new Label();
     FontIcon fontIcon = new FontIcon();
 
     public TableCell_Media() {
