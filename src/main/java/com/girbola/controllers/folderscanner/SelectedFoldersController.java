@@ -3,6 +3,8 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.tables.cell.TableCell_Connected;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
 import javafx.beans.property.SimpleObjectProperty;
@@ -146,8 +148,10 @@ public class SelectedFoldersController {
         folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+        hasMedia_col.setCellFactory(connected);
 
         hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
+        hasMedia_col.setCellFactory(hasMediaFiles);
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
@@ -171,6 +175,29 @@ public class SelectedFoldersController {
 
         scanner.setPeriod(Duration.seconds(10));*/
     }
+
+    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMediaFiles = new Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>>() {
+        @Override
+        public TableCell<SelectedFolder, Boolean> call(TableColumn<SelectedFolder, Boolean> selectedFolderBooleanTableColumn) {
+            return new TableCell_Media();
+        }
+    };
+
+    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> connected = new Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>>() {
+        @Override
+        public TableCell<SelectedFolder, Boolean> call(TableColumn<SelectedFolder, Boolean> selectedFolderBooleanTableColumn) {
+            return new TableCell_Connected();
+        }
+    };
+
+//    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMedia_tableCell =
+//            new Callback<SelectedFolder, TableCell<SelectedFolder, Boolean>>() {
+//                @Override
+//                public TableCell<SelectedFolder, Boolean> call(Object o) {
+//                    return new TableCell_Media();
+//                }
+//            };
+
 
     public void start() {
 //        this.scanner.start();

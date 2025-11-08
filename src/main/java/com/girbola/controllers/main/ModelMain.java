@@ -162,6 +162,7 @@ public class ModelMain {
      * @return {@code true} if the data was saved and committed successfully, {@code false} otherwise
      */
     public synchronized boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
+        Messages.sprintf("saveTableContent started");
         if (items.isEmpty()) {
             Messages.sprintf("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
