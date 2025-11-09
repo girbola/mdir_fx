@@ -11,9 +11,9 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
+<AnchorPane prefHeight="600.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.folderscanner.FolderScannerController">
     <children>
-        <SplitPane fx:id="splitPane_root" dividerPositions="0.5721476510067114" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane fx:id="splitPane_root" dividerPositions="0.5721" minHeight="600.0" minWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <fx:include fx:id="selectedFolders" source="SelectedFolders.fxml" />
                 <AnchorPane>

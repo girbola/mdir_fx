@@ -183,7 +183,7 @@ public class MenuBarController {
             }
         });
 
-        Scene fc_scene = new Scene(parent, 800, 400);
+        Scene fc_scene = new Scene(parent);
         fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);

@@ -5,23 +5,21 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
-import java.io.File;
-import java.sql.Connection;
-import java.util.Iterator;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import org.kordamp.ikonli.javafx.FontIcon;
+
+import java.io.File;
+import java.sql.Connection;
+import java.util.Iterator;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -74,13 +72,17 @@ public class SelectedFoldersController {
         dc.setInitialDirectory(new File(System.getProperty("user.home")));
         dc.setTitle(Main.bundle.getString("selectFolderForScanning"));
         File folder = dc.showDialog(selectedFolders_select_folder.getScene().getWindow());
+        Messages.sprintf("##########Selected folder: " + folder);
 
+//        model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
         if (Main.conf.getWorkDir().contains(folder.toString())) {
             Messages.warningText(Main.bundle.getString("workDirConflict"));
             return;
         }
 
         if (folder != null) {
+            int foldersAdded = model_main.getSelectedFolders().getSelectedFolderScanner_obs().size();
+
             if (!model_main.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
                 Messages.sprintf("model_main.getSelectedFolders():::::::::: " + model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
                 for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
@@ -91,7 +93,13 @@ public class SelectedFoldersController {
                 }
                 model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
             }
-            SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+            Messages.sprintf("foldersAdded: " + foldersAdded + "  vs size: " + model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
+            if (foldersAdded != model_main.getSelectedFolders().getSelectedFolderScanner_obs().size() || model_main.getSelectedFolders().getSelectedFolderScanner_obs().size() == 0) {
+
+                model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
+                SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+            }
+
         } else {
             Messages.sprintfError("Folder is null");
             Messages.warningText(Main.bundle.getString("folderNotFound"));
@@ -149,6 +157,9 @@ public class SelectedFoldersController {
         folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+        FontIcon folder_connected_icon = new FontIcon("bi-plug");
+
+
         hasMedia_col.setCellFactory(connected);
 
         hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
@@ -156,6 +167,7 @@ public class SelectedFoldersController {
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
+
 
       /*  scanner = new ScheduledService<Void>() {
 
@@ -190,6 +202,7 @@ public class SelectedFoldersController {
             return new com.girbola.controllers.folderscanner.TableCell_Connected();
         }
     };
+
 
 //    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMedia_tableCell =
 //            new Callback<SelectedFolder, TableCell<SelectedFolder, Boolean>>() {
