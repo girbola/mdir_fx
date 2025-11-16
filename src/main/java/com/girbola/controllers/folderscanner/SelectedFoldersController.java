@@ -2,16 +2,27 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.CssStylesEnum;
+import com.girbola.controllers.datefixer.DateFixConstants;
+import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
+import com.girbola.sql.SelectedFoldersSQL;
+import common.utils.Conversion;
+import java.util.Optional;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -21,6 +32,8 @@ import java.io.File;
 import java.sql.Connection;
 import java.util.Iterator;
 
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {
@@ -52,7 +65,6 @@ public class SelectedFoldersController {
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
-
 
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
 
@@ -131,12 +143,22 @@ public class SelectedFoldersController {
             Messages.sprintf("RemoveFromTable selectedItem: " + selectedItem.getFolder());
         }
 
-        SelectedFolderInfoSQL.clearSelectedFolders(model_main);
+        Dialog<ButtonType> changesDialog = Dialogs.createDialog_YesNo(Main.sceneManager.getScene_dateFixer().getWindow(), bundle.getString("removeAsWellFromTables"));
 
-        table.getItems().removeAll(selectedItems);
-        table.getSelectionModel().clearSelection();
+        Optional<ButtonType> result = changesDialog.showAndWait();
+        if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+            SelectedFoldersSQL.removeFromTable(selectedItems);
+        } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+            SelectedFoldersSQL.removeFromTable(selectedItems);
+            SelectedFolderInfoSQL.clearSelectedFolders(model_main);
 
-        table.getSelectionModel().clearSelection();
+            table.getItems().removeAll(selectedItems);
+            table.getSelectionModel().clearSelection();
+        } else {
+            Messages.sprintf("RemoveFromTable result: " + result.get().getButtonData());
+            return;
+        }
+
     }
 
     public void init(ModelMain aModel_main, ModelFolderScanner aModel_folderScanner) {

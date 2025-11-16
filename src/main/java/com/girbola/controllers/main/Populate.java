@@ -6,6 +6,9 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -14,6 +17,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.scene.control.TableView;
 import javafx.stage.Window;
 
 import java.nio.file.Path;
@@ -121,6 +125,33 @@ public class Populate {
                 }
 
                 Collections.sort(fileList);
+
+                List<TableView<FolderInfo>> allTables = TableUtils.getAllTables(modelMain.tables());
+                List<Path> findDuplicates = new ArrayList<>();
+                for(Path path : fileList) {
+                    if(TableUtils.tableHasFolder(allTables, path)) {
+                        findDuplicates.add(path);
+                    }
+                }
+                fileList.removeAll(findDuplicates);
+                if(fileList.isEmpty()) {
+                    Messages.sprintf("List is empty at Populate class. Cancelling");
+                    Platform.runLater(loadingProcessTask::closeStage);
+                    createFileList.cancel();
+                    return;
+                }
+                for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
+                        if (sf.isConnected()) {
+                            boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()));
+                            if (!selectedFolderExists) {
+                                selectedFolders.add(Paths.get(sf.getFolder()));
+                                sprintf("! selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
+                            }
+                        }
+                    }
+                }
+
 
                 Task<Integer> sorterTask = new Sorter(modelMain, fileList);
                 loadingProcessTask.setTask(sorterTask);

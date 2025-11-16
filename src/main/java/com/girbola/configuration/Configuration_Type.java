@@ -21,7 +21,7 @@ public enum Configuration_Type {
     WINDOW_START_POS_X("windowStartPosX"),
     WINDOW_START_POS_Y("windowStartPosY"),
     WINDOW_START_WIDTH("windowStartWidth"),
-    WINDOW_START_HEIGTH("windowStartHeigth"),
+    WINDOW_START_HEIGTH("windowStartHeight"),
     IMAGEVIEW_X_POS("imageViewXPos"),
     IMAGEVIEW_Y_POS("imageViewYPos"),
     WORKDIR_SERIAL_NUMBER("workDirSerialNumber"),

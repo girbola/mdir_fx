@@ -36,7 +36,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
 //    public static final String CURRENTTHEME = "currentTheme";
 //    public static final String VLC_PATH = "vlcPath";
 //    public static final String VLC_SUPPORT = "vlcSupport";
-//    public static final String WINDOW_START_HEIGTH = "windowStartHeigth";
+//    public static final String WINDOW_START_HEIGTH = "windowStartHeight";
 //    public static final String WINDOW_START_POSITION_X = "windowStartPosX";
 //    public static final String WINDOW_START_POSITION_Y = "windowStartPosY";
 //    public static final String WINDOW_START_WIDTH = "windowStartWidth";
@@ -134,7 +134,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         StringBuilder questionMarks = new StringBuilder();
 
         for (String col : ConfigurationEnum.getAllColumnNames().split(",")) {
-            Messages.sprintf("QQQQQQQQQQQQQQQQQQQ" + questionMarks.toString() + "\n");
             if (questionMarks.toString().length() == 0) {
                 questionMarks.append("?");
             } else {
@@ -144,30 +143,6 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
                 " (" + String.join(", ", getAllColumnNames()) + ") " +
                 "VALUES(" + questionMarks + ")";
-        Messages.sprintf("sql::::::::::::::: insert " + sql + " VALUES:::: " + questionMarks);
-
-//        String sql = "INSERT OR REPLACE INTO " + SQLTableEnums.CONFIGURATION.getType() +
-//                " (" +
-//                ID + ", " +
-//                BETTER_THUMBNAIL_QUALITY + ", " +
-//                CONFIRM_ON_EXIT + ", " +
-//                ID_COUNTER + ", " +
-//                SHOW_FULL_PATH + ", " +
-//                SHOW_HINTS + ", " +
-//                SHOW_TOOLTIPS + ", " +
-//                CURRENTTHEME + ", " +
-//                VLC_PATH + ", " +
-//                VLC_SUPPORT + ", " +
-//                SAVE_DATA_AS_HD + ", " +
-//                WINDOW_START_POSITION_X + ", " +
-//                WINDOW_START_POSITION_Y + ", " +
-//                WINDOW_START_WIDTH + ", " +
-//                WINDOW_START_HEIGTH + ", " +
-//                IMAGE_VIEW_X_POSITION + ", " +
-//                IMAGE_VIEW_Y_POSITION + ", " +
-//                WORK_DIR_SERIAL_NUMBER + ", " +
-//                WORK_DIR + ") " +
-//                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
         int index = 1;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -513,7 +488,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
 
         //String sql_ = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips,
-        // " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
+        // " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeight, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
         loadTableSQL(configuration);
 
 

@@ -10,6 +10,7 @@ import com.girbola.misc.Misc;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.collections.ObservableList;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
 
@@ -209,4 +210,39 @@ public class SelectedFoldersSQL {
         }
     }
 
+    public static void removeFromTable(ObservableList<SelectedFolder> selectedItems) {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            return;
+        }
+
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if (connection == null) {
+            Messages.sprintfError("Could not connect to configuration DB for removing selected folders: " + Main.conf.getConfiguration_db_fileName());
+            return;
+        }
+
+        String sql = "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            for (SelectedFolder sf : selectedItems) {
+                if (sf == null || sf.getFolder() == null) {
+                    continue;
+                }
+                pstmt.setString(1, sf.getFolder());
+                pstmt.addBatch();
+            }
+
+            int[] counter = pstmt.executeBatch();
+            SQL_Utils.commitChanges(connection);
+            Messages.sprintf("removeFromTable deleted rows: " + counter.length);
+            // ... existing code ...
+        } catch (Exception e) {
+            Messages.sprintfError("removeFromTable failed: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
+            // ... existing code ...
+        } finally {
+            closeConnection(connection);
+        }
+    }
 }

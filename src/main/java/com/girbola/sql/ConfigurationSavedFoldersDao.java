@@ -99,10 +99,8 @@ public class ConfigurationSavedFoldersDao {
                 }
                 FolderInfoStatus folderInfoStatus = new FolderInfoStatus(path, tableType, justFolderName, isConnected);
                 folderInfoStatus.setConnected(Files.exists(Paths.get(path)));
-                Messages.sprintf("path: " + path + " FolderInfos.db were connected? " + folderInfoStatus.isConnected());
                 arrayList.add(folderInfoStatus);
             }
-            Messages.sprintf("getALLLLLL size was: " + arrayList.size());
             return arrayList;
         } catch (Exception e) {
             //SQL_Utils.closeConnection(connection);
@@ -124,7 +122,6 @@ public class ConfigurationSavedFoldersDao {
         }
 
         String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
-        Messages.sprintf("###########createFolderInfosDatabase sql: " + sql);
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);

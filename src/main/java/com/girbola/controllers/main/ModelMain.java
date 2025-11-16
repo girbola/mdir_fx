@@ -162,14 +162,14 @@ public class ModelMain {
      * @return {@code true} if the data was saved and committed successfully, {@code false} otherwise
      */
     public synchronized boolean saveTableContent(Connection connectionConfiguration, ObservableList<FolderInfo> items, String tableType) {
-        Messages.sprintf("saveTableContent started");
+        Messages.sprintf("saveTableContent started: " + tableType + " items: " + items.size() + " connectionConfiguration: " + connectionConfiguration);
         if (items.isEmpty()) {
             Messages.sprintf("saveTableContent items list were empty. tabletype: " + tableType);
             return false;
         }
 
         for (FolderInfo folderInfo : items) {
-
+            Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath() + " folder size: " + folderInfo.getFileInfoList().size());
         }
 
         for (FolderInfo folderInfo : items) {
@@ -197,7 +197,7 @@ public class ModelMain {
                      * or creates new one called fileinfo.db
                      */
 
-                    FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo);
+                    FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo, true);
 
                     // Inserts all data info fileinfo.db
                     FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);

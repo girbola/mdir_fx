@@ -167,7 +167,7 @@ public class FolderInfo_SQL {
                     stmt.executeUpdate(sql);
                 } catch (SQLException e) {
                     if (!e.getMessage().contains("duplicate column name")) {
-                        Messages.sprintfError("Duplicated column name found! Error altering table: {}" + e.getMessage());
+                        Messages.sprintfError("Error altering FolderInfo table: " + e.getMessage());
                         connection.rollback(); // rollback on any non-recoverable error
                         throw e;
                     }
@@ -365,23 +365,26 @@ public class FolderInfo_SQL {
         folderInfo.setTableType(rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName()));
     }
 
-    public static void saveConfigurationFolderInfoStateToDatabase(Connection connectionMdirFile, FolderInfo folderInfo) {
+    public static void saveConfigurationFolderInfoStateToDatabase(Connection connectionMdirFile, FolderInfo folderInfo, boolean leaveOpen) {
         Messages.sprintf("saveConfigurationFolderInfoStateToDatabase saving folder info to database: " + folderInfo.getFolderPath() + " connection is: " + SQL_Utils.getUrl(connectionMdirFile));
 
         try {
             // Ensure the table exists and has the correct structure
-            ensureFolderInfoTable(connectionMdirFile);
-//            aergaerg;
-//            Statement stmt = connectionMdirFile.createStatement();
-//            stmt.execute(createFolderInfoSQL);
 
+//            aergaerg;
+            Statement stmt = connectionMdirFile.createStatement();
+            stmt.execute(createFolderInfoSQL);
+
+            ensureFolderInfoTable(connectionMdirFile);
             insertFolderInfo(connectionMdirFile, folderInfo);
             connectionMdirFile.commit();
 
         } catch (SQLException ex) {
             Messages.sprintfError("Error saving folder info to database: " + ex.getMessage());
         } finally {
-            SQL_Utils.closeConnection(connectionMdirFile);
+            if (!leaveOpen) {
+                SQL_Utils.closeConnection(connectionMdirFile);
+            }
         }
     }
 

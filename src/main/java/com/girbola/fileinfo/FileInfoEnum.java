@@ -90,7 +90,6 @@ public enum FileInfoEnum {
 
         boolean first = true;
         for (FileInfoEnum e : values()) {
-            Messages.sprintf("creating fileInfo table " + e);
             if (!first) {
                 createTableSQLBuilder.append(", ");
             }

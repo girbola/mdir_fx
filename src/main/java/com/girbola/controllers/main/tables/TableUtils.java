@@ -391,6 +391,17 @@ public class TableUtils {
         return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
 
+    public static boolean tableHasFolder(List<TableView<FolderInfo>> allTables, Path path) {
+        for (TableView<FolderInfo> table : allTables) {
+            for (FolderInfo folderInfo : table.getItems()) {
+                if (folderInfo.getFolderPath().equals(path.toString())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public void check_All_TableView_forChanges(ModelMain model_main) {
         Iterator<FolderInfo> sorted_it = model_main.tables().getSorted_table().getItems().iterator();
         Iterator<FolderInfo> sortit_it = model_main.tables().getSortIt_table().getItems().iterator();
@@ -741,7 +752,7 @@ public class TableUtils {
             Connection configurationConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
             configurationConnection.setAutoCommit(false);
 
-            FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo);
+            FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo, false);
             SQL_Utils.commitChanges(configurationConnection);
             SQL_Utils.closeConnection(configurationConnection);
         } catch (Exception e) {

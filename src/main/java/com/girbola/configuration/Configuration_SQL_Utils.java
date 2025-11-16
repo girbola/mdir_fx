@@ -40,7 +40,7 @@ public class Configuration_SQL_Utils {
     public static final String currentTheme = "currentTheme";
     public static final String vlcPath = "vlcPath";
     public static final String vlcSupport = "vlcSupport";
-    public static final String windowStartHeigth = "windowStartHeigth";
+    public static final String windowStartHeight = "windowStartHeight";
     public static final String windowStartPosX = "windowStartPosX";
     public static final String windowStartPosY = "windowStartPosY";
     public static final String windowStartWidth = "windowStartWidth";
@@ -71,7 +71,7 @@ public class Configuration_SQL_Utils {
                 "windowStartPosX DOUBLE DEFAULT (-1)",
                 "windowStartPosY DOUBLE DEFAULT (-1)",
                 "windowStartWidth DOUBLE DEFAULT (-1)",
-                "windowStartHeigth DOUBLE DEFAULT (-1)",
+                "windowStartHeight DOUBLE DEFAULT (-1)",
                 "imageViewXPos DOUBLE",
                 "imageViewYPos DOUBLE",
                 "workDirSerialNumber STRING",
@@ -187,7 +187,7 @@ public class Configuration_SQL_Utils {
 		    	    + windowStartPosX  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartPosY  + " DOUBLE DEFAULT ( -1),"
 					+ windowStartWidth  + " DOUBLE DEFAULT ( -1),"
-					+ windowStartHeigth + " DOUBLE DEFAULT ( -1),"
+					+ windowStartHeight + " DOUBLE DEFAULT ( -1),"
 					+ imageViewXPos + " DOUBLE,"
 					+ imageViewYPos + " DOUBLE,"
 					+ workDirSerialNumber + " STRING, "
@@ -238,7 +238,28 @@ public class Configuration_SQL_Utils {
         }
         Messages.sprintf("loadConfiguration connection were connected: " + SQL_Utils.getUrl(connection));
 
-        String sql = "SELECT id, " + "betterQualityThumbs, " + "confirmOnExit, " + "id_counter, " + "showFullPath, " + "showHints, " + "showTooltips, " + "currentTheme, " + "vlcPath, " + "vlcSupport, " + "saveDataToHD, " + "windowStartPosX, " + "windowStartPosY, " + "windowStartWidth, " + "windowStartHeigth, " + "imageViewXPos, " + "imageViewYPos, " + "workDirSerialNumber, " + "workDir, " + "tableShow_sortIt, " + "tableShow_sorted, " + "tableShow_asItIs " + "FROM " + SQLTableEnums.CONFIGURATION.getType();
+        String sql = "SELECT id, " + "betterQualityThumbs, " +
+                "confirmOnExit, " +
+                "id_counter, " +
+                "showFullPath, " +
+                "showHints, " +
+                "showTooltips, " +
+                "currentTheme, " +
+                "vlcPath, " +
+                "vlcSupport, " +
+                "saveDataToHD, " +
+                "windowStartPosX, " +
+                "windowStartPosY, " +
+                "windowStartWidth, " +
+                "windowStartHeigth, " +
+                "imageViewXPos, " +
+                "imageViewYPos, " +
+                "workDirSerialNumber, " +
+                "workDir, " +
+                "tableShow_sortIt, " +
+                "tableShow_sorted, " +
+                "tableShow_asItIs " +
+                "FROM " + SQLTableEnums.CONFIGURATION.getType();
         try {
             PreparedStatement pstmt = connection.prepareStatement(sql);
             pstmt.executeQuery();
@@ -259,7 +280,7 @@ public class Configuration_SQL_Utils {
                 configuration.setWindowStartPosX(Double.parseDouble(rs.getString(windowStartPosX)));
                 configuration.setWindowStartPosY(Double.parseDouble(rs.getString(windowStartPosY)));
                 configuration.setWindowStartWidth(Double.parseDouble(rs.getString(windowStartWidth)));
-                configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeigth)));
+                configuration.setWindowStartHeight(Double.parseDouble(rs.getString(windowStartHeight)));
 
                 String imageViewXPosTemp = (rs.getString(imageViewXPos));
                 Messages.sprintf("imageViewXPosTemp: " + imageViewXPosTemp);
@@ -416,7 +437,7 @@ public class Configuration_SQL_Utils {
                             + "'" + windowStartPosX + "', "
                             + "'" + windowStartPosY + "', "
                             + "'" + windowStartWidth + "', "
-                            + "'" + windowStartHeigth + "', "
+                            + "'" + windowStartHeight + "', "
                             + "'" + imageViewXPos+ "', "
                             + "'" + imageViewYPos+ "', "
                             + "'" + workDirSerialNumber + "', "

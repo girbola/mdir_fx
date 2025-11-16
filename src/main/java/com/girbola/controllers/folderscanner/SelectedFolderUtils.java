@@ -41,6 +41,7 @@ public class SelectedFolderUtils {
 
         for (TableView<FolderInfo> tb : allTables) {
             for (FolderInfo folderInfo : tb.getItems()) {
+                Messages.sprintf("FolderInfo: " + folderInfo.getFolderPath() + " folder: " + folder);
                 if (folderInfo.getFolderPath().equals(folder.toString())) {
                     Messages.sprintf("Folder did exists: " + folder);
                     return true;
