@@ -9,8 +9,6 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.FileUtils;
 import common.utils.OSHI_Utils;
-import java.util.Arrays;
-
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
@@ -24,6 +22,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -271,7 +270,13 @@ public class ScanDrives {
 //                Messages.sprintf("Drive is NEW: " + listOfRoots[i].toString());
 //            }
 
-            modelMain.driveInfos().add(driveInfo);
+            for(DriveInfo drive : modelMain.driveInfos()) {
+                if(!drive.getSerial().equals(driveInfo.getSerial())) {
+                    modelMain.driveInfos().add(driveInfo);
+                    Messages.sprintf("Drive already in list: " + listOfRoots[i].toString());
+                    driveInfo.setSelected(drive.isSelected());
+                }
+            }
 
             setOfRootDrives.add(new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial));
 
