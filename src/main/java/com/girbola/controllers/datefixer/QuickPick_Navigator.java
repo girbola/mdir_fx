@@ -137,41 +137,4 @@ public class QuickPick_Navigator {
 				* ((node_height_tmp - 0.5 * scrollPane_viewport_height) / (scrollPane_bounds_height - scrollPane_viewport_height)));
 	}
 
-	private String getJumpButtonState(List<String> list) {
-		//        sprintf("getJumpButtonState started");
-		for (String s : list) {
-			sprintf("List of jumpButtonState: " + s);
-			if (s.equals(DateStatusEnum.DATE_BAD.getType())) {
-				return DateStatusEnum.DATE_BAD.getType();
-			} else {
-				if (s.equals(DateStatusEnum.DATE_SUGGESTED.getType())) {
-					return DateStatusEnum.DATE_SUGGESTED.getType();
-				} else {
-					if (s.equals(DateStatusEnum.DATE_VIDEO.getType())) {
-						return DateStatusEnum.DATE_VIDEO.getType();
-					}
-				}
-			}
-		}
-		return DateStatusEnum.DATE_GOOD.getType();
-	}
-
-	/**
-	 *
-	 * @param fileInfo
-	 * @return
-	 */
-	public String getStatus(FileInfo fileInfo) {
-		if (fileInfo.isBad()) {
-			return DateStatusEnum.DATE_BAD.getType();
-		} else if (fileInfo.isGood()) {
-			return DateStatusEnum.DATE_GOOD.getType();
-		} else if (fileInfo.isSuggested()) {
-			return DateStatusEnum.DATE_SUGGESTED.getType();
-		} else if (fileInfo.isVideo()) {
-			return DateStatusEnum.DATE_VIDEO.getType();
-		}
-		return null;
-	}
-
 }

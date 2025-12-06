@@ -81,9 +81,9 @@ public class Main extends Application {
 
     public static final String APP_NAME = "MDir - Image and Video Organizer";
     public static final String APP_VERSION = "1.0.0";
-    public static final String APP_AUTHOR = "<NAME>";
-    public static final String APP_EMAIL = "<EMAIL>";
-    public static final String APP_WEBSITE = "https://github.com//MDir";
+    public static final String APP_AUTHOR = "Marko Lokka";
+    public static final String APP_EMAIL = "girbola9@gmail.com";
+    public static final String APP_WEBSITE = "https://github.com//mdir_fx";
     public static final String APP_COPYRIGHT = "Copyright (c) 2025 All right reserved.";
     public static final String APP_LICENSE = "Apache License, Version 2.0";
 
@@ -234,7 +234,7 @@ public class Main extends Application {
                 setChanged(false);
                 conf.setModel(model_main);
                 conf.createProgramPaths();
-                ConfigurationSQLHandler.loadConfiguration(Main.conf);
+//                ConfigurationSQLHandler.loadConfiguration(Main.conf);
 
                 Messages.sprintf("CONFIG contains: " + conf.toString());
                 Messages.sprintf("Java version: " + System.getProperty("java.version"));
@@ -263,17 +263,13 @@ public class Main extends Application {
                     Messages.sprintf("conf.getThemePath() == null");
                 }
                 try {
-                    //String file = new File(".").getAbsolutePath();
+
                     if (conf.getThemePath() != null) {
                         Messages.sprintf("conf.getThemePath() != null: " + conf.getThemePath());
                     }
                     if (MDir_Stylesheets_Constants.MAINSTYLE.getType() != null) {
                         Messages.sprintf("MDir_Stylesheets_Constants.MAINSTYLE.getType() != null: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
                     }
-                    String externalForm = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm();
-//                    Messages.sprintf("==============file: " + file);
-                    Messages.sprintf("externalForm: " + externalForm);
-
                     primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong: " + e.getMessage());
@@ -315,9 +311,10 @@ public class Main extends Application {
 
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
+            // Loads save folders from configuration db
             Connection configurationLoadedFile = SqliteConnection.connectToDatabase(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
 
-            stageControl.setStageBoundarys();
+
             VLCJDiscovery.initVlc();
 
             if (SQL_Utils.isDbConnected(configurationLoadedFile)) {
@@ -349,7 +346,7 @@ public class Main extends Application {
                     Messages.sprintf("load_FileInfosBackToTableViews succeeded: " + Paths.get(conf.getWorkDir()));
 
                     model_main.getMonitorExternalDriveConnectivity().restart();
-
+                    //stageControl.setStageBoundarys();
                     autoResizeColumns(model_main.tables().getSorted_table());
                     autoResizeColumns(model_main.tables().getSorted_table());
                     autoResizeColumns(model_main.tables().getSortIt_table());
