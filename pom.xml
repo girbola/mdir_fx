@@ -28,19 +28,20 @@
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <imageio-jpeg.version>3.12.0</imageio-jpeg.version>
         <imageio-tiff.version>3.12.0</imageio-tiff.version>
+        <jackson.version>3.0.0</jackson.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <javacv-platform.version>1.5.10</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.9</javafx.maven.plugin.version>
         <javafx.version>25.0.1</javafx.version>
-        <jackson.version>3.0.0</jackson.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
         <lombok.version>1.18.38</lombok.version>
         <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
         <maven.compiler.target.release>24</maven.compiler.target.release>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
-        <mockito-inline-release>5.2.0</mockito-inline-release>
+        <mockito-core-release>5.20.0</mockito-core-release>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
         <oshi-core.version>6.8.2</oshi-core.version>
+        <owasp.version>12.1.9</owasp.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.17</slf4j.version>
         <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
@@ -209,14 +210,34 @@
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <version>${mockito-inline-release}</version>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core-release}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
     <build>
         <plugins>
+            <!-- OWASP Dependency-Check -->
             <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>${owasp.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <failBuildOnCVSS>7.0</failBuildOnCVSS>
+                    <formats>
+                        <format>HTML</format>
+                        <format>JSON</format>
+                    </formats>
+                </configuration>
+            </plugin>
+    <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.compiler.plugin.version}</version>

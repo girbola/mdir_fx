@@ -77,9 +77,8 @@ public class FileUtilsTest {
     public void testRenameFileDestinationDirectoryDoesNotExist() throws IOException {
         Path destFile = Paths.get("src", "test", "resources", "non-existent-directory", "IMG1.jpg");
 
-        // Attempt to rename and expect an exception
-        IOException exception = assertThrows(IOException.class, () -> FileUtils.renameFile(srcTest, destFile));
-        assertTrue(exception.getMessage().contains("non-existent-directory"));
+        Path path = FileUtils.renameFile(srcTest, destFile);
+        assertNull(path);
     }
 
     @Test
@@ -119,12 +118,24 @@ public class FileUtilsTest {
         Path sourceFile = Paths.get("src", "test", "resources", "test-material", "IMG1.jpg");
         Path destinationFile = Paths.get("src", "test", "resources", "test-material", "IMG1.jpg");
 
+        // Ensure the test image exists
+        if (!java.nio.file.Files.exists(sourceFile)) {
+            createTestImage(sourceFile);
+        }
+
+        // Remove destination file if it exists (redundant since source == destination, but kept for safety)
+        if (java.nio.file.Files.exists(destinationFile)) {
+            java.nio.file.Files.delete(destinationFile);
+            createTestImage(destinationFile);
+        }
+
         // Perform a file rename
         Path actualResult = FileUtils.renameFile(sourceFile, destinationFile);
 
         // As both files have the same size, no renaming should be done and null should be returned.
         assertNull(actualResult);
     }
+
 
     private static Path createTestImage(Path filePath) throws IOException {
         int width = 10; // Width of the image

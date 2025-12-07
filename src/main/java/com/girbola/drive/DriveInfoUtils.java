@@ -15,7 +15,17 @@ public class DriveInfoUtils {
 
 	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
+	private DriveInfoSQL driveInfoSQL;
 	private static ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
+
+	public DriveInfoUtils() {
+		this.driveInfoSQL = new DriveInfoSQL();
+	}
+
+
+	public DriveInfoUtils(DriveInfoSQL driveInfoSQL) {
+		this.driveInfoSQL = driveInfoSQL;
+	}
 
 	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath, String driveSerialNumber) {
 		for(DriveInfo driveInfo : driveInfos) {
@@ -51,9 +61,7 @@ public class DriveInfoUtils {
 	}
 
 	public void saveList() {
-
-		DriveInfoSQL.addDriveInfos(drivesList_obs);
-
+		driveInfoSQL.addDriveInfos(drivesList_obs);
 	}
 
 	public boolean isDriveAlreadyInRegister(String drive) {

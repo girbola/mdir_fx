@@ -68,7 +68,7 @@ public class FileUtils {
      * @throws IOException if an I/O error occurs
      * @throws IllegalArgumentException if source or destination paths are null
      */
-    public static Path renameFile(Path srcFile, Path destFile) throws IOException {
+    public static Path renameFile_old_with_exception(Path srcFile, Path destFile) throws IOException {
         if (srcFile == null || destFile == null) {
             throw new IllegalArgumentException("Source or destination file path cannot be null");
         }
@@ -82,6 +82,7 @@ public class FileUtils {
 
         if (Files.exists(destFile)) {
             if (Files.size(srcFile) == Files.size(destFile)) {
+
                 throw new IOException(String.format("File already exists at destination: %s", destFile));
             }
             return rename(srcFile, destFile);
@@ -89,6 +90,29 @@ public class FileUtils {
 
         return Files.move(srcFile, destFile);
     }
+
+    public static Path renameFile(Path srcFile, Path destFile) throws IOException {
+        if (srcFile == null || destFile == null) {
+            throw new IllegalArgumentException("Source or destination file path cannot be null");
+        }
+
+        Path parentPath = destFile.getParent();
+        if (parentPath == null || !Files.exists(parentPath)) {
+            return null;
+        }
+
+        Messages.sprintf("Renaming file - source: " +  srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
+
+        if (Files.exists(destFile)) {
+            if (Files.size(srcFile) == Files.size(destFile)) {
+                return null;
+            }
+            return rename(srcFile, destFile);
+        }
+
+        return Files.move(srcFile, destFile);
+    }
+
 
     /**
      * Rename file to new file name if file exists and it is different size example:

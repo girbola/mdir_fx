@@ -10,16 +10,14 @@ import static org.mockito.Mockito.*;
 
 class DriveInfoUtilsTest {
 
+
     @Test
     void testSaveList_whenDriveListIsEmpty() {
         // Arrange
-        DriveInfoUtils driveInfoUtils = new DriveInfoUtils();
+        DriveInfoSQL driveInfoSQLMock = mock(DriveInfoSQL.class);
+        DriveInfoUtils driveInfoUtils = new DriveInfoUtils(driveInfoSQLMock);
         ObservableList<DriveInfo> drivesListObs = FXCollections.observableArrayList();
         driveInfoUtils.getDrivesList_obs().addAll(drivesListObs);
-
-        // Mock DriveInfoSQL
-        DriveInfoSQL driveInfoSQLMock = mock(DriveInfoSQL.class);
-        Mockito.doNothing().when(driveInfoSQLMock).addDriveInfos(drivesListObs);
 
         // Act
         driveInfoUtils.saveList();
@@ -27,6 +25,7 @@ class DriveInfoUtilsTest {
         // Assert
         verify(driveInfoSQLMock, times(1)).addDriveInfos(drivesListObs);
     }
+
 
     @Test
     void testSaveList_whenDriveListHasItems() {
