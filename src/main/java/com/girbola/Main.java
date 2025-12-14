@@ -213,20 +213,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         stageControl = new StageControl(model_main, primaryStage);
-/*
-        try {
-            locale = Locale.of(lang, country);
-            bundle = ResourceBundle.getBundle("bundle/lang", locale);
-        } catch (Exception e) {
-            Messages.sprintfError("Something went wrong: " + e.getMessage());
-        }*/
-/*        try {
-            locale = Locale.of(lang, country);
-            bundle = ResourceBundle.getBundle("bundle/lang", locale);
-        } catch (MissingResourceException e) {
-            System.err.println("Warning: Resource bundle not found, using default messages");
-            // Create a default bundle or handle the error appropriately
-        }*/
+
         mainTask = new Task<>() {
             @Override
             protected Void call() {
@@ -300,12 +287,12 @@ public class Main extends Application {
 
         mainTask.setOnSucceeded(event -> {
             //ConfigurationSQLHandler.createConfigurationDatabase();
-            boolean configurationDatabase = ConfigurationSQLHandler.createConfigurationDatabase();
-            if (!configurationDatabase) {
-                Messages.sprintfError("Couldn't create configuration database");
-                lpt.closeStage();
-                return;
-            }
+//            boolean configurationDatabase = ConfigurationSQLHandler.createConfigurationDatabase();
+//            if (!configurationDatabase) {
+//                Messages.sprintfError("Couldn't create configuration database");
+//                lpt.closeStage();
+//                return;
+//            }
 
             ConfigurationSQLHandler.loadConfiguration(Main.conf);
 

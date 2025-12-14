@@ -4,25 +4,25 @@ import com.girbola.messages.Messages;
 
 public enum ConfigurationEnum {
 
+    ID("id", "INTEGER PRIMARY KEY"),
     BETTER_THUMBNAIL_QUALITY("betterQualityThumbs", "BOOLEAN"),
     CONFIRM_ON_EXIT("confirmOnExit", "BOOLEAN"),
-    CURRENTTHEME("currentTheme", "TEXT"),
-    ID("id", "INTEGER PRIMARY KEY"),
     ID_COUNTER("id_counter", "INTEGER UNIQUE"),
-    IMAGE_VIEW_X_POSITION("imageViewXPos", "DOUBLE"),
-    IMAGE_VIEW_Y_POSITION("imageViewYPos", "DOUBLE"),
-    SAVE_DATA_AS_HD("saveDataToHD", "BOOLEAN"),
     SHOW_FULL_PATH("showFullPath", "BOOLEAN"),
     SHOW_HINTS("showHints", "BOOLEAN"),
     SHOW_TOOLTIPS("showTooltips", "BOOLEAN"),
+    CURRENTTHEME("currentTheme", "TEXT"),
     VLC_PATH("vlcPath", "TEXT"),
     VLC_SUPPORT("vlcSupport", "BOOLEAN"),
-    WINDOW_START_HEIGHT("windowStartHeight", "DOUBLE"),
+    SAVE_DATA_AS_HD("saveDataToHD", "BOOLEAN"),
     WINDOW_START_POSITION_X("windowStartPosX", "DOUBLE"),
     WINDOW_START_POSITION_Y("windowStartPosY", "DOUBLE"),
     WINDOW_START_WIDTH("windowStartWidth", "DOUBLE"),
-    WORK_DIR("workDir", "TEXT"),
-    WORK_DIR_SERIAL_NUMBER("workDirSerialNumber", "TEXT");
+    WINDOW_START_HEIGHT("windowStartHeight", "DOUBLE"),
+    IMAGE_VIEW_X_POSITION("imageViewXPos", "DOUBLE"),
+    IMAGE_VIEW_Y_POSITION("imageViewYPos", "DOUBLE"),
+    WORK_DIR_SERIAL_NUMBER("workDirSerialNumber", "TEXT"),
+    WORK_DIR("workDir", "TEXT");
 
     private final String columnName;
     private final String sqlType;
@@ -56,6 +56,7 @@ public enum ConfigurationEnum {
                 counter++;
             }
             columnNamesBuilder.append(e.getColumnName());
+            Messages.sprintf("eeeeeeeeeeeeeeeeee: " + e.columnName);
         }
 
         return columnNamesBuilder.toString();
