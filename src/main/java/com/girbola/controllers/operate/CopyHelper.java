@@ -56,8 +56,9 @@ public class CopyHelper {
     public void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, ModelMain model_main) {
         try {
             Messages.sprintf(
-                    "Renaming file .tmp back to org extension: " + dest.toString() + ".tmp" + " to dest: " + dest);
-            Files.move(Paths.get(dest.toString(), ".tmp"), dest);
+                    "Renaming file .tmp back to org extension: " + destTmp + " to dest: " + dest);
+
+            Files.move(destTmp, dest);
             String newName = FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir());
             fileInfo.setDestination_Path(newName);
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
@@ -210,7 +211,7 @@ public class CopyHelper {
     }
 
     public boolean copyFile(FileInfo fileInfo, Path sourcePath, Path destPath, String state,
-                            SimpleIntegerProperty answer, ModelOperate modelOperate) {
+                            SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException, ExecutionException, InterruptedException {
 
         if (!Files.exists(sourcePath)) {
             return false;
@@ -227,16 +228,17 @@ public class CopyHelper {
         try (InputStream from = new FileInputStream(sourcePath.toFile());
              OutputStream to = new FileOutputStream(destTmpPath.toFile())) {
 
-            Files.deleteIfExists(destTmpPath);
+            //Files.deleteIfExists(destTmpPath);
             Messages.sprintf("Source: " + sourcePath + " dest: " + destPath);
             resetAndupdateSourceAndDestProcessValues(sourcePath, destPath);
 
             copyData(from, to, destTmpPath, sourcePath, destPath, answer, modelOperate);
-            finalizeCopy(destTmpPath, destPath, fileInfo, answer);
 
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        } finally {
+            finalizeCopy(destTmpPath, destPath, fileInfo, answer);
         }
 
         return true;
@@ -272,6 +274,18 @@ public class CopyHelper {
         }
     }
 
+    /**
+     * Finalizes the file copy process by handling potential conflicts and renaming
+     * the temporary file back to its original extension if no conflicts are detected.
+     *
+     * @param destTmpPath  the path of the temporary destination file
+     * @param destPath     the final destination path of the file
+     * @param fileInfo     metadata about the file being copied
+     * @param answer       a property that holds the user's decision in case of a conflict
+     * @throws IOException              if an I/O error occurs during file operations
+     * @throws ExecutionException       if an error occurs during concurrent execution
+     * @throws InterruptedException     if the thread is interrupted during execution
+     */
     private void finalizeCopy(Path destTmpPath, Path destPath, FileInfo fileInfo, SimpleIntegerProperty answer) throws IOException, ExecutionException, InterruptedException {
         if (Files.size(destTmpPath) != destTmpPath.toFile().length()) {
             handleCopyConflict(answer, destTmpPath, destPath, fileInfo);

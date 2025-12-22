@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.girbola.Main.simpleDates;
+import static com.girbola.workdir.WorkDirSQL.createWorkDirTable;
 import static com.girbola.workdir.WorkDirSQL.fileInfoColumnsSQL;
 
 public class WorkDirSQL {
@@ -58,7 +59,7 @@ public class WorkDirSQL {
         return null;
     }
 
-    // @formatter:off
+
     public boolean createFileInfoTable(Connection connection) {
         if (!SQL_Utils.isDbConnected(connection)) {
             Messages.sprintfError("Database connection is not active. Aborting the operation. Path is?" + SQL_Utils.getUrl(connection));
@@ -66,7 +67,7 @@ public class WorkDirSQL {
         }
 
         final String sql = FileInfoEnum.getCreateTableSQL(SQLTableEnums.FILEINFO.getType());
-System.out.println("SQLLLRLERLGELR::::::: " + sql);
+        System.out.println("SQLLLRLERLGELR::::::: " + sql);
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
@@ -175,7 +176,7 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
             if (SQL_Utils.isDbConnected(connection) && !connection.isClosed()) {
 
                 boolean fileInfoTable = FileInfo_SQL.createFileInfoTable(connection);
-                if(!fileInfoTable) {
+                if (!fileInfoTable) {
                     Messages.sprintfError("Could not create fileinfo workdir table");
                     return;
                 }
@@ -195,8 +196,8 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
 
             List<String> allValuesSplitted = Arrays.asList(FileInfoEnum.getAllColumnNames().split(","));
             StringBuilder valuePlaceholders = new StringBuilder();
-            for(String placeHolder : allValuesSplitted) {
-                if(valuePlaceholders.length() > 0) {
+            for (String placeHolder : allValuesSplitted) {
+                if (valuePlaceholders.length() > 0) {
                     valuePlaceholders.append(',');
                 }
                 valuePlaceholders.append("?");
@@ -343,7 +344,7 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
         return CopyState.COPY; // Default state, should be replaced with actual logic to determine the state
     }
 
-    public List<FileInfo> findDuplicateByExactDate(FileInfo fileInfo) {
+    public List<FileInfo> findDuplicateByExactDate(FileInfo fileInfo) throws SQLException {
         if (fileInfo == null) {
             return new ArrayList<>();
         }
@@ -362,33 +363,61 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
 
         List<FileInfo> list = new ArrayList<>();
 
-        String sql = "SELECT " + FileInfoEnum.getAllColumnNames() +
-                " FROM " + SQLTableEnums.WORKDIR.getType() +
-                " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
+        boolean empty = isTableEmpty(connection, SQLTableEnums.WORKDIR.getType());
+        if (!empty) {
+            Messages.sprintf("findDuplicateByExactDate: " + fileInfo.getOrgPath() + " empty? ");
 
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setString(1, fileInfo.getOrgPath());
-            pstmt.setLong(2, fileInfo.getSize());
+            String sql = "SELECT " + FileInfoEnum.getAllColumnNames() +
+                    " FROM " + SQLTableEnums.WORKDIR.getType() +
+                    " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, fileInfo.getOrgPath());
+                pstmt.setLong(2, fileInfo.getSize());
 //            pstmt.setObject(3, fileInfo.getLocalDateTime());
-            pstmt.setString(3, fileInfo.getImageDifferenceHash());
+                pstmt.setString(3, fileInfo.getImageDifferenceHash());
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                while (rs.next()) {
-                    FileInfo duplicateFileInfo = populateFileInfoFromResultSet(rs);
-                    if (duplicateFileInfo != null && FileInfoUtils.compareImagesMetadata(fileInfo, duplicateFileInfo)) {
-                        list.add(duplicateFileInfo);
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        FileInfo duplicateFileInfo = populateFileInfoFromResultSet(rs);
+                        if (duplicateFileInfo != null && FileInfoUtils.compareImagesMetadata(fileInfo, duplicateFileInfo)) {
+                            list.add(duplicateFileInfo);
+                        }
                     }
                 }
+            } catch (SQLException e) {
+                System.err.println(e.getMessage());
+                Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
+                return new ArrayList<>();
             }
-        } catch (SQLException e) {
-            Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
-            return new ArrayList<>();
-        }
 
-        return list;
+            return list;
+        }
+        Messages.sprintf("findDuplicateByExactDate: " + fileInfo.getOrgPath() + " empty? ");
+        return new ArrayList<>();
     }
 
-    private  static FileInfo populateFileInfoFromResultSet(ResultSet rs) throws SQLException {
+    // ... existing code ...
+    public static boolean isTableEmpty(Connection conn, String tableName) {
+        if (conn == null || tableName == null || tableName.trim().isEmpty()) {
+            return true;
+        }
+        if (SQL_Utils.isDbConnected(conn)) {
+            String sql = "SELECT 1 FROM " + tableName + " LIMIT 1";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                return !rs.next();
+            } catch (SQLException e) {
+                // If the table doesn't exist or connection is dead,
+                // we treat it as having no data.
+                return true;
+            }
+        }
+        return true;
+    }
+
+    private static FileInfo populateFileInfoFromResultSet(ResultSet rs) throws SQLException {
         if (!rs.next()) {
             return null;
         }
@@ -443,36 +472,7 @@ System.out.println("SQLLLRLERLGELR::::::: " + sql);
                 return false;
             }
 
-            String sql = "CREATE TABLE YourTableName (" +
-                    FileInfoEnum.BAD.getColumnName() + " " + FileInfoEnum.BAD.getSqlType() + ", " +
-                    FileInfoEnum.CAMERA_MODEL.getColumnName() + " " + FileInfoEnum.CAMERA_MODEL.getSqlType() + ", " +
-                    FileInfoEnum.CONFIRMED.getColumnName() + " " + FileInfoEnum.CONFIRMED.getSqlType() + ", " +
-                    FileInfoEnum.DESTINATION_PATH.getColumnName() + " " + FileInfoEnum.DESTINATION_PATH.getSqlType() + ", " +
-                    FileInfoEnum.EVENT.getColumnName() + " " + FileInfoEnum.EVENT.getSqlType() + ", " +
-                    FileInfoEnum.FILEINFO_ID.getColumnName() + " " + FileInfoEnum.FILEINFO_ID.getSqlType() + ", " +
-                    FileInfoEnum.FILEHISTORIES.getColumnName() + " " + FileInfoEnum.FILEHISTORIES.getSqlType() + ", " +
-                    FileInfoEnum.GOOD.getColumnName() + " " + FileInfoEnum.GOOD.getSqlType() + ", " +
-                    FileInfoEnum.COPIED.getColumnName() + " " + FileInfoEnum.COPIED.getSqlType() + ", " +
-                    FileInfoEnum.IGNORED.getColumnName() + " " + FileInfoEnum.IGNORED.getSqlType() + ", " +
-                    FileInfoEnum.IMAGE.getColumnName() + " " + FileInfoEnum.IMAGE.getSqlType() + ", " +
-                    FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + " " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getSqlType() + ", " +
-                    FileInfoEnum.LOCATION.getColumnName() + " " + FileInfoEnum.LOCATION.getSqlType() + ", " +
-                    FileInfoEnum.MODIFIED.getColumnName() + " " + FileInfoEnum.MODIFIED.getSqlType() + ", " +
-                    FileInfoEnum.ORGPATH.getColumnName() + " " + FileInfoEnum.ORGPATH.getSqlType() + ", " +
-                    FileInfoEnum.ORIENTATION.getColumnName() + " " + FileInfoEnum.ORIENTATION.getSqlType() + ", " +
-                    FileInfoEnum.RAW.getColumnName() + " " + FileInfoEnum.RAW.getSqlType() + ", " +
-                    FileInfoEnum.SIZE.getColumnName() + " " + FileInfoEnum.SIZE.getSqlType() + ", " +
-                    FileInfoEnum.SUGGESTED.getColumnName() + " " + FileInfoEnum.SUGGESTED.getSqlType() + ", " +
-                    FileInfoEnum.TABLE_DUPLICATED.getColumnName() + " " + FileInfoEnum.TABLE_DUPLICATED.getSqlType() + ", " +
-                    FileInfoEnum.TAGS.getColumnName() + " " + FileInfoEnum.TAGS.getSqlType() + ", " +
-                    FileInfoEnum.THUMB_LENGTH.getColumnName() + " " + FileInfoEnum.THUMB_LENGTH.getSqlType() + ", " +
-                    FileInfoEnum.THUMB_OFFSET.getColumnName() + " " + FileInfoEnum.THUMB_OFFSET.getSqlType() + ", " +
-                    FileInfoEnum.TIME_SHIFT.getColumnName() + " " + FileInfoEnum.TIME_SHIFT.getSqlType() + ", " +
-                    FileInfoEnum.USER.getColumnName() + " " + FileInfoEnum.USER.getSqlType() + ", " +
-                    FileInfoEnum.VIDEO.getColumnName() + " " + FileInfoEnum.VIDEO.getSqlType() + ", " +
-                    FileInfoEnum.WORK_DIR.getColumnName() + " " + FileInfoEnum.WORK_DIR.getSqlType() + ", " +
-                    FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getSqlType() +
-                    ");";
+            String sql = "CREATE TABLE " + SQLTableEnums.FILEINFO.getType() + "(" + FileInfoEnum.BAD.getColumnName() + " " + FileInfoEnum.BAD.getSqlType() + ", " + FileInfoEnum.CAMERA_MODEL.getColumnName() + " " + FileInfoEnum.CAMERA_MODEL.getSqlType() + ", " + FileInfoEnum.CONFIRMED.getColumnName() + " " + FileInfoEnum.CONFIRMED.getSqlType() + ", " + FileInfoEnum.DESTINATION_PATH.getColumnName() + " " + FileInfoEnum.DESTINATION_PATH.getSqlType() + ", " + FileInfoEnum.EVENT.getColumnName() + " " + FileInfoEnum.EVENT.getSqlType() + ", " + FileInfoEnum.FILEINFO_ID.getColumnName() + " " + FileInfoEnum.FILEINFO_ID.getSqlType() + ", " + FileInfoEnum.FILEHISTORIES.getColumnName() + " " + FileInfoEnum.FILEHISTORIES.getSqlType() + ", " + FileInfoEnum.GOOD.getColumnName() + " " + FileInfoEnum.GOOD.getSqlType() + ", " + FileInfoEnum.COPIED.getColumnName() + " " + FileInfoEnum.COPIED.getSqlType() + ", " + FileInfoEnum.IGNORED.getColumnName() + " " + FileInfoEnum.IGNORED.getSqlType() + ", " + FileInfoEnum.IMAGE.getColumnName() + " " + FileInfoEnum.IMAGE.getSqlType() + ", " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + " " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getSqlType() + ", " + FileInfoEnum.LOCATION.getColumnName() + " " + FileInfoEnum.LOCATION.getSqlType() + ", " + FileInfoEnum.MODIFIED.getColumnName() + " " + FileInfoEnum.MODIFIED.getSqlType() + ", " + FileInfoEnum.ORGPATH.getColumnName() + " " + FileInfoEnum.ORGPATH.getSqlType() + ", " + FileInfoEnum.ORIENTATION.getColumnName() + " " + FileInfoEnum.ORIENTATION.getSqlType() + ", " + FileInfoEnum.RAW.getColumnName() + " " + FileInfoEnum.RAW.getSqlType() + ", " + FileInfoEnum.SIZE.getColumnName() + " " + FileInfoEnum.SIZE.getSqlType() + ", " + FileInfoEnum.SUGGESTED.getColumnName() + " " + FileInfoEnum.SUGGESTED.getSqlType() + ", " + FileInfoEnum.TABLE_DUPLICATED.getColumnName() + " " + FileInfoEnum.TABLE_DUPLICATED.getSqlType() + ", " + FileInfoEnum.TAGS.getColumnName() + " " + FileInfoEnum.TAGS.getSqlType() + ", " + FileInfoEnum.THUMB_LENGTH.getColumnName() + " " + FileInfoEnum.THUMB_LENGTH.getSqlType() + ", " + FileInfoEnum.THUMB_OFFSET.getColumnName() + " " + FileInfoEnum.THUMB_OFFSET.getSqlType() + ", " + FileInfoEnum.TIME_SHIFT.getColumnName() + " " + FileInfoEnum.TIME_SHIFT.getSqlType() + ", " + FileInfoEnum.USER.getColumnName() + " " + FileInfoEnum.USER.getSqlType() + ", " + FileInfoEnum.VIDEO.getColumnName() + " " + FileInfoEnum.VIDEO.getSqlType() + ", " + FileInfoEnum.WORK_DIR.getColumnName() + " " + FileInfoEnum.WORK_DIR.getSqlType() + ", " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getSqlType() + ");";
 
             PreparedStatement pstmt = connection.prepareStatement(sql);
 

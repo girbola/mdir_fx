@@ -8,6 +8,7 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.controllers.main.sql.WorkDirSQL;
+import com.girbola.sql.SQL_Utils;
 import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -85,9 +86,6 @@ public class Copy extends Task<Integer> {
             FileInfo fileInfo = fileInfoIterator.next();
             Messages.sprintf(fileInfo.getOrgPath() + " getWorkDir file: " + fileInfo.getWorkDir());
             List<FileInfo> duplicateByExactDate = workDirSQL.findDuplicateByExactDate(fileInfo);
-//                if(duplicateByExactDate == null) {
-//                    break;
-//                }
             if (!duplicateByExactDate.isEmpty()) {
                 duplicatedFiles.add(fileInfo);
                 copyHelper.updateIncreaseDuplicatesProcessValues();
@@ -134,6 +132,7 @@ public class Copy extends Task<Integer> {
                 CopyState copyState = CopyState.valueOf(STATE);
                 switch (copyState) {
                     case COPY:
+                        Messages.sprintf("Copying file: " + source + " to: " + dest);
                         if (Files.exists(source)) {
                             if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                                 copyHelper.updateSourceAndDestProcessValues(source, dest);
@@ -150,6 +149,7 @@ public class Copy extends Task<Integer> {
 
                         break;
                     case RENAME:
+                        Messages.sprintf("Renaming file: " + source + " to: " + dest);
                         if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                             copyHelper.updateIncreaseRenamedProcessValues();
                             if (!fileInfo.isCopied()) {
@@ -217,6 +217,7 @@ public class Copy extends Task<Integer> {
             @Override
             protected Void call() throws Exception {
                 Messages.sprintf("Closing workdir connection");
+                SQL_Utils.commitChanges(workDirSQL.getConnection());
                 workDirSQL.closeConnection();
                 TableUtils.updateAllFolderInfos(modelMain.tables());
                 TableUtils.refreshAllTableContent(modelMain.tables());
@@ -247,6 +248,18 @@ public class Copy extends Task<Integer> {
         savingWorkDirContent.start();
 
         sprintf("OperateFiles succeeded");
+    }
+
+    private void cleanup() {
+        modelOperate.stopTimeLine();
+        modelOperate.doneButton(sceneNameType, close);
+        TableUtils.refreshAllTableContent(modelMain.tables());
+
+        try {
+            workDirSQL.closeConnection();
+        } catch (Exception e) {
+            Messages.sprintfError("Error closing DB: " + e.getMessage());
+        }
     }
 
 }

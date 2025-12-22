@@ -4,6 +4,7 @@ import com.girbola.*;
 import com.girbola.controllers.datefixer.ObservableHandler.*;
 import com.girbola.controllers.importimages.*;
 import com.girbola.controllers.main.*;
+import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.events.*;
 import com.girbola.fileinfo.*;
 import com.girbola.controllers.operate.*;
@@ -170,6 +171,11 @@ public class AskEventDialogController {
 
         event_cmb.setItems(model_dateFix.getObservableHandler().getEvent_obs());
         user_cmb.setItems(model_dateFix.getObservableHandler().getUser_obs());
+
+        WorkDirSQL workDirSQL = new WorkDirSQL(Paths.get(Main.conf.getWorkDir()));
+//        List<String> filesInfoList = workDirSQL.findDuplicatesByDateRange();
+
+
 
     }
 

@@ -64,7 +64,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
     public static boolean closeConnection(Connection connection) {
-        Messages.sprintf("About to close connection at: " + getUrl(connection));
+//        Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
             if (isDbConnected(connection)) {
                 connection.close();
@@ -93,9 +93,9 @@ public class SQL_Utils extends FolderInfo_SQL {
         }
     }
 
-    public static boolean setAutoCommit(Connection connection, boolean b) {
+    public static boolean setAutoCommit(Connection connection, boolean value) {
         try {
-            connection.setAutoCommit(false);
+            connection.setAutoCommit(value);
             return true;
         } catch (Exception e) {
             Messages.sprintfError("Cannot set connection AutoCommit to false: " + e.getMessage());

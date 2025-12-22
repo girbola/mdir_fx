@@ -611,7 +611,7 @@ public class TableUtils {
         Messages.sprintf("refreshAllTableContent started");
         ConcurrencyUtils.initNewSingleExecutionService();
 
-        RefreshAllTableContent refreshSortItTableTask = new RefreshAllTableContent(tables);
+        RefreshAllTableContent refreshAllTables = new RefreshAllTableContent(tables);
 
         calculateTableViewsStatistic(tables);
 

@@ -60,8 +60,7 @@ public class DateFixer extends Task<Void> {
                 parent = loader.load();
 
                 dateFixerController = loader.getController();
-                Scene scene_dateFixer = new Scene(parent, (Misc.getScreenBounds().getWidth()),
-                        (Misc.getScreenBounds().getHeight() - 50));
+                Scene scene_dateFixer = new Scene(parent);
                 dateFixerController.init(model_datefix, model_main, currentPath, folderInfo, isImported);
 
                 scene_dateFixer.setOnKeyPressed(event -> {
@@ -101,7 +100,7 @@ public class DateFixer extends Task<Void> {
                 e.printStackTrace();
             }
         });
-        Thread.sleep(1000);
+//        Thread.sleep(1000);
         return null;
     }
 

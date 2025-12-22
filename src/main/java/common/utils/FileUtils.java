@@ -62,10 +62,10 @@ public class FileUtils {
     /**
      * Renames a file from source path to destination path.
      *
-     * @param srcFile the source file path
+     * @param srcFile  the source file path
      * @param destFile the destination file path
      * @return the new path after renaming
-     * @throws IOException if an I/O error occurs
+     * @throws IOException              if an I/O error occurs
      * @throws IllegalArgumentException if source or destination paths are null
      */
     public static Path renameFile_old_with_exception(Path srcFile, Path destFile) throws IOException {
@@ -78,7 +78,7 @@ public class FileUtils {
             throw new IOException("Destination parent directory does not exist");
         }
 
-        Messages.sprintf("Renaming file - source: " +  srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
+        Messages.sprintf("Renaming file - source: " + srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
 
         if (Files.exists(destFile)) {
             if (Files.size(srcFile) == Files.size(destFile)) {
@@ -96,12 +96,16 @@ public class FileUtils {
             throw new IllegalArgumentException("Source or destination file path cannot be null");
         }
 
+        if (Files.notExists(srcFile)) {
+            return null;
+        }
+
         Path parentPath = destFile.getParent();
         if (parentPath == null || !Files.exists(parentPath)) {
             return null;
         }
 
-        Messages.sprintf("Renaming file - source: " +  srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
+//        Messages.sprintf("Renaming file - source: " +  srcFile + Files.size(srcFile) + destFile + Files.size(destFile));
 
         if (Files.exists(destFile)) {
             if (Files.size(srcFile) == Files.size(destFile)) {
@@ -131,14 +135,14 @@ public class FileUtils {
 //
 //        String destImageHash = ImageUtils.calculateImagePHash(destFile);
 
-        if(Files.exists(destFile.getParent())) {
+        if (Files.exists(destFile.getParent())) {
             // Get FolderInfo
             // If not exists return null
         }
         Messages.sprintf("srcFile: " + srcFile + " destFile: " + destFile + "");
 
-        if(Files.exists(destFile)) {
-            if(Files.size(srcFile) == Files.size(destFile)) {
+        if (Files.exists(destFile)) {
+            if (Files.size(srcFile) == Files.size(destFile)) {
                 Messages.sprintf("file did already exists at destination folder: " + srcFile + " destImageHash; " + destFile);
                 return null;
             } else {
@@ -169,7 +173,7 @@ public class FileUtils {
 
             while (it.hasNext()) {
                 Path path = Paths.get(destFile.getParent().toString(), destFile.getFileName().toString()
-                                .substring(0, destFile.getFileName().toString().lastIndexOf(".")) + prefix + String.valueOf(counter) + "." + ext);
+                        .substring(0, destFile.getFileName().toString().lastIndexOf(".")) + prefix + String.valueOf(counter) + "." + ext);
 
                 Messages.sprintf("fileName testing starting: " + path);
 
@@ -202,6 +206,7 @@ public class FileUtils {
             return null;
         }
     }
+
     public static DirectoryStream<Path> createDirectoryStream(Path path, DirectoryStream.Filter<Path> filter_directories) {
         try {
             return Files.newDirectoryStream(path, filter_directories);
@@ -541,11 +546,11 @@ public class FileUtils {
         return createFile.toFile().setWritable(true);
     }
 
-    public  static boolean setReadable(Path createFile, boolean b) {
+    public static boolean setReadable(Path createFile, boolean b) {
         return createFile.toFile().setReadable(true);
     }
 
     public static boolean checkFilePermissions(File file) {
-         return (file.canWrite() && file.canRead());
+        return (file.canWrite() && file.canRead());
     }
 }

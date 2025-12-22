@@ -51,7 +51,7 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                             cancel();
                             return false;
                         }
-                        Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+                        //Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
 
                         FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfoStatus.getFolderPath());
                         if (folderInfo == null) {

@@ -4,20 +4,23 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import javafx.application.Platform;
 import javafx.scene.control.TableView;
 
 import java.util.Iterator;
 
 public class RefreshAllTableContent {
-    private Tables tables;
+//    private Tables tables;
 
     public RefreshAllTableContent(Tables tables) {
-        this.tables = tables;
+//        this.tables = tables;
 
         Messages.sprintf("RefreshTableContent size: " + tables.getSortIt_table().getItems().size());
-        refresh(tables.getSortIt_table());
-        refresh(tables.getSorted_table());
-        refresh(tables.getAsItIs_table());
+        Platform.runLater(() -> {
+            refresh(tables.getSortIt_table());
+            refresh(tables.getSorted_table());
+            refresh(tables.getAsItIs_table());
+        });
     }
 
     //    @Override

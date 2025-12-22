@@ -1,7 +1,6 @@
 package com.girbola.controllers.loading;
 
 
-
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
@@ -22,6 +21,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
+
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
@@ -86,6 +86,7 @@ public class LoadingProcessTask {
 //            if (Main.getProcessCancelled()) {}
 //        });
     }
+
     public void loadGUI() {
         Platform.runLater(() -> {
             try {
@@ -151,17 +152,26 @@ public class LoadingProcessTask {
 
     private void setupLoadingScene() {
         // Add stylesheet
-        String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
-        loadingScene.getStylesheets().add(getClass().getResource(stylesheetPath).toExternalForm());
+        Platform.runLater(() -> {
+            try {
+                String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+                Messages.sprintf("LoadingProcess stylesheetPath: " + stylesheetPath);
+                loadingScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
 
-        // Store initial position
-        xOffset = loadingStage.getX();
-        yOffset = loadingStage.getY();
+                // Store initial position
+                xOffset = loadingStage.getX();
+                yOffset = loadingStage.getY();
 
-        // Add drag functionality
-        setupDragHandlers();
+                // Add drag functionality
+                setupDragHandlers();
 
-        loadingStage.setScene(loadingScene);
+                loadingStage.setScene(loadingScene);
+
+            } catch (Exception ex) {
+                Logger.getLogger(LoadingProcessTask.class.getName()).log(Level.SEVERE, null, ex);
+                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            }
+        });
     }
 
     private void setupDragHandlers() {
@@ -180,6 +190,7 @@ public class LoadingProcessTask {
         Main.sceneManager.setWindow_loadingprogress(loadingStage);
         Main.sceneManager.setScene_loading(loadingScene);
     }
+
     public void loadGUI_() {
         Platform.runLater(() -> {
             FXMLLoader loader = null;

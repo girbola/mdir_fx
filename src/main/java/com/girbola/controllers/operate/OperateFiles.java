@@ -146,6 +146,7 @@ find destination by date range 2010/01/01 - 2010/01/01 +1 day ratio
  */
 
                 for (FileInfo fileInfo : list) {
+                    Messages.sprintf("======OperateFiles fileInfo: " + fileInfo.getOrgPath());
                     CopyState duplicates = workDirSQL.findDuplicates(fileInfo);
                 }
 

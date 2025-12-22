@@ -288,6 +288,7 @@
                     <include>**/*.jp*g</include>
                     <include>**/*.png</include>
                     <include>**/*.properties</include>
+                    <include>**/fonts/**</include>
                 </includes>
             </resource>
         </resources>

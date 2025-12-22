@@ -157,7 +157,7 @@ public class Messages {
                 }
 
             } else {
-                if (!previousMessage.contentEquals(message)) {
+                if (previousMessage == null || !previousMessage.contentEquals(message)) {
                     Platform.runLater(() -> {
                         alert.getDialogPane().setHeaderText(className + " at line " + line);
                         textArea_alert.setText(message + " new message");

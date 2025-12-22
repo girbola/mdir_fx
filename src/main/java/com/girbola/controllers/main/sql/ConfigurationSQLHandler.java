@@ -497,7 +497,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
                     configuration.setShowTooltips(rs.getBoolean(SHOW_TOOLTIPS.getColumnName()));
 
                     configuration.setCurrentTheme(rs.getString(CURRENTTHEME.getColumnName())); // e.g. "dark"
-                    configuration.setThemePath("/" + configuration.getCurrentTheme() + "/");
+                    configuration.setThemePath("/themes/" + configuration.getCurrentTheme() + "/");
 
                     configuration.setVlcPath(rs.getString(VLC_PATH.getColumnName()));
                     configuration.setVlcSupport(rs.getBoolean(VLC_SUPPORT.getColumnName()));

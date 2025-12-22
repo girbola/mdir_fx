@@ -74,7 +74,7 @@ public class Main extends Application {
     public static SceneSwitcher sceneManager = new SceneSwitcher();
     public static SimpleDates simpleDates = new SimpleDates();
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final boolean DEBUG_CONF = true;
     public static final String country = "EN";
     public static final String lang = "en";

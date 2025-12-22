@@ -1,5 +1,6 @@
 package com.girbola.controllers.datefixer;
 
+import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
@@ -8,6 +9,7 @@ import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.datefixer.utils.DestinationResolver;
 import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.operate.OperateFiles;
@@ -16,6 +18,8 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
+import java.time.LocalDate;
+import java.util.TreeMap;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -53,6 +57,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.controllers.main.tables.TableUtils.calculateDateDifferenceRatio;
 import static com.girbola.messages.Messages.sprintf;
 import static com.girbola.messages.Messages.warningText;
 import static com.girbola.misc.Misc.openFileBrowser;
@@ -351,6 +356,11 @@ public class DateFixerController {
             ConcurrencyUtils.stopExecThread();
             Parent parent = null;
 
+
+            TreeMap<LocalDate, Integer> map = new TreeMap<>();
+
+                    calculateDateDifferenceRatio(map);
+
             try {
                 FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/datefixer/AskEventDialog.fxml"),
                         bundle);
@@ -367,13 +377,10 @@ public class DateFixerController {
                 Scene scene = new Scene(parent);
                 Stage stage = new Stage();
                 stage.setScene(scene);
+                scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
                 stage.show();
-                stage.setOnHiding(new EventHandler<WindowEvent>() {
-                    @Override
-                    public void handle(WindowEvent event) {
-                        modelDatefix.getSelectionModel().clearAll(df_tilePane);
-                    }
-                });
+                stage.setOnHiding(event1-> modelDatefix.getSelectionModel().clearAll(df_tilePane));
+
             } catch (Exception ex) {
                 log.error(ERROR, parent, event);
                 Logger.getLogger(DateFixerController.class.getName()).log(Level.SEVERE, null, ex);

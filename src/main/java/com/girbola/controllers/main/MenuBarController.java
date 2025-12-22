@@ -184,9 +184,11 @@ public class MenuBarController {
         });
 
         Scene fc_scene = new Scene(parent);
-        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath());
-        Messages.sprintf("MAINSTYLE.getType(): :: " + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+
+        //fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
         fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
         folderScannerController.init(model_main);
