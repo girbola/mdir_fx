@@ -69,6 +69,19 @@
                                 </TableView>
                             </content>
                         </TitledPane>
+                        <TitledPane fx:id="users_titledPane" text="%users" VBox.vgrow="NEVER">
+                            <content>
+                                <TableView fx:id="users_tableView" styleClass="metadataTable">
+                                    <columns>
+                                        <TableColumn fx:id="users_col" editable="false" minWidth="100.0" prefWidth="120.0" text="%location" />
+                                        <TableColumn fx:id="users_counter_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" text="%photos" />
+                                    </columns>
+                                    <columnResizePolicy>
+                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                    </columnResizePolicy>
+                                </TableView>
+                            </content>
+                        </TitledPane>
                     </children>
                     <padding>
                         <Insets left="2.0" right="4.0" />

@@ -42,6 +42,8 @@ public class SelectorController {
 //	@FXML private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> locations_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> locations_counter_col;
+	@FXML private TableColumn<EXIF_Data_Selector, String> users_col;
+	@FXML private TableColumn<EXIF_Data_Selector, Integer> users_counter_col;
 	@FXML private TableView<EXIF_Data_Selector> events_tableView;
 	@FXML private TableColumn<EXIF_Data_Selector, Boolean> events_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> events_col;
@@ -156,9 +158,17 @@ public class SelectorController {
 		locations_counter_col.setCellValueFactory(
 				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Integer> cellData) -> new SimpleObjectProperty<>(
 						cellData.getValue().getCount()));
+
+		users_col.setCellValueFactory(
+				(TableColumn.CellDataFeatures<EXIF_Data_Selector, String> cellData) -> new SimpleObjectProperty<>(
+						cellData.getValue().getInfo()));
+		users_counter_col.setCellValueFactory(
+				(TableColumn.CellDataFeatures<EXIF_Data_Selector, Integer> cellData) -> new SimpleObjectProperty<>(
+						cellData.getValue().getCount()));
+
+
 		locations_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		locations_tableView.setRowFactory(new TableRowSelector(locations_tableView, modelDatefix.getScrollPane()));
-
 		users_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		users_tableView.setRowFactory(new TableRowSelector(users_tableView, modelDatefix.getScrollPane()));
 
