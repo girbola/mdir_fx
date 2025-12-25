@@ -1,10 +1,10 @@
-@font-face {
-    font-family: "Inter";
-    src: url("fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");
-    font-optical-sizing: auto;
-    font-weight: 100 900;
-    font-style: normal;
-}
+/*@font-face {*/
+/*    font-family: "Inter";*/
+/*    src: url("fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");*/
+/*    font-optical-sizing: auto;*/
+/*    font-weight: 100 900;*/
+/*    font-style: normal;*/
+/*}*/
 
 .root {
     /* Using consistent hex format for colors */
@@ -17,7 +17,8 @@
     -fx-base-blue: #355091;
     -fx-base-red: #C14545;
     -fx-light-text-color: #E4E1E1;
-
+    -fx-font-family: "Roboto", monospace;
+    -fx-font-weight: normal;
     /*-fx-font-family: "Source Code Pro", monospace;*/
     /*-fx-font-family: "Inter", system-ui, sans-serif;*/
     /*-fx-font-family: "Source Code Pro", monospace;*/
@@ -253,6 +254,14 @@
 
 .tab .tab-label:hover {
     -fx-background-color: derive(-fx-base, 20%);
+}
+
+.selected {
+    -fx-background-color: -fx-base-cyan;
+}
+
+unselected {
+    -fx-background-color: -fx-base;
 }
 
 .selectCircleButton {

@@ -6,6 +6,7 @@ public enum MetadataField {
     LOCATION("Location"),
     CAMERA("Camera"),
     DATE("Date"),
+    USER("User"),
     UNKNOWN("Unknown");
 
     private String type;

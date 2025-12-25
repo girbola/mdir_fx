@@ -81,6 +81,7 @@ public class ModelDatefix extends DateFixerModel {
     private TableView<EXIF_Data_Selector> dates_TableView;
     private TableView<EXIF_Data_Selector> events_TableView;
     private TableView<EXIF_Data_Selector> locations_TableView;
+    private TableView<EXIF_Data_Selector> users_TableView;
 
     private VBox rightInfoPanel;
     private TableView<MetaData> metaDataTableView;
@@ -136,16 +137,23 @@ public class ModelDatefix extends DateFixerModel {
         getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getEvents_TableView().getItems(), MetadataField.EVENT.getType());
     }
 
+    public void updateUsersInfos(List<FileInfo> fileInfo_List) {
+        getUsers_TableView().getItems().clear();
+        getDateFix_Utils().createTableEXIF_Data_Selector_list(fileInfo_List, getUsers_TableView().getItems(), MetadataField.USER.getType());
+    }
+
     public void updateAllInfos(List<FileInfo> fileInfo_List) {
         getCameras_TableView().getItems().clear();
         getDates_TableView().getItems().clear();
         getEvents_TableView().getItems().clear();
         getLocations_TableView().getItems().clear();
+        getUsers_TableView().getItems().clear();
 
         updateCameraInfos(fileInfo_List);
         updateDateInfos(fileInfo_List);
         updateEventsInfos(fileInfo_List);
         updateLocationInfos(fileInfo_List);
+        updateUsersInfos(fileInfo_List);
     }
 
     public void updateAllInfos(TilePane gridPane) {
@@ -153,55 +161,42 @@ public class ModelDatefix extends DateFixerModel {
         getDates_TableView().getItems().clear();
         getEvents_TableView().getItems().clear();
         getLocations_TableView().getItems().clear();
+        getUsers_TableView().getItems().clear();
 
         updateCameraInfo(tilePane);
         updateDatesInfos(tilePane);
         updateEventsInfos(tilePane);
         updateLocationsInfos(tilePane);
+        updateUsersInfos(tilePane);
     }
 
     public void updateCameraInfo(TilePane tilePane) {
-
-        List<FileInfo> fileInfo_list = new ArrayList<>();
-        for (Node node : tilePane.getChildren()) {
-            if (node instanceof VBox) {
-                FileInfo fileInfo = (FileInfo) node.getUserData();
-                if (fileInfo != null) {
-                    fileInfo_list.add(fileInfo);
-                }
-            }
-        }
-        if (getCameras_TableView() == null) {
-            Messages.sprintfError("Cameras TableView were null!!!!");
-        } else {
-            dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getCameras_TableView().getItems(), MetadataField.CAMERA.getType());
-        }
+        updateMetadataInfos(tilePane, getCameras_TableView(), MetadataField.CAMERA.getType());
     }
 
     public void updateEventsInfos(TilePane tilePane) {
-        List<FileInfo> fileInfo_list = new ArrayList<>();
-        for (Node node : tilePane.getChildren()) {
-            if (node instanceof VBox) {
-                FileInfo fileInfo = (FileInfo) node.getUserData();
-                if (fileInfo != null) {
-                    fileInfo_list.add(fileInfo);
-                }
-            }
-        }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getEvents_TableView().getItems(), MetadataField.EVENT.getType());
+        updateMetadataInfos(tilePane, getEvents_TableView(), MetadataField.EVENT.getType());
     }
 
     public void updateLocationsInfos(TilePane tilePane) {
-        List<FileInfo> fileInfo_list = new ArrayList<>();
+        updateMetadataInfos(tilePane, getLocations_TableView(), MetadataField.LOCATION.getType());
+    }
+
+    public void updateUsersInfos(TilePane tilePane) {
+        updateMetadataInfos(tilePane, getUsers_TableView(), MetadataField.USER.getType());
+    }
+
+    private void updateMetadataInfos(TilePane tilePane, TableView<EXIF_Data_Selector> tableView, String metadataType) {
+        List<FileInfo> fileInfos = new ArrayList<>();
         for (Node node : tilePane.getChildren()) {
             if (node instanceof VBox) {
                 FileInfo fileInfo = (FileInfo) node.getUserData();
                 if (fileInfo != null) {
-                    fileInfo_list.add(fileInfo);
+                    fileInfos.add(fileInfo);
                 }
             }
         }
-        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfo_list, getLocations_TableView().getItems(), MetadataField.LOCATION.getType());
+        dateFix_Utils.createTableEXIF_Data_Selector_list(fileInfos, tableView.getItems(), metadataType);
     }
 
     public void updateDatesInfos(TilePane tilePane) {
@@ -713,6 +708,9 @@ public class ModelDatefix extends DateFixerModel {
     public TableView<EXIF_Data_Selector> getLocations_TableView() {
         return locations_TableView;
     }
+    public TableView<EXIF_Data_Selector> getUsers_TableView() {return users_TableView;}
+    public void setUsers_TableView(TableView<EXIF_Data_Selector> users_TableView) {this.users_TableView = users_TableView;}
+
 
     public TableView<MetaData> getMetaDataTableView() {
         return this.metaDataTableView;

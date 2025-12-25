@@ -432,12 +432,21 @@ public class Tables {
             return new TableCell_DateFixer(model_Main);
         }
     };
+
+    public Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>> folderizeCellFactory = new Callback<TableColumn<FolderInfo, String>, TableCell<FolderInfo, String>>() {
+        @Override
+        public TableCell<FolderInfo, String> call(TableColumn<FolderInfo, String> p) {
+            return new TableCell_Folderize(model_Main);
+        }
+    };
+
     public Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>> dateDifference_Status_cellFactory = new Callback<TableColumn<FolderInfo, Double>, TableCell<FolderInfo, Double>>() {
         @Override
         public TableCell<FolderInfo, Double> call(TableColumn<FolderInfo, Double> p) {
             return new TableCell_DateDifference_Status(model_Main);
         }
     };
+
     public Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>> cell_Status_cellFactory = new Callback<TableColumn<FolderInfo, Integer>, TableCell<FolderInfo, Integer>>() {
         @Override
         public TableCell<FolderInfo, Integer> call(TableColumn<FolderInfo, Integer> p) {

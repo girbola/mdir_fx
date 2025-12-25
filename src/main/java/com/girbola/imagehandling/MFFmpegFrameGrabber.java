@@ -14,9 +14,11 @@ import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -131,8 +133,28 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             return;
         }
 
-        HBox pane = (HBox) imageView.getParent();
-        VBox rootPane = (VBox) pane.getParent();
+        // Safely navigate the parent hierarchy to avoid ClassCastException
+        Node parentNode = imageView.getParent();
+        HBox pane = null;
+        VBox rootPane = null;
+
+        if (parentNode instanceof StackPane) {
+            // If parent is StackPane, traverse up to find HBox (common in your image frame setup)
+            Node grandParent = parentNode.getParent();
+            if (grandParent instanceof HBox) {
+                pane = (HBox) grandParent;
+                rootPane = (VBox) pane.getParent(); // Assuming VBox is next
+            } else {
+                Messages.sprintfError("Unexpected parent structure for ImageView: " + grandParent);
+                return; // Bail out to prevent further errors
+            }
+        } else if (parentNode instanceof HBox) {
+            pane = (HBox) parentNode;
+            rootPane = (VBox) pane.getParent();
+        } else {
+            Messages.sprintfError("Unexpected parent type for ImageView: " + parentNode.getClass().getName());
+            return; // Handle gracefully
+        }
 
         if (list == null || list.isEmpty()) {
             Messages.sprintfError("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());

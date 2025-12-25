@@ -199,6 +199,7 @@
             				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
             				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied" />
             				<TableColumn fx:id="dateFix_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
+                            <TableColumn fx:id="folderize_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
             				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%justFolderName" />
             				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
             				<TableColumn fx:id="badFiles_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%badFiles" />

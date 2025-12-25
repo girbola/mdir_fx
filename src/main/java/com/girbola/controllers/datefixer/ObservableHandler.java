@@ -16,6 +16,11 @@ public class ObservableHandler {
 			it = event_obs.iterator();
 		} else if (obs.equals(ObservabeleListType.LOCATION.getType())) {
 			it = location_obs.iterator();
+		} else if (obs.equals(ObservabeleListType.USER.getType())) {
+			it = user_obs.iterator();
+		}
+		if(it == null) {
+			return;
 		}
 		while (it.hasNext()) {
 			String current = it.next();
@@ -27,6 +32,8 @@ public class ObservableHandler {
 			event_obs.add(value);
 		} else if (obs.equals(ObservabeleListType.LOCATION.getType())) {
 			location_obs.add(value);
+		} else if (obs.equals(ObservabeleListType.USER.getType())) {
+			user_obs.add(value);
 		}
 	}
 
@@ -43,7 +50,7 @@ public class ObservableHandler {
 	}
 	
 	enum ObservabeleListType {
-		EVENT("event"), LOCATION("location");
+		EVENT("event"), LOCATION("location"), USER("user");
 
 		private String type;
 

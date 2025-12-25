@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.TilePane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="1200.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.importimages.ImportImagesController">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" prefHeight="800.0" prefWidth="1600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.importimages.ImportImagesController">
     <children>
-        <VBox prefHeight="600.0" prefWidth="800.0" spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
+        <VBox spacing="2.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" HBox.hgrow="ALWAYS">
             <children>
-                <HBox fx:id="topButtons" maxHeight="150.0" minHeight="120.0" prefHeight="120.0" spacing="3.0" styleClass="topButtons" VBox.vgrow="NEVER">
+                <HBox fx:id="topButtons" spacing="3.0" styleClass="topButtons" VBox.vgrow="NEVER">
                     <children>
-                  <VBox>
+                  <VBox maxWidth="170.0" minWidth="170.0" prefWidth="170.0" spacing="4.0">
                      <children>
-                        <Button mnemonicParsing="false" text="Edit dates view" />
-                        <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" text="Apply changes" />
-                        <Button layoutX="10.0" layoutY="33.0" mnemonicParsing="false" text="Close without applying changes" />
-                        <Button mnemonicParsing="false" text="%remove" />
-                        <Button mnemonicParsing="false" text="Start processing" />
+                        <Button minWidth="170.0" mnemonicParsing="false" text="Edit dates view" VBox.vgrow="NEVER" />
+                        <Button layoutX="10.0" layoutY="10.0" minWidth="170.0" mnemonicParsing="false" text="Apply changes" />
+                        <Button minWidth="170.0" mnemonicParsing="false" text="%remove" />
+                        <Button minWidth="170.0" mnemonicParsing="false" text="Start processing" />
                         <HBox alignment="CENTER" VBox.vgrow="NEVER" />
                      </children>
+                     <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                     </padding>
                   </VBox>
                   <HBox HBox.hgrow="SOMETIMES">
                      <children>
-                        <TilePane hgap="1.0" prefColumns="1" prefRows="3" styleClass="selection_btns" tileAlignment="TOP_CENTER" vgap="1.0" HBox.hgrow="NEVER">
+                        <VBox spacing="2.0">
                            <children>
-                              <Label text="%selector" TilePane.alignment="CENTER">
+                              <Label minWidth="60.0" text="%selector">
                                  <font>
                                     <Font size="10.0" />
                                  </font>
                               </Label>
-                                      <Button fx:id="start_ok" minWidth="40.0" mnemonicParsing="false" onAction="#start_ok_action" text="All" />
-                                      <Button minWidth="40.0" mnemonicParsing="false" text="None" />
-                                      <Button minWidth="40.0" mnemonicParsing="false" text="Invert" />
+                                      <Button fx:id="start_ok" minWidth="60.0" mnemonicParsing="false" onAction="#start_ok_action" text="All" />
+                                      <Button minWidth="60.0" mnemonicParsing="false" text="None" />
+                                      <Button minWidth="60.0" mnemonicParsing="false" text="Invert" />
                            </children>
                            <padding>
-                              <Insets bottom="4.0" left="4.0" right="4.0" top="4.0" />
+                              <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
                            </padding>
-                        </TilePane>
+                        </VBox>
                                   <AnchorPane HBox.hgrow="NEVER">
                                       <children>
                                           <fx:include fx:id="dateTimeSelector" source="DateTimeSelector.fxml" />
@@ -47,7 +63,7 @@
                               <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
                            </padding>
                                   </AnchorPane>
-                        <GridPane hgap="3.0" vgap="3.0" HBox.hgrow="NEVER">
+                        <GridPane hgap="3.0" vgap="3.0" HBox.hgrow="SOMETIMES">
                           <columnConstraints>
                             <ColumnConstraints fillWidth="false" hgrow="NEVER" />
                             <ColumnConstraints fillWidth="false" hgrow="NEVER" />
@@ -72,7 +88,11 @@
                                  </children>
                               </HBox>
                               <Button mnemonicParsing="false" text="Merge selected" />
+                              <Button minWidth="170.0" mnemonicParsing="false" text="Close without applying changes" GridPane.columnIndex="2" />
                            </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
                         </GridPane>
                      </children>
                      <padding>

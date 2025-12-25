@@ -38,6 +38,7 @@ public class SelectorController {
 	@FXML private TableColumn<EXIF_Data_Selector, String> dates_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> dates_counter_col;
 	@FXML private TableView<EXIF_Data_Selector> locations_tableView;
+	@FXML private TableView<EXIF_Data_Selector> users_tableView;
 //	@FXML private TableColumn<EXIF_Data_Selector, Boolean> locations_checkBox_hide_col;
 	@FXML private TableColumn<EXIF_Data_Selector, String> locations_col;
 	@FXML private TableColumn<EXIF_Data_Selector, Integer> locations_counter_col;
@@ -72,6 +73,8 @@ public class SelectorController {
 		modelDatefix.setCameras_TableView(cameras_tableView);
 		modelDatefix.setEvents_TableView(events_tableView);
 		modelDatefix.setLocations_TableView(locations_tableView);
+		modelDatefix.setUsers_TableView(users_tableView);
+
 
 		modelDatefix.getDateFix_Utils().createDates_list(modelDatefix.getFolderInfo_full().getFileInfoList());
 		dates_tableView.setItems(modelDatefix.getDateFix_Utils().getDate_obs());
@@ -155,6 +158,10 @@ public class SelectorController {
 						cellData.getValue().getCount()));
 		locations_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 		locations_tableView.setRowFactory(new TableRowSelector(locations_tableView, modelDatefix.getScrollPane()));
+
+		users_tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		users_tableView.setRowFactory(new TableRowSelector(users_tableView, modelDatefix.getScrollPane()));
+
 
 		selector_root.heightProperty().addListener(new ChangeListener<Number>() {
 			@Override

@@ -122,6 +122,7 @@ public class TableController {
 	@FXML private TableColumn<FolderInfo, Integer> video_col;
 	@FXML private TableColumn<FolderInfo, Long> size_col;
 	@FXML private TableColumn<FolderInfo, String> dateFix_col;
+    @FXML private TableColumn<FolderInfo, String> folderize_col;
 	@FXML private TableColumn<FolderInfo, String> fullPath_col;
 	@FXML private TableColumn<FolderInfo, String> justFolderName_col;
 	@FXML private TableColumn<FolderInfo, String> maxDates_col;
@@ -840,6 +841,7 @@ public class TableController {
         copied_col.setCellFactory(model_main.tables().copied_cellFactory);
         dateDifference_ratio_col.setCellFactory(model_main.tables().dateDifference_Status_cellFactory);
         dateFix_col.setCellFactory(model_main.tables().dateFixer_cellFactory);
+        folderize_col.setCellFactory(model_main.tables().folderizeCellFactory);
         justFolderName_col.setCellFactory(param -> new EditingCell(model_main, param));
         status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
 

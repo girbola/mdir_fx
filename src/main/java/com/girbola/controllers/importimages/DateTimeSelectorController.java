@@ -137,6 +137,11 @@ public class DateTimeSelectorController {
 		model_ImportImages.start_time().increase_sec();
 	}
 
+	@FXML private void select_btn_action(ActionEvent event) {
+		sprintf("select_btn_action");
+//		model_ImportImages.getToggleButtonControl().setStart_toggled(pick_startDateTime.isSelected());
+//		model_ImportImages.getToggleButtonControl().setEnd_toggled(pick_endDateTime.isSelected());
+	}
 	private int parseTextFieldToInteger(TextField tf) {
 		int sec = 0;
 		try {

@@ -7,6 +7,7 @@ import javafx.beans.property.*;
 
 import java.nio.file.Path;
 import java.util.*;
+import java.util.Comparator;
 
 import static com.girbola.Main.simpleDates;
 
@@ -274,7 +275,12 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setConnected(boolean connected)        { this.connected.set(connected); }
     @Override public void setCopied(int value)                   { this.copied.set(value); }
     @Override public void setDateDifferenceRatio(double value)   { this.dateDifference.set(value); }
-    @Override public void setFileInfoList(List<FileInfo> value)  { this.fileInfoList = value; }
+    @Override public void setFileInfoList(List<FileInfo> value)  {
+        this.fileInfoList = value;
+        if (this.fileInfoList != null) {
+            this.fileInfoList.sort(Comparator.comparingLong(FileInfo::getDate));
+        }
+    }
     @Override public void setFolderFiles(int value)              { this.folderFiles.set(value); }
 
     @Override

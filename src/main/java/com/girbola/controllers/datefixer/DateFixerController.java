@@ -324,6 +324,12 @@ public class DateFixerController {
 
         DateFixLoadingProcessLoader.reNumberTheFrames(modelDatefix);
 
+        if(modelDatefix.getSelectionModel().getSelectionList().size() > 0) {
+            show_only_selected_btn.setDisable(false);
+        } else {
+            show_only_selected_btn.setDisable(true);
+        }
+
     }
 
     private boolean nodeParentIsSelected(Node nodeParent, ObservableList<Node> allNodes, ObservableList<Node> selectedNodes) {
@@ -338,7 +344,15 @@ public class DateFixerController {
         return false;
     }
     @FXML private void show_all_btn_action(ActionEvent event) {
-        sprintf("show_all_btn_action");
+        Messages.sprintf("show_all_btn_action");
+        String selected = "-fx-background-color: cyan;";
+        String deSelected = "-fx-background-color: -fx-base;";
+
+        if(show_all_btn.getStyle().equals(selected)) {
+            show_all_btn.setStyle(deSelected);
+        } else {
+            show_all_btn.setStyle(selected);
+        }
         modelDatefix.getSelectionModel().clearAll();
         modelDatefix.deselectAllExifDataSelectors();
         Platform.runLater(() -> {
