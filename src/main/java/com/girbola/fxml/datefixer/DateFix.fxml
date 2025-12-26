@@ -28,7 +28,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane minHeight="650.0" minWidth="2000.0" prefHeight="1000.0" prefWidth="2000.0"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
+<AnchorPane minHeight="650.0" minWidth="2000.0" prefHeight="1000.0" prefWidth="2000.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1" fx:controller="com.girbola.controllers.datefixer.DateFixerController">
     <children>
         <BorderPane id="imagesContainerScrollPane" layoutX="1.0" layoutY="1.0" style="-fx-background-color: -fx-base;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <top>
@@ -670,7 +670,79 @@
                                                         </VBox>
                                                     </children>
                                                 </VBox>
+                                    <VBox fx:id="imageFrame1" alignment="CENTER" maxHeight="350.0" maxWidth="300.0" minHeight="350.0" minWidth="300.0" prefHeight="350.0" prefWidth="300.0" styleClass="imageFrame">
+                                       <children>
+                                          <VBox VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <GridPane gridLinesVisible="true" styleClass="imageFrameTop" VBox.vgrow="NEVER">
+                                                   <columnConstraints>
+                                                      <ColumnConstraints halignment="CENTER" hgrow="NEVER" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="ALWAYS" />
+                                                      <ColumnConstraints fillWidth="false" halignment="RIGHT" hgrow="NEVER" />
+                                                      <ColumnConstraints fillWidth="false" halignment="CENTER" hgrow="NEVER" />
+                                                   </columnConstraints>
+                                                   <rowConstraints>
+                                                      <RowConstraints vgrow="NEVER" />
+                                                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="NEVER" />
+                                                      <RowConstraints vgrow="NEVER" />
+                                                      <RowConstraints />
+                                                   </rowConstraints>
+                                                   <children>
+                                                      <Label alignment="TOP_LEFT" styleClass="imageNumber" text="99999" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                                      <Label id="fileName_ta" graphicTextGap="0.0" styleClass="fileName_ta" text="photo.jpg" textAlignment="CENTER" textFill="WHITE" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                         <font>
+                                                            <Font size="11.0" />
+                                                         </font>
+                                                      </Label>
+                                                      <Label text="Label" GridPane.rowIndex="1" />
+                                                   </children>
+                                                </GridPane>
+                                             </children>
+                                          </VBox>
+                                          <HBox alignment="CENTER" fillHeight="false" maxHeight="250.0" minHeight="250.0" prefHeight="250.0" styleClass="imageViewContainer" VBox.vgrow="ALWAYS">
+                                             <children>
+                                                <ImageView fitHeight="290.0" fitWidth="240.0" pickOnBounds="true" preserveRatio="true" styleClass="imageView" HBox.hgrow="ALWAYS">
+                                                   <image>
+                                                      <Image url="@../../../../../../test/resources/in/20220413_160023_2.jpg" />
+                                                   </image>
+                                                </ImageView>
+                                             </children>
+                                          </HBox>
+                                          <VBox alignment="CENTER_LEFT" styleClass="bottomContainer" VBox.vgrow="ALWAYS">
+                                             <VBox.margin>
+                                                <Insets bottom="1.0" />
+                                             </VBox.margin>
+                                             <children>
+                                                <HBox id="bottom" alignment="CENTER_LEFT" fillHeight="false" styleClass="buttonDateTimeContainer">
+                                                   <children>
+                                                      <Button contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="acceptButton" HBox.hgrow="NEVER">
+                                                         <graphic>
+                                                            <FontIcon iconColor="WHITE" iconLiteral="bi-check" iconSize="20" />
+                                                         </graphic>
+                                                      </Button>
+                                                      <Label maxWidth="1.7976931348623157E308" text="2025-06-20 12:00:00" HBox.hgrow="ALWAYS">
+                                                         <font>
+                                                            <Font size="11.0" />
+                                                         </font>
+                                                         <styleClass>
+                                                            <String fx:value="fileDate_tf" />
+                                                            <String fx:value="centered-content" />
+                                                         </styleClass>
+                                                      </Label>
+                                                      <Region maxHeight="25.0" maxWidth="25.0" minHeight="25.0" minWidth="25.0" prefHeight="25.0" prefWidth="25.0" />
+                                                   </children>
+                                                </HBox>
+                                             </children>
+                                          </VBox>
+                                       </children>
+                                       <TilePane.margin>
+                                          <Insets left="30.0" />
+                                       </TilePane.margin>
+                                    </VBox>
                                             </children>
+                                 <padding>
+                                    <Insets right="30.0" />
+                                 </padding>
                                         </TilePane>
                                     </content>
                                 </ScrollPane>

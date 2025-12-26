@@ -236,11 +236,9 @@ public class SelectedFoldersSQL {
             int[] counter = pstmt.executeBatch();
             SQL_Utils.commitChanges(connection);
             Messages.sprintf("removeFromTable deleted rows: " + counter.length);
-            // ... existing code ...
         } catch (Exception e) {
             Messages.sprintfError("removeFromTable failed: " + e.getMessage());
             SQL_Utils.rollBackConnection(connection);
-            // ... existing code ...
         } finally {
             closeConnection(connection);
         }

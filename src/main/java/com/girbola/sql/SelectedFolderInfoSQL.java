@@ -39,7 +39,7 @@ public class SelectedFolderInfoSQL {
             """, SQLTableEnums.SELECTEDFOLDERS.getType());
 
 
-    // ... existing code ...
+
     public static boolean createSelectedFoldersDBTable(Connection connection) {
         if (!isDbConnected(connection)) {
             Messages.sprintf("createSelectedFoldersDBTable: not connected");
@@ -55,7 +55,7 @@ public class SelectedFolderInfoSQL {
             return false;
         }
     }
-// ... existing code ...
+
 
     public static boolean loadSelectedFolders(ModelMain modelMain) {
 
@@ -202,7 +202,7 @@ public class SelectedFolderInfoSQL {
         }
     }
 
-    // ... existing code ...
+
     public static boolean insertSelectedFoldersToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
         Messages.sprintf("insertSelectedFoldersToDB SQL: " + insertSelectedFolders);
 
@@ -289,7 +289,7 @@ public class SelectedFolderInfoSQL {
             Messages.sprintf("insertSelectedFoldersToDB finished");
         }
     }
-// ... existing code ...
+
 
     /**
      * Adds the selected folder to the selected folders database.
@@ -318,6 +318,6 @@ public class SelectedFolderInfoSQL {
             return false;
         }
     }
-// ... existing code ...
+
 
 }

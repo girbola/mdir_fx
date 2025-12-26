@@ -194,11 +194,12 @@
     -fx-alignment: center;
 
 }
+
 .centered-content {
     -fx-alignment: center;
 }
 
-.fileDate_tf .text{
+.fileDate_tf .text {
     -fx-font-size: 0.9em;
 }
 
@@ -267,7 +268,7 @@
 }
 
 .imageFrameTopContainer {
-    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 6, 0.0, 2, 2);
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.0, 2, 2);
 }
 
 .imageNumber {
@@ -441,7 +442,8 @@
 .rootBottomBar {
     -fx-background-color: red;
 }
-.rootPath *.text{
+
+.rootPath *.text {
     -fx-background-color: red;
     -fx-font-size: 1.0em;
     -fx-text-fill: black;
@@ -841,12 +843,18 @@
 
 .dateFixerContextMenu {
     -fx-font-smoothing-type: lcd;
-    -fx-font-size: 1.5em;
+    -fx-font-size: 1.0em;
     -fx-padding: 5px;
 }
 
 .context-menu {
-    -fx-background-color: #cd9c15;
-    -fx-text-fill: -fx-dark-text-color;
-    -fx-padding: 5px;
+    -fx-background-color: derive(-fx-base, 10%);
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(217, 217, 217, 0.3), 3, 1, 0, 0);
+
+    -fx-text-fill: derive(-fx-light-text-color, 50%);
+    -fx-padding: 10 2 10 2;
+}
+.context-menu  .menu-item:focused {
+    -fx-background-color: #4a4a4a;
 }

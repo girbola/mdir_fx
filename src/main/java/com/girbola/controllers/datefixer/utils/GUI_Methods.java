@@ -131,7 +131,6 @@ public class GUI_Methods {
         return null;
     }
 
-    // ... existing code ...
     public static void scrollNodeTopIntoView(ScrollPane scrollPane, Node node, double paddingTop) {
         Messages.sprintf("############scrollNodeTopIntoView: " + node.toString());
         if (scrollPane == null || scrollPane.getContent() == null || node == null) return;

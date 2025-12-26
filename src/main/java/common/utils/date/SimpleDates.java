@@ -187,7 +187,7 @@ public class SimpleDates {
         sdf_ymd_hms_spaces.setTimeZone(TimeZone.getTimeZone("UTC"));
         sdf_ymd_hms_nospaces.setTimeZone(TimeZone.getTimeZone("UTC"));
         sdf_ymd_minus.setTimeZone(TimeZone.getTimeZone("UTC"));
-        // ... existing code ...
+
     }
 
     // ---------------------------

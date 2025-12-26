@@ -109,7 +109,7 @@ interface TableValues_inf {
     // ============================ Setters (mutators) ============================
 
     public void setBadFiles(int value);
-    // ... existing code ...
+
     public void setBadImageFiles(int value);
     public void setGoodImageFiles(int value);
     public void setSuggestedImageFiles(int value);

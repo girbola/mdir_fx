@@ -397,7 +397,7 @@ public class WorkDirSQL {
         return new ArrayList<>();
     }
 
-    // ... existing code ...
+
     public static boolean isTableEmpty(Connection conn, String tableName) {
         if (conn == null || tableName == null || tableName.trim().isEmpty()) {
             return true;

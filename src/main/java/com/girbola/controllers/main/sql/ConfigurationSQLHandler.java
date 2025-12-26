@@ -461,7 +461,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
         Messages.sprintf("ensureAllColumnExists: " + configTable);
     }
 
-    // ... existing code ...
+
     private static boolean loadTableSQL(Configuration configuration) {
         final String tableName = SQLTableEnums.CONFIGURATION.getType();
         final String tableSQL = "SELECT " + ConfigurationEnum.getAllColumnNames() + " FROM " + tableName;
@@ -540,7 +540,7 @@ public class ConfigurationSQLHandler extends DriveInfoSQL {
             SQL_Utils.closeConnection(connection);
         }
     }
-// ... existing code ...
+
 
     private static boolean tableExists(Connection conn, String tableName) {
         if (conn == null) return false;

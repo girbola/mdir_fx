@@ -67,6 +67,9 @@ public class SQL_Utils extends FolderInfo_SQL {
 //        Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
             if (isDbConnected(connection)) {
+                if(!SQL_Utils.isAutoCommit(connection)) {
+                    connection.commit();
+                }
                 connection.close();
                 return true;
             }
@@ -75,6 +78,14 @@ public class SQL_Utils extends FolderInfo_SQL {
             return false;
         }
         return false;
+    }
+
+    private static boolean isAutoCommit(Connection connection) {
+        try {
+            return connection.getAutoCommit();
+        } catch (SQLException e) {
+            return false;
+        }
     }
 
     /**
@@ -144,7 +155,7 @@ public class SQL_Utils extends FolderInfo_SQL {
     }
 
 
-    // ... existing code ...
+
     public static void ensureColumnsExist(Connection conn, String tableName, Map<String, String> requiredColumns) throws SQLException {
         boolean originalAutoCommit = conn.getAutoCommit();
         try {
@@ -195,5 +206,5 @@ public class SQL_Utils extends FolderInfo_SQL {
             }
         }
     }
-// ... existing code ...
+
 }
