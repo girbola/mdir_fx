@@ -117,7 +117,7 @@ public class CloserLookController {
         iv.setPreserveRatio(true);
         iv.setMouseTransparent(true);
         iv.setRotate(rotate(fi.getOrientation()));
-        iv.setId("imageView");
+        iv.setId(DateFixConstants.IMAGEVIEW.getType());
         return iv;
     }
 

@@ -304,8 +304,8 @@ public class RenderVisibleNode {
                     TitledPane titledPane = (TitledPane) scrollPane_NODE;
                     TilePane tilePane = (TilePane) titledPane.getContent();
                     for (Node root : tilePane.getChildren()) {
-                        ImageView iv = (ImageView) root.lookup("#imageView");
-                        StackPane stackPane = (StackPane) root.lookup("#imageFrame");
+                        ImageView iv = (ImageView) root.lookup("#" + DateFixConstants.IMAGEVIEW.getType());
+                        StackPane stackPane = (StackPane) root.lookup("#" + DateFixConstants.IMAGEFRAME.getType());
                         if (iv != null) {
                             map.put(iv, (FileInfo) stackPane.getUserData());
                         }

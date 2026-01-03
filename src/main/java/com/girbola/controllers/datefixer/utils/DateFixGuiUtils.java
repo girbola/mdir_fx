@@ -76,7 +76,8 @@ public class DateFixGuiUtils {
 //        }
 
         Messages.sprintf("FileInfo: " + fi.getOrgPath() + " IMAGEVIEW: " + iv.getFitWidth() + " " + iv.getFitHeight());
-        iv.setId("imageView");
+        iv.setId(DateFixConstants.IMAGEVIEW.getType());
+
         return iv;
     }
 

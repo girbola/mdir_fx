@@ -809,4 +809,18 @@ public class ModelDatefix extends DateFixerModel {
     public ObservableList<Node> getNotVisibleNodes() {
         return this.notVisibleNodes;
     }
+
+    public void selectAll(TilePane dfTilePane, FileInfo fileInfo) {
+
+        for (Node n : dfTilePane.getChildren()) {
+            if ((n instanceof VBox && n.getId().equals(DateFixConstants.IMAGEFRAME.getType()))) {
+                getSelectionModel().addAll(n);
+            }
+        }
+        ObservableList<EXIF_Data_Selector> listi = getCameras_TableView().getItems();
+
+        for (EXIF_Data_Selector eds : listi) {
+            eds.setIsShowing(false);
+        }
+    }
 }

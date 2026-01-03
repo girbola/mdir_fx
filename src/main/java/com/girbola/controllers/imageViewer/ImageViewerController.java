@@ -2,10 +2,17 @@
 package com.girbola.controllers.imageViewer;
 
 import com.girbola.Main;
+import com.girbola.controllers.datefixer.DateFixPopulate;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -32,8 +39,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
+import static com.girbola.controllers.datefixer.ImageUtils.playVideo;
+import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.misc.Misc.getLineNumber;
 
 public class ImageViewerController {
 
@@ -154,7 +165,6 @@ public class ImageViewerController {
 		if (fileInfo.isImage()) {
 			Image image = new Image(new File(fileInfo.getOrgPath()).toURI().toString(), 0, 0, true, true, true);
 			image.progressProperty().addListener(new ChangeListener<Number>() {
-
 				@Override
 				public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 					if ((double) newValue == 1.0) {
@@ -185,7 +195,33 @@ public class ImageViewerController {
 				}
 			});
 		} else if (fileInfo.isVideo()) {
+
+
 			Messages.warningText("Video viewing is not ready yet");
+
+			Path path = Paths.get(fileInfo.getOrgPath());
+
+			if (conf.isVlcSupport()) {
+				sprintf(" if (conf.isVlcSupport()) {..");
+				if (Files.exists(path)) {
+//					playVideo(path, frame);
+					Messages.warningText("Video viewing is not ready yet");
+				} else {
+					Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + path, null, getLineNumber(), true);
+				}
+			} else {
+				if (Files.exists(path)) {
+					try {
+						Desktop.getDesktop().open(path.toFile());
+					} catch (IOException ex) {
+						Logger.getLogger(DateFixPopulate.class.getName()).log(Level.SEVERE, null, ex);
+						errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+					}
+				} else {
+					Messages.errorSmth(ERROR, bundle.getString("imageNotExists") + " " + path, null, getLineNumber(), true);
+				}
+			}
+
 //			SQL_Utils.loadth
 		}
 //		image.widthProperty().addListener(new ChangeListener<Number>() {

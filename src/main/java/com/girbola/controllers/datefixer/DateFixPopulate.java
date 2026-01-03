@@ -405,7 +405,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
                         });
                         Messages.sprintf("SElected should be deselected");
                     } else if (event.getClickCount() == 2) {
-                        Messages.sprintf("Clickcount were 2");
+                        Messages.sprintf("DateFixPopulate Clickcount were 2");
                         List<FileInfo> list = getFileList(tilePane.getChildren());
                         if (Files.exists(Paths.get(fileInfo.getOrgPath()))) {
                             ImageUtils.view(list, fileInfo, Main.sceneManager.getScene_dateFixer().getWindow());

@@ -6,6 +6,7 @@ import com.girbola.Main;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.controllers.viewimages.ViewImages;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -70,24 +71,31 @@ public class DateFixer extends Task<Void> {
                     }
                 });
 
-                scene_dateFixer.setOnMouseClicked(event -> {
-                    Messages.sprintf("scene_dateFixer mouse clicked event.getTarget(): " + event.getTarget());
-                    if (event.getTarget() instanceof VBox node) {
-                        if (node.getParent() instanceof HBox && node.lookupAll("#imageView") != null) {
-                            model_datefix.getSelectionModel().addWithToggle(node);
-                            if (event.getClickCount() == 2) {
-                                FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
-                                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
-                                        || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
-                                    ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
-                                            Main.sceneManager.getScene_dateFixer().getWindow());
-                                } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                                    ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
-                                }
-                            }
-                        }
-                    }
-                });
+//                scene_dateFixer.setOnMouseClicked(event -> {
+//                    Messages.sprintf("scene_dateFixer mouse clicked event.getTarget(): " + event.getTarget());
+//                    if (event.getTarget() instanceof VBox node) {
+//                        Messages.sprintf("####### scene_dateFixer.setOnMouseClick node: " + node.getId());
+//                        if (node.getParent() instanceof HBox && node.lookupAll("#" + DateFixConstants.IMAGEFRAME.getType()) != null) {
+//                            Messages.sprintf("Clickcount were 2 lookupalllll");
+//                            model_datefix.getSelectionModel().addWithToggle(node);
+//                            if (event.getClickCount() == 2) {
+//                                Messages.sprintf("DAteFixer Clickcount were 2");
+//                                FileInfo fileInfo = (FileInfo) node.getParent().getUserData();
+//                                ViewImages viewImages = new ViewImages(fileInfo, model_datefix);
+//                                viewImages.init();
+////                                if (FileUtils.supportedImage(Paths.get(fileInfo.getOrgPath()))
+////                                        || FileUtils.supportedRaw(Paths.get(fileInfo.getOrgPath()))) {
+////                                    ImageUtils.view(model_datefix.getFolderInfo_full().getFileInfoList(), fileInfo,
+////                                            Main.sceneManager.getScene_dateFixer().getWindow());
+////                                } else if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+////                                    ImageUtils.playVideo(Paths.get(fileInfo.getOrgPath()), node);
+////                                }
+//                            }
+//                        }
+//                    } else {
+//                        Messages.sprintf("2####### scene_dateFixer.setOnMouseClick node: " + event.getTarget());
+//                    }
+//                });
 
                 sprintf("conf.getThemePath(): " + conf.getThemePath());
                 scene_dateFixer.getStylesheets().add(

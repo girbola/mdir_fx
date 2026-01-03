@@ -213,12 +213,13 @@ public class Copy extends Task<Integer> {
         modelOperate.stopTimeLine();
         modelOperate.doneButton(sceneNameType, close);
         modelOperate.stopTimeLine();
+        Messages.sprintf("Closing workdir connection");
+        SQL_Utils.commitChanges(workDirSQL.getConnection());
+        workDirSQL.closeConnection();
         Task<Void> saveWorkDirToDatabase = new Task<Void>() {
             @Override
             protected Void call() throws Exception {
-                Messages.sprintf("Closing workdir connection");
-                SQL_Utils.commitChanges(workDirSQL.getConnection());
-                workDirSQL.closeConnection();
+
                 TableUtils.updateAllFolderInfos(modelMain.tables());
                 TableUtils.refreshAllTableContent(modelMain.tables());
                 return null;

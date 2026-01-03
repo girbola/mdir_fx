@@ -44,6 +44,26 @@
     -fx-font-style: normal;
 }
 
+.viewimage-container {
+    -fx-background-color: -fx-base;
+    /*-fx-border-radius: 50px;*/
+    -fx-background-radius: 5px;
+}
+
+.viewimage-container .close-viewimage-container{
+    -fx-background-color: -fx-base-red;
+    -fx-background-radius: 3px;
+}
+
+.viewimage-container .close-viewimage-container .ikonli-font-icon {
+    -fx-icon-color: white;
+}
+
+/*.bottom_controls .viewimage-control-button {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
+
+
 .button {
     -fx-background-color:
             linear-gradient(to bottom,

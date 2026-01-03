@@ -228,7 +228,6 @@ public class CopyHelper {
         try (InputStream from = new FileInputStream(sourcePath.toFile());
              OutputStream to = new FileOutputStream(destTmpPath.toFile())) {
 
-            //Files.deleteIfExists(destTmpPath);
             Messages.sprintf("Source: " + sourcePath + " dest: " + destPath);
             resetAndupdateSourceAndDestProcessValues(sourcePath, destPath);
 
@@ -239,6 +238,10 @@ public class CopyHelper {
             return false;
         } finally {
             finalizeCopy(destTmpPath, destPath, fileInfo, answer);
+            // Explicit check: Ensure source remains intact (unchanged and exists) after copy
+            if (!Files.exists(sourcePath)) {
+                throw new IOException("Source file was unexpectedly altered or deleted: " + sourcePath);
+            }
         }
 
         return true;

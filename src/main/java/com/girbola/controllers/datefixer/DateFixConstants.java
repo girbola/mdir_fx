@@ -2,8 +2,9 @@ package com.girbola.controllers.datefixer;
 
 public enum DateFixConstants {
 
-    IMAGEFRAME("imageFrame");
-
+    DFTILEPANE("df_tilePane"),
+    IMAGEFRAME("imageFrame"),
+    IMAGEVIEW("imageView");
     private String type;
 
     DateFixConstants(String type) {

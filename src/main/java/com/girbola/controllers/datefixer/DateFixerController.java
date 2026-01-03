@@ -620,17 +620,33 @@ public class DateFixerController {
         df_tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 ContextMenu contextMenu = new ContextMenu();
+
+                MenuItem openItem = createMenuItem(Main.bundle.getString("open"));
+
+                MenuItem selectAll = createMenuItem(Main.bundle.getString("selectAll"));
+
+                SeparatorMenuItem selectionSeparator = new SeparatorMenuItem();
+
                 MenuItem pickDateTime_Start = createMenuItem(Main.bundle.getString("pickdateAndTimeStart"));
                 MenuItem pickDateTime_End = createMenuItem(Main.bundle.getString("pickdateAndTimeEnd"));
                 MenuItem openFileLocation = createMenuItem(Main.bundle.getString("openFileLocation"));
 
                 Platform.runLater(() -> {
-                    contextMenu.getItems().addAll(pickDateTime_Start, pickDateTime_End, openFileLocation);
+                    contextMenu.getItems().addAll(
+                            openItem,
+                            selectAll,
+                            selectionSeparator,
+                            pickDateTime_Start,
+                            pickDateTime_End,
+                            openFileLocation);
                     modelDatefix.updateAllInfos(modelDatefix.getTilePane());
                 });
 
                 if (event.getTarget() instanceof VBox vbox && ((Node) event.getTarget()).getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                     FileInfo fileInfo = (FileInfo) vbox.getUserData();
+                    openItem.setOnAction(event2 -> openFileBrowser(Paths.get(fileInfo.getOrgPath())));
+
+                    selectAll.setOnAction(event2 -> modelDatefix.selectAll(df_tilePane, fileInfo));
                     pickDateTime_Start.setOnAction(event2 -> modelDatefix.setDateTime(
                             Main.simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()), true));
                     pickDateTime_End.setOnAction(event2 -> modelDatefix.setDateTime(
@@ -969,10 +985,10 @@ public class DateFixerController {
        OperateFiles operateFiles = new OperateFiles(fileInfo_list, true, model_main,
                 SceneNameType.DATEFIXER.getType());
         try {
-operateFiles.init();} catch (Exception e) {
-    throw new RuntimeException(e);
-}
-
-   }
+            operateFiles.init();
+        } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
 // @formatter:on
 }

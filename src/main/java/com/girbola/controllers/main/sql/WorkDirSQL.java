@@ -48,6 +48,7 @@ public class WorkDirSQL {
     private Connection createWorkDirConnection(Path workDirPath) {
         try {
             connection = SqliteConnection.connectToDatabase(workDirPath, Main.conf.getWorkDir_db_fileName());
+            SQL_Utils.setAutoCommit(connection, false);
             if (SQL_Utils.isDbConnected(connection)) {
                 createFileInfoTable(connection);
                 return connection;

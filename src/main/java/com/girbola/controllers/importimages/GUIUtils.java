@@ -136,7 +136,7 @@ public class GUIUtils {
 		iv.maxHeight(height - 2);
 		iv.setPreserveRatio(true);
 		iv.setMouseTransparent(true);
-		iv.setId("imageView");
+		iv.setId(DateFixConstants.IMAGEVIEW.getType());
 		iv.setRotate(rotate(fi.getOrientation()));
 		// Image image = new Image(Paths.get(path).toUri().toString(), 100, 0, true,
 		// true, true);

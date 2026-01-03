@@ -179,6 +179,9 @@ public class WorkDirSQL {
             return;
         }
 
+        if(fileInfo.getOrgPath().contains("IMG_1551.JPG")) {
+            Messages.sprintf("insertFileInfo starting: " + fileInfo);
+        }
         try {
             // Try to get or create connection if needed
             if (workDirConnection == null || workDirConnection.isClosed()) {
