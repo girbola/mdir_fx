@@ -64,8 +64,6 @@ public class CopyHelper {
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
             fileInfo.setCopied(true);
             listCopiedFiles.add(fileInfo);
-
-            WorkDirSQL.insertFileInfo(fileInfo);
         } catch (Exception ex) {
             ex.printStackTrace();
             Messages.sprintfError(ex.getMessage());
@@ -248,7 +246,7 @@ public class CopyHelper {
     }
 
     private void copyData(InputStream from, OutputStream to, Path destTmpPath, Path sourcePath, Path destPath,
-                          SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException, InterruptedException, ExecutionException {
+                          SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
         long totalBytesRead = 0L;
         int bytesRead;
@@ -268,7 +266,7 @@ public class CopyHelper {
         resetAndUpdateFileCopiedProcessValues();
     }
 
-    private void handleCancellationCleanup(InputStream from, OutputStream to, Path sourcePath, Path destPath, Path destTmpPath) throws IOException {
+    private void handleCancellationCleanup(InputStream from, OutputStream to, Path sourcePath, Path destPath, Path destTmpPath) {
         boolean cancelledSucceeded = cleanCancelledFile(from, to, sourcePath, destPath);
         if (cancelledSucceeded) {
             Messages.sprintf("Cleanup is done ");
@@ -290,12 +288,8 @@ public class CopyHelper {
      * @throws InterruptedException     if the thread is interrupted during execution
      */
     private void finalizeCopy(Path destTmpPath, Path destPath, FileInfo fileInfo, SimpleIntegerProperty answer) throws IOException, ExecutionException, InterruptedException {
-        if (Files.size(destTmpPath) != destTmpPath.toFile().length()) {
-            handleCopyConflict(answer, destTmpPath, destPath, fileInfo);
-        } else {
             renameTmpFileBackToOriginalExtentension(fileInfo, destTmpPath, destPath, modelMain);
             Messages.sprintf("File renamed to original extension: " + destTmpPath + " dest: " + destPath);
-        }
     }
 
     private void handleCopyConflict(SimpleIntegerProperty answer, Path destTmpPath, Path destPath, FileInfo fileInfo) throws IOException, ExecutionException, InterruptedException {

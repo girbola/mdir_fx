@@ -6,12 +6,22 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
-
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class FileInfo_SQL {
 
@@ -288,46 +298,113 @@ public class FileInfo_SQL {
         }
     }
 
+    public static String createFileInfoTable() {
+        return "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FILEINFO.getType() + "(" +
+                FileInfoEnum.BAD.getColumnName() + " " + FileInfoEnum.BAD.getSqlType() + ", " +
+                FileInfoEnum.CAMERA_MODEL.getColumnName() + " " + FileInfoEnum.CAMERA_MODEL.getSqlType() + ", " +
+                FileInfoEnum.CONFIRMED.getColumnName() + " " + FileInfoEnum.CONFIRMED.getSqlType() + ", " +
+                FileInfoEnum.DESTINATION_PATH.getColumnName() + " " + FileInfoEnum.DESTINATION_PATH.getSqlType() + ", " +
+                FileInfoEnum.EVENT.getColumnName() + " " + FileInfoEnum.EVENT.getSqlType() + ", " +
+                FileInfoEnum.FILEINFO_ID.getColumnName() + " " + FileInfoEnum.FILEINFO_ID.getSqlType() + ", " +
+                FileInfoEnum.FILEHISTORIES.getColumnName() + " " + FileInfoEnum.FILEHISTORIES.getSqlType() + ", " +
+                FileInfoEnum.GOOD.getColumnName() + " " + FileInfoEnum.GOOD.getSqlType() + ", " +
+                FileInfoEnum.COPIED.getColumnName() + " " + FileInfoEnum.COPIED.getSqlType() + ", " +
+                FileInfoEnum.IGNORED.getColumnName() + " " + FileInfoEnum.IGNORED.getSqlType() + ", " +
+                FileInfoEnum.IMAGE.getColumnName() + " " + FileInfoEnum.IMAGE.getSqlType() + ", " +
+                FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + " " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getSqlType() + ", " +
+                FileInfoEnum.LOCATION.getColumnName() + " " + FileInfoEnum.LOCATION.getSqlType() + ", " +
+                FileInfoEnum.MODIFIED.getColumnName() + " " + FileInfoEnum.MODIFIED.getSqlType() + ", " +
+                FileInfoEnum.ORGPATH.getColumnName() + " " + FileInfoEnum.ORGPATH.getSqlType() + ", " +
+                FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getSqlType() + ", " +
+                FileInfoEnum.ORIENTATION.getColumnName() + " " + FileInfoEnum.ORIENTATION.getSqlType() + ", " +
+                FileInfoEnum.RAW.getColumnName() + " " + FileInfoEnum.RAW.getSqlType() + ", " +
+                FileInfoEnum.SIZE.getColumnName() + " " + FileInfoEnum.SIZE.getSqlType() + ", " +
+                FileInfoEnum.SUGGESTED.getColumnName() + " " + FileInfoEnum.SUGGESTED.getSqlType() + ", " +
+                FileInfoEnum.TABLE_DUPLICATED.getColumnName() + " " + FileInfoEnum.TABLE_DUPLICATED.getSqlType() + ", " +
+                FileInfoEnum.TAGS.getColumnName() + " " + FileInfoEnum.TAGS.getSqlType() + ", " +
+                FileInfoEnum.THUMB_LENGTH.getColumnName() + " " + FileInfoEnum.THUMB_LENGTH.getSqlType() + ", " +
+                FileInfoEnum.THUMB_OFFSET.getColumnName() + " " + FileInfoEnum.THUMB_OFFSET.getSqlType() + ", " +
+                FileInfoEnum.TIME_SHIFT.getColumnName() + " " + FileInfoEnum.TIME_SHIFT.getSqlType() + ", " +
+                FileInfoEnum.USER.getColumnName() + " " + FileInfoEnum.USER.getSqlType() + ", " +
+                FileInfoEnum.VIDEO.getColumnName() + " " + FileInfoEnum.VIDEO.getSqlType() + ", " +
+                FileInfoEnum.WORK_DIR.getColumnName() + " " + FileInfoEnum.WORK_DIR.getSqlType() + ", " +
+                FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getSqlType() + ");";
+    }
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
-        String camera_model = rs.getString(FileInfoConstants.CAMERA_MODEL);
-        String destPath = rs.getString(FileInfoConstants.DESTINATIONPATH);
-        String event = rs.getString(FileInfoConstants.EVENT);
-        String imageDifferenceHash = rs.getString(FileInfoConstants.IMAGE_DIFFERENCE_HASH);
-        String location = rs.getString(FileInfoConstants.LOCATION);
-        String orgPath = rs.getString(FileInfoConstants.ORG_PATH);
-        String tags = rs.getString(FileInfoConstants.TAGS);
-        String user = rs.getString(FileInfoConstants.USER);
-        String workDir = rs.getString(FileInfoConstants.WORK_DIR);
-        String workDirDriveSerialNumber = rs.getString(FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER);
-        boolean bad = rs.getBoolean(FileInfoConstants.BAD);
-        boolean confirmed = rs.getBoolean(FileInfoConstants.CONFIRMED);
-        boolean copied = rs.getBoolean(FileInfoConstants.COPIED);
-        boolean good = rs.getBoolean(FileInfoConstants.GOOD);
-        boolean ignored = rs.getBoolean(FileInfoConstants.IGNORED);
-        boolean image = rs.getBoolean(FileInfoConstants.IMAGE);
-        boolean modified = rs.getBoolean(FileInfoConstants.MODIFIED);
-        boolean raw = rs.getBoolean(FileInfoConstants.RAW);
-        boolean suggested = rs.getBoolean(FileInfoConstants.SUGGESTED);
-        boolean tableDuplicated = rs.getBoolean(FileInfoConstants.TABLE_DUPLICATED);
-        boolean video = rs.getBoolean(FileInfoConstants.VIDEO);
-        int fileInfo_id = rs.getInt(FileInfoConstants.FILEINFOID);
-        int orientation = rs.getInt(FileInfoConstants.ORIENTATION);
-        int thumb_lenght = rs.getInt(FileInfoConstants.THUMB_LENGTH);
-        int thumb_offset = rs.getInt(FileInfoConstants.THUMB_OFFSET);
-        long date = rs.getLong(FileInfoConstants.DATE);
-        long size = rs.getLong(FileInfoConstants.SIZE);
-        long timeShift = rs.getLong(FileInfoConstants.TIMESHIFT); // <-- use getLong to match stored type
+        if(rs==null || !rs.next()) {
+            return null;
+        }
+
+        String camelModel = rs.getString(FileInfoEnum.CAMERA_MODEL.getColumnName());
+        String destinationPath = rs.getString(FileInfoEnum.DESTINATION_PATH.getColumnName());
+        String event = rs.getString(FileInfoEnum.EVENT.getColumnName());
+        String imageDifferenceHash = rs.getString(FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName());
+        String location = rs.getString(FileInfoEnum.LOCATION.getColumnName());
+        String orgPath = rs.getString(FileInfoEnum.ORGPATH.getColumnName());
+        String orgPathDriveSerialNumber = rs.getString(FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getColumnName());
+        String tags = rs.getString(FileInfoEnum.TAGS.getColumnName());
+        String user = rs.getString(FileInfoEnum.USER.getColumnName());
+        String workDir = rs.getString(FileInfoEnum.WORK_DIR.getColumnName());
+        String workDirDriveSerialNumber = rs.getString(FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName());
+        boolean bad = rs.getBoolean(FileInfoEnum.BAD.getColumnName());
+        boolean confirmed = rs.getBoolean(FileInfoEnum.CONFIRMED.getColumnName());
+        boolean copied = rs.getBoolean(FileInfoEnum.COPIED.getColumnName());
+        boolean good = rs.getBoolean(FileInfoEnum.GOOD.getColumnName());
+        boolean ignored = rs.getBoolean(FileInfoEnum.IGNORED.getColumnName());
+        boolean image = rs.getBoolean(FileInfoEnum.IMAGE.getColumnName());
+        boolean modified = rs.getBoolean(FileInfoEnum.MODIFIED.getColumnName());
+        boolean raw = rs.getBoolean(FileInfoEnum.RAW.getColumnName());
+        boolean suggested = rs.getBoolean(FileInfoEnum.SUGGESTED.getColumnName());
+        boolean tableDuplicated = rs.getBoolean(FileInfoEnum.TABLE_DUPLICATED.getColumnName());
+        boolean video = rs.getBoolean(FileInfoEnum.VIDEO.getColumnName());
+        int fileInfo_id = rs.getInt(FileInfoEnum.FILEINFO_ID.getColumnName());
+        int orientation = rs.getInt(FileInfoEnum.ORIENTATION.getColumnName());
+        int thumb_lenght = rs.getInt(FileInfoEnum.THUMB_LENGTH.getColumnName());
+        int thumb_offset = rs.getInt(FileInfoEnum.THUMB_OFFSET.getColumnName());
+        long date = rs.getLong(FileInfoEnum.DATE.getColumnName());
+        long size = rs.getLong(FileInfoEnum.SIZE.getColumnName());
+        long timeShift = rs.getLong(FileInfoEnum.TIME_SHIFT.getColumnName()); // <-- use getLong to match stored type
 
         List<String> fileHistories = getFileHistoriesData(rs);
 
-        return new FileInfo(orgPath, workDir, workDirDriveSerialNumber, destPath, event, location, tags, camera_model, user, orientation, timeShift, fileInfo_id, bad, good, suggested, confirmed, modified, image, raw, video, ignored, copied, tableDuplicated, date, size, imageDifferenceHash, thumb_offset, thumb_lenght, fileHistories);
+        return new FileInfo(
+                orgPath,
+                orgPathDriveSerialNumber,
+                workDir,
+                workDirDriveSerialNumber,
+                destinationPath,
+                event,
+                location,
+                tags,
+                camelModel,
+                user,
+                orientation,
+                timeShift,
+                fileInfo_id,
+                bad,
+                good,
+                suggested,
+                confirmed,
+                modified,
+                image,
+                raw,
+                video,
+                ignored,
+                copied,
+                tableDuplicated,
+                date,
+                size,
+                imageDifferenceHash,
+                thumb_offset,
+                thumb_lenght,
+                fileHistories);
     }
 
     private static List<String> getFileHistoriesData(ResultSet rs) throws SQLException {
         List<String> list = new ArrayList<>();
         // Remove the while loop - we're already in the correct row from the calling method
-        String fileHistoriesStr = rs.getString(FileInfoConstants.FILEHISTORIES);
+        String fileHistoriesStr = rs.getString(FileInfoEnum.FILEHISTORIES.getColumnName());
         if (fileHistoriesStr != null && !fileHistoriesStr.isEmpty()) {
             String[] fileHistories = fileHistoriesStr.trim().split("\\s*,\\s*");
             for (String history : fileHistories) {

@@ -19,6 +19,7 @@ public enum FileInfoEnum {
     LOCATION("location", "TEXT"),
     MODIFIED("modified", "BOOLEAN"),
     ORGPATH("orgPath", "TEXT UNIQUE"),
+    ORGPATH_DRIVE_SERIAL_NUMBER("orgPathDriveSerialNumber", "TEXT"),
     ORIENTATION("orientation", "INTEGER"),
     RAW("raw", "BOOLEAN"),
     SIZE("size", "NUMERIC"),

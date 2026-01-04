@@ -2,6 +2,7 @@ package com.girbola.utils;
 
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
+import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.drew.metadata.file.FileSystemDirectory;
@@ -24,6 +25,7 @@ import common.media.VideoDateFinder;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 import common.utils.ImageUtils;
+import common.utils.OSHI_Utils;
 import common.utils.date.DateUtils;
 
 import java.awt.image.BufferedImage;
@@ -48,6 +50,13 @@ public class FileInfoUtils {
     private final static String ERROR = FileInfoUtils.class.getSimpleName();
 
     public static FileInfo createFileInfo(Path fileName) throws IOException {
+
+
+        String sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());
+        if(sourceDriveSerialNumber == null) {
+            sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());
+        }
+
         Messages.sprintf("--------------createFileInfo: " + fileName);
         if (!Files.isRegularFile(fileName)) {
             Messages.sprintf("File were not a regular file: " + fileName);
@@ -57,7 +66,7 @@ public class FileInfoUtils {
 
         if (Main.conf.getId_counter() != null) {
             fileInfoId = Main.conf.getId_counter().incrementAndGet();
-        } else { // for the test cases
+        } else { // for the test cases and running program first time
             fileInfoId = 1;
         }
 
@@ -66,48 +75,8 @@ public class FileInfoUtils {
 
             if (FileUtils.supportedImage(fileName)) {
                 setImage(fileInfo);
-// Get Size FileName Date ModifiredDate TakenDate
 
-                long dateTime = tryToGetCreationDateTime(fileName, fileInfo);
-//                if(dateTime != null) {
-//                    fileInfo.setDate(dateTime);
-//                }
-//                setSuggested(fileInfo);
-
-//                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
-//
-//                boolean tryParseDateTime = tryParseDateTime(fileInfo);
-//                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
-//                String imageDifferenceHash = "";
-//                long start = System.currentTimeMillis();
-                Metadata metaData = DateTaken.getMetaData(fileName);
-//                if (metaData == null) {
-//                    Messages.sprintf("metaData were null!");
-//                    fileInfo.setBad(true);
-//                    boolean found = tryFileNameDate(fileInfo);
-//                    Messages.sprintf("found???: " + found);
-//                    if (found) {
-//                        FileInfoUtils.setSuggested(fileInfo);
-//                    } else {
-//                        FileInfoUtils.setBad(fileInfo);
-//                    }
-//
-//
-//                    return null;
-//                }
-                for (Directory directory : metaData.getDirectories()) {
-                    if (directory.getName().equals("File")) {
-                        Messages.sprintf("directory: " + directory.getName());
-                        try {
-                            String fileNameeee = directory.getString(FileSystemDirectory.TAG_FILE_NAME);
-                            String fSize = directory.getString(FileSystemDirectory.TAG_FILE_SIZE);
-                            String modified = directory.getString(FileSystemDirectory.TAG_FILE_MODIFIED_DATE);
-                            Messages.sprintf("00000Filename" + fileName + "fileNameeee:::: " + fileNameeee + " (Long.parseLong(fSize) == Files.size(fileName):::: " + (Long.parseLong(fSize) == Files.size(fileName)) + " modified:::: " + modified);
-                        } catch (Exception e) {
-
-                        }
-                    }
-                }
+                tryToGetCreationDateTime(fileName, fileInfo);
 
                 fileInfo.setSize(Files.size(fileName));
             } else if (FileUtils.supportedVideo(fileName)) {
@@ -439,6 +408,8 @@ public class FileInfoUtils {
             return false;
         }
         if (metaData != null) {
+
+            // Creation date
             creationDate = getMetaDataCreationDate(metaData, path);
             if (creationDate != 0) {
                 FileInfoUtils.setGood(fileInfo);
@@ -448,37 +419,35 @@ public class FileInfoUtils {
                 fileInfo.setDate(0);
             }
 
+            // Orientation
             orientation = DateTaken.getMetaDataOrientation(metaData);
             if (orientation != 0) {
                 fileInfo.setOrientation(orientation);
             } else {
                 fileInfo.setOrientation(0);
             }
+
+            // Camera model
             camera_model = DateTaken.getCameraModel(metaData);
             if (camera_model != null) {
                 if (!camera_model.isEmpty()) {
                     fileInfo.setCamera_model(camera_model);
                 }
             }
-            getImageThumb_Offset_Length(metaData, fileInfo);
-            // Get width and height
-            getImageThumbDimensions(metaData, fileInfo);
 
-            if (creationDate != 0) {
-                creationDate = 0;
-                orientation = 0;
-                camera_model = null;
-                return true;
-            } else {
-                creationDate = 0;
-                orientation = 0;
-                camera_model = null;
-                return false;
+            // Thumbnail offset for faster image extractor
+            boolean imageThumbOffsetLength = getImageThumb_Offset_Length(metaData, fileInfo);
+            if (!imageThumbOffsetLength) {
+                Messages.sprintfError("Cannot get image thumb offset and length.");
             }
+            // Get width and height
+            boolean imageThumbDimensions = getImageThumbDimensions(metaData, fileInfo);
+            if(!imageThumbDimensions) {
+                Messages.sprintfError("Cannot get image thumb dimensions.");
+            }
+
+            return creationDate != 0;
         }
-        creationDate = 0;
-        orientation = 0;
-        camera_model = null;
         return false;
     }
 
@@ -490,14 +459,12 @@ public class FileInfoUtils {
         ExifSubIFDDirectory subIfd = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
 
         if (subIfd != null) {
-            Integer width = subIfd.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_WIDTH);
-            Integer height = subIfd.getInteger(ExifSubIFDDirectory.TAG_EXIF_IMAGE_HEIGHT);
-            if (width != 0 && height != 0) {
-                int roundedWidth = Math.round(width.intValue());
-                int roundedHeight = Math.round(height.intValue());
-                fileInfo.setWidth(roundedWidth);
-                fileInfo.setHeight(roundedHeight);
-                Messages.sprintf("roundedWidth: " + roundedWidth + ", roundedHeight: " + roundedHeight);
+            Integer width = subIfd.getInteger(ExifDirectoryBase.TAG_EXIF_IMAGE_WIDTH);
+            Integer height = subIfd.getInteger(ExifDirectoryBase.TAG_EXIF_IMAGE_HEIGHT);
+            if (width != null && width != 0 && height != null && height != 0) {
+                fileInfo.setWidth(width);
+                fileInfo.setHeight(height);
+                Messages.sprintf("width: " + width + ", height: " + height);
                 return true;
             } else {
                 BufferedImage bufferedImage = ImageIO.read(new File(fileInfo.getOrgPath()));
@@ -508,10 +475,8 @@ public class FileInfoUtils {
 
                     fileInfo.setWidth((int)imageWidth);
                     fileInfo.setHeight((int)imageHeight);
-
                 }
             }
-
         } else {
             System.out.println("ExifSubIFDDirectory not found.");
         }
@@ -911,63 +876,4 @@ public class FileInfoUtils {
             Messages.sprintf("checkFolderPathChanges finished");
         }
     }
-
-    private static void checkFolderPathChanges_(ModelMain modelMain, FolderInfo folderInfo) {
-        Messages.sprintf("checkFolderPathChanges started");
-        String folderPath = folderInfo.getFolderPath();
-        List<DriveInfo> driveInfoList = DriveInfoSQL.loadDriveInfos();
-//        modelMain.getSqlConfigurationHandler().getDriveInfoList();
-
-        String sourceFolderSerialNumber = "";
-
-        try {
-            sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
-        } catch (Exception e) {
-            Messages.sprintfError("Cannot get source folder serialnumber for recognize actual drive: " + Misc.getLineNumber());
-            return;
-        }
-
-        if (sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
-            Messages.sprintfError("Cannot get source folder serialnumber for recognize actual drive: " + Misc.getLineNumber());
-            Path rootPath = Paths.get(folderInfo.getFolderPath());
-            // D:\UserPicturesUser1\Picture
-            // E:\UserPicturesUser1\Picture
-
-            // /media/
-            SelectedFolderScanner selectedFolders = modelMain.getSelectedFolders();
-            int folders = folderInfo.getFileInfoList().size();
-            int counter = 0;
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                for (SelectedFolder selectedFolderInfo : selectedFolders.getSelectedFolderScanner_obs()) {
-                    String parsedFileInfoPath = fileInfo.getOrgPath().replace(selectedFolderInfo.getFolder(), "");
-                    if (fileInfo.getOrgPath().contains(selectedFolderInfo.getFolder())) {
-                        Path path = Paths.get(selectedFolderInfo.getFolder(), parsedFileInfoPath);
-                        if (Files.exists(path)) {
-                            fileInfo.setOrgPath(path.toString());
-                            folderInfo.setChanged(true);
-                            counter++;
-                        }
-                    }
-                }
-            }
-            if (counter == folders) {
-                Messages.sprintf("All files were renamed to new path");
-                folderInfo.setSourceFolderSerialNumber(rootPath.getFileSystem().toString());
-                folderInfo.setChanged(true);
-            }
-
-        } else {
-            Messages.sprintfError("sourceFolderSerialNumber was null or empty!");
-            for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-                if (!folderPath.equals(fileInfo.getOrgPath())) {
-                    if (DriveInfoUtils.hasDrivePath(driveInfoList, fileInfo.getOrgPath(), sourceFolderSerialNumber)) {
-                        fileInfo.setOrgPath(folderPath);
-                        folderInfo.setChanged(true);
-                    }
-                }
-            }
-        }
-        Messages.sprintf("checkFolderPathChanges finished");
-    }
-
 }

@@ -1,31 +1,24 @@
-
 package com.girbola.fileinfo;
 
 import com.girbola.controllers.datefixer.utils.MetadataField;
+import common.utils.OSHI_Utils;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-
-
 @Getter
 @Setter
 public class FileInfo extends Metadata implements Cloneable {
+
+    private long timeShift;
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 
-
-//    private LocalDateTime localDateTime;
-
-    private long timeShift;
-
     public String showAllValues() {
-
-
             return "FileInfo{" +
                     "  \n bad=" + isBad() +
                     ", \n camera_model='" + getCamera_model() + '\'' +
@@ -43,6 +36,7 @@ public class FileInfo extends Metadata implements Cloneable {
                     ", \n modified=" + isModified() +
                     ", \n orientation=" + getOrientation() +
                     ", \n orgPath='" + getOrgPath() + '\'' +
+                    ", \n orgPathDriveSerialNumber='" + getOrgPathDriveSerialNumber() + '\'' +
                     ", \n raw=" + isRaw() +
                     ", \n size=" + getSize() +
                     ", \n suggested=" + isSuggested() +
@@ -67,6 +61,7 @@ public class FileInfo extends Metadata implements Cloneable {
          */
     public FileInfo(String orgPath, int fileInfo_id){
             this.setOrgPath(orgPath);
+            this.setOrgPathDriveSerialNumber(OSHI_Utils.getDriveSerialNumber(orgPath));
             this.setFileInfo_id(fileInfo_id);
 
             this.setDestination_Path("");
@@ -109,6 +104,7 @@ public class FileInfo extends Metadata implements Cloneable {
     public FileInfo() {
         this(
                 null,                     // aOrgPath - Original file path
+                null,                     // aOrgPathDriveSerialNumber - Serial number of the original file drive
                 null,                     // aWorkDir - Working directory path
                 null,                     // aWorkDirDriveSerialNumber - Serial number of the work directory drive
                 null,                     // aDestinationStructure - Destination path structure
@@ -140,15 +136,12 @@ public class FileInfo extends Metadata implements Cloneable {
         );
     }
 
-
-        /**
-         * Represents information about a file.
-         */
     /**
      * Represents information about a file.
      */
     public FileInfo(
             String aOrgPath,
+            String aOrgPathDriveSerialNumber,
             String aWorkDir,
             String aWorkDirDriveSerialNumber,
             String aDestinationStructure,
@@ -193,6 +186,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setLocation(aLocation);
         this.setModified(aModified);
         this.setOrgPath(aOrgPath);
+        this.setOrgPathDriveSerialNumber(aOrgPathDriveSerialNumber);
         this.setOrientation(aOrientation);
         this.setRaw(aRaw);
         this.setSize(aSize);
