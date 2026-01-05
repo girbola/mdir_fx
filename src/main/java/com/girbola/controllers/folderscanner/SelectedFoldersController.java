@@ -6,6 +6,7 @@ import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.DateFixConstants;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -66,6 +67,23 @@ public class SelectedFoldersController {
 
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
 
+        model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
+            Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
+        });
+        for(SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if(!selectedFolder.isSelected()) {
+                Iterator<FolderInfo> items = model_main.tables().getSorted_table().getItems().iterator();
+                while(items.hasNext()) {
+                    FolderInfo folderInfo = items.next();
+                    if(folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
+                        items.remove();
+                    }
+                }
+            }
+
+
+        }
+
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
 
         Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
@@ -108,7 +126,8 @@ public class SelectedFoldersController {
             Messages.sprintf("foldersAdded: " + foldersAdded + "  vs size: " + model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
             if (foldersAdded != model_main.getSelectedFolders().getSelectedFolderScanner_obs().size() || model_main.getSelectedFolders().getSelectedFolderScanner_obs().size() == 0) {
 
-                model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
+                model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
+//                model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
                 SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
             }
 

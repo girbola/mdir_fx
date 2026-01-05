@@ -51,7 +51,6 @@ public class FileInfoUtils {
 
     public static FileInfo createFileInfo(Path fileName) throws IOException {
 
-
         String sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());
         if(sourceDriveSerialNumber == null) {
             sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());

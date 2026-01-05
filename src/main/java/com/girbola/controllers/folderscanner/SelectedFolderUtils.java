@@ -4,6 +4,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
+import common.utils.OSHI_Utils;
 import javafx.scene.control.TableView;
 
 import java.io.File;
@@ -49,5 +50,13 @@ public class SelectedFolderUtils {
             }
         }
         return false;
+    }
+
+    public static String getDriveSerialNumberFromPath(String path) {
+        try {
+            return OSHI_Utils.getDriveSerialNumber(path);
+        } catch (Exception e) {
+            return "";
+        }
     }
 }

@@ -5,20 +5,23 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.main.*;
+import com.girbola.controllers.conflicttableview.ConflictTableViewController;
+import com.girbola.controllers.main.CleanTableView;
+import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.UpdateFolderInfoContent;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.fileinfo.FileInfo;
-import com.girbola.utils.FileInfoUtils;
-import com.girbola.filelisting.GetRootFiles;
-import com.girbola.controllers.conflicttableview.ConflictTableViewController;
 import com.girbola.controllers.operate.OperateFiles;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
@@ -402,62 +405,6 @@ public class TableUtils {
         return false;
     }
 
-    public void check_All_TableView_forChanges(ModelMain model_main) {
-        Iterator<FolderInfo> sorted_it = model_main.tables().getSorted_table().getItems().iterator();
-        Iterator<FolderInfo> sortit_it = model_main.tables().getSortIt_table().getItems().iterator();
-
-        while (sorted_it.hasNext()) {
-            FolderInfo folderInfo = sorted_it.next();
-            List<Path> currentPath_root_list = null;
-            try {
-                currentPath_root_list = GetRootFiles.getRootFiles(Paths.get(folderInfo.getFolderPath()));
-            } catch (IOException ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-            }
-            if (currentPath_root_list.isEmpty()) {
-                Main.setProcessCancelled(true);
-                errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-
-            }
-            List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
-            if (!list.isEmpty()) {
-                folderInfo.setFileInfoList(list);
-                folderInfo.setState("Updated");
-                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                TableUtils.refreshTableContent(model_main.tables().getSorted_table());
-                // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(false);
-                // model_main.getTables().getSorted_table().getColumns().get(0).setVisible(true);
-
-                Messages.sprintf("Sorted list had changed content!");
-            }
-        }
-        while (sortit_it.hasNext()) {
-            FolderInfo folderInfo = sortit_it.next();
-            List<Path> currentPath_root_list = null;
-            try {
-                currentPath_root_list = GetRootFiles.getRootFiles(Paths.get(folderInfo.getFolderPath()));
-            } catch (IOException ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-            }
-            if (currentPath_root_list.isEmpty()) {
-                Main.setProcessCancelled(true);
-                errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-
-            }
-            List<FileInfo> list = validateFileInfoList(currentPath_root_list, folderInfo.getFileInfoList());
-            if (!list.isEmpty()) {
-                folderInfo.setFileInfoList(list);
-                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-
-                folderInfo.setState("Updated");
-                model_main.tables().getSortIt_table().getColumns().get(0).setVisible(false);
-                model_main.tables().getSortIt_table().getColumns().get(0).setVisible(true);
-
-                Messages.sprintf("Sortit list had changed content!");
-            }
-        }
-    }
-
     public static void refreshTableContent(TableView<?> table) {
         if (table == null) {
             Messages.sprintfError("refreshTableContent - Table were null at TableUtils. Line: " + Misc.getLineNumber());
@@ -470,7 +417,6 @@ public class TableUtils {
                 table.refresh();
             });
         }
-
     }
 
     public static boolean checkChangedContent(TableView<FolderInfo> table) {

@@ -1,13 +1,15 @@
 package common.utils;
 
-import java.util.Collections;
 import org.junit.jupiter.api.Test;
 import oshi.SystemInfo;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HardwareAbstractionLayer;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Collections;
+import java.util.Map;
+
+import static common.utils.StableDriveIdentifier.buildMountToStableId;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +23,7 @@ public class OSHI_UtilsTest {
     @Test
     public void shouldReturnNullWhenPathIsNotAMountPoint() {
         // Given
-        String path = "P:/non/existing/path";
+        String path = "/non/existing/path";
         HWDiskStore disk = mock(HWDiskStore.class);
         when(disk.getPartitions()).thenReturn(Collections.emptyList());
 
@@ -39,17 +41,28 @@ public class OSHI_UtilsTest {
 
     @Test
     public void getSerialNumber() {
-        String serial = OSHI_Utils.getDriveSerialNumber("C:");
+        String serial = OSHI_Utils.getDriveSerialNumber(".");
         System.out.println("serial: " + serial);
     }
 
     @Test
     public void getDrive() {
-        HWDiskStore disk = OSHI_Utils.getDrive("C:");
+        HWDiskStore disk = OSHI_Utils.getDrive("./");
         System.out.println("disk name: " + disk.getName());
         System.out.println("disk.getPartitions(): " + disk.getPartitions().size());
         System.out.println("disk.getTimeStamp(): " + disk.getTimeStamp());
         assertNotNull(disk);
+    }
+
+    @Test
+    public void getDrive_Unix() {
+        Map<String, StableDriveIdentifier.DriveId> m = buildMountToStableId();
+        for (Map.Entry<String, StableDriveIdentifier.DriveId> entry : m.entrySet()) {
+            String mount = entry.getKey();
+            StableDriveIdentifier.DriveId id = entry.getValue();
+            System.out.println(mount + " -> " + id);
+        }
+
     }
 
 }

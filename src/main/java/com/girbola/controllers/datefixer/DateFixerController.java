@@ -616,7 +616,6 @@ public class DateFixerController {
         selectorController.getInfoTables_container().setMaxWidth(250);
         selectorController.getInfoTables_container().setPrefWidth(250);
 
-
         df_tilePane.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 ContextMenu contextMenu = new ContextMenu();

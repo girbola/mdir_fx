@@ -2,22 +2,42 @@
 
 package com.girbola.controllers.folderscanner;
 
+import common.utils.OSHI_Utils;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
+
+import static com.girbola.controllers.folderscanner.SelectedFolderUtils.getDriveSerialNumberFromPath;
 
 public class SelectedFolder {
 
     private SimpleStringProperty folder;
     private SimpleBooleanProperty selected;
     private SimpleBooleanProperty connected;
-	private SimpleBooleanProperty media;
+    private SimpleBooleanProperty media;
+    private SimpleStringProperty driveSerialNumber;
 
-	public SelectedFolder(boolean selected, boolean connected, String folder, boolean media) {
-		this.selected = new SimpleBooleanProperty(selected);
-		this.connected = new SimpleBooleanProperty(connected);
+    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media) {
+        this.selected = new SimpleBooleanProperty(selected);
+        this.connected = new SimpleBooleanProperty(connected);
         this.folder = new SimpleStringProperty(folder);
-		this.media = new SimpleBooleanProperty(media);
+        this.media = new SimpleBooleanProperty(media);
+		this.driveSerialNumber = new SimpleStringProperty(getDriveSerialNumberFromPath(folder));
+    }
+
+
+    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media, String driveSerialNumber) {
+        this.selected = new SimpleBooleanProperty(selected);
+        this.connected = new SimpleBooleanProperty(connected);
+        this.folder = new SimpleStringProperty(folder);
+        this.media = new SimpleBooleanProperty(media);
+
+        if(driveSerialNumber == null) {
+            driveSerialNumber = getDriveSerialNumberFromPath(folder);
+			this.driveSerialNumber = new SimpleStringProperty(driveSerialNumber);
+			return;
+		}
+        this.driveSerialNumber = new SimpleStringProperty(driveSerialNumber);
     }
 
     //@formatter:off
@@ -38,5 +58,9 @@ public class SelectedFolder {
 	public SimpleBooleanProperty selectedProperty() { return selected; }
 	public boolean isSelected() { return selected.get(); }
 	public void setSelected(boolean selected) {	this.selected.set(selected); }
+
+	public SimpleStringProperty driveSerialNumberProperty() { return driveSerialNumber; }
+	public String getDriveSerialNumber() { return driveSerialNumber.get(); }
+	public void setDriveSerialNumber(String driveSerialNumber) { this.driveSerialNumber.set(driveSerialNumber); }
 
 }

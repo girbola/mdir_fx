@@ -146,7 +146,7 @@ public class Populate {
                 }
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                     if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
-                        if (sf.isConnected()) {
+                        if (sf.isConnected() && sf.isSelected()) {
                             boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()));
                             if (!selectedFolderExists) {
                                 selectedFolders.add(Paths.get(sf.getFolder()));

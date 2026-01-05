@@ -26,6 +26,7 @@ public class FolderInfo implements TableValues_inf {
     private SimpleIntegerProperty suggestedImageFiles;
     private SimpleIntegerProperty suggestedVideoFiles;
 
+    private SimpleStringProperty selectedFolderParentPath;
     private SimpleBooleanProperty changed;
     private SimpleBooleanProperty connected;
     private SimpleIntegerProperty confirmed;
@@ -88,6 +89,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
+        this.selectedFolderParentPath = new SimpleStringProperty("");
         this.sourceFolderSerialNumber = new SimpleStringProperty("");
 
         // Image/Video category initializations
@@ -136,6 +138,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty(tableType);
+        this.selectedFolderParentPath = new SimpleStringProperty("");
         this.sourceFolderSerialNumber = new SimpleStringProperty("");
 
         // Image/Video category initializations
@@ -180,6 +183,7 @@ public class FolderInfo implements TableValues_inf {
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
         this.tableType = new SimpleStringProperty("");
+        this.selectedFolderParentPath = new SimpleStringProperty("");
         this.sourceFolderSerialNumber = new SimpleStringProperty("");
 
         // Image/Video category initializations
@@ -208,6 +212,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public int               getFolderFiles()              { return this.folderFiles.get(); }
     @Override public int               getFolderImageFiles()         { return this.folderImageFiles.get(); }
     @Override public String            getFolderPath()               { return this.folderPath.get(); }
+    @Override public String            getSelectedFolderParentPath() { return this.selectedFolderParentPath.get(); }
     @Override public int               getFolderRawFiles()           { return this.folderRawFiles.get(); }
     @Override public long              getFolderSize()               { return this.folderSize.get(); }
     @Override public int               getFolderVideoFiles()         { return this.folderVideoFiles.get(); }
@@ -222,11 +227,11 @@ public class FolderInfo implements TableValues_inf {
     @Override public int               getBadImageFiles()            { return this.badImageFiles.get(); }
     @Override public int               getGoodImageFiles()           { return this.goodImageFiles.get(); }
     @Override public int               getSuggestedImageFiles()      { return this.suggestedImageFiles.get(); }
-    @Override public int               getConfirmedImageFiles()       { return this.confirmedImageFiles.get(); }
+    @Override public int               getConfirmedImageFiles()      { return this.confirmedImageFiles.get(); }
     @Override public int               getBadVideoFiles()            { return this.badVideoFiles.get(); }
     @Override public int               getGoodVideoFiles()           { return this.goodVideoFiles.get(); }
     @Override public int               getSuggestedVideoFiles()      { return this.suggestedVideoFiles.get(); }
-    @Override public int               getConfirmedVideoFiles()       { return this.confirmedVideoFiles.get(); }
+    @Override public int               getConfirmedVideoFiles()      { return this.confirmedVideoFiles.get(); }
     @Override public String            getTableType()                { return tableType.get(); }
 
     // Property accessors (…_prop and …_property)
@@ -241,6 +246,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public SimpleIntegerProperty folderFiles_prop()              { return this.folderFiles; }
     @Override public SimpleIntegerProperty folderImageFiles_prop()         { return this.folderImageFiles; }
     @Override public SimpleStringProperty  folderPath_prop()               { return this.folderPath; }
+    @Override public SimpleStringProperty  selectedFolderParentPath_prop() { return this.selectedFolderParentPath; }
     @Override public SimpleIntegerProperty folderRawFiles_prop()           { return this.folderRawFiles; }
     @Override public SimpleLongProperty    folderSize_prop()               { return this.folderSize; }
     @Override public SimpleIntegerProperty folderVideoFiles_prop()         { return this.folderVideoFiles; }
@@ -254,8 +260,8 @@ public class FolderInfo implements TableValues_inf {
     @Override public SimpleIntegerProperty suggestedImageFiles_prop()      { return suggestedImageFiles; }
     @Override public SimpleIntegerProperty suggestedVideoFiles_prop()      { return suggestedVideoFiles; }
     @Override public SimpleStringProperty  state_property()                { return state; }
-    @Override public SimpleIntegerProperty confirmedImageFiles_prop()       { return confirmedImageFiles; }
-    @Override public SimpleIntegerProperty confirmedVideoFiles_prop()       { return confirmedVideoFiles; }
+    @Override public SimpleIntegerProperty confirmedImageFiles_prop()      { return confirmedImageFiles; }
+    @Override public SimpleIntegerProperty confirmedVideoFiles_prop()      { return confirmedVideoFiles; }
     @Override public SimpleStringProperty  tableType_property()            { return tableType; }
     @Override public IntegerProperty       status_property()               { return status; }
 
@@ -270,18 +276,20 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setSuggestedVideoFiles(int value)  { this.suggestedVideoFiles.set(value); }
     @Override public void setConfirmedVideoFiles(int value)   { this.confirmedVideoFiles.set(value); }
 
-    @Override public void setChanged(boolean changed)        { this.changed.set(changed); }
-    @Override public void setConfirmed(int value)                { this.confirmed.set(value); }
-    @Override public void setConnected(boolean connected)        { this.connected.set(connected); }
-    @Override public void setCopied(int value)                   { this.copied.set(value); }
-    @Override public void setDateDifferenceRatio(double value)   { this.dateDifference.set(value); }
-    @Override public void setFileInfoList(List<FileInfo> value)  {
+    @Override public void setChanged(boolean changed)               { this.changed.set(changed); }
+    @Override public void setConfirmed(int value)                   { this.confirmed.set(value); }
+    @Override public void setConnected(boolean connected)           { this.connected.set(connected); }
+    @Override public void setCopied(int value)                      { this.copied.set(value); }
+    @Override public void setDateDifferenceRatio(double value)      { this.dateDifference.set(value); }
+    @Override public void setSelectedFolderParentPath(String value) { this.selectedFolderParentPath.set(value); }
+
+    @Override public void setFileInfoList(List<FileInfo> value)     {
         this.fileInfoList = value;
         if (this.fileInfoList != null) {
             this.fileInfoList.sort(Comparator.comparingLong(FileInfo::getDate));
         }
     }
-    @Override public void setFolderFiles(int value)              { this.folderFiles.set(value); }
+    @Override public void setFolderFiles(int value)                 { this.folderFiles.set(value); }
 
     @Override
     public void setBadFiles(int value) {
@@ -325,7 +333,10 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setSourceFolderSerialNumber(String serialNumber) {this.sourceFolderSerialNumber.set(serialNumber);}
     @Override public void setState(String value) {this.state.set(value);}
     @Override public void setStatus(int value) {this.status.set(value);}
-    @Override public void setSuggested(int value) {this.suggested.set(value);TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());}
+    @Override public void setSuggested(int value) {
+        this.suggested.set(value);
+        TableUtils.updateStatus(status, this.folderFiles.get(), this.badFiles.get(), this.suggested.get());
+    }
     @Override public void setTableType(String value) {this.tableType.set(value);}
 
     // Other methods
@@ -346,29 +357,30 @@ public class FolderInfo implements TableValues_inf {
     @Override
     public String toString() {
         return "FolderInfo{" +
-                "status=" + status.get() +
-                ", fileInfoList.size =" + fileInfoList.size() +
-                ", changed=" + changed.get() +
-                ", connected=" + connected.get() +
-                ", ignored=" + ignored.get() +
-                ", dateDifference=" + dateDifference.get() +
-                ", badFiles=" + badFiles.get() +
-                ", confirmed=" + confirmed.get() +
-                ", copied=" + copied.get() +
-                ", folderFiles=" + folderFiles.get() +
-                ", folderImageFiles=" + folderImageFiles.get() +
-                ", folderRawFiles=" + folderRawFiles.get() +
-                ", folderVideoFiles=" + folderVideoFiles.get() +
-                ", goodFiles=" + goodFiles.get() +
-                ", suggested=" + suggested.get() +
-                ", folderSize=" + folderSize.get() +
-                ", folderPath=" + folderPath.get() +
-                ", justFolderName=" + justFolderName.get() +
-                ", maxDate=" + maxDate.get() +
-                ", minDate=" + minDate.get() +
-                ", state=" + state.get() +
-                ", tableType=" + tableType.get() +
-                ", sourceFolderSerialNumber=" + sourceFolderSerialNumber.get() +
+                "selectedFolderParentPath= " + selectedFolderParentPath.get() +
+                ", status= " + status.get() +
+                ", fileInfoList.size= " + fileInfoList.size() +
+                ", changed= " + changed.get() +
+                ", connected= " + connected.get() +
+                ", ignored= " + ignored.get() +
+                ", dateDifference= " + dateDifference.get() +
+                ", badFiles= " + badFiles.get() +
+                ", confirmed= " + confirmed.get() +
+                ", copied= " + copied.get() +
+                ", folderFiles= " + folderFiles.get() +
+                ", folderImageFiles= " + folderImageFiles.get() +
+                ", folderRawFiles= " + folderRawFiles.get() +
+                ", folderVideoFiles= " + folderVideoFiles.get() +
+                ", goodFiles= " + goodFiles.get() +
+                ", suggested= " + suggested.get() +
+                ", folderSize= " + folderSize.get() +
+                ", folderPath= " + folderPath.get() +
+                ", justFolderName= " + justFolderName.get() +
+                ", maxDate= " + maxDate.get() +
+                ", minDate= " + minDate.get() +
+                ", state= " + state.get() +
+                ", tableType= " + tableType.get() +
+                ", sourceFolderSerialNumber= " + sourceFolderSerialNumber.get() +
                 '}';
     }
 }

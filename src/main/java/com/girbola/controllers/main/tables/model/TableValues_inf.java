@@ -57,6 +57,7 @@ interface TableValues_inf {
     // Folder metadata
     public SimpleLongProperty folderSize_prop();
     public SimpleStringProperty folderPath_prop();
+    public SimpleStringProperty selectedFolderParentPath_prop();
     public SimpleStringProperty maxDate_prop();
     public SimpleStringProperty minDate_prop();
     public SimpleStringProperty state_property();
@@ -64,6 +65,7 @@ interface TableValues_inf {
 
     // ============================ Getters (plain values) ============================
     public String getFolderPath();
+    public String getSelectedFolderParentPath();
     public String getJustFolderName();
     public String getMaxDate();
     public String getMinDate();
@@ -127,6 +129,7 @@ interface TableValues_inf {
     public void setConnected(boolean value);
     public void setCopied(int value);
     public void setDateDifferenceRatio(double value);
+    public void setSelectedFolderParentPath(String value);
 
     // Data collections
     public void setFileInfoList(List<FileInfo> fileInfo);
