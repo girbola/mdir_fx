@@ -57,7 +57,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.ExecutorService;
@@ -174,18 +173,19 @@ public class TableUtils {
 
         double tester = 0;
         boolean pass = false;
-        LocalDate d1 = null;
+        LocalDate localDate = null;
 
         for (Entry<LocalDate, Integer> entry : map.entrySet()) {
+            LocalDate ld = entry.getKey();
+            Integer val = entry.getValue();
             if (!pass) {
                 pass = true;
-                d1 = entry.getKey();
+                localDate = entry.getKey();
             } else {
-                LocalDate d2 = entry.getKey();
-                Period per = Period.between(d1, d2);
-                double days = per.getDays();
+                LocalDate localDate2 = entry.getKey();
+                long days = java.time.temporal.ChronoUnit.DAYS.between(localDate, localDate2);
                 list.add(days - tester);
-                d1 = d2;
+                localDate = localDate2;
             }
         }
         double sum = 0;
@@ -195,11 +195,15 @@ public class TableUtils {
         if (list.isEmpty()) {
             return 0;
         } else {
-            return sum;
+            System.out.println("Max date difference: " + Collections.max(list));
+            for(Double db : list) {
+                System.out.println("Date difference entry: " + db);
+            }
+            return Collections.max(list);
         }
     }
 
-    public static FileInfo findFileInfo(String tableType, Path path, Tables tables) {
+    public static FileInfo findFileInfoFromTables(String tableType, Path path, Tables tables) {
         sprintf("findFileInfo starting... path is: " + path);
         FileInfo fi = null;
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
@@ -370,15 +374,19 @@ public class TableUtils {
 
 
     public static TableType resolveTableTypeByPath(Path p) {
-        // sprintf("REGULAR EXPRESSIONS STARTED");
 
-        int numberTotal = 0;
-        int letterTotal = 0;
-        int characterTotal = 0;
-        int spaceCount = 0;
+        if(p == null){
+            return null;
+        }
+
+        Path fileNamePath = p.getFileName();
+        if (fileNamePath == null) {
+            // Handle root paths gracefully, e.g., return a default or null
+            return TableType.SORTIT;
+        }
 
         String path = p.getFileName().toString();
-//        CommonUserFolders.resolve(path);
+
         Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
         for (Entry<CommonUserFolders.Kind, Path> entry : resolve.entrySet()) {
             CommonUserFolders.Kind key = entry.getKey();
@@ -394,18 +402,12 @@ public class TableUtils {
                 }
             }
         }
-//        if (path.contains("Pictures") || path.contains("Videos")) {
-//            return TableType.SORTIT;
-//        }
 
-
-        for(String knownName : knownCameraFolderNames) {
-            if(path.equalsIgnoreCase(knownName)) {
-                return TableType.SORTIT;
-            }
+        if (knownCameraFolderNames.stream().anyMatch(name -> path.equalsIgnoreCase(name))) {
+            return TableType.SORTIT;
         }
 
-     // Analyze the path for patterns using regex and more precise rules
+        // Analyze the path for patterns using regex and more precise rules
         if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
             return TableType.SORTIT;
         } else if (path.matches(".*\\d{4}([\\-_\\.])?\\d{2}\\1?\\d{2}.*")) { // e.g. 2014-12-11, 2012_12_05, 2012.12.05, 20121205

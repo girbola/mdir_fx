@@ -1,6 +1,7 @@
 package com.girbola.controllers.main.tasks;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
@@ -136,7 +137,7 @@ public class UpdateTableFolderInfo extends Task<Integer> {
 		folderInfo.setMinDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(min));
 		folderInfo.setMaxDate(simpleDates.getSdf_ymd_hms_minusDots_default().format(max));
 
-		double dateDifferenceRatio = calculateDateDifferenceRatio(map);
+		double dateDifferenceRatio = TableUtils.calculateDateDifferenceRatio(map);
 		folderInfo.setDateDifferenceRatio(dateDifferenceRatio);
 		// sprintf("Datedifference ratio completed");
 		// folderInfo.setDateDifferenceRatio(0);

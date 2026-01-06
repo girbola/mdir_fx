@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -155,6 +157,87 @@ public class TableUtilsTest {
         Path path = Paths.get("DJI");
         TableType result = TableUtils.resolveTableTypeByPath(path);
         assertEquals(TableType.SORTIT, result);
+    }
+
+
+    @Test
+    void calculateDateDifferenceRatio_shouldReturnZeroForEmptyMap() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(0, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldReturnZeroForSingleEntryMap() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(2023, 1, 1), 1);
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(0, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldCalculateDifferenceForSequentialDates() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(2023, 1, 1), 1);
+        map.put(LocalDate.of(2023, 1, 2), 1);
+        map.put(LocalDate.of(2023, 1, 3), 1);
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(2, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldCalculateDifferenceForNonSequentialDates() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(2023, 1, 1), 1);
+        map.put(LocalDate.of(2023, 1, 5), 1);
+        map.put(LocalDate.of(2023, 1, 10), 1);
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(9, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldHandleDatesWithLargeGaps() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(2020, 1, 1), 1);
+        map.put(LocalDate.of(2023, 1, 1), 1);
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(1095, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldHandleDatesWithLargeAmountOfDatesWithGaps() {
+        int year1 = 2022;
+        int year2 = 2023;
+        int year3 = 2024;
+
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(year1, 1, 1), 1);
+        map.put(LocalDate.of(year1, 1, 1), 1);
+        map.put(LocalDate.of(year1, 1, 1), 1);
+
+        map.put(LocalDate.of(year2, 1, 1), 1);
+        map.put(LocalDate.of(year2, 1, 1), 1);
+        map.put(LocalDate.of(year2, 1, 1), 1);
+
+        map.put(LocalDate.of(year3, 1, 1), 1);
+        map.put(LocalDate.of(year3, 1, 1), 1);
+        map.put(LocalDate.of(year3, 1, 1), 1);
+
+// Add 100 more LocalDate entries with increasing dates
+        for (int i = 0; i < 3; i++) {
+            map.put(LocalDate.of(year1, 1, 2).plusDays(i), 1);
+        }
+        for (int i = 0; i < 3; i++) {
+            map.put(LocalDate.of(year2
+                    , 1, 2).plusDays(i), 1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            map.put(LocalDate.of(year3
+                    , 5, 2).plusDays(i), 1);
+        }
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(362, result);
     }
 
 
