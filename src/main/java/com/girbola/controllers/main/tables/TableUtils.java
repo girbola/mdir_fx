@@ -76,6 +76,34 @@ public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
 
+
+    private static List<String> knownCameraFolderNames = Arrays.asList(
+            // DCF root
+            "DCIM",
+
+            // DCF standard subfolder pattern: 3 digits + 5 letters (e.g., 100CANON, 101APPLE)
+            // You’ll handle this with regex: "\\d{3}[A-Za-z0-9]{5}"
+
+            // Common brand-specific names (metadata or extra folders)
+            "CANONMSC",    // Canon metadata
+            "MISC",        // DCF metadata folder
+            "PRIVATE",     // Panasonic, DJI, AVCHD structure
+            "AVCHD",       // Video folder
+            "MP_ROOT",     // Sony Memory Stick
+            "CLIP",        // Professional cameras
+            "VIDEO",       // Some brands for video clips
+
+            // Android/iOS common camera folders
+            "Camera",
+            "Screenshots",
+            ".thumbnails",
+
+            // DJI / GoPro extras
+            "MEDIA",
+            "DJI"
+    );
+
+
     public static void showConflictTable(ModelMain model_Main, ObservableList<FileInfo> obs) {
         try {
             Parent parent = null;
@@ -369,10 +397,18 @@ public class TableUtils {
 //        if (path.contains("Pictures") || path.contains("Videos")) {
 //            return TableType.SORTIT;
 //        }
+
+
+        for(String knownName : knownCameraFolderNames) {
+            if(path.equalsIgnoreCase(knownName)) {
+                return TableType.SORTIT;
+            }
+        }
+
      // Analyze the path for patterns using regex and more precise rules
         if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
             return TableType.SORTIT;
-        } else if (path.matches(".*\\d{4}[-_]\\d{2}[-_]\\d{2}.*")) { // e\.g\. 2014-12-11 or 2012_12_05
+        } else if (path.matches(".*\\d{4}([\\-_\\.])?\\d{2}\\1?\\d{2}.*")) { // e.g. 2014-12-11, 2012_12_05, 2012.12.05, 20121205
             return TableType.SORTED;
         } else if (path.matches("[A-Za-z\\s']+\\d{4}")) { // e\.g\. O'layreys pub 2013
             return TableType.SORTED;
