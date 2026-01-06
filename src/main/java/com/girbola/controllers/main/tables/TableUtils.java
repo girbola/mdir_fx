@@ -21,6 +21,7 @@ import com.girbola.sql.FileInfo_SQL;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
+import com.girbola.utils.CommonUserFolders;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
 import common.utils.FileUtils;
@@ -340,7 +341,7 @@ public class TableUtils {
     }
 
 
-    public static TableType resolvePath(Path p) {
+    public static TableType resolveTableTypeByPath(Path p) {
         // sprintf("REGULAR EXPRESSIONS STARTED");
 
         int numberTotal = 0;
@@ -349,41 +350,36 @@ public class TableUtils {
         int spaceCount = 0;
 
         String path = p.getFileName().toString();
-        if (path.contains("Pictures") || path.contains("Videos")) {
-            return TableType.SORTIT;
-        }
-        for (int i = 0; i < path.length(); i++) {
-            char c = path.charAt(i);
-            if (Character.isLetter(c)) {
-                letterTotal++;
-            } else if (Character.isDigit(c)) {
-                numberTotal++;
-            } else if (c == ' ') {
-                spaceCount++;
-            } else {
-                characterTotal++;
+//        CommonUserFolders.resolve(path);
+        Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
+        for (Entry<CommonUserFolders.Kind, Path> entry : resolve.entrySet()) {
+            CommonUserFolders.Kind key = entry.getKey();
+            Path commonUserFolder = entry.getValue();
+            if (commonUserFolder != null) {
+                if (p.startsWith(commonUserFolder)) {
+                    switch (key) {
+                        case PICTURES, VIDEOS, DOCUMENTS:
+                            return TableType.SORTIT;
+                        case DOWNLOADS:
+                            return TableType.ASITIS;
+                    }
+                }
             }
         }
-
-        /*
-         * Lisää 2014-12-11 ja 2012_12_05
-         */
-
-        // 100Canon jne
-        if (numberTotal == 3 && letterTotal == 5 && characterTotal == 0 && spaceCount == 0) { // The
-            // most
-            // common
-            // format
-            // 123Canon
+//        if (path.contains("Pictures") || path.contains("Videos")) {
+//            return TableType.SORTIT;
+//        }
+     // Analyze the path for patterns using regex and more precise rules
+        if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
             return TableType.SORTIT;
-
-            // O'layreys pub 2013
-        } else if (numberTotal >= 0 && letterTotal >= 1 && characterTotal >= 0 && spaceCount >= 0) { // Just
-            // letters
+        } else if (path.matches(".*\\d{4}[-_]\\d{2}[-_]\\d{2}.*")) { // e\.g\. 2014-12-11 or 2012_12_05
             return TableType.SORTED;
-        } else if (numberTotal >= 1 && letterTotal == 0 && characterTotal == 0 && spaceCount == 0) { // 1-9
-            // numbers
+        } else if (path.matches("[A-Za-z\\s']+\\d{4}")) { // e\.g\. O'layreys pub 2013
+            return TableType.SORTED;
+        } else if (path.matches("\\d+")) { // Only numbers
             return TableType.SORTIT;
+        } else if (path.matches("[A-Za-z\\s']+")) { // Only letters and spaces
+            return TableType.SORTED;
         } else {
             return TableType.SORTIT;
         }

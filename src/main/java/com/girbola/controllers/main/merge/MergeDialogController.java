@@ -120,7 +120,7 @@ public class MergeDialogController {
             if (folderInfoDestination == null) {
                 folderInfoDestination = new FolderInfo();
                 folderInfoDestination.setFolderPath(newDestinationPath.toFile().getAbsolutePath());
-                folderInfoDestination.setTableType(TableUtils.resolvePath(newDestinationPath).getType());
+                folderInfoDestination.setTableType(TableUtils.resolveTableTypeByPath(newDestinationPath).getType());
 
                 Messages.sprintf("folderInfo were not found at destination: " + folderInfoDestination + " with database name " + Main.conf.getMdir_db_fileName());
             }

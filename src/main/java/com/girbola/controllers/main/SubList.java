@@ -37,7 +37,7 @@ public class SubList extends Task<List<Path>> {
 
 //        SubFolders subFolders = new SubFolders();
         List<Path> list = SubFolders.subFolders(p);
-        for(Path path : list) {
+        for (Path path : list) {
             Messages.sprintf("----path:::: " + path);
         }
 //		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
@@ -139,7 +139,7 @@ public class SubList extends Task<List<Path>> {
     protected void succeeded() {
         Messages.sprintf("SubList.succeeded()");
         super.succeeded();
-  }
+    }
 
     @Override
     protected void cancelled() {

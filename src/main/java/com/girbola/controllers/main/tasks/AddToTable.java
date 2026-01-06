@@ -55,7 +55,7 @@ public class AddToTable extends Task<Integer> {
 			// TODO Tämä uusiksi!
 
 			if (folderHasFiles(p)) {
-				TableType tableType = TableUtils.resolvePath(p);
+				TableType tableType = TableUtils.resolveTableTypeByPath(p);
 
 				Messages.sprintf("TABLETYPE IS: " + tableType + " Path is: PPPP: " + p);
 				switch (tableType) {
