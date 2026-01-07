@@ -6,10 +6,8 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
-import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
@@ -101,9 +99,123 @@ public class Populate {
 //        }
 
         Messages.sprintf("populateTablesFolderScannerList action ended. selectedFolders.size():::: " + selectedFolders.size());
-        Thread createFileListThread = getThread(owner, selectedFolders);
+        Thread createFileListThread = createFileListProcessingThread(owner, selectedFolders);
         createFileListThread.start();
     }
+
+    private Thread createFileListProcessingThread(Window owner, List<Path> selectedFolders) {
+        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
+        Task<List<Path>> createFileList = new SubList(selectedFolders);
+
+        createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
+        createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
+        createFileList.setOnFailed(event -> {
+            loadingProcessTask.closeStage();
+            Messages.sprintf("CreateFileList failed");
+        });
+
+        return new Thread(createFileList, "createFileList_th");
+    }
+
+    private Thread createFileListProcessingThread_old(Window owner, List<Path> selectedFolders) {
+        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
+        Task<List<Path>> createFileList = new SubList(selectedFolders);
+
+        createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
+        createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
+        createFileList.setOnFailed(event -> {
+            loadingProcessTask.closeStage();
+            Messages.sprintf("CreateFileList failed");
+        });
+
+        return new Thread(createFileList, "createFileList_th");
+    }
+
+    private void handleFileListSuccess(Task<List<Path>> createFileList, LoadingProcessTask loadingProcessTask, List<Path> selectedFolders) {
+        List<Path> fileList;
+        try {
+            fileList = createFileList.get();
+            if (fileList == null || fileList.isEmpty()) {
+                handleEmptyFileList(loadingProcessTask, createFileList);
+                return;
+            }
+
+            Collections.sort(fileList);
+            removeDuplicateFolders(fileList);
+
+            if (fileList.isEmpty()) {
+                handleEmptyFileList(loadingProcessTask, createFileList);
+                return;
+            }
+
+            appendMissingSelectedFolders(selectedFolders);
+
+            Task<Integer> sorterTask = new Sorter(modelMain, fileList);
+            loadingProcessTask.setTask(sorterTask);
+            setSorterTaskHandlers(sorterTask, loadingProcessTask);
+
+            Thread sorterThread = new Thread(sorterTask, "sorter_th");
+            sprintf("sorter_th: " + sorterThread.getName());
+            sorterThread.start();
+
+        } catch (InterruptedException | ExecutionException ex) {
+            Messages.sprintfError("Something went wrong with creating filelist: " + ex.getMessage());
+            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        }
+    }
+
+    private void handleEmptyFileList(LoadingProcessTask loadingProcessTask, Task<?> task) {
+        Messages.sprintf("List is empty at Populate class. Cancelling");
+        Platform.runLater(loadingProcessTask::closeStage);
+        task.cancel();
+    }
+
+    private void removeDuplicateFolders(List<Path> fileList) {
+        List<TableView<FolderInfo>> allTables = TableUtils.getAllTables(modelMain.tables());
+        List<Path> duplicates = new ArrayList<>();
+        for (Path path : fileList) {
+            if (TableUtils.tableHasFolder(allTables, path)) {
+                duplicates.add(path);
+            }
+        }
+        fileList.removeAll(duplicates);
+    }
+
+    private void appendMissingSelectedFolders(List<Path> selectedFolders) {
+        for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
+                if (sf.isConnected() && sf.isSelected()) {
+                    boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()));
+                    if (!selectedFolderExists) {
+                        selectedFolders.add(Paths.get(sf.getFolder()));
+                        sprintf("! selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
+                    }
+                }
+            }
+        }
+    }
+
+    private void setSorterTaskHandlers(Task<Integer> sorterTask, LoadingProcessTask loadingProcessTask) {
+        sorterTask.setOnSucceeded(event -> {
+            Task<Void> calculateFolderContent = loadContentToContainer(loadingProcessTask, sorterTask);
+            if (exec[getExecCounter()].isShutdown() || exec[getExecCounter()].isTerminated()) {
+                ConcurrencyUtils.initNewSingleExecutionService();
+                Messages.sprintf("initNewSingleExecutionService NEW one");
+            }
+            exec[getExecCounter()].submit(calculateFolderContent);
+        });
+        sorterTask.setOnCancelled(event -> {
+            loadingProcessTask.setMessage("CANCELLED...");
+            sprintf("sorterTask.setOnCancelled");
+            loadingProcessTask.closeStage();
+        });
+        sorterTask.setOnFailed(event -> {
+            loadingProcessTask.setMessage("FAILED...");
+            sprintf("sorterTask.setOnFailed");
+            loadingProcessTask.closeStage();
+        });
+    }
+
 
     /**
      * Retrieves a thread for processing file list creation and sorting.
@@ -112,7 +224,8 @@ public class Populate {
      * @param selectedFolders The list of selected folders
      * @return The created thread for file list processing
      */
-    private Thread getThread(Window owner, List<Path> selectedFolders) {
+    @Deprecated
+    private Thread createFileListProcessingThread_(Window owner, List<Path> selectedFolders) {
         LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
         Task<List<Path>> createFileList = new SubList(selectedFolders);
 
@@ -144,6 +257,7 @@ public class Populate {
                     createFileList.cancel();
                     return;
                 }
+                appendMissingSelectedFolders(selectedFolders);
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                     if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
                         if (sf.isConnected() && sf.isSelected()) {

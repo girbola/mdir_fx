@@ -29,7 +29,7 @@ public class SubList extends Task<List<Path>> {
         this.selectedFolderScanner_list = selectedFolderScanner_list;
     }
 
-    private static void calculate(Path p) throws IOException {
+    private static void collectSubFoldersRecursively(Path p) throws IOException {
         if (Files.isReadable(p)) {
             sprintf("IS Readable. SubList - calculate: " + p);
         }
@@ -38,13 +38,6 @@ public class SubList extends Task<List<Path>> {
 //        SubFolders subFolders = new SubFolders();
         List<Path> list = SubFolders.subFolders(p);
         for (Path path : list) {
-            Messages.sprintf("----path:::: " + path);
-        }
-//		DirectoryStream<Path> ds = FileUtils.createDirectoryStream(p, FileUtils.filter_directories);
-//		if(ds == null) {
-//			Messages.sprintfError("Calculate has failed. Cannot read folder: " + p);
-//		}
-        for (Path path : list) {
             if (Main.getProcessCancelled()) {
                 break;
             }
@@ -52,7 +45,7 @@ public class SubList extends Task<List<Path>> {
                 sprintf("----calculating: " + path);
                 if (!SubList.list.contains(path)) {
                     SubList.list.add(path);
-                    calculate(path);
+                    collectSubFoldersRecursively(path);
                 }
             }
         }
@@ -125,7 +118,7 @@ public class SubList extends Task<List<Path>> {
             }
             try {
                 Messages.sprintf("SubList.call() calculating: " + p);
-                calculate(p);
+                collectSubFoldersRecursively(p);
                 Messages.sprintf("SubList.call() calculated: " + p);
             } catch (IOException ex) {
                 Messages.sprintfError("SubList.call() IOException: " + ex.getMessage());
