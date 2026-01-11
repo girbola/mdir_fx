@@ -38,11 +38,6 @@ public class AddToTable extends Task<Integer> {
 		this.model = model;
 	}
 
-	public AddToTable(List<Path> list, ModelMain model) {
-		this.list = list;
-		this.model = model;
-	}
-
 	@Override
 	protected Integer call() throws Exception {
 		for (Path p : list) {

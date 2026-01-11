@@ -411,7 +411,7 @@ public class TableUtils {
         if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
             return TableType.SORTIT;
         } else if (path.matches(".*\\d{4}([\\-_\\.])?\\d{2}\\1?\\d{2}.*")) { // e.g. 2014-12-11, 2012_12_05, 2012.12.05, 20121205
-            return TableType.SORTED;
+            return TableType.SORTIT;
         } else if (path.matches("[A-Za-z\\s']+\\d{4}")) { // e\.g\. O'layreys pub 2013
             return TableType.SORTED;
         } else if (path.matches("\\d+")) { // Only numbers

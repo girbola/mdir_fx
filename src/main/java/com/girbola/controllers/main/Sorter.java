@@ -17,38 +17,55 @@ import static com.girbola.messages.Messages.sprintf;
 
 public class Sorter extends Task<Integer> {
 
-	private List<Path> selectedList;
-	private ModelMain model;
-	private AtomicInteger counter = new AtomicInteger(0);
+    private List<Path> selectedFolders;
+    private ModelMain model;
+    private AtomicInteger counter = new AtomicInteger(0);
 
-	public Sorter(ModelMain model, List<Path> selectedList) {
-		this.model = model;
-		this.selectedList = selectedList;
-	}
+    public Sorter(ModelMain model, List<Path> selectedFolders) {
+        this.model = model;
+        this.selectedFolders = selectedFolders;
+    }
 
-	@Override
-	protected Integer call() throws Exception {
-		if (!selectedList.isEmpty()) {
-			for (Path folder : selectedList) {
-				sprintf("Adding folder: " + folder);
-				if (Main.getProcessCancelled()) {
-					Messages.sprintf("Sorter process were cancelled");
-					exec[getExecCounter()].shutdownNow();
-					break;
-				}
-				Task<Integer> addToTable = new AddToTable(folder, model);
-				addToTable.setOnSucceeded(e -> Messages.sprintf("Sorter addToTable Sorter done! " + folder));
-				addToTable.setOnFailed(e -> Messages. sprintf("Sorter addToTable.setOnFailed: " + folder));
-				addToTable.setOnCancelled(e -> Messages.sprintf("Sorter addToTable.setOnCancelled: " + folder));
+    public void addToTable() {
+        if (!selectedFolders.isEmpty()) {
+            for (Path selectedFolder : selectedFolders) {
+                sprintf("Adding folder: " + selectedFolder);
+                if (Main.getProcessCancelled()) {
+                    Messages.sprintf("Sorter process were cancelled");
+                    exec[getExecCounter()].shutdownNow();
+                    break;
+                }
 
-				counter.incrementAndGet();
+            }
+        } else {
+            sprintf("list was empty!");
+        }
+    }
 
-				exec[getExecCounter()].submit(addToTable);
-			}
-		} else {
-			sprintf("list was empty!");
-		}
 
-		return counter.get();
-	}
+    @Override
+    protected Integer call() throws Exception {
+        if (!selectedFolders.isEmpty()) {
+            for (Path selectedFolder : selectedFolders) {
+                sprintf("Adding folder: " + selectedFolder);
+                if (Main.getProcessCancelled()) {
+                    Messages.sprintf("Sorter process were cancelled");
+                    exec[getExecCounter()].shutdownNow();
+                    break;
+                }
+                Task<Integer> addToTable = new AddToTable(selectedFolder, model);
+                addToTable.setOnSucceeded(e -> Messages.sprintf("Sorter addToTable Sorter done! " + selectedFolder));
+                addToTable.setOnFailed(e -> Messages.sprintf("Sorter addToTable.setOnFailed: " + selectedFolder));
+                addToTable.setOnCancelled(e -> Messages.sprintf("Sorter addToTable.setOnCancelled: " + selectedFolder));
+
+                counter.incrementAndGet();
+
+                exec[getExecCounter()].submit(addToTable);
+            }
+        } else {
+            sprintf("list was empty!");
+        }
+
+        return counter.get();
+    }
 }
