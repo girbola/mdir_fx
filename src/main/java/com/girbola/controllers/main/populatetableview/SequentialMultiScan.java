@@ -65,4 +65,3 @@ public class SequentialMultiScan {
 
     public void shutdown() { pool.shutdown(); }
 }
-``

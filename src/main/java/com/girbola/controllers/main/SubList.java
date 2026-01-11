@@ -29,27 +29,6 @@ public class SubList extends Task<List<Path>> {
         this.selectedFolderScanner_list = selectedFolderScanner_list;
     }
 
-    private static void collectSubFoldersRecursively(Path p) throws IOException {
-        if (Files.isReadable(p)) {
-            sprintf("IS Readable. SubList - calculate: " + p);
-        }
-        printFileInfo(p);
-
-//        SubFolders subFolders = new SubFolders();
-        List<Path> list = SubFolders.subFolders(p);
-        for (Path path : list) {
-            if (Main.getProcessCancelled()) {
-                break;
-            }
-            if (ValidatePathUtils.validFolder(path)) {
-                sprintf("----calculating: " + path);
-                if (!SubList.list.contains(path)) {
-                    SubList.list.add(path);
-                    collectSubFoldersRecursively(path);
-                }
-            }
-        }
-    }
 
     public static void printFileInfo(Path path) {
         try {
@@ -107,6 +86,12 @@ public class SubList extends Task<List<Path>> {
     @Override
     protected List<Path> call() throws Exception {
         Messages.sprintf("SubList.call()");
+
+        if (selectedFolderScanner_list == null) {
+            Messages.sprintfError("selectedFolderScanner_list is null.");
+            return list;
+        }
+
         for (Path p : selectedFolderScanner_list) {
             Messages.sprintf("PATHHHTHTH: " + p.toString());
             if (Main.getProcessCancelled()) {
@@ -114,18 +99,38 @@ public class SubList extends Task<List<Path>> {
             }
             if (ValidatePathUtils.hasMediaFilesInFolder(p)) {
                 list.add(p);
-                Messages.sprintf("SubList.call() added to list: " + p);
             }
             try {
-                Messages.sprintf("SubList.call() calculating: " + p);
                 collectSubFoldersRecursively(p);
-                Messages.sprintf("SubList.call() calculated: " + p);
             } catch (IOException ex) {
                 Messages.sprintfError("SubList.call() IOException: " + ex.getMessage());
                 Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
             }
         }
         return list;
+    }
+
+
+    private static void collectSubFoldersRecursively(Path p) throws IOException {
+        if (Files.isReadable(p)) {
+            sprintf("IS Readable. SubList - calculate: " + p);
+        }
+//        printFileInfo(p);
+
+//        SubFolders subFolders = new SubFolders();
+        List<Path> list = SubFolders.subFolders(p);
+        for (Path path : list) {
+            if (Main.getProcessCancelled()) {
+                break;
+            }
+            if (ValidatePathUtils.validFolder(path)) {
+                sprintf("----calculating: " + path);
+                if (!SubList.list.contains(path)) {
+                    SubList.list.add(path);
+                    collectSubFoldersRecursively(path);
+                }
+            }
+        }
     }
 
     @Override

@@ -68,7 +68,7 @@ public class Populate {
             }
         }
 
-        if (modelMain.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) return;
+
 
         // Add checked in datefixer
 
@@ -101,6 +101,15 @@ public class Populate {
         Messages.sprintf("populateTablesFolderScannerList action ended. selectedFolders.size():::: " + selectedFolders.size());
         Thread createFileListThread = createFileListProcessingThread(owner, selectedFolders);
         createFileListThread.start();
+    }
+
+    private Thread createTableViewContent(List<Path> selectedFolders) {
+        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(null);
+        for(Path selectedFolder : selectedFolders) {
+            sprintf("selectedFolder to process in createTableViewContent: " + selectedFolder);
+
+        }
+return null;
     }
 
     private Thread createFileListProcessingThread(Window owner, List<Path> selectedFolders) {

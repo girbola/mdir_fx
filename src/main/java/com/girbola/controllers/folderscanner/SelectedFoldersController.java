@@ -80,8 +80,6 @@ public class SelectedFoldersController {
                     }
                 }
             }
-
-
         }
 
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
@@ -199,7 +197,6 @@ public class SelectedFoldersController {
 
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
         FontIcon folder_connected_icon = new FontIcon("bi-plug");
-
 
         hasMedia_col.setCellFactory(connected);
 

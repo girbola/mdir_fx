@@ -5,9 +5,10 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
@@ -24,21 +25,40 @@
                                     <children>
                                         <VBox styleClass="listRoots" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <children>
-                                                <Label text="%drives">
-                                       <padding>
-                                          <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-                                       </padding></Label>
-                                                <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" GridPane.columnSpan="2" GridPane.rowIndex="1" GridPane.rowSpan="3" VBox.vgrow="ALWAYS">
-                                                    <content>
-                                                        <TreeView fx:id="drives_treeView" minWidth="150.0" styleClass="listRoots" />
-                                                    </content>
-                                                </ScrollPane>
-                                                <HBox alignment="CENTER">
-                                                    <children>
-                                                        <Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false" onAction="#addToSelectedFolders_btn_action" text="&lt;-" />
-                                                        <Button fx:id="list" maxHeight="50.0" maxWidth="75.0" minHeight="30.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="30.0" prefWidth="75.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />
-                                                    </children>
-                                                </HBox>
+                                    <VBox>
+                                       <children>
+                                          <Label text="%homeFolders" VBox.vgrow="NEVER" />
+                                          <TableView fx:id="homeDefaultsTableView" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                                            <columns>
+                                              <TableColumn fx:id="homeDefaults_select_column" editable="false" maxWidth="50.0" prefWidth="50.0" resizable="false" sortable="false" />
+                                              <TableColumn fx:id="homeDefaults_path_column" maxWidth="1.7976931348623157E308" minWidth="100.0" prefWidth="-1.0" text="%path" />
+                                            </columns>
+                                             <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                             </columnResizePolicy>
+                                          </TableView>
+                                       </children>
+                                    </VBox>
+                                    <VBox VBox.vgrow="ALWAYS">
+                                       <children>
+                                                      <Label text="%drives" VBox.vgrow="NEVER">
+                                             <padding>
+                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                             </padding>
+                                          </Label>
+                                                      <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" pannable="true" vbarPolicy="ALWAYS" VBox.vgrow="ALWAYS">
+                                                          <content>
+                                                              <TreeView fx:id="drives_treeView" minWidth="150.0" styleClass="listRoots" />
+                                                          </content>
+                                                      </ScrollPane>
+                                                      <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                                                          <children>
+                                                              <Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false" onAction="#addToSelectedFolders_btn_action" text="&lt;-" />
+                                                              <Button fx:id="list" maxHeight="50.0" maxWidth="75.0" minHeight="30.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="30.0" prefWidth="75.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />
+                                                          </children>
+                                                      </HBox>
+                                       </children>
+                                    </VBox>
                                             </children>
                                         </VBox>
                                     </children>

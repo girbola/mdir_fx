@@ -47,10 +47,17 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
                     Messages.sprintf("CHECKBOX IS: " + newValue);
-                    SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
-                    selectedFolder.setSelected(newValue);
-                    selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
-
+                    if(newValue) {
+                        SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
+                        selectedFolder.setSelected(newValue);
+                        selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
+                    } else {
+                        SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
+                        selectedFolder.setSelected(newValue);
+                        selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().removeIf(selectedFolder1 -> selectedFolder1.getFolder().equals(selectedFolder.getFolder()));
+                    }
                 }
             });
         }

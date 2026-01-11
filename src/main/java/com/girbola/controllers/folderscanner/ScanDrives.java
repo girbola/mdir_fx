@@ -7,6 +7,7 @@ import com.girbola.drive.DriveInfoUtils;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.utils.CommonUserFolders;
 import common.utils.FileUtils;
 import common.utils.OSHI_Utils;
 import javafx.application.Platform;
@@ -14,6 +15,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.CheckBoxTreeItem;
+import javafx.scene.control.Separator;
+import javafx.scene.control.TreeItem;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -22,10 +25,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -95,10 +95,16 @@ public class ScanDrives {
     };
 
     private File[] getListOfRoots() {
+
         String osName = System.getProperty("os.name").toLowerCase();
         if (osName.contains("win")) {
             return File.listRoots();
         } else if (osName.contains("mac")) {
+//            Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
+//            File[] userFolders = new File[resolve.size()];
+//            userFolders.addAll(resolve.values().stream().map(Path::toFile).toList());
+//            return userFolders;
+//
             File media = new File(File.separator + "Volumes");
             return media.listFiles();
         } else if (osName.contains("nix") || osName.contains("nux")) {
@@ -245,7 +251,6 @@ public class ScanDrives {
                     });
                 }
             }
-            rootItem.getChildren().add(checkBoxTreeItem);
         }
     }
 

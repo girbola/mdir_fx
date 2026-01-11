@@ -6,6 +6,9 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
+import com.girbola.utils.CommonUserFolders;
+import javafx.application.Platform;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -18,11 +21,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import static com.girbola.concurrency.ConcurrencyUtils.initNewSingleExecutionService;
 import static com.girbola.messages.Messages.sprintf;
@@ -43,6 +48,11 @@ public class FolderScannerController {
     @FXML private ScrollPane analyzeList_scrollPane;
     @FXML private SplitPane splitPane_drives;
     @FXML private SplitPane splitPane_root;
+
+    @FXML private TableView<SelectedFolder> homeDefaultsTableView;
+    @FXML private TableColumn<SelectedFolder, Boolean> homeDefaults_select_column;
+    @FXML private TableColumn<SelectedFolder, String> homeDefaults_path_column;
+
     @FXML private TreeView<File> drives_treeView;
     @FXML private VBox analyzeList_vbox;
 
@@ -151,6 +161,7 @@ public class FolderScannerController {
             }
         });
     }
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
 
     public void init(ModelMain aModel_main) {
         Main.setProcessCancelled(false);
@@ -169,5 +180,46 @@ public class FolderScannerController {
         selectedFoldersController.init(model_main, model_folderScanner);
         folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
         selectedFoldersController.start();
+
+        homeDefaults_select_column.setCellFactory(selectedFoldersCellFactory);
+        homeDefaults_select_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
+
+        homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+
+        Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
+        for(Path commonPath : resolve.values()) {
+//            Messages.sprintf("commonPath: " + commonPath);
+            if (Files.exists(commonPath)) {
+                Messages.sprintf("Adding commonPath to homeDefaultsTableView: " + commonPath);
+//                homeDefaultsTableView.getItems().add(commonPath);
+                SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
+                if (selectedHomeFolder != null) {
+                    Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
+                    this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
+                } else {
+                    selectedHomeFolder = new SelectedFolder(false, true, commonPath.toString(), false);
+                    this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
+                }
+            }
+        }
+
+        Platform.runLater(() -> {
+            homeDefaultsTableView.setItems(this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs());
+        });
+
+        homeDefaultsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                Messages.sprintf("Selected item: " + newSelection.getFolder());
+            }
+        });
+    }
+
+    SelectedFolder existsInSelectedFolderScannerObs(Path commonPath) {
+        for (SelectedFolder sf : this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (sf.getFolder().equals(commonPath.toString())) {
+                return sf;
+            }
+        }
+        return null;
     }
 }
