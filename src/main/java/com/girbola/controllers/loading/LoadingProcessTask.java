@@ -43,6 +43,10 @@ public class LoadingProcessTask {
         loadGUI();
     }
 
+    public void setProgress(double value, double max) {
+        modelLoading.getProgressBar().setProgress(value / max);
+    }
+
     /*
      * private Stage loadingStage; private Scene loadingScene;
      */

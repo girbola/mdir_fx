@@ -8,6 +8,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.girbola.filelisting.ValidatePathUtils.validFolder;
+
 public class FileTreeScanTask extends Task<List<Path>> {
     private final Path root;
     private final boolean estimate; // whether to do a pre-pass to estimate entries
@@ -22,6 +24,9 @@ public class FileTreeScanTask extends Task<List<Path>> {
         updateTitle("Scanning: " + root);
     }
 
+    /**
+     * Performs cancellable file tree traversal; collects paths
+     */
     @Override
     protected List<Path> call() throws Exception {
         if (!Files.exists(root)) {
@@ -42,10 +47,16 @@ public class FileTreeScanTask extends Task<List<Path>> {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 if (isCancelled()) return FileVisitResult.TERMINATE;
+                try {
+                    if (!validFolder(dir)) {
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                } catch (IOException e) {
+                    return FileVisitResult.SKIP_SUBTREE;
+                }
                 record(dir);
                 return FileVisitResult.CONTINUE;
             }
-
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (isCancelled()) return FileVisitResult.TERMINATE;

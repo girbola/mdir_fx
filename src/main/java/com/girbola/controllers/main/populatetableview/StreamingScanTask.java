@@ -24,15 +24,24 @@ public class StreamingScanTask extends Task<Void> {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 if (isCancelled()) return FileVisitResult.TERMINATE;
-                emit(dir);
-                return FileVisitResult.CONTINUE;
+                if (validFolder(dir)) {
+                    emit(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+                return FileVisitResult.SKIP_SUBTREE;
             }
 
             @Override
             public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
                 if (isCancelled()) return FileVisitResult.TERMINATE;
-                emit(file);
+                if (Files.isReadable(file)) {
+                    emit(file);
+                }
                 return FileVisitResult.CONTINUE;
+            }
+
+            private boolean validFolder(Path dir) {
+                return Files.exists(dir) && Files.isDirectory(dir) && Files.isReadable(dir);
             }
 
             private void emit(Path p) {

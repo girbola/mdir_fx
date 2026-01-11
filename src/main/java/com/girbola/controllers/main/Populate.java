@@ -6,6 +6,7 @@ import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
+import com.girbola.controllers.main.populatetableview.SequentialMultiScan;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
@@ -68,7 +69,12 @@ public class Populate {
             }
         }
 
-        if (modelMain.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) return;
+        if(selectedFolders.isEmpty()) {
+            sprintf("selectedFolders is null or empty");
+            return;
+        }
+
+
 
         // Add checked in datefixer
 
@@ -97,7 +103,11 @@ public class Populate {
 //        for(Path path : acceptedFolders) {
 //            sprintf("acceptedFolders initialized with path: " + path);
 //        }
-
+//LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
+//
+//        SequentialMultiScan sequentialMultiScan = new SequentialMultiScan(loadingProcessTask);
+//        sequentialMultiScan.scanInOrder(selectedFolders);
+////
         Messages.sprintf("populateTablesFolderScannerList action ended. selectedFolders.size():::: " + selectedFolders.size());
         Thread createFileListThread = createFileListProcessingThread(owner, selectedFolders);
         createFileListThread.start();

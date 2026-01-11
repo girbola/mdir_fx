@@ -41,6 +41,7 @@ public class SubList extends Task<List<Path>> {
             if (Main.getProcessCancelled()) {
                 break;
             }
+            // Adds and recurses valid subfolders if not present
             if (ValidatePathUtils.validFolder(path)) {
                 sprintf("----calculating: " + path);
                 if (!SubList.list.contains(path)) {
