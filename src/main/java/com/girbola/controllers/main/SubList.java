@@ -29,28 +29,28 @@ public class SubList extends Task<List<Path>> {
         this.selectedFolderScanner_list = selectedFolderScanner_list;
     }
 
-    private static void collectSubFoldersRecursively(Path p) throws IOException {
-        if (Files.isReadable(p)) {
-            sprintf("IS Readable. SubList - calculate: " + p);
-        }
-        printFileInfo(p);
-
-//        SubFolders subFolders = new SubFolders();
-        List<Path> list = SubFolders.subFolders(p);
-        for (Path path : list) {
-            if (Main.getProcessCancelled()) {
-                break;
-            }
-            // Adds and recurses valid subfolders if not present
-            if (ValidatePathUtils.validFolder(path)) {
-                sprintf("----calculating: " + path);
-                if (!SubList.list.contains(path)) {
-                    SubList.list.add(path);
-                    collectSubFoldersRecursively(path);
-                }
-            }
-        }
-    }
+//    private static void collectSubFoldersRecursively(Path p) throws IOException {
+//        if (Files.isReadable(p)) {
+//            sprintf("IS Readable. SubList - calculate: " + p);
+//        }
+//        printFileInfo(p);
+//
+////        SubFolders subFolders = new SubFolders();
+//        List<Path> list = SubFolders.subFolders(p);
+//        for (Path path : list) {
+//            if (Main.getProcessCancelled()) {
+//                break;
+//            }
+//            // Adds and recurses valid subfolders if not present
+//            if (ValidatePathUtils.validFolder(path)) {
+//                sprintf("----calculating: " + path);
+//                if (!SubList.list.contains(path)) {
+//                    SubList.list.add(path);
+//                    collectSubFoldersRecursively(path);
+//                }
+//            }
+//        }
+//    }
 
     public static void printFileInfo(Path path) {
         try {
