@@ -114,42 +114,66 @@ public class ModelMain {
     }
 
     public boolean saveAllTableContents() {
-        Messages.sprintf("saveAllTableContents started");
-        Connection connection = ConfigurationSQLHandler.getConnection();
+    Messages.sprintf("saveAllTableContents started");
+    Connection connection = null;
+    boolean success = true;
+
+    try {
+        connection = ConfigurationSQLHandler.getConnection();
         if (!SQL_Utils.isDbConnected(connection)) {
             Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
             return false;
         }
+
         SQL_Utils.setAutoCommit(connection, false);
 
-//        SQL_Utils.clearTable(connection, SQLTableEnums.SAVED_FOLDERS.getType()); // clear table folderInfo.db
-        SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection); // create new folderinfodatabase folderInfo.db
+        // Create the necessary tables first
+        SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection);
 
+        // Save each table's content and track success
         boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
         if (sorted) {
             Messages.sprintf("sorted were saved successfully");
+        } else {
+            Messages.sprintf("Failed to save sorted table");
+            success = false;
         }
 
         boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
         if (sortit) {
             Messages.sprintf("sortit were saved successfully");
+        } else {
+            Messages.sprintf("Failed to save sortit table");
+            success = false;
         }
 
         boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
         if (asitis) {
             Messages.sprintf("asitis were saved successfully");
+        } else {
+            Messages.sprintf("Failed to save asitis table");
+            success = false;
         }
 
-        SQL_Utils.commitChanges(connection);
+        // Commit only if all operations were successful
+        if (success) {
+            SQL_Utils.commitChanges(connection);
+            Main.setChanged(false);
+        } else {
+            SQL_Utils.rollBackConnection(connection);
+        }
 
-        boolean closeConnection = SQL_Utils.closeConnection(connection);
-        if (!closeConnection) return false;
-
-        Main.setChanged(false);
-
-        return true;
-
+        return success;
+    } catch (Exception e) {
+        Messages.sprintfError("Error in saveAllTableContents: " + e.getMessage());
+        if (connection != null) {
+            SQL_Utils.rollBackConnection(connection);
+        }
+        return false;
+    } finally {
+        SQL_Utils.closeConnection(connection);
     }
+}
 
     /**
      * Saves the content of the provided folder information list into the database based on the specified table type.

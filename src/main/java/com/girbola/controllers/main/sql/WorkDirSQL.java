@@ -83,7 +83,7 @@ public class WorkDirSQL {
         String fileInfoTable = SQLTableEnums.FILEINFO.getType();
 
         try (Statement stmt = connection.createStatement()) {
-            String[] allColumns = FileInfoEnum.getAllColumnNames().split(",");
+            String[] allColumns = FileInfoEnum.getAllFileInfoColumnNames().split(",");
             for (String columnDef : allColumns) {
                 try {
                     String alterTableSQL = "ALTER TABLE " + fileInfoTable + " ADD COLUMN " + columnDef;
@@ -191,7 +191,7 @@ public class WorkDirSQL {
                 }
             }
 
-            List<String> allValuesSplitted = Arrays.asList(FileInfoEnum.getAllColumnNames().split(","));
+            List<String> allValuesSplitted = Arrays.asList(FileInfoEnum.getAllFileInfoColumnNames().split(","));
             StringBuilder valuePlaceholders = new StringBuilder();
             for (String placeHolder : allValuesSplitted) {
                 if (valuePlaceholders.length() > 0) {
@@ -201,7 +201,7 @@ public class WorkDirSQL {
             }
 
             final String sql = "INSERT INTO " + SQLTableEnums.FILEINFO.getType()
-                    + " (" + FileInfoEnum.getAllColumnNames() + ") "
+                    + " (" + FileInfoEnum.getAllFileInfoColumnNames() + ") "
                     + "VALUES (" + valuePlaceholders + ")";
 
             SQL_Utils.setAutoCommit(connection, false);
@@ -253,7 +253,7 @@ public class WorkDirSQL {
         if (!empty) {
             Messages.sprintf("findDuplicateByExactDate: " + fileInfo.getOrgPath() + " empty? ");
 
-            String sql = "SELECT " + FileInfoEnum.getAllColumnNames() +
+            String sql = "SELECT " + FileInfoEnum.getAllFileInfoColumnNames() +
                     " FROM " + SQLTableEnums.WORKDIR.getType() +
                     " WHERE orgPath = ? AND size = ? AND localDateTime = ? AND imageDifferenceHash = ?";
 

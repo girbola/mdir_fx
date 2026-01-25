@@ -49,8 +49,8 @@ public class FolderInfo_SQL {
 //			+ "tableType TEXT)";
 
     final static String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType() + " ("
-            + "'id' INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + "'status' INTEGER, "
+            + "'" + FolderInfoEnum.ID.getColumnName() + "' INTEGER PRIMARY KEY AUTOINCREMENT, "
+            + "'" + FolderInfoEnum.STATUS.getColumnName() + "' INTEGER, "
             + "'" + FolderInfoEnum.CHANGED.getColumnName() + "' BOOLEAN, "
             + "'" + FolderInfoEnum.CONNECTED.getColumnName() + "' BOOLEAN, "
             + "'" + FolderInfoEnum.IGNORED.getColumnName() + "' BOOLEAN, "
@@ -263,6 +263,7 @@ public class FolderInfo_SQL {
 
             try {
                 String sql = buildSelectFolderInfoQuery();
+                
                 Messages.sprintf("sql query is: " + sql);
                 try (Statement stmt = connectionFileInfos.createStatement();
                      ResultSet rs = stmt.executeQuery(sql)) {
@@ -270,7 +271,6 @@ public class FolderInfo_SQL {
                         Messages.sprintfError("No folder information found in database");
                         return null;
                     }
-
 
                     List<FileInfo> fileInfos = FileInfo_SQL.loadFileInfoDatabase(connectionFileInfos);
                     if (fileInfos == null || fileInfos.isEmpty()) {
@@ -307,13 +307,29 @@ public class FolderInfo_SQL {
     }
 
     private static String buildSelectFolderInfoQuery() {
-        return "SELECT id, status, changed, connected, ignored, dateDifference, " +
-                "badFiles, confirmed, copied, folderFiles, folderImageFiles, " +
-                "folderRawFiles, folderVideoFiles, goodFiles, suggested, " +
-                "folderSize, justFolderName, folderPath, maxDate, minDate, " +
-                "state, tableType FROM " + SQLTableEnums.FOLDERINFO.getType();
-
-    }
+        return "SELECT id, status, " +
+            FolderInfoEnum.CHANGED.getColumnName() + ", " +
+            FolderInfoEnum.CONNECTED.getColumnName() + ", " +
+            FolderInfoEnum.IGNORED.getColumnName() + ", " +
+            FolderInfoEnum.DATE_DIFFERENCE.getColumnName() + ", " +
+            FolderInfoEnum.BAD_FILES.getColumnName() + ", " +
+            FolderInfoEnum.CONFIRMED.getColumnName() + ", " +
+            FolderInfoEnum.COPIED.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_FILES.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_RAW_FILES.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName() + ", " +
+            FolderInfoEnum.GOOD_FILES.getColumnName() + ", " +
+            FolderInfoEnum.SUGGESTED.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_SIZE.getColumnName() + ", " +
+            FolderInfoEnum.JUST_FOLDER_NAME.getColumnName() + ", " +
+            FolderInfoEnum.FOLDER_PATH.getColumnName() + ", " +
+            FolderInfoEnum.MAX_DATE.getColumnName() + ", " +
+            FolderInfoEnum.MIN_DATE.getColumnName() + ", " +
+            FolderInfoEnum.STATE.getColumnName() + ", " +
+            FolderInfoEnum.TABLE_TYPE.getColumnName() +
+            " FROM " + SQLTableEnums.FOLDERINFO.getType();
+}
 
     private static void loadFolderInfoFromResultSet(FolderInfo folderInfo, ResultSet rs) throws SQLException {
         folderInfo.setBadFiles(rs.getInt(FolderInfoEnum.BAD_FILES.getColumnName()));

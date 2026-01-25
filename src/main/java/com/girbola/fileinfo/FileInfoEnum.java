@@ -137,7 +137,7 @@ public enum FileInfoEnum {
     }
 
 
-    public static String getAllColumnNames() {
+    public static String getAllFileInfoColumnNames() {
         StringBuilder columnNamesBuilder = new StringBuilder();
         for (int i = 0; i < BINDING_ORDER.length; i++) {
             if (i > 0) {

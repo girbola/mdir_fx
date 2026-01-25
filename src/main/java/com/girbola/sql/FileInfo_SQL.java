@@ -18,6 +18,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -173,11 +174,11 @@ public class FileInfo_SQL {
 
 
 // java
-            String[] cols = FileInfoEnum.getAllColumnNames().split("\\s*,\\s*");
+            String[] cols = FileInfoEnum.getAllFileInfoColumnNames().split("\\s*,\\s*");
             int colCount = cols.length;
             String placeholders = String.join(", ", Collections.nCopies(colCount, "?"));
             String sqlInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" +
-                    FileInfoEnum.getAllColumnNames() +
+                    FileInfoEnum.getAllFileInfoColumnNames() +
                     ") VALUES (" + placeholders + ");";
 
             Messages.sprintf("FileInfo columns count: " + colCount + " columns: " + Arrays.toString(cols));
@@ -241,7 +242,7 @@ public class FileInfo_SQL {
         try (Statement stmt = connection.createStatement()) {
             // Add any missing columns
 
-            for (String columnDef : FileInfoEnum.getAllColumnNames().split(",")) {
+            for (String columnDef : FileInfoEnum.getAllFileInfoColumnNames().split(",")) {
                 String columnName = columnDef.split("\\s+")[0].toLowerCase();
                 if (!existingColumns.contains(columnName)) {
                     try {
@@ -299,40 +300,42 @@ public class FileInfo_SQL {
     }
 
     public static String createFileInfoTable() {
-        return "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FILEINFO.getType() + "(" +
-                FileInfoEnum.BAD.getColumnName() + " " + FileInfoEnum.BAD.getSqlType() + ", " +
-                FileInfoEnum.CAMERA_MODEL.getColumnName() + " " + FileInfoEnum.CAMERA_MODEL.getSqlType() + ", " +
-                FileInfoEnum.CONFIRMED.getColumnName() + " " + FileInfoEnum.CONFIRMED.getSqlType() + ", " +
-                FileInfoEnum.DESTINATION_PATH.getColumnName() + " " + FileInfoEnum.DESTINATION_PATH.getSqlType() + ", " +
-                FileInfoEnum.EVENT.getColumnName() + " " + FileInfoEnum.EVENT.getSqlType() + ", " +
-                FileInfoEnum.FILEINFO_ID.getColumnName() + " " + FileInfoEnum.FILEINFO_ID.getSqlType() + ", " +
-                FileInfoEnum.FILEHISTORIES.getColumnName() + " " + FileInfoEnum.FILEHISTORIES.getSqlType() + ", " +
-                FileInfoEnum.GOOD.getColumnName() + " " + FileInfoEnum.GOOD.getSqlType() + ", " +
-                FileInfoEnum.COPIED.getColumnName() + " " + FileInfoEnum.COPIED.getSqlType() + ", " +
-                FileInfoEnum.IGNORED.getColumnName() + " " + FileInfoEnum.IGNORED.getSqlType() + ", " +
-                FileInfoEnum.IMAGE.getColumnName() + " " + FileInfoEnum.IMAGE.getSqlType() + ", " +
-                FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + " " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getSqlType() + ", " +
-                FileInfoEnum.LOCATION.getColumnName() + " " + FileInfoEnum.LOCATION.getSqlType() + ", " +
-                FileInfoEnum.MODIFIED.getColumnName() + " " + FileInfoEnum.MODIFIED.getSqlType() + ", " +
-                FileInfoEnum.ORGPATH.getColumnName() + " " + FileInfoEnum.ORGPATH.getSqlType() + ", " +
-                FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getSqlType() + ", " +
-                FileInfoEnum.ORIENTATION.getColumnName() + " " + FileInfoEnum.ORIENTATION.getSqlType() + ", " +
-                FileInfoEnum.RAW.getColumnName() + " " + FileInfoEnum.RAW.getSqlType() + ", " +
-                FileInfoEnum.SIZE.getColumnName() + " " + FileInfoEnum.SIZE.getSqlType() + ", " +
-                FileInfoEnum.SUGGESTED.getColumnName() + " " + FileInfoEnum.SUGGESTED.getSqlType() + ", " +
-                FileInfoEnum.TABLE_DUPLICATED.getColumnName() + " " + FileInfoEnum.TABLE_DUPLICATED.getSqlType() + ", " +
-                FileInfoEnum.TAGS.getColumnName() + " " + FileInfoEnum.TAGS.getSqlType() + ", " +
-                FileInfoEnum.THUMB_LENGTH.getColumnName() + " " + FileInfoEnum.THUMB_LENGTH.getSqlType() + ", " +
-                FileInfoEnum.THUMB_OFFSET.getColumnName() + " " + FileInfoEnum.THUMB_OFFSET.getSqlType() + ", " +
-                FileInfoEnum.TIME_SHIFT.getColumnName() + " " + FileInfoEnum.TIME_SHIFT.getSqlType() + ", " +
-                FileInfoEnum.USER.getColumnName() + " " + FileInfoEnum.USER.getSqlType() + ", " +
-                FileInfoEnum.VIDEO.getColumnName() + " " + FileInfoEnum.VIDEO.getSqlType() + ", " +
-                FileInfoEnum.WORK_DIR.getColumnName() + " " + FileInfoEnum.WORK_DIR.getSqlType() + ", " +
-                FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getSqlType() + ");";
+        return FileInfoEnum.getCreateTableSQL(SQLTableEnums.FILEINFO.getType());
+//
+//        return "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FILEINFO.getType() + "(" +
+//                FileInfoEnum.BAD.getColumnName() + " " + FileInfoEnum.BAD.getSqlType() + ", " +
+//                FileInfoEnum.CAMERA_MODEL.getColumnName() + " " + FileInfoEnum.CAMERA_MODEL.getSqlType() + ", " +
+//                FileInfoEnum.CONFIRMED.getColumnName() + " " + FileInfoEnum.CONFIRMED.getSqlType() + ", " +
+//                FileInfoEnum.DESTINATION_PATH.getColumnName() + " " + FileInfoEnum.DESTINATION_PATH.getSqlType() + ", " +
+//                FileInfoEnum.EVENT.getColumnName() + " " + FileInfoEnum.EVENT.getSqlType() + ", " +
+//                FileInfoEnum.FILEINFO_ID.getColumnName() + " " + FileInfoEnum.FILEINFO_ID.getSqlType() + ", " +
+//                FileInfoEnum.FILEHISTORIES.getColumnName() + " " + FileInfoEnum.FILEHISTORIES.getSqlType() + ", " +
+//                FileInfoEnum.GOOD.getColumnName() + " " + FileInfoEnum.GOOD.getSqlType() + ", " +
+//                FileInfoEnum.COPIED.getColumnName() + " " + FileInfoEnum.COPIED.getSqlType() + ", " +
+//                FileInfoEnum.IGNORED.getColumnName() + " " + FileInfoEnum.IGNORED.getSqlType() + ", " +
+//                FileInfoEnum.IMAGE.getColumnName() + " " + FileInfoEnum.IMAGE.getSqlType() + ", " +
+//                FileInfoEnum.IMAGE_DIFFERENCE_HASH.getColumnName() + " " + FileInfoEnum.IMAGE_DIFFERENCE_HASH.getSqlType() + ", " +
+//                FileInfoEnum.LOCATION.getColumnName() + " " + FileInfoEnum.LOCATION.getSqlType() + ", " +
+//                FileInfoEnum.MODIFIED.getColumnName() + " " + FileInfoEnum.MODIFIED.getSqlType() + ", " +
+//                FileInfoEnum.ORGPATH.getColumnName() + " " + FileInfoEnum.ORGPATH.getSqlType() + ", " +
+//                FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.ORGPATH_DRIVE_SERIAL_NUMBER.getSqlType() + ", " +
+//                FileInfoEnum.ORIENTATION.getColumnName() + " " + FileInfoEnum.ORIENTATION.getSqlType() + ", " +
+//                FileInfoEnum.RAW.getColumnName() + " " + FileInfoEnum.RAW.getSqlType() + ", " +
+//                FileInfoEnum.SIZE.getColumnName() + " " + FileInfoEnum.SIZE.getSqlType() + ", " +
+//                FileInfoEnum.SUGGESTED.getColumnName() + " " + FileInfoEnum.SUGGESTED.getSqlType() + ", " +
+//                FileInfoEnum.TABLE_DUPLICATED.getColumnName() + " " + FileInfoEnum.TABLE_DUPLICATED.getSqlType() + ", " +
+//                FileInfoEnum.TAGS.getColumnName() + " " + FileInfoEnum.TAGS.getSqlType() + ", " +
+//                FileInfoEnum.THUMB_LENGTH.getColumnName() + " " + FileInfoEnum.THUMB_LENGTH.getSqlType() + ", " +
+//                FileInfoEnum.THUMB_OFFSET.getColumnName() + " " + FileInfoEnum.THUMB_OFFSET.getSqlType() + ", " +
+//                FileInfoEnum.TIME_SHIFT.getColumnName() + " " + FileInfoEnum.TIME_SHIFT.getSqlType() + ", " +
+//                FileInfoEnum.USER.getColumnName() + " " + FileInfoEnum.USER.getSqlType() + ", " +
+//                FileInfoEnum.VIDEO.getColumnName() + " " + FileInfoEnum.VIDEO.getSqlType() + ", " +
+//                FileInfoEnum.WORK_DIR.getColumnName() + " " + FileInfoEnum.WORK_DIR.getSqlType() + ", " +
+//                FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName() + " " + FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getSqlType() + ");";
     }
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
-        if(rs==null || !rs.next()) {
+        if (rs == null || !rs.next()) {
             return null;
         }
 
@@ -479,6 +482,21 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
             return new ArrayList<>();
         }
 
+        // Add this block to ensure all required columns exist
+        try {
+            // Create a map of column names and their SQL types
+            Map<String, String> fileInfoColumnsMap = new HashMap<>();
+            for (FileInfoEnum column : FileInfoEnum.values()) {
+                fileInfoColumnsMap.put(column.getColumnName(), column.getSqlType());
+                Messages.sprintf("############Adding column: " + column.getColumnName());
+            }
+            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
+            Messages.sprintf("############Ensured columns exist!");
+        } catch (SQLException e) {
+            Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
 //        try {
 //            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);}
 //        catch (SQLException e) {
@@ -486,7 +504,10 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
 //            throw new RuntimeException(e);
 //        }
         List<FileInfo> list = new ArrayList<>();
-        String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
+
+        //String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
+        String sql = "SELECT " + FileInfoEnum.getAllFileInfoColumnNames() +
+                " FROM " + SQLTableEnums.FILEINFO.getType();
 
         boolean originalAutoCommit = true;
         try {
@@ -506,6 +527,9 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
                     }
 
                     FileInfo finfo = loadFileInfo(rs);
+                    if(finfo == null) {
+                        Messages.sprintfError("############## Cannot load fileinfo: " + finfo.toString() );
+                    }
 //                    if (finfo == null) {
 //                        SQL_Utils.rollBackConnection(connection);
 //                        return new ArrayList<>();
