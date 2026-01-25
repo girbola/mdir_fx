@@ -66,6 +66,9 @@ public class SQL_Utils extends FolderInfo_SQL {
     public static boolean closeConnection(Connection connection) {
 //        Messages.sprintf("About to close connection at: " + getUrl(connection));
         try {
+            if(connection == null) {
+                return false;
+            }
             if (isDbConnected(connection)) {
                 if(!SQL_Utils.isAutoCommit(connection)) {
                     connection.commit();

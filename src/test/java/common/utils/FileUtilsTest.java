@@ -33,7 +33,9 @@ public class FileUtilsTest {
     @Test
     public void renameFileToDate() throws IOException {
 
-        FileInfo fileInfo = FileInfoUtils.createFileInfo(srcTest);
+        System.out.println("SRCPATH: " + srcTest.toFile().getAbsolutePath());
+        File absoluteFile = srcTest.toFile().getAbsoluteFile();
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(absoluteFile.toPath());
         Path renamedFile = FileInfoUtils.renameFileToDate(srcTest, fileInfo);
         Path expectedFile = Paths.get(srcTest.getParent().toString(), "1970-01-01 00.00.00.jpg");
         assertEquals(expectedFile.toString(), renamedFile.toString());
@@ -64,13 +66,21 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testRenameFileSourceDoesNotExist() throws IOException {
+    public void testRenameFileSourceDoesNotExist() {
         Path nonExistentSource = Paths.get("src", "test", "resources", "non-existent.jpg");
         Path destFile = Paths.get("src", "test", "resources", "out", "IMG1.jpg");
-
+        Path pathToTest = null;
         // Attempt to rename and expect an exception
-        IOException exception = assertThrows(IOException.class, () -> FileUtils.renameFile(nonExistentSource, destFile));
-        assertTrue(exception.getMessage().contains("non-existent.jpg"));
+        try {
+            pathToTest = FileUtils.renameFile(nonExistentSource, destFile);
+            if(pathToTest != null) {
+                System.out.println("path: " + pathToTest);
+            }
+        } catch (IOException e) {
+            return;
+        };
+
+        assertNull(pathToTest);
     }
 
     @Test

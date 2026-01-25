@@ -2,7 +2,6 @@ package com.girbola.controllers.main.options;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;

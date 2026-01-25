@@ -2,7 +2,7 @@ package com.girbola.configuration;
 
 import javafx.beans.property.SimpleDoubleProperty;
 
-public class ConfigurationWindow extends Configuration_GetsSets {
+public class ConfigurationWindow extends ConfigurationGetsSets {
 
     private SimpleDoubleProperty imageViewXProperty = new SimpleDoubleProperty(0);
     private SimpleDoubleProperty imageViewYProperty = new SimpleDoubleProperty(0);

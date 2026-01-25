@@ -37,7 +37,8 @@ public class WorkDirSQL {
             System.out.println("WorkDirSQL: " + workDirPath.toString() + " exists");
             this.connection = createWorkDirConnection(workDirPath);
         } else {
-            System.err.println("WorkDirSQL: " + workDirPath.toString() + " does not exist");
+            loadWorkDir();
+            System.err.println("Loading the content: " + workDirPath.toString());
         }
     }
 
@@ -104,7 +105,7 @@ public class WorkDirSQL {
         try {
             // Check if the connection is valid
             if (!SQL_Utils.isDbConnected(connection)) {
-                Messages.sprintf("Configuration database closed");
+                Messages.sprintf("Configuration database closed. Creating new connection");
                 connection = createWorkDirConnection(Main.conf.getAppDataPath());
                 if (connection == null) {
                     Messages.sprintfError("Failed to create new configuration connection");

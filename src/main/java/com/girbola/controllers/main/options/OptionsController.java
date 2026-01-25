@@ -2,7 +2,6 @@
 package com.girbola.controllers.main.options;
 
 import com.girbola.Main;
-import com.girbola.configuration.Configuration_SQL_Utils;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.sql.WorkDirSQL;
@@ -12,7 +11,6 @@ import common.utils.OSHI_Utils;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
