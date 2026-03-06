@@ -58,6 +58,7 @@ public class ConvertImage extends Task<Image> {
 			if (imageView != null) {
                 try {
                     imageView.setImage(get());
+					Messages.sprintf("ConvertImage image loading succeeded: " + imageView.getImage());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 } catch (ExecutionException e) {

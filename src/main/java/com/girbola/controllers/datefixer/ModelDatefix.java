@@ -412,36 +412,38 @@ public class ModelDatefix extends DateFixerModel {
                 Stage stage = (Stage) Main.sceneManager.getScene_dateFixer().getWindow();
                 stage.setScene(Main.sceneManager.getScene_dateFixer());
 
-                if (Main.conf.isSavingThumb()) {
-
-                    Main.setProcessCancelled(true);
-                    getRenderVisibleNode().stopTimeLine();
-                    ConcurrencyUtils.stopExecThreadNow();
-
-                    Task<List<ThumbInfo>> task = new SaveThumbInfos(connection, currentFolderPath, tilePane);
-
-                    task.setOnSucceeded(workerStateEvent -> {
-                        Messages.sprintf("saveThumb were succeeded: " + workerStateEvent.getSource().getMessage());
-
-                        event.consume();
-                    });
-                    task.setOnFailed(workerStateEvent -> {
-                        event.consume();
-                        Messages.sprintf("saveThumb were failed");
-                    });
-                    task.setOnCancelled(workerStateEvent -> {
-                        event.consume();
-                        Messages.sprintf("saveThumb were cancelled");
-                    });
-
-                    Thread thread = new Thread(task);
-                    thread.start();
-                }
 
             } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
                 event.consume();
                 return;
             }
+        }
+
+
+        if (Main.conf.isSavingThumb()) {
+
+            Main.setProcessCancelled(true);
+            getRenderVisibleNode().stopTimeLine();
+            ConcurrencyUtils.stopExecThreadNow();
+
+            Task<List<ThumbInfo>> task = new SaveThumbInfos(connection, currentFolderPath, tilePane);
+
+            task.setOnSucceeded(workerStateEvent -> {
+                Messages.sprintf("saveThumb were succeeded: " + workerStateEvent.getSource().getMessage());
+
+                event.consume();
+            });
+            task.setOnFailed(workerStateEvent -> {
+                event.consume();
+                Messages.sprintf("saveThumb were failed");
+            });
+            task.setOnCancelled(workerStateEvent -> {
+                event.consume();
+                Messages.sprintf("saveThumb were cancelled");
+            });
+
+            Thread thread = new Thread(task);
+            thread.start();
         }
 
         if (changes_made.get()) {

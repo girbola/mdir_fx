@@ -5,6 +5,7 @@ import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.sql.FolderInfo_SQL;
@@ -39,7 +40,7 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                 }
 
                 List<FolderInfoStatus> savedFolders = ConfigurationSavedFoldersDao.loadSavedFolderDetails(connection, modelMain);
-                Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + savedFolders.size());
+                Messages.sprintf("LoadFileInfosBackToTableViews savedFolderInfoStatuses: " + savedFolders.get(0).getFolderPath());
                 if (savedFolders == null || savedFolders.isEmpty()) {
                     Messages.sprintf("There were no data available for loading" + LoadFileInfosBackToTableViews.class.getName());
                     cancel();
@@ -48,29 +49,37 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                     for (FolderInfoStatus folderInfoStatus : savedFolders) {
                         Messages.sprintf("-----folderInfoStatus: " + folderInfoStatus.getFolderPath());
                         if (Main.getProcessCancelled()) {
+                            Messages.sprintf("FolderInfoStatus Process cancelled");
                             cancel();
                             return false;
                         }
-                        //Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+                        Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
 
                         FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfoStatus.getFolderPath());
                         if (folderInfo == null) {
-                            Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " " + Misc.getLineNumber());
+                            Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
                             continue;
                         }
-                        Messages.sprintf("-----------------folderInfo table type:::: " + folderInfo.getTableType());
+                        if(!folderInfo.getFolderPath().contains("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON\\")) {
+                            Messages.sprintf("Here we go!: " + folderInfo.getFolderPath());
+                        }
+                        Messages.sprintf("-----------------folderInfo getFolderPath:::: " + folderInfo.getFolderPath());
 
                         try {
                             if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTIT.getType())) {
                                 modelMain.tables().getSortIt_table().getItems().add(folderInfo);
+                                Messages.sprintf("SORTIT ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
                             } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTED.getType())) {
                                 modelMain.tables().getSorted_table().getItems().add(folderInfo);
+                                Messages.sprintf("SORTED ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
                             } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.ASITIS.getType())) {
                                 modelMain.tables().getAsItIs_table().getItems().add(folderInfo);
+                                Messages.sprintf("ASITIS ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
                             } else {
                                 Messages.sprintfError("FolderInfo tableType was not recognized: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
                                 Platform.exit();
                             }
+                            Messages.sprintf("FOLDER TO ITERATE NOW::::: " + folderInfo.getFolderPath() + " TYPEEE:::: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
                         } catch (Exception e) {
                             Messages.sprintfError("Error in tableType: " + folderInfo.getTableType() + " " + Misc.getLineNumber() + " " + e.getMessage());
                         }

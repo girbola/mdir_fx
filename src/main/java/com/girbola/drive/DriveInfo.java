@@ -44,4 +44,19 @@ public class DriveInfo {
 		this.identifier = identifier;
 	}
 
+	@Override
+	public String toString() {
+		return "DriveInfo{" +
+				"fileSystem=" + fileSystem +
+				", selectedFolders=" + selectedFolders +
+				", drive=" + drive +
+				", drivePath='" + drivePath + '\'' +
+				", identifier='" + identifier + '\'' +
+				", serial='" + serial + '\'' +
+				", connected=" + connected +
+				", isWritable=" + isWritable +
+				", selected=" + selected +
+				", driveTotalSize=" + driveTotalSize +
+				'}';
+	}
 }

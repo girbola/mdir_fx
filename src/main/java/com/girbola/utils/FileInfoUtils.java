@@ -456,6 +456,8 @@ public class FileInfoUtils {
             return false;
         }
         ExifSubIFDDirectory subIfd = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
+        ExifThumbnailDirectory firstDirectoryOfType = metaData.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+        firstDirectoryOfType.getAdjustedThumbnailOffset();
 
         if (subIfd != null) {
             Integer width = subIfd.getInteger(ExifDirectoryBase.TAG_EXIF_IMAGE_WIDTH);
@@ -463,7 +465,7 @@ public class FileInfoUtils {
             if (width != null && width != 0 && height != null && height != 0) {
                 fileInfo.setWidth(width);
                 fileInfo.setHeight(height);
-                Messages.sprintf("width: " + width + ", height: " + height);
+                Messages.sprintf("123width: " + width + ", height: " + height);
                 return true;
             } else {
                 BufferedImage bufferedImage = ImageIO.read(new File(fileInfo.getOrgPath()));
@@ -834,6 +836,24 @@ public class FileInfoUtils {
             // Consider proper logging here
             return false;
         }
+    }
+
+    public static FileInfo createWorkDirFileInfo(FileInfo fileInfo, Path dest) throws CloneNotSupportedException {
+        FileInfo workDirFileInfo = (FileInfo) fileInfo.clone();
+//
+//        workDirFileInfo.thu
+//
+//        workDirFileInfo.setFileInfo_id(generateNewWorkDirId());
+        workDirFileInfo.setCopied(true);
+
+        workDirFileInfo.setWorkDir(dest.toAbsolutePath().toString());
+        workDirFileInfo.setWorkDirDriveSerialNumber(fileInfo.getWorkDirDriveSerialNumber());
+        workDirFileInfo.setDestination_Path(dest.toAbsolutePath().toString());
+        workDirFileInfo.setTableDuplicated(true);
+
+
+
+        return workDirFileInfo;
     }
 
 

@@ -40,7 +40,7 @@ public class AskEventDialogController {
 
     private List<FileInfo> applyChanges(String workDir) {
         List<FileInfo> list = new ArrayList<>();
-        if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb.getEditor().getText().isEmpty()) {
+        if (!event_cmb.getEditor().getText().isEmpty() || !location_cmb. getEditor().getText().isEmpty()) {
             for (Node selected_Node : model_dateFix.getSelectionModel().getSelectionList()) {
                 FileInfo fileInfo = (FileInfo) selected_Node.getUserData();
                 Messages.sprintf("selected_Node.getUserData Fileinfo: " + fileInfo);
@@ -132,7 +132,7 @@ public class AskEventDialogController {
 //            Messages.errorSmth(ERROR, ex.getMessage(), ex, Misc.getLineNumber(), false);
 //        }
 
-        Messages.sprintf("OperateFiles instance ended?");
+        Messages.sprintf("OperateFiles instance ended");
     }
 
     @FXML

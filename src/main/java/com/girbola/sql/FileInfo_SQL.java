@@ -26,77 +26,40 @@ import java.util.Set;
 
 public class FileInfo_SQL {
 
-
-//    final public static String[] fileInfoColumnsSQL_ = {
-//            FileInfoConstants.BAD + " BOOLEAN",
-//            FileInfoConstants.CAMERA_MODEL + " STRING",
-//            FileInfoConstants.CONFIRMED + " BOOLEAN",
-//            FileInfoConstants.DATE + " NUMERIC",
-//            FileInfoConstants.DESTINATIONPATH + " STRING",
-//            FileInfoConstants.EVENT + " STRING",
-//            FileInfoConstants.FILEINFOID + " INTEGER PRIMARY KEY",
-//            FileInfoConstants.FILEHISTORIES + " STRING",
-//            FileInfoConstants.GOOD + " BOOLEAN",
-//            FileInfoConstants.COPIED + " BOOLEAN",
-//            FileInfoConstants.IGNORED + " BOOLEAN",
-//            FileInfoConstants.IMAGE + " BOOLEAN",
-//            FileInfoConstants.IMAGE_DIFFERENCE_HASH + " STRING",
-//            FileInfoConstants.LOCATION + " STRING",
-//            FileInfoConstants.MODIFIED + " BOOLEAN",
-//            FileInfoConstants.ORG_PATH + " STRING UNIQUE",
-//            FileInfoConstants.ORIENTATION + " INTEGER",
-//            FileInfoConstants.RAW + " BOOLEAN",
-//            FileInfoConstants.SIZE + " NUMERIC",
-//            FileInfoConstants.SUGGESTED + " BOOLEAN",
-//            FileInfoConstants.TABLE_DUPLICATED + " BOOLEAN",
-//            FileInfoConstants.TAGS + " STRING",
-//            FileInfoConstants.THUMB_LENGTH + " INTEGER",
-//            FileInfoConstants.THUMB_OFFSET + " INTEGER",
-//            FileInfoConstants.TIMESHIFT + " INTEGER",
-//            FileInfoConstants.USER + " STRING",
-//            FileInfoConstants.VIDEO + " BOOLEAN",
-//            FileInfoConstants.WORK_DIR + " STRING",
-//            FileInfoConstants.WORK_DIR_DRIVE_SERIAL_NUMBER + " STRING"
-//    };
-
-
     private static final String ERROR = FileInfo_SQL.class.getName();
 
     // @formatter:on
-    // java
     public static boolean addToFileInfoDB(PreparedStatement pstmt, FileInfo fileInfo) {
         try {
             int index = 1;
-            pstmt.setInt(index++, fileInfo.getFileInfo_id());
-            pstmt.setString(index++, fileInfo.getOrgPath());
-            pstmt.setString(index++, fileInfo.getWorkDir());
-            pstmt.setString(index++, fileInfo.getWorkDirDriveSerialNumber());
-            pstmt.setString(index++, fileInfo.getDestination_Path());
-            pstmt.setString(index++, fileInfo.getCamera_model());
-            pstmt.setString(index++, fileInfo.getUser());
-            pstmt.setInt(index++, fileInfo.getOrientation());
             pstmt.setBoolean(index++, fileInfo.isBad());
-            pstmt.setBoolean(index++, fileInfo.isGood());
+            pstmt.setString(index++, fileInfo.getCamera_model());
             pstmt.setBoolean(index++, fileInfo.isConfirmed());
+            pstmt.setString(index++, fileInfo.getDestination_Path());
+            pstmt.setLong(index++, fileInfo.getDate());        // <-- added DATE binding
+            pstmt.setString(index++, fileInfo.getEvent());
+            pstmt.setInt(index++, fileInfo.getFileInfo_id());
+            pstmt.setString(index++, convertFileHistoriesToString(fileInfo.getFileHistories()));
+            pstmt.setBoolean(index++, fileInfo.isGood());
             pstmt.setBoolean(index++, fileInfo.isCopied());
             pstmt.setBoolean(index++, fileInfo.isIgnored());
-            pstmt.setBoolean(index++, fileInfo.isModified());
-            pstmt.setBoolean(index++, fileInfo.isSuggested());
             pstmt.setBoolean(index++, fileInfo.isImage());
+            pstmt.setString(index++, fileInfo.getImageDifferenceHash());
+            pstmt.setString(index++, fileInfo.getLocation());
+            pstmt.setBoolean(index++, fileInfo.isModified());
+            pstmt.setString(index++, fileInfo.getOrgPath());
+            pstmt.setString(index++, fileInfo.getWorkDirDriveSerialNumber());
+            pstmt.setInt(index++, fileInfo.getOrientation());
             pstmt.setBoolean(index++, fileInfo.isRaw());
-            pstmt.setBoolean(index++, fileInfo.isVideo());
-            // ensure DATE is bound after TIMESHIFT to match FileInfoEnum.getAllColumnNames() ordering
-            pstmt.setLong(index++, fileInfo.getTimeShift());
-            pstmt.setLong(index++, fileInfo.getDate());        // <-- added DATE binding
             pstmt.setLong(index++, fileInfo.getSize());
+            pstmt.setBoolean(index++, fileInfo.isSuggested());
             pstmt.setBoolean(index++, fileInfo.isTableDuplicated());
             pstmt.setString(index++, fileInfo.getTags());
-            pstmt.setString(index++, fileInfo.getEvent());
-            pstmt.setString(index++, fileInfo.getLocation());
-            pstmt.setString(index++, fileInfo.getImageDifferenceHash());
-            pstmt.setInt(index++, fileInfo.getThumb_offset());
             pstmt.setInt(index++, fileInfo.getThumb_length());
-            pstmt.setString(index++, convertFileHistoriesToString(fileInfo.getFileHistories()));
+            pstmt.setInt(index++, fileInfo.getThumb_offset());
+            pstmt.setLong(index++, fileInfo.getTimeShift());
+            pstmt.setBoolean(index++, fileInfo.isVideo());
+            pstmt.setString(index++, fileInfo.getWorkDir());
 
             pstmt.addBatch();
             return true;
@@ -111,86 +74,78 @@ public class FileInfo_SQL {
     }
 
     // @formatter:on
+// ... existing code ...
     public static boolean insertFileInfoListToFileInfoDatabase(FolderInfo folderInfo, boolean isWorkDir) {
-        Messages.sprintf("--------------insertFileInfoListToDatabase started: " + folderInfo.getFolderPath() + " isWorkDir: " + isWorkDir);
-        Connection mdirDatabaseConnection = SqliteConnection.connectToDatabase(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+        final int BATCH_LIMIT = 1000;
+        final String logPrefix = "insertFileInfoListToFileInfoDatabase";
 
-        FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
+        Messages.sprintf("--------------" + logPrefix + " started: " + folderInfo.getFolderPath() + " isWorkDir: " + isWorkDir);
 
-        SQL_Utils.isDbConnected(mdirDatabaseConnection);
-        SQL_Utils.setAutoCommit(mdirDatabaseConnection, false);
-
-        List<FileInfo> list = folderInfo.getFileInfoList();
-
-        if (mdirDatabaseConnection == null || list == null || list.isEmpty()) {
-            Messages.sprintfError("Invalid parameters provided to insertFileInfoListToDatabase");
+        final List<FileInfo> fileInfos = (folderInfo != null) ? folderInfo.getFileInfoList() : null;
+        if (folderInfo == null || fileInfos == null || fileInfos.isEmpty()) {
+            Messages.sprintfError("Invalid parameters provided to " + logPrefix);
             return false;
         }
 
-        Messages.sprintf("insertFileInfoListToDatabase started");
-        Path folder = null;
+        final Connection connection = SqliteConnection.connectToDatabase(folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+        if (connection == null) {
+            Messages.sprintfError("Failed to open database connection: " + folderInfo.getFolderPath());
+            return false;
+        }
+
         try {
-            folder = Paths.get(list.get(0).getOrgPath()).getParent();
-            if (!Files.exists(folder)) {
-                Messages.sprintfError("Parent folder does not exist: " + folder);
+            if (!SQL_Utils.isDbConnected(connection)) {
+                Messages.sprintfError("Database connection lost: " + logPrefix + " " + folderInfo.getFolderPath());
                 return false;
             }
-        } catch (Exception e) {
-            Messages.sprintfError("Cannot get path for the folder: " + e.getMessage());
-            return false;
-        }
 
-        try {
-            boolean tableCreated = createFileInfoTable(mdirDatabaseConnection);
-            if (!tableCreated) {
+            SQL_Utils.setAutoCommit(connection, false);
+
+            final Path folder;
+            try {
+                folder = Paths.get(fileInfos.get(0).getOrgPath()).getParent();
+                if (folder == null || !Files.exists(folder)) {
+                    Messages.sprintfError("Parent folder does not exist: " + folder);
+                    return false;
+                }
+            } catch (Exception e) {
+                Messages.sprintfError("Cannot get path for the folder: " + e.getMessage());
+                return false;
+            }
+
+            if (!createFileInfoTable(connection)) {
                 Messages.sprintfError("Failed to create FileInfo table");
-                SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
             Messages.sprintf("FileInfo table created/verified");
 
-            if (!SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
-                Messages.sprintfError("Database connection lost");
-                SQL_Utils.closeConnection(mdirDatabaseConnection);
-                return false;
-            }
-//            SQL_Utils.ensureColumnsExist(mdirDatabaseConnection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
             // IMPORTANT: perform any other writes (which may commit/rollback/DDL) BEFORE preparing the statement
-            FolderInfo_SQL.saveFolderInfo(mdirDatabaseConnection, folderInfo);
-            SQL_Utils.commitChanges(mdirDatabaseConnection);
+            if (!FolderInfo_SQL.saveFolderInfo(connection, folderInfo)) {
+                Messages.sprintfError("Failed to save folder info for later loading: " + folderInfo.getFolderPath() + " still continuing");
+            }
+            SQL_Utils.commitChanges(connection);
 
-            // Re-check connection state after external call
-            if (!SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
+            if (!SQL_Utils.isDbConnected(connection)) {
                 Messages.sprintfError("Database connection lost after writing folder info");
-                SQL_Utils.closeConnection(mdirDatabaseConnection);
                 return false;
             }
-//            String sqlInsert =
-//                    "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" +
-//                            FileInfoEnum.getAllColumnNames() +
-//                            ") VALUES (" +
-//                            "?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?" +
-//                            ");";
 
-
-// java
-            String[] cols = FileInfoEnum.getAllFileInfoColumnNames().split("\\s*,\\s*");
-            int colCount = cols.length;
-            String placeholders = String.join(", ", Collections.nCopies(colCount, "?"));
-            String sqlInsert = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" +
-                    FileInfoEnum.getAllFileInfoColumnNames() +
+            final String columnNames = FileInfoEnum.getAllFileInfoColumnNames();
+            final String[] columns = columnNames.split("\\s*,\\s*");
+            final String placeholders = String.join(", ", Collections.nCopies(columns.length, "?"));
+            final String insertSql = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType() + " (" +
+                    columnNames +
                     ") VALUES (" + placeholders + ");";
 
-            Messages.sprintf("FileInfo columns count: " + colCount + " columns: " + Arrays.toString(cols));
+            Messages.sprintf("FileInfo columns count: " + columns.length + " columns: " + Arrays.toString(columns));
+            Messages.sprintf("Insert SQL: " + insertSql);
 
-            Messages.sprintf("FileInfoEnum.getAllColumnNames():::::::::: " + sqlInsert);
-            try (PreparedStatement pstmt = mdirDatabaseConnection.prepareStatement(sqlInsert)) {
-
+            try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
                 int batchSize = 0;
-                final int BATCH_LIMIT = 1000;
 
-                for (FileInfo fileInfo : list) {
+                for (FileInfo fileInfo : fileInfos) {
                     Messages.sprintf("FIQ - Processing file: " + fileInfo.getOrgPath());
+
                     if (!addToFileInfoDB(pstmt, fileInfo)) {
                         throw new SQLException("Failed to add file info to database: " + fileInfo.getOrgPath());
                     }
@@ -198,14 +153,14 @@ public class FileInfo_SQL {
                     batchSize++;
                     if (batchSize >= BATCH_LIMIT) {
                         pstmt.executeBatch();
-                        mdirDatabaseConnection.commit();
+                        connection.commit();
                         batchSize = 0;
                     }
                 }
 
                 if (batchSize > 0) {
                     pstmt.executeBatch();
-                    mdirDatabaseConnection.commit();
+                    connection.commit();
                 }
 
                 Messages.sprintf("Successfully inserted all file info records");
@@ -213,7 +168,7 @@ public class FileInfo_SQL {
             }
         } catch (SQLException ex) {
             try {
-                mdirDatabaseConnection.rollback();
+                connection.rollback();
             } catch (SQLException rollbackEx) {
                 Messages.sprintfError("Failed to rollback transaction: " + rollbackEx.getMessage());
             }
@@ -221,12 +176,13 @@ public class FileInfo_SQL {
             ex.printStackTrace();
             return false;
         } finally {
-            if (SQL_Utils.isDbConnected(mdirDatabaseConnection)) {
-                SQL_Utils.closeConnection(mdirDatabaseConnection);
+            if (SQL_Utils.isDbConnected(connection)) {
+                SQL_Utils.closeConnection(connection);
             }
         }
     }
 
+    // ... existing code ...
     private static void ensureFileInfoColumnsExists_(Connection connection, Map<String, String> map) throws SQLException {
         DatabaseMetaData meta = connection.getMetaData();
         String fileInfoTable = SQLTableEnums.FILEINFO.getType();
@@ -335,10 +291,12 @@ public class FileInfo_SQL {
     }
 
     public static FileInfo loadFileInfo(ResultSet rs) throws SQLException {
-        if (rs == null || !rs.next()) {
+        if (rs == null) {
+            Messages.sprintfError("No file info found in database. ResultSet is null");
             return null;
         }
 
+        Messages.sprintf("--------------orgPath = " + rs.getString(FileInfoEnum.ORGPATH.getColumnName()));
         String camelModel = rs.getString(FileInfoEnum.CAMERA_MODEL.getColumnName());
         String destinationPath = rs.getString(FileInfoEnum.DESTINATION_PATH.getColumnName());
         String event = rs.getString(FileInfoEnum.EVENT.getColumnName());
@@ -466,7 +424,7 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param connection
 	 * @return
 	 */
@@ -475,6 +433,7 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
         if (connection == null) {
             return new ArrayList<>();
         }
+
         Messages.sprintf("loadFileInfoDatabase Started!: " + SQL_Utils.getUrl(connection));
 
         if (!SQL_Utils.isDbConnected(connection)) {
@@ -488,7 +447,7 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
             Map<String, String> fileInfoColumnsMap = new HashMap<>();
             for (FileInfoEnum column : FileInfoEnum.values()) {
                 fileInfoColumnsMap.put(column.getColumnName(), column.getSqlType());
-                Messages.sprintf("############Adding column: " + column.getColumnName());
+                //Messages.sprintf("############Adding column: " + column.getColumnName());
             }
             SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
             Messages.sprintf("############Ensured columns exist!");
@@ -506,22 +465,17 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
         List<FileInfo> list = new ArrayList<>();
 
         //String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();
-        String sql = "SELECT " + FileInfoEnum.getAllFileInfoColumnNames() +
-                " FROM " + SQLTableEnums.FILEINFO.getType();
-
-        boolean originalAutoCommit = true;
+        String sql = "SELECT " + FileInfoEnum.getAllFileInfoColumnNames() + " FROM " + SQLTableEnums.FILEINFO.getType();
+        Messages.sprintf("############ FILEINFOOOOOO SQL: " + sql);
         try {
-            originalAutoCommit = connection.getAutoCommit();
-            connection.setAutoCommit(false);
-
-            boolean tableCreated = createFileInfoTable(connection);
-            Messages.sprintf("tableCreated? " + tableCreated);
+            SQL_Utils.setAutoCommit(connection, false);
 
             try (Statement stmt = connection.createStatement();
                  ResultSet rs = stmt.executeQuery(sql)) {
 
                 while (rs.next()) {
                     if (Main.getProcessCancelled()) {
+                        Messages.sprintfError("############## Process cancelled, rolling back connection");
                         SQL_Utils.rollBackConnection(connection);
                         return new ArrayList<>();
                     }
@@ -529,27 +483,21 @@ Messages.sprintf("Createa fileinfo table: " +  createTableSQL);
                     FileInfo finfo = loadFileInfo(rs);
                     if(finfo == null) {
                         Messages.sprintfError("############## Cannot load fileinfo: " + finfo.toString() );
+                        continue;
                     }
-//                    if (finfo == null) {
-//                        SQL_Utils.rollBackConnection(connection);
-//                        return new ArrayList<>();
-//                    }
                     list.add(finfo);
                 }
 
-                connection.commit();
                 return list;
             }
+        } catch (SQLException e) {
+            Messages.sprintfError("Error ensuring columns exist in file info table: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
+            return new ArrayList<>();
         } catch (Exception e) {
             Messages.sprintfError("Error loading file info database: " + e.getMessage());
             SQL_Utils.rollBackConnection(connection);
             return new ArrayList<>();
-        } finally {
-            try {
-                connection.setAutoCommit(originalAutoCommit);
-            } catch (SQLException e) {
-                Messages.sprintfError("Error restoring auto-commit state: " + e.getMessage());
-            }
         }
     }
 

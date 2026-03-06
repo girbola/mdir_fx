@@ -3,9 +3,6 @@ package com.girbola.controllers.main.selectedfolder;
 
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.messages.Messages;
-import com.girbola.sql.SelectedFoldersSQL;
-
-import java.nio.file.Path;
 import java.util.Iterator;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

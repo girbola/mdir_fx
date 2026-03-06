@@ -61,10 +61,13 @@ public class ValidatePathUtils {
 
         // Check for Windows-specific conditions
         if (Misc.isWindows()) {
-            if (isHiddenFile(fileName, HIDDEN_FILE_PREFIX) || containsIgnoreCase(fileName, APP_INDICATOR)) {
-                return true;
+            if (fileName != null && !fileName.isEmpty()) {
+                if (isHiddenFile(fileName, HIDDEN_FILE_PREFIX) || containsIgnoreCase(fileName, APP_INDICATOR)) {
+                    return true;
+                }
             }
-            return isInSkippedFolderList(file.toString(), List.of(skippedFolderList_WIN));
+//            return isInSkippedFolderList(file.toString(), List.of(skippedFolderList_WIN));
+            return isInSkippedFolderList(fileName, List.of(skippedFolderList_WIN));
         }
 
         // Check for Unix-specific conditions
@@ -74,7 +77,7 @@ public class ValidatePathUtils {
 
         // Check for Mac-specific conditions
         if (Misc.isMac()) {
-            return isInSkippedFolderListIgnoreCase(file.toString(), List.of(skippedFolderList_OSX));
+            return isInSkippedFolderList(file.toString(), List.of(skippedFolderList_OSX));
         }
 
         // Log unsupported OS information
@@ -118,49 +121,6 @@ public class ValidatePathUtils {
                 Misc.isWindows(), Misc.isUnix(), Misc.isMac(), System.getProperty("os.name"));
         Messages.sprintf("OS: " + osInfo);
         errorSmth(ERROR, osInfo, null, getLineNumber(), true);
-    }
-
-    /**
-     * isInSkippedFolderList check if current folder is in skipped list
-     *
-     * @param file
-     * @return
-     */
-    public static boolean isInSkippedFolderList_(Path file) {
-        if (Misc.isWindows()) {
-            if (file.getFileName().toString().charAt(0) == '.') {
-                return true;
-            }
-            if (file.getFileName().toString().toLowerCase().contains("app")) {
-                return true;
-            }
-            for (String skippedFolder : skippedFolderList_WIN) {
-                if (file.toString().equalsIgnoreCase(skippedFolder)) {
-                    return true;
-                }
-            }
-            return false;
-        } else if (Misc.isUnix()) {
-            for (String skippedFolder : skippedFolderList_UNIX) {
-                if (file.toString().equalsIgnoreCase(skippedFolder)) {
-                    return true;
-                }
-            }
-            return false;
-        } else if (Misc.isMac()) {
-            for (String skippedFolder : skippedFolderList_OSX) {
-                if (file.toString().toLowerCase().contains(skippedFolder.toLowerCase())) {
-                    return true;
-                }
-            }
-            return false;
-        } else {
-            String os = "isWindows: " + Misc.isWindows() + " UNIX: " + Misc.isUnix() + " Mac: " + Misc.isMac() + " UNIII: " + System.getProperty("os.name");
-            Messages.sprintf("OS: " + os);
-            errorSmth(ERROR, os, null, getLineNumber(), true);
-        }
-
-        return false;
     }
 
     public static boolean validFile(Path f) throws IOException {

@@ -12,13 +12,16 @@
     -fx-mid-base: #1E1F22;
     -fx-dark-border-color: derive(-fx-base, 80%);
     -fx-mid-border-color: derive(-fx-base, 60%);
+
     -fx-base-cyan: #3B8787;
     -fx-base-orange: #CF6418;
     -fx-base-blue: #355091;
     -fx-base-red: #C14545;
+
     -fx-light-text-color: #E4E1E1;
     -fx-font-family: "Roboto", monospace;
     -fx-font-weight: normal;
+
     /*-fx-font-family: "Source Code Pro", monospace;*/
     /*-fx-font-family: "Inter", system-ui, sans-serif;*/
     /*-fx-font-family: "Source Code Pro", monospace;*/
@@ -300,6 +303,7 @@ unselected {
     -fx-margin: 0;
 }
 
+
 .table-row-cell:focused {
     -fx-background-color: -fx-base-cyan;
 }
@@ -312,6 +316,7 @@ unselected {
 .table-row-cell:even {
     -fx-background-color: transparent;
 }
+
 /* Normalize all rows */
 .table-row-cell {
     -fx-background-color: red;
@@ -399,6 +404,16 @@ unselected {
 
 .scroll-pane .viewport {
     -fx-background-color: derive(-fx-base, 50%);
+}
+
+
+.selectedFolderTableView {
+    -fx-background-color: #404040;
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.selectedFolderTableView .table-cell {
+    -fx-text-fill: -fx-light-text-color;
 }
 
 .text-field {

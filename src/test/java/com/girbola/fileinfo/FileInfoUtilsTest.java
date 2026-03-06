@@ -48,6 +48,7 @@ public class FileInfoUtilsTest {
 
     @Test
     void createFileInfo() throws IOException {
+
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
         fileInfo.setFileInfo_id(1);
         List<String> list = new ArrayList<>();

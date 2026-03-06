@@ -1,17 +1,26 @@
 package common.utils;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
 import com.girbola.configuration.UIContants;
 import com.girbola.controllers.datefixer.DateFixerController;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 
+import common.media.DateTaken;
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBufferByte;
+import java.io.ByteArrayOutputStream;
+import java.io.RandomAccessFile;
+import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.IntStream;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -49,6 +58,131 @@ public class ImageUtils {
     private static BufferedImage convertToBufferedImage(Frame frame) {
         Java2DFrameConverter converter = new Java2DFrameConverter();
         return converter.convert(frame);
+    }
+
+    public static BufferedImage getMetadataThumbImage(Path file) {
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(file.toFile());
+        } catch (IOException ex) {
+            Messages.sprintfError("Error reading image: " + ex.getMessage());
+        }
+        return image;
+    }
+
+    public static byte[] getMetadataThumbImageAsByteArray(FileInfo fileinfo) {
+    if (fileinfo == null) {
+        Messages.sprintfError("fileinfo is null");
+        return null;
+    }
+    Metadata metadata = DateTaken.readMetaData(Paths.get(fileinfo.getOrgPath()));
+    Path file = Paths.get(fileinfo.getOrgPath());
+    
+    if (metadata == null) {
+        Messages.sprintfError("No metadata found for file: " + fileinfo.getOrgPath());
+        return null;
+    }
+    
+    ExifThumbnailDirectory directory = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+    if (directory == null) {
+        Messages.sprintfError("No thumbnail directory found in metadata for file: " + fileinfo.getOrgPath());
+        return null;
+    }
+
+    // Get both raw and adjusted offsets for debugging
+    Integer rawOffset = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET);
+    Integer rawLength = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
+    Integer thumbOffset = directory.getAdjustedThumbnailOffset();
+    Integer thumbLength = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
+    
+    Messages.sprintf("Raw thumbnail data: offset=" + rawOffset + " length=" + rawLength);
+    Messages.sprintf("Adjusted thumbnail data: offset=" + thumbOffset + " length=" + thumbLength);
+    
+    if (thumbOffset != null && thumbLength != null && thumbOffset > 0 && thumbLength > 0) {
+        // Try to extract thumbnail directly from file using RandomAccessFile
+        try (RandomAccessFile fileRaf = new RandomAccessFile(file.toFile(), "r")) {
+            fileRaf.seek(thumbOffset);
+            byte[] thumbnailData = new byte[thumbLength];
+            fileRaf.readFully(thumbnailData);
+            
+            Messages.sprintf("Attempting to decode thumbnail using ImageIO from offset: " + thumbOffset);
+            
+            // Try to decode as image for validation but don't fail if it doesn't decode
+            try (ByteArrayInputStream bais = new ByteArrayInputStream(thumbnailData)) {
+                BufferedImage thumbnailImage = ImageIO.read(bais);
+                if (thumbnailImage != null) {
+                    Messages.sprintf("Thumbnail successfully decoded: " + thumbnailImage.getWidth() + "x" + thumbnailImage.getHeight());
+                    // Successfully decoded - return the data
+                    return thumbnailData;
+                } else {
+                    Messages.sprintf("Failed to decode thumbnail with adjusted offset, trying raw offset...");
+                    // Try with the raw offset instead if adjusted offset failed
+                    try (RandomAccessFile fileRaf2 = new RandomAccessFile(file.toFile(), "r")) {
+                        fileRaf2.seek(rawOffset);
+                        byte[] rawThumbnailData = new byte[rawLength];
+                        fileRaf2.readFully(rawThumbnailData);
+                        
+                        try (ByteArrayInputStream bais2 = new ByteArrayInputStream(rawThumbnailData)) {
+                            BufferedImage rawThumbnailImage = ImageIO.read(bais2);
+                            if (rawThumbnailImage != null) {
+                                Messages.sprintf("Thumbnail successfully decoded using raw offset: " + 
+                                                 rawThumbnailImage.getWidth() + "x" + rawThumbnailImage.getHeight());
+                                return rawThumbnailData;
+                            } else {
+                                Messages.sprintf("Failed to decode thumbnail even with raw offset");
+                                // Just return the data even if we can't decode it
+                                return thumbnailData;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    } else {
+        System.err.println("Invalid thumbnail metadata: offset=" + thumbOffset + ", length=" + thumbLength);
+    }
+    
+    // Fall back to the other method if direct extraction fails
+    return getMetadataThumbImageAsByteArray(file, rawOffset != null ? rawOffset : 0, 
+                                           rawLength != null ? rawLength : 0);
+}
+
+    private static byte[] getMetadataThumbImageAsByteArray(Path file, int thumbOffset, int thumbLength) {
+        if (file == null) {
+            Messages.sprintfError("File path is null");
+            return null;
+        }
+
+        if (thumbOffset <= 0 || thumbLength <= 0) {
+            Messages.sprintfError("Invalid thumbnail metadata: offset=" + thumbOffset + ", length=" + thumbLength);
+            return null;
+        }
+
+        // Read the file into a byte array
+        byte[] fileData = null;
+        try {
+            fileData = Files.readAllBytes(file);
+            if (fileData == null) {
+                Messages.sprintfError("Failed to read file data: " + file);
+                return null;
+            }
+            if (thumbOffset + thumbLength > fileData.length) {
+                Messages.sprintfError("Thumbnail metadata exceeds file size: offset=" + thumbOffset +
+                        ", length=" + thumbLength + ", fileSize=" + fileData.length);
+                return null;
+            }
+
+            Messages.sprintf("Extracting thumnail by slicing");
+
+            // Extract the thumbnail slice
+            return extractThumbnailSlice(fileData, thumbOffset, thumbLength);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static String calculateRAWImagePHash(Path imagePath) {
@@ -115,13 +249,103 @@ public class ImageUtils {
 
     /**
      * Extracts a slice of bytes from the given data.
+     *
+     * @param data   The source byte array
+     * @param offset The starting position in the source array
+     * @param length The number of bytes to extract
+     * @return The extracted byte slice or null if extraction fails
      */
     private static byte[] extractThumbnailSlice(byte[] data, int offset, int length) {
         try {
-            return Arrays.copyOfRange(data, offset, offset + length);
-        } catch (IndexOutOfBoundsException e) {
-            Messages.sprintfError("Error extracting slice: offset=" + offset + ", length=" + length);
+            if (data == null) {
+                Messages.sprintfError("Error extracting slice: data is null");
+                return null;
+            }
+
+            if (offset < 0 || length <= 0) {
+                Messages.sprintfError("Error extracting slice: invalid offset or length - offset=" + offset + ", length=" + length);
+                return null;
+            }
+
+            // Check for array bounds
+            if (offset + length > data.length) {
+                Messages.sprintfError("Error extracting slice: requested range exceeds array bounds - offset=" + offset +
+                        ", length=" + length + ", data length=" + data.length);
+                return null;
+            }
+
+            sprintf("data size is: " + data.length + " length: " + length + " offset: " + offset);
+            byte[] slice = null;
+            try {
+                slice = Arrays.copyOfRange(data, offset, (offset + length));
+                Messages.sprintf("slice size is: " + slice.length);
+            } catch (Exception ex) {
+                Messages.sprintf("exxxx:::" + ex.getMessage());
+                ex.printStackTrace();
+                return null;
+            }
+
+            // Try to decode the image but don't fail if we can't
+            try (ByteArrayInputStream in = new ByteArrayInputStream(slice)) {
+                BufferedImage bufferedImage = ImageIO.read(in);
+                if (bufferedImage != null) {
+                    Messages.sprintf("Successfully decoded thumbnail: " + bufferedImage.getWidth() + "x" + bufferedImage.getHeight());
+                } else {
+                    // Try to detect what format this might be
+                    Messages.sprintf("Warning: Could not decode image. First bytes: " + 
+                                      bytesToHexPreview(slice, 16));
+                    
+                    // Try with different image readers to see if any can handle it
+                    tryAlternativeImageReaders(slice);
+                }
+            } catch (IOException ex) {
+                Messages.sprintf("IOException during image decoding: " + ex.getMessage());
+                // Continue anyway - we'll return the raw data
+            }
+
+            // Return the slice data regardless of whether we could decode it
+            return slice;
+        } catch (Exception e) {
+            Messages.sprintfError("Unexpected error extracting slice: " + e.getMessage());
             return null;
+        }
+    }
+
+    /**
+     * Helper method to convert beginning of byte array to hex for debugging
+     */
+    private static String bytesToHexPreview(byte[] bytes, int maxBytes) {
+        if (bytes == null || bytes.length == 0) {
+            return "empty";
+        }
+        
+        int len = Math.min(maxBytes, bytes.length);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            sb.append(String.format("%02X ", bytes[i]));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Tries different image readers to see if any can decode the image data
+     */
+    private static void tryAlternativeImageReaders(byte[] imageData) {
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(imageData)) {
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(ImageIO.createImageInputStream(bais));
+            if (!readers.hasNext()) {
+                Messages.sprintf("No image readers found for this format");
+            } else {
+                while (readers.hasNext()) {
+                    ImageReader reader = readers.next();
+                    Messages.sprintf("Found image reader: " + reader.getFormatName());
+                    
+                    // Reset stream for next reader
+                    bais.reset();
+                }
+            }
+        } catch (IOException e) {
+            Messages.sprintf("Error inspecting image format: " + e.getMessage());
         }
     }
 
@@ -309,13 +533,118 @@ public class ImageUtils {
         return hash.toString();
     }
 
+    public static byte[] resizeImage(byte[] src, int width, int height) {
+        if (src == null || src.length == 0) {
+            Messages.sprintfError("Cannot resize null or empty image data");
+            return null;
+        }
+
+        ByteArrayOutputStream outputStream = null;
+        try {
+            Messages.sprintf("Resizing image to " + width + "x" + height + " src.length: " + src.length);
+            
+            // Convert byte array to BufferedImage
+            BufferedImage originalImage = ImageIO.read(new ByteArrayInputStream(src));
+            if (originalImage == null) {
+                Messages.sprintfError("Failed to read image data");
+                return null;
+            }
+            
+            Messages.sprintf("img IWDTH:::: " + originalImage.getWidth() + " IHGT:::: " + originalImage.getHeight());
+            
+            // Convert to TYPE_INT_RGB to ensure compatibility
+            BufferedImage convertedImage = new BufferedImage(
+                originalImage.getWidth(), 
+                originalImage.getHeight(), 
+                BufferedImage.TYPE_INT_RGB);
+            convertedImage.getGraphics().drawImage(originalImage, 0, 0, null);
+            
+            // Resize the image
+            BufferedImage resizedImage = resize(convertedImage, width, height);
+            
+            // Try to detect the original format
+            String formatName = getImageFormat(src);
+            if (formatName == null || formatName.isEmpty()) {
+                formatName = "jpeg"; // Default format
+            }
+            
+            Messages.sprintf("formatName:::: " + formatName);
+            
+            // Convert BufferedImage back to byte array
+            outputStream = new ByteArrayOutputStream();
+            
+            // Try to write with the detected format
+            boolean success = ImageIO.write(resizedImage, formatName, outputStream);
+            
+            // If writing with the detected format fails, try JPEG
+            if (!success) {
+                Messages.sprintf("Failed to write with format: " + formatName + ", trying JPEG");
+                outputStream.reset();
+                success = ImageIO.write(resizedImage, "jpeg", outputStream);
+            }
+            
+            // If that also fails, try PNG
+            if (!success) {
+                Messages.sprintf("Failed to write with JPEG, trying PNG");
+                outputStream.reset();
+                success = ImageIO.write(resizedImage, "png", outputStream);
+            }
+            
+            if (success) {
+                Messages.sprintf("Successfully wrote image with size: " + outputStream.size());
+                return outputStream.toByteArray();
+            } else {
+                Messages.sprintfError("Failed to write resized image data with any format");
+                return null;
+            }
+            
+        } catch (IOException e) {
+            Messages.sprintfError("Error resizing image: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    // Ignore close exception
+                }
+            }
+        }
+    }
+
+    // Helper method to detect image format from byte array
+    private static String getImageFormat(byte[] imageData) {
+        try (ByteArrayInputStream bis = new ByteArrayInputStream(imageData)) {
+            ImageInputStream iis = ImageIO.createImageInputStream(bis);
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+            if (readers.hasNext()) {
+                ImageReader reader = readers.next();
+                String format = reader.getFormatName().toLowerCase();
+                Messages.sprintf("Detected image format: " + format);
+                return format;
+            }
+        } catch (IOException e) {
+            // Log but continue with default format
+            Messages.sprintfError("Error detecting image format: " + e.getMessage());
+        }
+        return null;
+    }
+
     private static BufferedImage resize(BufferedImage img, int width, int height) {
-        Image tmp = img.getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        BufferedImage resized = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = resized.createGraphics();
-        g2d.drawImage(tmp, 0, 0, null);
+        // Create a new BufferedImage with RGB color model for maximum compatibility
+        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        
+        // Get graphics context and enable better quality
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        
+        // Draw the scaled image
+        g2d.drawImage(img.getScaledInstance(width, height, Image.SCALE_SMOOTH), 0, 0, null);
         g2d.dispose();
-        return resized;
+        
+        return resizedImage;
     }
 
     private static BufferedImage scaleBufferedImage(BufferedImage image, int desiredWidth, int desiredHeight) {
@@ -363,7 +692,7 @@ public class ImageUtils {
     public static String processImagesOneAtATime(Path file) {
         String hash = "";
 
-        System.out.println("Processing file: " + file);
+        Messages.sprintf("Processing file: " + file);
         try {
             // Read image from file
             BufferedImage imagee = ImageIO.read(file.toFile());
@@ -375,7 +704,7 @@ public class ImageUtils {
 
 
             // Output the result for the current file
-            System.out.println("File: " + file + " -> Hash: " + hash);
+            Messages.sprintf("File: " + file + " -> Hash: " + hash);
         } catch (IOException e) {
             // Log error and skip invalid file
             System.err.println("Error processing file: " + file + ". Skipping.");

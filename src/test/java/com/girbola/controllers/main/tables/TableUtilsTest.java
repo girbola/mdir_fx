@@ -196,12 +196,24 @@ public class TableUtilsTest {
     }
 
     @Test
+    void calculateDateDifferenceRatio_shouldCalculateDifferenceForNonSequentialDates2() {
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(2023, 1, 1), 1);
+        map.put(LocalDate.of(2023, 1, 5), 1);
+        map.put(LocalDate.of(2023, 1, 7), 1);
+        map.put(LocalDate.of(2023, 1, 10), 1);
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(9, result);
+    }
+
+
+    @Test
     void calculateDateDifferenceRatio_shouldHandleDatesWithLargeGaps() {
         TreeMap<LocalDate, Integer> map = new TreeMap<>();
         map.put(LocalDate.of(2020, 1, 1), 1);
         map.put(LocalDate.of(2023, 1, 1), 1);
         double result = TableUtils.calculateDateDifferenceRatio(map);
-        assertEquals(1095, result);
+        assertEquals(1096, result);
     }
 
     @Test
@@ -225,19 +237,69 @@ public class TableUtilsTest {
 
 // Add 100 more LocalDate entries with increasing dates
         for (int i = 0; i < 3; i++) {
-            map.put(LocalDate.of(year1, 1, 2).plusDays(i), 1);
-        }
-        for (int i = 0; i < 3; i++) {
-            map.put(LocalDate.of(year2
-                    , 1, 2).plusDays(i), 1);
+            LocalDate localDate = LocalDate.of(year1, 1, 2).plusDays(i);
+            System.out.println("1 - LocalDate: " + localDate);
+            map.put(localDate, 1);
         }
 
         for (int i = 0; i < 3; i++) {
-            map.put(LocalDate.of(year3
-                    , 5, 2).plusDays(i), 1);
+            LocalDate localDate = LocalDate.of(year2, 1, 2).plusDays(i);
+            System.out.println("2 - LocalDate: " + localDate);
+            map.put(localDate, 1);
         }
+
+        for (int i = 0; i < 3; i++) {
+            LocalDate localDate = LocalDate.of(year3, 1, 2).plusDays(i);
+            System.out.println("3 - LocalDate: " + localDate);
+            map.put(localDate, 1);
+        }
+        map.keySet().forEach(System.out::println);
+
         double result = TableUtils.calculateDateDifferenceRatio(map);
-        assertEquals(362, result);
+        assertEquals(733, result);
+    }
+
+    @Test
+    void calculateDateDifferenceRatio_shouldHandleDatesWithLargeAmountOfDatesWithGapsLeapYearIncluded() {
+        int year1 = 2020;
+        int year2 = 2021;
+        int year3 = 2022;
+
+        TreeMap<LocalDate, Integer> map = new TreeMap<>();
+        map.put(LocalDate.of(year1, 1, 1), 1);
+        map.put(LocalDate.of(year1, 1, 1), 1);
+        map.put(LocalDate.of(year1, 1, 1), 1);
+
+        map.put(LocalDate.of(year2, 1, 1), 1);
+        map.put(LocalDate.of(year2, 1, 1), 1);
+        map.put(LocalDate.of(year2, 1, 1), 1);
+
+        map.put(LocalDate.of(year3, 1, 1), 1);
+        map.put(LocalDate.of(year3, 1, 1), 1);
+        map.put(LocalDate.of(year3, 1, 1), 1);
+
+// Add 100 more LocalDate entries with increasing dates
+        for (int i = 0; i < 3; i++) {
+            LocalDate localDate = LocalDate.of(year1, 1, 2).plusDays(i);
+            System.out.println("1 - LocalDate: " + localDate);
+            map.put(localDate, 1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            LocalDate localDate = LocalDate.of(year2, 1, 2).plusDays(i);
+            System.out.println("2 - LocalDate: " + localDate);
+            map.put(localDate, 1);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            LocalDate localDate = LocalDate.of(year3, 1, 2).plusDays(i);
+            System.out.println("3 - LocalDate: " + localDate);
+            map.put(localDate, 1);
+        }
+        map.keySet().forEach(System.out::println);
+
+        double result = TableUtils.calculateDateDifferenceRatio(map);
+        assertEquals(732, result);
     }
 
 

@@ -330,8 +330,8 @@ fileInfo.getFileHistories() (for FILEHISTORIES - needs to be converted to String
             // Update values
             setFileInfoParameters(pstmt, fileInfo, index);
 
-            pstmt.executeUpdate();
-            Messages.sprintf("FileInfo inserted/updated successfully");
+            pstmt.addBatch();
+            Messages.sprintf("FileInfo added to batch");
             return true;
         } catch (SQLException e) {
             Messages.sprintfError("4444Error inserting/updating FileInfo: " + e.getMessage());

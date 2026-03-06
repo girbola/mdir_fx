@@ -5,6 +5,7 @@ import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersControll
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DriveInfoUtils;
+import com.girbola.messages.Messages;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;
@@ -101,6 +102,12 @@ public class ModelFolderScanner {
 		this.modelMain = modelMain;
 		this.drivesRootItem = drivesRootItem;
 		List<DriveInfo> driveInfos = modelMain.driveInfos();
+
+		if(driveInfos == null || driveInfos.isEmpty()) {
+			Messages.sprintf("No drives found!");
+
+		}
+
 		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, driveInfoUtils, this);
 
 		scanDrives.restart();

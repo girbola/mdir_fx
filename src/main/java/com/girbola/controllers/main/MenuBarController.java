@@ -62,40 +62,25 @@ public class MenuBarController {
 
     private ModelMain model_main;
 
-    @FXML
-    private MenuItem menuItem_tools_options_viewIgnoredList;
-    @FXML
-    private CheckMenuItem menuItem_tools_themes_dark;
-    @FXML
-    private CheckMenuItem menuItem_tools_themes_light;
-    @FXML
-    private CheckMenuItem menuItem_tools_showFullPath;
-    @FXML
-    private CheckMenuItem menuItem_tools_findImageDuplicates;
-    @FXML
-    private MenuBar menuBar;
-    @FXML
-    private MenuItem menuItem_file_addFolders;
-    @FXML
-    private MenuItem menuItem_file_clear;
-    @FXML
-    private MenuItem menuItem_file_close;
-    @FXML
-    private MenuItem menuItem_file_import;
-    @FXML
-    private MenuItem menuItem_file_load;
-    @FXML
-    private MenuItem menuItem_file_save;
-    @FXML
-    private MenuItem menuItem_help_about;
-    @FXML
-    private MenuItem menuItem_help_help;
-    @FXML
-    private MenuItem menuItem_tools_options;
-    @FXML
-    private MenuItem menuItem_help_supportUs;
-    @FXML
-    private MenuItem menuItem_help_update;
+    //@formatter:off
+    @FXML private MenuItem menuItem_tools_options_viewIgnoredList;
+    @FXML private CheckMenuItem menuItem_tools_themes_dark;
+    @FXML private CheckMenuItem menuItem_tools_themes_light;
+    @FXML private CheckMenuItem menuItem_tools_showFullPath;
+    @FXML private CheckMenuItem menuItem_tools_findImageDuplicates;
+    @FXML private MenuBar menuBar;
+    @FXML private MenuItem menuItem_file_addFolders;
+    @FXML private MenuItem menuItem_file_clear;
+    @FXML private MenuItem menuItem_file_close;
+    @FXML private MenuItem menuItem_file_import;
+    @FXML private MenuItem menuItem_file_load;
+    @FXML private MenuItem menuItem_file_save;
+    @FXML private MenuItem menuItem_help_about;
+    @FXML private MenuItem menuItem_help_help;
+    @FXML private MenuItem menuItem_tools_options;
+    @FXML private MenuItem menuItem_help_supportUs;
+    @FXML private MenuItem menuItem_help_update;
+    //@formatter:on
 
     CheckMenuItem[] themeMenuItems = {menuItem_tools_themes_light, menuItem_tools_themes_dark};
 
@@ -184,10 +169,10 @@ public class MenuBarController {
         });
 
         Scene fc_scene = new Scene(parent);
-        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType());
 
         //fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+        fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
 
         folderScannerController.setStage(fc_stage);
         folderScannerController.setScene(fc_scene);
@@ -198,6 +183,9 @@ public class MenuBarController {
         fc_stage.setScene(fc_scene);
 
         fc_stage.show();
+
+        folderScannerController.initTableWidths();
+
 
     }
 

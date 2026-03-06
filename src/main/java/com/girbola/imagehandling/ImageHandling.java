@@ -3,7 +3,6 @@ package com.girbola.imagehandling;
 
 import com.drew.metadata.Metadata;
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.DateFixerController;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
@@ -339,6 +338,7 @@ public class ImageHandling {
 	 */
 	public static Task<Image> convertImage_offset(Path fileName, int offset, int length, double image_width,
 			ImageView imageView) {
+		Messages.sprintf("convertImage_offset: " + fileName.toString());
 
         return new Task<Image>() {
 			@Override
@@ -370,6 +370,7 @@ public class ImageHandling {
 				try {
 					bufferedImage = ImageIO.read(in);
 				} catch (IOException ex) {
+					Messages.sprintfError("!!!!!!!!!!Error reading image: " + ex.getMessage());
 					return null;
 				}
 				try {

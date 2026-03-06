@@ -81,6 +81,7 @@ public class DateFixerController {
 	@FXML private Button folderize_btn;
 	@FXML private Button hideInfoTables_btn;
 	@FXML private Button hideRightInfo_btn;
+    @FXML private Button moveFilesInfSourcePath;
 	@FXML private Button show_all_btn;
 	@FXML private Button show_only_selected_btn;
 	@FXML private CheckBox copied_chk;
@@ -323,12 +324,12 @@ public class DateFixerController {
         modelDatefix.getSelectionModel().clearAll();
 
         DateFixLoadingProcessLoader.reNumberTheFrames(modelDatefix);
-
-        if(modelDatefix.getSelectionModel().getSelectionList().size() > 0) {
-            show_only_selected_btn.setDisable(false);
-        } else {
-            show_only_selected_btn.setDisable(true);
-        }
+//
+//        if(modelDatefix.getSelectionModel().getSelectionList().size() > 0) {
+//            show_only_selected_btn.setDisable(false);
+//        } else {
+//            show_only_selected_btn.setDisable(true);
+//        }
 
     }
 
@@ -403,6 +404,12 @@ public class DateFixerController {
         }
 
     }
+
+    @FXML private void moveFilesInfSourcePath_action(ActionEvent event) {
+        Messages.sprintf("moveFilesInfSourcePath_action");
+
+    }
+
     @FXML private void dateFix_btn_action(ActionEvent event) {
         Path p = Paths.get(modelDatefix.getFolderInfo_full().getFolderPath());
         Scene scene = dateFix_btn.getScene();

@@ -7,15 +7,17 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SqliteConnection;
 import com.girbola.sql.ThumbInfoSQL;
 import com.girbola.thumbinfo.ThumbInfo;
-import com.girbola.utils.ThumbInfo_Utils;
+import com.girbola.utils.ThumbInfoUtils;
 import common.utils.FileUtils;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 
@@ -41,7 +43,7 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
 
     public SaveThumbInfos(Connection connection, Path currentFolderPath, TilePane tilePane) {
         this.connection = connection;
-        this.currentFolderPath =currentFolderPath;
+        this.currentFolderPath = currentFolderPath;
         this.tilePane = tilePane;
     }
 
@@ -56,70 +58,98 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
             return null;
         }
 
+//       VBox tilaPane
+//         -HBox - imageSection
+//           -HBox imageViewContainer
+//             -ImageView
+
         List<ThumbInfo> thumbInfo_list = new ArrayList<>();
         for (Node n : tilePane.getChildren()) {
+            Messages.sprintf("n.getId() is: " + n.getId() + " NODEEE: " + n);
             if (n instanceof VBox) {
-                for (Node vbox : ((VBox) n).getChildren()) {
-                    if (vbox instanceof StackPane) {
-                        ImageView iv = (ImageView) vbox.lookup("#imageView");
-                        if (iv.getImage() != null) {
-                            FileInfo fileInfo = (FileInfo) n.getUserData();
+                for (Node imageSectionNode : ((VBox) n).getChildren()) {
+                    Messages.sprintf("---vbox.getId() is: " + imageSectionNode.getId() + " VBOX: " + imageSectionNode);
+                    if (imageSectionNode instanceof HBox) { // ImageSection
+                        for (Node imageViewContainer : ((HBox) imageSectionNode).getChildren()) {
+                            Messages.sprintf("###---imageViewContainer: " + imageViewContainer);
+                            if (imageViewContainer instanceof ImageView) {
+                                Messages.sprintf("###---ImageView: " + imageViewContainer);
+                                ImageView iv = (ImageView) imageViewContainer;
+                                Image image = (Image) iv.getImage();
 
-                            if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
-                                if (iv.getUserData() instanceof List<?>) {
-                                    Messages.sprintf("iv.getUserData() was instanceof List<?>");
-                                    ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
-                                            fileInfo.getFileInfo_id());
+                                if (image != null) {
+                                    Messages.sprintf("!!!!!!!!!!!!!iv.getImage() was not null");
+                                    FileInfo fileInfo = (FileInfo) n.getUserData();
 
-                                    List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
-                                    Messages.sprintf("buffList size is: " + buffList.size());
+                                    if (FileUtils.supportedVideo(Paths.get(fileInfo.getOrgPath()))) {
+                                        Messages.sprintf("Video: " + fileInfo.getOrgPath());
+                                        if (iv.getUserData() instanceof List<?>) {
+                                            Messages.sprintf("iv.getUserData() was instanceof List<?>");
+                                            ThumbInfo thumbInfo = ThumbInfoUtils.findThumbInfo(fileInfo, thumbInfo_list,
+                                                    fileInfo.getFileInfo_id());
 
-                                    int counter = 0;
-                                    for (BufferedImage bufImage : buffList) {
-                                        if (bufImage == null) {
-                                            continue;
+                                            List<BufferedImage> buffList = (List<BufferedImage>) iv.getUserData();
+                                            Messages.sprintf("buffList size is: " + buffList.size());
+
+                                            int counter = 0;
+                                            for (BufferedImage bufImage : buffList) {
+                                                if (bufImage == null) {
+                                                    continue;
+                                                }
+
+                                                try {
+                                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                    ImageIO.write(bufImage, "jpg", baos);
+                                                    baos.flush();
+                                                    byte[] imageInByte = baos.toByteArray();
+                                                    baos.close();
+                                                    thumbInfo.setThumb_width(bufImage.getWidth());
+                                                    thumbInfo.setThumb_height(bufImage.getHeight());
+                                                    thumbInfo.getThumbs().add(counter, imageInByte);
+                                                } catch (Exception e) {
+                                                    Messages.sprintfError("Something went wrong with converting Bufferedimage to byte array: " + e.getMessage());
+                                                }
+                                            }
+                                            thumbInfo_list.add(thumbInfo);
                                         }
+                                    } else {
+                                        Messages.sprintf("Picture: " + fileInfo.getOrgPath());
 
-                                        try {
-                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                            ImageIO.write(bufImage, "jpg", baos);
-                                            baos.flush();
-                                            byte[] imageInByte = baos.toByteArray();
-                                            baos.close();
-                                            thumbInfo.setThumb_width(bufImage.getWidth());
-                                            thumbInfo.setThumb_height(bufImage.getHeight());
-                                            thumbInfo.getThumbs().add(counter, imageInByte);
-                                        } catch (Exception e) {
-                                            Messages.sprintfError("Something went wrong with converting Bufferedimage to byte array: " + e.getMessage());
+//                                        iv.getImage().get(0)
+                                        ThumbInfo thumbInfo = ThumbInfoUtils.findThumbInfo(fileInfo, thumbInfo_list,
+                                                fileInfo.getFileInfo_id());
+                                        if (image != null) {
+                                            Platform.runLater(() -> {
+
+                                                Messages.sprintf("IMAGEEEEEEEEEEEEEEEEE:::::::::::: " + image.toString());
+                                                WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
+                                                thumbInfo.setThumb_fast_width(writableImage.getWidth());
+                                                thumbInfo.setThumb_fast_height(writableImage.getHeight());
+                                                ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
+
+                                                try {
+                                                    ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png",
+                                                            byteArrayOS);
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                byte[] imageByteArray = byteArrayOS.toByteArray();
+                                                try {
+                                                    byteArrayOS.close();
+                                                } catch (IOException ex) {
+                                                    Logger.getLogger(ModelDatefix.class.getName()).log(Level.SEVERE, null, ex);
+                                                }
+                                                thumbInfo.getThumbs().add(imageByteArray);
+                                                thumbInfo_list.add(thumbInfo);
+
+                                            });
+                                        } else {
+                                            Messages.sprintf("iv.getImage() was null:");
                                         }
                                     }
-                                    thumbInfo_list.add(thumbInfo);
                                 }
                             } else {
-                                Messages.sprintf("Picture: " + fileInfo.getOrgPath());
-                                ThumbInfo thumbInfo = ThumbInfo_Utils.findThumbInfo(fileInfo, thumbInfo_list,
-                                        fileInfo.getFileInfo_id());
-                                if (!thumbInfo.getThumbs().isEmpty()) {
-                                    WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
-                                    thumbInfo.setThumb_fast_width(writableImage.getWidth());
-                                    thumbInfo.setThumb_fast_height(writableImage.getHeight());
-                                    ByteArrayOutputStream byteArrayOS = new ByteArrayOutputStream();
-
-                                    try {
-                                        ImageIO.write(SwingFXUtils.fromFXImage(writableImage, null), "png",
-                                                byteArrayOS);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    byte[] imageByteArray = byteArrayOS.toByteArray();
-                                    try {
-                                        byteArrayOS.close();
-                                    } catch (IOException ex) {
-                                        Logger.getLogger(ModelDatefix.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-                                    thumbInfo.getThumbs().add(imageByteArray);
-                                    thumbInfo_list.add(thumbInfo);
-                                }
+                                Messages.sprintf("iv.getUserData() was not instanceof List<?>: " + imageViewContainer);
                             }
                         }
                     }

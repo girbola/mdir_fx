@@ -196,6 +196,9 @@ public class ModelMain {
             Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath() + " folder size: " + folderInfo.getFileInfoList().size());
         }
 
+        Connection configurationConnection = ConfigurationSQLHandler.getConnection();
+//        configurationConnection.folder
+
         for (FolderInfo folderInfo : items) {
             Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath() + " folder size: " + folderInfo.getFileInfoList().size());
             if (!folderInfo.getFileInfoList().isEmpty()) {

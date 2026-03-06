@@ -67,6 +67,7 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
         } catch (Exception e) {
             Messages.sprintfError("Error saving tables to databases: " + e.getMessage());
         } finally {
+            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
             SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
         }
 

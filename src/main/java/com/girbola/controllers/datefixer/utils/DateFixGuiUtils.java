@@ -137,6 +137,9 @@ public class DateFixGuiUtils {
         button.getStyleClass().add("acceptButton");
 
         FontIcon fontIcon = new FontIcon();
+        fontIcon.setIconLiteral("far-edit");
+        fontIcon.setIconSize(20);
+        fontIcon.setIconColor(Color.WHITESMOKE);
         button.setGraphic(fontIcon);
 //        fontIcon.setStyle("-fx-background-color: red;");
 //        fontIcon.setIconColor(Color.RED);

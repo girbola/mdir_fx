@@ -2,39 +2,35 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.CssStylesEnum;
-import com.girbola.controllers.datefixer.DateFixConstants;
-import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
-import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SelectedFolderInfoSQL;
-import com.girbola.sql.SelectedFoldersSQL;
-import common.utils.Conversion;
+import java.io.File;
+import java.sql.Connection;
+import java.util.Iterator;
 import java.util.Optional;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.kordamp.ikonli.javafx.FontIcon;
 
-import java.io.File;
-import java.sql.Connection;
-import java.util.Iterator;
-
 import static com.girbola.Main.bundle;
-import static com.girbola.Main.simpleDates;
 import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {
@@ -50,14 +46,16 @@ public class SelectedFoldersController {
     @FXML private TableColumn<SelectedFolder, String> folder_col;
     @FXML private TableColumn<SelectedFolder, Boolean> folder_connected_col;
     @FXML private TableColumn<SelectedFolder, Boolean> hasMedia_col;
+    @FXML private TableColumn<SelectedFolder, Boolean> remove_row_col;
 
-    @FXML private Button selectedFolders_ok;
-    @FXML private Button selectedFolders_remove;
+    @FXML private Button selectedFolders_ok_btn;
+    @FXML private Button selectedFolders_cancel_btn;
     @FXML private Button selectedFolders_select_folder;
     @FXML private TableView<SelectedFolder> selectedFolder_TableView;
     //@formatter:on
 
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(model_main, model_folderScanner);
 
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
@@ -66,7 +64,6 @@ public class SelectedFoldersController {
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
-
         model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
             Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
         });
@@ -82,16 +79,30 @@ public class SelectedFoldersController {
             }
         }
 
-        model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
+        for(SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if(!selectedFolder.isSelected()) {
+                Iterator<FolderInfo> items = model_main.tables().getSortIt_table().getItems().iterator();
+                while(items.hasNext()) {
+                    FolderInfo folderInfo = items.next();
+                    if(folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
+                        items.remove();
+                    }
+                }
+            }
+        }
 
-        Stage stage = (Stage) selectedFolders_ok.getScene().getWindow();
+
+        model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
+        SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+        Stage stage = (Stage) selectedFolders_ok_btn.getScene().getWindow();
         stage.close();
     }
 
     @FXML
-    private void selectedFolders_remove_action(ActionEvent event) {
-        sprintf("selectedFolders_remove_action  pressed");
-        removeFromTable(selectedFolder_TableView);
+    private void selectedFolders_cancel_action(ActionEvent event) {
+        sprintf("selectedFolders_cancel_action  pressed");
+        Stage stage = (Stage) selectedFolders_cancel_btn.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -164,11 +175,10 @@ public class SelectedFoldersController {
 
         Optional<ButtonType> result = changesDialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-            SelectedFoldersSQL.removeFromTable(selectedItems);
+            SelectedFolderInfoSQL.removeFromTable(selectedItems);
         } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-            SelectedFoldersSQL.removeFromTable(selectedItems);
+            SelectedFolderInfoSQL.removeFromTable(selectedItems);
             SelectedFolderInfoSQL.clearSelectedFolders(model_main);
-
             table.getItems().removeAll(selectedItems);
             table.getSelectionModel().clearSelection();
         } else {
@@ -193,15 +203,17 @@ public class SelectedFoldersController {
         folder_selected_col.setCellFactory(selectedFoldersCellFactory);
         folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
 
+        remove_row_col.setCellFactory(removeRowCellFactory);
+        remove_row_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(false));
+
+
         folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
+        folder_connected_col.setCellFactory(connected);
         folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
-        FontIcon folder_connected_icon = new FontIcon("bi-plug");
 
-        hasMedia_col.setCellFactory(connected);
-
-        hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
         hasMedia_col.setCellFactory(hasMediaFiles);
+        hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
 
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());

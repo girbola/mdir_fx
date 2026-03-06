@@ -74,36 +74,6 @@ public class Populate {
             return;
         }
 
-
-
-        // Add checked in datefixer
-
-
-//        Set<Path> acceptedFolders = new HashSet<>();
-//        for(SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-//
-//            if(selectedFolder.isSelected()) {
-//                sprintf("-----Selected folder: " + selectedFolder.getFolder());
-//                List<Path> paths = SubFolders.subFolders(Paths.get(selectedFolder.getFolder()));// This is just to initialize the SubFolders class, if needed.
-//                if (paths == null) {
-//                    sprintf("paths is null");
-//                    continue;
-//                }
-//                for (Path p : paths) {
-//                    if (!acceptedFolders.contains(p)) {
-//                        Messages.sprintf("acceptedFolders initialized with path: " + p);
-//                        acceptedFolders.add(p);
-//                    } else {
-//                        sprintf("acceptedFolders already contains path: " + p);
-//                    }
-//                }
-//            }
-//        }
-//
-//        for(Path path : acceptedFolders) {
-//            sprintf("acceptedFolders initialized with path: " + path);
-//        }
-
         Messages.sprintf("populateTablesFolderScannerList action ended. selectedFolders.size():::: " + selectedFolders.size());
         Thread createFileListThread = createFileListProcessingThread(owner, selectedFolders);
         createFileListThread.start();

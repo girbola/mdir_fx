@@ -5,8 +5,6 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SelectedFolderInfoSQL;
-import com.girbola.sql.SelectedFoldersSQL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

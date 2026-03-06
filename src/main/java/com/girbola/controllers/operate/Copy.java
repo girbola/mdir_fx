@@ -9,6 +9,7 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.sql.SQL_Utils;
+import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -137,6 +138,10 @@ public class Copy extends Task<Integer> {
                             if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                                 copyHelper.updateSourceAndDestProcessValues(source, dest);
                                 copyHelper.updateIncreaseCopyingProcessValues();
+                                workDirSQL.insertFileInfo(fileInfo);
+
+                                FileInfoUtils.createWorkDirFileInfo(fileInfo, dest);
+
                                 if (!fileInfo.isCopied()) {
                                     fileInfo.setCopied(true);
                                     workDirSQL.insertFileInfo(fileInfo);

@@ -27,6 +27,7 @@ import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
 import common.utils.ui.ScreenUtils;
+import java.time.temporal.ChronoUnit;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -169,38 +170,30 @@ public class TableUtils {
     }
 
     public static double calculateDateDifferenceRatio(TreeMap<LocalDate, Integer> map) {
-        List<Double> list = new ArrayList<>();
-
-        double tester = 0;
-        boolean pass = false;
-        LocalDate localDate = null;
-
-        for (Entry<LocalDate, Integer> entry : map.entrySet()) {
-            LocalDate ld = entry.getKey();
-            Integer val = entry.getValue();
-            if (!pass) {
-                pass = true;
-                localDate = entry.getKey();
-            } else {
-                LocalDate localDate2 = entry.getKey();
-                long days = java.time.temporal.ChronoUnit.DAYS.between(localDate, localDate2);
-                list.add(days - tester);
-                localDate = localDate2;
-            }
-        }
-        double sum = 0;
-        for (Double db : list) {
-            sum += db;
-        }
-        if (list.isEmpty()) {
+        if (map.isEmpty()) {
             return 0;
-        } else {
-            System.out.println("Max date difference: " + Collections.max(list));
-            for(Double db : list) {
-                System.out.println("Date difference entry: " + db);
-            }
-            return Collections.max(list);
         }
+
+        // Add all dates to a set to avoid duplicates
+        Set<LocalDate> dateSet = new HashSet<>(map.keySet());
+
+
+
+        // Convert to list and sort
+        List<LocalDate> sortedDates = new ArrayList<>(dateSet);
+        Collections.sort(sortedDates);
+
+        System.out.println("SORTED:::: number on sortedDates");
+        sortedDates.forEach(System.out::println);
+
+        // Calculate the days between min and max date
+        LocalDate minDate = sortedDates.get(0);
+        LocalDate maxDate = sortedDates.get(sortedDates.size() - 1);
+
+        System.out.println("Min date: " + minDate + ", max date: " + maxDate + ", difference: " + ChronoUnit.DAYS.between(minDate, maxDate) + " days");
+        return ChronoUnit.DAYS.between(
+              minDate, maxDate); // 365
+
     }
 
     public static FileInfo findFileInfoFromTables(String tableType, Path path, Tables tables) {
@@ -375,7 +368,7 @@ public class TableUtils {
 
     public static TableType resolveTableTypeByPath(Path p) {
 
-        if(p == null){
+        if (p == null) {
             return null;
         }
 

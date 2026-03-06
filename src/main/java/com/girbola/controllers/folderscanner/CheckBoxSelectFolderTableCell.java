@@ -4,6 +4,8 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
 import common.utils.FileUtils;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
@@ -47,16 +49,23 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
                     Messages.sprintf("CHECKBOX IS: " + newValue);
-                    if(newValue) {
-                        SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
-                        selectedFolder.setSelected(newValue);
-                        selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-                    } else {
-                        SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
-                        selectedFolder.setSelected(newValue);
-                        selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().removeIf(selectedFolder1 -> selectedFolder1.getFolder().equals(selectedFolder.getFolder()));
+                    SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
+                    selectedFolder.setSelected(newValue);
+                    selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
+                    for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                        if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+                            selectedFolder1.setSelected(newValue);
+                            if(newValue) {
+                                // Check if folder exists and then check for media
+                                if(selectedFolder1.getFolder() != null && Files.exists(Paths.get(selectedFolder1.getFolder()))) {
+                                    boolean hasMedia = FileUtils.getHasMedia(selectedFolder1.getFolder());
+                                    selectedFolder.setMedia(hasMedia);
+                                } else {
+                                    selectedFolder.setMedia(false);
+                                }
+                            }
+                            Messages.sprintf("Selected folder changed to: " + newValue);
+                        }
                     }
                 }
             });

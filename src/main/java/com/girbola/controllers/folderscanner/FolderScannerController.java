@@ -4,6 +4,7 @@ package com.girbola.controllers.folderscanner;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
+import com.girbola.controllers.main.tables.cell.TableCell_Connected;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.CommonUserFolders;
@@ -18,7 +19,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
@@ -30,6 +35,7 @@ import java.nio.file.Paths;
 import java.util.Map;
 
 import static com.girbola.concurrency.ConcurrencyUtils.initNewSingleExecutionService;
+import static com.girbola.controllers.misc.Misc_GUI.autoResizeColumns;
 import static com.girbola.messages.Messages.sprintf;
 
 public class FolderScannerController {
@@ -40,15 +46,16 @@ public class FolderScannerController {
     /*
      * @FXML needed! SelectedFoldersController
      */
+    @FXML AnchorPane folderScannerMain;
     @FXML SelectedFoldersController selectedFoldersController;
     @FXML private Button addToSelectedFolders_btn;
     @FXML private Button analyzeList_add;
     @FXML private Button analyzeList_remove;
     @FXML private Button list;
     @FXML private ScrollPane analyzeList_scrollPane;
-    @FXML private SplitPane splitPane_drives;
+//    @FXML private SplitPane splitPane_drives;
     @FXML private SplitPane splitPane_root;
-
+    @FXML private Label folderSelectorLabel;
     @FXML private TableView<SelectedFolder> homeDefaultsTableView;
     @FXML private TableColumn<SelectedFolder, Boolean> homeDefaults_select_column;
     @FXML private TableColumn<SelectedFolder, String> homeDefaults_path_column;
@@ -161,8 +168,21 @@ public class FolderScannerController {
             }
         });
     }
+
+
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
 
+    public void initTableWidths() {
+        Messages.sprintf("initTableWidths::::::: " + homeDefaultsTableView.getWidth());
+                        Platform.runLater(() -> {
+                            homeDefaultsTableView.getScene().getWindow().sizeToScene();
+                            homeDefaultsTableView.refresh();
+                            homeDefaultsTableView.layout();
+                            homeDefaultsTableView.autosize();
+                            Messages.sprintf("initTableWidths homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
+                        });
+
+    }
     public void init(ModelMain aModel_main) {
         Main.setProcessCancelled(false);
 
@@ -184,7 +204,19 @@ public class FolderScannerController {
         homeDefaults_select_column.setCellFactory(selectedFoldersCellFactory);
         homeDefaults_select_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
 
+
+        
         homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+
+        homeDefaults_path_column.setResizable(true);
+        homeDefaults_path_column.setPrefWidth(Region.USE_COMPUTED_SIZE);
+        homeDefaults_path_column.setMinWidth(Region.USE_PREF_SIZE);
+
+        //homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        homeDefaultsTableView.setTableMenuButtonVisible(false);
+//        this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().addListener((javafx.collections.ListChangeListener.Change<? extends SelectedFolder> c) -> {
+//            updatePathColumnWidth();
+//        });
 
         Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
         for(Path commonPath : resolve.values()) {
@@ -201,19 +233,146 @@ public class FolderScannerController {
                     this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }
+
         }
+        homeDefaultsTableView.setColumnResizePolicy(tableView -> true);
+
+        homeDefaultsTableView.itemsProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) return;
+            Messages.sprintf("homeDefaultsTableView.itemsProperty::: " + newValue.size());
+                //autoResizeColumns(homeDefaultsTableView, 30);
+                Platform.runLater(() -> {
+                    homeDefaultsTableView.getColumns().forEach(column -> {
+
+                        column.setPrefWidth(Region.USE_COMPUTED_SIZE);
+                        autoResizeColumns(homeDefaultsTableView, 30);
+                });
+            });
+        });
 
         Platform.runLater(() -> {
             homeDefaultsTableView.setItems(this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs());
+            homeDefaultsTableView.applyCss();
+            homeDefaultsTableView.layout();
+        });
+//        homeDefaultsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+//            if (newSelection != null) {
+//                Messages.sprintf("Selected item: " + newSelection.getFolder());
+//            }
+//        });
+
+//        homeDefaultsTableView.sceneProperty().addListener((obs, oldScene, newScene) -> {
+//            if (newScene != null) {
+//                newScene.getWindow().showingProperty().addListener((obsWindow, oldVal, newVal) -> {
+//                    if (newVal) {
+//                        Messages.sprintf("homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
+//                        Platform.runLater(() -> {
+//                            homeDefaultsTableView.getScene().getWindow().sizeToScene();
+//                            homeDefaultsTableView.refresh();
+//                            homeDefaultsTableView.layout();
+//                            homeDefaultsTableView.autosize();
+//                            //updatePathColumnWidth();
+//                            Messages.sprintf("homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
+//                        });
+//                        Messages.sprintf("homeDefaultsTableView is showing");
+//                    } else {
+//                        Messages.sprintf("homeDefaultsTableView is not showing");
+//                    }
+//                });
+//            }
+//        });
+        folderScannerMain.widthProperty().addListener((obs, oldVal, newVal) -> {
+            Messages.sprintf("folderScannerMain.getWidth(); " + folderScannerMain.getWidth());
+            if (homeDefaultsTableView == null) {
+                Messages.sprintfError("homeDefaultsTableView is null!");
+                return;
+            }
+            Platform.runLater(() -> {
+               updatePathColumnWidth(homeDefaultsTableView);
+            });
         });
 
-        homeDefaultsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                Messages.sprintf("Selected item: " + newSelection.getFolder());
-            }
-        });
+
+
     }
 
+    private void updatePathColumnWidth( TableView<?> table )
+    {
+        //Set the right policy
+        table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.getColumns().stream().forEach( (column) ->
+        {
+            //Minimal width = columnheader
+            Text t = new Text( column.getText() );
+            double max = t.getLayoutBounds().getWidth();
+            for ( int i = 0; i < table.getItems().size(); i++ )
+            {
+                //cell must not be empty
+                if ( column.getCellData( i ) != null )
+                {
+                    t = new Text( column.getCellData( i ).toString() );
+                    double calcwidth = t.getLayoutBounds().getWidth();
+                    //remember new max-width
+                    if ( calcwidth > max )
+                    {
+                        max = calcwidth;
+                    }
+                }
+            }
+            //set the new max-widht with some extra space
+            column.setPrefWidth( max + 10.0d );
+        } );
+    }
+    private void updatePathColumnWidth_() {
+        if (homeDefaultsTableView.getScene() == null || !homeDefaultsTableView.isVisible()) {
+            Messages.sprintfError("updatePathColumnWidth() scene is null!");
+            return;
+        }
+
+        homeDefaultsTableView.applyCss();
+
+        double maxWidth = 5.0; // minimum width
+        javafx.scene.text.Text text = new javafx.scene.text.Text();
+
+        // Get the actual font from a cell renderer if possible
+        javafx.scene.text.Font cellFont = null;
+        if (!homeDefaultsTableView.getItems().isEmpty()) {
+            // Try to get font from an actual rendered cell
+            TableCell<SelectedFolder, String> cell = (TableCell<SelectedFolder, String>) homeDefaults_path_column.getCellFactory().call(homeDefaults_path_column);
+            if (cell != null && cell.getFont() != null) {
+                cellFont = cell.getFont();
+            }
+        }
+        
+        // Fallback to default font if we couldn't get cell font
+        if (cellFont == null) {
+            cellFont = javafx.scene.text.Font.getDefault();
+        }
+        
+        text.setFont(cellFont);
+
+        for (SelectedFolder folder : this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs()) {
+            text.setText(folder.getFolder());
+            double textWidth = text.getLayoutBounds().getWidth();
+            if (textWidth > maxWidth) {
+                maxWidth = textWidth;
+            }
+        }
+
+        // Add more padding to account for cell padding and scrollbar
+        double newWidth = maxWidth + 40;
+        
+        // Ensure we don't exceed table width
+        double tableWidth = homeDefaultsTableView.getWidth();
+        if (tableWidth > 0 && newWidth > tableWidth - homeDefaults_select_column.getWidth() - 20) {
+            newWidth = tableWidth - homeDefaults_select_column.getWidth() - 20;
+        }
+        
+        homeDefaults_path_column.setPrefWidth(newWidth);
+        homeDefaults_path_column.setMinWidth(newWidth);
+        homeDefaults_path_column.setMaxWidth(newWidth);
+        Messages.sprintf("######################################homeDefaults_path_column.setPrefWidth(newWidth); " + newWidth);
+    }
     SelectedFolder existsInSelectedFolderScannerObs(Path commonPath) {
         for (SelectedFolder sf : this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (sf.getFolder().equals(commonPath.toString())) {

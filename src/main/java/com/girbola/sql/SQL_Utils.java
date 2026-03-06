@@ -160,12 +160,9 @@ public class SQL_Utils extends FolderInfo_SQL {
 
 
     public static void ensureColumnsExist(Connection conn, String tableName, Map<String, String> requiredColumns) throws SQLException {
-        boolean originalAutoCommit = conn.getAutoCommit();
+//        boolean originalAutoCommit = conn.getAutoCommit();
         try {
-            if (originalAutoCommit) {
-                conn.setAutoCommit(false);
-            }
-
+            SQL_Utils.setAutoCommit(conn, false);
             // Get existing columns (normalize to lower-case for comparison)
             Set<String> existingColumns = new HashSet<>();
             DatabaseMetaData meta = conn.getMetaData();
@@ -174,6 +171,7 @@ public class SQL_Utils extends FolderInfo_SQL {
                     String colName = rs.getString("COLUMN_NAME");
                     if (colName != null) {
                         existingColumns.add(colName.toLowerCase());
+                        Messages.sprintf("Column EXISTS: " + colName);
                     } else {
                         Messages.sprintf("Column NOT found: " + colName + " ===of type===: " + rs.getString("TYPE_NAME"));
                     }
@@ -186,11 +184,26 @@ public class SQL_Utils extends FolderInfo_SQL {
                 for (Map.Entry<String, String> entry : requiredColumns.entrySet()) {
                     String columnName = entry.getKey();
                     String columnType = entry.getValue();
-
                     if (!existingColumns.contains(columnName.toLowerCase())) {
-                        String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s;", tableName, columnName, columnType);
-                        stmt.execute(alterSQL);
-                        Messages.sprintf("Added missing column: " + columnName + " (" + columnType + ")");
+                        // Validate column name and type to prevent SQL injection
+                        if (!isValidIdentifier(columnName) || !isValidColumnType(columnType)) {
+                            Messages.sprintfError("Invalid column name or type: " + columnName + " (" + columnType + ")");
+                            continue;
+                        }
+                        
+                        // Use properly quoted identifiers
+                        String safeTableName = quoteIdentifier(tableName);
+                        String safeColumnName = quoteIdentifier(columnName);
+                        String alterSQL = String.format("ALTER TABLE %s ADD COLUMN %s %s", 
+                                                       safeTableName, safeColumnName, columnType);
+                        
+                        try {
+                            stmt.execute(alterSQL);
+                            Messages.sprintf("Added missing column: " + " columnName " + columnName + " columnTytpe: " + columnType);
+                        } catch (SQLException e) {
+                            Messages.sprintfError("Failed to add column " + columnName + ": " + e.getMessage());
+                            throw e; // Rethrow to be handled by the outer try-catch
+                        }
                     }
                 }
             }
@@ -200,14 +213,39 @@ public class SQL_Utils extends FolderInfo_SQL {
             SQL_Utils.rollBackConnection(conn);
             throw e;
         } finally {
-            if (originalAutoCommit) {
-                try {
-                    conn.setAutoCommit(true);
-                } catch (SQLException ignore) {
-                    // best-effort restore
-                }
-            }
+            conn.commit();
+//            SQL_Utils.closeConnection(conn);
         }
     }
 
+    // Helper methods to validate identifiers and column types
+    private static boolean isValidIdentifier(String identifier) {
+        // Basic validation: identifiers should be alphanumeric with underscores
+        return identifier != null && identifier.matches("[a-zA-Z][a-zA-Z0-9_]*");
+    }
+
+
+    /**
+     * Safely quotes an SQL identifier to prevent SQL injection.
+     * @param identifier The identifier to quote
+     * @return The safely quoted identifier
+     */
+    private static String quoteIdentifier(String identifier) {
+        // Basic validation: identifiers should be alphanumeric with underscores
+        if (identifier == null || !identifier.matches("[a-zA-Z][a-zA-Z0-9_]*")) {
+            throw new IllegalArgumentException("Invalid SQL identifier: " + identifier);
+        }
+        return "\"" + identifier.replace("\"", "\"\"") + "\"";
+    }
+
+    /**
+     * Validates if a string represents a valid SQL column type
+     * @param columnType The column type to validate
+     * @return true if valid, false otherwise
+     */
+    private static boolean isValidColumnType(String columnType) {
+        // Basic validation: check for common SQL types
+        String upperType = columnType.toUpperCase();
+        return upperType.matches("(VARCHAR|TEXT|INTEGER|INT|BOOLEAN|DOUBLE|FLOAT|DATE|TIMESTAMP|BLOB)(\\(\\d+\\))?");
+    }
 }

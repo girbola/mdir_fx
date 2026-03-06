@@ -1,15 +1,24 @@
 
-/* 
+/*
     Created on : 10.12.2017, 23:13:25
 
 */
 
 .root {
-    -fx-primary: #393939;
+    -fx-base: #393939;
     -fx-background-color: darkgrey;
     -fx-dark-border-color: darkgrey;
     -fx-mid-border-color: grey;
     -fx-light-border-color: white;
+
+    -fx-base-cyan: #3b8787;
+    -fx-base-orange: #cf6418;
+    -fx-base-blue: #355091;
+    -fx-base-red: #c14545;
+    -fx-base-green: #2d8022;
+    -fx-base-pink: #c94578;
+    -fx-base-yellow: #cf6418;
+
 
     /* One of these colors will be chosen based upon a ladder calculation
  * that uses the brightness of a background color.  Instead of using these
@@ -28,37 +37,39 @@
 }
 
 .button {
-    -fx-background-color: 
-        -fx-primary,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
-    /*-fx-background-insets: 1;*/
-    /*-fx-background-radius: 1;*/
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    /*-fx-insets: 0;*/
-    /*-fx-padding: 3;*/
+    -fx-background-color: -fx-base,
+    transparent,
+    transparent,
+    linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
+    -fx-effect: dropshadow(three-pass-box, rgba(217,217,217,0.2), 1, 0.0, 0, 1);
+    -fx-font-size: 0.8em;
     -fx-text-fill: -fx-light-text-color;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
 }
 
 .button:hover {
-    -fx-background-color: linear-gradient(to bottom, white, -fx-primary);
+    -fx-background-color: linear-gradient(to bottom, white, -fx-base);
 }
-.selectedFolders {
-    -fx-background-color: pink;
-}
-.advanced_select {
-    -fx-background-color: grey;
-}
-.splitPane {
-    -fx-background-color: grey;
-    -fx-border-color: black;
-    -fx-border-width: 0.125em;
 
+.folderSelectorLabelHead {
+    -fx-background-color: black;
 }
-.splitPane .label {
+.folderSelectorLabelHead .label {
+    -fx-font-size: 1.8em;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.selectedFolders {
+    -fx-background-color: -fx-base;
+}
+
+.splitPane_root {
+    -fx-background-color: transparent;
+}
+
+.splitPane_root .label {
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
@@ -66,94 +77,104 @@
     -fx-background-color: transparent;
 }
 
-.scroll-pane {
-    -fx-border-color: transparent;
-    -fx-background-color: derive(-fx-primary, 20%);
-}
-.scroll-pane .viewport{
-    /*-fx-border-color: #126e6e;*/
+/*.scroll-pane {*/
+/*    -fx-border-color: transparent;*/
+/*    -fx-background-color: derive(-fx-base, 20%);*/
+/*}*/
+/*.scroll-pane .viewport{*/
+/*    !*-fx-border-color: #126e6e;*!*/
 
-    -fx-background-color: derive(-fx-primary, 30%);
-}
+/*    -fx-background-color: derive(-fx-base, 30%);*/
+/*}*/
 
-.scroll-bar:horizontal, .scroll-bar:vertical {
-    -fx-background-color: derive(#444444, 20%);
-    -fx-background-radius: 5;
-}
-.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
-    -fx-background-color: derive(darkgray, 20%);
-    -fx-background-radius: 0.2em;
-}
+/*.scroll-bar:horizontal, .scroll-bar:vertical {*/
+/*    -fx-background-color: derive(#444444, 20%);*/
+/*    -fx-background-radius: 5;*/
+/*}*/
+/*.scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {*/
+/*    -fx-background-color: derive(darkgray, 20%);*/
+/*    -fx-background-radius: 0.2em;*/
+/*}*/
 
-.table-view {
-    -fx-background-color: #1d1d1d;
-    -fx-background-padding: 2;
-    -fx-base: #1d1d1d;
-    -fx-control-inner-background: #1d1d1d;
-    -fx-padding: 5;
-    -fx-border-color:  -fx-dark-border-color;
-    /*    -fx-table-header-border-color: cyan;*/
-    /*-fx-border-color: red;*/
-    /*-fx-border-width: 0.125em;*/
-}
-.table-view .column-header.table_media .label {
-    -fx-background-color: linear-gradient(to bottom, red, orange);
-    -fx-text-fill: -fx-primary;
-    -fx-alignment: center;
-    -fx-font-weight: bold;
-}
-.table-view .column-header-background {
-    -fx-background-color: transparent;
-}
-.table-view .column-header .label {
-    -fx-font-size: 8pt;
-    -fx-font-family: "Gaduci";
-    -fx-text-fill: -fx-light-text-color;
-    -fx-alignment: center-left;
-    -fx-opacity: 1;
-}
-.table-view .column-header, .table-view .filler {
-    -fx-size: 15;
-    -fx-border-width: 0 0 1 0;
-    /*-fx-background-color: transparent;*/
-    -fx-border-color: 
-        transparent,
-        transparent,
-        -fx-light-border-color,
-        transparent;
-}
+/*.table-view {*/
+/*    -fx-background-color: #1d1d1d;*/
+/*    -fx-background-padding: 2;*/
+/*    -fx-base: #1d1d1d;*/
+/*    -fx-control-inner-background: #1d1d1d;*/
+/*    -fx-padding: 5;*/
+/*    -fx-border-color:  -fx-dark-border-color;*/
+/*    !*    -fx-table-header-border-color: cyan;*!*/
+/*    !*-fx-border-color: red;*!*/
+/*    !*-fx-border-width: 0.125em;*!*/
+/*}*/
+/*.table-view .column-header.table_media .label {*/
+/*    -fx-background-color: linear-gradient(to bottom, red, orange);*/
+/*    -fx-text-fill: -fx-base;*/
+/*    -fx-alignment: center;*/
+/*    -fx-font-weight: bold;*/
+/*}*/
+/*.table-view .column-header .label {*/
+/*    -fx-font-weight: normal;*/
+/*    -fx-font-size: 9px;*/
+/*    -fx-text-fill: -fx-light-text-color;*/
+/*    -fx-alignment: center-left;*/
+/*    -fx-padding: 7 2 7 2;*/
+/*}*/
 
-.table-view:focused {
-    -fx-border-color:  -fx-light-border-color;
-    -fx-border-width: 0.125em;
+/*.table-view .column-header-background {*/
+/*    -fx-background-color: transparent;*/
+/*}*/
 
-}
+/*!*.table-view .column-header .label {*!*/
+/*!*    -fx-font-size: 8pt;*!*/
+/*!*    -fx-font-family: "Gaduci";*!*/
+/*!*    -fx-text-fill: -fx-light-text-color;*!*/
+/*!*    -fx-alignment: center-left;*!*/
+/*!*    -fx-opacity: 1;*!*/
+/*!*}*!*/
+/*.table-view .column-header, .table-view .filler {*/
+/*    -fx-size: 15;*/
+/*    -fx-border-width: 0 0 1 0;*/
+/*    !*-fx-background-color: transparent;*!*/
+/*    -fx-border-color:*/
+/*        transparent,*/
+/*        transparent,*/
+/*        -fx-light-border-color,*/
+/*        transparent;*/
+/*}*/
 
-.table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: -fx-focus-color;
-}
+/*.table-view:focused {*/
+/*    -fx-border-color:  -fx-light-border-color;*/
+/*    -fx-border-width: 0.125em;*/
 
-.table-view .scroll-bar:horizontal, .scroll-bar:vertical {
-    -fx-background-color: derive(#444444, 20%);
-    -fx-background-radius: 5;
-}
-.table-view .scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {
-    -fx-background-color: derive(darkgray, 20%);
-    -fx-background-radius: 0.2em;
-}
-.tree-view, .tree-cell {
-    -fx-background-color: -fx-primary;
-    -fx-text-fill: white ;
-}
-.tree-cell:expanded, .tree-cell:sub-tree-item {
-    -fx-background-color: #404040;
-}
-.tree-cell:selected {
-    -fx-font-weight: bold;
-}
-.tree-cell {
-    -fx-padding: 0.15em 0em 0.15em 0em;
-}
-.tree-cell:sub-tree-item {
-    -fx-padding: 0.25em ;
+/*}*/
+
+/*.table-view:focused .table-row-cell:filled:focused:selected {*/
+/*    -fx-background-color: -fx-base-cyan;*/
+/*}*/
+
+/*.table-view .scroll-bar:horizontal, .scroll-bar:vertical {*/
+/*    -fx-background-color: derive(#444444, 20%);*/
+/*    -fx-background-radius: 5;*/
+/*}*/
+/*.table-view .scroll-bar:horizontal .thumb, .scroll-bar:vertical .thumb {*/
+/*    -fx-background-color: derive(darkgray, 20%);*/
+/*    -fx-background-radius: 0.2em;*/
+/*}*/
+/*.tree-view, .tree-cell {*/
+/*    -fx-background-color: -fx-base;*/
+/*    -fx-text-fill: white ;*/
+/*}*/
+/*.tree-cell:expanded, .tree-cell:sub-tree-item {*/
+/*    -fx-background-color: #404040;*/
+/*    -fx-text-fill: -fx-dark-text-color;*/
+/*}*/
+/*.tree-cell:selected {*/
+/*    -fx-font-weight: bold;*/
+/*}*/
+/*.tree-cell {*/
+/*    -fx-padding: 0.15em 0em 0.15em 0em;*/
+/*}*/
+/*.tree-cell:sub-tree-item {*/
+/*    -fx-padding: 0.25em ;*/
 }

@@ -1,3 +1,4 @@
+
 package com.girbola.sql;
 
 import com.girbola.Main;
@@ -13,6 +14,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import javafx.collections.ObservableList;
 
 import static com.girbola.sql.SQL_Utils.closeConnection;
 import static com.girbola.sql.SQL_Utils.isDbConnected;
@@ -76,11 +78,9 @@ public class SelectedFolderInfoSQL {
             boolean loadSelectedFoldersFromConfigDb = SelectedFolderInfoSQL.loadSelectedFoldersFromConfigDb(connection, modelMain);
             if(loadSelectedFoldersFromConfigDb) {
                 Messages.sprintf("load_SelectedFolders_UsingSQL loaded....");
-                closeConnection(connection);
                 return true;
             } else {
                 Messages.warningText("Could not load selected folders from database");
-                closeConnection(connection);
                 return false;
             }
 
@@ -95,6 +95,7 @@ public class SelectedFolderInfoSQL {
         Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
+            return false;
         }
 
         List<SelectedFolder> list = new ArrayList<>(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
@@ -103,6 +104,7 @@ public class SelectedFolderInfoSQL {
         Messages.sprintf("removeFromIgnoredList SQL= " + sql);
 
         try {
+            connection.setAutoCommit(false);
             PreparedStatement pstmt = connection.prepareStatement(sql);
             for (SelectedFolder path : list) {
                 pstmt.setString(1, path.getFolder());
@@ -112,14 +114,15 @@ public class SelectedFolderInfoSQL {
             connection.commit();
             Messages.sprintf("removeSelectedFolders counted rows: " + counter.length);
             pstmt.close();
+            return true;
 
         } catch (Exception e) {
+            SQL_Utils.rollBackConnection(connection);
             e.printStackTrace();
             return false;
+        } finally {
+            closeConnection(connection);
         }
-
-        closeConnection(connection);
-        return true;
     }
 
     public static void saveSelectedFoldersToConfigDb(ModelMain modelMain) {
@@ -175,17 +178,9 @@ public class SelectedFolderInfoSQL {
                 SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
                 Messages.sprintf("loadFolders_list: " + selectedFolder.getFolder());
 
-//                ObservableList<SelectedFolder> obs = modelMain.getSelectedFolders().getSelectedFolderScanner_obs();
-
                 boolean exists = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().stream().anyMatch(sf -> Objects.equals(sf.getFolder(), selectedFolder.getFolder()));
                 if (!exists) {
                     modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-//                    Messages.sprintf("Added selected folder: " + selectedFolder.getFolder());
-//                    for(SelectedFolder selectedFolderExists : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-//                        if(selectedFolderExists.getFolder().equals(selectedFolder.getFolder())) {
-//                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-//                        }
-//                    }
                 } else {
                     Messages.sprintf("Skipped duplicate selected folder: " + selectedFolder.getFolder());
                 }
@@ -319,5 +314,42 @@ public class SelectedFolderInfoSQL {
         }
     }
 
+    /**
+     * Removes selected folders from the database table.
+     *
+     * @param selectedItems The list of selected folders to remove.
+     */
+    public static void removeFromTable(ObservableList<SelectedFolder> selectedItems) {
+        if (selectedItems == null || selectedItems.isEmpty()) {
+            return;
+        }
 
+        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if (connection == null) {
+            Messages.sprintfError("Could not connect to configuration DB for removing selected folders: " + Main.conf.getConfiguration_db_fileName());
+            return;
+        }
+
+        String sql = "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE path = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            connection.setAutoCommit(false);
+
+            for (SelectedFolder sf : selectedItems) {
+                if (sf == null || sf.getFolder() == null) {
+                    continue;
+                }
+                pstmt.setString(1, sf.getFolder());
+                pstmt.addBatch();
+            }
+
+            int[] counter = pstmt.executeBatch();
+            connection.commit();
+            Messages.sprintf("removeFromTable deleted rows: " + counter.length);
+        } catch (Exception e) {
+            Messages.sprintfError("removeFromTable failed: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
+        } finally {
+            closeConnection(connection);
+        }
+    }
 }
