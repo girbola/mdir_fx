@@ -155,10 +155,13 @@ public class ScanDrives {
     }
 
     private void processSelectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
+    Messages.sprintf("cb.selectedProperty selected path is: " + selectedPath);
         if (Files.exists(selectedPath) && !selectedFolderHasValue(selectedPath)) {
             boolean hasMedia = FileUtils.getHasMedia(selectedPath.toFile());
             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
                     .add(new SelectedFolder(true, true, selectedPath.toString(), hasMedia));
+        } else {
+            Messages.sprintf("processSelectedPath Folder already exists: " + selectedPath);
         }
         modelFolderScanner.getSelectedDrivesFoldersListObs().add(selectedPath);
         sprintf("111drive selected: " + cb.getValue());
