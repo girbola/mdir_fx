@@ -1,33 +1,29 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.folderpicker.LazyDirTreeItem;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DriveInfoUtils;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.utils.CommonUserFolders;
 import common.utils.FileUtils;
 import common.utils.OSHI_Utils;
-import java.util.concurrent.atomic.AtomicInteger;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.Separator;
-import javafx.scene.control.TreeItem;
 import javafx.scene.input.MouseEvent;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -37,7 +33,7 @@ public class ScanDrives {
 
     private AtomicInteger redraw = new AtomicInteger(0);
 
-    private CheckBoxTreeItem<File> rootItem;
+    private CheckBoxTreeItem<Path> rootItem;
     private ObservableList<Path> driveListSelectedObs;
     private ModelFolderScanner modelFolderScanner;
     private Set<DriveInfo> rootDrives = new HashSet<>();
@@ -46,14 +42,14 @@ public class ScanDrives {
     private DriveInfoUtils driveInfoUtils;
     private ModelMain modelMain;
 
-    public ScanDrives(ModelMain modelMain, CheckBoxTreeItem<File> rootItem, ObservableList<Path> driveListSelectedObs,
+    public ScanDrives(ModelMain modelMain, CheckBoxTreeItem<Path> rootItem, ObservableList<Path> driveListSelectedObs,
                       DriveInfoUtils driveInfoUtils, ModelFolderScanner modelFolderScanner) {
         this.modelMain = modelMain;
         this.rootItem = rootItem;
         this.driveListSelectedObs = driveListSelectedObs;
         this.driveInfoUtils = driveInfoUtils;
         this.modelFolderScanner = modelFolderScanner;
-        scanner.setPeriod(Duration.seconds(10));
+        scanner.setPeriod(Duration.seconds(30));
     }
 
     public void restart() {
@@ -119,8 +115,8 @@ public class ScanDrives {
         }
     }
 
-    private CheckBoxTreeItem<File> createBranch(File fileName) {
-        CheckBoxTreeItem<File> cb = new CheckBoxTreeItem<>(fileName);
+    private CheckBoxTreeItem<Path> createBranch(Path fileName) {
+        CheckBoxTreeItem<Path> cb = new CheckBoxTreeItem<>(fileName);
         cb.setExpanded(true);
         cb.selectedProperty().addListener((observable, oldValue, newValue) -> handleSelectionChange(cb, newValue));
 
@@ -128,7 +124,7 @@ public class ScanDrives {
         return cb;
     }
 
-    private void handleSelectionChange(CheckBoxTreeItem<File> cb, Boolean isSelected) {
+    private void handleSelectionChange(CheckBoxTreeItem<Path> cb, Boolean isSelected) {
         Path selectedPath = Paths.get(cb.getValue().toString());
         sprintf("cb.selectedProperty path is: " + selectedPath);
         if (cb.isIndeterminate()) {
@@ -146,7 +142,7 @@ public class ScanDrives {
         driveInfoUtils.createDriveInfo(cb.getValue().toString(), isSelected);
     }
 
-    private void handleWorkDirConflict(CheckBoxTreeItem<File> cb, Path selectedPath) {
+    private void handleWorkDirConflict(CheckBoxTreeItem<Path> cb, Path selectedPath) {
         Platform.runLater(() -> {
             cb.setSelected(false);
             Messages.warningText(Main.bundle.getString("workDirConflict"));
@@ -154,8 +150,8 @@ public class ScanDrives {
         });
     }
 
-    private void processSelectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
-    Messages.sprintf("cb.selectedProperty selected path is: " + selectedPath);
+    private void processSelectedPath(CheckBoxTreeItem<Path> cb, Path selectedPath) {
+        Messages.sprintf("cb.selectedProperty selected path is: " + selectedPath);
         if (Files.exists(selectedPath) && !selectedFolderHasValue(selectedPath)) {
             boolean hasMedia = FileUtils.getHasMedia(selectedPath.toFile());
             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -167,7 +163,7 @@ public class ScanDrives {
         sprintf("111drive selected: " + cb.getValue());
     }
 
-    private void processDeselectedPath(CheckBoxTreeItem<File> cb, Path selectedPath) {
+    private void processDeselectedPath(CheckBoxTreeItem<Path> cb, Path selectedPath) {
         sprintf("cb.selectedProperty de-selected path is: " + selectedPath);
         Platform.runLater(() -> {
 //            remove(cb.getValue().toString());
@@ -208,6 +204,20 @@ public class ScanDrives {
             Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
             return;
         }
+
+        for (Path r : FileSystems.getDefault().getRootDirectories()) {
+            rootItem.getChildren().add(new LazyDirTreeItem(r));
+        }
+
+
+
+    }
+
+    private void redrawRootFolders2() throws IOException {
+        if (Main.getProcessCancelled()) {
+            Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
+            return;
+        }
         redraw.incrementAndGet();
         Messages.sprintf("redrawRootFolders COUNTER: " + redraw.get());
         List<DriveInfo> sortedRootDrives = new ArrayList<>(rootDrives);
@@ -215,7 +225,7 @@ public class ScanDrives {
 
         for (DriveInfo driveInfo : sortedRootDrives) {
             Messages.sprintf("---------------driveInfo: " + driveInfo.getDrivePath() + " drive serial: " + driveInfo.getIdentifier());
-            CheckBoxTreeItem<File> checkBoxTreeItem2 = new CheckBoxTreeItem<>(new File(driveInfo.getDrivePath()));
+            CheckBoxTreeItem<Path> checkBoxTreeItem2 = new CheckBoxTreeItem<>(Paths.get(driveInfo.getDrivePath()));
             checkBoxTreeItem2.setExpanded(true);
             checkBoxTreeItem2.setSelected(driveInfo.isSelected());
             checkBoxTreeItem2.setIndeterminate(false);
@@ -238,7 +248,7 @@ public class ScanDrives {
                         if (ValidatePathUtils.validFolder(path)) {
                             CustomCheckBoxTreeItem checkBoxTreeItem = new CustomCheckBoxTreeItem<>(modelMain, path);
                             checkBoxTreeItem.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-                               Messages.sprintf("mouse clicked: " + event.getSource());
+                                Messages.sprintf("mouse clicked: " + event.getSource());
                             });
 
                             checkBoxTreeItem2.getChildren().add(checkBoxTreeItem);

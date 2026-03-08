@@ -2,6 +2,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.folderpicker.SelectionPropagation;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.cell.TableCell_Connected;
@@ -60,7 +61,7 @@ public class FolderScannerController {
     @FXML private TableColumn<SelectedFolder, Boolean> homeDefaults_select_column;
     @FXML private TableColumn<SelectedFolder, String> homeDefaults_path_column;
 
-    @FXML private TreeView<File> drives_treeView;
+    @FXML private TreeView<Path> drives_treeView;
     @FXML private VBox analyzeList_vbox;
 
     private ModelMain model_main;
@@ -69,7 +70,7 @@ public class FolderScannerController {
     private Scene folderScannerController_scene;
     private Stage folderScannerController_stage;
 
-    private CheckBoxTreeItem<File> drives_rootItem;
+    private CheckBoxTreeItem<Path> drives_rootItem;
 
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
@@ -88,9 +89,9 @@ public class FolderScannerController {
             }
         }
 
-        for (TreeItem<File> fil : drives_rootItem.getChildren()) {
+        for (TreeItem<Path> fil : drives_rootItem.getChildren()) {
             if (!fil.getChildren().isEmpty()) {
-                for (TreeItem<File> c_fil : fil.getChildren()) {
+                for (TreeItem<Path> c_fil : fil.getChildren()) {
                     Messages.sprintf("c_fil.getValue(); " + c_fil);
                 }
             }
@@ -191,11 +192,26 @@ public class FolderScannerController {
 
         drives_rootItem = new CheckBoxTreeItem<>();
         drives_rootItem.setExpanded(true);
-        drives_treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
+        drives_treeView.setCellFactory(tv -> new CheckBoxTreeCell<Path>() {
+            @Override
+            public void updateItem(Path item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
+                    setText(name);
+                }
+            }
+        });
+
+//        drives_treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
 
         drives_treeView.setRoot(drives_rootItem);
         drives_treeView.setShowRoot(false);
 
+        // Selection propagation logic (parent <-> children)
+        SelectionPropagation.installSelectionPropagation(drives_rootItem, model_main);
         model_folderScanner.init(model_main, drives_rootItem);
         selectedFoldersController.init(model_main, model_folderScanner);
         folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);

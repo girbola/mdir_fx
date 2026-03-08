@@ -35,7 +35,7 @@ public class ModelFolderScanner {
 	private List<TreeItem<FolderInfoTable>> analyzeList_selected = new ArrayList<>();
 	private ObservableList<Path> selectedDrivesFoldersListObs = FXCollections.observableArrayList();
 	private VBox analyzeList_vbox;
-	private CheckBoxTreeItem<File> drivesRootItem;
+	private CheckBoxTreeItem<Path> drivesRootItem;
 
 	public ScanDrives getScanDrives() {
 		return scanDrives;
@@ -98,14 +98,14 @@ public class ModelFolderScanner {
 		});
 	}
 
-	public void init(ModelMain modelMain, CheckBoxTreeItem<File> drivesRootItem) {
+	public void init(ModelMain modelMain, CheckBoxTreeItem<Path> drivesRootItem) {
 		this.modelMain = modelMain;
 		this.drivesRootItem = drivesRootItem;
+
 		List<DriveInfo> driveInfos = modelMain.driveInfos();
 
 		if(driveInfos == null || driveInfos.isEmpty()) {
 			Messages.sprintf("No drives found!");
-
 		}
 
 		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, driveInfoUtils, this);
