@@ -5,10 +5,13 @@ import com.girbola.Main;
 import com.girbola.controllers.folderscanner.folderpicker.SelectionPropagation;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
-import com.girbola.controllers.main.tables.cell.TableCell_Connected;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.CommonUserFolders;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
@@ -16,24 +19,24 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBoxTreeItem;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import javafx.util.Callback;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Map;
 
 import static com.girbola.concurrency.ConcurrencyUtils.initNewSingleExecutionService;
 import static com.girbola.controllers.misc.Misc_GUI.autoResizeColumns;
@@ -68,7 +71,7 @@ public class FolderScannerController {
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
 
     private Scene folderScannerController_scene;
-    private Stage folderScannerController_stage;
+//    private Stage folderScannerController_stage;
 
     private CheckBoxTreeItem<Path> drives_rootItem;
 
@@ -143,7 +146,7 @@ public class FolderScannerController {
     public void exit() {
         model_folderScanner.getScanDrives().stop();
         model_folderScanner.drive().saveList();
-        folderScannerController_stage.close();
+//        folderScannerController_stage.close();
     }
 
     final EventHandler<KeyEvent> eventFilter = new EventHandler<KeyEvent>() {
@@ -156,19 +159,19 @@ public class FolderScannerController {
         }
     };
 
-    public void setScene(Scene folderScannerController_scene) {
-        this.folderScannerController_scene = folderScannerController_scene;
-    }
+//    public void setScene(Scene folderScannerController_scene) {
+//        this.folderScannerController_scene = folderScannerController_scene;
+//    }
 
-    public void setStage(Stage folderScannerController_stage) {
-        this.folderScannerController_stage = folderScannerController_stage;
-        this.folderScannerController_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                exit();
-            }
-        });
-    }
+//    public void setStage(Stage folderScannerController_stage) {
+//        this.folderScannerController_stage = folderScannerController_stage;
+//        this.folderScannerController_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//            @Override
+//            public void handle(WindowEvent event) {
+//                exit();
+//            }
+//        });
+//    }
 
 
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);

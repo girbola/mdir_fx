@@ -29,11 +29,6 @@
                   <Font size="9.0" />
                </font>
             </Button>
-            <Button fx:id="addFolders_btn" mnemonicParsing="false" onAction="#addFolders_btn_action" styleClass="bottomButton" text="Add" wrapText="true">
-               <font>
-                  <Font size="9.0" />
-               </font>
-            </Button>
             <Button fx:id="showWorkdir_btn" mnemonicParsing="false" onAction="#showWorkdir_btn_action" styleClass="bottomButton" text="Work dir" wrapText="true">
                <font>
                   <Font size="9.0" />

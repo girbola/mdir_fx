@@ -100,43 +100,43 @@ public class BottomController {
 
     }
 
-    @FXML
-    private void addFolders_btn_action(ActionEvent action) {
-
-        Messages.sprintf("addFolders_btn_action pressed");
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
-                Main.bundle);
-
-        Parent parent = null;
-        FolderScannerController folderScannerController = null;
-        try {
-            parent = loader.load();
-            folderScannerController = (FolderScannerController) loader.getController();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Messages.errorSmth(ERROR,
-                    "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex,
-                    Misc.getLineNumber(), true);
-        }
-        Stage fc_stage = new Stage();
-//		fc_stage.setWidth(conf.getScreenBounds().getWidth());
-//		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
-        fc_stage.setOnCloseRequest(event -> fc_stage.close());
-
-        Scene fc_scene = new Scene(parent, 800, 400);
-        fc_scene.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
-        folderScannerController.setStage(fc_stage);
-        folderScannerController.setScene(fc_scene);
-        folderScannerController.init(model_main);
-        fc_stage.setScene(fc_scene);
-        /*fc_stage.initModality(Modality.WINDOW_MODAL);*//**/
-        fc_stage.setTitle(bundle.getString("folderChooser"));
-        Messages.sprintf("fc_stage.initModality(Modality.WINDOW_MODAL)");
-
-        fc_stage.show();
-
-    }
+//    @FXML
+//    private void addFolders_btn_action(ActionEvent action) {
+//
+//        Messages.sprintf("addFolders_btn_action pressed");
+//        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"),
+//                Main.bundle);
+//
+//        Parent parent = null;
+//        FolderScannerController folderScannerController = null;
+//        try {
+//            parent = loader.load();
+//            folderScannerController = (FolderScannerController) loader.getController();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            Messages.errorSmth(ERROR,
+//                    "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex,
+//                    Misc.getLineNumber(), true);
+//        }
+//        Stage fc_stage = new Stage();
+////		fc_stage.setWidth(conf.getScreenBounds().getWidth());
+////		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
+//        fc_stage.setOnCloseRequest(event -> fc_stage.close());
+//
+//        Scene fc_scene = new Scene(parent, 800, 400);
+//        fc_scene.getStylesheets()
+//                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
+//        folderScannerController.setStage(fc_stage);
+//        folderScannerController.setScene(fc_scene);
+//        folderScannerController.init(model_main);
+//        fc_stage.setScene(fc_scene);
+//        /*fc_stage.initModality(Modality.WINDOW_MODAL);*//**/
+//        fc_stage.setTitle(bundle.getString("folderChooser"));
+//        Messages.sprintf("fc_stage.initModality(Modality.WINDOW_MODAL)");
+//
+//        fc_stage.show();
+//
+//    }
 
     @FXML
     private void options_btn_action(ActionEvent event) {

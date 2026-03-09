@@ -14,7 +14,6 @@
             <MenuItem fx:id="menuItem_file_import" mnemonicParsing="false" onAction="#menuItem_file_import_action" text="%import" />
             <MenuItem fx:id="menuItem_file_load" mnemonicParsing="false" onAction="#menuItem_file_load_action" text="%load" />
             <MenuItem fx:id="menuItem_file_save" mnemonicParsing="false" onAction="#menuItem_file_save_action" text="%save" />
-            <MenuItem fx:id="menuItem_file_addFolders" mnemonicParsing="false" onAction="#menuItem_file_addFolders_action" text="%addFolders" />
             <MenuItem fx:id="menuItem_file_close" mnemonicParsing="false" onAction="#menuItem_file_close_action" text="%close" />
          </items>
       </Menu>

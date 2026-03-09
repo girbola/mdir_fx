@@ -141,53 +141,53 @@ public class MenuBarController {
             }
         }
     }
-
-    @FXML
-    private void menuItem_file_addFolders_action(ActionEvent event) {
-        Messages.sprintf("menuItem_file_addFolders_action pressed");
-        model_main.getMonitorExternalDriveConnectivity().cancel();
-        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"), Main.bundle);
-
-        Parent parent = null;
-        FolderScannerController folderScannerController = null;
-        try {
-            parent = loader.load();
-            folderScannerController = (FolderScannerController) loader.getController();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Messages.errorSmth(ERROR, "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex, Misc.getLineNumber(), true);
-        }
-        Stage fc_stage = new Stage();
-//		fc_stage.setWidth(conf.getScreenBounds().getWidth());
-//		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
-        fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent event) {
-                model_main.getMonitorExternalDriveConnectivity().restart();
-                fc_stage.close();
-            }
-        });
-
-        Scene fc_scene = new Scene(parent);
-        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType());
-
-        //fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
-
-        folderScannerController.setStage(fc_stage);
-        folderScannerController.setScene(fc_scene);
-        folderScannerController.init(model_main);
-        fc_stage.setTitle("Select folder to scan for images");
-        fc_stage.initModality(Modality.WINDOW_MODAL);
-        fc_stage.initOwner(menuBar.getScene().getWindow());
-        fc_stage.setScene(fc_scene);
-
-        fc_stage.show();
-
-        folderScannerController.initTableWidths();
-
-
-    }
+//
+//    @FXML
+//    private void menuItem_file_addFolders_action(ActionEvent event) {
+//        Messages.sprintf("menuItem_file_addFolders_action pressed");
+//        model_main.getMonitorExternalDriveConnectivity().cancel();
+//        FXMLLoader loader = new FXMLLoader(Main.class.getResource("fxml/folderscanner/FolderScanner.fxml"), Main.bundle);
+//
+//        Parent parent = null;
+//        FolderScannerController folderScannerController = null;
+//        try {
+//            parent = loader.load();
+//            folderScannerController = (FolderScannerController) loader.getController();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            Messages.errorSmth(ERROR, "Country= " + Main.bundle.getLocale().getCountry() + " location?\n: " + Main.bundle.getLocale(), ex, Misc.getLineNumber(), true);
+//        }
+//        Stage fc_stage = new Stage();
+////		fc_stage.setWidth(conf.getScreenBounds().getWidth());
+////		fc_stage.setHeight(conf.getScreenBounds().getHeight() / 1.3);
+//        fc_stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+//            @Override
+//            public void handle(WindowEvent event) {
+//                model_main.getMonitorExternalDriveConnectivity().restart();
+//                fc_stage.close();
+//            }
+//        });
+//
+//        Scene fc_scene = new Scene(parent);
+//        Messages.sprintf("conf.getThemePath(): :: " + conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType());
+//
+//        //fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+//        fc_scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.FOLDERCHOOSER.getType()).toExternalForm());
+//
+//        folderScannerController.setStage(fc_stage);
+//        folderScannerController.setScene(fc_scene);
+//        folderScannerController.init(model_main);
+//        fc_stage.setTitle("Select folder to scan for images");
+//        fc_stage.initModality(Modality.WINDOW_MODAL);
+//        fc_stage.initOwner(menuBar.getScene().getWindow());
+//        fc_stage.setScene(fc_scene);
+//
+//        fc_stage.show();
+//
+//        folderScannerController.initTableWidths();
+//
+//
+//    }
 
     private List<FileInfo> removeImageDuplicates(DuplicateStatistics duplicateStatistics, TableView<FolderInfo> tableToSearch, FolderInfo folderInfo) {
         List<FileInfo> filesToRemove = new ArrayList<>();
