@@ -57,7 +57,10 @@ public class LazyDirTreeItem extends CheckBoxTreeItem<Path> {
                 try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
                     for (Path p : stream) {
                         // Only show readable directories; avoid following symlinks to prevent cycles
-                        if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS) && Files.isReadable(p) && !Files.isHidden(p) && !p.toFile().toString().toLowerCase().contains("opt")) {
+                        if (Files.isDirectory(p, LinkOption.NOFOLLOW_LINKS)
+                                && Files.isReadable(p)
+                                && !Files.isHidden(p)
+                                && !p.toFile().toString().toLowerCase().contains("opt")) {
                             result.add(new LazyDirTreeItem(p));
                         }
                     }

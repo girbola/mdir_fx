@@ -184,10 +184,9 @@ public class FolderScannerController {
                         });
 
     }
-    public void init(ModelMain aModel_main) {
+    public void initFolderScanner() {
         Main.setProcessCancelled(false);
 
-        this.model_main = aModel_main;
         initNewSingleExecutionService();
 
         drives_rootItem = new CheckBoxTreeItem<>();
@@ -214,7 +213,8 @@ public class FolderScannerController {
         SelectionPropagation.installSelectionPropagation(drives_rootItem, model_main);
         model_folderScanner.init(model_main, drives_rootItem);
         selectedFoldersController.init(model_main, model_folderScanner);
-        folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
+
+        //folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
         selectedFoldersController.start();
 
         homeDefaults_select_column.setCellFactory(selectedFoldersCellFactory);
@@ -396,5 +396,10 @@ public class FolderScannerController {
             }
         }
         return null;
+    }
+
+    public void init(ModelMain aModel_main) {
+        this.model_main = aModel_main;
+        model_folderScanner = new ModelFolderScanner();
     }
 }

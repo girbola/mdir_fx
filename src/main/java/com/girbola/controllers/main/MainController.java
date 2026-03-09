@@ -2,6 +2,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import common.utils.ui.UI_Tools;
@@ -9,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.scene.control.TabPane;
@@ -30,6 +32,7 @@ public class MainController {
     private Bounds tables_rootPaneNodeLayoutBounds;
 
     //@formatter:off
+    @FXML FolderScannerController folderScannerController;
 	@FXML BottomController bottomController;
 	@FXML TableController asitisController;
 	@FXML TableController sortedController;
@@ -53,6 +56,7 @@ public class MainController {
         configureTableActions();
 
         bottomController.init(model_main);
+        folderScannerController.init(model_main);
         setModelProperties();
         tables_hbox.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
@@ -81,7 +85,17 @@ public class MainController {
     private void initControllers() {
         Platform.runLater(() -> {
 
+            // folderScannerController is null because its fx:id in the FXML may not match the field name,
+            // or the <fx:include> tag is missing the fx:id attribute. Check FXML file for proper injection.
+            // menuBar_topController works because it's properly configured in FXML with matching fx:id.
+            if (menuBar_topController == null) {
+                Messages.sprintfError("menuBar_topController WAS NULL!!!L!L!!!L");
+            }
+            if (folderScannerController == null) {
+                Messages.sprintfError("folderScannerController WAS NULL!!!L!L!!!L - Check FXML fx:id attribute");
+            }
             menuBar_topController.init(model_main);
+            folderScannerController.init(model_main);
             sortitController.init(model_main, Main.bundle.getString("sortit"), TableType.SORTIT.getType());
             sortedController.init(model_main, Main.bundle.getString("sorted"), TableType.SORTED.getType());
             if (asitisController == null) {
@@ -92,6 +106,19 @@ public class MainController {
             sortitController.setShowHideTableButtonIcons(sortitController.hide_btn, true);
             sortedController.setShowHideTableButtonIcons(sortedController.hide_btn, true);
             asitisController.setShowHideTableButtonIcons(asitisController.hide_btn, true);
+//
+//            if (folderScannerController != null) {
+//                folderScannerController.init(model_main);
+//            } else {
+//                Messages.sprintf("folderScannerController WAS NULL! Deferring initialization...");
+//                Platform.runLater(() -> {
+//                    if (folderScannerController != null) {
+//                        folderScannerController.init(model_main);
+//                    } else {
+//                        Messages.sprintfError("folderScannerController still null after Platform.runLater");
+//                    }
+//                });
+//            }
 
         });
     }
@@ -124,7 +151,11 @@ public class MainController {
         model_main.setBottomController(bottomController);
         model_main.setMainContainer(main_container);
         model_main.setMainVBox(main_vbox);
+        model_main.setFolderScannerController(folderScannerController);
         tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
     }
 
+    public void folderScannerTabSelection(Event event) {
+        Messages.sprintf("folderScannerTabSelection");
+    }
 }

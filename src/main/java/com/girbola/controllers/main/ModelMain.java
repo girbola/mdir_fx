@@ -5,6 +5,7 @@ package com.girbola.controllers.main;
 import com.girbola.LoadFileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -50,6 +51,7 @@ public class ModelMain {
 
     private AnchorPane main_container;
     private BottomController bottomController;
+    private FolderScannerController folderScannerController;
     private Buttons buttons;
     private Populate populate;
     private ScheduledService<Void> monitorExternalDriveConnectivity;
@@ -354,4 +356,11 @@ public class ModelMain {
         return this.driveInfos;
     }
 
+    public void setFolderScannerController(FolderScannerController folderScannerController) {
+        this.folderScannerController = folderScannerController;
+    }
+
+    public FolderScannerController getFolderScannerController() {
+        return this.folderScannerController;
+    }
 }

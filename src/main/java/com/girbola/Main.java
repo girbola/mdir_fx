@@ -275,6 +275,8 @@ public class Main extends Application {
                     primaryStage.setScene(primaryScene);
                     primaryStage.show();
                     model_main.getBottomController().initBottomWorkdirMonitors();
+                    model_main.getFolderScannerController().initFolderScanner();
+
                 });
 
 //                lpt = new LoadingProcessTask(sceneManager.getWindow());

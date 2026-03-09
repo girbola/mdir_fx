@@ -24,6 +24,7 @@
         </developer>
     </developers>
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <apache-common-imaging.version>1.0.0-alpha6</apache-common-imaging.version>
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <imageio-jpeg.version>3.12.0</imageio-jpeg.version>
@@ -42,7 +43,6 @@
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
         <oshi-core.version>6.9.2</oshi-core.version>
         <owasp.version>12.1.9</owasp.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <slf4j.version>2.0.17</slf4j.version>
         <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
         <thumbnailator.version>[0.4, 0.5]</thumbnailator.version>
