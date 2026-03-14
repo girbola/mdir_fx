@@ -22,9 +22,9 @@
                 <fx:include fx:id="menuBar_top" source="MenuBar.fxml" VBox.vgrow="NEVER" />
                 <AnchorPane VBox.vgrow="ALWAYS">
                     <children>
-                        <TabPane fx:id="tablesTabPane" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                        <TabPane fx:id="tabPaneMain" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                             <tabs>
-                                <Tab fx:id="tabFolders" closable="false" text="%folders">
+                                <Tab fx:id="tabTables" closable="false" text="%main">
                                     <content>
                                         <AnchorPane fx:id="tables_rootPane">
                                             <children>
@@ -61,7 +61,7 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab closable="false" onSelectionChanged="#folderScannerTabSelection" text="%folders">
+                                <Tab fx:id="tabFolders" closable="false" onSelectionChanged="#folderScannerTabSelection" text="%folders">
                                     <content>
                                         <AnchorPane>
                                             <fx:include fx:id="folderScanner" source="../folderscanner/FolderScanner.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />

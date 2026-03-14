@@ -35,6 +35,7 @@ import javafx.event.EventHandler;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
@@ -58,6 +59,7 @@ public class ModelMain {
     private SelectedFolderScanner selectedFolders;
     private StringProperty table_root_hbox_width = new SimpleStringProperty();
     private TablePositionHolder tablePositionHolder;
+    private TabPane tabPaneMain;
     private Tables tables;
     private VBox main_vbox;
 //    private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
@@ -115,67 +117,71 @@ public class ModelMain {
         return this.populate;
     }
 
+    public TabPane getTabPaneMain() { return tabPaneMain; }
+
+    public void setTabPaneMain(TabPane tabPaneMain) { this.tabPaneMain = tabPaneMain;}
+
     public boolean saveAllTableContents() {
-    Messages.sprintf("saveAllTableContents started");
-    Connection connection = null;
-    boolean success = true;
+        Messages.sprintf("saveAllTableContents started");
+        Connection connection = null;
+        boolean success = true;
 
-    try {
-        connection = ConfigurationSQLHandler.getConnection();
-        if (!SQL_Utils.isDbConnected(connection)) {
-            Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
+        try {
+            connection = ConfigurationSQLHandler.getConnection();
+            if (!SQL_Utils.isDbConnected(connection)) {
+                Messages.warningText(Main.bundle.getString("cannotConnectConfigurationTable"));
+                return false;
+            }
+
+            SQL_Utils.setAutoCommit(connection, false);
+
+            // Create the necessary tables first
+            SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection);
+
+            // Save each table's content and track success
+            boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
+            if (sorted) {
+                Messages.sprintf("sorted were saved successfully");
+            } else {
+                Messages.sprintf("Failed to save sorted table");
+                success = false;
+            }
+
+            boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
+            if (sortit) {
+                Messages.sprintf("sortit were saved successfully");
+            } else {
+                Messages.sprintf("Failed to save sortit table");
+                success = false;
+            }
+
+            boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
+            if (asitis) {
+                Messages.sprintf("asitis were saved successfully");
+            } else {
+                Messages.sprintf("Failed to save asitis table");
+                success = false;
+            }
+
+            // Commit only if all operations were successful
+            if (success) {
+                SQL_Utils.commitChanges(connection);
+                Main.setChanged(false);
+            } else {
+                SQL_Utils.rollBackConnection(connection);
+            }
+
+            return success;
+        } catch (Exception e) {
+            Messages.sprintfError("Error in saveAllTableContents: " + e.getMessage());
+            if (connection != null) {
+                SQL_Utils.rollBackConnection(connection);
+            }
             return false;
+        } finally {
+            SQL_Utils.closeConnection(connection);
         }
-
-        SQL_Utils.setAutoCommit(connection, false);
-
-        // Create the necessary tables first
-        SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection);
-
-        // Save each table's content and track success
-        boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
-        if (sorted) {
-            Messages.sprintf("sorted were saved successfully");
-        } else {
-            Messages.sprintf("Failed to save sorted table");
-            success = false;
-        }
-
-        boolean sortit = saveTableContent(connection, tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
-        if (sortit) {
-            Messages.sprintf("sortit were saved successfully");
-        } else {
-            Messages.sprintf("Failed to save sortit table");
-            success = false;
-        }
-
-        boolean asitis = saveTableContent(connection, tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
-        if (asitis) {
-            Messages.sprintf("asitis were saved successfully");
-        } else {
-            Messages.sprintf("Failed to save asitis table");
-            success = false;
-        }
-
-        // Commit only if all operations were successful
-        if (success) {
-            SQL_Utils.commitChanges(connection);
-            Main.setChanged(false);
-        } else {
-            SQL_Utils.rollBackConnection(connection);
-        }
-
-        return success;
-    } catch (Exception e) {
-        Messages.sprintfError("Error in saveAllTableContents: " + e.getMessage());
-        if (connection != null) {
-            SQL_Utils.rollBackConnection(connection);
-        }
-        return false;
-    } finally {
-        SQL_Utils.closeConnection(connection);
     }
-}
 
     /**
      * Saves the content of the provided folder information list into the database based on the specified table type.

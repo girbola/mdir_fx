@@ -73,7 +73,9 @@ public class FolderScannerController {
     private Scene folderScannerController_scene;
 //    private Stage folderScannerController_stage;
 
-    private CheckBoxTreeItem<Path> drives_rootItem;
+
+
+private CheckBoxTreeItem<Path> drives_rootItem;
 
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
@@ -193,6 +195,7 @@ public class FolderScannerController {
         initNewSingleExecutionService();
 
         drives_rootItem = new CheckBoxTreeItem<>();
+        drives_rootItem.setIndependent(true);
         drives_rootItem.setExpanded(true);
         drives_treeView.setCellFactory(tv -> new CheckBoxTreeCell<Path>() {
             @Override
@@ -213,9 +216,12 @@ public class FolderScannerController {
         drives_treeView.setShowRoot(false);
 
         // Selection propagation logic (parent <-> children)
-        SelectionPropagation.installSelectionPropagation(drives_rootItem, model_main);
+        SelectionPropagation.installSelectionPropagation(model_main);
+
         model_folderScanner.init(model_main, drives_rootItem);
         selectedFoldersController.init(model_main, model_folderScanner);
+
+
 
         //folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
         selectedFoldersController.start();
@@ -399,6 +405,10 @@ public class FolderScannerController {
             }
         }
         return null;
+    }
+
+    public CheckBoxTreeItem<Path> getDrives_rootItem() {
+        return drives_rootItem;
     }
 
     public void init(ModelMain aModel_main) {

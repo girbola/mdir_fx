@@ -19,10 +19,13 @@ public class LazyDirTreeItem extends CheckBoxTreeItem<Path> {
 
     public LazyDirTreeItem(Path path) {
         super(path);
+        setIndependent(true);
 
         // Show an expand arrow by adding a dummy child for directories that might have children
         if (mayHaveChildren(path)) {
-            getChildren().add(new CheckBoxTreeItem<>(null)); // placeholder
+            CheckBoxTreeItem<Path> placeholder = new CheckBoxTreeItem<>(null);
+            placeholder.setIndependent(true);
+            getChildren().add(placeholder); // placeholder
         }
 
         // Lazy-load on expand

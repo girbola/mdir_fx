@@ -2,6 +2,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.folderpicker.SelectionPropagation;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
@@ -60,6 +61,9 @@ public class SelectedFoldersController {
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
         Messages.sprintf("selectedFolders_ok_action pressed");
+
+        model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
+
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
@@ -94,15 +98,26 @@ public class SelectedFoldersController {
 
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
         SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
-        Stage stage = (Stage) selectedFolders_ok_btn.getScene().getWindow();
-        stage.close();
+
+
+//        Stage stage = (Stage) selectedFolders_ok_btn.getScene().getWindow();
+//        stage.close();
     }
 
     @FXML
     private void selectedFolders_cancel_action(ActionEvent event) {
         sprintf("selectedFolders_cancel_action  pressed");
-        Stage stage = (Stage) selectedFolders_cancel_btn.getScene().getWindow();
-        stage.close();
+
+//        SelectionPropagation.syncTreeFromModel(model_main);
+
+        boolean b = SelectedFolderInfoSQL.loadSelectedFolders(model_main);
+        if(!b) {
+            Messages.warningText(bundle.getString("errorLoadingSelectedFolders"));
+        }
+
+        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        SelectionPropagation.syncTreeFromModel(model_main);
+        model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
     }
 
     @FXML

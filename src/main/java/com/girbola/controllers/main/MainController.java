@@ -42,7 +42,7 @@ public class MainController {
 	@FXML private HBox tables_hbox;
 	@FXML private VBox main_vbox;
     @FXML MenuBarController menuBar_topController;
-    @FXML TabPane tablesTabPane;
+    @FXML TabPane tabPaneMain;
 	//@formatter:on
 
     public void initialize(ModelMain model_main) {
@@ -67,7 +67,7 @@ public class MainController {
 
 
         //tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
-        tablesTabPane.widthProperty().addListener(new ChangeListener<Number>() {
+        tabPaneMain.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
                 /*Messages.sprintf("TABPANE WIDTH IS: " + newValue);*/
@@ -151,6 +151,7 @@ public class MainController {
         model_main.setBottomController(bottomController);
         model_main.setMainContainer(main_container);
         model_main.setMainVBox(main_vbox);
+        model_main.setTabPaneMain(tabPaneMain);
         model_main.setFolderScannerController(folderScannerController);
         tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
     }
