@@ -48,28 +48,55 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
             checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
-                    Messages.sprintf("CHECKBOX IS: " + newValue);
+
+
                     SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
                     selectedFolder.setSelected(newValue);
+                    selectedFolder.setConnected(true);
                     selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
-                    for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                        if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
-                            selectedFolder1.setSelected(newValue);
-                            if(newValue) {
-                                // Check if folder exists and then check for media
-                                if(selectedFolder1.getFolder() != null && Files.exists(Paths.get(selectedFolder1.getFolder()))) {
-                                    boolean hasMedia = FileUtils.getHasMedia(selectedFolder1.getFolder());
-                                    selectedFolder.setMedia(hasMedia);
-                                } else {
-                                    selectedFolder.setMedia(false);
-                                }
-                            }
-                            Messages.sprintf("Selected folder changed to: " + newValue);
+
+                    Messages.sprintf("CHECKBOX IS: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia());
+
+                    if(newValue == true) {
+                        if(!hasSelectedFolders(selectedFolder)) {
+                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
+                            modelMain.getFolderSelectionService().selectFolder(selectedFolder);
+                        }
+                    } else {
+                        if(hasSelectedFolders(selectedFolder)) {
+                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().remove(selectedFolder);
+                            modelMain.getFolderSelectionService().remove(selectedFolder);
                         }
                     }
+
+
+//                    for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+//                        if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+//                            selectedFolder1.setSelected(newValue);
+//                            if(newValue) {
+//                                // Check if folder exists and then check for media
+//                                if(selectedFolder1.getFolder() != null && Files.exists(Paths.get(selectedFolder1.getFolder()))) {
+//                                    boolean hasMedia = FileUtils.getHasMedia(selectedFolder1.getFolder());
+//                                    selectedFolder.setMedia(hasMedia);
+//                                } else {
+//                                    selectedFolder.setMedia(false);
+//                                }
+//                            }
+//                            Messages.sprintf("Selected folder changed to: " + newValue);
+//                        }
+//                    }
                 }
             });
         }
+    }
+
+    private boolean hasSelectedFolders(SelectedFolder selectedFolder) {
+        for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private Boolean getValue() {

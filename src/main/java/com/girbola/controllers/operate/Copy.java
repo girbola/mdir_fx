@@ -25,23 +25,23 @@ import javafx.concurrent.Task;
 import static com.girbola.messages.Messages.sprintf;
 
 public class Copy extends Task<Integer> {
-    private CopyHelper copyHelper;
 
     private final String ERROR = Copy.class.getSimpleName();
-    private WorkDirSQL workDirSQL;
+
+    boolean close;
     private AtomicInteger counter;
+    private CopyHelper copyHelper;
+    private List<FileInfo> list = new ArrayList<>();
+    private ModelMain modelMain;
+    private ModelOperate modelOperate;
+    private Path dest = null;
+    private Path source = null;
+    private SimpleStringProperty rememberAnswer = new SimpleStringProperty(CopyAnswerType.ASK);
+    private String STATE = "";
+    private String sceneNameType;
+    private WorkDirSQL workDirSQL;
     private int byteRead;
     private long currentSize;
-    private String STATE = "";
-    private Path source = null;
-    private Path dest = null;
-    private SimpleStringProperty rememberAnswer = new SimpleStringProperty(CopyAnswerType.ASK);
-
-    List<FileInfo> list = new ArrayList<>();
-    ModelOperate modelOperate;
-    ModelMain modelMain;
-    String sceneNameType;
-    boolean close;
 
     public Copy(List<FileInfo> list, ModelOperate modelOperate, ModelMain modelMain, String sceneNameType, boolean close, WorkDirSQL workDirSQL) {
         this.list = list;
@@ -81,6 +81,7 @@ public class Copy extends Task<Integer> {
 
         List<FileInfo> duplicatedFiles = new ArrayList<>();
 
+        // Duplicates removal
         Iterator<FileInfo> fileInfoIterator = list.iterator();
         //Removing duplicates before copying
         while (fileInfoIterator.hasNext()) {
@@ -94,6 +95,7 @@ public class Copy extends Task<Integer> {
             }
         }
 
+        // CopyProcess
         for (FileInfo fileInfo : list) {
 
             Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
@@ -149,7 +151,6 @@ public class Copy extends Task<Integer> {
                             }
                         } else {
                             Messages.sprintfError("Source file did not exists!: " + source);
-
                         }
 
                         break;
@@ -189,7 +190,7 @@ public class Copy extends Task<Integer> {
 
         TableUtils.refreshAllTableContent(modelMain.tables());
 //			modelOperate.doneButton(sceneNameType, close);
-        Messages.errorSmth(ERROR, "", null, Misc.getLineNumber(), false);
+        Messages.errorSmth(ERROR, "Something went wrong", null, Misc.getLineNumber(), false);
     }
 
     @Override

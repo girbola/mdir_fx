@@ -4,6 +4,7 @@ import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
@@ -82,6 +83,32 @@ public class SelectionPropagation {
             }
         }
     }
+
+    public static void removeFromSelection(SelectedFolder selectedFolder) {
+        if (selectedFolder == null || selectedFolder.getFolder() == null) {
+            return;
+        }
+
+        String removedPath = selectedFolder.getFolder();
+
+        Iterator<SelectedFolder> it = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
+        while (it.hasNext()) {
+            SelectedFolder current = it.next();
+            String currentPath = current.getFolder();
+
+            if (currentPath == null) {
+                continue;
+            }
+
+            if (currentPath.equals(removedPath) || currentPath.startsWith(removedPath + java.io.File.separator)) {
+                it.remove();
+            }
+        }
+
+        // refresh tree so parents/intermediate folders update correctly
+        SelectionPropagation.syncTreeFromModel(modelMain);
+    }
+
 
     private static void addRecursiveListener(CheckBoxTreeItem<Path> item,
                                              TreeItemSelectionConsumer onChange) {

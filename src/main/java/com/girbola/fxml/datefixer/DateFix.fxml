@@ -451,6 +451,7 @@
                                         <GridPane hgap="5.0" vgap="2.0" VBox.vgrow="ALWAYS">
                                             <columnConstraints>
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+                                    <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
                                                 <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
                                             </columnConstraints>
@@ -485,29 +486,30 @@
                                                     </tooltip>
                                                 </Button>
                                                 <Label text="%action" GridPane.rowIndex="1" />
-                                                <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="Make folder and choose to copy now or later" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label text="%batch" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%addToMisc" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Label text="%batch" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%addToMisc" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToMiscTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" text="%addToAsItIs" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" text="%addToAsItIs" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToAsItIsTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" text="%addToAsUnsorted" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+                                                <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" text="%addToAsUnsorted" GridPane.columnIndex="2" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                                                     <tooltip>
                                                         <Tooltip text="%copyToAsItIsTip" />
                                                     </tooltip>
                                                 </Button>
-                                                <Label text="%direct" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                    <Button fx:id="moveFilesInfSourcePath" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveFilesInfSourcePath_action" text="%moveToInSourceFolder" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                                <Label text="%direct" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                                    <Button fx:id="moveFilesInfSourcePath" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveFilesInfSourcePath_action" text="%moveToInSourceFolder" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                    <Button id="actionButtons" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#findSimilars_btn_action" text="Find similars" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
                                             </children>
                                             <padding>
                                                 <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />

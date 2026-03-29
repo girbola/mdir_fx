@@ -6,6 +6,7 @@ import com.girbola.LoadFileInfosBackToTableViews;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.folderscanner.FolderScannerController;
+import com.girbola.controllers.folderscanner.folderpicker.FolderSelectionService;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -57,6 +58,7 @@ public class ModelMain {
     private Populate populate;
     private ScheduledService<Void> monitorExternalDriveConnectivity;
     private SelectedFolderScanner selectedFolders;
+    private FolderSelectionService folderSelectionService;
     private StringProperty table_root_hbox_width = new SimpleStringProperty();
     private TablePositionHolder tablePositionHolder;
     private TabPane tabPaneMain;
@@ -66,6 +68,14 @@ public class ModelMain {
 //    private SQLConfigurationHandler sqlConfigurationHandler;
 
     private List<DriveInfo> driveInfos = new ArrayList<>();
+
+    public FolderSelectionService getFolderSelectionService() {
+        return folderSelectionService;
+    }
+
+//    public void setFolderSelectionService(FolderSelectionService folderSelectionService) {
+//        this.folderSelectionService = folderSelectionService;
+//    }
 
     public ModelMain() {
         sprintf("Model instantiated...");
@@ -84,7 +94,7 @@ public class ModelMain {
         selectedFolders = new SelectedFolderScanner();
         tablePositionHolder = new TablePositionHolder(this);
         tables = new Tables(this);
-
+        folderSelectionService = new FolderSelectionService(this);
         tables.init();
 
     }

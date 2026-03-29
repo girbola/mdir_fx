@@ -49,16 +49,16 @@ public class FileInfoUtils {
 
     private final static String ERROR = FileInfoUtils.class.getSimpleName();
 
-    public static FileInfo createFileInfo(Path fileName) throws IOException {
+   /* public static FileInfo createFileInfo(Path path) throws IOException {
 
-        String sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());
+        String sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((path.getRoot()).toString());
         if(sourceDriveSerialNumber == null) {
-            sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((fileName.getRoot()).toString());
+            sourceDriveSerialNumber = OSHI_Utils.getDriveSerialNumber((path.getRoot()).toString());
         }
 
-        Messages.sprintf("--------------createFileInfo: " + fileName);
-        if (!Files.isRegularFile(fileName)) {
-            Messages.sprintf("File were not a regular file: " + fileName);
+        Messages.sprintf("--------------createFileInfo: " + path);
+        if (!Files.isRegularFile(path)) {
+            Messages.sprintf("File were not a regular file: " + path);
             return null;
         }
         int fileInfoId = -1;
@@ -70,30 +70,30 @@ public class FileInfoUtils {
         }
 
         try {
-            FileInfo fileInfo = new FileInfo(fileName.toString(), fileInfoId);
+            FileInfo fileInfo = new FileInfo(path.toString(), fileInfoId);
 
-            if (FileUtils.supportedImage(fileName)) {
+            if (FileUtils.supportedImage(path)) {
                 setImage(fileInfo);
 
-                tryToGetCreationDateTime(fileName, fileInfo);
+                tryToGetCreationDateTime(path, fileInfo);
 
-                fileInfo.setSize(Files.size(fileName));
-            } else if (FileUtils.supportedVideo(fileName)) {
+                fileInfo.setSize(Files.size(path));
+            } else if (FileUtils.supportedVideo(path)) {
                 setVideo(fileInfo);
-                fileInfo.setSize(Files.size(fileName));
-                boolean metaDataFound = getVideoDateTaken(fileName, fileInfo);
+                fileInfo.setSize(Files.size(path));
+                boolean metaDataFound = getVideoDateTaken(path, fileInfo);
                 if (!metaDataFound) {
                     fileInfo.setBad(true);
                 }
-            } else if (FileUtils.supportedRaw(fileName)) {
+            } else if (FileUtils.supportedRaw(path)) {
                 setRaw(fileInfo);
-                tryToGetCreationDateTime(fileName, fileInfo);
-                String imageDifferenceHash = ImageUtils.calculateRAWImagePHash(fileName.toAbsolutePath());
+                tryToGetCreationDateTime(path, fileInfo);
+                String imageDifferenceHash = ImageUtils.calculateRAWImagePHash(path.toAbsolutePath());
                 fileInfo.setImageDifferenceHash(imageDifferenceHash);
-                fileInfo.setSize(Files.size(fileName));
+                fileInfo.setSize(Files.size(path));
             } else {
-                Messages.sprintf("Cannot create FileInfo: " + fileName);
-                Messages.sprintfError("Something went wrong and this file can't be created: " + fileName);
+                Messages.sprintf("Cannot create FileInfo: " + path);
+                Messages.sprintfError("Something went wrong and this file can't be created: " + path);
                 return null;
             }
 
@@ -101,7 +101,7 @@ public class FileInfoUtils {
 
             return fileInfo;
         } catch (IOException e) {
-            Messages.sprintfError("IOException while processing file: " + fileName + " - " + e.getMessage());
+            Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
             throw e;
         }
     }
@@ -164,31 +164,7 @@ public class FileInfoUtils {
         }
         return false;
     }
-
-    /**
-     * This method checks if the given video file has a corresponding thumbnail file with metadata,
-     * and populates the FileInfo object with the metadata if found.
-     *
-     * @param path The path of the video file.
-     * @param
-     * @return
-     */
-
-    public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) throws IOException {
-        if (supportedVideo(path)) {
-            Path THM_path = VideoDateFinder.hasTHMFile(path);
-            if (THM_path == null) {
-                return false;
-            }
-            if (Files.exists(THM_path)) {
-                boolean metaDataFound = handleMetadataInformation(THM_path, fileInfo);
-                if (metaDataFound) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+*/
 
     public static boolean getImageThumb_Offset_Length(Metadata metaData, FileInfo fileInfo) {
         if (metaData == null) {
@@ -441,7 +417,7 @@ public class FileInfoUtils {
             }
             // Get width and height
             boolean imageThumbDimensions = getImageThumbDimensions(metaData, fileInfo);
-            if(!imageThumbDimensions) {
+            if (!imageThumbDimensions) {
                 Messages.sprintfError("Cannot get image thumb dimensions.");
             }
 
@@ -474,8 +450,8 @@ public class FileInfoUtils {
                     double imageWidth = bufferedImage.getWidth();
                     double imageHeight = bufferedImage.getHeight();
 
-                    fileInfo.setWidth((int)imageWidth);
-                    fileInfo.setHeight((int)imageHeight);
+                    fileInfo.setWidth((int) imageWidth);
+                    fileInfo.setHeight((int) imageHeight);
                 }
             }
         } else {
@@ -852,47 +828,182 @@ public class FileInfoUtils {
         workDirFileInfo.setTableDuplicated(true);
 
 
-
         return workDirFileInfo;
     }
 
+    public static FileInfo createFileInfo(Path path) throws IOException {
+        String sourceDriveSerialNumber = resolveSourceDriveSerialNumber(path);
+        Messages.sprintf("--------------createFileInfo: " + path);
 
-    /**
-     * Checks and updates folder path changes for the given FolderInfo
-     *
-     * @param folderInfo The folder information to check and update
-     */
-    private boolean checkFolderPathChanges(FolderInfo folderInfo) {
+        if (!Files.isRegularFile(path)) {
+            Messages.sprintf("File were not a regular file: " + path);
+            return null;
+        }
+
+        int fileInfoId = nextFileInfoId();
+
         try {
-            if (folderInfo.getIgnored()) {
-                Messages.sprintf("checkFolderPathChanges was ignored");
-                return false;
+            FileInfo fileInfo = new FileInfo(path.toString(), fileInfoId);
+            boolean processed = populateFileInfoByType(path, fileInfo);
+
+            if (!processed) {
+                Messages.sprintf("Cannot create FileInfo: " + path);
+                Messages.sprintfError("Something went wrong and this file can't be created: " + path);
+                return null;
             }
 
-            Messages.sprintf("checkFolderPathChanges started");
-
-            Path folderInfoFolderPath = Paths.get(folderInfo.getFolderPath());
-            if (!Files.exists(folderInfoFolderPath)) {
-                Messages.sprintfError("Folder does not exist: " + folderInfoFolderPath);
-                return false;
-            }
-
-            String sourceFolderSerialNumber = folderInfo.getSourceFolderSerialNumber();
-            if (sourceFolderSerialNumber == null || sourceFolderSerialNumber.isEmpty()) {
-                boolean hasEmptySerialNumber = handleEmptySerialNumber(folderInfo);
-                if (hasEmptySerialNumber) {
-                    folderInfo.setChanged(true);
-                    return true;
-                }
-                return false;
-            }
-
-            return false;
-        } catch (Exception e) {
-            Messages.sprintfError("Error in checkFolderPathChanges for path " + folderInfo.getFolderPath() + ": " + e.getMessage());
-            return false;
-        } finally {
-            Messages.sprintf("checkFolderPathChanges finished");
+            fileInfo.setFileHistories(
+                    Arrays.asList(LocalDateTime.now() + " FileInfo created. PATH=" + fileInfo.getOrgPath()));
+            return fileInfo;
+        } catch (IOException e) {
+            Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
+            throw e;
         }
     }
+
+    private static String resolveSourceDriveSerialNumber(Path path) {
+        String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(path.getRoot().toString());
+        if (driveSerialNumber == null) {
+            driveSerialNumber = OSHI_Utils.getDriveSerialNumber(path.getRoot().toString());
+        }
+        return driveSerialNumber;
+    }
+
+    private static int nextFileInfoId() {
+        if (Main.conf.getId_counter() != null) {
+            return Main.conf.getId_counter().incrementAndGet();
+        }
+        return 1;
+    }
+
+    private static boolean populateFileInfoByType(Path path, FileInfo fileInfo) throws IOException {
+        long size = Files.size(path);
+
+        if (FileUtils.supportedImage(path)) {
+            populateImageFileInfo(path, fileInfo, size);
+            return true;
+        }
+
+        if (FileUtils.supportedVideo(path)) {
+            populateVideoFileInfo(path, fileInfo, size);
+            return true;
+        }
+
+        if (FileUtils.supportedRaw(path)) {
+            populateRawFileInfo(path, fileInfo, size);
+            return true;
+        }
+
+        return false;
+    }
+
+    private static void populateImageFileInfo(Path path, FileInfo fileInfo, long size) {
+        setImage(fileInfo);
+        tryToGetCreationDateTime(path, fileInfo);
+        fileInfo.setSize(size);
+    }
+
+    private static void populateVideoFileInfo(Path path, FileInfo fileInfo, long size) throws IOException {
+        setVideo(fileInfo);
+        fileInfo.setSize(size);
+
+        boolean metadataFound = getVideoDateTaken(path, fileInfo);
+        if (!metadataFound) {
+            fileInfo.setBad(true);
+        }
+    }
+
+    private static void populateRawFileInfo(Path path, FileInfo fileInfo, long size) {
+        setRaw(fileInfo);
+        tryToGetCreationDateTime(path, fileInfo);
+        fileInfo.setImageDifferenceHash(ImageUtils.calculateRAWImagePHash(path.toAbsolutePath()));
+        fileInfo.setSize(size);
+    }
+
+    public static long tryToGetCreationDateTime(Path path, FileInfo fileInfo) {
+        try {
+            boolean metadataFound = handleMetadataInformation(path, fileInfo);
+            if (!metadataFound) {
+                return FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
+            }
+            return fileInfo.getDate();
+        } catch (Exception e) {
+            setBad(fileInfo);
+            fileInfo.setDate(0);
+            return 0L;
+        }
+    }
+
+    public static boolean getVideoDateTaken(Path path, FileInfo fileInfo) throws IOException {
+        if (!Files.exists(path)) {
+            sprintf("File does not exists: " + path + " returning....");
+            return false;
+        }
+
+        if (!FileUtils.supportedVideo(path)) {
+            return false;
+        }
+
+        setVideo(fileInfo);
+
+        Metadata metadata = readMetaData(path);
+        if (metadata != null && applyVideoMetadata(path, fileInfo, metadata)) {
+            return true;
+        }
+
+        if (getDateThumbFileForVideo(path, fileInfo)) {
+            return true;
+        }
+
+        return applyVideoFileNameDate(path, fileInfo);
+    }
+
+    private static boolean applyVideoMetadata(Path path, FileInfo fileInfo, Metadata metadata) {
+        long date = getMetaDataCreationDate(metadata, path);
+        if (date >= 1) {
+            FileInfoUtils.setGood(fileInfo);
+            fileInfo.setDate(date);
+            getImageThumb_Offset_Length(metadata, fileInfo);
+            return true;
+        }
+
+        boolean fileNameDateFound = tryFileNameDate(fileInfo);
+        if (!fileNameDateFound) {
+            FileInfoUtils.setBad(fileInfo);
+        }
+        return false;
+    }
+
+    private static boolean applyVideoFileNameDate(Path path, FileInfo fileInfo) {
+        long date = FileNameParseUtils.hasFileNameDate(path);
+        if (date >= 1) {
+            fileInfo.setDate(date);
+            setGood(fileInfo);
+            fileInfo.setSuggested(true);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * This method checks if the given video file has a corresponding thumbnail file with metadata,
+     * and populates the FileInfo object with the metadata if found.
+     *
+     * @param path The path of the video file.
+     * @param
+     * @return
+     */
+    public static boolean getDateThumbFileForVideo(Path path, FileInfo fileInfo) throws IOException {
+        if (!supportedVideo(path)) {
+            return false;
+        }
+
+        Path thumbnailPath = VideoDateFinder.hasTHMFile(path);
+        if (thumbnailPath == null || !Files.exists(thumbnailPath)) {
+            return false;
+        }
+
+        return handleMetadataInformation(thumbnailPath, fileInfo);
+    }
+
 }

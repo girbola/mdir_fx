@@ -18,7 +18,9 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
+import common.utils.date.DateUtils;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.TreeMap;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -406,7 +408,7 @@ public class DateFixerController {
     }
 
     @FXML private void moveFilesInfSourcePath_action(ActionEvent event) {
-        Messages.sprintf("moveFilesInfSourcePath_action");
+        Messages.warningText("moveFilesInfSourcePath_action");
 
     }
 
@@ -461,6 +463,55 @@ public class DateFixerController {
         Main.sceneManager.getWindow().getOnCloseRequest()
                 .handle(new WindowEvent(Main.sceneManager.getWindow(), WindowEvent.WINDOW_CLOSE_REQUEST));
         model_main.getMonitorExternalDriveConnectivity().restart();
+    }
+
+    @FXML private void findSimilars_btn_action(ActionEvent event) {
+        for (Node n : modelDatefix.getSelectionModel().getSelectionList()) {
+            sprintf("findSimilars_btn_action .getChildren(): " + n);
+            if (n instanceof VBox && n.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+                FileInfo fileInfo = (FileInfo) n.getUserData();
+
+                LocalDate localDateTimeToSearch = DateUtils.longToLocalDateTime(fileInfo.getDate()).toLocalDate();
+                if(localDateTimeToSearch == null) {
+                  Messages.sprintfError("localDateTimeToSearch were null");
+                    return;
+                }
+
+                /*
+
+                 */
+                List<String> similarFiles = new ArrayList<>();
+                for(FolderInfo folderInfo : model_main.tables().getSorted_table().getItems()) {
+
+                    LocalDate localDateMin = DateUtils.parseLocalDateFromString(folderInfo.getMinDate());
+                    LocalDate localDateMax = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate());
+
+                    if(localDateTimeToSearch.isAfter(localDateMin) && localDateTimeToSearch.isBefore(localDateMax)) {
+                        Messages.sprintf("localDateTimeToSearch is between min and max dates");
+                        similarFiles.add(folderInfo.getFolderPath());
+                    }
+
+                }
+
+                for(FolderInfo folderInfo : model_main.tables().getSortIt_table().getItems()) {
+
+                    LocalDate localDateMin = DateUtils.parseLocalDateFromString(folderInfo.getMinDate());
+                    LocalDate localDateMax = DateUtils.parseLocalDateFromString(folderInfo.getMaxDate());
+
+                    if(localDateTimeToSearch.isAfter(localDateMin) && localDateTimeToSearch.isBefore(localDateMax)) {
+                        Messages.sprintf("localDateTimeToSearch is between min and max dates");
+                        similarFiles.add(folderInfo.getFolderPath());
+                    }
+
+                }
+
+                if(similarFiles.size() > 0) {
+                    for(String s : similarFiles) {
+                        Messages.sprintf(":::::::::::::similarFiles: " + s);
+                    }
+                }
+            }
+        }
     }
 
     private Button getAcceptButton(Node node) {

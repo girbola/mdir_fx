@@ -2,7 +2,6 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.folderpicker.SelectionPropagation;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
@@ -67,7 +66,7 @@ public class FolderScannerController {
     @FXML private TreeView<Path> drives_treeView;
     @FXML private VBox analyzeList_vbox;
 
-    private ModelMain model_main;
+    private ModelMain modelMain;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
 
     private Scene folderScannerController_scene;
@@ -83,11 +82,11 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         for (Path path : model_folderScanner.getSelectedDrivesFoldersListObs()) {
             sprintf("Path is: " + path);
             if (Files.exists(path)) {
-                if (!selectedFolderHasValue(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs(),
+                if (!selectedFolderHasValue(this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs(),
                         path)) {
-                    if (!hasTableSelectedFolderPath(model_main.tables(), path)) {
+                    if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()
+                        this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
                                 .add(new SelectedFolder(true, true, path.toString(),true));
                     }
                 }
@@ -176,7 +175,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //    }
 
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain, model_folderScanner);
 
     public void initTableWidths() {
         Messages.sprintf("initTableWidths::::::: " + homeDefaultsTableView.getWidth());
@@ -216,10 +215,12 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         drives_treeView.setShowRoot(false);
 
         // Selection propagation logic (parent <-> children)
-        SelectionPropagation.installSelectionPropagation(model_main);
+        //SelectionPropagation.installSelectionPropagation(modelMain);
 
-        model_folderScanner.init(model_main, drives_rootItem);
-        selectedFoldersController.init(model_main, model_folderScanner);
+        modelMain.getFolderSelectionService().installSelectionPropagation();
+
+        model_folderScanner.init(modelMain, drives_rootItem);
+        selectedFoldersController.init(modelMain, model_folderScanner);
 
 
 
@@ -233,13 +234,20 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         
         homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
-        homeDefaults_path_column.setResizable(true);
-        homeDefaults_path_column.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        homeDefaults_path_column.setMinWidth(Region.USE_PREF_SIZE);
+//        homeDefaults_path_column.setResizable(true);
+//        homeDefaults_path_column.setPrefWidth(Region.USE_COMPUTED_SIZE);
+//        homeDefaults_path_column.setMinWidth(Region.USE_PREF_SIZE);
 
-        //homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        homeDefaultsTableView.setTableMenuButtonVisible(false);
-//        this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().addListener((javafx.collections.ListChangeListener.Change<? extends SelectedFolder> c) -> {
+        Platform.runLater(() -> {
+
+        homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+
+        homeDefaultsTableView.setTableMenuButtonVisible(true);
+
+
+        });
+//        this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().addListener((javafx.collections.ListChangeListener.Change<? extends SelectedFolder> c) -> {
 //            updatePathColumnWidth();
 //        });
 
@@ -252,15 +260,15 @@ private CheckBoxTreeItem<Path> drives_rootItem;
                 SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
                 if (selectedHomeFolder != null) {
                     Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
-                    this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
+                    this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
                 } else {
                     selectedHomeFolder = new SelectedFolder(false, true, commonPath.toString(), false);
-                    this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
+                    this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }
 
         }
-        homeDefaultsTableView.setColumnResizePolicy(tableView -> true);
+//        homeDefaultsTableView.setColumnResizePolicy(tableView -> true);
 
         homeDefaultsTableView.itemsProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
@@ -276,15 +284,36 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         });
 
         Platform.runLater(() -> {
-            homeDefaultsTableView.setItems(this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs());
+            homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            homeDefaultsTableView.setItems(this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs());
             homeDefaultsTableView.applyCss();
             homeDefaultsTableView.layout();
+            homeDefaultsTableView.refresh();
+            homeDefaultsTableView.requestLayout();
+
         });
-//        homeDefaultsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-//            if (newSelection != null) {
-//                Messages.sprintf("Selected item: " + newSelection.getFolder());
-//            }
-//        });
+        Messages.sprintf("homeDefaultsTableView.getItems().size(); " + homeDefaultsTableView.getColumnResizePolicy() + " " + homeDefaultsTableView.getItems().size());
+        homeDefaultsTableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                Messages.sprintf("Selected item: " + newSelection.getFolder());
+                modelMain.getFolderSelectionService().focusFolder(newSelection);
+            }
+        });
+        homeDefaultsTableView.itemsProperty().addListener((obs, oldVal, newVal) -> {
+            if(newVal != null) {
+                if(homeDefaultsTableView != null) {
+
+Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItems().size());
+                    Platform.runLater(() -> {
+                        homeDefaultsTableView.applyCss();
+                        homeDefaultsTableView.layout();
+                        homeDefaultsTableView.refresh();
+                        homeDefaultsTableView.requestLayout();
+                    });
+                }
+            }
+        });
+
 
 //        homeDefaultsTableView.sceneProperty().addListener((obs, oldScene, newScene) -> {
 //            if (newScene != null) {
@@ -317,14 +346,18 @@ private CheckBoxTreeItem<Path> drives_rootItem;
             });
         });
 
-
-
+    }
+    public TreeView<Path> getDrivesTreeView() {
+        if(drives_treeView == null) {
+            Messages.sprintfError("drivesTreeView is null!");
+        }
+        return drives_treeView;
     }
 
     private void updatePathColumnWidth( TableView<?> table )
     {
         //Set the right policy
-        table.setColumnResizePolicy( TableView.UNCONSTRAINED_RESIZE_POLICY);
+        table.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY);
         table.getColumns().stream().forEach( (column) ->
         {
             //Minimal width = columnheader
@@ -376,7 +409,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         
         text.setFont(cellFont);
 
-        for (SelectedFolder folder : this.model_main.getSelectedFolders().getHomeDefaultsFolders_obs()) {
+        for (SelectedFolder folder : this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs()) {
             text.setText(folder.getFolder());
             double textWidth = text.getLayoutBounds().getWidth();
             if (textWidth > maxWidth) {
@@ -399,7 +432,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         Messages.sprintf("######################################homeDefaults_path_column.setPrefWidth(newWidth); " + newWidth);
     }
     SelectedFolder existsInSelectedFolderScannerObs(Path commonPath) {
-        for (SelectedFolder sf : this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+        for (SelectedFolder sf : this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (sf.getFolder().equals(commonPath.toString())) {
                 return sf;
             }
@@ -412,7 +445,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
     }
 
     public void init(ModelMain aModel_main) {
-        this.model_main = aModel_main;
+        this.modelMain = aModel_main;
         model_folderScanner = new ModelFolderScanner();
     }
 }

@@ -1,6 +1,7 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.messages.Messages;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
@@ -22,8 +23,12 @@ public class CheckBoxRemoveRowTableCell extends TableCell<SelectedFolder, Boolea
         deleteButton.setGraphic(fontIcon);
 
         this.deleteButton.setOnAction(event -> {
+            Messages.sprintf("deleteButton.setOnAction");
             SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
+
             if (selectedFolder != null) {
+//                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().remove(selectedFolder);
+                modelMain.getFolderSelectionService().remove(selectedFolder);
                 getTableView().getItems().remove(selectedFolder);
             }
         });
