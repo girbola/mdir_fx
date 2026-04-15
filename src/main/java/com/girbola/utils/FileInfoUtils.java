@@ -844,6 +844,9 @@ public class FileInfoUtils {
 
         try {
             FileInfo fileInfo = new FileInfo(path.toString(), fileInfoId);
+
+            fileInfo.setOrgPathDriveSerialNumber(sourceDriveSerialNumber);
+
             boolean processed = populateFileInfoByType(path, fileInfo);
 
             if (!processed) {

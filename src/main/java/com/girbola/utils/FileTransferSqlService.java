@@ -163,5 +163,6 @@ public class FileTransferSqlService {
 
     private void deleteSourceThumbIfOrphan(Connection sourceConnection, FileInfo fileInfo) {
         // only delete if no remaining fileinfo references the thumb
+        Messages.warningText("deleteSourceThumbIfOrphan Not ready yet");
     }
 }

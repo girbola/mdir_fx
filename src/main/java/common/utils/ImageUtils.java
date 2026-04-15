@@ -14,6 +14,7 @@ import common.media.DateTaken;
 import java.awt.geom.AffineTransform;
 import java.awt.image.DataBufferByte;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.RandomAccessFile;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -177,7 +178,7 @@ public class ImageUtils {
             Messages.sprintf("Extracting thumnail by slicing");
 
             // Extract the thumbnail slice
-            return extractThumbnailSlice(fileData, thumbOffset, thumbLength);
+            return extractThumbnailSlice(fileData, thumbOffset, thumbLength, file);
 
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -213,7 +214,7 @@ public class ImageUtils {
             }
 
             // Extract the thumbnail slice
-            byte[] thumbnailData = extractThumbnailSlice(fileData, offset, length);
+            byte[] thumbnailData = extractThumbnailSlice(fileData, offset, length, imagePath);
             if (thumbnailData == null) {
                 Messages.sprintfError("Failed to extract thumbnail slice.");
                 return "";
@@ -230,6 +231,7 @@ public class ImageUtils {
             return getString(thumbnailImage);
 
         } catch (Exception e) {
+            System.err.println("Error calculating RAW image PHash: " + e.getMessage());
             Messages.sprintfError("Error calculating RAW image PHash: " + e.getMessage());
             return "";
         }
@@ -247,6 +249,10 @@ public class ImageUtils {
         }
     }
 
+    private static byte[] extractThumbnailSlice(byte[] data, int offset, int length, Path filePath) {
+        return extractThumbnailSlice(data, offset, length, filePath.toFile());
+    }
+
     /**
      * Extracts a slice of bytes from the given data.
      *
@@ -255,7 +261,8 @@ public class ImageUtils {
      * @param length The number of bytes to extract
      * @return The extracted byte slice or null if extraction fails
      */
-    private static byte[] extractThumbnailSlice(byte[] data, int offset, int length) {
+    private static byte[] extractThumbnailSlice(byte[] data, int offset, int length, File file) {
+        Messages.sprintf("Extracting thumbnail from file: " + file + " slice from data of length: " + data.length + " offset: " + offset + " length: " + length);
         try {
             if (data == null) {
                 Messages.sprintfError("Error extracting slice: data is null");
@@ -277,8 +284,19 @@ public class ImageUtils {
             sprintf("data size is: " + data.length + " length: " + length + " offset: " + offset);
             byte[] slice = null;
             try {
-                slice = Arrays.copyOfRange(data, offset, (offset + length));
+
+                int actualOffset = ImageOffsetUtils.resolveImageOffset(data, offset);
+                
+                slice = Arrays.copyOfRange(data, actualOffset, (offset + length));
                 Messages.sprintf("slice size is: " + slice.length);
+                saveByteArrayToFile(slice, Paths.get("C:\\Temp\\thumbnail_slice_for_examination.bin"));
+                ByteArrayInputStream bais = new ByteArrayInputStream(slice);
+                BufferedImage image = ImageIO.read(bais);
+                if(image != null) {
+                    Messages.sprintf("Successfully decoded thumbnail: " + image.getWidth() + "x" + image.getHeight());
+                } else {
+                    Messages.sprintf("Warning: Could not decode image. First bytes: " + bytesToHexPreview(slice, 16));
+                }
             } catch (Exception ex) {
                 Messages.sprintf("exxxx:::" + ex.getMessage());
                 ex.printStackTrace();
@@ -353,8 +371,17 @@ public class ImageUtils {
      * Decodes byte array into a BufferedImage.
      */
     private static BufferedImage decodeToImage(byte[] imageData) {
+        if (imageData == null || imageData.length == 0) {
+            Messages.sprintfError("Error decoding image: input data is null or empty");
+            return null;
+        }
+
         try (ByteArrayInputStream in = new ByteArrayInputStream(imageData)) {
-            return ImageIO.read(in);
+            BufferedImage image = ImageIO.read(in);
+            if (image == null) {
+                Messages.sprintfError("Error decoding image: unsupported or invalid image data");
+            }
+            return image;
         } catch (IOException e) {
             Messages.sprintfError("Error decoding image from byte array: " + e.getMessage());
             return null;
@@ -489,6 +516,18 @@ public class ImageUtils {
         });
 
         return hash.get();
+    }
+
+    private static void saveByteArrayToFile(byte[] data, Path filePath) {
+        if (data == null || data.length == 0 || filePath == null) {
+            return;
+        }
+        try {
+            Files.write(filePath, data);
+            Messages.sprintf("Saved slice to file: " + filePath);
+        } catch (IOException e) {
+            Messages.sprintfError("Failed to save slice to file: " + e.getMessage());
+        }
     }
 
     public static boolean compareImages(BufferedImage image1, BufferedImage image2) {
