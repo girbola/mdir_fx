@@ -73,6 +73,9 @@ public class PHash {
     public static String computePHash(String imagePath) {
         // 1. Load image
         Mat img = opencv_imgcodecs.imread(imagePath);
+        if(img.empty()) {
+            return null;
+        }
 
         // 2. Resize to 32x32
         Mat resized = new Mat();
