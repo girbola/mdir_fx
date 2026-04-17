@@ -128,7 +128,7 @@ public class RenderVisibleNode {
             List<Task<?>> needToConvert_Image_list = new ArrayList<>();
             List<Task<?>> needToConvert_Video_list = new ArrayList<>();
             List<Task<?>> needToConvert_SlowRender_list = new ArrayList<>();
-
+Messages.sprintf("############Map size: " + map.size());
             for (Entry<ImageView, FileInfo> entry : map.entrySet()) {
                 ImageView imageView = entry.getKey();
                 FileInfo fileInfo = (FileInfo) entry.getValue();
@@ -137,7 +137,7 @@ public class RenderVisibleNode {
                     Messages.errorSmth(ERROR, "fileInfo were null!!!", null, Misc.getLineNumber(), true);
                     break;
                 }
-
+Messages.sprintf("************File: " + fileInfo.getOrgPath());
                 if (imageView != null) {
                     Path file = Paths.get(fileInfo.getOrgPath());
                     if (Files.exists(file)) {

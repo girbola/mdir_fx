@@ -7,6 +7,7 @@ import com.girbola.filelisting.CheckMediaExistenceInFolder;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
+
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -257,18 +258,17 @@ public class FileUtils {
         result = getExtension(file.getName());
         // sprintf("extension result is: " +result);
         for (String s : SUPPORTED_VIDEO_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s.toLowerCase())) {
                 return true;
             }
         }
         for (String s : SUPPORTED_IMAGE_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s.toLowerCase())) {
                 return true;
             }
         }
-
         for (String s : SUPPORTED_RAW_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s.toLowerCase())) {
                 return true;
             }
         }
@@ -337,68 +337,68 @@ public class FileUtils {
         return false;
     }
 
-    public static boolean otherFormat(File file) {
-        String result;
-        result = getExtension(file.getName());
-        if (result.equals("ini") || result.equals("lnk") || result.equals("db")) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+//    public static boolean otherFormat(File file) {
+//        String result;
+//        result = getExtension(file.getName());
+//        if (result.equals("ini") || result.equals("lnk") || result.equals("db")) {
+//            return false;
+//        } else {
+//            return true;
+//        }
+//    }
 
-    public static boolean otherImageFormats(File file) {
-        String result;
-        result = getExtension(file.getName());
-        if (result.equals("")) {
-            return true;
-        }
-        return false;
-    }
+//    public static boolean otherImageFormats(File file) {
+//        String result;
+//        result = getExtension(file.getName());
+//        if (result.equals("")) {
+//            return true;
+//        }
+//        return false;
+//    }
 
     public static boolean supportedVideo(Path path) {
         String result = "";
         result = getExtension(path);
         for (String s : SUPPORTED_VIDEO_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s.toLowerCase())) {
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean nonsupportedVideoThumb(File file) {
-        String result;
-        result = getExtension(file.getName());
-        if (result.equals("3gp")) {
-            return true;
-        }
-        return false;
-    }
+//    public static boolean nonsupportedVideoThumb(File file) {
+//        String result;
+//        result = getExtension(file.getName());
+//        if (result.equals("3gp")) {
+//            return true;
+//        }
+//        return false;
+//    }
 
-    public static boolean videoFormat(File file) {
-        String result;
-        result = getExtension(file.getName());
-        if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx")
-                || result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
-                || result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob")
-                || result.equals("wmv") || result.equals("mkv")) {
-            return true;
-        }
-        return false;
-    }
-
-    public static boolean allFormats(File file) {
-
-        if (supportedMediaFormat(file)) {
-            return true;
-        } else if (supportedRaw(file)) {
-            return true;
-        } else if (videoFormat(file)) {
-            return true;
-        }
-        return false;
-    }
+//    public static boolean videoFormat(File file) {
+//        String result;
+//        result = getExtension(file.getName());
+//        if (result.equals("3g2") || result.equals("3gp") || result.equals("asf") || result.equals("asx")
+//                || result.equals("avi") || result.equals("flv") || result.equals("mov") || result.equals("mp4")
+//                || result.equals("mpg") || result.equals("rm") || result.equals("swf") || result.equals("vob")
+//                || result.equals("wmv") || result.equals("mkv")) {
+//            return true;
+//        }
+//        return false;
+//    }
+//
+//    public static boolean allFormats(File file) {
+//
+//        if (supportedMediaFormat(file)) {
+//            return true;
+//        } else if (supportedRaw(file)) {
+//            return true;
+//        } else if (videoFormat(file)) {
+//            return true;
+//        }
+//        return false;
+//    }
 
     /**
      * Returns file extension name in lowercase

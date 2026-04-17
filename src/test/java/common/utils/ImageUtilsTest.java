@@ -150,20 +150,26 @@ class ImageUtilsTest {
         File[] folder = new File("src/test/resources/in").listFiles();
         Map<File, String> hashMap = new HashMap<>();
         for(File file : folder) {
-            System.out.println("File: " + file.getAbsolutePath());
             String h1 = computePHash(file.getAbsolutePath());
-            if(h1 != null|| !h1.isEmpty()) {
+            if(file != null ||h1 != null|| !h1.isEmpty()) {
+                System.out.println("----ADDING File: " + file.getAbsolutePath() + " ###Hash: " + h1);
                 hashMap.put(file, h1);
+            } else {
+                continue;
             }
         }
 
+        System.out.println("Total files hashed: " + hashMap.size() + " COMPARING...\n");
         for(Map.Entry<File, String> entry: hashMap.entrySet()) {
             File file = entry.getKey();
             String hash = entry.getValue();
+            System.out.println("-----Comparing " + file.getName() + " hash: " + hash);
             for(Map.Entry<File, String> compareEntry: hashMap.entrySet()) {
                 File compareFile = compareEntry.getKey();
                 String compareHash = compareEntry.getValue();
                 if(file != compareFile) {
+                    System.out.println("---------Comparing  compareFile.getName() " + " hash: " + compareHash + " hash: " + hash);
+
                     System.out.println("Hamming Distance: " + hammingDistance(hash, compareHash));
                     assertNotEquals(0, hammingDistance(hash, compareHash), "Hamming distance between similar images should be 0");
                 }
