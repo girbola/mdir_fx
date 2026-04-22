@@ -231,8 +231,8 @@ public class ImageUtils {
             return getString(thumbnailImage);
 
         } catch (Exception e) {
-            System.err.println("Error calculating RAW image PHash: " + e.getMessage());
-            Messages.sprintfError("Error calculating RAW image PHash: " + e.getMessage());
+            System.err.println("Error calculating RAW image ImageComparionUtils: " + e.getMessage());
+            Messages.sprintfError("Error calculating RAW image ImageComparionUtils: " + e.getMessage());
             return "";
         }
     }

@@ -14,12 +14,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit tests for the pHash method in the PHash class.
+ * Unit tests for the pHash method in the ImageComparionUtils class.
  * The pHash method generates a perceptual hash of an image by resizing it,
  * computing the Discrete Cosine Transform (DCT), and extracting features from the low frequencies.
  * This test class ensures that the pHash method works as expected for various input scenarios.
  */
-public class PHashTest {
+public class ImageComparionUtilsTest {
 
     public static long computePHash(String imagePath) {
         // Load image in color (or change to IMREAD_GRAYSCALE)
@@ -143,7 +143,7 @@ public class PHashTest {
 //        long startTime = System.nanoTime();
 //
 //        // Create pHash instance
-//        ImgHashBase phash = org.opencv.img_hash.PHash.create();
+//        ImgHashBase phash = org.opencv.img_hash.ImageComparionUtils.create();
 //
 //        // Compute hashes
 //        Mat hash1 = new Mat();
@@ -165,7 +165,7 @@ public class PHashTest {
 //
 //        // Assert: Validate similarity score is within expected range (0.0 = identical, higher = more different)
 //        assertTrue(distance >= 0.0, "Similarity score should be non-negative");
-//        assertTrue(distance <= 64.0, "Similarity score should be within expected range for PHash");
+//        assertTrue(distance <= 64.0, "Similarity score should be within expected range for ImageComparionUtils");
 //    }
 
     @Test
@@ -183,7 +183,7 @@ public class PHashTest {
         long h2 = computePHash(resourcePath2.toAbsolutePath().toString());
 
         long endTime = System.currentTimeMillis();
-        System.out.println("PHash computation time: " + (endTime - startTime) + " ms");
+        System.out.println("ImageComparionUtils computation time: " + (endTime - startTime) + " ms");
 
         System.out.println("Hash1 (hex): " + hashToHex(h1));
 //        System.out.println("Hash1 (bin): " + hashToBinaryString(h1));

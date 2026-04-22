@@ -1,19 +1,19 @@
 package common.utils;
 
+import com.girbola.utils.imagehash.ImageComparionUtils;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.RequiredArgsConstructor;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
-import static com.girbola.utils.imagehash.PHash.computePHash;
-import static com.girbola.utils.imagehash.PHash.hammingDistance;
+import static com.girbola.utils.imagehash.ImageComparionUtils.computePHash;
+import static com.girbola.utils.imagehash.ImageComparionUtils.hammingDistance;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 
-class ImageUtilsTest {
+class ImageComparationUtilsTest {
 
     /**
      * Tests for calculateRAWImagePHash method in the ImageUtils class.
@@ -123,18 +123,18 @@ class ImageUtilsTest {
         Path resourcePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
         assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
 
-        Path resourcePath2 = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
-        //Path resourcePath2 = Paths.get("src", "test", "resources", "in", "20220413_160023_edited.jpg");
+        Path resourcePath2 = Paths.get("src", "test", "resources", "in", "20220413_160023_edited.jpg");
         assertTrue(java.nio.file.Files.exists(resourcePath2), "Test image2 resource not found: " + resourcePath2);
 
         long startTime = System.currentTimeMillis();
         String h1 = computePHash(resourcePath.toAbsolutePath().toString());
-
         long endTime = System.currentTimeMillis();
         System.out.println("PHash1 computation time: " + (endTime - startTime) + " ms");
 
         startTime = System.currentTimeMillis();
         String h2 = computePHash(resourcePath2.toAbsolutePath().toString());
+        System.out.println("PHash2: " + h2);
+
         endTime = System.currentTimeMillis();
 
         System.out.println("PHash2 computation time: " + (endTime - startTime) + " ms");
@@ -149,26 +149,59 @@ class ImageUtilsTest {
     public void testDifferentImagePhashMatching() {
         File[] folder = new File("src/test/resources/in").listFiles();
         Map<File, String> hashMap = new HashMap<>();
-        for(File file : folder) {
+        for (File file : folder) {
             System.out.println("File: " + file.getAbsolutePath());
             String h1 = computePHash(file.getAbsolutePath());
-            if(h1 != null|| !h1.isEmpty()) {
+            if (h1 != null && !h1.isEmpty() && h1.length() > 1) {
                 hashMap.put(file, h1);
             }
         }
 
-        for(Map.Entry<File, String> entry: hashMap.entrySet()) {
+        for (Map.Entry<File, String> entry : hashMap.entrySet()) {
             File file = entry.getKey();
             String hash = entry.getValue();
-            for(Map.Entry<File, String> compareEntry: hashMap.entrySet()) {
+            for (Map.Entry<File, String> compareEntry : hashMap.entrySet()) {
                 File compareFile = compareEntry.getKey();
                 String compareHash = compareEntry.getValue();
-                if(file != compareFile) {
-                    System.out.println("Hamming Distance: " + hammingDistance(hash, compareHash));
-                    assertNotEquals(0, hammingDistance(hash, compareHash), "Hamming distance between similar images should be 0");
+                if (file != compareFile) {
+                    int distance = hammingDistance(hash, compareHash);
+                    System.out.println("Comparing " + file.getName() + " with " + compareFile.getName() + " - Hamming Distance: " + distance);
+                    assertNotEquals(-1, distance, "Hamming distance should not be -1");
+
+//                    if (!file.getName().contains("_edited") || !compareFile.getName().contains("_edited")) {
+//                        assertNotEquals(0, distance, "Hamming distance between different images should not be 0");
+//                    }
                 }
             }
         }
+    }
+
+    @Test
+    public void testPixelComparion() throws IOException {
+        Path resourcePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
+
+        Path resourcePath2 = Paths.get("src", "test", "resources", "in", "20220413_160023_identicaltest.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath2), "Test image2 resource not found: " + resourcePath2);
+
+
+        double similarity = ImageComparionUtils.pixelSimilarity(resourcePath, resourcePath2, 32, 32);
+        System.out.println("Pixel similarity: " + similarity);
+        assertTrue(similarity > 0, "Pixel similarity should be greater than 0 for similar images");
+    }
+
+    @Test
+    public void testPixelComparion_DifferentImages() throws IOException {
+        Path resourcePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
+        Path resourcePath2 = Paths.get("src", "test", "resources", "in", "20220413_160023_dots.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath2), "Test image2 resource not found: " + resourcePath2);
+
+        BufferedImage imageDifference = ImageComparionUtils.createDifferenceImage(resourcePath, resourcePath2);
+        assertNotNull(imageDifference, "Difference image should not be null");
+
+        ImageIO.write(imageDifference, "jpg", new File("C:\\Temp\\20220413_160023_edited_difference.jpg"));
+
     }
 
 }

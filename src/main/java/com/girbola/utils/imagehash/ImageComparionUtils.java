@@ -2,14 +2,16 @@ package com.girbola.utils.imagehash;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.nio.file.Path;
+import javax.imageio.ImageIO;
 import org.bytedeco.opencv.global.opencv_core;
 import org.bytedeco.opencv.global.opencv_imgcodecs;
 import org.bytedeco.opencv.global.opencv_imgproc;
 import org.bytedeco.opencv.opencv_core.Mat;
 import org.bytedeco.opencv.opencv_core.Size;
 
-
-public class PHash {
+public class ImageComparionUtils {
     public static long pHash(BufferedImage img) {
         BufferedImage small = resize(img, 32, 32);
         double[][] vals = new double[32][32];
@@ -73,7 +75,7 @@ public class PHash {
     public static String computePHash(String imagePath) {
         // 1. Load image
         Mat img = opencv_imgcodecs.imread(imagePath);
-        if(img.empty()) {
+        if (img.empty()) {
             return null;
         }
 
@@ -109,16 +111,19 @@ public class PHash {
         // 7. Compute average (excluding DC coefficient [0][0] optional)
         double avg = (sum - dctVals[0][0]) / (size * size - 1);
 
+        System.out.println("Average: " + avg);
+        System.out.println("SUM: " + sum);
         // 8. Build hash
-        StringBuilder hash = new StringBuilder();
+        long hash = 0L;
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (i == 0 && j == 0) continue; // skip DC term
-                hash.append(dctVals[i][j] > avg ? "1" : "0");
+                hash <<= 1;
+                if (dctVals[i][j] > avg) hash |= 1L;
             }
         }
 
-        return hash.toString();
+        return Long.toHexString(hash);
     }
 
     public static int hammingDistance(String hash1, String hash2) {
@@ -130,5 +135,80 @@ public class PHash {
         }
         return dist;
     }
+
+    public static double pixelSimilarity(Path path1, Path path2, int width, int height) throws IOException {
+        if (path1 == null || path2 == null) {
+            return 0.0;
+        }
+
+        BufferedImage img1 = ImageIO.read(path1.toFile());
+        BufferedImage img2 = ImageIO.read(path2.toFile());
+
+
+        BufferedImage resized1 = resizeToGray(img1, width, height);
+        BufferedImage resized2 = resizeToGray(img2, width, height);
+
+        int total = width * height;
+        int equal = 0;
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int p1 = resized1.getRGB(x, y) & 0xFF;
+                int p2 = resized2.getRGB(x, y) & 0xFF;
+
+                if (p1 == p2) {
+                    equal++;
+                }
+            }
+        }
+
+        return (equal * 100.0) / total;
+    }
+
+    private static BufferedImage resizeToGray(BufferedImage img, int width, int height) {
+        BufferedImage out = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+        Graphics2D g = out.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(img, 0, 0, width, height, null);
+        g.dispose();
+        return out;
+    }
+
+    public static BufferedImage createDifferenceImage(Path path1, Path path2) throws IOException {
+        if (path1 == null || path2 == null) {
+            return null;
+        }
+
+        BufferedImage img1 = ImageIO.read(path1.toFile());
+        BufferedImage img2 = ImageIO.read(path2.toFile());
+
+        if (img1 == null || img2 == null) {
+            return null;
+        }
+
+        int width = Math.min(img1.getWidth(), img2.getWidth());
+        int height = Math.min(img1.getHeight(), img2.getHeight());
+
+        BufferedImage gray1 = resizeToGray(img1, width, height);
+        BufferedImage gray2 = resizeToGray(img2, width, height);
+
+        BufferedImage diff = new BufferedImage(width, height, BufferedImage.TYPE_BYTE_GRAY);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int p1 = gray1.getRGB(x, y) & 0xFF;
+                int p2 = gray2.getRGB(x, y) & 0xFF;
+
+                int delta = Math.abs(p1 - p2);
+                int value = Math.min(255, delta * 4);
+
+                int rgb = new Color(value, value, value).getRGB();
+                diff.setRGB(x, y, rgb);
+            }
+        }
+
+        return diff;
+    }
+
 }
 
