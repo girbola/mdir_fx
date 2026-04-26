@@ -8,6 +8,7 @@ import lombok.Setter;
 public class Metadata extends FileMetadata {
 	private double width;
 	private double height;
+	private String gpsCoordinates;
+	private boolean customGpsCoordinates;
     private String fileName;
-
 }

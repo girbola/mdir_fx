@@ -22,6 +22,7 @@ import common.utils.ImageUtils;
 import common.utils.OSHI_Utils;
 import common.utils.date.DateUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -35,7 +36,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.*;
-import javax.imageio.ImageIO;
 
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
@@ -373,6 +373,8 @@ public class FileInfoUtils {
 
         long creationDate = 0;
         int orientation = 0;
+        String gpsCoordinates = null;
+
         int width = 0;
         int height = 0;
         String cameraModel = MetadataField.UNKNOWN.getType();
@@ -407,6 +409,15 @@ public class FileInfoUtils {
             cameraModel = DateTaken.getCameraModel(metaData);
             if (cameraModel != null && !cameraModel.isEmpty()) {
                 fileInfo.setCamera_model(cameraModel);
+            }
+
+            // GPS coordinates
+            gpsCoordinates = DateTaken.getCoordinates(metaData);
+            if (gpsCoordinates != null) {
+                if (!gpsCoordinates.isEmpty()) {
+                    fileInfo.setGpsCoordinates(gpsCoordinates);
+                    fileInfo.setCustomGpsCoordinates(false);
+                }
             }
 
             // Thumbnail offset for faster image extractor

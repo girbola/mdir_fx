@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import static com.girbola.messages.Messages.sprintf;
-import static common.media.DateTaken.getMetadataDateTaken;
 import static common.utils.FileUtils.supportedVideo;
 
 
@@ -23,25 +22,25 @@ public class VideoDateTaken {
      * @param path
      * @return thumb file takendate or null
      */
-    public static long getDateThumbFileForVideo(Path path) {
-
-        if (supportedVideo(path)) {
-            String orgFileName = FileNameParseUtils.parseFileExtentension(path);
-            Path thmFile = Paths.get(path.getParent() + File.separator + orgFileName + ".THM");
-            sprintf("thmFile name is: " + thmFile);
-            if (Files.exists(thmFile)) {
-                sprintf("THM FILE FOUND: " + thmFile);
-//                ongelma;
-                long date = getMetadataDateTaken(thmFile);
-                sprintf("getDateThumbFileForVideo date: " + date);
-                return date;
-            } else {
-                sprintf("THM FILE NOT FOUND: " + thmFile);
-                return 0;
-            }
-
-        }
-
-        return 0;
-    }
+//    public static long getDateThumbFileForVideo(Path path) {
+//
+//        if (supportedVideo(path)) {
+//            String orgFileName = FileNameParseUtils.parseFileExtentension(path);
+//            Path thmFile = Paths.get(path.getParent() + File.separator + orgFileName + ".THM");
+//            sprintf("thmFile name is: " + thmFile);
+//            if (Files.exists(thmFile)) {
+//                sprintf("THM FILE FOUND: " + thmFile);
+////                ongelma;
+//                long date = getMetadataDateTaken(thmFile);
+//                sprintf("getDateThumbFileForVideo date: " + date);
+//                return date;
+//            } else {
+//                sprintf("THM FILE NOT FOUND: " + thmFile);
+//                return 0;
+//            }
+//
+//        }
+//
+//        return 0;
+//    }
 }

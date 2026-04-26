@@ -479,13 +479,13 @@ public class TableUtils {
         return false;
     }
 
-    private static List<FileInfo> validateFileInfoList(List<Path> currentPath_root_list, List<FileInfo> fileInfo_list) {
+    private static List<FileInfo> validateFileInfoList(List<Path> currentPathRootList, List<FileInfo> fileInfos) {
         List<FileInfo> theList = new ArrayList<>();
-        Iterator<Path> it = currentPath_root_list.iterator();
+        Iterator<Path> it = currentPathRootList.iterator();
         while (it.hasNext()) {
             Path file = it.next();
             Messages.sprintf("File name is: " + file);
-            FileInfo fileInfo = hasFileInfo_In_List(file, fileInfo_list);
+            FileInfo fileInfo = hasFileInfo_In_List(file, fileInfos);
             if (fileInfo == null) {
                 try {
                     fileInfo = FileInfoUtils.createFileInfo(file);

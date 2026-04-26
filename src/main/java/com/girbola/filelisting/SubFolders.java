@@ -65,7 +65,7 @@ class Folders extends SimpleFileVisitor<Path> {
     @Override
     public FileVisitResult postVisitDirectory(Path t, IOException ioe) throws IOException {
      Messages.sprintf("DEBUG - postVisitDirectory: " + t);
-        if (ValidatePathUtils.validFolder(t)) {
+        if (ValidatePathUtils.acceptedFolder(t)) {
             foundPaths.add(t);
             return CONTINUE;
         } else {

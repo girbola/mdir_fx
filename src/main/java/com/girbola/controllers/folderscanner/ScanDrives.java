@@ -245,7 +245,7 @@ public class ScanDrives {
                         return;
                     }
                     try {
-                        if (ValidatePathUtils.validFolder(path)) {
+                        if (ValidatePathUtils.acceptedFolder(path)) {
                             CustomCheckBoxTreeItem checkBoxTreeItem = new CustomCheckBoxTreeItem<>(modelMain, path);
                             checkBoxTreeItem.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
                                 Messages.sprintf("mouse clicked: " + event.getSource());
@@ -292,40 +292,40 @@ public class ScanDrives {
         }
     }
 
-    private boolean updateRootDrives(File[] listOfRoots) {
-        Set<DriveInfo> setOfRootDrives = new HashSet<>();
+    private boolean updateRootDrives(File[] roots) {
+        Set<DriveInfo> rootDrives = new HashSet<>();
         boolean changed = false;
 
-        for (int i = 0; i < listOfRoots.length; i++) {
+        for (int i = 0; i < roots.length; i++) {
             if (Main.getProcessCancelled()) {
                 break;
             }
             //TODO driveinfos ei huomioi olemassa olevia lisättyjä drivejnfoja vaan se lisää listaan kokoajan uutta.
-            String serial = OSHI_Utils.getDriveSerialNumber(listOfRoots[i].toString());
+            String serial = OSHI_Utils.getDriveSerialNumber(roots[i].toString());
 
-            Messages.sprintf("seriallllllll: " + serial + " drive: " + listOfRoots[i].toString());
-            DriveInfo driveInfo = new DriveInfo(listOfRoots[i].toString(), listOfRoots[i].getTotalSpace(), listOfRoots[i].exists(), false, serial);
+            Messages.sprintf("ROOT DRIVE: " + roots[i] +  " seriallllllll: " + serial + " drive: " + roots[i].toString());
+            DriveInfo driveInfo = new DriveInfo(roots[i].toString(), roots[i].getTotalSpace(), roots[i].exists(), false, serial);
 
             if (!hasDriveInfo(driveInfo, modelMain.driveInfos())) {
                 driveInfo.setSelected(false);
                 driveInfo.setConnected(true);
                 modelMain.driveInfos().add(driveInfo);
-                setOfRootDrives.add(driveInfo);
+                rootDrives.add(driveInfo);
                 changed = true;
             }
         }
 
         if (changed) {
-            for (DriveInfo driveInfo : setOfRootDrives) {
+            for (DriveInfo driveInfo : rootDrives) {
                 if (Main.getProcessCancelled()) {
                     break;
                 }
                 if (!findDuplicateDrive(driveInfo)) {
                     Messages.sprintf("Adding all to root Drives. DriveInfo: " + driveInfo.getDrivePath()
                             + " serial: " + driveInfo.getIdentifier() + " setOfRootDrives size: "
-                            + setOfRootDrives.size());
+                            + rootDrives.size());
                     rootDrives.clear();
-                    rootDrives.addAll(setOfRootDrives);
+                    rootDrives.addAll(rootDrives);
                     return true;
                 }
             }

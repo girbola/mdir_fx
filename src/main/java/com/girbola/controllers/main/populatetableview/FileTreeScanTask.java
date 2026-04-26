@@ -8,7 +8,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.girbola.filelisting.ValidatePathUtils.validFolder;
+import static com.girbola.filelisting.ValidatePathUtils.acceptedFolder;
 
 public class FileTreeScanTask extends Task<List<Path>> {
     private final Path root;
@@ -48,7 +48,7 @@ public class FileTreeScanTask extends Task<List<Path>> {
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                 if (isCancelled()) return FileVisitResult.TERMINATE;
                 try {
-                    if (!validFolder(dir)) {
+                    if (!acceptedFolder(dir)) {
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                 } catch (IOException e) {

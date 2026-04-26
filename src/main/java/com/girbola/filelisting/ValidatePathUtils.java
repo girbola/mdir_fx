@@ -9,9 +9,8 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.misc.Misc.getLineNumber;
@@ -20,11 +19,19 @@ import static com.girbola.misc.Misc.getLineNumber;
 public class ValidatePathUtils {
 
     private final static String ERROR = ValidatePathUtils.class.getSimpleName();
-    private static long FILE_MIN_SIZE = (1 * 1024);
+    private static long FILE_MIN_SIZE = 102400; // 100 KB
 
-    public final static String[] skippedFolderList_UNIX = {"bin", "dev", "lib", "libx32", "root", "snap", "swapfile", "usr", "boot", "etc", "lib32", "lost+found", "opt", "run", "some", "sys", "var", "cdrom", "lib64", "media", "proc", "sbin", "srv"};
-    public final static String[] skippedFolderList_WIN = {"$SysReset", "$Recycle.Bin", "RECYCLER", ".Trash", "Android", "AppData", "Boot", "Default", "Efi", "Intel", "Java", "NetBeansProjects", "OEM", "PerfLogs", "Program Files (x86)", "Program Files", "ProgramData", "Recycle", "Resource", "System Volume Information", "Windows", "source"};
-    public static final String[] skippedFolderList_OSX = {"$RECYCLE.BIN", ".DS_Store", "Applications", "Library", "Network", "Photos Library", "Photos Library.photoslibrary", "System Volume Information", "System", "Users", "Volumes", "bin", "cores", "dev", "etc", "home", "lost+found", "opt", "private", "sbin", "tmp", "usr", "var"};
+    protected final static String[] skippedFolderList_UNIX = {"bin", "dev", "lib", "libx32", "root", "snap", "swapfile", "usr", "boot", "etc", "lib32", "lost+found", "opt", "run", "some", "sys", "var", "cdrom", "lib64", "media", "proc", "sbin", "srv"};
+    protected final static String[] skippedFolderList_WIN = {"$SysReset", "$Recycle.Bin", "RECYCLER", ".Trash", "Android", "AppData", "Boot", "Default", "Efi", "Intel", "Java", "NetBeansProjects", "OEM", "PerfLogs", "Program Files (x86)", "Program Files", "ProgramData", "Recycle", "Resource", "System Volume Information", "Windows", "source"};
+
+    protected final static String[] skippedFolderList_OSX = {"$RECYCLE.BIN", ".DS_Store", "Applications", "Library", "Network", "Photos Library.photoslibrary", "System Volume Information", "System", "Users", "Volumes", "bin", "cores", "dev", "etc", "home", "lost+found", "opt", "private", "sbin", "tmp", "usr", "var"};
+
+    private static final Set<String> SKIPPED_FOLDER_SET_OSX = Set.of(
+            "$RECYCLE.BIN", ".DS_Store", "Applications", "Library", "Network",
+            "Photos Library.photoslibrary", "System Volume Information", "System",
+            "Users", "Volumes", "bin", "cores", "dev", "etc", "home", "lost+found",
+            "opt", "private", "sbin", "tmp", "usr", "var"
+    );
 
     public static boolean hasMediaFilesInFolder(Path path) {
         DirectoryStream<Path> directoryStream = FileUtils.createDirectoryStream(path, FileUtils.filter_directories);
@@ -62,6 +69,7 @@ public class ValidatePathUtils {
         // Check for Windows-specific conditions
         if (Misc.isWindows()) {
             if (fileName != null && !fileName.isEmpty()) {
+                Messages.sprintf("Checking Windows-specific conditions for file: " + file.toString());
                 if (isHiddenFile(fileName, HIDDEN_FILE_PREFIX) || containsIgnoreCase(fileName, APP_INDICATOR)) {
                     return true;
                 }
@@ -72,11 +80,13 @@ public class ValidatePathUtils {
 
         // Check for Unix-specific conditions
         if (Misc.isUnix()) {
+            Messages.sprintf("Checking Unix-specific conditions for file: " + file.toString());
             return isInSkippedFolderList(file.toString(), List.of(skippedFolderList_UNIX));
         }
 
         // Check for Mac-specific conditions
         if (Misc.isMac()) {
+            Messages.sprintf("Checking Mac-specific conditions for file: " + file.toString());
             return isInSkippedFolderList(file.toString(), List.of(skippedFolderList_OSX));
         }
 
@@ -90,13 +100,54 @@ public class ValidatePathUtils {
         return fileName.charAt(0) == hiddenFilePrefix;
     }
 
-    // Utility method: checks if a file is in a skipped folder list with exact match
     private static boolean isInSkippedFolderList(String filePath, List<String> skippedFolders) {
-        for (String folder : skippedFolders) {
-            if (filePath.equalsIgnoreCase(folder)) {
+        Path path = Paths.get(filePath);
+        if (!Files.isDirectory(path)) {
+            path = path.getParent(); // Check the parent directory for files
+        }
+        String partName = path.getFileName().toString();
+
+        for (String filter : skippedFolders) {
+            if (partName.equals(filter)) {
                 return true;
             }
         }
+        return false;
+    }
+
+    // Utility method: checks if a file is in a skipped folder list with exact match (any path segment)
+    private static boolean isInSkippedFolderList_(String filePath, List<String> skippedFolders) {
+        Path path = Paths.get(filePath);
+        boolean isHome = isInUserHomeFolder(path);
+        Messages.sprintf("Checking path: " + path.toString() + " - isHome: " + isHome);
+
+        if (Files.isRegularFile(path)) {
+            path = path.getParent(); // Check the parent directory for files
+        }
+
+        if (isHome) {
+            Messages.sprintf("Path: " + path + " is in the user's home directory, skipping skipped folder check.");
+
+            for (String filter : skippedFolders) {
+                System.out.println("---filtering: " + filter + " against path: " + path.toAbsolutePath());
+                if (path.toAbsolutePath().toString().equals(filter)) {
+                    Messages.sprintf("--------- Part: " + path + " contains in SKIPPED_FOLDER_SET_OSX");
+                    return true;
+                }
+            }
+
+            return false; // Skip skipped folder check for paths in the user's home directory
+        }
+
+        System.out.println("Checking path: " + path.toString() + " against skipped folders: " + skippedFolders);
+        for (String filter : skippedFolders) {
+            System.out.println("---filtering: " + filter + " against path: " + path.toAbsolutePath());
+            if (path.toAbsolutePath().toString().contains(filter)) {
+                Messages.sprintf("--------- Part: " + path + " contains in SKIPPED_FOLDER_SET_OSX");
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -124,11 +175,24 @@ public class ValidatePathUtils {
     }
 
     public static boolean validFile(Path f) throws IOException {
-        return Files.isReadable(f) && !Files.isHidden(f) && Files.size(f) > FILE_MIN_SIZE && Files.exists(f) && FileUtils.supportedMediaFormat(f.toFile());
+        return Files.isReadable(f) && !Files.isHidden(f) && Files.size(f) > FILE_MIN_SIZE && Files.exists(f) && FileUtils.supportedMediaFormat(f.toFile()) && isInSkippedFolderList(f.toAbsolutePath());
     }
 
-    public static boolean validFolder(Path f) throws IOException {
-        return Files.isDirectory(f) && Files.exists(f) && Files.isReadable(f) && !Files.isHidden(f) && !isInSkippedFolderList(f);
+    public static boolean acceptedFolder(Path f) throws IOException {
+        boolean isValid = Files.isDirectory(f) && Files.exists(f) && Files.isReadable(f) && !Files.isHidden(f) && isInSkippedFolderList(f);
+        Messages.sprintf("Validating folder: " + f.toString() + " - isValid: " + isValid);
+        return isValid;
     }
 
+    /**
+     * Checks if the given folder is inside the user's home directory (e.g. /Users/<user>/ on Mac).
+     *
+     * @param folder Path to check
+     * @return true if the folder is inside the user's home directory, false otherwise
+     */
+    public static boolean isInUserHomeFolder(Path folder) {
+        Path home = Paths.get(System.getProperty("user.home")).toAbsolutePath();
+        Path absFolder = folder.toAbsolutePath();
+        return absFolder.startsWith(home);
+    }
 }
