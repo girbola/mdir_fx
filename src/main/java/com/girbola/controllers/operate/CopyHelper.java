@@ -5,7 +5,6 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.ModelOperate;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.workdir.WorkDirSQL;
 import common.utils.FileUtils;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

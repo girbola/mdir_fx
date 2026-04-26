@@ -2,6 +2,7 @@
 package common.media;
 
 import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
 import com.drew.lang.GeoLocation;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
@@ -16,7 +17,10 @@ import com.girbola.messages.Messages;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 
 import static com.girbola.messages.Messages.sprintf;

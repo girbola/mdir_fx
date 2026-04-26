@@ -73,7 +73,7 @@ public class OperateFilesUtils {
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
             fileInfo.setCopied(true);
             listCopiedFiles.add(fileInfo);
-            WorkDirSQL.insertFileInfo(fileInfo);
+//            WorkDirSQL.insertFileInfo(fileInfo);
 
         } catch (Exception ex) {
             ex.printStackTrace();

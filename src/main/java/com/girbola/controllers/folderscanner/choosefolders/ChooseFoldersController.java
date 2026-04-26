@@ -75,24 +75,9 @@ public class ChooseFoldersController {
 		model_folderScanner.getAnalyzeList_vbox().getChildren().clear();
 
 		Task<Void> analyze = new AnalyzeFolderContent(selected, model_folderScanner);
-		analyze.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf(" analyze.setOnSucceeded");
-			}
-		});
-		analyze.setOnFailed(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf(" analyze.setOnFailed");
-			}
-		});
-		analyze.setOnCancelled(new EventHandler<WorkerStateEvent>() {
-			@Override
-			public void handle(WorkerStateEvent event) {
-				sprintf(" analyze.setOnCancelled");
-			}
-		});
+		analyze.setOnSucceeded(event1 -> sprintf(" analyze.setOnSucceeded"));
+		analyze.setOnFailed(event2 -> sprintf(" analyze.setOnFailed"));
+		analyze.setOnCancelled(event3 -> sprintf(" analyze.setOnCancelled"));
 
 		Thread analyze_th = new Thread(analyze, "analyze_th");
 		sprintf("analyze_th.getName(): " + analyze_th.getName());
