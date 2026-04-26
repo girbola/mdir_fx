@@ -10,6 +10,8 @@ import com.drew.metadata.exif.ExifIFD0Directory;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.mov.QuickTimeDirectory;
 import com.drew.metadata.mp4.media.Mp4VideoDirectory;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.messages.Messages;
 import common.utils.FileNameParseUtils;
 import common.utils.FileUtils;
 
@@ -21,6 +23,8 @@ import java.nio.file.Paths;
 import java.util.Date;
 
 import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.utils.FileInfoUtils.calculateFileSHA256;
+import static com.girbola.utils.FileInfoUtils.getImageThumb_Offset_Length;
 
 
 public class DateTaken {
@@ -98,6 +102,47 @@ public class DateTaken {
             }
         }
         return 0;
+    }
+
+    public static boolean readMetadataInformation(Path path) {
+        Metadata metaData = null;
+        try {
+            metaData = ImageMetadataReader.readMetadata(path.toFile());
+        } catch (ImageProcessingException | IOException ex) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean defineFileInfo(FileInfo fileInfo) {
+        Path path = Paths.get(fileInfo.getOrgPath());
+        if (!Files.exists(path)) {
+            Messages.sprintfError("File does not exists: " + path);
+            return false;
+        }
+        Metadata metaData = null;
+        try {
+            metaData = ImageMetadataReader.readMetadata(path.toFile());
+            if (fileInfo.getDate() == 0) {
+                fileInfo.setDate(getMetaDataCreationDate(metaData, path));
+            }
+            if (fileInfo.getOrientation() == 0) {
+                fileInfo.setOrientation(getMetaDataOrientation(metaData));
+            }
+            if (fileInfo.getCamera_model() == null || fileInfo.getCamera_model().isEmpty()) {
+                fileInfo.setCamera_model(getCameraModel(metaData));
+            }
+            if (fileInfo.getThumb_offset() == 0) {
+                getImageThumb_Offset_Length(metaData, fileInfo);
+            }
+            if (fileInfo.getSha256Checksum() == null || fileInfo.getSha256Checksum().isEmpty()) {
+                fileInfo.setSha256Checksum(calculateFileSHA256(path));
+            }
+
+            return true;
+        } catch (ImageProcessingException | IOException ex) {
+            return false;
+        }
     }
 
     public static long getMetaDataCreationDate(Metadata metaData, Path path) {

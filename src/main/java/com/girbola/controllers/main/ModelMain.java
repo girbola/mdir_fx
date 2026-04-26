@@ -17,7 +17,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FileInfoSql;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.ConfigurationSavedFoldersDao;
@@ -245,7 +245,7 @@ public class ModelMain {
                     FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo, true);
 
                     // Inserts all data info fileinfo.db
-                    FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+                    FileInfoSql.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 //                    SQL_Utils.commitChanges(connectionConfiguration);
 
                 } catch (Exception e) {

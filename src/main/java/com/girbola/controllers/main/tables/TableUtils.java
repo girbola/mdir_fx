@@ -5,6 +5,7 @@ import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.conflicttableview.ConflictTableViewController;
 import com.girbola.controllers.main.CleanTableView;
 import com.girbola.controllers.main.ModelMain;
@@ -17,10 +18,9 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FileInfoSql;
 import com.girbola.sql.FolderInfo_SQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import com.girbola.utils.CommonUserFolders;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
@@ -719,10 +719,10 @@ public class TableUtils {
              * or creates new one called fileinfo.db
              */
             // Inserts all data info fileinfo.db
-            FileInfo_SQL.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+            FileInfoSql.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
-//            Connection fileList_connection = SqliteConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-            Connection configurationConnection = SqliteConnection.connectToDatabase(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
+//            Connection fileList_connection = FileInfoSqlConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+            Connection configurationConnection = ConfigurationSqlConnection.connectToDatabase(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
             configurationConnection.setAutoCommit(false);
 
             FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo, false);

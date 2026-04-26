@@ -4,6 +4,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileInfoTestUtil;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.girbola.utils.FileInfoUtils.calculateFileSHA256;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -241,6 +243,60 @@ public class FileInfoUtilsTest {
             assertTrue(FileInfoUtils.compareImagesMetadata(fileInfo1, fileInfo2), "Comparison of different files incorrectly returned true");
         } catch (IOException e) {
             fail("Exception occurred during test: " + e.getMessage());
+        }
+    }
+
+    @Test
+    public void testCalculateFileSHA256_Should_Differ() throws IOException {
+        Path resourcePath = Paths.get("src", "test", "resources", "in", "IMG1.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
+
+        Path resourcePath2 = Paths.get("src", "test", "resources", "in", "IMG1_dot_difference.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath2), "Test image2 resource not found: " + resourcePath2);
+
+        long startTime = System.currentTimeMillis();
+
+        String h1 = calculateFileSHA256(resourcePath.toAbsolutePath());
+        String h2 = calculateFileSHA256(resourcePath2.toAbsolutePath());
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("h1: " + h1 + " h2: " + h2 + " sha256Checksum computation time: " + (endTime - startTime) + " ms");
+
+        assertNotEquals(h1, h2, "Hashes should be different");
+    }
+
+    @Test
+    public void testCalculateFileSHA256ShouldBeTheSame() throws IOException {
+        Path resourcePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
+
+        Path resourcePath2 = Paths.get("src", "test", "resources", "test-material", "20220413_160023.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath2), "Test image2 resource not found: " + resourcePath2);
+
+        long startTime = System.currentTimeMillis();
+
+        String h1 = calculateFileSHA256(resourcePath.toAbsolutePath());
+        String h2 = calculateFileSHA256(resourcePath2.toAbsolutePath());
+
+        long endTime = System.currentTimeMillis();
+
+        System.out.println("h1: " + h1 + " h2: " + h2 + " sha256Checksum computation time: " + (endTime - startTime) + " ms");
+
+        assertEquals(h1, h2, "Hashes should be different");
+    }
+
+    @Test
+    public void testCalculateFileSHA256CalculationSpeed() throws IOException {
+        Path resourcePath = Paths.get("src", "test", "resources", "in", "IMG1.jpg");
+        assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
+        File[] folder = new File("src/test/resources/in").listFiles();
+
+        for (File file : folder) {
+            long startTime = System.currentTimeMillis();
+            String sha256 = calculateFileSHA256(file.toPath().toAbsolutePath());
+            long endTime = System.currentTimeMillis();
+            System.out.println("File: " + file.getAbsolutePath() + " sha256\n" + sha256 + " sha256Checksum computation time: " + (endTime - startTime) + " ms");
         }
     }
 }

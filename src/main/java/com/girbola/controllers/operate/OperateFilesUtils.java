@@ -2,10 +2,10 @@ package com.girbola.controllers.operate;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.workdir.WorkDirSQL;
 import common.utils.FileUtils;
 
 import java.io.*;

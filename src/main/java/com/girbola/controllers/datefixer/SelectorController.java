@@ -2,9 +2,9 @@
 package com.girbola.controllers.datefixer;
 
 import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
+import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.*;
-import com.girbola.workdir.*;
 import java.nio.file.*;
 import java.util.*;
 import java.util.concurrent.*;
@@ -18,7 +18,7 @@ import javafx.util.*;
 
 public class SelectorController {
 
-	private WorkDirSQL workDir_SQL;
+	private WorkDirSQL workDirSql;
 	private ModelDatefix modelDatefix;
 	private TilePane df_tilePane;
 	private FolderInfo folderInfo;
@@ -69,7 +69,7 @@ public class SelectorController {
 
 		Messages.sprintf("Folderinfo path name is: " + this.folderInfo.getFolderPath());
 
-		workDir_SQL = new WorkDirSQL(Paths.get(folderInfo.getFolderPath()));
+		workDirSql = new WorkDirSQL(Paths.get(folderInfo.getFolderPath()));
 
 		modelDatefix.setDates_TableView(dates_tableView);
 		modelDatefix.setCameras_TableView(cameras_tableView);

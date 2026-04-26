@@ -2,10 +2,14 @@ package com.girbola.fileinfo;
 
 import com.girbola.controllers.datefixer.utils.MetadataField;
 import common.utils.OSHI_Utils;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+
+import static com.girbola.utils.FileInfoUtils.calculateFileSHA256;
 
 @Getter
 @Setter
@@ -49,6 +53,7 @@ public class FileInfo extends Metadata implements Cloneable {
                     ", \n video=" + isVideo() +
                     ", \n workDir='" + getWorkDir() + '\'' +
                     ", \n workDirDriveSerialNumber='" + getWorkDirDriveSerialNumber() + '\'' +
+                    ", \n sha256Checksum='" + getSha256Checksum() + '\'' +
                     ", \n fileInfoHistories='" + getFileHistories() + '\'' +
                     '}';
         }
@@ -57,12 +62,12 @@ public class FileInfo extends Metadata implements Cloneable {
          * Represents information about a file.
          *
          * @param orgPath                     The original path of the file.
-         * @param fileInfo_id                 The ID of the file info.
+         * @param fileInfoId                 The ID of the file info.
          */
-    public FileInfo(String orgPath, int fileInfo_id){
+    public FileInfo(String orgPath, int fileInfoId){
             this.setOrgPath(orgPath);
             this.setOrgPathDriveSerialNumber(OSHI_Utils.getDriveSerialNumber(orgPath));
-            this.setFileInfo_id(fileInfo_id);
+            this.setFileInfo_id(fileInfoId);
 
             this.setDestination_Path("");
             this.setEvent("");
@@ -90,6 +95,7 @@ public class FileInfo extends Metadata implements Cloneable {
             this.setUser("");
             this.setWorkDir("");
             this.setWorkDirDriveSerialNumber("");
+            this.setSha256Checksum("");
             this.setFileHistories(new ArrayList<>());
             this.timeShift = 0;
 
@@ -132,6 +138,7 @@ public class FileInfo extends Metadata implements Cloneable {
                 "",                       // aImageDifferenceHash - Image difference hash value
                 0,                        // aThumb_offset - Thumbnail offset in file
                 0,                        // aThumb_length - Thumbnail length in bytes
+                "",                       // SHA256 Checksum
                 new ArrayList<String>()   // fileInfoHistories - List of file history records
         );
     }
@@ -169,6 +176,7 @@ public class FileInfo extends Metadata implements Cloneable {
             String aImageDifferenceHash,
             int aThumb_offset,
             int aThumb_length,
+            String sha256Checksum,
             List<String> fileInfoHistories) {
         this.setBad(aBad);
         this.setCamera_model(aCamera_model);
@@ -198,6 +206,7 @@ public class FileInfo extends Metadata implements Cloneable {
         this.setTimeShift(aTimeShift);
         this.setUser(user);
         this.setVideo(aVideo);
+        this.setSha256Checksum(sha256Checksum);
         this.setWorkDir(aWorkDir);
         this.setWorkDirDriveSerialNumber(aWorkDirDriveSerialNumber);
     }

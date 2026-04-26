@@ -71,7 +71,88 @@ public class ImageUtils {
         return image;
     }
 
-    public static byte[] getMetadataThumbImageAsByteArray(FileInfo fileinfo) {
+    public static byte[] getMetadataThumbImageAsByteArray(FileInfo fileInfo) {
+        if (fileInfo == null) {
+            Messages.sprintfError("fileinfo is null");
+            return null;
+        }
+
+        Path filePath = Paths.get(fileInfo.getOrgPath());
+        Metadata metadata = DateTaken.readMetaData(filePath);
+
+        if (metadata == null) {
+            Messages.sprintfError("No metadata found for file: " + fileInfo.getOrgPath());
+            return null;
+        }
+
+        ExifThumbnailDirectory directory = metadata.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
+        if (directory == null) {
+            Messages.sprintfError("No thumbnail directory found in metadata for file: " + fileInfo.getOrgPath());
+            return null;
+        }
+
+        Integer rawOffset = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_OFFSET);
+        Integer rawLength = directory.getInteger(ExifThumbnailDirectory.TAG_THUMBNAIL_LENGTH);
+        Integer adjustedOffset = directory.getAdjustedThumbnailOffset();
+
+        Messages.sprintf("Raw thumbnail data: offset=" + rawOffset + " length=" + rawLength);
+        Messages.sprintf("Adjusted thumbnail data: offset=" + adjustedOffset + " length=" + rawLength);
+
+        byte[] adjustedThumbnailData = readThumbnailBytes(filePath, adjustedOffset, rawLength);
+        if (isDecodableImage(adjustedThumbnailData)) {
+            return adjustedThumbnailData;
+        }
+
+        Messages.sprintf("Failed to decode thumbnail with adjusted offset, trying raw offset...");
+
+        byte[] rawThumbnailData = readThumbnailBytes(filePath, rawOffset, rawLength);
+        if (isDecodableImage(rawThumbnailData)) {
+            Messages.sprintf("Thumbnail successfully decoded using raw offset.");
+            return rawThumbnailData;
+        }
+
+        Messages.sprintf("Failed to decode thumbnail even with raw offset");
+        return adjustedThumbnailData != null ? adjustedThumbnailData : getMetadataThumbImageAsByteArray(filePath,
+                rawOffset != null ? rawOffset : 0,
+                rawLength != null ? rawLength : 0);
+    }
+
+    private static byte[] readThumbnailBytes(Path filePath, Integer offset, Integer length) {
+        if (offset == null || length == null || offset <= 0 || length <= 0) {
+            return null;
+        }
+
+        try (RandomAccessFile fileRaf = new RandomAccessFile(filePath.toFile(), "r")) {
+            fileRaf.seek(offset);
+            byte[] thumbnailData = new byte[length];
+            fileRaf.readFully(thumbnailData);
+            Messages.sprintf("Attempting to decode thumbnail using ImageIO from offset: " + offset);
+            return thumbnailData;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static boolean isDecodableImage(byte[] imageData) {
+        if (imageData == null || imageData.length == 0) {
+            return false;
+        }
+
+        try (ByteArrayInputStream bais = new ByteArrayInputStream(imageData)) {
+            BufferedImage image = ImageIO.read(bais);
+            if (image != null) {
+                Messages.sprintf("Thumbnail successfully decoded: " + image.getWidth() + "x" + image.getHeight());
+                return true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static byte[] getMetadataThumbImageAsByteArray_(FileInfo fileinfo) {
     if (fileinfo == null) {
         Messages.sprintfError("fileinfo is null");
         return null;

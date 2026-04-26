@@ -5,9 +5,9 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.sql.FileInfoSql;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FileInfo_SQL;
 import common.utils.Conversion;
 import common.utils.OSHI_Utils;
 import javafx.application.Platform;
@@ -123,7 +123,7 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 				if (!folderInfo.isConnected()) {
 					folderInfo.setConnected(true);
 					Messages.sprintf("===Updating folder exists: " + folderInfo.isConnected());
-					boolean loaded = FileInfo_SQL.loadFileInfoDatabase(folderInfo);
+					boolean loaded = FileInfoSql.loadFileInfoDatabase(folderInfo);
 					if (!loaded) {
 						List<FileInfo> list = FileInfoUtils.createFileInfo_list(folderInfo);
 						folderInfo.getFileInfoList().addAll(list);

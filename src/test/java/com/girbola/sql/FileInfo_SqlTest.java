@@ -11,10 +11,10 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class FileInfo_SQLTest {
+class FileInfo_SqlTest {
 
     /**
-     * Test class for the FileInfo_SQL class.
+     * Test class for the FileInfoSql class.
      * Focused on testing the addToFileInfoDB method, particularly its functionality to correctly bind parameters
      * from a FileInfo object to a PreparedStatement.
      */
@@ -28,7 +28,7 @@ class FileInfo_SQLTest {
         System.out.println("fileInfo.showAllValues(): " + fileInfo.showAllValues());
 
         // Act
-        boolean result = FileInfo_SQL.addToFileInfoDB(pstmt, fileInfo);
+        boolean result = FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
 
         // Assert
         assertTrue(result);
@@ -74,7 +74,7 @@ class FileInfo_SQLTest {
         Mockito.doThrow(new SQLException("Mocked SQL exception")).when(pstmt).setBoolean(Mockito.anyInt(), Mockito.anyBoolean());
 
         // Act
-        boolean result = FileInfo_SQL.addToFileInfoDB(pstmt, fileInfo);
+        boolean result = FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
 
         // Assert
         assertFalse(result);

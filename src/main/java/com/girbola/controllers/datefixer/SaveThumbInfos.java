@@ -3,8 +3,8 @@ package com.girbola.controllers.datefixer;
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.sql.FileInfoSqlConnection;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import com.girbola.sql.ThumbInfoSQL;
 import com.girbola.thumbinfo.ThumbInfo;
 import com.girbola.utils.ThumbInfoUtils;
@@ -171,7 +171,7 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
         }
 
         Messages.sprintf("Thumbinfo list size is: " + thumbInfos.size());
-        connection = SqliteConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
+        connection = FileInfoSqlConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
         ThumbInfoSQL.insertThumbInfoListToDatabase(connection, thumbInfos);
         try {
             connection.commit();

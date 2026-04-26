@@ -16,6 +16,7 @@ package com.girbola;
 
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
+import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
@@ -25,9 +26,9 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
+import com.girbola.sql.FileInfoSqlConnection;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.sql.SelectedFolderInfoSQL;
-import com.girbola.sql.SqliteConnection;
 import common.utils.date.SimpleDates;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -44,9 +45,7 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -304,7 +303,7 @@ public class Main extends Application {
             SelectedFolderInfoSQL.loadSelectedFolders(model_main);
 
             // Loads save folders from configuration db
-            Connection configurationLoadedFile = SqliteConnection.connectToDatabase(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
+            Connection configurationLoadedFile = ConfigurationSqlConnection.connectToDatabase(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
 
 
             VLCJDiscovery.initVlc();
@@ -479,7 +478,7 @@ public class Main extends Application {
         Messages.sprintf("Configuration connection closed");
 
         ConcurrencyUtils.stopAllExecThreadNow();
-        SqliteConnection.closeAllConnections();
+        FileInfoSqlConnection.closeAllConnections();
         Messages.sprintf("Program has ended. Exiting...");
         Platform.exit();
     }

@@ -7,10 +7,11 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FileInfoSql;
+import com.girbola.sql.FileInfoSqlConnection;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
 import com.girbola.utils.FileInfoUtils;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -44,7 +45,7 @@ public class WorkDirSQL {
 
     private Connection createWorkDirConnection(Path workDirPath) {
         try {
-            connection = SqliteConnection.connectToDatabase(workDirPath, Main.conf.getWorkDir_db_fileName());
+            connection = FileInfoSqlConnection.connectToDatabase(workDirPath, Main.conf.getWorkDir_db_fileName());
             SQL_Utils.setAutoCommit(connection, false);
             if (SQL_Utils.isDbConnected(connection)) {
                 createFileInfoTable(connection);
@@ -157,7 +158,7 @@ public class WorkDirSQL {
     }
 
     public void ensureFileInfoTable() {
-        FileInfo_SQL.createFileInfoTable(connection);
+        FileInfoSql.createFileInfoTable(connection);
     }
 
 
@@ -172,7 +173,7 @@ public class WorkDirSQL {
             // Try to get or create connection if needed
             if (SQL_Utils.isDbConnected(connection) && !connection.isClosed()) {
 
-                boolean fileInfoTable = FileInfo_SQL.createFileInfoTable(connection);
+                boolean fileInfoTable = FileInfoSql.createFileInfoTable(connection);
                 if (!fileInfoTable) {
                     Messages.sprintfError("Could not create fileinfo workdir table");
                     return;
@@ -209,10 +210,9 @@ public class WorkDirSQL {
             System.out.println("sql:::::::: " + sql);
             System.out.println(" fileInfo: " + fileInfo.showAllValues());
             PreparedStatement pstmt = connection.prepareStatement(sql);
-            int index = 1;
 
             // Update values
-            setFileInfoParameters(pstmt, fileInfo, index);
+            FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
 
             pstmt.executeUpdate();
             Messages.sprintf("FileInfo inserted/updated successfully");
@@ -265,13 +265,13 @@ public class WorkDirSQL {
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     while (rs.next()) {
-                        FileInfo duplicateFileInfo = FileInfo_SQL.loadFileInfo(rs);
+                        FileInfo duplicateFileInfo = FileInfoSql.loadFileInfo(rs);
                         if (duplicateFileInfo != null && FileInfoUtils.compareImagesMetadata(fileInfo, duplicateFileInfo)) {
                             list.add(duplicateFileInfo);
                         }
                     }
                 }
-            } catch (SQLException e) {
+            } catch (SQLException | IOException e) {
                 System.err.println(e.getMessage());
                 Messages.sprintfError("Error finding duplicate FileInfo: " + e.getMessage() + " line nubmer: " + Misc.getLineNumber());
                 return new ArrayList<>();
@@ -284,7 +284,7 @@ public class WorkDirSQL {
     }
 
 
-    public static boolean isTableEmpty(Connection conn, String tableName) {
+    public boolean isTableEmpty(Connection conn, String tableName) {
         if (conn == null || tableName == null || tableName.trim().isEmpty()) {
             return true;
         }
@@ -317,7 +317,7 @@ public class WorkDirSQL {
                 Messages.sprintf("Database connection failed for: " + Main.conf.getWorkDir());
                 return false;
             }
-            String sql = FileInfo_SQL.createFileInfoTable();
+            String sql = FileInfoSql.createFileInfoTable();
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
             int index = 1;
@@ -328,7 +328,7 @@ fileInfo.getFileHistories() (for FILEHISTORIES - needs to be converted to String
              */
             // Update values
             // Update values
-            setFileInfoParameters(pstmt, fileInfo, index);
+            FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
 
             pstmt.addBatch();
             Messages.sprintf("FileInfo added to batch");
@@ -339,44 +339,4 @@ fileInfo.getFileHistories() (for FILEHISTORIES - needs to be converted to String
         }
     }
 
-
-    private int setFileInfoParameters(PreparedStatement pstmt, FileInfo fileInfo, int index) throws SQLException {
-        // Must match the order in FileInfoEnum.values()
-        // BAD, CAMERA_MODEL, CONFIRMED, DATE, DESTINATION_PATH, EVENT, FILEINFO_ID, FILEHISTORIES,
-        // GOOD, COPIED, IGNORED, IMAGE, IMAGE_DIFFERENCE_HASH, LOCATION, MODIFIED, ORGPATH,
-        // ORIENTATION, RAW, SIZE, SUGGESTED, TABLE_DUPLICATED, TAGS, THUMB_LENGTH, THUMB_OFFSET,
-        // TIME_SHIFT, USER, VIDEO, WORK_DIR, WORK_DIR_DRIVE_SERIAL_NUMBER
-
-        pstmt.setBoolean(index++, fileInfo.isBad());                        // 1 - BAD
-        pstmt.setString(index++, fileInfo.getCamera_model());               // 2 - CAMERA_MODEL
-        pstmt.setBoolean(index++, fileInfo.isConfirmed());                  // 3 - CONFIRMED
-        pstmt.setString(index++, fileInfo.getDestination_Path());           // 4 - DESTINATION_PATH
-        pstmt.setString(index++, fileInfo.getEvent());                      // 5 - EVENT
-        pstmt.setInt(index++, fileInfo.getFileInfo_id());                   // 6 - FILEINFO_ID
-        String historiesStr = String.join("|", fileInfo.getFileHistories());
-        pstmt.setString(index++, historiesStr);                             // 7 - FILEHISTORIES
-        pstmt.setBoolean(index++, fileInfo.isGood());                       // 8 - GOOD
-        pstmt.setBoolean(index++, fileInfo.isCopied());                     // 9 - COPIED
-        pstmt.setBoolean(index++, fileInfo.isIgnored());                    // 10 - IGNORED
-        pstmt.setBoolean(index++, fileInfo.isImage());                      // 11 - IMAGE
-        pstmt.setString(index++, fileInfo.getImageDifferenceHash());        // 11 - IMAGE_DIFFERENCE_HASH
-        pstmt.setString(index++, fileInfo.getLocation());                   // 12 - LOCATION
-        pstmt.setBoolean(index++, fileInfo.isModified());                   // 13 - MODIFIED
-        pstmt.setString(index++, fileInfo.getOrgPath());                    // 14 - ORGPATH
-        pstmt.setInt(index++, fileInfo.getOrientation());                   // 15 - ORIENTATION
-        pstmt.setBoolean(index++, fileInfo.isRaw());                        // 16 - RAW
-        pstmt.setLong(index++, fileInfo.getSize());                         // 17 - SIZE
-        pstmt.setBoolean(index++, fileInfo.isSuggested());                  // 18 - SUGGESTED
-        pstmt.setBoolean(index++, fileInfo.isTableDuplicated());            // 19 - TABLE_DUPLICATED
-        pstmt.setString(index++, fileInfo.getTags());                       // 20 - TAGS
-        pstmt.setInt(index++, fileInfo.getThumb_length());                  // 21 - THUMB_LENGTH
-        pstmt.setInt(index++, fileInfo.getThumb_offset());                  // 22 - THUMB_OFFSET
-        pstmt.setLong(index++, fileInfo.getTimeShift());                    // 23 - TIME_SHIFT
-        pstmt.setString(index++, fileInfo.getUser());                       // 24 - USER
-        pstmt.setBoolean(index++, fileInfo.isVideo());                      // 25 - VIDEO
-        pstmt.setString(index++, fileInfo.getWorkDir());                    // 26 - WORK_DIR
-        pstmt.setString(index++, fileInfo.getWorkDirDriveSerialNumber());   // 27 - WORK_DIR_DRIVE_SERIAL_NUMBER
-
-        return index;
-    }
 }

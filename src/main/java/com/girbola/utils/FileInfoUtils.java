@@ -1,19 +1,13 @@
 package com.girbola.utils;
 
-import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
-import com.drew.metadata.file.FileSystemDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.utils.MetadataField;
-import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DriveInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.ValidatePathUtils;
@@ -31,10 +25,14 @@ import common.utils.date.DateUtils;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.*;
 import javax.imageio.ImageIO;
@@ -367,6 +365,9 @@ public class FileInfoUtils {
 
         // TODO Auto-generated method stub
     }
+    public static boolean handleMetadataInformation(FileInfo fileInfo) throws IOException {
+        return handleMetadataInformation(Paths.get(fileInfo.getOrgPath()), fileInfo);
+    }
 
     public static boolean handleMetadataInformation(Path path, FileInfo fileInfo) throws IOException {
 
@@ -374,9 +375,9 @@ public class FileInfoUtils {
         int orientation = 0;
         int width = 0;
         int height = 0;
-        String camera_model = MetadataField.UNKNOWN.getType();
+        String cameraModel = MetadataField.UNKNOWN.getType();
         Metadata metaData = null;
-        fileInfo.setCamera_model(camera_model);
+        fileInfo.setCamera_model(cameraModel);
         try {
             metaData = readMetaData(path);
         } catch (Exception e) {
@@ -403,11 +404,9 @@ public class FileInfoUtils {
             }
 
             // Camera model
-            camera_model = DateTaken.getCameraModel(metaData);
-            if (camera_model != null) {
-                if (!camera_model.isEmpty()) {
-                    fileInfo.setCamera_model(camera_model);
-                }
+            cameraModel = DateTaken.getCameraModel(metaData);
+            if (cameraModel != null && !cameraModel.isEmpty()) {
+                fileInfo.setCamera_model(cameraModel);
             }
 
             // Thumbnail offset for faster image extractor
@@ -846,6 +845,7 @@ public class FileInfoUtils {
             FileInfo fileInfo = new FileInfo(path.toString(), fileInfoId);
 
             fileInfo.setOrgPathDriveSerialNumber(sourceDriveSerialNumber);
+            fileInfo.setSha256Checksum(calculateFileSHA256(path));
 
             boolean processed = populateFileInfoByType(path, fileInfo);
 
@@ -861,6 +861,27 @@ public class FileInfoUtils {
         } catch (IOException e) {
             Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
             throw e;
+        }
+    }
+
+    public static String calculateFileSHA256(Path path) {
+        if (path == null || !Files.isRegularFile(path)) {
+            return null;
+        }
+
+        try (InputStream in = Files.newInputStream(path)) {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] buffer = new byte[8192];
+
+            for (int read; (read = in.read(buffer)) != -1; ) {
+                digest.update(buffer, 0, read);
+            }
+
+            return java.util.HexFormat.of().formatHex(digest.digest());
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to read file for SHA-256: " + path, e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("SHA-256 not available", e);
         }
     }
 

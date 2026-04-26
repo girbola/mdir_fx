@@ -2,7 +2,7 @@ package com.girbola.utils;
 
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FileInfoSql;
 import com.girbola.sql.SQL_Utils;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -138,7 +138,7 @@ public class FileTransferSqlService {
     }
 
     private boolean insertTargetFileInfo(Connection targetConnection, FileInfo targetFileInfo) {
-        return FileInfo_SQL.createFileInfoTable(targetConnection)
+        return FileInfoSql.createFileInfoTable(targetConnection)
                 && insertOneFileInfo(targetConnection, targetFileInfo);
     }
 

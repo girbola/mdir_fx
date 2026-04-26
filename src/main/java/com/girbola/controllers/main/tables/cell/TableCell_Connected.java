@@ -9,9 +9,9 @@ import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FileInfo_SQL;
+import com.girbola.sql.FileInfoSql;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SqliteConnection;
+import com.girbola.sql.FileInfoSqlConnection;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.image.ImageView;
@@ -68,8 +68,8 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 		tryToReconnect.setOnAction(event -> {
 			if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
 				setGood();
-				Connection connection = SqliteConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
-				List<FileInfo> list = FileInfo_SQL.loadFileInfoDatabase(connection);
+				Connection connection = FileInfoSqlConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+				List<FileInfo> list = FileInfoSql.loadFileInfoDatabase(connection);
 				folderInfo.getFileInfoList().addAll(list);
 				FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 				TableUtils.refreshTableContent(modelMain.tables().getSorted_table());

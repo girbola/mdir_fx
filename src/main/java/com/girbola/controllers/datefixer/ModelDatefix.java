@@ -14,7 +14,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SqliteConnection;
+import com.girbola.sql.FileInfoSqlConnection;
 import com.girbola.thumbinfo.ThumbInfo;
 import com.girbola.workdir.WorkDirSQL;
 import common.utils.Conversion;
@@ -106,7 +106,7 @@ public class ModelDatefix extends DateFixerModel {
     public ModelDatefix(ModelMain model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
         this.model_Main = model_Main;
-        this.connection = SqliteConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
+        this.connection = FileInfoSqlConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
     }
 
     public void instantiateRenderVisibleNodes() {

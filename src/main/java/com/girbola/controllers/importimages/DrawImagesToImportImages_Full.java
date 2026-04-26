@@ -7,7 +7,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SqliteConnection;
+import com.girbola.sql.FileInfoSqlConnection;
 import javafx.beans.binding.NumberBinding;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
@@ -61,7 +61,7 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
         this.vbox = aVbox;
         this.list = new TreeMap<>(aList);
         if (connection == null) {
-            this.connection = SqliteConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()),
+            this.connection = FileInfoSqlConnection.connectToDatabase(Paths.get(folderInfo.getFolderPath()),
                     Main.conf.getMdir_db_fileName());
         } else {
             this.connection = connection;

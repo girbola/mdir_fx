@@ -2,6 +2,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
+import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
@@ -64,13 +65,13 @@ public class SelectedFolderInfoSQL {
         Path configFile = Paths.get(Main.conf.getAppDataPath().toString(), Main.conf.getConfiguration_db_fileName());
 
         Messages.sprintf("configFile.getParent().toString(), configFile.getFileName().toString() " + configFile.getParent().toString() + " DATABASE NAMEEEE:::::::::::: " +  configFile.getFileName().toString());
-        try (Connection connection = SqliteConnection.connectToDatabase(configFile.getParent().toString(), configFile.getFileName().toString())) {
+        try (Connection connection = ConfigurationSqlConnection.connectToDatabase(configFile.getParent().toString(), configFile.getFileName().toString())) {
 
             if (!isDbConnected(connection)) {
                 Messages.sprintf("load_SelectedFolders_UsingSQL loading....");
                 return false;
             }
-            if (!SqliteConnection.tableExists(connection, SQLTableEnums.SELECTEDFOLDERS.getType())) {
+            if (!FileInfoSqlConnection.tableExists(connection, SQLTableEnums.SELECTEDFOLDERS.getType())) {
                 Messages.sprintf("Table not found + " + SQLTableEnums.SELECTEDFOLDERS.getType());
                 return false;
             }
@@ -92,7 +93,7 @@ public class SelectedFolderInfoSQL {
 
 
     public static boolean clearSelectedFolders(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
             return false;
@@ -126,7 +127,7 @@ public class SelectedFolderInfoSQL {
     }
 
     public static void saveSelectedFoldersToConfigDb(ModelMain modelMain) {
-        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not SelectedFolder connect: " + Main.conf.getConfiguration_db_fileName());
             return;
@@ -324,7 +325,7 @@ public class SelectedFolderInfoSQL {
             return;
         }
 
-        Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        Connection connection = ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         if (connection == null) {
             Messages.sprintfError("Could not connect to configuration DB for removing selected folders: " + Main.conf.getConfiguration_db_fileName());
             return;

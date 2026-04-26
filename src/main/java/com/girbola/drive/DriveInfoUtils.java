@@ -46,7 +46,7 @@ public class DriveInfoUtils {
 //	}
 //
 //	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
-//		Connection connection = SqliteConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//		Connection connection = FileInfoSqlConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 //
 //		boolean driveInfoLoaded = DriveInfoSQL.loadDriveInfo(model_folderScanner);
 //		if (driveInfoLoaded) {

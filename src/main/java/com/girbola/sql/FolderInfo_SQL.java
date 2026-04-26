@@ -254,7 +254,7 @@ public class FolderInfo_SQL {
         boolean success = false;
 
         try {
-            connectionFileInfos = SqliteConnection.connectToDatabase(path, Main.conf.getMdir_db_fileName());
+            connectionFileInfos = FileInfoSqlConnection.connectToDatabase(path, Main.conf.getMdir_db_fileName());
             if (!SQL_Utils.isDbConnected(connectionFileInfos)) {
                 Messages.sprintfError("Failed to establish database connection: " + path);
                 return null;
@@ -278,7 +278,7 @@ public class FolderInfo_SQL {
                 FolderInfo folderInfo = loadFolderInfoFromResultSet(rs);
                 Messages.sprintf("Loaded folder info: " + folderInfo.toString());
 
-                List<FileInfo> fileInfos = FileInfo_SQL.loadFileInfoDatabase(connectionFileInfos);
+                List<FileInfo> fileInfos = FileInfoSql.loadFileInfoDatabase(connectionFileInfos);
                 if (fileInfos == null || fileInfos.isEmpty()) {
                     Messages.sprintfError("No file information found in database");
                     SQL_Utils.rollBackConnection(connectionFileInfos);

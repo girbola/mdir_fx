@@ -1,6 +1,7 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -9,7 +10,7 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.SqliteConnection;
+import com.girbola.sql.FileInfoSqlConnection;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -257,8 +258,7 @@ public class Tables {
                 if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
 
                     ArrayList<FolderInfo> listToRemove = new ArrayList<>();
-                    Connection connection = SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(),
-                            Main.conf.getConfiguration_db_fileName());
+                    Connection connection = ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 
                     for (FolderInfo folderInfo : table_row_list) {
                         if (!folderInfo.getFolderPath()

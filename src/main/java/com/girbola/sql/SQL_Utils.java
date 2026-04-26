@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.Main;
+import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 
@@ -15,7 +16,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     public static Connection createConfigurationConfig() {
         try {
-            return SqliteConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+            return ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
         } catch (Exception e) {
             Messages.sprintfError("Error connecting to database: " + Main.conf.getConfiguration_db_fileName());
             return null;
