@@ -11,8 +11,6 @@ import javafx.concurrent.Task;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.PosixFileAttributes;
-import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +41,7 @@ public class SubList extends Task<List<Path>> {
             if (Main.getProcessCancelled()) {
                 break;
             }
-            if (ValidatePathUtils.hasMediaFilesInFolder(p)) {
+            if (ValidatePathUtils.hasMediaFilesInFolder(p) && ValidatePathUtils.acceptedFolder(p)) {
                 list.add(p);
             }
             try {
@@ -69,7 +67,7 @@ public class SubList extends Task<List<Path>> {
             if (Main.getProcessCancelled()) {
                 break;
             }
-            if (ValidatePathUtils.validFolder(path)) {
+            if (ValidatePathUtils.acceptedFolder(path)) {
                 sprintf("----calculating: " + path);
                 if (!SubList.list.contains(path)) {
                     SubList.list.add(path);

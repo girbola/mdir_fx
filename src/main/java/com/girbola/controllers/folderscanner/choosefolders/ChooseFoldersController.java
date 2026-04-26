@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.girbola.filelisting.ValidatePathUtils.isInSkippedFolderList;
 import static com.girbola.messages.Messages.sprintf;
 
 
@@ -95,7 +96,7 @@ public class ChooseFoldersController {
 
 		Thread analyze_th = new Thread(analyze, "analyze_th");
 		sprintf("analyze_th.getName(): " + analyze_th.getName());
-		analyze_th.run();
+		analyze_th.start();
 
 		// new Thread(analyze).run();
 	}
@@ -117,7 +118,7 @@ public class ChooseFoldersController {
 					sprintf("Is dir: " + path);
 					DosFileAttributes dfa = Files.readAttributes(path, DosFileAttributes.class);
 					if (!Files.isHidden(path) && Files.isReadable(path) && !dfa.isSystem()
-							&& !ValidatePathUtils.isInSkippedFolderList(path)) {
+							&& !isInSkippedFolderList(path)) {
 						Messages.sprintf("Gonna create new subDir treeview");
 						CheckBoxTreeItem<Path> subDirectory = createCheckBoxTreeItem(path);
 						getSubLeafs(path, subDirectory);
@@ -142,16 +143,21 @@ public class ChooseFoldersController {
 	}
 
 	private void getSubLeafs(Path subPath, TreeItem<Path> parent) {
-		if (!Files.isDirectory(subPath)) {
-			return;
-		}
+Messages.sprintf("getSubLeafs: " + subPath);
 		try {
+			if (!Files.isDirectory(subPath)) {
+				return;
+			}
 			if (Files.isHidden(subPath)) {
 				return;
 			}
 			if (!Files.isReadable(subPath)) {
 				return;
 			}
+			if(isInSkippedFolderList(subPath)) {
+				return;
+			}
+
 			DosFileAttributes dfa = Files.readAttributes(subPath, DosFileAttributes.class);
 			if (dfa.isSystem()) {
 				return;
@@ -159,7 +165,7 @@ public class ChooseFoldersController {
 			if (dfa.isHidden()) {
 				return;
 			}
-			if (ValidatePathUtils.isInSkippedFolderList(subPath)) {
+			if (isInSkippedFolderList(subPath)) {
 				return;
 			}
 		} catch (IOException ex) {

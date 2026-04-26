@@ -25,7 +25,6 @@ public class AnalyzeFolderContent extends Task<Void> {
 
 	private List<Path> selectedPaths;
 	private ModelFolderScanner modelFolderScanner;
-	//    private Path rootPath = null;
 
 	public AnalyzeFolderContent(List<Path> selectedPaths, ModelFolderScanner modelFolderScanner) {
 		this.selectedPaths = selectedPaths;
@@ -34,7 +33,7 @@ public class AnalyzeFolderContent extends Task<Void> {
 
 	@Override
 	protected Void call() throws Exception {
-		sprintf("analyzeFolderContent started: " + selectedPaths.size());
+		sprintf("analyzeFolderContent started: " + selectedPaths.size() + " selected  modelFolderScanner.getSelectedDrivesFoldersListObs() : " +  modelFolderScanner.getSelectedDrivesFoldersListObs().size());
 		for (Path selectedFolder : modelFolderScanner.getSelectedDrivesFoldersListObs()) {
 			sprintf("getDrivesList is: " + selectedFolder);
 		}

@@ -74,7 +74,6 @@ public class FileInfo_SQL {
     }
 
     // @formatter:on
-// ... existing code ...
     public static boolean insertFileInfoListToFileInfoDatabase(FolderInfo folderInfo, boolean isWorkDir) {
         final int BATCH_LIMIT = 1000;
         final String logPrefix = "insertFileInfoListToFileInfoDatabase";

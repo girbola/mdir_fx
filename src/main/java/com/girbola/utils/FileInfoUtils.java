@@ -1,19 +1,13 @@
 package com.girbola.utils;
 
-import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifDirectoryBase;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.drew.metadata.exif.ExifThumbnailDirectory;
-import com.drew.metadata.file.FileSystemDirectory;
 import com.girbola.Main;
 import com.girbola.controllers.datefixer.utils.MetadataField;
-import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DriveInfoUtils;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.ValidatePathUtils;
@@ -28,6 +22,7 @@ import common.utils.ImageUtils;
 import common.utils.OSHI_Utils;
 import common.utils.date.DateUtils;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +32,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.*;
-import javax.imageio.ImageIO;
 
 import static com.girbola.messages.Messages.sprintf;
 import static common.media.DateTaken.getMetaDataCreationDate;
@@ -372,9 +366,12 @@ public class FileInfoUtils {
 
         long creationDate = 0;
         int orientation = 0;
+        String gpsCoordinates = null;
+
         int width = 0;
         int height = 0;
         String camera_model = MetadataField.UNKNOWN.getType();
+
         Metadata metaData = null;
         fileInfo.setCamera_model(camera_model);
         try {
@@ -407,6 +404,15 @@ public class FileInfoUtils {
             if (camera_model != null) {
                 if (!camera_model.isEmpty()) {
                     fileInfo.setCamera_model(camera_model);
+                }
+            }
+
+            // GPS coordinates
+            gpsCoordinates = DateTaken.getCoordinates(metaData);
+            if (gpsCoordinates != null) {
+                if (!gpsCoordinates.isEmpty()) {
+                    fileInfo.setGpsCoordinates(gpsCoordinates);
+                    fileInfo.setCustomGpsCoordinates(false);
                 }
             }
 
