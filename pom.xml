@@ -231,7 +231,7 @@
     </dependencies>
     <build>
         <plugins>
-            <!-- OWASP Dependency-Check -->
+            <!-- OWASP Dependency-Check mvn org.owasp:dependency-check-maven:check -->
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
