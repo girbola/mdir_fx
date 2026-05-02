@@ -1,4 +1,4 @@
-package com.girbola.sql.migrate;
+package com.girbola.persistence.migration;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

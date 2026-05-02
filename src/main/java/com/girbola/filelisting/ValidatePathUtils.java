@@ -65,6 +65,7 @@ public class ValidatePathUtils {
         final char HIDDEN_FILE_PREFIX = '.';
 
         String fileName = file.getFileName().toString();
+        Messages.sprintf("----isInSkippedFolderList Checking file: " + file.toString());
 
         // Check for Windows-specific conditions
         if (Misc.isWindows()) {
@@ -101,17 +102,27 @@ public class ValidatePathUtils {
     }
 
     private static boolean isInSkippedFolderList(String filePath, List<String> skippedFolders) {
-        Path path = Paths.get(filePath);
-        if (!Files.isDirectory(path)) {
-            path = path.getParent(); // Check the parent directory for files
+        if (filePath == null || filePath.isEmpty()) {
+            return false;
         }
+
+        Path path = Paths.get(filePath);
+        Messages.sprintf("Checking path: " + path.toString());
+
+        // Test if filePath is file or folder
+        if (Files.isRegularFile(path)) {
+            path = path.getParent();
+        }
+
         String partName = path.getFileName().toString();
 
         for (String filter : skippedFolders) {
             if (partName.equals(filter)) {
+                Messages.sprintf("!!!!!!!!!!!!!Skipped folder name found!!--------- Part: " + partName + " contains in SKIPPED_FOLDER");
                 return true;
             }
         }
+//        Messages.sprintf("REturning FALSE with path: " + path + " - isFile: " + isFile + ", isDirectory: " + isDirectory + " partName: ");
         return false;
     }
 
@@ -175,11 +186,30 @@ public class ValidatePathUtils {
     }
 
     public static boolean validFile(Path f) throws IOException {
-        return Files.isReadable(f) && !Files.isHidden(f) && Files.size(f) > FILE_MIN_SIZE && Files.exists(f) && FileUtils.supportedMediaFormat(f.toFile()) && isInSkippedFolderList(f.toAbsolutePath());
+        if (!Files.isReadable(f)) {
+            return false;
+        }
+        if (Files.isHidden(f)) {
+            return false;
+        }
+        if (!Files.exists(f)) {
+            return false;
+        }
+        if (Files.size(f) < FILE_MIN_SIZE) {
+            return false;
+        }
+        if (!FileUtils.supportedMediaFormat(f.toFile())) {
+            return false;
+        }
+        if (isInSkippedFolderList(f.toAbsolutePath())) {
+            return false;
+        }
+        return true;
+//        return Files.isReadable(f) && !Files.isHidden(f) && Files.size(f) > FILE_MIN_SIZE && Files.exists(f) && FileUtils.supportedMediaFormat(f.toFile()) && isInSkippedFolderList(f.toAbsolutePath());
     }
 
     public static boolean acceptedFolder(Path f) throws IOException {
-        boolean isValid = Files.isDirectory(f) && Files.exists(f) && Files.isReadable(f) && !Files.isHidden(f) && isInSkippedFolderList(f);
+        boolean isValid = Files.isDirectory(f) && Files.exists(f) && Files.isReadable(f) && !Files.isHidden(f) && !isInSkippedFolderList(f);
         Messages.sprintf("Validating folder: " + f.toString() + " - isValid: " + isValid);
         return isValid;
     }

@@ -17,11 +17,11 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSql;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.fileinfo.FileInfoDao;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.ConfigurationSavedFoldersDao;
-import com.girbola.sql.SelectedFolderInfoSQL;
+import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -146,7 +146,7 @@ public class ModelMain {
             SQL_Utils.setAutoCommit(connection, false);
 
             // Create the necessary tables first
-            SelectedFolderInfoSQL.createSelectedFoldersDBTable(connection);
+            SelectedFolderInfoDao.createSelectedFoldersDBTable(connection);
 
             // Save each table's content and track success
             boolean sorted = saveTableContent(connection, tables().getSorted_table().getItems(), TableType.SORTED.getType());
@@ -210,11 +210,13 @@ public class ModelMain {
             return false;
         }
 
+        FileInfoDao fileInfoDao = new FileInfoDao();
+
         for (FolderInfo folderInfo : items) {
             Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath() + " folder size: " + folderInfo.getFileInfoList().size());
         }
 
-        Connection configurationConnection = ConfigurationSQLHandler.getConnection();
+//        Connection configurationConnection = ConfigurationSQLHandler.getConnection();
 //        configurationConnection.folder
 
         for (FolderInfo folderInfo : items) {
@@ -242,10 +244,10 @@ public class ModelMain {
                      * or creates new one called fileinfo.db
                      */
 
-                    FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo, true);
+                    FolderInfoDao.saveConfigurationFolderInfoStateToDatabase(connectionConfiguration, folderInfo, true);
 
                     // Inserts all data info fileinfo.db
-                    FileInfoSql.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+                    FolderInfoDao.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 //                    SQL_Utils.commitChanges(connectionConfiguration);
 
                 } catch (Exception e) {

@@ -239,13 +239,8 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //        homeDefaults_path_column.setMinWidth(Region.USE_PREF_SIZE);
 
         Platform.runLater(() -> {
-
-        homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
-
-        homeDefaultsTableView.setTableMenuButtonVisible(true);
-
-
+            homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
+            homeDefaultsTableView.setTableMenuButtonVisible(true);
         });
 //        this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().addListener((javafx.collections.ListChangeListener.Change<? extends SelectedFolder> c) -> {
 //            updatePathColumnWidth();
@@ -284,7 +279,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         });
 
         Platform.runLater(() -> {
-            homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+            homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
             homeDefaultsTableView.setItems(this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs());
             homeDefaultsTableView.applyCss();
             homeDefaultsTableView.layout();
@@ -357,7 +352,7 @@ Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItem
     private void updatePathColumnWidth( TableView<?> table )
     {
         //Set the right policy
-        table.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
         table.getColumns().stream().forEach( (column) ->
         {
             //Minimal width = columnheader

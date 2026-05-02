@@ -13,7 +13,7 @@ import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.DriveInfoSQL;
+import com.girbola.persistence.drive.DriveInfoDao;
 import common.media.DateTaken;
 import common.media.VideoDateFinder;
 import common.utils.FileNameParseUtils;
@@ -166,6 +166,7 @@ public class FileInfoUtils {
 
     public static boolean getImageThumb_Offset_Length(Metadata metaData, FileInfo fileInfo) {
         if (metaData == null) {
+            Messages.sprintfError("Cannot get image thumb offset and length, metadata is null");
             return false;
         }
         ExifThumbnailDirectory directory = metaData.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
@@ -219,7 +220,6 @@ public class FileInfoUtils {
             return false;
         }
     }
-
 
     public static List<FileInfo> createFileInfo_list(FolderInfo folderInfo) {
         long start = System.currentTimeMillis();
@@ -779,7 +779,7 @@ public class FileInfoUtils {
     private static boolean handleEmptySerialNumber(FolderInfo folderInfo) {
         boolean isDriveFound = false;
         try {
-            List<DriveInfo> driveInfos = DriveInfoSQL.loadDriveInfos();
+            List<DriveInfo> driveInfos = DriveInfoDao.loadDriveInfos();
             if (driveInfos == null || driveInfos.isEmpty()) {
                 return false;
             }
@@ -795,7 +795,7 @@ public class FileInfoUtils {
             Messages.sprintfError("Error in handleEmptySerialNumber: " + e.getMessage());
             return false;
         } finally {
-            DriveInfoSQL.closeConnection();
+            DriveInfoDao.closeConnection();
         }
 
         return isDriveFound;

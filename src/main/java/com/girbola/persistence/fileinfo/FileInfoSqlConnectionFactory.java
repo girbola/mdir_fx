@@ -1,7 +1,8 @@
-package com.girbola.sql;
+package com.girbola.persistence.fileinfo;
 
 import com.girbola.messages.Messages;
-import com.girbola.sql.migrate.FileInfoSqlDatabaseMigrator;
+import com.girbola.sql.SQL_Utils;
+import com.girbola.persistence.migration.FileInfoSqlDatabaseMigrator;
 import java.nio.file.Paths;
 import java.util.Objects;
 import lombok.Getter;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class FileInfoSqlConnection {
+public class FileInfoSqlConnectionFactory {
 
     @Getter
     private static List<Connection> connectionList = new ArrayList<>();
@@ -141,7 +142,7 @@ public class FileInfoSqlConnection {
             return null;
         }
 
-        Connection conn = FileInfoSqlConnection.hasDatabase(Paths.get(path.toString(), tableName).toString());
+        Connection conn = FileInfoSqlConnectionFactory.hasDatabase(Paths.get(path.toString(), tableName).toString());
         if (conn == null) {
             try {
                 Class.forName("org.sqlite.JDBC");

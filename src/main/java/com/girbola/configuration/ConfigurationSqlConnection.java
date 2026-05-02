@@ -1,7 +1,7 @@
 package com.girbola.configuration;
 
 import com.girbola.messages.Messages;
-import com.girbola.sql.migrate.ConfigurationSqlDatabaseMigrator;
+import com.girbola.persistence.migration.ConfigurationSqlDatabaseMigrator;
 import java.io.File;
 import java.nio.file.Path;
 import java.sql.Connection;

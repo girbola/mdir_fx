@@ -3,7 +3,7 @@ package com.girbola.drive;
 
 import com.girbola.Main;
 import com.girbola.messages.Messages;
-import com.girbola.sql.DriveInfoSQL;
+import com.girbola.persistence.drive.DriveInfoDao;
 import common.utils.OSHI_Utils;
 import java.util.List;
 import javafx.collections.FXCollections;
@@ -15,16 +15,16 @@ public class DriveInfoUtils {
 
 	private final String ERROR = DriveInfoUtils.class.getSimpleName();
 
-	private DriveInfoSQL driveInfoSQL;
+	private DriveInfoDao driveInfoDao;
 	private static ObservableList<DriveInfo> drivesList_obs = FXCollections.observableArrayList();
 
 	public DriveInfoUtils() {
-		this.driveInfoSQL = new DriveInfoSQL();
+		this.driveInfoDao = new DriveInfoDao();
 	}
 
 
-	public DriveInfoUtils(DriveInfoSQL driveInfoSQL) {
-		this.driveInfoSQL = driveInfoSQL;
+	public DriveInfoUtils(DriveInfoDao driveInfoDao) {
+		this.driveInfoDao = driveInfoDao;
 	}
 
 	public static boolean hasDrivePath(List<DriveInfo> driveInfos, String drivePath, String driveSerialNumber) {
@@ -46,9 +46,9 @@ public class DriveInfoUtils {
 //	}
 //
 //	public boolean loadDrives(ModelFolderScanner model_folderScanner) {
-//		Connection connection = FileInfoSqlConnection.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+//		Connection connection = FileInfoSqlConnectionFactory.connector(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
 //
-//		boolean driveInfoLoaded = DriveInfoSQL.loadDriveInfo(model_folderScanner);
+//		boolean driveInfoLoaded = DriveInfoDao.loadDriveInfo(model_folderScanner);
 //		if (driveInfoLoaded) {
 //			return true;
 //		} else {
@@ -61,7 +61,7 @@ public class DriveInfoUtils {
 	}
 
 	public void saveList() {
-		driveInfoSQL.addDriveInfos(drivesList_obs);
+		driveInfoDao.addDriveInfos(drivesList_obs);
 	}
 
 	public boolean isDriveAlreadyInRegister(String drive) {

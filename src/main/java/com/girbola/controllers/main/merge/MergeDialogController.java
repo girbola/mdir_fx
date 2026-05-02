@@ -10,7 +10,7 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import common.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -115,7 +115,7 @@ public class MergeDialogController {
             }
 
         } else {
-            folderInfoDestination = FolderInfo_SQL.loadFolderInfo(newDestinationPath);
+            folderInfoDestination = FolderInfoDao.loadFolderInfo(newDestinationPath);
 
             if (folderInfoDestination == null) {
                 folderInfoDestination = new FolderInfo();

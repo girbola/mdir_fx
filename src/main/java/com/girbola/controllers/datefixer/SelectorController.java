@@ -18,7 +18,7 @@ import javafx.util.*;
 
 public class SelectorController {
 
-	private WorkDirSQL workDirSql;
+//	private WorkDirSQL workDirSql;
 	private ModelDatefix modelDatefix;
 	private TilePane df_tilePane;
 	private FolderInfo folderInfo;
@@ -69,7 +69,7 @@ public class SelectorController {
 
 		Messages.sprintf("Folderinfo path name is: " + this.folderInfo.getFolderPath());
 
-		workDirSql = new WorkDirSQL(Paths.get(folderInfo.getFolderPath()));
+//		workDirSql = new WorkDirSQL(Paths.get(folderInfo.getFolderPath()));
 
 		modelDatefix.setDates_TableView(dates_tableView);
 		modelDatefix.setCameras_TableView(cameras_tableView);

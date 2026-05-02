@@ -5,13 +5,14 @@ import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class SQL_Utils extends FolderInfo_SQL {
+public class SQL_Utils extends FolderInfoDao {
     final private static String ERROR = SQL_Utils.class.getSimpleName();
 
     public static Connection createConfigurationConfig() {
@@ -122,7 +123,7 @@ public class SQL_Utils extends FolderInfo_SQL {
 
     public static FolderInfo loadFolderInfoCurrentDir(Path path) {
         Messages.sprintf("loadFolderInfos started: " + path);
-        FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(path.toString());
+        FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(path.toString());
         return folderInfo;
     }
 

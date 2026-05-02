@@ -12,7 +12,7 @@ import com.girbola.utils.FileInfoUtils;
 import com.girbola.controllers.move.MoveController;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -223,7 +223,7 @@ public class FileOperationsController {
 		boolean update = false;
 		for (Entry<String, List<FileInfo>> entry : map.entrySet()) {
 			Path folderSQLFile = Paths.get(entry.getKey(),  Main.conf.getMdir_db_fileName());
-			FolderInfo loadFolderInfo = FolderInfo_SQL.loadFolderInfo(folderSQLFile);
+			FolderInfo loadFolderInfo = FolderInfoDao.loadFolderInfo(folderSQLFile);
 
 			for (FileInfo fileInfo : entry.getValue()) {
 				if (!FileInfoUtils.findDuplicates(fileInfo, loadFolderInfo)) {
@@ -235,7 +235,7 @@ public class FileOperationsController {
 			}
 			if (update) {
 				FolderInfoUtils.calculateFolderInfoStatus(loadFolderInfo);
-//				FolderInfo_SQL.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
+//				FolderInfoDao.saveFolderInfoToTable(connection_mdirFile, loadFolderInfo);
 			}
 		}
 

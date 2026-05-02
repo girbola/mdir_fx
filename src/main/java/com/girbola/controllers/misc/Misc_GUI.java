@@ -29,7 +29,7 @@ public class Misc_GUI {
             //Minimal width = columnheader
             Text t = new Text(column.getText());
             double fontSize = t.getFont().getSize();
-            Messages.sprintf("FOLDER::: "+ t + " *********t.getLayoutBounds().getWidth(): " + fontSize);
+            //Messages.sprintf("FOLDER::: "+ t + " *********t.getLayoutBounds().getWidth(): " + fontSize);
             double max = Math.max(t.getLayoutBounds().getWidth(), fontSize * column.getText().length() * 0.6);
             for (int i = 0; i < table.getItems().size(); i++) {
                 //cell must not be empty

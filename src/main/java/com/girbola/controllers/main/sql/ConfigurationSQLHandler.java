@@ -5,7 +5,7 @@ import com.girbola.configuration.Configuration;
 import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
-import com.girbola.sql.DriveInfoSQL;
+import com.girbola.persistence.drive.DriveInfoDao;
 import com.girbola.sql.SQL_Utils;
 import java.util.List;
 import java.nio.file.Path;
@@ -13,7 +13,7 @@ import java.sql.*;
 
 import static com.girbola.controllers.main.sql.ConfigurationEnum.*;
 
-public class ConfigurationSQLHandler extends DriveInfoSQL {
+public class ConfigurationSQLHandler extends DriveInfoDao {
 
     private static final String ERROR = ConfigurationSQLHandler.class.getName();
 //    public static final String ID = "id";
