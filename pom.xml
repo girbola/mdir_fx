@@ -32,7 +32,7 @@
         <imageio-tiff.version>3.12.0</imageio-tiff.version>
         <jackson.version>3.0.0</jackson.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
-        <javacv-platform.version>1.5.10</javacv-platform.version>
+        <javacv-platform.version>1.5.13</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.9</javafx.maven.plugin.version>
         <javafx.version>25.0.1</javafx.version>
         <junit-jupiter.version>5.13.2</junit-jupiter.version>
@@ -41,11 +41,11 @@
         <maven.compiler.target.release>24</maven.compiler.target.release>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
         <mockito-core-release>5.23.0</mockito-core-release>
-        <org.openpnp.version>4.9.0-0</org.openpnp.version>
+<!--        <org.openpnp.version>4.9.0-0</org.openpnp.version>-->
         <oshi-core.version>6.9.2</oshi-core.version>
         <owasp.version>12.1.9</owasp.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <sqlite-jdbc.version>3.50.3.0</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.53.0.0</sqlite-jdbc.version>
         <thumbnailator.version>[0.4, 0.5]</thumbnailator.version>
         <vlcj-javafx.version>1.2.0</vlcj-javafx.version>
         <vlcj.version>5.0.0</vlcj.version>
@@ -53,11 +53,11 @@
 
     <dependencies>
         <!-- https://mvnrepository.com/artifact/tools.jackson.core/jackson-databind -->
-        <dependency>
-            <groupId>tools.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>tools.jackson.core</groupId>-->
+<!--            <artifactId>jackson-databind</artifactId>-->
+<!--            <version>${jackson.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>net.coobird</groupId>
             <artifactId>thumbnailator</artifactId>
@@ -165,7 +165,13 @@
             <artifactId>javacv-platform</artifactId>
             <version>${javacv-platform.version}</version>
         </dependency>
-
+        <!-- Source: https://mvnrepository.com/artifact/org.bytedeco/javacpp -->
+        <dependency>
+            <groupId>org.bytedeco</groupId>
+            <artifactId>javacpp</artifactId>
+            <version>${javacv-platform.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- Twelvemonkeys -->
         <dependency>
             <groupId>com.twelvemonkeys.imageio</groupId>
@@ -201,12 +207,16 @@
         </dependency>
 
         <!-- slfj4j -->
+<!--        <dependency>-->
+<!--            <groupId>org.slf4j</groupId>-->
+<!--            <artifactId>slf4j-simple</artifactId>-->
+<!--            <version>${slf4j.version}</version>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <version>2.23.1</version>
         </dependency>
-
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -239,6 +249,7 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <nvdApiKey>${env.NVD_API_KEY}</nvdApiKey>
                     <failBuildOnCVSS>7.0</failBuildOnCVSS>
                     <formats>
                         <format>HTML</format>
