@@ -39,7 +39,7 @@
         <maven.compiler.plugin.version>3.14.1</maven.compiler.plugin.version>
         <maven.compiler.target.release>24</maven.compiler.target.release>
         <metadata-extractor.version>2.19.0</metadata-extractor.version>
-        <mockito-core-release>5.20.0</mockito-core-release>
+        <mockito-core-release>5.23.0</mockito-core-release>
         <org.openpnp.version>4.9.0-0</org.openpnp.version>
         <oshi-core.version>6.9.2</oshi-core.version>
         <owasp.version>12.1.9</owasp.version>
@@ -215,12 +215,6 @@
         </dependency>
 
         <!-- mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>5.20.0</version>
-            <scope>test</scope>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.mockito/mockito-inline -->
         <dependency>
             <groupId>org.mockito</groupId>

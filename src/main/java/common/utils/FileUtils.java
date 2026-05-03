@@ -28,7 +28,7 @@ import static com.girbola.messages.Messages.sprintf;
 public class FileUtils {
 
     private final static String[] SUPPORTED_VIDEO_FORMATS = {"3gp", "avi", "mov", "mp4", "mpg", "mkv"};
-    private final static String[] SUPPORTED_IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif"};
+    private final static String[] SUPPORTED_IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "dng", "heic"};
     private final static String[] SUPPORTED_RAW_FORMATS = {"cr2", "nef"};
 
     private final static String[] IGNORED_FORMATS = {"ini", "db", "exe", "sh", "dll", "sys", "java", "jar"};

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.workdir.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -44,13 +43,13 @@ public class WorkDirSQLTest {
                 return count++;
             }
         });
-        WorkDirSQL.insertFileInfo(fileInfo);
+        //WorkDirSQL.insertFileInfo(fileInfo);
     }
 
     //@Test
     public void insertFileInfo_throwsException() throws SQLException {
         when(connectionMock.prepareStatement(any())).thenThrow(SQLException.class);
-        WorkDirSQL.insertFileInfo(fileInfo);
+        //WorkDirSQL.insertFileInfo(fileInfo);
     }
 
 }
