@@ -34,7 +34,7 @@
                   <TableColumn fx:id="remove_row_col" editable="false" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
                   </columns>
                <columnResizePolicy>
-                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN" />
                </columnResizePolicy>
               </TableView>
               <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" VBox.vgrow="NEVER">

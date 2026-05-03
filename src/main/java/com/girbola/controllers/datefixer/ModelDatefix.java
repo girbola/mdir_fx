@@ -15,7 +15,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSqlConnection;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.thumbinfo.ThumbInfo;
 import common.utils.Conversion;
 import common.utils.FileNameParseUtils;
@@ -106,7 +106,7 @@ public class ModelDatefix extends DateFixerModel {
     public ModelDatefix(ModelMain model_Main, Path aCurrentFolderPath) {
         this.currentFolderPath = aCurrentFolderPath;
         this.model_Main = model_Main;
-        this.connection = FileInfoSqlConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
+        this.connection = FileInfoSqlConnectionFactory.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
     }
 
     public void instantiateRenderVisibleNodes() {
@@ -800,12 +800,6 @@ public class ModelDatefix extends DateFixerModel {
 
     public void setTilePane(TilePane tilePane) {
         this.tilePane = tilePane;
-    }
-
-//    public void setWorkDir_Handler(WorkDirSQL workDirSQL) {this.workDirSQL= workDirSQL;}
-
-    public WorkDirSQL getWorkDir_Handler() {
-        return this.workDirSQL;
     }
 
     public ObservableList<Node> getNotVisibleNodes() {

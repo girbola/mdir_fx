@@ -18,8 +18,8 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSql;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.fileinfo.FileInfoDao;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.utils.CommonUserFolders;
 import com.girbola.utils.FileInfoUtils;
@@ -719,13 +719,13 @@ public class TableUtils {
              * or creates new one called fileinfo.db
              */
             // Inserts all data info fileinfo.db
-            FileInfoSql.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+            FolderInfoDao.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
-//            Connection fileList_connection = FileInfoSqlConnection.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
+//            Connection fileList_connection = FileInfoSqlConnectionFactory.connector(Paths.get(folderInfo.getFolderPath()), Main.conf.getMdir_db_fileName());
             Connection configurationConnection = ConfigurationSqlConnection.connectToDatabase(Paths.get(Main.conf.getAppDataPath().toString()), Main.conf.getConfiguration_db_fileName());
             configurationConnection.setAutoCommit(false);
 
-            FolderInfo_SQL.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo, false);
+            FolderInfoDao.saveConfigurationFolderInfoStateToDatabase(configurationConnection, folderInfo, false);
             SQL_Utils.commitChanges(configurationConnection);
             SQL_Utils.closeConnection(configurationConnection);
         } catch (Exception e) {

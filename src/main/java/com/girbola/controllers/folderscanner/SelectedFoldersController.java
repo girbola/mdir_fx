@@ -7,7 +7,7 @@ import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
-import com.girbola.sql.SelectedFolderInfoSQL;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import java.io.File;
 import java.sql.Connection;
 import java.util.Iterator;
@@ -27,9 +27,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Stage;
 import javafx.util.Callback;
-import org.kordamp.ikonli.javafx.FontIcon;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
@@ -67,7 +65,7 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
         model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
             Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
         });
@@ -97,7 +95,7 @@ public class SelectedFoldersController {
 
 
         model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
-        SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
 
 
 //        Stage stage = (Stage) selectedFolders_ok_btn.getScene().getWindow();
@@ -110,7 +108,7 @@ public class SelectedFoldersController {
 
 //        SelectionPropagation.syncTreeFromModel(model_main);
 
-        boolean b = SelectedFolderInfoSQL.loadSelectedFolders(model_main);
+        boolean b = SelectedFolderInfoDao.loadSelectedFolders(model_main);
         if(!b) {
             Messages.warningText(bundle.getString("errorLoadingSelectedFolders"));
         }
@@ -152,7 +150,7 @@ public class SelectedFoldersController {
 
                 model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
 //                model_main.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
-                SelectedFolderInfoSQL.saveSelectedFoldersToConfigDb(model_main);
+                SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
             }
 
         } else {
@@ -190,10 +188,10 @@ public class SelectedFoldersController {
 
         Optional<ButtonType> result = changesDialog.showAndWait();
         if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
-            SelectedFolderInfoSQL.removeFromTable(selectedItems);
+            SelectedFolderInfoDao.removeFromTable(selectedItems);
         } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
-            SelectedFolderInfoSQL.removeFromTable(selectedItems);
-            SelectedFolderInfoSQL.clearSelectedFolders(model_main);
+            SelectedFolderInfoDao.removeFromTable(selectedItems);
+            SelectedFolderInfoDao.clearSelectedFolders(model_main);
             table.getItems().removeAll(selectedItems);
             table.getSelectionModel().clearSelection();
         } else {

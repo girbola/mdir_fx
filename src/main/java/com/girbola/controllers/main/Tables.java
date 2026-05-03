@@ -10,7 +10,6 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSqlConnection;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -37,7 +36,6 @@ import static com.girbola.Main.bundle;
 import static com.girbola.messages.Messages.sprintf;
 
 
-
 public class Tables {
 
     private final String ERROR = Tables.class.getSimpleName();
@@ -48,22 +46,23 @@ public class Tables {
 
     //	private HideButtons hideButtons;
     public ShowAndHideTables showAndHideTables;
+
+    private AnchorPane tables_rootPane;
     private TableStatistic tableStatistic;
-
-    @Setter
-    private Pane sortItRootPane;
-    @Getter
-    @Setter
-    private Pane sortedRootPane;
-    @Setter
-    @Getter
-    private Pane asItIsRootPane;
-
     private TableView<FolderInfo> sortIt_table;
     private TableView<FolderInfo> sorted_table;
     private TableView<FolderInfo> asitis_table;
 
-    private AnchorPane tables_rootPane;
+    @Setter
+    private Pane sortItRootPane;
+
+    @Getter
+    @Setter
+    private Pane sortedRootPane;
+
+    @Setter
+    @Getter
+    private Pane asItIsRootPane;
 
     @Getter
     @Setter
@@ -87,18 +86,12 @@ public class Tables {
         this.tables_rootPane = tables_rootPane;
     }
 
-
-//	private HBox tables_container;
-
-
     protected Tables(ModelMain aModel) {
         this.model_Main = aModel;
-
         sprintf("Tables instantiated...");
     }
 
     public void init() {
-
         sprintf("Tables hideButtons instantiating...");
         showAndHideTables = new ShowAndHideTables(this.model_Main);
         sprintf("Tables hideButtons instantiated...");
@@ -351,7 +344,7 @@ public class Tables {
             Messages.sprintf("table was null!");
         }
         this.sorted_table = sorted_table;
-        
+
     }
 
     public void setAsItIs_table(TableView<FolderInfo> asitis_table) {

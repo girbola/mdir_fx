@@ -25,7 +25,7 @@ public class ModelFolderScanner {
 	//	@SuppressWarnings("unused")
 	private ModelMain modelMain;
 
-//	private Connection connection = FileInfoSqlConnection.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
+//	private Connection connection = FileInfoSqlConnectionFactory.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
 
 	private ScanDrives scanDrives;
 	private DriveInfoUtils driveInfoUtils = new DriveInfoUtils();

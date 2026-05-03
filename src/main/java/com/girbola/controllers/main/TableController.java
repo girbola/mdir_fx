@@ -16,7 +16,8 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSql;
+import com.girbola.persistence.fileinfo.FileInfoDao;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.utils.WorkdirUtils;
 import common.utils.Conversion;
 import javafx.application.Platform;
@@ -866,7 +867,7 @@ public class TableController {
                 folderInfo.setChanged(true);
                 FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
 
-                FileInfoSql.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+                FolderInfoDao.insertFileInfoListToFileInfoDatabase(folderInfo, false);
 
 //                SQL_Utils.commitChanges(connection);
 //                SQL_Utils.closeConnection(connection);

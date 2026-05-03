@@ -9,8 +9,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
-import com.girbola.sql.ConfigurationSavedFoldersDao;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 

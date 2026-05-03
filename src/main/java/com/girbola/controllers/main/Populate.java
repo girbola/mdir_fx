@@ -8,6 +8,7 @@ import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.filelisting.GetAllMediaFiles;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import javafx.application.Platform;
@@ -65,6 +66,8 @@ public class Populate {
                         sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
                     }
                 }
+            } else {
+                Messages.sprintf("##### FOLDER IGNORED!!!!: " + sf.getFolder());
             }
         }
 
@@ -81,40 +84,71 @@ public class Populate {
 
     private Thread createFileListProcessingThread(Window owner, List<Path> selectedFolders) {
         LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
+
+        /*
+        First load selectedFolders sublist
+        Then add walkfiletree per folder to scan if there are more folders. If there are no more folders, then load the rest of the selectedFolders list
+
+         */
+        for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if(sf.isSelected()) {
+                if(sf.isConnected()) {
+
+                    selectedFolders.add(Paths.get(sf.getFolder()));
+                }
+            }
+        }
+        for(Path path : selectedFolders) {
+            ArrayList<Path> mediaFilesInCurrentFolder = GetAllMediaFiles.getAllMediaFiles(path);
+            for(Path mediaFile : mediaFilesInCurrentFolder) {
+                Messages.sprintf("mediaFile: " + mediaFile);
+            }
+        }
+
+
         Task<List<Path>> createFileList = new SubList(selectedFolders);
 
         createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
         createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
         createFileList.setOnFailed(event -> {
             loadingProcessTask.closeStage();
-            Messages.sprintf("CreateFileList failed");
+            Messages.sprintf("Populate CreateFileList failed CreateFileList failed");
         });
 
         return new Thread(createFileList, "createFileList_th");
     }
 
-    private Thread createFileListProcessingThread_old(Window owner, List<Path> selectedFolders) {
-        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
-        Task<List<Path>> createFileList = new SubList(selectedFolders);
-
-        createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
-        createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
-        createFileList.setOnFailed(event -> {
-            loadingProcessTask.closeStage();
-            Messages.sprintf("CreateFileList failed");
-        });
-
-        return new Thread(createFileList, "createFileList_th");
-    }
+//    private Thread createFileListProcessingThread_old(Window owner, List<Path> selectedFolders) {
+//        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(owner);
+//        Task<List<Path>> createFileList = new SubList(selectedFolders);
+//
+//        createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
+//        createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
+//        createFileList.setOnFailed(event -> {
+//            loadingProcessTask.closeStage();
+//            Messages.sprintf("CreateFileList failed");
+//        });
+//
+//        return new Thread(createFileList, "createFileList_th");
+//    }
 
     private void handleFileListSuccess(Task<List<Path>> createFileList, LoadingProcessTask loadingProcessTask, List<Path> selectedFolders) {
         List<Path> fileList;
         try {
             fileList = createFileList.get();
             if (fileList == null || fileList.isEmpty()) {
+                Messages.sprintf("List is empty at Populate class. Cancelling");
                 handleEmptyFileList(loadingProcessTask, createFileList);
                 return;
             }
+Messages.sprintf("fileList.size(): " + fileList.size());
+            for(Path path : fileList) {
+                Messages.sprintf("!#!#!#!##!!path: " + path);
+            }
+            // TODO korjaa olemassa oleva lista, ettei sieltä poistu mitään enää vaan tarkastetaan, että onko tullut lisäyksiä
+            /*
+            Tarkista onko jo tablevieweissä nämä, jos on tarkista onko sisältö muuttunut
+             */
 
             Collections.sort(fileList);
             removeDuplicateFolders(fileList);
@@ -285,7 +319,7 @@ public class Populate {
         createFileList.setOnCancelled(createFileListCancelled -> Messages.sprintf("CreateFileList cancelled"));
         createFileList.setOnFailed(createFileListFailed -> {
             loadingProcessTask.closeStage();
-            Messages.sprintf("CreateFileList failed");
+            Messages.sprintf("Populate createFileList failed!!!");
         });
 
         return new Thread(createFileList, "createFileList_th");

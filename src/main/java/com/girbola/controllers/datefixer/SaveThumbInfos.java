@@ -3,9 +3,9 @@ package com.girbola.controllers.datefixer;
 import com.girbola.Main;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
-import com.girbola.sql.FileInfoSqlConnection;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.ThumbInfoSQL;
+import com.girbola.persistence.thumbinfo.ThumbInfoDao;
 import com.girbola.thumbinfo.ThumbInfo;
 import com.girbola.utils.ThumbInfoUtils;
 import common.utils.FileUtils;
@@ -171,8 +171,8 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
         }
 
         Messages.sprintf("Thumbinfo list size is: " + thumbInfos.size());
-        connection = FileInfoSqlConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
-        ThumbInfoSQL.insertThumbInfoListToDatabase(connection, thumbInfos);
+        connection = FileInfoSqlConnectionFactory.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
+        ThumbInfoDao.insertThumbInfoListToDatabase(connection, thumbInfos);
         try {
             connection.commit();
         } catch (SQLException e) {

@@ -157,6 +157,6 @@ public class MainController {
     }
 
     public void folderScannerTabSelection(Event event) {
-        Messages.sprintf("folderScannerTabSelection");
+        Messages.sprintf("Main Controller folderScannerTabSelection");
     }
 }

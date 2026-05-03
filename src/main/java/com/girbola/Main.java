@@ -26,9 +26,9 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSqlConnection;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.SelectedFolderInfoSQL;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.date.SimpleDates;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -300,7 +300,7 @@ public class Main extends Application {
 
             ConfigurationSQLHandler.loadConfiguration(Main.conf);
 
-            SelectedFolderInfoSQL.loadSelectedFolders(model_main);
+            SelectedFolderInfoDao.loadSelectedFolders(model_main);
 
             // Loads save folders from configuration db
             Connection configurationLoadedFile = ConfigurationSqlConnection.connectToDatabase(conf.getAppDataPath(), conf.getConfiguration_db_fileName());
@@ -478,7 +478,7 @@ public class Main extends Application {
         Messages.sprintf("Configuration connection closed");
 
         ConcurrencyUtils.stopAllExecThreadNow();
-        FileInfoSqlConnection.closeAllConnections();
+        FileInfoSqlConnectionFactory.closeAllConnections();
         Messages.sprintf("Program has ended. Exiting...");
         Platform.exit();
     }

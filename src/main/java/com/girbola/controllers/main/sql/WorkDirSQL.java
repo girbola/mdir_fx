@@ -7,8 +7,9 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSql;
-import com.girbola.sql.FileInfoSqlConnection;
+import com.girbola.persistence.fileinfo.FileInfoDao;
+import com.girbola.persistence.fileinfo.FileInfoMapper;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.utils.FileInfoUtils;
 import java.io.IOException;
@@ -45,7 +46,7 @@ public class WorkDirSQL {
 
     private Connection createWorkDirConnection(Path workDirPath) {
         try {
-            connection = FileInfoSqlConnection.connectToDatabase(workDirPath, Main.conf.getWorkDir_db_fileName());
+            connection = FileInfoSqlConnectionFactory.connectToDatabase(workDirPath, Main.conf.getWorkDir_db_fileName());
             SQL_Utils.setAutoCommit(connection, false);
             if (SQL_Utils.isDbConnected(connection)) {
                 createFileInfoTable(connection);
@@ -158,7 +159,7 @@ public class WorkDirSQL {
     }
 
     public void ensureFileInfoTable() {
-        FileInfoSql.createFileInfoTable(connection);
+        FileInfoDao.createFileInfoTable(connection);
     }
 
 
@@ -173,7 +174,7 @@ public class WorkDirSQL {
             // Try to get or create connection if needed
             if (SQL_Utils.isDbConnected(connection) && !connection.isClosed()) {
 
-                boolean fileInfoTable = FileInfoSql.createFileInfoTable(connection);
+                boolean fileInfoTable = FileInfoDao.createFileInfoTable(connection);
                 if (!fileInfoTable) {
                     Messages.sprintfError("Could not create fileinfo workdir table");
                     return;
@@ -212,7 +213,7 @@ public class WorkDirSQL {
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
             // Update values
-            FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
+            FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo);
 
             pstmt.executeUpdate();
             Messages.sprintf("FileInfo inserted/updated successfully");
@@ -265,7 +266,7 @@ public class WorkDirSQL {
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     while (rs.next()) {
-                        FileInfo duplicateFileInfo = FileInfoSql.loadFileInfo(rs);
+                        FileInfo duplicateFileInfo = FileInfoMapper.fromFileInfoResultSet(rs);
                         if (duplicateFileInfo != null && FileInfoUtils.compareImagesMetadata(fileInfo, duplicateFileInfo)) {
                             list.add(duplicateFileInfo);
                         }
@@ -317,7 +318,7 @@ public class WorkDirSQL {
                 Messages.sprintf("Database connection failed for: " + Main.conf.getWorkDir());
                 return false;
             }
-            String sql = FileInfoSql.createFileInfoTable();
+            String sql = FileInfoDao.createFileInfoTable();
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
             int index = 1;
@@ -328,7 +329,7 @@ fileInfo.getFileHistories() (for FILEHISTORIES - needs to be converted to String
              */
             // Update values
             // Update values
-            FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
+            FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo);
 
             pstmt.addBatch();
             Messages.sprintf("FileInfo added to batch");

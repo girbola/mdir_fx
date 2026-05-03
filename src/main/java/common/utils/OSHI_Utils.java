@@ -18,11 +18,11 @@ public class OSHI_Utils {
         HardwareAbstractionLayer hal = si.getHardware();
         for (HWDiskStore disk : hal.getDiskStores()) {
             for (HWPartition part : disk.getPartitions()) {
-                Messages.sprintf("Mount point: " + part.getMountPoint() + " path: " + pathRoot.toString());
+//                Messages.sprintf("Mount point: " + part.getMountPoint() + " path: " + pathRoot.toString());
                 if (part.getMountPoint().contains(pathRoot.toString())) {
-                    Messages.sprintf("disk: " + disk.toString() + " PART: " + part.toString());
+//                    Messages.sprintf("disk: " + disk.toString() + " PART: " + part.toString());
                     String uuid = part.getUuid();
-                    Messages.sprintf("Partition uuid: " + uuid);
+//                    Messages.sprintf("Partition uuid: " + uuid);
                     String serial = disk.getSerial();
                     if (serial == null || serial.isEmpty()) {
                         serial = part.getUuid(); // fallback for macOS
@@ -41,7 +41,7 @@ public class OSHI_Utils {
             for (HWPartition part : disk.getPartitions()) {
                 Path root = Paths.get(path).getRoot();
                 if (part.getMountPoint().contains(root.toString())) {
-                    Messages.sprintf("Disk s: " + disk.toString());
+                    Messages.sprintf("Is root drive: " + disk.toString());
                     return disk;
                 }
             }

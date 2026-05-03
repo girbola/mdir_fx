@@ -8,7 +8,7 @@ import com.girbola.imagehandling.*;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.rotate.Rotate;
-import com.girbola.sql.ThumbInfoSQL;
+import com.girbola.persistence.thumbinfo.ThumbInfoDao;
 import com.girbola.thumbinfo.ThumbInfo;
 import common.utils.FileUtils;
 import javafx.animation.KeyFrame;
@@ -143,7 +143,7 @@ Messages.sprintf("************File: " + fileInfo.getOrgPath());
                     if (Files.exists(file)) {
                         if (imageView.getImage() == null) {
                             if (FileUtils.supportedMediaFormat(file.toFile())) {
-                                ThumbInfo thumbInfo = ThumbInfoSQL.loadThumbInfo(connection, fileInfo.getFileInfo_id());
+                                ThumbInfo thumbInfo = ThumbInfoDao.loadThumbInfo(connection, fileInfo.getFileInfo_id());
                                 int value = handle_thumb(fileInfo, thumbInfo);
                                 /*
                                  * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.

@@ -5,12 +5,11 @@ import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
-import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FolderInfo_SQL;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.sql.ConfigurationSavedFoldersDao;
+import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
 import java.io.File;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -55,7 +54,7 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                         }
                         Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
 
-                        FolderInfo folderInfo = FolderInfo_SQL.loadFolderInfo(folderInfoStatus.getFolderPath());
+                        FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(folderInfoStatus.getFolderPath());
                         if (folderInfo == null) {
                             Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
                             continue;

@@ -1,6 +1,6 @@
 package com.girbola.migration;
 
-import com.girbola.sql.migrate.FileInfoSqlDatabaseMigrator;
+import com.girbola.persistence.migration.FileInfoSqlDatabaseMigrator;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
  * Unit tests for the {@link FileInfoSqlDatabaseMigrator} class.
  * These tests validate the behavior of the {@code migrate} method under various use cases.
  */
-class FileInfoSqlDatabaseMigratorTest {
+class FileInfoDaoDatabaseMigratorTest {
 
     /**
      * Test that when the connection is null, the `migrate` method does nothing.

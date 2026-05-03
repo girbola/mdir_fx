@@ -6,7 +6,7 @@ import com.girbola.controllers.datefixer.RenderVisibleNode;
 import com.girbola.controllers.datefixer.TimeControl;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.misc.Misc;
-import com.girbola.sql.FileInfoSqlConnection;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import common.utils.date.DateUtils;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -37,7 +37,7 @@ class Model_importImages {
 
 	public Model_importImages(Path currentFolderPath) {
 		this.currentFolderPath = currentFolderPath;
-		this.connection = FileInfoSqlConnection.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
+		this.connection = FileInfoSqlConnectionFactory.connectToDatabase(currentFolderPath, Main.conf.getMdir_db_fileName());
 	}
 
 	private final String ERROR = Model_importImages.class.getSimpleName();

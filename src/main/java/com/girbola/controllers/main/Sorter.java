@@ -47,7 +47,7 @@ public class Sorter extends Task<Integer> {
     protected Integer call() throws Exception {
         if (!selectedFolders.isEmpty()) {
             for (Path selectedFolder : selectedFolders) {
-                sprintf("Adding folder: " + selectedFolder);
+                sprintf("---Adding folder: " + selectedFolder);
                 if (Main.getProcessCancelled()) {
                     Messages.sprintf("Sorter process were cancelled");
                     exec[getExecCounter()].shutdownNow();
@@ -63,7 +63,7 @@ public class Sorter extends Task<Integer> {
                 exec[getExecCounter()].submit(addToTable);
             }
         } else {
-            sprintf("list was empty!");
+            sprintf("Sorter list were empty!");
         }
 
         return counter.get();

@@ -1,6 +1,7 @@
 package com.girbola.sql;
 
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.persistence.fileinfo.FileInfoMapper;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class FileInfo_SqlTest {
 
     /**
-     * Test class for the FileInfoSql class.
+     * Test class for the FileInfoDao class.
      * Focused on testing the addToFileInfoDB method, particularly its functionality to correctly bind parameters
      * from a FileInfo object to a PreparedStatement.
      */
@@ -28,7 +29,7 @@ class FileInfo_SqlTest {
         System.out.println("fileInfo.showAllValues(): " + fileInfo.showAllValues());
 
         // Act
-        boolean result = FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
+        boolean result = FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo);
 
         // Assert
         assertTrue(result);
@@ -74,7 +75,7 @@ class FileInfo_SqlTest {
         Mockito.doThrow(new SQLException("Mocked SQL exception")).when(pstmt).setBoolean(Mockito.anyInt(), Mockito.anyBoolean());
 
         // Act
-        boolean result = FileInfoSql.addToFileInfoDB(pstmt, fileInfo);
+        boolean result = FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo);
 
         // Assert
         assertFalse(result);
