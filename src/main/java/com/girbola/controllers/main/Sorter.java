@@ -63,7 +63,7 @@ public class Sorter extends Task<Integer> {
                 exec[getExecCounter()].submit(addToTable);
             }
         } else {
-            sprintf("list was empty!");
+            sprintf("Sorter list were empty!");
         }
 
         return counter.get();

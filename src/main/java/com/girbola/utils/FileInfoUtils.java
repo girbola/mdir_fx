@@ -453,17 +453,18 @@ public class FileInfoUtils {
                 fileInfo.setHeight(height);
                 Messages.sprintf("123width: " + width + ", height: " + height);
                 return true;
-            } else {
-                BufferedImage bufferedImage = ImageIO.read(new File(fileInfo.getOrgPath()));
-                if (bufferedImage != null) {
-
-                    double imageWidth = bufferedImage.getWidth();
-                    double imageHeight = bufferedImage.getHeight();
-
-                    fileInfo.setWidth((int) imageWidth);
-                    fileInfo.setHeight((int) imageHeight);
-                }
             }
+//            else {
+//                BufferedImage bufferedImage = ImageIO.read(new File(fileInfo.getOrgPath()));
+//                if (bufferedImage != null) {
+//
+//                    double imageWidth = bufferedImage.getWidth();
+//                    double imageHeight = bufferedImage.getHeight();
+//
+//                    fileInfo.setWidth((int) imageWidth);
+//                    fileInfo.setHeight((int) imageHeight);
+//                }
+//            }
         } else {
             System.out.println("ExifSubIFDDirectory not found.");
         }

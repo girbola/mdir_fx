@@ -124,11 +124,11 @@ Messages.sprintf("foldersWithMedia size: " + result.size());
                         Messages.sprintfError("Directory is not readable: " + dir);
                         return FileVisitResult.SKIP_SUBTREE;
                     }
-                    if (ValidatePathUtils.hasMediaFilesInFolder(dir)) {
-                        Messages.sprintf("Found media in folder: " + dir);
-                        foldersWithMedia.add(dir);
-                    }
-
+//                    if (ValidatePathUtils.hasMediaFilesInFolder(dir)) {
+//                        Messages.sprintf("Found media in folder: " + dir);
+//                        foldersWithMedia.add(dir);
+//                    }
+                    foldersWithMedia.add(dir);
                     return FileVisitResult.CONTINUE;
                 }
 
@@ -164,7 +164,13 @@ Messages.sprintf("foldersWithMedia size: " + result.size());
 
     @Override
     protected void succeeded() {
-        Messages.sprintf("SubList succeeded.");
+        try {
+            Messages.sprintf("SubList succeeded. " + get().size());
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
         super.succeeded();
     }
 }

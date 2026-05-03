@@ -65,11 +65,14 @@ public class ValidatePathUtils {
         final char HIDDEN_FILE_PREFIX = '.';
 
         String fileName = file.getFileName().toString();
+        if(Files.isRegularFile(file)) {
+            return false;
+        }
         Messages.sprintf("----isInSkippedFolderList Checking file: " + file.toString());
 
         // Check for Windows-specific conditions
         if (Misc.isWindows()) {
-            if (fileName != null && !fileName.isEmpty()) {
+            if (!fileName.isEmpty()) {
                 Messages.sprintf("Checking Windows-specific conditions for file: " + file.toString());
                 if (isHiddenFile(fileName, HIDDEN_FILE_PREFIX) || containsIgnoreCase(fileName, APP_INDICATOR)) {
                     return true;

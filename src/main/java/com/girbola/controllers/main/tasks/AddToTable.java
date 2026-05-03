@@ -4,26 +4,18 @@ package com.girbola.controllers.main.tasks;
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
-import com.girbola.misc.Misc;
-import common.utils.FileUtils;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
-import javafx.concurrent.Task;
-import javafx.scene.control.TableView;
-
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import javafx.concurrent.Task;
+import javafx.scene.control.TableView;
 
-import static com.girbola.Main.conf;
 import static com.girbola.controllers.main.tables.tabletype.TableType.SORTED;
 import static com.girbola.controllers.main.tables.tabletype.TableType.SORTIT;
 import static com.girbola.messages.Messages.sprintf;
@@ -71,9 +63,10 @@ public class AddToTable extends Task<Integer> {
                         Messages.sprintf("SORTED FolderINFOOOOO: " + folderInfo.getFolderPath());
                         if (!hasDuplicates(model.tables().getSorted_table(), folderInfo) || !hasDuplicates(model.tables().getSortIt_table(), folderInfo)) {
                             folderInfo.setTableType(tableType.getType());
+// TODO                            folderInfo is empty here!
                             model.tables().getSorted_table().getItems().add(folderInfo);
                             counter.incrementAndGet();
-                            sprintf("sorted: " + p + " c= " + counter.get());
+                            sprintf("Add to table Sorted: " + p + " c= " + counter.get());
                             refreshTable = true;
 //						TableUtils.refreshTableContent(model.tables().getSorted_table());
                         }
@@ -85,7 +78,7 @@ public class AddToTable extends Task<Integer> {
                             folderInfo.setTableType(tableType.getType());
                             model.tables().getSortIt_table().getItems().add(folderInfo);
                             counter.incrementAndGet();
-                            sprintf("sortit: " + p + " c= " + counter.get());
+                            sprintf("Add to table SortIt: " + p + " c= " + counter.get());
                             refreshTable = true;
 //						TableUtils.refreshTableContent(model.tables().getSortIt_table());
                         }
@@ -117,9 +110,9 @@ public class AddToTable extends Task<Integer> {
     protected void succeeded() {
         super.succeeded();
         if (refreshTable) {
-            if (tableType.equals(SORTED.getType())) {
+            if (tableType.getType().equals(SORTED.getType())) {
                 TableUtils.refreshTableContent(model.tables().getSorted_table());
-            } else if (tableType.equals(SORTIT.getType())) {
+            } else if (tableType.getType().equals(SORTIT.getType())) {
                 TableUtils.refreshTableContent(model.tables().getSortIt_table());
             }
         }

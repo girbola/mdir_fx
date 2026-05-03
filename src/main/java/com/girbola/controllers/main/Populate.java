@@ -141,6 +141,14 @@ public class Populate {
                 handleEmptyFileList(loadingProcessTask, createFileList);
                 return;
             }
+Messages.sprintf("fileList.size(): " + fileList.size());
+            for(Path path : fileList) {
+                Messages.sprintf("!#!#!#!##!!path: " + path);
+            }
+            // TODO korjaa olemassa oleva lista, ettei sieltä poistu mitään enää vaan tarkastetaan, että onko tullut lisäyksiä
+            /*
+            Tarkista onko jo tablevieweissä nämä, jos on tarkista onko sisältö muuttunut
+             */
 
             Collections.sort(fileList);
             removeDuplicateFolders(fileList);
