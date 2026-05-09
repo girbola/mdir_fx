@@ -8,8 +8,10 @@ import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import common.utils.date.DateUtils;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -28,8 +30,9 @@ import static com.girbola.messages.Messages.sprintf;
 public class FileUtils {
 
     private final static String[] SUPPORTED_VIDEO_FORMATS = {"3gp", "avi", "mov", "mp4", "mpg", "mkv"};
-    private final static String[] SUPPORTED_IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif", "dng", "heic"};
-    private final static String[] SUPPORTED_RAW_FORMATS = {"cr2", "nef"};
+    private final static String[] SUPPORTED_IMAGE_FORMATS = {"png", "jpg", "jpeg", "gif", "bmp", "tiff", "tif"};
+    private final static String[] SUPPORTED_HEIC_FORMAT = {"heic"};
+    private final static String[] SUPPORTED_RAW_FORMATS = {"cr2", "nef", "dng"};
 
     private final static String[] IGNORED_FORMATS = {"ini", "db", "exe", "sh", "dll", "sys", "java", "jar"};
 
@@ -254,24 +257,19 @@ public class FileUtils {
      * @return
      */
     public static boolean supportedMediaFormat(File file) {
-        String result;
-        result = getExtension(file.getName());
-        // sprintf("extension result is: " +result);
-        for (String s : SUPPORTED_VIDEO_FORMATS) {
-            if (result.equalsIgnoreCase(s.toLowerCase())) {
-                return true;
-            }
+        if (supportedVideo(file.toPath())) {
+            return true;
         }
-        for (String s : SUPPORTED_IMAGE_FORMATS) {
-            if (result.equalsIgnoreCase(s.toLowerCase())) {
-                return true;
-            }
+        if (supportedImage(file.toPath())) {
+            return true;
         }
-        for (String s : SUPPORTED_RAW_FORMATS) {
-            if (result.equalsIgnoreCase(s.toLowerCase())) {
-                return true;
-            }
+        if (supportedRaw(file.toPath())) {
+            return true;
         }
+        if (supportedHeic(file.toPath())) {
+            return true;
+        }
+
         return false;
     }
 
@@ -279,7 +277,7 @@ public class FileUtils {
     public static boolean supportedImage(File file) {
         String result = getExtension(file.getName());
         for (String s : SUPPORTED_IMAGE_FORMATS) {
-            if (result.toLowerCase().equals(s.toLowerCase())) {
+            if (result.equalsIgnoreCase(s)) {
                 return true;
             }
         }
@@ -289,6 +287,16 @@ public class FileUtils {
     public static boolean supportedImage(Path path) {
         String result = getExtension(path.getFileName());
         for (String s : SUPPORTED_IMAGE_FORMATS) {
+            if (result.equalsIgnoreCase(s)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean supportedHeic(Path path) {
+        String result = getExtension(path.getFileName());
+        for (String s : SUPPORTED_HEIC_FORMAT) {
             if (result.equalsIgnoreCase(s)) {
                 return true;
             }
@@ -553,4 +561,43 @@ public class FileUtils {
     public static boolean checkFilePermissions(File file) {
         return (file.canWrite() && file.canRead());
     }
+
+    public static Path findExecutableFolder(String executable) {
+
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+
+            ProcessBuilder pb;
+
+            if (os.contains("win")) {
+                pb = new ProcessBuilder("where", executable);
+            } else {
+                pb = new ProcessBuilder("which", executable);
+            }
+
+            pb.redirectErrorStream(true);
+
+            Process process = pb.start();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    line = line.trim();
+                    if (!line.isEmpty()) {
+                        Path exe = Path.of(line);
+                        if (Files.exists(exe)) {
+                            return exe.getParent();
+                        }
+                    }
+                }
+            }
+            process.waitFor();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

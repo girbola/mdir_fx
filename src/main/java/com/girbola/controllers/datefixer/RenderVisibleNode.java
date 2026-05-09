@@ -83,10 +83,10 @@ public class RenderVisibleNode {
             timeline.play();
             //map.clear();
         });
-        Platform.runLater(()-> {
+        Platform.runLater(() -> {
 
-        scrollPane.setVvalue(1);
-        scrollPane.setVvalue(0);
+            scrollPane.setVvalue(1);
+            scrollPane.setVvalue(0);
 
         });
 
@@ -128,7 +128,7 @@ public class RenderVisibleNode {
             List<Task<?>> needToConvert_Image_list = new ArrayList<>();
             List<Task<?>> needToConvert_Video_list = new ArrayList<>();
             List<Task<?>> needToConvert_SlowRender_list = new ArrayList<>();
-Messages.sprintf("############Map size: " + map.size());
+            Messages.sprintf("############Map size: " + map.size());
             for (Entry<ImageView, FileInfo> entry : map.entrySet()) {
                 ImageView imageView = entry.getKey();
                 FileInfo fileInfo = (FileInfo) entry.getValue();
@@ -137,7 +137,7 @@ Messages.sprintf("############Map size: " + map.size());
                     Messages.errorSmth(ERROR, "fileInfo were null!!!", null, Misc.getLineNumber(), true);
                     break;
                 }
-Messages.sprintf("************File: " + fileInfo.getOrgPath());
+                Messages.sprintf("************File: " + fileInfo.getOrgPath());
                 if (imageView != null) {
                     Path file = Paths.get(fileInfo.getOrgPath());
                     if (Files.exists(file)) {
@@ -157,6 +157,10 @@ Messages.sprintf("************File: " + fileInfo.getOrgPath());
                                                     imageView);
                                             byte_List.add(convertByte_thumb_fast);
 
+                                        }
+                                        if (FileUtils.supportedHeic(file)) {
+                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
+                                            needToConvert_Video_list.add(convertVideo_task);
                                         }
                                         if (FileUtils.supportedRaw(file)) {
                                             Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
@@ -181,6 +185,11 @@ Messages.sprintf("************File: " + fileInfo.getOrgPath());
                                                 Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
                                                 needToConvert_Image_list.add(imageThumb);
+                                            } else if (FileUtils.supportedHeic(file)) {
+                                                Messages.sprintf("Heic file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
+//                                                Task<Image> imageThumb = HeicThumbnailService.¸
+                                                Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
+                                                needToConvert_Video_list.add(convertVideo_task);
                                             } else {
                                                 Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
                                                 Task<Image> imageThumb = handleImageThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);

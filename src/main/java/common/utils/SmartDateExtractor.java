@@ -94,9 +94,9 @@ public final class SmartDateExtractor {
         return Optional.empty();
     }
 
-    public static OptionalLong extractEpochMillis(String text) {
-        return extractInstant(text).map(i -> OptionalLong.of(i.toEpochMilli())).orElseGet(OptionalLong::empty);
-    }
+//    public static OptionalLong extractEpochMillis(String text) {
+//        return extractInstant(text).map(i -> OptionalLong.of(i.toEpochMilli())).orElseGet(OptionalLong::empty);
+//    }
 
     private static String normYmdHms(String y, String m, String d, String hh, String mm, String ss) {
         return pad4(y) + "-" + pad2(m) + "-" + pad2(d) + " " + pad2(hh) + ":" + pad2(mm) + ":" + pad2(ss);

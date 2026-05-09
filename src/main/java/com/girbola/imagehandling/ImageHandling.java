@@ -154,6 +154,11 @@ public class ImageHandling {
 		return convert;
 	}
 
+    public static Task<Image> handleImageHeic(FileInfo fileInfo, double width, ImageView imageView) {
+        Task<Image> convertHeicImage = new HandleHeicImageThumb(Paths.get(fileInfo.getOrgPath()), width, imageView);
+        return convertHeicImage;
+    }
+
 	public static Task<Image> handleImageThumb(FileInfo fileInfo, double width, ImageView imageView) {
 		// sprintf("handleImageThumb: " + Paths.get(fileInfo.getOrgPath()));
 		Task<Image> convr = new ConvertImage(Paths.get(fileInfo.getOrgPath()), width, imageView);
