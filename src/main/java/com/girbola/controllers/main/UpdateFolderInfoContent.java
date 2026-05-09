@@ -2,27 +2,23 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.utils.FileInfoUtils;
-import common.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.Path;
-import javafx.concurrent.Task;
-
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.TreeMap;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 
 import static com.girbola.Main.simpleDates;
 import static com.girbola.utils.FileInfoUtils.createFileInfo;
@@ -35,7 +31,7 @@ public class UpdateFolderInfoContent extends Task<Integer> {
     private final FolderInfo folderInfo;
 
     public UpdateFolderInfoContent(FolderInfo folderInfo) {
-        this.folderInfo = Objects.requireNonNull(folderInfo, "folderInfo must not be null");
+        this.folderInfo = folderInfo;
     }
 
     @Override

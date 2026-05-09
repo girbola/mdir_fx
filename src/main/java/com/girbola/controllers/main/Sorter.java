@@ -6,11 +6,10 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
-import javafx.concurrent.Task;
-
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import javafx.concurrent.Task;
 import javafx.scene.control.TableView;
 
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
@@ -72,10 +71,9 @@ public class Sorter extends Task<Integer> {
                 } else {
                     sprintf("Folder already in table: " + selectedFolder);
                     counter.incrementAndGet();
+                    UpdateFolderInfoContent updateFolderInfoContent = new UpdateFolderInfoContent(folderInfoExistence.getItems());
 
-
-
-                    exec[getExecCounter()].submit(addToTable);
+                    exec[getExecCounter()].submit(updateFolderInfoContent);
                 }
 
 //if(!TableUtils.tableHasFolder(selectedFolder) {
