@@ -7,6 +7,9 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -17,8 +20,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.TreeMap;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Task;
 
 import static com.girbola.Main.simpleDates;
 import static com.girbola.utils.FileInfoUtils.createFileInfo;
@@ -28,12 +29,14 @@ public class UpdateObservableListFolderInfoContent extends Task<Integer> {
 
     private static final String ERROR = UpdateObservableListFolderInfoContent.class.getSimpleName();
 
+    private Tables tables;
+
     private ObservableList<FolderInfo> folderInfoObs;
-    private FolderInfo searchFolderInfo;
+    private Path searchFolderInfo;
     private FolderInfo toUpdate;
 
-    public UpdateObservableListFolderInfoContent(ObservableList<FolderInfo> folderInfoObs, FolderInfo searchFolderInfo) {
-        this.folderInfoObs = folderInfoObs;
+    public UpdateObservableListFolderInfoContent(Tables tables, Path searchFolderInfo) {
+        this.tables = tables;
         this.searchFolderInfo = searchFolderInfo;
     }
 
@@ -42,7 +45,11 @@ public class UpdateObservableListFolderInfoContent extends Task<Integer> {
         Messages.sprintf("Running UpdateFolderInfoContent: " + folderInfoObs);
 
         for (FolderInfo folderInfo : folderInfoObs) {
-            if (folderInfo.getFolderPath().equals(searchFolderInfo.getFolderPath())) {
+            if (folderInfo.getFolderPath().equals(searchFolderInfo.toAbsolutePath().toString())) {
+                // Check if fileinfos folder files has been changed or not
+                // GetAllMediaFiles
+                // Do check new folders and them as well to Table using Sorter%Populate
+
                 toUpdate = folderInfo;
             }
         }

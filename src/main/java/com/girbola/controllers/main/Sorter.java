@@ -71,9 +71,11 @@ public class Sorter extends Task<Integer> {
                 } else {
                     sprintf("Folder already in table: " + selectedFolder);
                     counter.incrementAndGet();
-                    UpdateFolderInfoContent updateFolderInfoContent = new UpdateFolderInfoContent(folderInfoExistence.getItems());
 
-                    exec[getExecCounter()].submit(updateFolderInfoContent);
+                    Task<Integer> updateObservableListFolderInfoContent = new UpdateObservableListFolderInfoContent(model.tables(), selectedFolder);
+//                    UpdateFolderInfoContent updateFolderI¸nfoContent = new UpdateFolderInfoContent(folderInfoExistence.getItems());
+
+                    exec[getExecCounter()].submit(updateObservableListFolderInfoContent);
                 }
 
 //if(!TableUtils.tableHasFolder(selectedFolder) {
