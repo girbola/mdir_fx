@@ -250,6 +250,9 @@ public class FileUtils {
         }
     }/* FILE FORMATS START */
 
+    public static boolean supportedMediaFormat(Path file) {
+        return supportedMediaFormat(file.toFile());
+    }
     /**
      * Checks if file supports image, raw or video formats
      *

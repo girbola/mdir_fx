@@ -26,11 +26,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <apache-common-imaging.version>1.0.0-alpha6</apache-common-imaging.version>
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
         <imageio-jpeg.version>3.12.0</imageio-jpeg.version>
         <imageio-tiff.version>3.12.0</imageio-tiff.version>
-        <jackson.version>3.0.0</jackson.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <javacv-platform.version>1.5.13</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.9</javafx.maven.plugin.version>

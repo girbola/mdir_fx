@@ -421,6 +421,17 @@ public class TableUtils {
         return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
 
+    public static TableView<FolderInfo> getExistingTableFolderInfo(List<TableView<FolderInfo>> allTables, Path path) {
+        for (TableView<FolderInfo> table : allTables) {
+            for (FolderInfo folderInfo : table.getItems()) {
+                if (folderInfo.getFolderPath().equals(path.toString())) {
+                    return table;
+                }
+            }
+        }
+        return null;
+    }
+
     public static boolean tableHasFolder(List<TableView<FolderInfo>> allTables, Path path) {
         for (TableView<FolderInfo> table : allTables) {
             for (FolderInfo folderInfo : table.getItems()) {

@@ -2,6 +2,8 @@
 package com.girbola.controllers.main;
 
 import com.girbola.Main;
+import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tasks.AddToTable;
 import com.girbola.messages.Messages;
 import javafx.concurrent.Task;
@@ -9,6 +11,7 @@ import javafx.concurrent.Task;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import javafx.scene.control.TableView;
 
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
@@ -53,14 +56,34 @@ public class Sorter extends Task<Integer> {
                     exec[getExecCounter()].shutdownNow();
                     break;
                 }
-                Task<Integer> addToTable = new AddToTable(selectedFolder, model);
-                addToTable.setOnSucceeded(e -> Messages.sprintf("Sorter addToTable Sorter done! " + selectedFolder));
-                addToTable.setOnFailed(e -> Messages.sprintf("Sorter addToTable.setOnFailed: " + selectedFolder));
-                addToTable.setOnCancelled(e -> Messages.sprintf("Sorter addToTable.setOnCancelled: " + selectedFolder));
 
-                counter.incrementAndGet();
+//                List<TableView<FolderInfo>> allTables = TableUtils.getAllTables(model.tables());
 
-                exec[getExecCounter()].submit(addToTable);
+                TableView<FolderInfo> folderInfoExistence = TableUtils.getExistingTableFolderInfo(TableUtils.getAllTables(model.tables()), selectedFolder);
+                if(folderInfoExistence == null) {
+                    Task<Integer> addToTable = new AddToTable(selectedFolder, model);
+                    addToTable.setOnSucceeded(e -> Messages.sprintf("Sorter addToTable Sorter done! " + selectedFolder));
+                    addToTable.setOnFailed(e -> Messages.sprintf("Sorter addToTable.setOnFailed: " + selectedFolder));
+                    addToTable.setOnCancelled(e -> Messages.sprintf("Sorter addToTable.setOnCancelled: " + selectedFolder));
+
+                    counter.incrementAndGet();
+
+                    exec[getExecCounter()].submit(addToTable);
+                } else {
+                    sprintf("Folder already in table: " + selectedFolder);
+                    counter.incrementAndGet();
+
+
+
+                    exec[getExecCounter()].submit(addToTable);
+                }
+
+//if(!TableUtils.tableHasFolder(selectedFolder) {
+//    sprintf("Table already has this folder: " + selectedFolder);
+//
+//}
+
+
             }
         } else {
             sprintf("Sorter list were empty!");
