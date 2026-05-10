@@ -11,6 +11,7 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 *.project
 /bin/
 *null*
+mdir.db
 
 /.apt_generated/
 /.apt_generated_tests/
