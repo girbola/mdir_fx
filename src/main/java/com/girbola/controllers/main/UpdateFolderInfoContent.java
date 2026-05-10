@@ -64,6 +64,8 @@ public class UpdateFolderInfoContent extends Task<Integer> {
                                     throw new RuntimeException(e);
                                 }
 
+                            } else {
+                                // Is NEW
                             }
                         }
                     });

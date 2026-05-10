@@ -223,9 +223,15 @@ public class Main extends Application {
                 conf.createProgramPaths();
 //                ConfigurationSQLHandler.loadConfiguration(Main.conf);
 
-                Messages.sprintf("CONFIG contains: " + conf.toString());
-                Messages.sprintf("Java version: " + System.getProperty("java.version"));
-                Messages.sprintf("JavaFX version: " + System.getProperty("javafx.version"));
+                Messages.sprintf("\n╔════════════════════════════════════════╗");
+                Messages.sprintf("║  SYSTEM INFORMATION                    ║");
+                Messages.sprintf("╚════════════════════════════════════════╝");
+
+                Messages.sprintf("  File Encoding:     " + System.getProperty("file.encoding"));
+                Messages.sprintf("  Default Charset:   " + String.valueOf(java.nio.charset.Charset.defaultCharset()));
+                Messages.sprintf("  Configuration:     " + conf.toString());
+                Messages.sprintf("  Java Version:      " + System.getProperty("java.version"));
+                Messages.sprintf("  JavaFX Version:    " + System.getProperty("javafx.version"));
                 System.setProperty("javafx.verbose", "false");
 
 //                GraphicsEnvironment ge = GraphicsEnvironment
