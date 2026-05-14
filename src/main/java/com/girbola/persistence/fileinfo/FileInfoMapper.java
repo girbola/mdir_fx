@@ -20,6 +20,69 @@ public class FileInfoMapper {
 
     public static boolean bindToFileInfoStatement(PreparedStatement pstmt, FileInfo fileInfo) {
         try {
+            for (FileInfoEnum column : FileInfoEnum.getValuesInBindingOrder()) {
+                int index = column.getBindIndex();
+
+                switch (column) {
+                    case FILEINFO_ID -> pstmt.setInt(index, fileInfo.getFileInfo_id());
+                    case BAD -> pstmt.setBoolean(index, fileInfo.isBad());
+                    case CAMERA_MODEL -> pstmt.setString(index, fileInfo.getCamera_model());
+                    case CONFIRMED -> pstmt.setBoolean(index, fileInfo.isConfirmed());
+                    case DESTINATION_PATH -> pstmt.setString(index, fileInfo.getDestination_Path());
+                    case GPS_COORDINATES -> pstmt.setString(index, fileInfo.getGpsCoordinates());
+                    case CUSTOM_GPS_COORDINATES -> pstmt.setBoolean(index, fileInfo.isCustomGpsCoordinates());
+                    case DATE -> pstmt.setLong(index, fileInfo.getDate());
+                    case EVENT -> pstmt.setString(index, fileInfo.getEvent());
+                    case FILEHISTORIES -> pstmt.setString(index, convertFileHistoriesToString(fileInfo.getFileHistories()));
+                    case GOOD -> pstmt.setBoolean(index, fileInfo.isGood());
+                    case COPIED -> pstmt.setBoolean(index, fileInfo.isCopied());
+                    case IGNORED -> pstmt.setBoolean(index, fileInfo.isIgnored());
+                    case IMAGE -> pstmt.setBoolean(index, fileInfo.isImage());
+                    case IMAGE_DIFFERENCE_HASH -> pstmt.setString(index, fileInfo.getImageDifferenceHash());
+                    case LOCATION -> pstmt.setString(index, fileInfo.getLocation());
+                    case MODIFIED -> pstmt.setBoolean(index, fileInfo.isModified());
+                    case ORGPATH -> pstmt.setString(index, fileInfo.getOrgPath());
+                    case ORGPATH_DRIVE_SERIAL_NUMBER -> pstmt.setString(index, fileInfo.getOrgPathDriveSerialNumber());
+                    case ORIENTATION -> pstmt.setInt(index, fileInfo.getOrientation());
+                    case RAW -> pstmt.setBoolean(index, fileInfo.isRaw());
+                    case SHA256_CHECKSUM -> pstmt.setString(index, fileInfo.getSha256Checksum());
+                    case SIZE -> pstmt.setLong(index, fileInfo.getSize());
+                    case SUGGESTED -> pstmt.setBoolean(index, fileInfo.isSuggested());
+                    case TABLE_DUPLICATED -> pstmt.setBoolean(index, fileInfo.isTableDuplicated());
+                    case TAGS -> pstmt.setString(index, fileInfo.getTags());
+                    case THUMB_LENGTH -> pstmt.setInt(index, fileInfo.getThumb_length());
+                    case THUMB_OFFSET -> pstmt.setInt(index, fileInfo.getThumb_offset());
+                    case TIME_SHIFT -> pstmt.setLong(index, fileInfo.getTimeShift());
+                    case USER -> pstmt.setString(index, fileInfo.getUser());
+                    case VIDEO -> pstmt.setBoolean(index, fileInfo.isVideo());
+                    case WORK_DIR -> pstmt.setString(index, fileInfo.getWorkDir());
+                    case WORK_DIR_DRIVE_SERIAL_NUMBER -> pstmt.setString(index, fileInfo.getWorkDirDriveSerialNumber());
+                }
+            }
+
+            pstmt.addBatch();
+            return true;
+        } catch (Exception e) {
+            Messages.sprintfError("Failed to bind FileInfo statement for: "
+                    + (fileInfo == null ? "null" : fileInfo.getOrgPath())
+                    + " error: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public static void bindToFileInfoBatch(PreparedStatement pstmt, FileInfo fileInfo) throws SQLException {
+        if (!bindToFileInfoStatement(pstmt, fileInfo)) {
+            throw new SQLException("Failed to bind FileInfo statement for: " + fileInfo.getOrgPath());
+        }
+    }
+
+//    private static String convertFileHistoriesToString(List<String> fileHistories) {
+//        return String.join(",", fileHistories);
+//    }
+
+    public static boolean bindToFileInfoStatementOld(PreparedStatement pstmt, FileInfo fileInfo) {
+        try {
             int index = 1;
             pstmt.setBoolean(index++, fileInfo.isBad());
             pstmt.setString(index++, fileInfo.getCamera_model());
@@ -60,7 +123,7 @@ public class FileInfoMapper {
         }
     }
 
-    public static void bindToFileInfoBatch(PreparedStatement pstmt, FileInfo fileInfo) throws SQLException {
+    public static void bindToFileInfoBatch_(PreparedStatement pstmt, FileInfo fileInfo) throws SQLException {
         bindToFileInfoStatement(pstmt, fileInfo);
         try {
             pstmt.addBatch();

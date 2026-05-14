@@ -1,6 +1,7 @@
 package com.girbola.persistence.migration;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -8,6 +9,7 @@ import java.sql.Statement;
 public final class FileInfoSqlDatabaseMigrator {
 
     private static final int CURRENT_SCHEMA_VERSION = 1;
+    private static final String FILEINFO_TABLE_NAME = "fileinfo";
 
     private FileInfoSqlDatabaseMigrator() {
     }
@@ -61,6 +63,10 @@ public final class FileInfoSqlDatabaseMigrator {
     }
 
     private static void createUniqueOrgPathIndexIfPossible(Connection connection) throws SQLException {
+        if (!tableExists(connection, FILEINFO_TABLE_NAME)) {
+            return;
+        }
+
         if (hasDuplicateOrgPaths(connection)) {
             return;
         }
@@ -70,6 +76,26 @@ public final class FileInfoSqlDatabaseMigrator {
                     CREATE UNIQUE INDEX IF NOT EXISTS ux_fileinfo_orgPath
                     ON fileinfo(orgPath)
                     """);
+        }
+    }
+
+    private static boolean tableExists(Connection connection, String tableName) throws SQLException {
+        DatabaseMetaData metaData = connection.getMetaData();
+
+        try (ResultSet resultSet = metaData.getTables(null, null, tableName, null)) {
+            if (resultSet.next()) {
+                return true;
+            }
+        }
+
+        try (ResultSet resultSet = metaData.getTables(null, null, tableName.toUpperCase(), null)) {
+            if (resultSet.next()) {
+                return true;
+            }
+        }
+
+        try (ResultSet resultSet = metaData.getTables(null, null, tableName.toLowerCase(), null)) {
+            return resultSet.next();
         }
     }
 

@@ -84,7 +84,7 @@ public class Main extends Application {
     public static final String APP_AUTHOR = "Marko Lokka";
     public static final String APP_EMAIL = "girbola9@gmail.com";
     public static final String APP_WEBSITE = "https://github.com//mdir_fx";
-    public static final String APP_COPYRIGHT = "Copyright (c) 2025 All right reserved.";
+    public static final String APP_COPYRIGHT = "Copyright (c) 2026 All right reserved.";
     public static final String APP_LICENSE = "Apache License, Version 2.0";
 
     private static final String BUNDLE_PATH = "bundle/lang";

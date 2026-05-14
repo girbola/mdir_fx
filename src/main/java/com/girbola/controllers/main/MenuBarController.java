@@ -12,6 +12,7 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.fileinfo.SavedFoldersIntoConfigurationTable;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
@@ -355,9 +356,12 @@ public class MenuBarController {
 
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
-        sprintf("menuItem_file_save_action");
-//        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
-//        saveFileInfos.readTables();
+        Messages.sprintf("menuItem_file_save_action");
+        /*
+
+         */
+        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
+        saveFileInfos.readTables();
 
         Task<Integer> writeTablesFolderInfoToConfigurationDatabase = new WriteTablesFolderInfoToConfigurationDatabase(model_main, Main.sceneManager.getWindow(), null, true);
         writeTablesFolderInfoToConfigurationDatabase.setOnSucceeded(event2 -> {

@@ -1,10 +1,9 @@
 package com.girbola.fileinfo;
 
 import com.girbola.Main;
-import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.WriteTablesFolderInfoToConfigurationDatabase;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
@@ -15,7 +14,7 @@ import javafx.stage.Stage;
 
 public class SavedFoldersIntoConfigurationTable {
 
-    private final String ERROR = WriteTablesFolderInfoToConfigurationDatabase.class.getName();
+    private final String ERROR = SavedFoldersIntoConfigurationTable.class.getName();
 
     private Stage stage;
     private LoadingProcessTask loadingProcessTask;
@@ -50,8 +49,8 @@ public class SavedFoldersIntoConfigurationTable {
     }
 
     private boolean iterateTable(TableView<FolderInfo> table) {
-
         for (FolderInfo folderInfo : table.getItems()) {
+            Messages.sprintf("Saving status for: " + folderInfo.getFolderPath());
             try {
                 FolderInfoStatus folderInfoStatus = new FolderInfoStatus(folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
                 ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(ConfigurationSQLHandler.getConnection(), folderInfoStatus);

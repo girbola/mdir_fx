@@ -72,7 +72,7 @@ public class Populate {
         }
 
 
-        if(selectedFolders.isEmpty()) {
+        if (selectedFolders.isEmpty()) {
             sprintf("selectedFolders is null or empty");
             return;
         }
@@ -90,17 +90,17 @@ public class Populate {
         Then add walkfiletree per folder to scan if there are more folders. If there are no more folders, then load the rest of the selectedFolders list
 
          */
-        for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if(sf.isSelected()) {
-                if(sf.isConnected()) {
+        for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (sf.isSelected()) {
+                if (sf.isConnected()) {
 
                     selectedFolders.add(Paths.get(sf.getFolder()));
                 }
             }
         }
-        for(Path path : selectedFolders) {
+        for (Path path : selectedFolders) {
             ArrayList<Path> mediaFilesInCurrentFolder = GetAllMediaFiles.getAllMediaFiles(path);
-            for(Path mediaFile : mediaFilesInCurrentFolder) {
+            for (Path mediaFile : mediaFilesInCurrentFolder) {
                 Messages.sprintf("mediaFile: " + mediaFile);
             }
         }
@@ -141,8 +141,8 @@ public class Populate {
                 handleEmptyFileList(loadingProcessTask, createFileList);
                 return;
             }
-Messages.sprintf("fileList.size(): " + fileList.size());
-            for(Path path : fileList) {
+            Messages.sprintf("fileList.size(): " + fileList.size());
+            for (Path path : fileList) {
                 Messages.sprintf("!#!#!#!##!!path: " + path);
             }
             // TODO korjaa olemassa oleva lista, ettei sieltä poistu mitään enää vaan tarkastetaan, että onko tullut lisäyksiä
@@ -255,13 +255,13 @@ Messages.sprintf("fileList.size(): " + fileList.size());
 
                 List<TableView<FolderInfo>> allTables = TableUtils.getAllTables(modelMain.tables());
                 List<Path> findDuplicates = new ArrayList<>();
-                for(Path path : fileList) {
-                    if(TableUtils.tableHasFolder(allTables, path)) {
+                for (Path path : fileList) {
+                    if (TableUtils.tableHasFolder(allTables, path)) {
                         findDuplicates.add(path);
                     }
                 }
                 fileList.removeAll(findDuplicates);
-                if(fileList.isEmpty()) {
+                if (fileList.isEmpty()) {
                     Messages.sprintf("List is empty at Populate class. Cancelling");
                     Platform.runLater(loadingProcessTask::closeStage);
                     createFileList.cancel();
@@ -285,7 +285,7 @@ Messages.sprintf("fileList.size(): " + fileList.size());
                 loadingProcessTask.setTask(sorterTask);
                 sorterTask.setOnSucceeded(sorterSuccess -> {
                     Task<Void> calculateFolderContent = loadContentToContainer(loadingProcessTask, sorterTask);
-                    if(exec[getExecCounter()].isShutdown() || exec[getExecCounter()].isTerminated()) {
+                    if (exec[getExecCounter()].isShutdown() || exec[getExecCounter()].isTerminated()) {
                         ConcurrencyUtils.initNewSingleExecutionService();
                         Messages.sprintf("initNewSingleExecutionService NEW one");
                     }
