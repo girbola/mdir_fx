@@ -456,89 +456,89 @@ public class TableUtils {
             });
         }
     }
+//
+//    public static boolean checkChangedContent(TableView<FolderInfo> table) {
+//
+//        for (FolderInfo fo : table.getSelectionModel().getSelectedItems()) {
+//            Messages.sprintf("FolderInfo check....  " + fo.getFolderPath());
+//            if (Main.getProcessCancelled()) {
+//                return false;
+//            }
+//            List<FileInfo> fileInfo_list = fo.getFileInfoList();
+//
+//            List<Path> currentPath_root_list = null;
+//            try {
+//                currentPath_root_list = GetRootFiles.getRootFiles(Paths.get(fo.getFolderPath()));
+//            } catch (IOException ex) {
+//                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+//            }
+//            if (currentPath_root_list.isEmpty()) {
+//                Main.setProcessCancelled(true);
+//                errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
+//
+//            }
+//            List<FileInfo> list = validateFileInfoList(currentPath_root_list, fileInfo_list);
+//
+//            if (list.isEmpty()) {
+//                Messages.sprintf("list were empty!: " + list.size());
+//                return false;
+//            }
+//            fo.setFileInfoList(list);
+//            Messages.sprintf("list were not empty!: " + list.size());
+//            return true;
+//        }
+//        return false;
+//    }
 
-    public static boolean checkChangedContent(TableView<FolderInfo> table) {
+//    private static List<FileInfo> validateFileInfoList(List<Path> currentPathRootList, List<FileInfo> fileInfos) {
+//        List<FileInfo> theList = new ArrayList<>();
+//        Iterator<Path> it = currentPathRootList.iterator();
+//        while (it.hasNext()) {
+//            Path file = it.next();
+//            Messages.sprintf("File name is: " + file);
+//            FileInfo fileInfo = hasFileInfo_In_List(file, fileInfos);
+//            if (fileInfo == null) {
+//                try {
+//                    fileInfo = FileInfoUtils.createFileInfo(file);
+//                    Messages.sprintf("fileInfo created: " + fileInfo.toString());
+//                } catch (IOException ex) {
+//                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+//                }
+//            }
+//            if (fileInfo != null) {
+//                theList.add(fileInfo);
+//            }
+//        }
+//        return theList;
+//    }
 
-        for (FolderInfo fo : table.getSelectionModel().getSelectedItems()) {
-            Messages.sprintf("FolderInfo check....  " + fo.getFolderPath());
-            if (Main.getProcessCancelled()) {
-                return false;
-            }
-            List<FileInfo> fileInfo_list = fo.getFileInfoList();
+//    private static FileInfo hasFileInfo_In_List(Path file, List<FileInfo> fileInfo_list) {
+//        Iterator<FileInfo> it = fileInfo_list.iterator();
+//        while (it.hasNext()) {
+//            FileInfo fi = it.next();
+//            if (fi.getOrgPath().equals(file.toString())) {
+//                return fi;
+//            }
+//        }
+//        return null;
+//    }
 
-            List<Path> currentPath_root_list = null;
-            try {
-                currentPath_root_list = GetRootFiles.getRootFiles(Paths.get(fo.getFolderPath()));
-            } catch (IOException ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-            }
-            if (currentPath_root_list.isEmpty()) {
-                Main.setProcessCancelled(true);
-                errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-
-            }
-            List<FileInfo> list = validateFileInfoList(currentPath_root_list, fileInfo_list);
-
-            if (list.isEmpty()) {
-                Messages.sprintf("list were empty!: " + list.size());
-                return false;
-            }
-            fo.setFileInfoList(list);
-            Messages.sprintf("list were not empty!: " + list.size());
-            return true;
-        }
-        return false;
-    }
-
-    private static List<FileInfo> validateFileInfoList(List<Path> currentPathRootList, List<FileInfo> fileInfos) {
-        List<FileInfo> theList = new ArrayList<>();
-        Iterator<Path> it = currentPathRootList.iterator();
-        while (it.hasNext()) {
-            Path file = it.next();
-            Messages.sprintf("File name is: " + file);
-            FileInfo fileInfo = hasFileInfo_In_List(file, fileInfos);
-            if (fileInfo == null) {
-                try {
-                    fileInfo = FileInfoUtils.createFileInfo(file);
-                    Messages.sprintf("fileInfo created: " + fileInfo.toString());
-                } catch (IOException ex) {
-                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-                }
-            }
-            if (fileInfo != null) {
-                theList.add(fileInfo);
-            }
-        }
-        return theList;
-    }
-
-    private static FileInfo hasFileInfo_In_List(Path file, List<FileInfo> fileInfo_list) {
-        Iterator<FileInfo> it = fileInfo_list.iterator();
-        while (it.hasNext()) {
-            FileInfo fi = it.next();
-            if (fi.getOrgPath().equals(file.toString())) {
-                return fi;
-            }
-        }
-        return null;
-    }
-
-    public static boolean mergeSameFilesIntoFolderByDateFiles(FolderInfo folderInfoToFind, Tables table) {
-        if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty() || table.getAsItIs_table().getItems().isEmpty()) {
-            Messages.sprintfError("All tables contents are empty");
-            return false;
-        }
-        ListIterator<FolderInfo> folderInfoSortItListIterator = table.getSortIt_table().getItems().listIterator();
-        while (folderInfoSortItListIterator.hasNext()) {
-            FolderInfo folderInfo = folderInfoSortItListIterator.next();
-            ListIterator<FileInfo> fileInfoList_SortItListIterator = folderInfo.getFileInfoList().listIterator();
-//			while(fileInfoList_SortItListIterator.hasNext()) {
-//				findExistingFolder()
-//			}
-
-        }
-        return false;
-    }
+//    public static boolean mergeSameFilesIntoFolderByDateFiles(FolderInfo folderInfoToFind, Tables table) {
+//        if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty() || table.getAsItIs_table().getItems().isEmpty()) {
+//            Messages.sprintfError("All tables contents are empty");
+//            return false;
+//        }
+//        ListIterator<FolderInfo> folderInfoSortItListIterator = table.getSortIt_table().getItems().listIterator();
+//        while (folderInfoSortItListIterator.hasNext()) {
+//            FolderInfo folderInfo = folderInfoSortItListIterator.next();
+//            ListIterator<FileInfo> fileInfoList_SortItListIterator = folderInfo.getFileInfoList().listIterator();
+////			while(fileInfoList_SortItListIterator.hasNext()) {
+////				findExistingFolder()
+////			}
+//
+//        }
+//        return false;
+//    }
 
     public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
         if (table.getItems().isEmpty()) {

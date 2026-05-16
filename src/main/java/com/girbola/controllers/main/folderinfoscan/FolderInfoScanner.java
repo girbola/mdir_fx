@@ -24,31 +24,85 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.girbola.utils.FileInfoUtils.createFileInfo;
 import static common.utils.FileUtils.supportedMediaFormat;
 
 public class FolderInfoScanner extends Task<Integer> {
 
     private final Tables tables;
-    private final Path selectedFolder;
+    private final List<Path> selectedFolders;
+
+    private final Map<String, FolderInfo> existingFoldersByPath = new HashMap<>();
 
     private final List<FolderInfo> sortItFoldersToAdd = new ArrayList<>();
     private final List<FolderInfo> sortedFoldersToAdd = new ArrayList<>();
     private final List<FolderInfo> asItIsFoldersToAdd = new ArrayList<>();
     private final List<FolderInfo> changedExistingFolders = new ArrayList<>();
 
-    public FolderInfoScanner(Tables tables, Path selectedFolder) {
+    public FolderInfoScanner(Tables tables, List<Path> selectedFolders) {
         this.tables = tables;
-        this.selectedFolder = selectedFolder;
+        this.selectedFolders = selectedFolders == null ? List.of() : List.copyOf(selectedFolders);
+
+        /*
+         * TableView items must be read on the JavaFX Application Thread.
+         * This constructor is created from JavaFX event handlers, so taking the snapshot here
+         * avoids reading TableView content from call().
+         */
+        snapshotExistingFolders();
+    }
+
+    private void snapshotExistingFolders() {
+        existingFoldersByPath.clear();
+        snapshotTable(tables.getSortIt_table());
+        snapshotTable(tables.getSorted_table());
+        snapshotTable(tables.getAsItIs_table());
+    }
+
+    private void snapshotTable(TableView<FolderInfo> table) {
+        for (FolderInfo folderInfo : table.getItems()) {
+            if (folderInfo.getFolderPath() == null || folderInfo.getFolderPath().isBlank()) {
+                continue;
+            }
+
+            existingFoldersByPath.put(
+                    normalizePathString(Path.of(folderInfo.getFolderPath())),
+                    folderInfo
+            );
+        }
     }
 
     @Override
     protected Integer call() throws Exception {
-        if (selectedFolder == null || !Files.isDirectory(selectedFolder)) {
-            Messages.sprintfError("FolderInfoScanner selectedFolder was invalid: " + selectedFolder);
+        if (selectedFolders.isEmpty()) {
+            Messages.sprintf("FolderInfoScanner selectedFolders was empty");
             return 0;
         }
 
+        for (Path selectedFolder : selectedFolders) {
+            if (isCancelled() || Main.getProcessCancelled()) {
+                cancel();
+                break;
+            }
+
+            if (selectedFolder == null || !Files.isDirectory(selectedFolder)) {
+                Messages.sprintfError("FolderInfoScanner selectedFolder was invalid: " + selectedFolder);
+                continue;
+            }
+
+            scanSelectedFolder(selectedFolder);
+        }
+
+        return sortItFoldersToAdd.size()
+                + sortedFoldersToAdd.size()
+                + asItIsFoldersToAdd.size()
+                + changedExistingFolders.size();
+    }
+
+    private void scanSelectedFolder(Path selectedFolder) throws IOException {
         Files.walkFileTree(selectedFolder, new SimpleFileVisitor<>() {
 
             @Override
@@ -75,11 +129,6 @@ public class FolderInfoScanner extends Task<Integer> {
                 return FileVisitResult.SKIP_SUBTREE;
             }
         });
-
-        return sortItFoldersToAdd.size()
-                + sortedFoldersToAdd.size()
-                + asItIsFoldersToAdd.size()
-                + changedExistingFolders.size();
     }
 
     private void scanDirectory(Path directory) throws IOException {
@@ -117,11 +166,14 @@ public class FolderInfoScanner extends Task<Integer> {
                 if (!supportedMediaFormat(path)) {
                     continue;
                 }
-
+long startTime = System.currentTimeMillis();
                 FileInfo fileInfo = createFileInfo(path);
 
                 if (fileInfo != null) {
+                    Messages.sprintf("FileInfo were created! " + fileInfo.getOrgPath());
                     fileInfos.add(fileInfo);
+                    long endTime = System.currentTimeMillis();
+                    Messages.sprintf("########createFileInfosFromDirectory created in " + (endTime - startTime) + " ms ################");
                 } else {
                     Messages.sprintfError("FolderInfoScanner createFileInfo returned null: " + path);
                 }
@@ -255,37 +307,7 @@ public class FolderInfoScanner extends Task<Integer> {
     }
 
     private FolderInfo findExistingFolderInfo(Path folderPath) {
-        FolderInfo folderInfo = findExistingFolderInfoFromTable(tables.getSortIt_table(), folderPath);
-
-        if (folderInfo != null) {
-            return folderInfo;
-        }
-
-        folderInfo = findExistingFolderInfoFromTable(tables.getSorted_table(), folderPath);
-
-        if (folderInfo != null) {
-            return folderInfo;
-        }
-
-        return findExistingFolderInfoFromTable(tables.getAsItIs_table(), folderPath);
-    }
-
-    private FolderInfo findExistingFolderInfoFromTable(TableView<FolderInfo> table, Path folderPath) {
-        String normalizedFolderPath = normalizePathString(folderPath);
-
-        for (FolderInfo folderInfo : table.getItems()) {
-            if (folderInfo.getFolderPath() == null) {
-                continue;
-            }
-
-            String existingFolderPath = normalizePathString(Path.of(folderInfo.getFolderPath()));
-
-            if (existingFolderPath.equals(normalizedFolderPath)) {
-                return folderInfo;
-            }
-        }
-
-        return null;
+        return existingFoldersByPath.get(normalizePathString(folderPath));
     }
 
     private String normalizePathString(Path path) {
@@ -296,37 +318,39 @@ public class FolderInfoScanner extends Task<Integer> {
     protected void succeeded() {
         super.succeeded();
 
-        Platform.runLater(() -> {
-            tables.getSortIt_table().getItems().addAll(sortItFoldersToAdd);
-            tables.getSorted_table().getItems().addAll(sortedFoldersToAdd);
-            tables.getAsItIs_table().getItems().addAll(asItIsFoldersToAdd);
+        /*
+         * Task.succeeded() already runs on the JavaFX Application Thread.
+         * Do not wrap this in Platform.runLater().
+         */
+        tables.getSortIt_table().getItems().addAll(sortItFoldersToAdd);
+        tables.getSorted_table().getItems().addAll(sortedFoldersToAdd);
+        tables.getAsItIs_table().getItems().addAll(asItIsFoldersToAdd);
 
-            TableUtils.refreshTableContent(tables.getSortIt_table());
-            TableUtils.refreshTableContent(tables.getSorted_table());
-            TableUtils.refreshTableContent(tables.getAsItIs_table());
-            TableUtils.calculateTableViewsStatistic(tables);
+        TableUtils.refreshTableContent(tables.getSortIt_table());
+        TableUtils.refreshTableContent(tables.getSorted_table());
+        TableUtils.refreshTableContent(tables.getAsItIs_table());
+        TableUtils.calculateTableViewsStatistic(tables);
 
-            if (!sortItFoldersToAdd.isEmpty()
-                    || !sortedFoldersToAdd.isEmpty()
-                    || !asItIsFoldersToAdd.isEmpty()
-                    || !changedExistingFolders.isEmpty()) {
-                Main.setChanged(true);
-            }
+        if (!sortItFoldersToAdd.isEmpty()
+                || !sortedFoldersToAdd.isEmpty()
+                || !asItIsFoldersToAdd.isEmpty()
+                || !changedExistingFolders.isEmpty()) {
+            Main.setChanged(true);
+        }
 
-            Messages.sprintf("FolderInfoScanner completed. Added SORTIT: "
-                    + sortItFoldersToAdd.size()
-                    + " Added SORTED: "
-                    + sortedFoldersToAdd.size()
-                    + " Added ASITIS: "
-                    + asItIsFoldersToAdd.size()
-                    + " Changed existing: "
-                    + changedExistingFolders.size());
-        });
+        Messages.sprintf("FolderInfoScanner completed. Added SORTIT: "
+                + sortItFoldersToAdd.size()
+                + " Added SORTED: "
+                + sortedFoldersToAdd.size()
+                + " Added ASITIS: "
+                + asItIsFoldersToAdd.size()
+                + " Changed existing: "
+                + changedExistingFolders.size());
     }
 
     @Override
     protected void cancelled() {
-        Messages.sprintf("FolderInfoScanner cancelled: " + selectedFolder);
+        Messages.sprintf("FolderInfoScanner cancelled");
     }
 
     @Override
@@ -334,10 +358,9 @@ public class FolderInfoScanner extends Task<Integer> {
         Throwable exception = getException();
 
         if (exception != null) {
-            Messages.sprintfError("FolderInfoScanner failed: "
-                    + selectedFolder + " error: " + exception.getMessage());
+            Messages.sprintfError("FolderInfoScanner failed: " + exception.getMessage());
         } else {
-            Messages.sprintfError("FolderInfoScanner failed: " + selectedFolder);
+            Messages.sprintfError("FolderInfoScanner failed");
         }
     }
 }

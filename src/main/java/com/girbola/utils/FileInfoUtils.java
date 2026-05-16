@@ -843,8 +843,9 @@ public class FileInfoUtils {
     }
 
     public static FileInfo createFileInfo(Path path) throws IOException {
-        String sourceDriveSerialNumber = resolveSourceDriveSerialNumber(path);
+//        String sourceDriveSerialNumber = resolveSourceDriveSerialNumber(path);
         Messages.sprintf("--------------createFileInfo: " + path);
+        long startTime = System.currentTimeMillis();
 
         if (!Files.isRegularFile(path)) {
             Messages.sprintf("File were not a regular file: " + path);
@@ -856,8 +857,12 @@ public class FileInfoUtils {
         try {
             FileInfo fileInfo = new FileInfo(path.toString(), fileInfoId);
 
-            fileInfo.setOrgPathDriveSerialNumber(sourceDriveSerialNumber);
+//            fileInfo.setOrgPathDriveSerialNumber(sourceDriveSerialNumber);
+            long startTimeSha = System.currentTimeMillis();
             fileInfo.setSha256Checksum(calculateFileSHA256(path));
+            long endTimeSha = System.currentTimeMillis();
+            Messages.sprintf("******SHA256: TOOK:::::: " + (endTimeSha - startTimeSha) + "ms");
+
 
             boolean processed = populateFileInfoByType(path, fileInfo);
 
@@ -869,8 +874,12 @@ public class FileInfoUtils {
 
             fileInfo.setFileHistories(
                     Arrays.asList(LocalDateTime.now() + " FileInfo created. PATH=" + fileInfo.getOrgPath()));
+            long endTime = System.currentTimeMillis();
+            Messages.sprintf("########FileInfo created in " + (endTime - startTime) + " ms ################");
             return fileInfo;
         } catch (IOException e) {
+            long endTime = System.currentTimeMillis();
+            Messages.sprintf("########FileInfo created in " + (endTime - startTime) + " ms ################");
             Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
             throw e;
         }
@@ -883,9 +892,13 @@ public class FileInfoUtils {
 
         try (InputStream in = Files.newInputStream(path)) {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] buffer = new byte[8192];
 
-            for (int read; (read = in.read(buffer)) != -1; ) {
+            // Increased buffer size for better I/O performance
+            // Larger buffer reduces system calls, especially for large files
+            byte[] buffer = new byte[128 * 1024]; // 128KB instead of 8KB
+
+            int read;
+            while ((read = in.read(buffer)) != -1) {
                 digest.update(buffer, 0, read);
             }
 

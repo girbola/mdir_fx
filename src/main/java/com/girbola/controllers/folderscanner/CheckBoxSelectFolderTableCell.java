@@ -10,6 +10,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
+import javafx.scene.robot.Robot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,58 +46,19 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
         if (checkBox == null) {
             checkBox = new CheckBox();
             checkBox.setSelected(getValue());
-            checkBox.selectedProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> observableValue, Boolean oldValue, Boolean newValue) {
+            checkBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
+                Messages.sprintf("CheckBoxSelectFolderTableCell CHECKBOX IS: " + newValue);
+                SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
 
-
-                    SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
-                    selectedFolder.setSelected(newValue);
-                    selectedFolder.setConnected(true);
-                    selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
-
-                    Messages.sprintf("CHECKBOX IS: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia());
-
-                    if(newValue == true) {
-                        if(!hasSelectedFolders(selectedFolder)) {
-                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(selectedFolder);
-                            modelMain.getFolderSelectionService().selectFolder(selectedFolder);
-                        }
-                    } else {
-                        if(hasSelectedFolders(selectedFolder)) {
-                            modelMain.getSelectedFolders().getSelectedFolderScanner_obs().remove(selectedFolder);
-                            modelMain.getFolderSelectionService().remove(selectedFolder);
-                        }
+                for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+                        selectedFolder1.setSelected(newValue);
+                        selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));
+                        Messages.sprintf("--CHECKBOX IS: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia());
                     }
-
-
-//                    for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-//                        if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
-//                            selectedFolder1.setSelected(newValue);
-//                            if(newValue) {
-//                                // Check if folder exists and then check for media
-//                                if(selectedFolder1.getFolder() != null && Files.exists(Paths.get(selectedFolder1.getFolder()))) {
-//                                    boolean hasMedia = FileUtils.getHasMedia(selectedFolder1.getFolder());
-//                                    selectedFolder.setMedia(hasMedia);
-//                                } else {
-//                                    selectedFolder.setMedia(false);
-//                                }
-//                            }
-//                            Messages.sprintf("Selected folder changed to: " + newValue);
-//                        }
-//                    }
                 }
             });
         }
-    }
-
-    private boolean hasSelectedFolders(SelectedFolder selectedFolder) {
-        for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private Boolean getValue() {

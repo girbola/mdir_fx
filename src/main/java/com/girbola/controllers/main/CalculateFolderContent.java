@@ -30,12 +30,12 @@ public class CalculateFolderContent extends Task<Void> {
 
     private final String ERROR = CalculateFolderContent.class.getSimpleName();
 
-    private ModelMain model;
+    private ModelMain modelMain;
     private IntegerProperty total;
     private IntegerProperty counter = new SimpleIntegerProperty();
 
-    public CalculateFolderContent(ModelMain aModel, LoadingProcessTask aLoadingProcess_Task, IntegerProperty total) {
-        this.model = aModel;
+    public CalculateFolderContent(ModelMain modelMain, LoadingProcessTask aLoadingProcess_Task, IntegerProperty total) {
+        this.modelMain = modelMain;
         this.total = total;
         this.counter = this.total;
     }
@@ -54,11 +54,11 @@ public class CalculateFolderContent extends Task<Void> {
             return;
         }
         if (tableType.equals(TableType.SORTED.getType())) {
-            tableView = model.tables().getSorted_table();
+            tableView = modelMain.tables().getSorted_table();
         } else if (tableType.equals(TableType.SORTIT.getType())) {
-            tableView = model.tables().getSortIt_table();
+            tableView = modelMain.tables().getSortIt_table();
         } else if (tableType.equals(TableType.ASITIS.getType())) {
-            tableView = model.tables().getAsItIs_table();
+            tableView = modelMain.tables().getAsItIs_table();
         } else {
             Messages.errorSmth(ERROR, "Can't find Tabletype: " + tableType, null, Misc.getLineNumber(), true);
             return;
@@ -151,15 +151,22 @@ public class CalculateFolderContent extends Task<Void> {
             TableUtils.refreshTableContent(tableView);
 
         } else {
-            List<FileInfo> li = createFileInfo_list(folderInfo);
-            folderInfo.setFileInfoList(li);
-            if (!folderInfo.getFileInfoList().isEmpty()) {
+            if (folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
                 FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                 counter.set(counter.get() - 1);
                 updateProgress(counter.get(), total.get());
                 updateMessage(folderInfo.getFolderPath());
                 TableUtils.refreshTableContent(tableView);
-
+            } else {
+                List<FileInfo> li = createFileInfo_list(folderInfo);
+                folderInfo.setFileInfoList(li);
+                if (!folderInfo.getFileInfoList().isEmpty()) {
+                    FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+                    counter.set(counter.get() - 1);
+                    updateProgress(counter.get(), total.get());
+                    updateMessage(folderInfo.getFolderPath());
+                    TableUtils.refreshTableContent(tableView);
+                }
             }
         }
     }

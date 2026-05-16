@@ -1,6 +1,5 @@
 package com.girbola.controllers.main;
 
-import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import java.io.IOException;
@@ -57,6 +56,7 @@ public class SubList extends Task<List<Path>> {
             List<Future<?>> futures = new ArrayList<>();
 
             for (Path root : selectedFolderScannerList) {
+                Messages.sprintf("-------------------Submitting task for folder: " + root);
                 futures.add(executor.submit(() -> scanRootFolder(root)));
             }
 
@@ -64,8 +64,9 @@ public class SubList extends Task<List<Path>> {
             for (Future<?> f : futures) {
                 try {
                     f.get(); // wait
+                    Messages.sprintf("Task completed." + foldersWithMedia.size());
                 } catch (CancellationException e) {
-                    Messages.sprintf("Task cancelled.");
+                    Messages.sprintf("Task cancelled." + foldersWithMedia.size());
                 } catch (ExecutionException e) {
                     Messages.sprintfError("Task error: " + e.getMessage());
                 }
@@ -128,6 +129,7 @@ Messages.sprintf("foldersWithMedia size: " + result.size());
 //                        Messages.sprintf("Found media in folder: " + dir);
 //                        foldersWithMedia.add(dir);
 //                    }
+                    Messages.sprintf("----------Found media in folder: " + dir);
                     foldersWithMedia.add(dir);
                     return FileVisitResult.CONTINUE;
                 }

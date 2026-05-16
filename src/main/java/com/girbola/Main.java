@@ -30,6 +30,10 @@ import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.date.SimpleDates;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileLock;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ListResourceBundle;
@@ -58,6 +62,9 @@ public class Main extends Application {
     private static final String ERROR = Main.class.getSimpleName();
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
+
+    private static RandomAccessFile lockFile;
+    private static FileLock fileLock;
 
     private ModelMain model_main = new ModelMain();
     private Scene primaryScene;
@@ -179,7 +186,7 @@ public class Main extends Application {
         try {
             bundle = ResourceBundle.getBundle(BUNDLE_PATH);
 
-            Messages.sprintf("=====Successfully loaded default resource bundle: " + bundle.getString("startBatchCopy"));
+            Messages.sprintf("=====Successfully loaded default resource bundle. startBatchCopy = " + bundle.getString("startBatchCopy"));
             return true;
         } catch (MissingResourceException defaultEx) {
             boolean fallingBack = loadFallbackBundle();
@@ -212,6 +219,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        if (!acquireSingleInstanceLock()) {
+            Messages.sprintfError("Another instance of " + APP_NAME + " is already running!");
+            Platform.exit();
+            return;
+        }
+
         stageControl = new StageControl(model_main, primaryStage);
 
         mainTask = new Task<>() {
@@ -485,8 +498,43 @@ public class Main extends Application {
 
         ConcurrencyUtils.stopAllExecThreadNow();
         FileInfoSqlConnectionFactory.closeAllConnections();
+        releaseSingleInstanceLock();
         Messages.sprintf("Program has ended. Exiting...");
         Platform.exit();
+    }
+
+    private boolean acquireSingleInstanceLock() {
+        try {
+            String tempDir = System.getProperty("java.io.tmpdir");
+            File lockFileObj = new File(tempDir, "mdir_application.lock");
+            lockFile = new RandomAccessFile(lockFileObj, "rw");
+            fileLock = lockFile.getChannel().tryLock();
+
+            if (fileLock == null) {
+                lockFile.close();
+                return false;
+            }
+
+            Messages.sprintf("Single instance lock acquired successfully");
+            return true;
+        } catch (IOException e) {
+            Messages.sprintfError("Failed to acquire single instance lock: " + e.getMessage());
+            return false;
+        }
+    }
+
+    private void releaseSingleInstanceLock() {
+        try {
+            if (fileLock != null && fileLock.isValid()) {
+                fileLock.release();
+                Messages.sprintf("Single instance lock released");
+            }
+            if (lockFile != null) {
+                lockFile.close();
+            }
+        } catch (IOException e) {
+            Messages.sprintfError("Error releasing single instance lock: " + e.getMessage());
+        }
     }
 
     public static void centerWindowDialog(Stage stage) {
