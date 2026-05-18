@@ -10,6 +10,8 @@ import com.girbola.utils.CommonUserFolders;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
@@ -68,6 +70,7 @@ public class FolderScannerController {
 
     private ModelMain modelMain;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
+    private List<SelectedFolder> selectedFolderScanner = new ArrayList<>();
 
     private Scene folderScannerController_scene;
 //    private Stage folderScannerController_stage;
@@ -79,14 +82,17 @@ private CheckBoxTreeItem<Path> drives_rootItem;
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
         sprintf("addToSelectedFolders_btn_action...");
+
+        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().addAll(selectedFolderScanner);
+
         for (Path path : model_folderScanner.getSelectedDrivesFoldersListObs()) {
             sprintf("Path is: " + path);
             if (Files.exists(path)) {
-                if (!selectedFolderHasValue(this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs(),
+                if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(),
                         path)) {
                     if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
                                 .add(new SelectedFolder(true, true, path.toString(),true));
                     }
                 }
@@ -175,19 +181,8 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //    }
 
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(selectedFolderScanner, model_folderScanner);
 
-    public void initTableWidths() {
-        Messages.sprintf("initTableWidths::::::: " + homeDefaultsTableView.getWidth());
-                        Platform.runLater(() -> {
-                            homeDefaultsTableView.getScene().getWindow().sizeToScene();
-                            homeDefaultsTableView.refresh();
-                            homeDefaultsTableView.layout();
-                            homeDefaultsTableView.autosize();
-                            Messages.sprintf("initTableWidths homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
-                        });
-
-    }
     public void initFolderScanner() {
         Main.setProcessCancelled(false);
 
@@ -255,13 +250,12 @@ private CheckBoxTreeItem<Path> drives_rootItem;
                 SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
                 if (selectedHomeFolder != null) {
                     Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
-                    this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
+                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
                 } else {
                     selectedHomeFolder = new SelectedFolder(false, true, commonPath.toString(), false);
-                    this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
+                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }
-
         }
 //        homeDefaultsTableView.setColumnResizePolicy(tableView -> true);
 
@@ -376,56 +370,7 @@ Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItem
             column.setPrefWidth( max + 10.0d );
         } );
     }
-    private void updatePathColumnWidth_() {
-        if (homeDefaultsTableView.getScene() == null || !homeDefaultsTableView.isVisible()) {
-            Messages.sprintfError("updatePathColumnWidth() scene is null!");
-            return;
-        }
 
-        homeDefaultsTableView.applyCss();
-
-        double maxWidth = 5.0; // minimum width
-        javafx.scene.text.Text text = new javafx.scene.text.Text();
-
-        // Get the actual font from a cell renderer if possible
-        javafx.scene.text.Font cellFont = null;
-        if (!homeDefaultsTableView.getItems().isEmpty()) {
-            // Try to get font from an actual rendered cell
-            TableCell<SelectedFolder, String> cell = (TableCell<SelectedFolder, String>) homeDefaults_path_column.getCellFactory().call(homeDefaults_path_column);
-            if (cell != null && cell.getFont() != null) {
-                cellFont = cell.getFont();
-            }
-        }
-        
-        // Fallback to default font if we couldn't get cell font
-        if (cellFont == null) {
-            cellFont = javafx.scene.text.Font.getDefault();
-        }
-        
-        text.setFont(cellFont);
-
-        for (SelectedFolder folder : this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs()) {
-            text.setText(folder.getFolder());
-            double textWidth = text.getLayoutBounds().getWidth();
-            if (textWidth > maxWidth) {
-                maxWidth = textWidth;
-            }
-        }
-
-        // Add more padding to account for cell padding and scrollbar
-        double newWidth = maxWidth + 40;
-        
-        // Ensure we don't exceed table width
-        double tableWidth = homeDefaultsTableView.getWidth();
-        if (tableWidth > 0 && newWidth > tableWidth - homeDefaults_select_column.getWidth() - 20) {
-            newWidth = tableWidth - homeDefaults_select_column.getWidth() - 20;
-        }
-        
-        homeDefaults_path_column.setPrefWidth(newWidth);
-        homeDefaults_path_column.setMinWidth(newWidth);
-        homeDefaults_path_column.setMaxWidth(newWidth);
-        Messages.sprintf("######################################homeDefaults_path_column.setPrefWidth(newWidth); " + newWidth);
-    }
     SelectedFolder existsInSelectedFolderScannerObs(Path commonPath) {
         for (SelectedFolder sf : this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (sf.getFolder().equals(commonPath.toString())) {

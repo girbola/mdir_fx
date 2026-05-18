@@ -46,8 +46,6 @@ public class ValidatePathUtils {
                 }
             } catch (IOException ex) {
                 Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-                // Logger.getLogger(ValidatePathUtils.class.getName()).log(Level.SEVERE, null,
-                // ex);
             }
         }
         return false;
@@ -65,7 +63,7 @@ public class ValidatePathUtils {
         final char HIDDEN_FILE_PREFIX = '.';
 
         String fileName = file.getFileName().toString();
-        if(Files.isRegularFile(file)) {
+        if (Files.isRegularFile(file)) {
             return false;
         }
         Messages.sprintf("----isInSkippedFolderList Checking file: " + file.toString());

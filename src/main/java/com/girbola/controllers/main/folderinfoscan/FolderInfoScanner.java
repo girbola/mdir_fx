@@ -7,26 +7,28 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.fileinfo.FileInfo;
+import com.girbola.filelisting.GetRootFiles;
+import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.scene.control.TableView;
-
+import com.girbola.persistence.fileinfo.FileInfoDao;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
+import common.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import javafx.concurrent.Task;
+import javafx.scene.control.TableView;
 
 import static com.girbola.utils.FileInfoUtils.createFileInfo;
 import static common.utils.FileUtils.supportedMediaFormat;
@@ -132,8 +134,30 @@ public class FolderInfoScanner extends Task<Integer> {
     }
 
     private void scanDirectory(Path directory) throws IOException {
-        List<FileInfo> currentFileInfos = createFileInfosFromDirectory(directory);
+        FolderInfo folderInfo = null;
+        Path mdirDatabaseFilePath = directory.resolve(Main.conf.getMdir_db_fileName());
+        if(Files.exists(mdirDatabaseFilePath)) {
+            folderInfo = FolderInfoDao.loadFolderInfo(directory);
+        }
 
+        List<FileInfo> currentFileInfos = null;
+
+        if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
+            currentFileInfos = folderInfo.getFileInfoList();
+
+            List<Path> rootFiles = GetRootFiles.getRootFiles(directory);
+            FileUtils.checkFolderForChanges(folderInfo.getFileInfoList(), rootFiles);
+
+            boolean hasMediaFilesInFolder = ValidatePathUtils.hasMediaFilesInFolder(directory);
+            if (!hasMediaFilesInFolder) {
+
+            }
+
+
+            Messages.sprintf("Found existing folder info for directory: " + directory);
+        } else {
+            currentFileInfos = createFileInfosFromDirectory(directory);
+        }
         if (currentFileInfos.isEmpty()) {
             removeExistingFolderIfDirectoryNoLongerHasMedia(directory);
             return;
@@ -166,7 +190,7 @@ public class FolderInfoScanner extends Task<Integer> {
                 if (!supportedMediaFormat(path)) {
                     continue;
                 }
-long startTime = System.currentTimeMillis();
+                long startTime = System.currentTimeMillis();
                 FileInfo fileInfo = createFileInfo(path);
 
                 if (fileInfo != null) {
@@ -296,7 +320,6 @@ long startTime = System.currentTimeMillis();
         switch (tableType) {
             case SORTED -> sortedFoldersToAdd.add(folderInfo);
             case ASITIS -> asItIsFoldersToAdd.add(folderInfo);
-            case SORTIT -> sortItFoldersToAdd.add(folderInfo);
             default -> sortItFoldersToAdd.add(folderInfo);
         }
 

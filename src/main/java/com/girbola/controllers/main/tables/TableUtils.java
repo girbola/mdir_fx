@@ -7,6 +7,7 @@ import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.ConfigurationSqlConnection;
 import com.girbola.controllers.conflicttableview.ConflictTableViewController;
+import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.CleanTableView;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
@@ -958,5 +959,40 @@ public class TableUtils {
                 Messages.sprintf("Destination path would be: " + fileInfo.getDestination_Path());
             }
         }
+    }
+
+    public static boolean removeNotSelectedFromTables(ModelMain modelMain) {
+
+        boolean changed = false;
+
+        for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (!selectedFolder.isSelected()) {
+                Messages.sprintf("Removing not selected folder: " + selectedFolder.getFolder());
+                Iterator<FolderInfo> items = modelMain.tables().getSorted_table().getItems().iterator();
+                while (items.hasNext()) {
+                    FolderInfo folderInfo = items.next();
+                    if (folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
+                        changed = true;
+                        items.remove();
+                    }
+                }
+            }
+        }
+
+        for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (!selectedFolder.isSelected()) {
+                Iterator<FolderInfo> items = modelMain.tables().getSortIt_table().getItems().iterator();
+                while (items.hasNext()) {
+                    FolderInfo folderInfo = items.next();
+                    if (folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
+                        changed = true;
+                        items.remove();
+                    }
+                }
+            }
+        }
+
+
+        return changed;
     }
 }

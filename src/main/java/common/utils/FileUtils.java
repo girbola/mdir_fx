@@ -21,8 +21,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.util.Iterator;
+import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.utils.FileInfoUtils.createFileInfo;
 
 /**
  * @author Marko
@@ -253,6 +255,7 @@ public class FileUtils {
     public static boolean supportedMediaFormat(Path file) {
         return supportedMediaFormat(file.toFile());
     }
+
     /**
      * Checks if file supports image, raw or video formats
      *
@@ -603,4 +606,41 @@ public class FileUtils {
         return null;
     }
 
+    private static boolean rootFolderFilesExists(FileInfo fileInfo, List<Path> rootFiles) {
+        for (Path rootFile : rootFiles) {
+            if (fileInfo.getOrgPath().equals(rootFile.toAbsolutePath().toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean isFileInfoExists(Path rootFile, List<FileInfo> fileInfos) {
+        for (FileInfo fileInfo : fileInfos) {
+            if (fileInfo.getOrgPath().equals(rootFile.toAbsolutePath().toString())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static void checkFolderForChanges(List<FileInfo> fileInfos, List<Path> rootFiles) throws IOException {
+
+        Iterator<FileInfo> iterator = fileInfos.iterator();
+        while (iterator.hasNext()) {
+            FileInfo fileInfo = iterator.next();
+            if (!rootFolderFilesExists(fileInfo, rootFiles)) {
+                fileInfos.remove(fileInfo);
+            }
+        }
+
+        for (Path rootFile : rootFiles) {
+            if (!isFileInfoExists(rootFile, fileInfos)) {
+                FileInfo fileInfo = createFileInfo(rootFile);
+                fileInfos.add(fileInfo);
+                Messages.sprintf("File not found in database: " + rootFile.toAbsolutePath().toString());
+            }
+        }
+    }
 }

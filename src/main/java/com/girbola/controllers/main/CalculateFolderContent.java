@@ -100,74 +100,78 @@ public class CalculateFolderContent extends Task<Void> {
     private void handleFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
         Path mdirDatabaseFilePath = Paths.get(folderInfo.getFolderPath(), conf.getMdir_db_fileName());
         Messages.sprintf("mdirDatabaseFilePath trying to find folderinfo path: " + mdirDatabaseFilePath);
-        if (Files.exists(mdirDatabaseFilePath)) {
-            Messages.sprintf("File DOES exists at: " + mdirDatabaseFilePath);
 
-            FolderInfo loaded_FolderInfo = null;
-            try {
-                loaded_FolderInfo = SQL_Utils.loadFolderInfoCurrentDir(mdirDatabaseFilePath.getParent());
-                if (loaded_FolderInfo == null) {
-                    Messages.sprintf("loaded_FolderInfo were null at: " + mdirDatabaseFilePath + " Creating new one");
-                    List<FileInfo> listOfFileInfos = createFileInfo_list(folderInfo);
-                    loaded_FolderInfo = new FolderInfo(mdirDatabaseFilePath.getParent());
-
-                    folderInfo.setFileInfoList(listOfFileInfos);
-
-                    if (!folderInfo.getFileInfoList().isEmpty()) {
-                        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                        counter.set(counter.get() - 1);
-                        updateProgress(counter.get(), total.get());
-                        updateMessage(folderInfo.getFolderPath());
-                        TableUtils.refreshTableContent(tableView);
-                        return;
-                    }
-                }
-                folderInfo.setBadFiles(loaded_FolderInfo.getBadFiles());
-                if (loaded_FolderInfo.getFileInfoList() == null) {
-                    List<FileInfo> li = createFileInfo_list(folderInfo);
-                    folderInfo.setFileInfoList(li);
-                    if (!folderInfo.getFileInfoList().isEmpty()) {
-                        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                        counter.set(counter.get() - 1);
-                        updateProgress(counter.get(), total.get());
-                        updateMessage(folderInfo.getFolderPath());
-                        TableUtils.refreshTableContent(tableView);
-                        return;
-                    }
-                }
-            } catch (Exception ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        try {
+            if (hasFileInfos(folderInfo)) {
+                Messages.sprintf("Using existing FileInfo list: " + folderInfo.getFolderPath());
+                finishFolderInfo(folderInfo, tableView);
+                return;
             }
-            if (loaded_FolderInfo != null) {
-                folderInfo.setFileInfoList(loaded_FolderInfo.getFileInfoList());
-                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                Messages.sprintf("folderInfo were not zero: " + folderInfo.getFolderPath());
+
+            FolderInfo loadedFolderInfo = loadFolderInfoIfDatabaseExists(mdirDatabaseFilePath);
+
+            if (loadedFolderInfo != null && hasFileInfos(loadedFolderInfo)) {
+                folderInfo.setBadFiles(loadedFolderInfo.getBadFiles());
+                folderInfo.setFileInfoList(loadedFolderInfo.getFileInfoList());
+                Messages.sprintf("Loaded FolderInfo from database: " + folderInfo.getFolderPath());
+                finishFolderInfo(folderInfo, tableView);
+                return;
+            }
+
+            Messages.sprintf("Creating FileInfo list for: " + folderInfo.getFolderPath());
+            List<FileInfo> fileInfos = createFileInfo_list(folderInfo);
+            folderInfo.setFileInfoList(fileInfos);
+
+            if (hasFileInfos(folderInfo)) {
+                finishFolderInfo(folderInfo, tableView);
             } else {
-                Messages.sprintf("folderInfo were were zero: " + mdirDatabaseFilePath);
+                Messages.sprintf("FolderInfo FileInfo list was empty: " + folderInfo.getFolderPath());
+                updateTaskProgress(folderInfo, tableView);
             }
-            counter.set(counter.get() - 1);
-            updateProgress(counter.get(), total.get());
-            updateMessage(folderInfo.getFolderPath());
-            TableUtils.refreshTableContent(tableView);
-
-        } else {
-            if (folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
-                FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                counter.set(counter.get() - 1);
-                updateProgress(counter.get(), total.get());
-                updateMessage(folderInfo.getFolderPath());
-                TableUtils.refreshTableContent(tableView);
-            } else {
-                List<FileInfo> li = createFileInfo_list(folderInfo);
-                folderInfo.setFileInfoList(li);
-                if (!folderInfo.getFileInfoList().isEmpty()) {
-                    FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                    counter.set(counter.get() - 1);
-                    updateProgress(counter.get(), total.get());
-                    updateMessage(folderInfo.getFolderPath());
-                    TableUtils.refreshTableContent(tableView);
-                }
-            }
+        } catch (Exception ex) {
+            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            updateTaskProgress(folderInfo, tableView);
         }
+    }
+
+    private FolderInfo loadFolderInfoIfDatabaseExists(Path mdirDatabaseFilePath) {
+        if (!Files.exists(mdirDatabaseFilePath)) {
+            Messages.sprintf("File DOES NOT exist at: " + mdirDatabaseFilePath);
+            return null;
+        }
+
+        Messages.sprintf("File DOES exists at: " + mdirDatabaseFilePath);
+
+        try {
+            FolderInfo loadedFolderInfo = SQL_Utils.loadFolderInfoCurrentDir(mdirDatabaseFilePath.getParent());
+
+            if (loadedFolderInfo == null) {
+                Messages.sprintf("loadedFolderInfo was null at: " + mdirDatabaseFilePath);
+            }
+
+            return loadedFolderInfo;
+        } catch (Exception ex) {
+            Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+            return null;
+        }
+    }
+
+    private boolean hasFileInfos(FolderInfo folderInfo) {
+        return folderInfo != null
+                && folderInfo.getFileInfoList() != null
+                && !folderInfo.getFileInfoList().isEmpty();
+    }
+
+    private void finishFolderInfo(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
+        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+        Messages.sprintf("FolderInfo calculated: " + folderInfo.getFolderPath());
+        updateTaskProgress(folderInfo, tableView);
+    }
+
+    private void updateTaskProgress(FolderInfo folderInfo, TableView<FolderInfo> tableView) {
+        counter.set(counter.get() - 1);
+        updateProgress(counter.get(), total.get());
+        updateMessage(folderInfo.getFolderPath());
+        TableUtils.refreshTableContent(tableView);
     }
 }

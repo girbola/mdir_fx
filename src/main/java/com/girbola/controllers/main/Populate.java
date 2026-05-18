@@ -105,7 +105,6 @@ public class Populate {
          */
 
         Task<List<Path>> createFileList = new SubList(selectedFolders);
-
         createFileList.setOnSucceeded(event -> handleFileListSuccess(createFileList, loadingProcessTask, selectedFolders));
         createFileList.setOnCancelled(event -> Messages.sprintf("CreateFileList cancelled"));
         createFileList.setOnFailed(event -> {
@@ -159,7 +158,7 @@ public class Populate {
 
             appendMissingSelectedFolders(selectedFolders);
 
-            for(Path path : fileList) {
+            for (Path path : fileList) {
                 Messages.sprintf("!#!#!#!##!! after appendMissingSelectedFolders path: " + path);
             }
 

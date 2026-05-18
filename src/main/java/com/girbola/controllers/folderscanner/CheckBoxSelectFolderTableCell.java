@@ -6,8 +6,10 @@ import com.girbola.messages.Messages;
 import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.robot.Robot;
@@ -18,13 +20,15 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
 
     private Logger logger = LoggerFactory.getLogger(CheckBoxSelectFolderTableCell.class);
 
-    private ModelMain modelMain;
+    //private ModelMain modelMain;
     private ModelFolderScanner modelFolderScanner;
+    private List<SelectedFolder> selectedFolderScanner;
 
     private CheckBox checkBox;
 
-    public CheckBoxSelectFolderTableCell(ModelMain modelMain, ModelFolderScanner modelFolderScanner) {
-        this.modelMain = modelMain;
+    public CheckBoxSelectFolderTableCell(List<SelectedFolder> selectedFolderScanner, ModelFolderScanner modelFolderScanner) {
+        //this.modelMain = modelMain;
+        this.selectedFolderScanner = selectedFolderScanner;
         this.modelFolderScanner = modelFolderScanner;
     }
 
@@ -50,7 +54,7 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
                 Messages.sprintf("CheckBoxSelectFolderTableCell CHECKBOX IS: " + newValue);
                 SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
 
-                for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                for(SelectedFolder selectedFolder1 : selectedFolderScanner) {
                     if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
                         selectedFolder1.setSelected(newValue);
                         selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));

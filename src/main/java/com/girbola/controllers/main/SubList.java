@@ -10,6 +10,7 @@ import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CancellationException;
@@ -22,10 +23,8 @@ import javafx.concurrent.Task;
 
 public class SubList extends Task<List<Path>> {
 
-    private static final int MAX_SCANNER_THREADS = 4;
-
     private final List<Path> selectedFolderScannerList;
-    private final Set<Path> foldersWithMedia = ConcurrentHashMap.newKeySet();
+    private final Set<Path> foldersWithMedia = new HashSet<>();
 
     public SubList(List<Path> selectedFolderScannerList) {
         this.selectedFolderScannerList = selectedFolderScannerList;
@@ -41,11 +40,11 @@ public class SubList extends Task<List<Path>> {
 
         //int threadCount = calculateThreadCount(selectedFolderScannerList.size());
 
-        ExecutorService executor = Executors.newSingleThreadExecutor(r ->{
-            Thread t = new Thread(r,"sublist-folder-scanner");
-            t.setDaemon(true);
-            return t;
-        });
+//        ExecutorService executor = Executors.newSingleThreadExecutor(r -> {
+//            Thread t = new Thread(r, "sublist-folder-scanner");
+//            t.setDaemon(true);
+//            return t;
+//        });
 //        ExecutorService executor2 = Executors.newSingleThreadExecutor(threadCount, r -> {
 //            Thread t = new Thread(r, "sublist-folder-scanner");
 //            t.setDaemon(true);
@@ -53,41 +52,19 @@ public class SubList extends Task<List<Path>> {
 //        });
 
         try {
-            List<Future<?>> futures = new ArrayList<>();
-
             for (Path root : selectedFolderScannerList) {
                 Messages.sprintf("-------------------Submitting task for folder: " + root);
-                futures.add(executor.submit(() -> scanRootFolder(root)));
+                scanRootFolder(root);
             }
-
-            // Wait for all tasks to complete safely
-            for (Future<?> f : futures) {
-                try {
-                    f.get(); // wait
-                    Messages.sprintf("Task completed." + foldersWithMedia.size());
-                } catch (CancellationException e) {
-                    Messages.sprintf("Task cancelled." + foldersWithMedia.size());
-                } catch (ExecutionException e) {
-                    Messages.sprintfError("Task error: " + e.getMessage());
-                }
-            }
-
         } catch (Exception ex) {
             Messages.sprintfError("Executor error: " + ex.getMessage());
-        } finally {
-            executor.shutdown(); // ✅ graceful shutdown
         }
 
         List<Path> result = new ArrayList<>(foldersWithMedia);
         Collections.sort(result);
-Messages.sprintf("foldersWithMedia size: " + result.size());
+        Messages.sprintf("foldersWithMedia size: " + result.size());
         return result;
     }
-
-//    private int calculateThreadCount(int rootCount) {
-//        int cores = Runtime.getRuntime().availableProcessors();
-//        return Math.max(1, Math.min(Math.min(rootCount, cores), MAX_SCANNER_THREADS));
-//    }
 
     private void scanRootFolder(Path rootFolder) {
         Messages.sprintf("-------------------Scanning folder: " + rootFolder);
@@ -114,7 +91,7 @@ Messages.sprintf("foldersWithMedia size: " + result.size());
                         return FileVisitResult.TERMINATE; // global stop if user cancels
                     }
                     try {
-                        if(Files.isHidden(dir)) {
+                        if (Files.isHidden(dir)) {
                             Messages.sprintf("Hidden folder: " + dir);
                             return FileVisitResult.SKIP_SUBTREE;
                         }

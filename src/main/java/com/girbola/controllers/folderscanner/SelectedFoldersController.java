@@ -2,17 +2,22 @@
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
-import com.girbola.controllers.folderscanner.folderpicker.SelectionPropagation;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -56,6 +61,8 @@ public class SelectedFoldersController {
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(model_main, model_folderScanner);
 
+    private ObservableList<SelectedFolder> selectedFolderScannerOriginal = FXCollections.observableArrayList();
+
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
         Messages.sprintf("selectedFolders_ok_action pressed");
@@ -65,36 +72,51 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
+//        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
+
         model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
             Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
         });
-        for(SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if(!selectedFolder.isSelected()) {
-                Iterator<FolderInfo> items = model_main.tables().getSorted_table().getItems().iterator();
-                while(items.hasNext()) {
-                    FolderInfo folderInfo = items.next();
-                    if(folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
-                        items.remove();
+
+        boolean removeNotSelectedFromTables = TableUtils.removeNotSelectedFromTables(model_main);
+
+        if (model_main.tables().getSorted_table().getItems().isEmpty() && model_main.tables().getSorted_table().getItems().isEmpty()) {
+            Messages.warningText(bundle.getString("noFoldersSelected"));
+            return;
+        }
+
+        List<Path> selectedFolders = new ArrayList<>();
+        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
+                if (sf.isConnected() && sf.isSelected()) {
+                    boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), Paths.get(sf.getFolder()));
+                    if (!selectedFolderExists) {
+                        selectedFolders.add(Paths.get(sf.getFolder()));
+                        sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
+                    }
+                }
+            } else {
+                Messages.sprintf("##### FOLDER IGNORED!!!!: " + sf.getFolder());
+
+                Iterator tableIteratorSortit = model_main.tables().getSortIt_table().getItems().iterator();
+                Iterator tableIteratorSorted = model_main.tables().getSorted_table().getItems().iterator();
+
+                while (tableIteratorSortit.hasNext()) {
+                    FolderInfo folderInfo = (FolderInfo) tableIteratorSortit.next();
+                    if (folderInfo.getFolderPath().startsWith(sf.getFolder())) {
+                        tableIteratorSortit.remove();
+                    }
+                }
+                while (tableIteratorSorted.hasNext()) {
+                    FolderInfo folderInfo = (FolderInfo) tableIteratorSorted.next();
+                    if (folderInfo.getFolderPath().startsWith(sf.getFolder())) {
+                        tableIteratorSorted.remove();
                     }
                 }
             }
         }
 
-        for(SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if(!selectedFolder.isSelected()) {
-                Iterator<FolderInfo> items = model_main.tables().getSortIt_table().getItems().iterator();
-                while(items.hasNext()) {
-                    FolderInfo folderInfo = items.next();
-                    if(folderInfo.getSelectedFolderParentPath().equals(selectedFolder.getFolder())) {
-                        items.remove();
-                    }
-                }
-            }
-        }
-
-
-        model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
+//        model_main.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
         SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
 
 
@@ -108,13 +130,26 @@ public class SelectedFoldersController {
 
 //        SelectionPropagation.syncTreeFromModel(model_main);
 
-        boolean b = SelectedFolderInfoDao.loadSelectedFolders(model_main);
-        if(!b) {
-            Messages.warningText(bundle.getString("errorLoadingSelectedFolders"));
+        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (sf.isSelected()) {
+                Messages.sprintf("##########Selected folder: " + sf.getFolder());
+            }
+
         }
 
-        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
-        SelectionPropagation.syncTreeFromModel(model_main);
+        model_main.getSelectedFolders().getSelectedFolderScanner_obs().clear();
+        for (SelectedFolder sf : selectedFolderScannerOriginal) {
+            model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(sf);
+        }
+//        model_main.getSelectedFolders().getSelectedFolderScanner_obs().addAll(selectedFolderScannerOriginal);
+
+//        boolean loadSelectedFolders = SelectedFolderInfoDao.loadSelectedFolders(model_main);
+//        if (!loadSelectedFolders) {
+//            Messages.warningText(bundle.getString("errorLoadingSelectedFolders"));
+//        }
+//
+//        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+//        SelectionPropagation.syncTreeFromModel(model_main);
         model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
     }
 
@@ -231,6 +266,9 @@ public class SelectedFoldersController {
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
 
+        for (SelectedFolder sf : this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            selectedFolderScannerOriginal.add(sf);
+        }
 
       /*  scanner = new ScheduledService<Void>() {
 
@@ -288,4 +326,12 @@ public class SelectedFoldersController {
 //        this.scanner.cancel();
     }
 
+    private boolean hasInIgnoredListMain(ObservableList<Path> ignoredList, String path) {
+        for (Path ignored : ignoredList) {
+            if (ignored.toString().equals(path)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

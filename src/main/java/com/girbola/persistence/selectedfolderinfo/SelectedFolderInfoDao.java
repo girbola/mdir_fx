@@ -144,10 +144,15 @@ public class SelectedFolderInfoDao {
             DatabaseMetaData metaData = connection.getMetaData();
             ResultSet resultSet = metaData.getTables(null, null, SQLTableEnums.SELECTEDFOLDERS.getType(), null);
             if (resultSet.next()) {
-                Messages.sprintf("Table: " + SQLTableEnums.SELECTEDFOLDERS.getType() + " already exists");
+                Messages.sprintf("Table: already exists " + SQLTableEnums.SELECTEDFOLDERS.getType());
+                for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    Messages.sprintf("----SelectedFolder: " + sf.getFolder() + " isConnected? " + sf.isConnected());
+                }
+
                 insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
+                updateSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
             } else {
-                Messages.sprintf("Table: " + SQLTableEnums.SELECTEDFOLDERS.getType() + " not exists");
+                Messages.sprintf("Table: not exists" + SQLTableEnums.SELECTEDFOLDERS.getType() + " not exists");
                 createSelectedFoldersDBTable(connection);
                 insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
             }
@@ -156,6 +161,9 @@ public class SelectedFolderInfoDao {
         } finally {
             closeConnection(connection);
         }
+    }
+
+    private static void updateSelectedFoldersToDB(Connection connection, ObservableList<SelectedFolder> selectedFolderScannerObs) {
     }
 
     public static boolean loadSelectedFoldersFromConfigDb(Connection connection, ModelMain modelMain) {
@@ -200,9 +208,116 @@ public class SelectedFolderInfoDao {
         }
     }
 
+    public static boolean insertSelectedFoldersToDB(
+            Connection connection,
+            List<SelectedFolder> selectedFolderList
+    ) {
 
-    public static boolean insertSelectedFoldersToDB(Connection connection, List<SelectedFolder> selectedFolder_list) {
-        Messages.sprintf("insertSelectedFoldersToDB SQL: " + insertSelectedFolders);
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.sprintfError("insertSelectedFoldersToDB: connection is null or closed");
+            return false;
+        }
+
+        if (selectedFolderList == null) {
+            Messages.sprintfError("insertSelectedFoldersToDB: list is null");
+            return false;
+        }
+
+        if (selectedFolderList.isEmpty()) {
+            Messages.sprintf("insertSelectedFoldersToDB: nothing to insert");
+            return true;
+        }
+
+        if (!createSelectedFoldersDBTable(connection)) {
+            Messages.sprintfError("insertSelectedFoldersToDB: failed to ensure table exists");
+            return false;
+        }
+
+        boolean originalAutoCommit;
+
+        final String sql = String.format("""
+        INSERT INTO %s (
+            selected,
+            connected,
+            path,
+            media
+        ) VALUES (?,?,?,?)
+        ON CONFLICT(path) DO UPDATE SET
+            selected = excluded.selected,
+            connected = excluded.connected,
+            media = excluded.media
+        """, SQLTableEnums.SELECTEDFOLDERS.getType());
+
+        try {
+            originalAutoCommit = connection.getAutoCommit();
+        } catch (SQLException e) {
+            Messages.sprintfError("Cannot read autoCommit: " + e.getMessage());
+            return false;
+        }
+
+        int batchSize = 0;
+        int batchLimit = 500;
+
+        try {
+            connection.setAutoCommit(false);
+
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+                for (SelectedFolder folder : selectedFolderList) {
+
+                    if (folder == null) {
+                        Messages.sprintfError("Null SelectedFolder skipped");
+                        continue;
+                    }
+
+                    if (!folder.isSelected()) {
+                        continue;
+                    }
+
+                    pstmt.setInt(1, folder.isSelected() ? 1 : 0);
+                    pstmt.setInt(2, folder.isConnected() ? 1 : 0);
+                    pstmt.setString(3, folder.getFolder());
+                    pstmt.setString(4, folder.getDriveSerialNumber());
+
+                    pstmt.addBatch();
+                    batchSize++;
+
+                    if (batchSize >= batchLimit) {
+                        pstmt.executeBatch();
+                        batchSize = 0;
+                    }
+                }
+
+                if (batchSize > 0) {
+                    pstmt.executeBatch();
+                }
+            }
+
+            connection.commit();
+            return true;
+
+        } catch (SQLException ex) {
+
+            try {
+                connection.rollback();
+            } catch (SQLException rbEx) {
+                Messages.sprintfError("Rollback failed: " + rbEx.getMessage());
+            }
+
+            Messages.sprintfError("insertSelectedFoldersToDB failed: " + ex.getMessage());
+            return false;
+
+        } finally {
+
+            try {
+                connection.setAutoCommit(originalAutoCommit);
+            } catch (SQLException e) {
+                Messages.sprintfError("Failed to restore autoCommit: " + e.getMessage());
+            }
+        }
+    }
+    public static boolean insertSelectedFoldersToDB_old(Connection connection, List<SelectedFolder> selectedFolder_list) {
+       // Messages.sprintf("insertSelectedFoldersToDB SQL: " + insertSelectedFolders);
 
         // Validate inputs
         if (!SQL_Utils.isDbConnected(connection)) {
@@ -246,20 +361,20 @@ public class SelectedFolderInfoDao {
                         continue;
                     }
 
-                    Messages.sprintf("insertSelectedFoldersToDB -> evaluating: " + selectedFolder.getFolder());
+                 //   Messages.sprintf("insertSelectedFoldersToDB -> evaluating: " + selectedFolder.getFolder());
 
                     if (!selectedFolder.isSelected()) {
                         // Skip silently or log at low level; do not break the loop
-                        Messages.sprintf("insertSelectedFoldersToDB: skipping unselected folder: " + selectedFolder.getFolder());
+                   //     Messages.sprintf("insertSelectedFoldersToDB: skipping unselected folder: " + selectedFolder.getFolder());
                         continue;
                     }
 
                     boolean folderAdded = addToSelectedFoldersDB(connection, pstmt, selectedFolder);
                     if (!folderAdded) {
                         anyFailures = true;
-                        Messages.sprintfError("insertSelectedFoldersToDB: cannot add folder to database: " + selectedFolder.getFolder());
+                     //   Messages.sprintfError("insertSelectedFoldersToDB: cannot add folder to database: " + selectedFolder.getFolder());
                     } else {
-                        Messages.sprintf("insertSelectedFoldersToDB: added folder to database: " + selectedFolder.getFolder());
+                       // Messages.sprintf("insertSelectedFoldersToDB: added folder to database: " + selectedFolder.getFolder());
                         anyBatched = true;
                     }
                 }
@@ -275,9 +390,9 @@ public class SelectedFolderInfoDao {
             try {
                 connection.rollback();
             } catch (SQLException rbEx) {
-                Messages.sprintfError("insertSelectedFoldersToDB: rollback failed: " + rbEx.getMessage());
+                Messages.sprintfError("insertSelectedFoldersToDB rollback failed: " + rbEx.getMessage());
             }
-            Messages.sprintfError(Misc.getLineNumber() + " insertSelectedFoldersToDB failed: " + ex.getMessage());
+           // Messages.sprintfError(Misc.getLineNumber() + " insertSelectedFoldersToDB failed: " + ex.getMessage());
             return false;
         } finally {
             try {
@@ -285,7 +400,7 @@ public class SelectedFolderInfoDao {
             } catch (SQLException e) {
                 Messages.sprintfError("insertSelectedFoldersToDB: failed to restore auto-commit: " + e.getMessage());
             }
-            Messages.sprintf("insertSelectedFoldersToDB finished");
+            //Messages.sprintf("insertSelectedFoldersToDB finished");
         }
     }
 
