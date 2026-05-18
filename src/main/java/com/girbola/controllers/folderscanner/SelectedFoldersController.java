@@ -57,11 +57,11 @@ public class SelectedFoldersController {
     @FXML private Button selectedFolders_select_folder;
     @FXML private TableView<SelectedFolder> selectedFolder_TableView;
     //@formatter:on
+    private List<SelectedFolder> selectedFolderScannerOriginal = new ArrayList<>();
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(selectedFolderScannerOriginal, model_folderScanner);
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(model_main, model_folderScanner);
 
-    private ObservableList<SelectedFolder> selectedFolderScannerOriginal = FXCollections.observableArrayList();
 
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
@@ -72,6 +72,7 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
+        model_main.getSelectedFolders().getSelectedFolderScanner_obs().setAll(selectedFolderScannerOriginal);
 //        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
 
         model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
@@ -134,14 +135,9 @@ public class SelectedFoldersController {
             if (sf.isSelected()) {
                 Messages.sprintf("##########Selected folder: " + sf.getFolder());
             }
-
         }
 
-        model_main.getSelectedFolders().getSelectedFolderScanner_obs().clear();
-        for (SelectedFolder sf : selectedFolderScannerOriginal) {
-            model_main.getSelectedFolders().getSelectedFolderScanner_obs().add(sf);
-        }
-//        model_main.getSelectedFolders().getSelectedFolderScanner_obs().addAll(selectedFolderScannerOriginal);
+        //model_main.getSelectedFolders().getSelectedFolderScanner_obs().setAll(selectedFolderScannerOriginal);
 
 //        boolean loadSelectedFolders = SelectedFolderInfoDao.loadSelectedFolders(model_main);
 //        if (!loadSelectedFolders) {
@@ -266,9 +262,7 @@ public class SelectedFoldersController {
         selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
 
-        for (SelectedFolder sf : this.model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            selectedFolderScannerOriginal.add(sf);
-        }
+        selectedFolderScannerOriginal.addAll(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
       /*  scanner = new ScheduledService<Void>() {
 

@@ -86,7 +86,7 @@ public class EditingCell extends TableCell<FolderInfo, String> {
 
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-				if(!Text_Utils.isValidFileOrFolderName(newValue)) {
+				if(!TextUtils.isValidFileOrFolderName(newValue)) {
 					textField.setText(oldValue);
 				}
 			}
