@@ -70,7 +70,7 @@ public class FolderScannerController {
 
     private ModelMain modelMain;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
-    private List<SelectedFolder> selectedFolderScanner = new ArrayList<>();
+//    private List<SelectedFolder> selectedFolderScanner = new ArrayList<>();¸
 
     private Scene folderScannerController_scene;
 //    private Stage folderScannerController_stage;
@@ -181,7 +181,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //    }
 
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(selectedFolderScanner, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
 
     public void initFolderScanner() {
         Main.setProcessCancelled(false);
@@ -303,12 +303,12 @@ Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItem
             }
         });
 
-        Messages.sprintf("homeDefaultsTableView.getItems().size(); " + homeDefaultsTableView.getColumnResizePolicy() + " " + homeDefaultsTableView.getItems().size());
-        selectedFolderScanner.addAll(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
-        for(SelectedFolder sf : selectedFolderScanner) {
+/*        Messages.sprintf("homeDefaultsTableView.getItems().size(); " + homeDefaultsTableView.getColumnResizePolicy() + " " + homeDefaultsTableView.getItems().size());
+        modelMain.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
+        for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScannerOriginal()) {
             Messages.sprintf("LIIIIIST:: SelectedFolder: " + sf.getFolder());
         }
-
+*/
 //        homeDefaultsTableView.sceneProperty().addListener((obs, oldScene, newScene) -> {
 //            if (newScene != null) {
 //                newScene.getWindow().showingProperty().addListener((obsWindow, oldVal, newVal) -> {

@@ -3,6 +3,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
+import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import common.utils.ui.UI_Tools;
@@ -18,6 +19,8 @@ import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
+import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
 
@@ -77,15 +80,25 @@ public class MainController {
 
         tabPaneMain.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                if(newValue.getText() != null) {
-                    if(newValue.getText().equals("Folders")) {
+                if (newValue.getText() != null) {
+                    if (newValue.getText().equals("Folders")) {
+                        sprintf("Selected tab: " + newValue.getText());
+                      //  model_main.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
+                          model_main.getSelectedFolders().backup();
+
+                        model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
+                            sprintf("getSelectedFolderScanner_obs: " + selectedFolder.getFolder() + " isConnected?: " + selectedFolder.isConnected());
+                        });
+
+                        model_main.getSelectedFolders().getSelectedFolderScannerOriginal().forEach(selectedFolder -> {
+                            Messages.sprintf("getSelectedFolderScannerOriginal: " + selectedFolder.getFolder() + " isConnected?: " + selectedFolder.isConnected());
+                        });
                     } else {
+                        Messages.sprintf("Selected tab: " + newValue.getText());
                         newValue.getText();
                     }
                 }
-                sprintf("Selected tab: " + newValue.getText());
-
             }
         });
 

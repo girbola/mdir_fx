@@ -59,7 +59,7 @@ public class SelectedFoldersController {
     //@formatter:on
     private List<SelectedFolder> selectedFolderScannerOriginal = new ArrayList<>();
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(selectedFolderScannerOriginal, model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(model_main.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(model_main, model_folderScanner);
 
 
@@ -72,7 +72,9 @@ public class SelectedFoldersController {
         model_folderScanner.getScanDrives().stop();
         model_main.getMonitorExternalDriveConnectivity().cancel();
 
-        model_main.getSelectedFolders().getSelectedFolderScanner_obs().setAll(selectedFolderScannerOriginal);
+        model_main.getSelectedFolders().restore();
+
+//        model_main.getSelectedFolders().getSelectedFolderScanner_obs().setAll(selectedFolderScannerOriginal);
 //        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(model_main);
 
         model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
@@ -131,9 +133,17 @@ public class SelectedFoldersController {
 
 //        SelectionPropagation.syncTreeFromModel(model_main);
 
+        model_main.getSelectedFolders().restore();
+
+        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScannerOriginal()) {
+            if (sf.isSelected()) {
+                Messages.sprintf("111##########getSelectedFolderScannerOriginal folder: " + sf.getFolder() + " is selected ");
+            }
+        }
+
         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (sf.isSelected()) {
-                Messages.sprintf("123##########Selected folder: " + sf.getFolder());
+                Messages.sprintf("222##########getSelectedFolderScanner_obs folder: " + sf.getFolder() + " is selected ");
             }
         }
 
@@ -146,7 +156,7 @@ public class SelectedFoldersController {
 //
 //        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 //        SelectionPropagation.syncTreeFromModel(model_main);
-        model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
+      //  model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
     }
 
     @FXML
@@ -259,10 +269,10 @@ public class SelectedFoldersController {
         hasMedia_col.setCellFactory(hasMediaFiles);
         hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
 
-        selectedFolder_TableView.setItems(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.model_main.getSelectedFolders().getSelectedFolderScanner_obs().size());
 
-        selectedFolderScannerOriginal.addAll(this.model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+        selectedFolderScannerOriginal.addAll(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
       /*  scanner = new ScheduledService<Void>() {
 
