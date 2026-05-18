@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
@@ -67,12 +68,28 @@ public class MainController {
 
 
         //tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
-        tabPaneMain.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
-                /*Messages.sprintf("TABPANE WIDTH IS: " + newValue);*/
+//        tabPaneMain.widthProperty().addListener(new ChangeListener<Number>() {
+//            @Override
+//            public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, Number newValue) {
+//                /*Messages.sprintf("TABPANE WIDTH IS: " + newValue);*/
+//            }
+//        });
+
+        tabPaneMain.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                if(newValue.getText() != null) {
+                    if(newValue.getText().equals("Folders")) {
+
+                    } else {
+                        newValue.getText();
+                    }
+                }
+                sprintf("Selected tab: " + newValue.getText());
+
             }
         });
+
+
     }
 
     private void validateRootPane() {
@@ -156,7 +173,5 @@ public class MainController {
         tables_rootPaneNodeLayoutBounds = UI_Tools.getNodeLayoutBounds(tables_rootPane);
     }
 
-    public void folderScannerTabSelection(Event event) {
-        Messages.sprintf("Main Controller folderScannerTabSelection: " + event.getSource().toString());
-    }
+
 }

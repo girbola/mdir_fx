@@ -83,7 +83,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
     private void addToSelectedFolders_btn_action(ActionEvent event) {
         sprintf("addToSelectedFolders_btn_action...");
 
-        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().addAll(selectedFolderScanner);
+//        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().addAll(selectedFolderScanner);
 
         for (Path path : model_folderScanner.getSelectedDrivesFoldersListObs()) {
             sprintf("Path is: " + path);
@@ -303,6 +303,11 @@ Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItem
             }
         });
 
+        Messages.sprintf("homeDefaultsTableView.getItems().size(); " + homeDefaultsTableView.getColumnResizePolicy() + " " + homeDefaultsTableView.getItems().size());
+        selectedFolderScanner.addAll(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
+        for(SelectedFolder sf : selectedFolderScanner) {
+            Messages.sprintf("LIIIIIST:: SelectedFolder: " + sf.getFolder());
+        }
 
 //        homeDefaultsTableView.sceneProperty().addListener((obs, oldScene, newScene) -> {
 //            if (newScene != null) {

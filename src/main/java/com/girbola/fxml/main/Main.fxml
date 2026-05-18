@@ -61,7 +61,7 @@
                                         </AnchorPane>
                                     </content>
                                 </Tab>
-                                <Tab fx:id="tabFolders" closable="false" onSelectionChanged="#folderScannerTabSelection" text="%folders">
+                                <Tab fx:id="tabFolders" closable="false" text="%folders">
                                     <content>
                                         <AnchorPane>
                                             <fx:include fx:id="folderScanner" source="../folderscanner/FolderScanner.fxml" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0" />

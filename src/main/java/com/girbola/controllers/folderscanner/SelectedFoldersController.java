@@ -133,7 +133,7 @@ public class SelectedFoldersController {
 
         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
             if (sf.isSelected()) {
-                Messages.sprintf("##########Selected folder: " + sf.getFolder());
+                Messages.sprintf("123##########Selected folder: " + sf.getFolder());
             }
         }
 
