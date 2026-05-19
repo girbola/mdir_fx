@@ -8,6 +8,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
+
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -89,20 +91,22 @@ public class SelectedFoldersController {
         }
 
         List<Path> selectedFolders = new ArrayList<>();
+        /*
+            Task<Set<Path>> task = }
+         */
         for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
-                if (sf.isConnected() && sf.isSelected()) {
-                    boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(model_main.tables(), Paths.get(sf.getFolder()));
-                    if (!selectedFolderExists) {
-                        selectedFolders.add(Paths.get(sf.getFolder()));
-                        sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
-                    }
-                }
+            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(),
+                    sf.getFolder()) &&
+                    sf.isSelected() &&
+                    sf.isConnected() &&
+                    SelectedFolderUtils.tableHasFolder(model_main.tables(), Paths.get(sf.getFolder()))) {
+                selectedFolders.add(Paths.get(sf.getFolder()));
+                sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
             } else {
                 Messages.sprintf("##### FOLDER IGNORED!!!!: " + sf.getFolder());
 
-                Iterator tableIteratorSortit = model_main.tables().getSortIt_table().getItems().iterator();
-                Iterator tableIteratorSorted = model_main.tables().getSorted_table().getItems().iterator();
+                Iterator<FolderInfo> tableIteratorSortit = model_main.tables().getSortIt_table().getItems().iterator();
+                Iterator<FolderInfo> tableIteratorSorted = model_main.tables().getSorted_table().getItems().iterator();
 
                 while (tableIteratorSortit.hasNext()) {
                     FolderInfo folderInfo = (FolderInfo) tableIteratorSortit.next();
@@ -156,7 +160,7 @@ public class SelectedFoldersController {
 //
 //        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 //        SelectionPropagation.syncTreeFromModel(model_main);
-      //  model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
+        //  model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
     }
 
     @FXML
