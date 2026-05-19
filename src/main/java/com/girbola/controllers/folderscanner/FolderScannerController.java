@@ -224,8 +224,6 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 
         homeDefaults_select_column.setCellFactory(selectedFoldersCellFactory);
         homeDefaults_select_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
-
-
         
         homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
