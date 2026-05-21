@@ -179,7 +179,6 @@ public class TableUtils {
         Set<LocalDate> dateSet = new HashSet<>(map.keySet());
 
 
-
         // Convert to list and sort
         List<LocalDate> sortedDates = new ArrayList<>(dateSet);
         Collections.sort(sortedDates);
@@ -193,7 +192,7 @@ public class TableUtils {
 
         System.out.println("Min date: " + minDate + ", max date: " + maxDate + ", difference: " + ChronoUnit.DAYS.between(minDate, maxDate) + " days");
         return ChronoUnit.DAYS.between(
-              minDate, maxDate); // 365
+                minDate, maxDate); // 365
 
     }
 
@@ -533,14 +532,14 @@ public class TableUtils {
 //        while (folderInfoSortItListIterator.hasNext()) {
 //            FolderInfo folderInfo = folderInfoSortItListIterator.next();
 //            ListIterator<FileInfo> fileInfoList_SortItListIterator = folderInfo.getFileInfoList().listIterator();
-////			while(fileInfoList_SortItListIterator.hasNext()) {
-////				findExistingFolder()
-////			}
+
+    /// /			while(fileInfoList_SortItListIterator.hasNext()) {
+    /// /				findExistingFolder()
+    /// /			}
 //
 //        }
 //        return false;
 //    }
-
     public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
         if (table.getItems().isEmpty()) {
             return false;
@@ -991,7 +990,6 @@ public class TableUtils {
                 }
             }
         }
-
 
         return changed;
     }

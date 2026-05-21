@@ -1,4 +1,3 @@
-
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
@@ -68,6 +67,7 @@ public class FolderScannerController {
     @FXML private TreeView<Path> drives_treeView;
     @FXML private VBox analyzeList_vbox;
 
+    //@formatter:on
     private ModelMain modelMain;
     private ModelFolderScanner model_folderScanner = new ModelFolderScanner();
 //    private List<SelectedFolder> selectedFolderScanner = new ArrayList<>();¸
@@ -76,8 +76,7 @@ public class FolderScannerController {
 //    private Stage folderScannerController_stage;
 
 
-
-private CheckBoxTreeItem<Path> drives_rootItem;
+    private CheckBoxTreeItem<Path> drives_rootItem;
 
     @FXML
     private void addToSelectedFolders_btn_action(ActionEvent event) {
@@ -88,12 +87,10 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         for (Path path : model_folderScanner.getSelectedDrivesFoldersListObs()) {
             sprintf("Path is: " + path);
             if (Files.exists(path)) {
-                if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(),
-                        path)) {
+                if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
                     if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                .add(new SelectedFolder(true, true, path.toString(),true));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, path.toString(), true));
                     }
                 }
             }
@@ -138,16 +135,8 @@ private CheckBoxTreeItem<Path> drives_rootItem;
     }
 
     @FXML
-    private void analyzeList_add_action(ActionEvent event) {
-
-    }
-
-    @FXML
-    private void analyzeList_remove_action(ActionEvent event) {
-    }
-
-    @FXML
     private void list_action(ActionEvent event) {
+        Messages.warningText("list_action NOT READY YET!");
     }
 
     public void exit() {
@@ -156,15 +145,16 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //        folderScannerController_stage.close();
     }
 
-    final EventHandler<KeyEvent> eventFilter = new EventHandler<KeyEvent>() {
-
-        @Override
-        public void handle(KeyEvent event) {
-            if (event.getCode().equals(KeyCode.ESCAPE)) {
-                exit();
-            }
-        }
-    };
+//
+//    final EventHandler<KeyEvent> eventFilter = new EventHandler<KeyEvent>() {
+//
+//        @Override
+//        public void handle(KeyEvent event) {
+//            if (event.getCode().equals(KeyCode.ESCAPE)) {
+//                exit();
+//            }
+//        }
+//    };
 
 //    public void setScene(Scene folderScannerController_scene) {
 //        this.folderScannerController_scene = folderScannerController_scene;
@@ -217,16 +207,12 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         model_folderScanner.init(modelMain, drives_rootItem);
         selectedFoldersController.init(modelMain, model_folderScanner);
 
-
-
         //folderScannerController_stage.addEventFilter(KeyEvent.KEY_PRESSED, eventFilter);
         selectedFoldersController.start();
 
         homeDefaults_select_column.setCellFactory(selectedFoldersCellFactory);
         homeDefaults_select_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
 
-
-        
         homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
 //        homeDefaults_path_column.setResizable(true);
@@ -242,7 +228,7 @@ private CheckBoxTreeItem<Path> drives_rootItem;
 //        });
 
         Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
-        for(Path commonPath : resolve.values()) {
+        for (Path commonPath : resolve.values()) {
 //            Messages.sprintf("commonPath: " + commonPath);
             if (Files.exists(commonPath)) {
                 Messages.sprintf("Adding commonPath to homeDefaultsTableView: " + commonPath);
@@ -262,12 +248,12 @@ private CheckBoxTreeItem<Path> drives_rootItem;
         homeDefaultsTableView.itemsProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == null) return;
             Messages.sprintf("homeDefaultsTableView.itemsProperty::: " + newValue.size());
-                //autoResizeColumns(homeDefaultsTableView, 30);
-                Platform.runLater(() -> {
-                    homeDefaultsTableView.getColumns().forEach(column -> {
+            //autoResizeColumns(homeDefaultsTableView, 30);
+            Platform.runLater(() -> {
+                homeDefaultsTableView.getColumns().forEach(column -> {
 
-                        column.setPrefWidth(Region.USE_COMPUTED_SIZE);
-                        autoResizeColumns(homeDefaultsTableView, 30);
+                    column.setPrefWidth(Region.USE_COMPUTED_SIZE);
+                    autoResizeColumns(homeDefaultsTableView, 30);
                 });
             });
         });
@@ -289,10 +275,10 @@ private CheckBoxTreeItem<Path> drives_rootItem;
             }
         });
         homeDefaultsTableView.itemsProperty().addListener((obs, oldVal, newVal) -> {
-            if(newVal != null) {
-                if(homeDefaultsTableView != null) {
+            if (newVal != null) {
+                if (homeDefaultsTableView != null) {
 
-Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItems().size());
+                    Messages.sprintf("homeDefaultsTableView.WIDTH:: " + homeDefaultsTableView.getItems().size());
                     Platform.runLater(() -> {
                         homeDefaultsTableView.applyCss();
                         homeDefaultsTableView.layout();
@@ -336,44 +322,40 @@ Messages.sprintf("homeDefaultsTableView.WIDTH:: "+ homeDefaultsTableView.getItem
                 return;
             }
             Platform.runLater(() -> {
-               updatePathColumnWidth(homeDefaultsTableView);
+                updatePathColumnWidth(homeDefaultsTableView);
             });
         });
 
     }
+
     public TreeView<Path> getDrivesTreeView() {
-        if(drives_treeView == null) {
+        if (drives_treeView == null) {
             Messages.sprintfError("drivesTreeView is null!");
         }
         return drives_treeView;
     }
 
-    private void updatePathColumnWidth( TableView<?> table )
-    {
+    private void updatePathColumnWidth(TableView<?> table) {
         //Set the right policy
-        table.setColumnResizePolicy( TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
-        table.getColumns().stream().forEach( (column) ->
-        {
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
+        table.getColumns().stream().forEach((column) -> {
             //Minimal width = columnheader
-            Text t = new Text( column.getText() );
+            Text t = new Text(column.getText());
             double max = t.getLayoutBounds().getWidth();
-            for ( int i = 0; i < table.getItems().size(); i++ )
-            {
+            for (int i = 0; i < table.getItems().size(); i++) {
                 //cell must not be empty
-                if ( column.getCellData( i ) != null )
-                {
-                    t = new Text( column.getCellData( i ).toString() );
+                if (column.getCellData(i) != null) {
+                    t = new Text(column.getCellData(i).toString());
                     double calcwidth = t.getLayoutBounds().getWidth();
                     //remember new max-width
-                    if ( calcwidth > max )
-                    {
+                    if (calcwidth > max) {
                         max = calcwidth;
                     }
                 }
             }
             //set the new max-widht with some extra space
-            column.setPrefWidth( max + 10.0d );
-        } );
+            column.setPrefWidth(max + 10.0d);
+        });
     }
 
     SelectedFolder existsInSelectedFolderScannerObs(Path commonPath) {
