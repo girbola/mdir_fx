@@ -116,9 +116,11 @@ public class SelectedFoldersController {
                             if (!TableUtils.checkTableDuplicates(modelMain.tables(), p)) {
                                 //add as new
                                 newLists.add(p);
+                                Messages.sprintf("##########newLists Selected folder to scan: " + p);
                             } else {
                                 //updates folder content for new content
                                 updateLists.add(p);
+                                Messages.sprintf("##########updateLists Selected folder to scan: " + p);
                             }
                         }
 
@@ -146,38 +148,38 @@ public class SelectedFoldersController {
                 }
                 for (Path p : updateLists) {
                     FolderInfo folderInfo = TableUtils.findTableValues(p, modelMain.tables());
-
+                    Messages.sprintf("##########updateLists folderInfo: " + folderInfo);
                     if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
                         List<FileInfo> fileInfoList = folderInfo.getFileInfoList();
-
+                        if (folderInfo.getFolderPath().equals("C:\\Users\\marko\\Pictures\\mdir - Copy")) {
+                            Messages.sprintf("FOUND!!!");
+                        }
                         List<Path> currentFolderMediaFilesOnly = FileUtils
                                 .getCurrentFolderMediaFilesOnly(p, FileUtils.filter_directories);
 
+                        Messages.sprintf("!#!SIZE BEFORE REMOVED: "+ currentFolderMediaFilesOnly.size());
                         // Delete if from List<FileInfo> has not findRemovedFiles
-                        for(Path findRemovedFiles : currentFolderMediaFilesOnly) {
+                        Iterator<Path> iterator = currentFolderMediaFilesOnly.iterator();
+                        while (iterator.hasNext()) {
+                            Path findRemovedFiles = iterator.next();
                             boolean hasFile = FileInfoUtils.fileInfoHasCurrentFile(fileInfoList, findRemovedFiles);
-                            if(!hasFile) {
-                                boolean remove = folderInfo.getFileInfoList().remove(findRemovedFiles);
-                                if(remove) {
-                                    Messages.sprintf("Removed file: " + findRemovedFiles);
-                                }
+
+                            if (!hasFile) {
+                                Messages.sprintf("findRemovedFiles fileInfoHasCurrentFile hasFile?: " + findRemovedFiles);
+                                iterator.remove();
                             }
                         }
 
-                        // Create if currenFile has not in List<Path> currentFolderMediaFilesOnly
-                        for(Path currentFile : currentFolderMediaFilesOnly) {
+                        Messages.sprintf("SIZE AFTER REMOVED: "+ currentFolderMediaFilesOnly.size());
 
-                            sprintf("##########updateLists folderFile: " + currentFile);
-//for(FileInfo fileInfo : fileInfoList) {
-//    if(fileInfo.getOrgPath().equals(p.toAbsolutePath().toString())) {
-//        continue;
-//    } else {
-//        FileInfo newFileInfo = createFileInfo(currentFile);
-//        folderInfo.getFileInfoList().add(newFileInfo);
-//        folderInfo.setChanged(true);
-//        Main.setChanged(true);
-//    }
-//}
+                        Iterator<Path> iterator1 = currentFolderMediaFilesOnly.iterator();
+
+                        // Create if currenFile has not in List<Path> currentFolderMediaFilesOnly
+                        while (iterator1.hasNext()) {
+                            Path currentFile = iterator1.next();
+
+                            sprintf("##########create new folderInfo currentFile folderFile: " + currentFile);
+
                             /*
                             scenario 1) file exists in fileinfo, continue
                             scenario 2) file does not exists in fileinfo, create fileinfo
@@ -189,11 +191,11 @@ public class SelectedFoldersController {
                             boolean hasFile = FileInfoUtils.hasCurrentFile(fileInfoList, currentFile);
 
                             if (!hasFile) {
+                                folderInfo.getFileInfoList().remove(currentFile);
                                 fileInfoList.removeIf(fileInfo -> currentFile.toString().equals(fileInfo.getOrgPath()));
                                 folderInfo.setChanged(true);
                                 Main.setChanged(true);
-                            }
-                            else {
+                            } else {
                                 FileInfo newFileInfo = createFileInfo(currentFile);
                                 folderInfo.getFileInfoList().add(newFileInfo);
                                 folderInfo.setChanged(true);
