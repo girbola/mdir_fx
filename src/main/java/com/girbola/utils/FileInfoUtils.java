@@ -22,8 +22,6 @@ import common.utils.ImageUtils;
 import common.utils.OSHI_Utils;
 import common.utils.date.DateUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -1056,6 +1054,18 @@ public class FileInfoUtils {
     }
 
     public static boolean hasCurrentFile(List<FileInfo> fileListInfos, Path currentFile) {
+        Iterator<FileInfo> fileInfosIterator = fileListInfos.iterator();
+        while(fileInfosIterator.hasNext()) {
+            FileInfo fileInfo = fileInfosIterator.next();
+            if(currentFile.toString().equals(fileInfo.getOrgPath())) {
+                sprintf("##########updateLists folderFile: " + currentFile);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean fileInfoHasCurrentFile(List<FileInfo> fileListInfos, Path currentFile) {
         Iterator<FileInfo> fileInfosIterator = fileListInfos.iterator();
         while(fileInfosIterator.hasNext()) {
             FileInfo fileInfo = fileInfosIterator.next();

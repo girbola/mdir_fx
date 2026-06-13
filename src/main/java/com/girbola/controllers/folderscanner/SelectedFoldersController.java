@@ -2,22 +2,14 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
-import com.girbola.controllers.folderscanner.mediafolderscanner.MediaFolderScanner;
-import com.girbola.controllers.folderscanner.searchservice.ScanEvent;
-import com.girbola.controllers.folderscanner.searchservice.ScanJob;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.SubList;
-import com.girbola.controllers.main.folderinfoscan.FolderInfoScanner;
-import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.filelisting.GetAllFiles;
-import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import com.girbola.utils.FileInfoUtils;
@@ -30,13 +22,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import javafx.application.Platform;
+
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -58,6 +48,7 @@ import javafx.util.Callback;
 import static com.girbola.Main.bundle;
 import static com.girbola.controllers.main.tables.TableUtils.resolveTableTypeByPath;
 import static com.girbola.messages.Messages.sprintf;
+import static com.girbola.utils.FileInfoUtils.createFileInfo;
 
 public class SelectedFoldersController {
 
@@ -159,18 +150,52 @@ public class SelectedFoldersController {
                     if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
                         List<FileInfo> fileInfoList = folderInfo.getFileInfoList();
 
-                        Iterator<Path> currentFolderMediaFilesOnly = FileUtils
-                                .getCurrentFolderMediaFilesOnly(p, FileUtils.filter_directories)
-                                .iterator();
+                        List<Path> currentFolderMediaFilesOnly = FileUtils
+                                .getCurrentFolderMediaFilesOnly(p, FileUtils.filter_directories);
 
-                        while (currentFolderMediaFilesOnly.hasNext()) {
-                            Path currentFile = currentFolderMediaFilesOnly.next();
+                        // Delete if from List<FileInfo> has not findRemovedFiles
+                        for(Path findRemovedFiles : currentFolderMediaFilesOnly) {
+                            boolean hasFile = FileInfoUtils.fileInfoHasCurrentFile(fileInfoList, findRemovedFiles);
+                            if(!hasFile) {
+                                boolean remove = folderInfo.getFileInfoList().remove(findRemovedFiles);
+                                if(remove) {
+                                    Messages.sprintf("Removed file: " + findRemovedFiles);
+                                }
+                            }
+                        }
+
+                        // Create if currenFile has not in List<Path> currentFolderMediaFilesOnly
+                        for(Path currentFile : currentFolderMediaFilesOnly) {
+
                             sprintf("##########updateLists folderFile: " + currentFile);
+//for(FileInfo fileInfo : fileInfoList) {
+//    if(fileInfo.getOrgPath().equals(p.toAbsolutePath().toString())) {
+//        continue;
+//    } else {
+//        FileInfo newFileInfo = createFileInfo(currentFile);
+//        folderInfo.getFileInfoList().add(newFileInfo);
+//        folderInfo.setChanged(true);
+//        Main.setChanged(true);
+//    }
+//}
+                            /*
+                            scenario 1) file exists in fileinfo, continue
+                            scenario 2) file does not exists in fileinfo, create fileinfo
+                            scenario 3) currentFile does not has fileinfo list file anymore
 
+                            if file exists in fileinfo or not
+                            if new file if in currentFile it should be added as new fileinfo to FolderInfo.getFileLists().add(newFileInfo);
+                             */
                             boolean hasFile = FileInfoUtils.hasCurrentFile(fileInfoList, currentFile);
 
                             if (!hasFile) {
                                 fileInfoList.removeIf(fileInfo -> currentFile.toString().equals(fileInfo.getOrgPath()));
+                                folderInfo.setChanged(true);
+                                Main.setChanged(true);
+                            }
+                            else {
+                                FileInfo newFileInfo = createFileInfo(currentFile);
+                                folderInfo.getFileInfoList().add(newFileInfo);
                                 folderInfo.setChanged(true);
                                 Main.setChanged(true);
                             }
