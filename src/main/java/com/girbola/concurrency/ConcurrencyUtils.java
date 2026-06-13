@@ -52,11 +52,11 @@ public class ConcurrencyUtils {
         if (exec[currentCounter] != null) {
             if (!exec[currentCounter].isTerminated()) {
                 exec[currentCounter].shutdownNow();
-                sprintf("execThread stopped: " + currentCounter);
+                sprintf("stopExecThreadNow execThread stopped: " + currentCounter);
             }
             if (!exec[currentCounter].isShutdown()) {
                 exec[currentCounter].shutdownNow();
-                sprintf("execThread stopped: " + currentCounter);
+                sprintf("stopExecThreadNow execThread stopped: " + currentCounter);
             }
         }
     }
@@ -66,11 +66,11 @@ public class ConcurrencyUtils {
         if (exec[currentCounter] != null) {
             if (!exec[currentCounter].isTerminated()) {
                 exec[currentCounter].shutdown();
-                sprintf("execThread stopped: " + currentCounter);
+                sprintf("stopExecThread execThread stopped: " + currentCounter);
             }
             if (!exec[currentCounter].isShutdown()) {
                 exec[currentCounter].shutdown();
-                sprintf("execThread stopped: " + currentCounter);
+                sprintf("stopExecThread execThread stopped: " + currentCounter);
             }
         }
     }

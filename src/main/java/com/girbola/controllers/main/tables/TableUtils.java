@@ -131,23 +131,6 @@ public class TableUtils {
         }
     }
 
-    //
-//	public static void updateCopiedStatus(TableView<FolderInfo> table) {
-//		ObservableList<FolderInfo> list = table.getItems();
-//		for (FolderInfo folderInfo : list) {
-//			for (FileInfo fileInfo : folderInfo.getFileInfoList()) {
-//				if (fileInfo.getDestinationPath() != null) {
-//					if (!fileInfo.getDestinationPath().isEmpty()) {
-//						if (!Files.exists(Paths.get(fileInfo.getDestinationPath()))) {
-//							fileInfo.setCopied(false);
-//						}
-//					}
-//				}
-//			}
-//			updateFolderInfos_FileInfo(folderInfo);
-//		}
-//
-//	}
     public static void updateTableContent(TableView<FolderInfo> table, Tables tables) {
         ExecutorService exec = Executors.newSingleThreadExecutor();
         for (FolderInfo folderInfo : table.getSelectionModel().getSelectedItems()) {
@@ -212,7 +195,25 @@ public class TableUtils {
         return null;
     }
 
-    public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
+    public static FolderInfo findTableValues(Path path, Tables tables) {
+        if (tables == null) {
+            return null;
+        }
+        for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(path.toString())) {
+                return folderInfo;
+            }
+        }
+        for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(path.toString())) {
+                return folderInfo;
+            }
+        }
+
+        return null;
+    }
+
+                                             public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
         // TableValues tbv = null;
         for (FolderInfo tv : tableValues) {
             if (tv.getFolderPath().equals(path.toString())) {
@@ -365,7 +366,6 @@ public class TableUtils {
         });
     }
 
-
     public static TableType resolveTableTypeByPath(Path p) {
 
         if (p == null) {
@@ -416,7 +416,6 @@ public class TableUtils {
         }
     }
 
-
     public static List<TableView<FolderInfo>> getAllTables(Tables tables) {
         return Arrays.<TableView<FolderInfo>>asList(tables.getSortIt_table(), tables.getSorted_table(), tables.getAsItIs_table());
     }
@@ -456,90 +455,22 @@ public class TableUtils {
             });
         }
     }
-//
-//    public static boolean checkChangedContent(TableView<FolderInfo> table) {
-//
-//        for (FolderInfo fo : table.getSelectionModel().getSelectedItems()) {
-//            Messages.sprintf("FolderInfo check....  " + fo.getFolderPath());
-//            if (Main.getProcessCancelled()) {
-//                return false;
-//            }
-//            List<FileInfo> fileInfo_list = fo.getFileInfoList();
-//
-//            List<Path> currentPath_root_list = null;
-//            try {
-//                currentPath_root_list = GetRootFiles.getRootFiles(Paths.get(fo.getFolderPath()));
-//            } catch (IOException ex) {
-//                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-//            }
-//            if (currentPath_root_list.isEmpty()) {
-//                Main.setProcessCancelled(true);
-//                errorSmth(ERROR, "", null, Misc.getLineNumber(), true);
-//
-//            }
-//            List<FileInfo> list = validateFileInfoList(currentPath_root_list, fileInfo_list);
-//
-//            if (list.isEmpty()) {
-//                Messages.sprintf("list were empty!: " + list.size());
-//                return false;
-//            }
-//            fo.setFileInfoList(list);
-//            Messages.sprintf("list were not empty!: " + list.size());
-//            return true;
-//        }
-//        return false;
-//    }
 
-//    private static List<FileInfo> validateFileInfoList(List<Path> currentPathRootList, List<FileInfo> fileInfos) {
-//        List<FileInfo> theList = new ArrayList<>();
-//        Iterator<Path> it = currentPathRootList.iterator();
-//        while (it.hasNext()) {
-//            Path file = it.next();
-//            Messages.sprintf("File name is: " + file);
-//            FileInfo fileInfo = hasFileInfo_In_List(file, fileInfos);
-//            if (fileInfo == null) {
-//                try {
-//                    fileInfo = FileInfoUtils.createFileInfo(file);
-//                    Messages.sprintf("fileInfo created: " + fileInfo.toString());
-//                } catch (IOException ex) {
-//                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-//                }
-//            }
-//            if (fileInfo != null) {
-//                theList.add(fileInfo);
-//            }
-//        }
-//        return theList;
-//    }
+    public static boolean checkTableDuplicates(Tables tables, Path path) {
+        for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(path.toString())) {
+                return true;
+            }
+        }
+        for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+            if (folderInfo.getFolderPath().equals(path.toString())) {
+                return true;
+            }
+        }
 
-//    private static FileInfo hasFileInfo_In_List(Path file, List<FileInfo> fileInfo_list) {
-//        Iterator<FileInfo> it = fileInfo_list.iterator();
-//        while (it.hasNext()) {
-//            FileInfo fi = it.next();
-//            if (fi.getOrgPath().equals(file.toString())) {
-//                return fi;
-//            }
-//        }
-//        return null;
-//    }
+        return false;
+    }
 
-//    public static boolean mergeSameFilesIntoFolderByDateFiles(FolderInfo folderInfoToFind, Tables table) {
-//        if (table.getSorted_table().getItems().isEmpty() || table.getSortIt_table().getItems().isEmpty() || table.getAsItIs_table().getItems().isEmpty()) {
-//            Messages.sprintfError("All tables contents are empty");
-//            return false;
-//        }
-//        ListIterator<FolderInfo> folderInfoSortItListIterator = table.getSortIt_table().getItems().listIterator();
-//        while (folderInfoSortItListIterator.hasNext()) {
-//            FolderInfo folderInfo = folderInfoSortItListIterator.next();
-//            ListIterator<FileInfo> fileInfoList_SortItListIterator = folderInfo.getFileInfoList().listIterator();
-
-    /// /			while(fileInfoList_SortItListIterator.hasNext()) {
-    /// /				findExistingFolder()
-    /// /			}
-//
-//        }
-//        return false;
-//    }
     public static boolean checkTableDuplicates(FolderInfo folderInfoToFind, TableView<FolderInfo> table) {
         if (table.getItems().isEmpty()) {
             return false;

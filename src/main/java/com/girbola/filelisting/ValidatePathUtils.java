@@ -34,19 +34,22 @@ public class ValidatePathUtils {
     );
 
     public static boolean hasMediaFilesInFolder(Path path) {
-        DirectoryStream<Path> directoryStream = FileUtils.createDirectoryStream(path, FileUtils.filter_directories);
-        if (directoryStream == null) {
-            return false;
-        }
-
-        for (Path file : directoryStream) {
-            try {
-                if (ValidatePathUtils.validFile(file)) {
-                    return true;
-                }
-            } catch (IOException ex) {
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+        try (DirectoryStream<Path> directoryStream = FileUtils.createDirectoryStream(path, FileUtils.filter_directories)) {
+            if (directoryStream == null) {
+                return false;
             }
+
+            for (Path file : directoryStream) {
+                try {
+                    if (ValidatePathUtils.validFile(file)) {
+                        return true;
+                    }
+                } catch (IOException ex) {
+                    Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+                }
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
         return false;
     }
@@ -66,13 +69,14 @@ public class ValidatePathUtils {
         if (Files.isRegularFile(file)) {
             return false;
         }
-        Messages.sprintf("----isInSkippedFolderList Checking file: " + file.toString());
+        //Messages.sprintf("----isInSkippedFolderList Checking file: " + file.toString());
 
         // Check for Windows-specific conditions
         if (Misc.isWindows()) {
             if (!fileName.isEmpty()) {
-                Messages.sprintf("Checking Windows-specific conditions for file: " + file.toString());
+
                 if (isHiddenFile(fileName, HIDDEN_FILE_PREFIX) || containsIgnoreCase(fileName, APP_INDICATOR)) {
+                    Messages.sprintf("Windows-specific conditions for file: " + file.toString());
                     return true;
                 }
             }
@@ -118,58 +122,12 @@ public class ValidatePathUtils {
         String partName = path.getFileName().toString();
 
         for (String filter : skippedFolders) {
-            if (partName.equals(filter)) {
+            if (partName.equalsIgnoreCase(filter)) {
                 Messages.sprintf("!!!!!!!!!!!!!Skipped folder name found!!--------- Part: " + partName + " contains in SKIPPED_FOLDER");
                 return true;
             }
         }
 //        Messages.sprintf("REturning FALSE with path: " + path + " - isFile: " + isFile + ", isDirectory: " + isDirectory + " partName: ");
-        return false;
-    }
-
-    // Utility method: checks if a file is in a skipped folder list with exact match (any path segment)
-    private static boolean isInSkippedFolderList_(String filePath, List<String> skippedFolders) {
-        Path path = Paths.get(filePath);
-        boolean isHome = isInUserHomeFolder(path);
-        Messages.sprintf("Checking path: " + path.toString() + " - isHome: " + isHome);
-
-        if (Files.isRegularFile(path)) {
-            path = path.getParent(); // Check the parent directory for files
-        }
-
-        if (isHome) {
-            Messages.sprintf("Path: " + path + " is in the user's home directory, skipping skipped folder check.");
-
-            for (String filter : skippedFolders) {
-                System.out.println("---filtering: " + filter + " against path: " + path.toAbsolutePath());
-                if (path.toAbsolutePath().toString().equals(filter)) {
-                    Messages.sprintf("--------- Part: " + path + " contains in SKIPPED_FOLDER_SET_OSX");
-                    return true;
-                }
-            }
-
-            return false; // Skip skipped folder check for paths in the user's home directory
-        }
-
-        System.out.println("Checking path: " + path.toString() + " against skipped folders: " + skippedFolders);
-        for (String filter : skippedFolders) {
-            System.out.println("---filtering: " + filter + " against path: " + path.toAbsolutePath());
-            if (path.toAbsolutePath().toString().contains(filter)) {
-                Messages.sprintf("--------- Part: " + path + " contains in SKIPPED_FOLDER_SET_OSX");
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    // Utility method: checks if a file is in a skipped folder list (case-insensitive contains)
-    private static boolean isInSkippedFolderListIgnoreCase(String filePath, List<String> skippedFolders) {
-        for (String folder : skippedFolders) {
-            if (filePath.toLowerCase().contains(folder.toLowerCase())) {
-                return true;
-            }
-        }
         return false;
     }
 

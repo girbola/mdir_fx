@@ -20,6 +20,8 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -201,17 +203,17 @@ public class FileUtils {
         return srcFile;
     }
 
-    public static DirectoryStream<Path> createDirectoryStream(Path path) {
-
-        try {
-            DirectoryStream<Path> paths = Files.newDirectoryStream(path);
-            return paths;
-        } catch (IOException ex) {
-            Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
-            Messages.warningText("Cannot read directory: " + path.toString());
-            return null;
-        }
-    }
+//    public static DirectoryStream<Path> createDirectoryStream(Path path) {
+//
+//        try {
+//            DirectoryStream<Path> paths = Files.newDirectoryStream(path);
+//            return paths;
+//        } catch (IOException ex) {
+//            Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
+//            Messages.warningText("Cannot read directory: " + path.toString());
+//            return null;
+//        }
+//    }
 
     public static DirectoryStream<Path> createDirectoryStream(Path path, DirectoryStream.Filter<Path> filter_directories) {
         try {
@@ -220,6 +222,29 @@ public class FileUtils {
             Messages.sprintfError("folderHasFiles cannot read directory: " + path.toString());
             Messages.warningText("Cannot read directory: " + path.toString());
             return null;
+        }
+    }
+
+    public static List<Path> getCurrentFolderMediaFilesOnly(
+            Path path,
+            DirectoryStream.Filter<Path> filterDirectories) {
+
+        try (DirectoryStream<Path> stream = createDirectoryStream(path, filterDirectories)) {
+            List<Path> result = new ArrayList<>();
+
+            if (stream == null) {
+                return Collections.emptyList();
+            }
+            for (Path p : stream) {
+                result.add(p);
+            }
+
+            return result;
+
+        } catch (IOException ex) {
+            Messages.sprintfError("Cannot read directory: " + path);
+            Messages.warningText("Cannot read directory: " + path);
+            return Collections.emptyList();
         }
     }
 
@@ -642,5 +667,13 @@ public class FileUtils {
                 Messages.sprintf("File not found in database: " + rootFile.toAbsolutePath().toString());
             }
         }
+    }
+
+    public static boolean getIsConnected(String folder) {
+        return getIsConnected(Paths.get(folder));
+    }
+
+    public static boolean getIsConnected(Path path) {
+        return Files.exists(path);
     }
 }

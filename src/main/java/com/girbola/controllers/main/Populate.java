@@ -175,7 +175,7 @@ public class Populate {
                 Throwable exception = folderInfoScanner.getException();
                 if (exception != null) {
                     loadingProcessTask.closeStage();
-                    Messages.sprintfError("FolderInfoScanner failed: " + exception.getMessage());
+                    Messages.sprintfError("Populate FolderInfoScanner failed: " + exception.getMessage());
                 }
             });
             loadingProcessTask.setTask(folderInfoScanner);
@@ -249,12 +249,14 @@ public class Populate {
 
             Throwable exception = folderInfoScannerTask.getException();
             if (exception != null) {
-                Messages.sprintfError("FolderInfoScanner failed: " + exception.getMessage());
+                Messages.sprintfError("folderInfoScannerTask FolderInfoScanner failed: " + exception.getMessage());
             }
         });
     }
 
     public Task<Void> loadContentToContainer(LoadingProcessTask loadingProcessTask, Task<Integer> sorter) {
+        Messages.sprintf("loadContentToContainer started");
+
         total.set(modelMain.tables().getAsItIs_table().getItems().size()
                 + modelMain.tables().getSortIt_table().getItems().size()
                 + modelMain.tables().getSorted_table().getItems().size());

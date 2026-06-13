@@ -457,41 +457,36 @@ public class Tables {
     public void refreshAllTables() {
         Platform.runLater(() -> {
             if (!getAsItIs_table().getItems().isEmpty()
-                    || (TableColumn<?, ?>) getAsItIs_table().getColumns().get(0) != null) {
-                ((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(false);
+                    || getAsItIs_table().getColumns().get(0) != null) {
+                getAsItIs_table().getColumns().get(0).setVisible(false);
             }
-            ((TableColumn<?, ?>) getAsItIs_table().getColumns().get(0)).setVisible(true);
+            getAsItIs_table().getColumns().get(0).setVisible(true);
         });
         Platform.runLater(() -> {
             if (!getSortIt_table().getItems().isEmpty()
-                    || (TableColumn<?, ?>) getSortIt_table().getColumns().get(0) != null) {
-                ((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(false);
+                    || getSortIt_table().getColumns().get(0) != null) {
+                getSortIt_table().getColumns().get(0).setVisible(false);
             }
-            ((TableColumn<?, ?>) getSortIt_table().getColumns().get(0)).setVisible(true);
+            getSortIt_table().getColumns().get(0).setVisible(true);
         });
         Platform.runLater(() -> {
             if (!getSorted_table().getItems().isEmpty()
-                    || (TableColumn<?, ?>) getSorted_table().getColumns().get(0) != null) {
-                ((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(false);
+                    || getSorted_table().getColumns().get(0) != null) {
+                (getSorted_table().getColumns().get(0)).setVisible(false);
             }
-            ((TableColumn<?, ?>) getSorted_table().getColumns().get(0)).setVisible(true);
+            (getSorted_table().getColumns().get(0)).setVisible(true);
         });
     }
 
-    public void registerTableView_obs_listener() {
+    public void registerTableViewObsListener() {
         getSorted_table().getItems().addListener(listener);
         getSortIt_table().getItems().addListener(listener);
         getAsItIs_table().getItems().addListener(listener);
     }
 
-    ListChangeListener<FolderInfo> listener = new ListChangeListener<FolderInfo>() {
-
-        @Override
-        public void onChanged(Change<? extends FolderInfo> c) {
-            Main.setChanged(true);
-            sprintf("listener changed");
-        }
-
+    ListChangeListener<FolderInfo> listener = c -> {
+        Main.setChanged(true);
+        sprintf("listener changed");
     };
 
 /*    public void setAsItIs_TableStatistic(TableStatistic asitis_TableStatistic) {

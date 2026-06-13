@@ -224,7 +224,7 @@ public class FileInfoUtils {
     public static List<FileInfo> createFileInfo_list(FolderInfo folderInfo) {
         long start = System.currentTimeMillis();
         List<FileInfo> fileInfo_list = new ArrayList<>();
-        DirectoryStream<Path> list = FileUtils.createDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
+        DirectoryStream<Path> list = createDirectoryStream(Paths.get(folderInfo.getFolderPath()), filter_directories);
 
         Iterator<Path> listIterator = list.iterator();
 
@@ -1055,4 +1055,15 @@ public class FileInfoUtils {
         return handleMetadataInformation(thumbnailPath, fileInfo);
     }
 
+    public static boolean hasCurrentFile(List<FileInfo> fileListInfos, Path currentFile) {
+        Iterator<FileInfo> fileInfosIterator = fileListInfos.iterator();
+        while(fileInfosIterator.hasNext()) {
+            FileInfo fileInfo = fileInfosIterator.next();
+            if(currentFile.toString().equals(fileInfo.getOrgPath())) {
+                sprintf("##########updateLists folderFile: " + currentFile);
+                return true;
+            }
+        }
+        return false;
+    }
 }

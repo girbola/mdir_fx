@@ -348,7 +348,7 @@ public class Main extends Application {
                     Platform.runLater(() -> {
                         lpt.closeStage();
                     });
-                    model_main.tables().registerTableView_obs_listener();
+                    model_main.tables().registerTableViewObsListener();
                     primaryStage.setOnCloseRequest(model_main.exitProgram);
 
                     TableUtils.refreshAllTableContent(model_main.tables());

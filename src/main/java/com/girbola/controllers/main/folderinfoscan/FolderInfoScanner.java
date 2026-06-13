@@ -10,14 +10,12 @@ import com.girbola.fileinfo.FileInfo;
 import com.girbola.filelisting.GetRootFiles;
 import com.girbola.filelisting.ValidatePathUtils;
 import com.girbola.messages.Messages;
-import com.girbola.persistence.fileinfo.FileInfoDao;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
 import common.utils.FileUtils;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -117,7 +115,7 @@ public class FolderInfoScanner extends Task<Integer> {
                 try {
                     scanDirectory(directory);
                 } catch (IOException exception) {
-                    Messages.sprintfError("FolderInfoScanner failed to scan directory: "
+                    Messages.sprintfError("scanSelectedFolder FolderInfoScanner failed to scan directory: "
                             + directory + " error: " + exception.getMessage());
                 }
 

@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 
 import java.util.List;
 import java.util.Map;
+import javafx.beans.value.ObservableValue;
 
 
 interface TableValues_inf {
@@ -62,6 +63,7 @@ interface TableValues_inf {
     public SimpleStringProperty minDate_prop();
     public SimpleStringProperty state_property();
     public SimpleStringProperty tableType_property();
+    public SimpleStringProperty justFolderName_prop();
 
     // ============================ Getters (plain values) ============================
     public String getFolderPath();

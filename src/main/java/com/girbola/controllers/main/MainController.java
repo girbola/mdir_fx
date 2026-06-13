@@ -6,7 +6,11 @@ import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
+import common.utils.FileUtils;
 import common.utils.ui.UI_Tools;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Iterator;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
@@ -23,6 +27,7 @@ import javafx.scene.layout.VBox;
 import java.util.List;
 
 import static com.girbola.messages.Messages.sprintf;
+import static common.utils.FileUtils.getHasMedia;
 
 
 public class MainController {
@@ -83,20 +88,27 @@ public class MainController {
                 if (newValue.getText() != null) {
                     if (newValue.getText().equals("Folders")) {
                         sprintf("Selected tab: " + newValue.getText());
-                      //  model_main.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
+                        //  model_main.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
-                          model_main.getSelectedFolders().backup();
+                        model_main.getSelectedFolders().backup();
 
-                        model_main.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
-                            sprintf("getSelectedFolderScanner_obs: " + selectedFolder.getFolder() + " isConnected?: " + selectedFolder.isConnected());
-                        });
+                        for (SelectedFolder selectedFolder : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
+
+                            boolean isSelected = FileUtils.getIsConnected(Paths.get(selectedFolder.getFolder()));
+                            boolean hasMedia = FileUtils.getHasMedia(selectedFolder.getFolder());
+
+                            Messages.sprintf("Iterating SelectedFolder: " + selectedFolder.getFolder() + " isSelected: " + isSelected + " hasMedia: " + hasMedia);
+                            Platform.runLater(() -> {
+                                selectedFolder.setConnected(isSelected);
+                                selectedFolder.setMedia(hasMedia);
+                            });
+                        }
 
                         model_main.getSelectedFolders().getSelectedFolderScannerOriginal().forEach(selectedFolder -> {
                             Messages.sprintf("getSelectedFolderScannerOriginal: " + selectedFolder.getFolder() + " isConnected?: " + selectedFolder.isConnected());
                         });
                     } else {
                         Messages.sprintf("Selected tab: " + newValue.getText());
-                        newValue.getText();
                     }
                 }
             }

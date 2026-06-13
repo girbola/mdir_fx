@@ -1,25 +1,45 @@
-
 package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
+import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.controllers.folderscanner.mediafolderscanner.MediaFolderScanner;
+import com.girbola.controllers.folderscanner.searchservice.ScanEvent;
+import com.girbola.controllers.folderscanner.searchservice.ScanJob;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.SubList;
+import com.girbola.controllers.main.folderinfoscan.FolderInfoScanner;
+import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
+import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
+import com.girbola.fileinfo.FileInfo;
+import com.girbola.filelisting.GetAllFiles;
+import com.girbola.filelisting.SubFolders;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
-
+import com.girbola.utils.FileInfoUtils;
+import com.girbola.utils.folderscanner.FolderScanner;
+import common.utils.FileUtils;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.Set;
+import java.util.concurrent.ExecutionException;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -36,12 +56,12 @@ import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.controllers.main.tables.TableUtils.resolveTableTypeByPath;
 import static com.girbola.messages.Messages.sprintf;
 
 public class SelectedFoldersController {
-    private final String ERROR = SelectedFoldersController.class.getName();
 
-    /*private ScheduledService<Void> scanner;*/
+    private final String ERROR = SelectedFoldersController.class.getName();
 
     private ModelMain modelMain;
     private ModelFolderScanner model_folderScanner;
@@ -65,18 +85,14 @@ public class SelectedFoldersController {
 
 
     @FXML
-    private void selectedFolders_ok_action(ActionEvent event) {
+    private void selectedFolders_ok_action(ActionEvent event) throws ExecutionException, InterruptedException, IOException {
         Messages.sprintf("selectedFolders_ok_action pressed");
-
         modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
 
         model_folderScanner.getScanDrives().stop();
         modelMain.getMonitorExternalDriveConnectivity().cancel();
 
         modelMain.getSelectedFolders().restore();
-
-//        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().setAll(selectedFolderScannerOriginal);
-//        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
 
         modelMain.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
             Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
@@ -89,54 +105,224 @@ public class SelectedFoldersController {
             return;
         }
 
-        List<Path> selectedFolders = new ArrayList<>();
-        for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) && sf.isSelected()) {
-                if (sf.isConnected() && sf.isSelected()) {
-                    boolean selectedFolderExists = SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()));
-                    if (!selectedFolderExists) {
-                        selectedFolders.add(Paths.get(sf.getFolder()));
-                        sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
+        ConcurrencyUtils.stopExecThreadNow();
+
+        // Create background task
+        Task<List<FolderInfo>> scanTask = new Task<>() {
+            @Override
+            protected List<FolderInfo> call() throws Exception {
+
+                List<FolderInfo> folderInfos = new ArrayList<>();
+
+                List<Path> newLists = new ArrayList<>();
+                List<Path> updateLists = new ArrayList<>();
+                for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) &&
+                            sf.isSelected() &&
+                            Files.exists(Paths.get(sf.getFolder()))) {
+                        List<Path> paths = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
+                        for (Path p : paths) {
+                            if (!TableUtils.checkTableDuplicates(modelMain.tables(), p)) {
+                                //add as new
+                                newLists.add(p);
+                            } else {
+                                //updates folder content for new content
+                                updateLists.add(p);
+                            }
+                        }
+
                     }
                 }
-        /*
-            Task<Set<Path>> task = }
-         */
-        for (SelectedFolder sf : model_main.getSelectedFolders().getSelectedFolderScanner_obs()) {
-            if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(),
-                    sf.getFolder()) &&
-                    sf.isSelected() &&
-                    sf.isConnected() &&
-                    SelectedFolderUtils.tableHasFolder(model_main.tables(), Paths.get(sf.getFolder()))) {
-                selectedFolders.add(Paths.get(sf.getFolder()));
-                sprintf("!selectedFolderExists Path is: " + sf.getFolder() + " isConnected: " + sf.isConnected());
-            } else {
-                Messages.sprintf("##### FOLDER IGNORED!!!!: " + sf.getFolder());
 
-                Iterator tableIteratorSortit = modelMain.tables().getSortIt_table().getItems().iterator();
-                Iterator tableIteratorSorted = modelMain.tables().getSorted_table().getItems().iterator();
+                for (Path path : newLists) {
+                    sprintf("#### FOLDER IS NEW and SELECTED: " + path);
 
-                while (tableIteratorSortit.hasNext()) {
-                    FolderInfo folderInfo = (FolderInfo) tableIteratorSortit.next();
-                    if (folderInfo.getFolderPath().startsWith(sf.getFolder())) {
-                        tableIteratorSortit.remove();
+                    TableType tableType = resolveTableTypeByPath(path);
+                    FolderInfo folderInfo = new FolderInfo(path);
+                    folderInfo.setTableType(tableType.getType());
+
+                    // Heavy I/O operation
+                    List<FileInfo> fileInfoList = FileInfoUtils.createFileInfo_list(folderInfo);
+                    if (fileInfoList != null && !fileInfoList.isEmpty()) {
+                        folderInfo.setFileInfoList(fileInfoList);
+                        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+                        folderInfo.setChanged(true);
+                        Main.setChanged(true);
+
+                        // Store with table type info
+                        folderInfos.add(folderInfo);
                     }
                 }
-                while (tableIteratorSorted.hasNext()) {
-                    FolderInfo folderInfo = (FolderInfo) tableIteratorSorted.next();
-                    if (folderInfo.getFolderPath().startsWith(sf.getFolder())) {
-                        tableIteratorSorted.remove();
+                for (Path p : updateLists) {
+                    FolderInfo folderInfo = TableUtils.findTableValues(p, modelMain.tables());
+
+                    if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
+                        List<FileInfo> fileInfoList = folderInfo.getFileInfoList();
+
+                        Iterator<Path> currentFolderMediaFilesOnly = FileUtils
+                                .getCurrentFolderMediaFilesOnly(p, FileUtils.filter_directories)
+                                .iterator();
+
+                        while (currentFolderMediaFilesOnly.hasNext()) {
+                            Path currentFile = currentFolderMediaFilesOnly.next();
+                            sprintf("##########updateLists folderFile: " + currentFile);
+
+                            boolean hasFile = FileInfoUtils.hasCurrentFile(fileInfoList, currentFile);
+
+                            if (!hasFile) {
+                                fileInfoList.removeIf(fileInfo -> currentFile.toString().equals(fileInfo.getOrgPath()));
+                                folderInfo.setChanged(true);
+                                Main.setChanged(true);
+                            }
+
+                            Messages.sprintf("*** ended folderFile: " + currentFile);
+                        }
+                        //FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+                    } else {
+                        Messages.sprintfError("Cannot find correct folderinfo: " + p);
+                    }
+                }
+
+
+//                List<FolderInfo> newFolderInfos = new ArrayList<>();
+//
+//                // Scan all folders (heavy operation)
+//                List<Path> allPaths = new ArrayList<>();
+//                for (Path path : newLists) {
+//                    if (Main.getProcessCancelled() || isCancelled()) {
+//                        cancel();
+//                        return null;
+//                    }
+//                    List<Path> paths = FolderScanner.scanFolders(path);
+//                    allPaths.addAll(paths);
+//                }
+//
+//                for (Path p : allPaths) {
+//                    Messages.sprintf("########allPaths Selected folder to scan: " + p);
+//                }
+
+                // Process selected folders (heavy operation)
+//                for (Path path : allPaths) {
+//                    if (!TableUtils.checkTableDuplicates(modelMain.tables(), path)) {
+//
+//                        sprintf("#### FOLDER IS NEW and SELECTED: " + path);
+//
+//                        TableType tableType = resolveTableTypeByPath(path);
+//                        FolderInfo folderInfo = new FolderInfo(path);
+//                        folderInfo.setTableType(tableType.getType());
+//
+//                        // Heavy I/O operation
+//                        List<FileInfo> fileInfoList = FileInfoUtils.createFileInfo_list(folderInfo);
+//                        if (fileInfoList != null && !fileInfoList.isEmpty()) {
+//                            folderInfo.setFileInfoList(fileInfoList);
+//                            FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+//
+//                            // Store with table type info
+//                            newFolderInfos.add(folderInfo);
+//                        }
+//                    } else {
+//                        sprintf("#### FOLDER WAS AT THE TABLE and SELECTED: " + path);
+//                    }
+//                }
+
+
+                return folderInfos;
+
+            }
+
+            @Override
+            protected void succeeded() {
+                super.succeeded();
+                List<FolderInfo> folderInfos = getValue();
+
+                // Update UI on JavaFX Application Thread
+                for (FolderInfo folderInfo : folderInfos) {
+                    String tableType = folderInfo.getTableType();
+
+                    if (tableType.equals(TableType.SORTIT.getType())) {
+                        modelMain.tables().getSortIt_table().getItems().add(folderInfo);
+                    } else if (tableType.equals(TableType.SORTED.getType())) {
+                        modelMain.tables().getSorted_table().getItems().add(folderInfo);
+                    } else if (tableType.equals(TableType.ASITIS.getType())) {
+                        modelMain.tables().getAsItIs_table().getItems().add(folderInfo);
                     }
                 }
             }
-        }
 
-//        modelMain.populate().populateTablesFolderScannerList(Main.sceneManager.getWindow());
-        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
+            @Override
+            protected void failed() {
+                super.failed();
+                Throwable exception = getException();
+                Messages.sprintfError("Folder scanning failed: " + exception.getMessage());
+                exception.printStackTrace();
+            }
+
+            @Override
+            protected void cancelled() {
+                super.cancelled();
+                Messages.sprintf("Folder scanningn cancelled");
+            }
 
 
-//        Stage stage = (Stage) selectedFolders_ok_btn.getScene().getWindow();
-//        stage.close();
+        };
+
+// Optional: Show progress indicator
+        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(Main.sceneManager.getWindow());
+//        scanTask.setOnRunning(e -> loadingProcessTask.loadGUI());
+
+        scanTask.setOnSucceeded(e -> loadingProcessTask.closeStage());
+        scanTask.setOnFailed(e -> loadingProcessTask.closeStage());
+        scanTask.setOnCancelled(e -> loadingProcessTask.closeStage());
+
+// Start the task in a background thread
+        Thread scanThread = new Thread(scanTask);
+        scanThread.setDaemon(true);
+        scanThread.start();
+//
+//        for (Path p : selectedFolders) {
+//            Messages.sprintf("------------***********allPaths Selected folder to scan: " + p);
+//        }
+//
+//        // Scan subfolders and accept only folders which has more than one mediaFiles
+//        Set<Path> selectedSubFolders = new HashSet<>();
+//
+//        for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+//
+//            //List<Path> paths = SubFolders.subFolders(Paths.get(sf.getFolder()));
+//
+//            List<Path> paths = MediaFolderScanner.findMediaFolders(Paths.get(sf.getFolder()));
+//            if (!paths.isEmpty()) {
+//                selectedSubFolders.addAll(paths);
+//            }
+//
+////
+////            boolean tableHasFolder = SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()));
+////            if (!tableHasFolder) {
+////                selectedSubFolders.add(Paths.get(sf.getFolder()));
+////            }
+//
+//
+//        }
+////populate<
+//        LoadingProcessTask loadingProcessTask = new LoadingProcessTask(Main.sceneManager.getWindow());
+//
+//        List<ScanJob> list = new ArrayList<>();
+//
+//        for (Path path : selectedSubFolders) {
+//
+//            //!SelectedFolderUtils.tableHasFolder(modelMain.tables(), Paths.get(sf.getFolder()))
+//            ObservableList<FolderInfo> tableIteratorSortit = modelMain.tables().getSortIt_table().getItems();
+//            ObservableList<FolderInfo> tableIteratorSorted = modelMain.tables().getSorted_table().getItems();
+//
+//            for (FolderInfo folderInfo : tableIteratorSortit) {
+//                if (folderInfo.getFolderPath().equals(path.toAbsolutePath().toString())) {
+//                    // Update and see if there were changes
+//                }
+//            }
+//
+//            //createNewFolderInfo
+//        }
+
     }
 
     @FXML
@@ -168,7 +354,7 @@ public class SelectedFoldersController {
 //
 //        selectedFolder_TableView.setItems(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 //        SelectionPropagation.syncTreeFromModel(modelMain);
-      //  modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
+        //  modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
 //        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 //        SelectionPropagation.syncTreeFromModel(model_main);
         //  model_main.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
@@ -270,19 +456,23 @@ public class SelectedFoldersController {
         });
 
         folder_selected_col.setCellFactory(selectedFoldersCellFactory);
-        folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
+        //folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));
+        folder_selected_col.setCellValueFactory(cellData -> cellData.getValue().selectedProperty().asObject());
 
         remove_row_col.setCellFactory(removeRowCellFactory);
         remove_row_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(false));
 
 
-        folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+        //folder_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
+        folder_col.setCellValueFactory(cellData -> cellData.getValue().folder_property());
 
         folder_connected_col.setCellFactory(connected);
-        folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+        //folder_connected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isConnected()));
+        folder_connected_col.setCellValueFactory(cellData -> cellData.getValue().connected_property().asObject());
 
         hasMedia_col.setCellFactory(hasMediaFiles);
-        hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
+        //hasMedia_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isMedia()));
+        hasMedia_col.setCellValueFactory(cellData -> cellData.getValue().mediaProperty().asObject());
 
         selectedFolder_TableView.setItems(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
         Messages.sprintf("getFolderScanner lldlflfl" + this.modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size());
@@ -309,19 +499,9 @@ public class SelectedFoldersController {
         scanner.setPeriod(Duration.seconds(10));*/
     }
 
-    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMediaFiles = new Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>>() {
-        @Override
-        public TableCell<SelectedFolder, Boolean> call(TableColumn<SelectedFolder, Boolean> selectedFolderBooleanTableColumn) {
-            return new TableCell_Media();
-        }
-    };
+    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMediaFiles = selectedFolderBooleanTableColumn -> new TableCell_Media();
 
-    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> connected = new Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>>() {
-        @Override
-        public TableCell<SelectedFolder, Boolean> call(TableColumn<SelectedFolder, Boolean> selectedFolderBooleanTableColumn) {
-            return new com.girbola.controllers.folderscanner.TableCell_Connected();
-        }
-    };
+    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> connected = selectedFolderBooleanTableColumn -> new TableCell_Connected();
 
 
 //    public Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> hasMedia_tableCell =

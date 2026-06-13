@@ -53,17 +53,17 @@ public class FolderInfo implements TableValues_inf {
 
     /**
      * Constructs a new `FolderInfo` object with default initial values for all properties.
-     *
+     * <p>
      * This constructor initializes various properties related to folder statistics, metadata,
      * state tracking, and file categorization. These properties include counters for file
      * types (e.g., image files, video files), booleans for folder status (e.g., connected,
      * ignored), and additional metadata such as folder path and dates. All properties
      * are initialized with default values, such as zero for numerical properties, empty
      * strings for text properties, and false for boolean properties.
-     *
+     * <p>
      * The constructor also initializes specific category-tracking properties for image
      * and video files, including properties for bad, good, suggested, and accepted files.
-     *
+     * <p>
      * Additionally, this constructor sets up property bindings, such as calculating the
      * difference between the number of files and bad files.
      */
@@ -110,10 +110,10 @@ public class FolderInfo implements TableValues_inf {
      * Constructs a new FolderInfo object with initial values for the provided folder path
      * and associated metadata.
      *
-     * @param folderPath the path to the folder to initialize the FolderInfo object for
-     * @param tableType the type of table associated with this folder
+     * @param folderPath     the path to the folder to initialize the FolderInfo object for
+     * @param tableType      the type of table associated with this folder
      * @param justFolderName the name of the folder, or an empty string to use the folder name derived from the path
-     * @param connected a boolean indicating if the folder is connected
+     * @param connected      a boolean indicating if the folder is connected
      */
     public FolderInfo(Path folderPath, String tableType, String justFolderName, boolean connected) {
         this.badFiles = new SimpleIntegerProperty(0);
@@ -263,6 +263,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public SimpleIntegerProperty confirmedImageFiles_prop()      { return confirmedImageFiles; }
     @Override public SimpleIntegerProperty confirmedVideoFiles_prop()      { return confirmedVideoFiles; }
     @Override public SimpleStringProperty  tableType_property()            { return tableType; }
+    @Override public SimpleStringProperty  justFolderName_prop()           { return justFolderName; }
     @Override public IntegerProperty       status_property()               { return status; }
 
     // Setters (alphabetical)
