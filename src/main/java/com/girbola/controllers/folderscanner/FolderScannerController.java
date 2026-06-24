@@ -185,9 +185,12 @@ public class FolderScannerController {
             @Override
             public void updateItem(Path item, boolean empty) {
                 super.updateItem(item, empty);
+
                 if (empty || item == null) {
+                    Messages.sprintf("-----setCellFactory null: " + item + " boolean is: " + empty);
                     setText(null);
                 } else {
+                    Messages.sprintf("-----setCellFactory: " + item + " boolean is: " + empty);
                     String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
                     setText(name);
                 }
@@ -229,7 +232,7 @@ public class FolderScannerController {
 
         Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
         for (Path commonPath : resolve.values()) {
-//            Messages.sprintf("commonPath: " + commonPath);
+            Messages.sprintf("commonPath: " + commonPath);
             if (Files.exists(commonPath)) {
                 Messages.sprintf("Adding commonPath to homeDefaultsTableView: " + commonPath);
 //                homeDefaultsTableView.getItems().add(commonPath);

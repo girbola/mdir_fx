@@ -76,4 +76,15 @@ The IntelliJ IDEA `.iml` module file should look similar to the following:
   </component>
 </module>
 ```
+## JavaFX Scene Builder 24.0.1
+Libraries need to be installed manually:
+```
+ikonli-bootstrapicons-pack-12.3.1.jar
+org.kordamp.ikonli:ikonli-bootstrapicons-pack:12.4.0
+org.kordamp.ikonli:ikonli-core:12.4.0
+org.kordamp.ikonli:ikonli-ionicons4-pack:12.4.0
+org.kordamp.ikonli:ikonli-javafx:12.4.0
+org.kordamp.ikonli:ikonli-material2-pack:12.4.0
+org.kordamp.ikonli:ikonli-materialdesign2-pack:12.4.0
 
+```

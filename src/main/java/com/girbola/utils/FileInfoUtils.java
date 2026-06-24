@@ -877,7 +877,7 @@ public class FileInfoUtils {
             return fileInfo;
         } catch (IOException e) {
             long endTime = System.currentTimeMillis();
-            Messages.sprintf("########FileInfo created in " + (endTime - startTime) + " ms ################");
+            Messages.sprintf("IOException ########FileInfo created in " + (endTime - startTime) + " ms ################");
             Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
             throw e;
         }
@@ -1058,7 +1058,7 @@ public class FileInfoUtils {
         while(fileInfosIterator.hasNext()) {
             FileInfo fileInfo = fileInfosIterator.next();
             if(currentFile.toString().equals(fileInfo.getOrgPath())) {
-                sprintf("##########updateLists folderFile: " + currentFile);
+                sprintf("##########hasCurrentFile folderFile: " + currentFile);
                 return true;
             }
         }
@@ -1070,10 +1070,10 @@ public class FileInfoUtils {
         while(fileInfosIterator.hasNext()) {
             FileInfo fileInfo = fileInfosIterator.next();
             if(currentFile.toString().equals(fileInfo.getOrgPath())) {
-                sprintf("##########updateLists folderFile: " + currentFile);
                 return true;
             }
         }
+        sprintf("##########fileInfoHas NOT currentFile: " + currentFile);
         return false;
     }
 }

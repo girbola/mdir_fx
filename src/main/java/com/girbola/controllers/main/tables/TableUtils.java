@@ -459,18 +459,20 @@ public class TableUtils {
     public static boolean checkTableDuplicates(Tables tables, Path path) {
         Messages.sprintf("checkTableDuplicates started: " + path.toString());
         for (FolderInfo folderInfo : tables.getSortIt_table().getItems()) {
+            Messages.sprintf("SortIt checkTableDuplicates CHEEECK dup " + folderInfo.getFolderPath() + " " + path.toString());
             if (folderInfo.getFolderPath().equals(path.toString())) {
-                Messages.sprintf("---1111 checkTableDuplicates found dup " + path.toString());
+                Messages.sprintf("---1111 checkTableDuplicates FOOUUUNNND dup " + path.toString());
                 return true;
             }
         }
         for (FolderInfo folderInfo : tables.getSorted_table().getItems()) {
+            Messages.sprintf("Sorted checkTableDuplicates CHEEECK dup " + folderInfo.getFolderPath() + " " + path.toString());
             if (folderInfo.getFolderPath().equals(path.toString())) {
-                Messages.sprintf("---2222 checkTableDuplicates found dup " + path.toString());
+                Messages.sprintf("####---#3333 checkTableDuplicates found dup " + folderInfo.getFolderPath() + " " + path.toString());
                 return true;
             }
         }
-
+        Messages.sprintf("---NOOOOOT FOUNDDDNDNDNND " + path.toString());
         return false;
     }
 

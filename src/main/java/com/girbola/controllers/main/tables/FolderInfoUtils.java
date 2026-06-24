@@ -403,4 +403,16 @@ public class FolderInfoUtils {
         }
 
     }
+
+    public static boolean remove(FolderInfo folderInfo, Path currentFile) {
+        Iterator<FileInfo> fileInfoIt = folderInfo.getFileInfoList().iterator();
+        while(fileInfoIt.hasNext()) {
+            FileInfo fileInfo = fileInfoIt.next();
+            if (fileInfo.getOrgPath().equals(currentFile.toString())) {
+                fileInfoIt.remove();
+                return true;
+            }
+        }
+        return false;
+    }
 }

@@ -2,6 +2,7 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.Main;
 import com.girbola.concurrency.ConcurrencyUtils;
+import com.girbola.configuration.ConfigurationUtils;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
@@ -11,6 +12,7 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.utils.folderscanner.FolderScanner;
@@ -82,8 +84,20 @@ public class SelectedFoldersController {
 
         model_folderScanner.getScanDrives().stop();
         modelMain.getMonitorExternalDriveConnectivity().cancel();
+        for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            Messages.sprintf("----selectedFolders size" + sf.getFolder());
+        }
 
-        modelMain.getSelectedFolders().restore();
+//        modelMain.getSelectedFolders().restore();
+
+
+        for (FolderInfo folderInfo : modelMain.tables().getSortIt_table().getItems()) {
+            Messages.sprintf("########## SORTIT folderInfo: " + folderInfo.getFolderPath());
+        }
+
+        for (FolderInfo folderInfo : modelMain.tables().getSorted_table().getItems()) {
+            Messages.sprintf("########## SORTED folderInfo: " + folderInfo.getFolderPath());
+        }
 
         modelMain.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
             Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
@@ -107,24 +121,64 @@ public class SelectedFoldersController {
 
                 List<Path> newLists = new ArrayList<>();
                 List<Path> updateLists = new ArrayList<>();
+                List<Path> notConnected = new ArrayList<>();
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                    if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) &&
-                            sf.isSelected() &&
-                            Files.exists(Paths.get(sf.getFolder()))) {
-                        List<Path> paths = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
-                        for (Path p : paths) {
-                            if (!TableUtils.checkTableDuplicates(modelMain.tables(), p)) {
-                                //add as new
-                                newLists.add(p);
-                                Messages.sprintf("##########newLists Selected folder to scan: " + p);
-                            } else {
-                                //updates folder content for new content
-                                updateLists.add(p);
-                                Messages.sprintf("##########updateLists Selected folder to scan: " + p);
+                    Messages.sprintf("##########getSelectedFolderScanner_obs folder: " + sf.getFolder() + " isSelected: " + sf.isSelected());
+                    if (sf.getFolder().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\Ruotsin reissu")) {
+                        Messages.sprintf("##########FFFFFFFFFFFFFFFFFFFFOUNDgetSelectedFolderScanner_obs folder: " + sf.getFolder() + " isSelected: " + sf.isSelected());
+                    }
+                    if (sf.isConnected()) {
+                        if (sf.isSelected() && sf.isConnected()) {
+                            if (Files.exists(Paths.get(sf.getFolder()))) {
+                                if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder())) {
+                                    List<Path> otherFolders = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
+                                    for (Path otherFolder : otherFolders) {
+                                        Messages.sprintf("---***SELECTED folder to scan: " + otherFolder);
+                                        if(otherFolder.startsWith("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
+                                            Messages.sprintf("---***SELECTED folder to scan: " + otherFolder);
+                                        }
+                                        if (!TableUtils.checkTableDuplicates(modelMain.tables(), otherFolder)) {
+                                            //add as new
+                                            newLists.add(otherFolder);
+                                            Messages.sprintf("##########newLists Selected folder to scan: " + otherFolder);
+                                        } else {
+                                            //updates folder content for new content
+                                            updateLists.add(otherFolder);
+                                            Messages.sprintf("##########updateLists Selected folder to scan: " + otherFolder);
+                                        }
+                                    }
+                                }
                             }
                         }
-
+                    } else {
+                        notConnected.add(Paths.get(sf.getFolder()));
                     }
+                    if (!notConnected.isEmpty()) {
+                        StringBuilder sb = new StringBuilder();
+                        for (Path notConnectedPath : notConnected) {
+                            sb.append(notConnectedPath).append("\n");
+                        }
+                        Messages.warningText("Selected folder(s) not connected: " + sb.toString());
+                    }
+//                    if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) &&
+//                            sf.isSelected() &&
+//                            Files.exists(Paths.get(sf.getFolder()))) {
+//                        List<Path> paths = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
+//                        for (Path p : paths) {
+//                            if (!TableUtils.checkTableDuplicates(modelMain.tables(), p)) {
+//                                //add as new
+//                                newLists.add(p);
+//                                Messages.sprintf("##########newLists Selected folder to scan: " + p);
+//                            } else {
+//                                //updates folder content for new content
+//                                updateLists.add(p);
+//                                Messages.sprintf("##########updateLists Selected folder to scan: " + p);
+//                            }
+//                        }
+//
+//                    } else {
+//                        Messages.sprintf("##########NOT SELECTED folder: " + sf.getFolder());
+//                    }
                 }
 
                 for (Path path : newLists) {
@@ -146,40 +200,43 @@ public class SelectedFoldersController {
                         folderInfos.add(folderInfo);
                     }
                 }
-                for (Path p : updateLists) {
-                    FolderInfo folderInfo = TableUtils.findTableValues(p, modelMain.tables());
+
+                for (Path updateFile : updateLists) {
+                    Messages.sprintf("##########updateLists Selected folder to scan: " + updateFile);
+                    if(updateFile.startsWith("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
+                        Messages.sprintf("##########updateLists Selected folder to scan: " + updateFile);
+                    }
+                    FolderInfo folderInfo = TableUtils.findTableValues(updateFile, modelMain.tables());
+
                     Messages.sprintf("##########updateLists folderInfo: " + folderInfo);
                     if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
+                        List<FileInfo> newFileInfo = new ArrayList<>();
                         List<FileInfo> fileInfoList = folderInfo.getFileInfoList();
                         if (folderInfo.getFolderPath().equals("C:\\Users\\marko\\Pictures\\mdir - Copy")) {
                             Messages.sprintf("FOUND!!!");
                         }
-                        List<Path> currentFolderMediaFilesOnly = FileUtils
-                                .getCurrentFolderMediaFilesOnly(p, FileUtils.filter_directories);
+                        List<Path> currentFolderMediaFilesOnly = FileUtils.getCurrentFolderMediaFilesOnly(updateFile, FileUtils.filter_directories);
 
-                        Messages.sprintf("!#!SIZE BEFORE REMOVED: "+ currentFolderMediaFilesOnly.size());
+                        Messages.sprintf("!#!SIZE BEFORE REMOVED: " + currentFolderMediaFilesOnly.size());
+
                         // Delete if from List<FileInfo> has not findRemovedFiles
                         Iterator<Path> iterator = currentFolderMediaFilesOnly.iterator();
                         while (iterator.hasNext()) {
                             Path findRemovedFiles = iterator.next();
                             boolean hasFile = FileInfoUtils.fileInfoHasCurrentFile(fileInfoList, findRemovedFiles);
-
                             if (!hasFile) {
                                 Messages.sprintf("findRemovedFiles fileInfoHasCurrentFile hasFile?: " + findRemovedFiles);
                                 iterator.remove();
                             }
                         }
 
-                        Messages.sprintf("SIZE AFTER REMOVED: "+ currentFolderMediaFilesOnly.size());
+                        Messages.sprintf("SIZE AFTER REMOVED: " + currentFolderMediaFilesOnly.size());
 
                         Iterator<Path> iterator1 = currentFolderMediaFilesOnly.iterator();
 
                         // Create if currenFile has not in List<Path> currentFolderMediaFilesOnly
                         while (iterator1.hasNext()) {
                             Path currentFile = iterator1.next();
-
-                            sprintf("##########create new folderInfo currentFile folderFile: " + currentFile);
-
                             /*
                             scenario 1) file exists in fileinfo, continue
                             scenario 2) file does not exists in fileinfo, create fileinfo
@@ -191,11 +248,15 @@ public class SelectedFoldersController {
                             boolean hasFile = FileInfoUtils.hasCurrentFile(fileInfoList, currentFile);
 
                             if (!hasFile) {
-                                folderInfo.getFileInfoList().remove(currentFile);
-                                fileInfoList.removeIf(fileInfo -> currentFile.toString().equals(fileInfo.getOrgPath()));
+                                sprintf("##########remove currentFile from folderInfo.getFileLists(): " + currentFile);
+                                FolderInfoUtils.remove(folderInfo, currentFile);
+
                                 folderInfo.setChanged(true);
                                 Main.setChanged(true);
                             } else {
+//TODO TÄSSÄ MENEE VÄÄÄÄÄRIN!!!. Ei osaa lukea olemassa olevaa. Pitäisi verrata onko olemassa vai ei.
+                                //KORJAAA!!!!!!
+                                sprintf("##########create new folderInfo currentFile folderFile: " + currentFile);
                                 FileInfo newFileInfo = createFileInfo(currentFile);
                                 folderInfo.getFileInfoList().add(newFileInfo);
                                 folderInfo.setChanged(true);
@@ -206,52 +267,9 @@ public class SelectedFoldersController {
                         }
                         //FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                     } else {
-                        Messages.sprintfError("Cannot find correct folderinfo: " + p);
+                        Messages.sprintfError("Cannot find correct folderinfo: " + updateFile);
                     }
                 }
-
-
-//                List<FolderInfo> newFolderInfos = new ArrayList<>();
-//
-//                // Scan all folders (heavy operation)
-//                List<Path> allPaths = new ArrayList<>();
-//                for (Path path : newLists) {
-//                    if (Main.getProcessCancelled() || isCancelled()) {
-//                        cancel();
-//                        return null;
-//                    }
-//                    List<Path> paths = FolderScanner.scanFolders(path);
-//                    allPaths.addAll(paths);
-//                }
-//
-//                for (Path p : allPaths) {
-//                    Messages.sprintf("########allPaths Selected folder to scan: " + p);
-//                }
-
-                // Process selected folders (heavy operation)
-//                for (Path path : allPaths) {
-//                    if (!TableUtils.checkTableDuplicates(modelMain.tables(), path)) {
-//
-//                        sprintf("#### FOLDER IS NEW and SELECTED: " + path);
-//
-//                        TableType tableType = resolveTableTypeByPath(path);
-//                        FolderInfo folderInfo = new FolderInfo(path);
-//                        folderInfo.setTableType(tableType.getType());
-//
-//                        // Heavy I/O operation
-//                        List<FileInfo> fileInfoList = FileInfoUtils.createFileInfo_list(folderInfo);
-//                        if (fileInfoList != null && !fileInfoList.isEmpty()) {
-//                            folderInfo.setFileInfoList(fileInfoList);
-//                            FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-//
-//                            // Store with table type info
-//                            newFolderInfos.add(folderInfo);
-//                        }
-//                    } else {
-//                        sprintf("#### FOLDER WAS AT THE TABLE and SELECTED: " + path);
-//                    }
-//                }
-
 
                 return folderInfos;
 
@@ -260,6 +278,8 @@ public class SelectedFoldersController {
             @Override
             protected void succeeded() {
                 super.succeeded();
+//                TableUtils.saveChangesContentsToTables(modelMain.tables());
+
                 List<FolderInfo> folderInfos = getValue();
 
                 // Update UI on JavaFX Application Thread
@@ -274,6 +294,9 @@ public class SelectedFoldersController {
                         modelMain.tables().getAsItIs_table().getItems().add(folderInfo);
                     }
                 }
+
+                ConfigurationUtils.saveTablesToConfigurationDatabase(modelMain);
+
             }
 
             @Override
@@ -542,14 +565,17 @@ public class SelectedFoldersController {
 
     public void start() {
 //        this.scanner.start();
+        Messages.sprintfError("start is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
     }
 
     public void restart() {
 //        this.scanner.restart();
+        Messages.sprintfError("restart is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
     }
 
     public void stop() {
 //        this.scanner.cancel();
+        Messages.sprintfError("stop is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
     }
 
     private boolean hasInIgnoredListMain(ObservableList<Path> ignoredList, String path) {

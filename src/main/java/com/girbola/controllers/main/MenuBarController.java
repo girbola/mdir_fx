@@ -2,6 +2,7 @@ package com.girbola.controllers.main;
 
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
+import com.girbola.configuration.ConfigurationUtils;
 import com.girbola.controllers.datefixer.DateFixer;
 import com.girbola.controllers.main.enums.ThemeType;
 import com.girbola.controllers.main.options.OptionsComponent;
@@ -357,27 +358,10 @@ public class MenuBarController {
     @FXML
     private void menuItem_file_save_action(ActionEvent event) {
         Messages.sprintf("menuItem_file_save_action");
-        /*
 
-         */
-        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(model_main, Main.sceneManager.getWindow(), null, true);
-        saveFileInfos.readTables();
-
-        Task<Integer> writeTablesFolderInfoToConfigurationDatabase = new WriteTablesFolderInfoToConfigurationDatabase(model_main, Main.sceneManager.getWindow(), null, true);
-        writeTablesFolderInfoToConfigurationDatabase.setOnSucceeded(event2 -> {
-            Messages.sprintfError("saveTablesToDatabases succeeded");
-        });
-        writeTablesFolderInfoToConfigurationDatabase.setOnFailed(event2 -> {
-            Messages.sprintfError("saveTablesToDatabases failed");
-        });
-        writeTablesFolderInfoToConfigurationDatabase.setOnCancelled(event2 -> {
-            Messages.sprintfError("saveTablesToDatabases cancelled");
-        });
-        Thread thread = new Thread(writeTablesFolderInfoToConfigurationDatabase, "Saving data MenuBarConctroller Thread");
-        thread.setDaemon(true);
-        thread.start();
-
+        ConfigurationUtils.saveTablesToConfigurationDatabase(model_main);
     }
+
 
     @FXML
     private void menuItem_help_about_action(ActionEvent event) {
