@@ -1076,4 +1076,28 @@ public class FileInfoUtils {
         sprintf("##########fileInfoHas NOT currentFile: " + currentFile);
         return false;
     }
+
+    public static FileInfo hasFileInfo(Path currentFile, List<FileInfo> fileInfoList) throws IOException {
+        for(FileInfo fileInfo : fileInfoList) {
+            Path fileInfoPath = Paths.get(fileInfo.getOrgPath());
+            boolean isSameFile = Files.isSameFile(currentFile, fileInfoPath);
+            if(isSameFile) {
+                return fileInfo;
+            }
+        }
+        return null;
+    }
+
+    public static Optional<FileInfo> findFileInfo(Path currentFile, List<FileInfo> fileInfoList) {
+        return fileInfoList.stream()
+                .filter(fileInfo -> {
+                    try {
+                        Path fileInfoPath = Paths.get(fileInfo.getOrgPath());
+                        return Files.isSameFile(currentFile, fileInfoPath);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                })
+                .findFirst(); // Returns an empty Optional if nothing matches
+    }
 }

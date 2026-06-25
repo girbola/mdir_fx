@@ -43,7 +43,6 @@
       <Menu mnemonicParsing="false" text="%help">
          <items>
             <MenuItem fx:id="menuItem_help_help" mnemonicParsing="false" onAction="#menuItem_help_help_action" text="%help" />
-            <MenuItem fx:id="menuItem_help_supportUs" mnemonicParsing="false" onAction="#menuItem_help_supportUs_action" text="%supportUs" />
             <MenuItem fx:id="menuItem_help_update" mnemonicParsing="false" onAction="#menuItem_help_update_action" text="%update" />
             <MenuItem fx:id="menuItem_help_about" mnemonicParsing="false" onAction="#menuItem_help_about_action" text="%about" />
          </items>

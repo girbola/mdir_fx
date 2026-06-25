@@ -1,6 +1,8 @@
 package com.girbola.configuration;
 
 import com.girbola.Main;
+import com.girbola.controllers.loading.LoadingProcess;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.WriteTablesFolderInfoToConfigurationDatabase;
 import com.girbola.fileinfo.SavedFoldersIntoConfigurationTable;
@@ -10,6 +12,13 @@ import javafx.concurrent.Task;
 public class ConfigurationUtils {
 
 //    final private static String ERROR = ConfigurationUtils.class.getSimpleName();
+
+    public static void saveTablesToConfigurationDatabase(ModelMain modelMain, LoadingProcessTask loadingProcessTask, boolean closeLoadingStage ) {
+        Task<Integer> saveTablesToDatabases = new WriteTablesFolderInfoToConfigurationDatabase(modelMain, Main.sceneManager.getWindow(), loadingProcessTask, closeLoadingStage);
+        Thread thread = new Thread(saveTablesToDatabases, "Saving data Thread");
+        thread.start();
+        //
+    }
 
     public static void saveTablesToConfigurationDatabase(ModelMain modelMain) {
         SavedFoldersIntoConfigurationTable saveFileInfos =

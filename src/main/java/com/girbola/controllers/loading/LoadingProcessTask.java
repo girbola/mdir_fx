@@ -1,18 +1,14 @@
 package com.girbola.controllers.loading;
 
-
 import com.girbola.MDir_Stylesheets_Constants;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import java.io.IOException;
-import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,102 +18,66 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.io.IOException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
-import static com.girbola.messages.Messages.sprintf;
 
 public class LoadingProcessTask {
 
-    private final String ERROR = LoadingProcessTask.class.getSimpleName();
-    private ModelLoading modelLoading = new ModelLoading();
+    private static final Logger LOGGER = Logger.getLogger(LoadingProcessTask.class.getName());
+    private static final String ERROR_TAG = LoadingProcessTask.class.getSimpleName();
+
+    private final ModelLoading modelLoading = new ModelLoading();
+    private final Window owner;
+
     private double xOffset;
     private double yOffset;
-    private Parent parent = null;
-    private Window owner;
 
     private Scene loadingScene;
     private Stage loadingStage;
 
     public LoadingProcessTask(Window owner) {
         this.owner = owner;
-        loadGUI();
+        // Run setup safely. If already on FX thread, runs immediately. If not, pushes to FX thread.
+        if (Platform.isFxApplicationThread()) {
+            Messages.sprintf("LoadingProcessTask: FX Application Thread");
+            initGUI();
+        } else {
+            Messages.sprintf("LoadingProcessTask: Not FX Application Thread");
+            Platform.runLater(this::initGUI);
+        }
     }
 
-    public void setProgress(double value, double max) {
-        modelLoading.getProgressBar().setProgress(value / max);
-    }
-
-    /*
-     * private Stage loadingStage; private Scene loadingScene;
+    /**
+     * Initializes the entire UI stack predictably.
      */
-    public void setProgressBar(double progress) {
-        modelLoading.getProgressBar().setProgress(progress);
-    }
+    private void initGUI() {
+        try {
+            // 1. Load FXML & Instantiate Parent
+            FXMLLoader loader = loadFXML();
+            if (loader == null || loadingScene == null) return;
 
-    public void setTask(Task<?> current_Task) {
-        if (modelLoading == null) {
-            Messages.sprintfError("ModelLoading is not initialized");
-            return;
-        }
-
-        if (current_Task == null) {
-            Messages.sprintf("LoadingProcess_Task Task were set to null!!");
-            return;
-        }
-
-//        Platform.runLater(() -> {
-//            try {
-//                modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-//                if (!Main.getProcessCancelled()) {
-//                    if (Main.sceneManager.getWindow_loadingprogress() != null
-//                            && Main.sceneManager.getWindow_loadingprogress().isShowing()) {
-//                        modelLoading.setTask(current_Task);
-//                        bind();
-//                    } else {
-//                        modelLoading.setTask(current_Task);
-//                        bind();
-//                        loadGUI();
-//                    }
-//                } else {
-//                    closeStage();
-//                }
-//            } catch (Exception ex) {
-//                Messages.sprintfError("Error setting task: " + ex.getMessage());
-//
-//                Logger.getLogger(LoadingProcessTask.class.getName()).log(Level.SEVERE, null, ex);
-//                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
-//            }
-//            if (Main.getProcessCancelled()) {}
-//        });
-    }
-
-    public void loadGUI() {
-        Platform.runLater(() -> {
-            try {
-                // Load FXML
-                FXMLLoader loader = loadFXML();
-                if (loader == null) return;
-
-                // Initialize controller
-                LoadingProcessController lpc = (LoadingProcessController) loader.getController();
+            // 2. Initialize controller data
+            LoadingProcessController lpc = loader.getController();
+            if (lpc != null) {
                 lpc.init(modelLoading);
-
-                // Configure stage
-                setupLoadingStage(parent);
-
-                // Configure scene
-                setupLoadingScene();
-
-                // Show stage and update scene switcher
-                loadingStage.show();
-                updateSceneSwitcher();
-
-            } catch (Exception ex) {
-                Logger.getLogger(LoadingProcessTask.class.getName())
-                        .log(Level.SEVERE, "Failed to load GUI", ex);
-                Messages.errorSmth(ERROR, "Failed to load GUI", ex, Misc.getLineNumber(), true);
             }
-        });
+
+            // 3. Configure Stage
+            setupLoadingStage();
+
+            // 4. Register globally
+            updateSceneSwitcher();
+
+            showLoadStage();
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Failed to load GUI", ex);
+            Messages.errorSmth(ERROR_TAG, "Failed to load GUI", ex, Misc.getLineNumber(), true);
+        }
     }
 
     private FXMLLoader loadFXML() throws IOException {
@@ -129,15 +89,21 @@ public class LoadingProcessTask {
         }
 
         FXMLLoader loader = new FXMLLoader(fxmlLocation, bundle);
-        parent = loader.load();
+        Parent parent = loader.load();
+
+        // Scene creation should happen safely right here
+        loadingScene = new Scene(parent);
+        setupDragHandlers();
+        applyStylesheet();
+
         return loader;
     }
 
-    private void setupLoadingStage(Parent parent) {
-        loadingScene = new Scene(parent);
+    private void setupLoadingStage() {
         loadingStage = new Stage();
+        loadingStage.setScene(loadingScene);
 
-        // Set fixed dimensions
+        // Set fixed dimensions tightly
         loadingStage.setWidth(500);
         loadingStage.setHeight(400);
         loadingStage.setMinWidth(500);
@@ -149,33 +115,23 @@ public class LoadingProcessTask {
             loadingStage.initOwner(owner);
         }
 
-        loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
+        loadingStage.setTitle("Loading Process");
         loadingStage.setAlwaysOnTop(true);
         Main.centerWindowDialog(loadingStage);
     }
 
-    private void setupLoadingScene() {
-        // Add stylesheet
-        Platform.runLater(() -> {
-            try {
-                String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
-                Messages.sprintf("LoadingProcess stylesheetPath: " + stylesheetPath);
-                loadingScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
-
-                // Store initial position
-                xOffset = loadingStage.getX();
-                yOffset = loadingStage.getY();
-
-                // Add drag functionality
-                setupDragHandlers();
-
-                loadingStage.setScene(loadingScene);
-
-            } catch (Exception ex) {
-                Logger.getLogger(LoadingProcessTask.class.getName()).log(Level.SEVERE, null, ex);
-                Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), true);
+    private void applyStylesheet() {
+        try {
+            String themePath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+            URL cssResource = Main.class.getResource(themePath);
+            if (cssResource != null) {
+                loadingScene.getStylesheets().add(cssResource.toExternalForm());
+            } else {
+                Messages.sprintfError("Stylesheet not found: " + themePath);
             }
-        });
+        } catch (Exception ex) {
+            LOGGER.log(Level.SEVERE, "Failed to apply stylesheet", ex);
+        }
     }
 
     private void setupDragHandlers() {
@@ -191,166 +147,130 @@ public class LoadingProcessTask {
     }
 
     private void updateSceneSwitcher() {
-        Main.sceneManager.setWindow_loadingprogress(loadingStage);
-        Main.sceneManager.setScene_loading(loadingScene);
-    }
-
-    public void loadGUI_() {
-        Platform.runLater(() -> {
-            FXMLLoader loader = null;
-            URL fxmlLocation = Main.class.getResource("/com/girbola/fxml/loading/LoadingProcess.fxml");
-            if (fxmlLocation == null) {
-                Messages.sprintfError("FXML resource not found: " + fxmlLocation);
-                Platform.exit();
-                return;
-            }
-
-            try {
-                loader = new FXMLLoader(fxmlLocation, bundle);
-                parent = loader.load();
-            } catch (IOException ex) {
-                Logger.getLogger(LoadingProcessTask.class.getName()).log(Level.SEVERE, null, ex);
-                Messages.errorSmth(ERROR, "Failed to load FXML", ex, Misc.getLineNumber(), true);
-                return;
-            }
-
-            LoadingProcessController lpc = (LoadingProcessController) loader.getController();
-            lpc.init(modelLoading);
-            loadingScene = new Scene(parent);
-            loadingStage = new Stage();
-            loadingStage.setWidth(500);
-            loadingStage.setMinWidth(500);
-            loadingStage.setMaxWidth(500);
-            loadingStage.setHeight(400);
-            loadingStage.setMinHeight(400);
-            loadingStage.setMaxHeight(400);
-
-            if (owner != null) {
-                loadingStage.initOwner(owner);
-            }
-//			loadingStage.initStyle(StageStyle.UNDECORATED);
-            Messages.sprintf("Owner is: " + loadingStage.getOwner());
-//		loadingStage.setX(Main.conf.getWindowStartPosX());
-            loadingStage.setTitle("loadingprocess_task: " + Main.conf.getWindowStartPosX());
-            loadingScene.getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType()).toExternalForm());
-
-            xOffset = loadingStage.getX();
-            yOffset = loadingStage.getY();
-
-            Main.centerWindowDialog(loadingStage);
-            loadingScene.setOnMousePressed(event -> {
-                xOffset = (loadingStage.getX() - event.getScreenX());
-                yOffset = (loadingStage.getY() - event.getScreenY());
-                sprintf("yOffset: " + yOffset);
-            });
-
-            loadingScene.setOnMouseDragged(event -> {
-                loadingStage.setX(event.getScreenX() + xOffset);
-                if (event.getScreenY() <= 0) {
-                    loadingStage.setY(0);
-                } else {
-                    loadingStage.setY(event.getScreenY() + yOffset);
-                }
-
-                sprintf("event.getScreenY(); = " + event.getScreenY());
-            });
-
-            loadingStage.setScene(loadingScene);
-            loadingStage.setAlwaysOnTop(true);
-
-            loadingStage.show();
+        if (Main.sceneManager != null) {
             Main.sceneManager.setWindow_loadingprogress(loadingStage);
             Main.sceneManager.setScene_loading(loadingScene);
-        });
-
-    }
-
-    private void unbind() {
-        if (modelLoading.getTask() != null) {
-            modelLoading.getProgressBar().progressProperty().unbind();
-            modelLoading.getMessages_lbl().textProperty().unbind();
+        } else {
+            Messages.sprintfError("LoadingProcess_Task: Main.sceneManager was null!");
+            Messages.warningText("LoadingProcess_Task: Main.sceneManager was null!");
         }
     }
 
-    private void bind() {
-        if (modelLoading.getTask() != null && modelLoading.getProgressBar() != null) {
+    public void setTask(Task<?> currentTask) {
+        if (modelLoading == null || currentTask == null) {
+            Messages.sprintfError("LoadingProcess_Task: modelLoading or currentTask was null!");
+            return;
+        }
+        // FIXED: Actually assign the task to your model!
+        modelLoading.setTask(currentTask);
+    }
+
+    public void setProgress(double value, double max) {
+        if (modelLoading.getProgressBar() != null) {
+            Platform.runLater(() -> modelLoading.getProgressBar().setProgress(value / max));
+        }
+    }
+
+    public void bind() {
+        Task<?> task = modelLoading.getTask();
+        if (task != null && modelLoading.getProgressBar() != null && modelLoading.getMessages_lbl() != null) {
             Platform.runLater(() -> {
-                modelLoading.getProgressBar().progressProperty().bind(modelLoading.getTask().progressProperty());
-                modelLoading.getMessages_lbl().textProperty().bind(modelLoading.getTask().messageProperty());
+                modelLoading.getProgressBar().progressProperty().bind(task.progressProperty());
+                modelLoading.getMessages_lbl().textProperty().bind(task.messageProperty());
             });
         } else {
-            sprintf("task or progress bar were null in BIND()");
+            Messages.sprintf("Task, Progress Bar, or Label was null in bind()");
         }
+    }
+
+    public void unbind() {
+        Platform.runLater(() -> {
+            if (modelLoading.getProgressBar() != null) {
+                modelLoading.getProgressBar().progressProperty().unbind();
+            }
+            if (modelLoading.getMessages_lbl() != null) {
+                modelLoading.getMessages_lbl().textProperty().unbind();
+            }
+        });
+    }
+
+    public void showLoadStage() {
+        Stage stage = (Main.sceneManager != null) ? Main.sceneManager.getWindow_loadingprogress() : loadingStage;
+
+        if (stage == null) {
+            Messages.errorSmth(ERROR_TAG, "Loading scene has not been initialized.", null, Misc.getLineNumber(), true);
+            return;
+        }
+
+        if (stage.isShowing()) {
+            Messages.sprintf("Window is already showing!!");
+            return;
+        }
+
+        if (modelLoading.getTask() == null && modelLoading.getProgressBar() != null) {
+            Messages.sprintf("Task was null! Setting indeterminate progress.");
+            Platform.runLater(() -> modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS));
+        }
+
+        Platform.runLater(stage::show);
     }
 
     public void closeStage() {
-        Messages.sprintf("closeStage is closing window");
-
+        Messages.sprintf("Closing loading stage window via fade-out animation");
         stopTask();
         unbind();
 
         Platform.runLater(() -> {
-            if (Main.sceneManager.getScene_loading() != null && Main.sceneManager.getScene_loading().getRoot() != null && Main.sceneManager.getWindow_loadingprogress() != null) {
+            Stage stage = (Main.sceneManager != null) ? Main.sceneManager.getWindow_loadingprogress() : loadingStage;
+            Scene scene = (Main.sceneManager != null) ? Main.sceneManager.getScene_loading() : loadingScene;
 
+            if (stage != null && scene != null && scene.getRoot() != null) {
                 Timeline timeline = new Timeline();
-                KeyFrame key = new KeyFrame(Duration.millis(2000), new KeyValue(Main.sceneManager.getScene_loading().getRoot().opacityProperty(), 0));
+                KeyFrame key = new KeyFrame(Duration.millis(300), // Reduced from 2000ms (2 seconds is too long a delay to block closing layouts!)
+                        new KeyValue(scene.getRoot().opacityProperty(), 0));
                 timeline.getKeyFrames().add(key);
-                timeline.setOnFinished(event -> Main.sceneManager.getWindow_loadingprogress().close());
+                timeline.setOnFinished(event -> stage.close());
                 timeline.play();
-            } else {
-                // Fallback if scene or root is null
-                if (Main.sceneManager.getWindow_loadingprogress() != null) {
-                    Main.sceneManager.getWindow_loadingprogress().close();
-                }
+            } else if (stage != null) {
+                stage.close();
             }
         });
     }
 
     private void stopTask() {
-        if (modelLoading.getTask() != null) {
-            if (modelLoading.getTask().isRunning()) {
-                modelLoading.getTask().cancel();
-            }
+        Task<?> task = modelLoading.getTask();
+        if (task != null && task.isRunning()) {
+            task.cancel();
         }
-    }
-
-    public void showLoadStage() {
-        if (Main.sceneManager.getWindow_loadingprogress().isShowing()) {
-            Messages.sprintf("Window is already showing!!");
-            return;
-        }
-        if (modelLoading.getTask() == null) {
-            Messages.sprintf("Task were null!");
-            Platform.runLater(() -> {
-                modelLoading.getProgressBar().setProgress(ProgressBar.INDETERMINATE_PROGRESS);
-            });
-        }
-
-        Messages.sprintf("Showing stage!");
-
-        Stage stage = Main.sceneManager.getWindow_loadingprogress();
-        /*
-         * if (owner != null) { stage.initOwner(owner); }
-         */
-        if (stage != null) {
-
-            stage.show();
-
-        } else {
-            Messages.errorSmth(ERROR, "Loading scene haven't been initialisiz. It was null null!!!", null, Misc.getLineNumber(), true);
-        }
-
     }
 
     public void setMessage(String message) {
-        Messages.sprintf("LoadingProcess_Task message= " + message);
-        if (Main.sceneManager.getWindow_loadingprogress() != null) {
-            if (Main.sceneManager.getWindow_loadingprogress().isShowing()) {
-                Platform.runLater(() -> {
-                    modelLoading.getMessages_lbl().setText(message);
-                });
-            }
+        if (modelLoading.getMessages_lbl() != null) {
+            Platform.runLater(() -> modelLoading.getMessages_lbl().setText(message));
         }
     }
 
+    public void bind(ReadOnlyStringProperty readOnlyStringProperty) {
+        if (readOnlyStringProperty != null && modelLoading.getMessages_lbl() != null) {
+            Platform.runLater(() -> modelLoading.getMessages_lbl().textProperty().bind(readOnlyStringProperty));
+        }
+    }
+
+    public void unbind(ReadOnlyStringProperty readOnlyStringProperty) {
+        if (modelLoading.getMessages_lbl() != null) {
+            Platform.runLater(() -> modelLoading.getMessages_lbl().textProperty().unbind());
+        }
+    }
+
+    public void bindTa(ReadOnlyStringProperty readOnlyStringProperty) {
+        if (readOnlyStringProperty != null && modelLoading.getMessages_txa() != null) {
+            Platform.runLater(() -> modelLoading.getMessages_txa().textProperty().bind(readOnlyStringProperty));
+        }
+    }
+
+    public void unbindTa(ReadOnlyStringProperty readOnlyStringProperty) {
+        if (modelLoading.getMessages_txa() != null) {
+            Platform.runLater(() -> modelLoading.getMessages_txa().textProperty().unbind());
+        }
+    }
 }

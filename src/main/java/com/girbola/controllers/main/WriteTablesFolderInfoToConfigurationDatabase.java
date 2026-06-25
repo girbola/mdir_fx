@@ -23,13 +23,21 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
                                                         boolean closeLoadingStage) {
         this.model_main = model_main;
         this.stage = stage;
-        if (loadingProcess_Task == null) {
-            loadingProcess_Task = new LoadingProcessTask(stage);
-            loadingProcess_Task.setTask(this);
-        }
         this.loadingProcess_Task = loadingProcess_Task;
         this.closeLoadingStage = closeLoadingStage;
     }
+//
+//    public void initializeTask() {
+//        Messages.sprintf("Saving tables to databases");
+//
+//        if (this.loadingProcess_Task == null) {
+//            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase loadingProcess_Task were NULL!");
+//            loadingProcess_Task = new LoadingProcessTask(stage);
+//            loadingProcess_Task.setTask(this);
+//        } else {
+//            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase loadingProcess_Task were NOT NULL!");
+//        }
+//    }
 
     @Override
     protected Integer call() throws Exception {
@@ -78,8 +86,9 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     @Override
     protected void succeeded() {
         super.succeeded();
-        Messages.sprintf("Saving succeeded");
+        Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase Saving succeeded");
         if (closeLoadingStage) {
+            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
         }
         Main.setChanged(false);
@@ -89,6 +98,7 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     protected void cancelled() {
         super.cancelled();
         if (closeLoadingStage) {
+            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
         }
     }
@@ -97,6 +107,7 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     protected void failed() {
         super.failed();
         if (closeLoadingStage) {
+            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
         }
     }

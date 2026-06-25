@@ -74,7 +74,6 @@ public class MenuBarController {
     @FXML private MenuItem menuItem_help_about;
     @FXML private MenuItem menuItem_help_help;
     @FXML private MenuItem menuItem_tools_options;
-    @FXML private MenuItem menuItem_help_supportUs;
     @FXML private MenuItem menuItem_help_update;
     //@formatter:on
 
@@ -398,11 +397,6 @@ public class MenuBarController {
     @FXML
     private void menuItem_help_help_action(ActionEvent event) {
         viewWebPage("http://girbola.com/index.html");
-    }
-
-    @FXML
-    private void menuItem_help_supportUs_action(ActionEvent event) {
-        viewWebPage("http://girbola.com/supportUs.html");
     }
 
     @FXML
