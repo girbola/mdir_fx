@@ -183,6 +183,14 @@ public class LoadingProcessTask {
         }
     }
 
+    public void updateTextArea(String message) {
+        if (modelLoading.getMessages_txa() != null) {
+            Platform.runLater(() -> {
+                modelLoading.getMessages_txa().appendText(message + System.lineSeparator());
+            });
+        }
+    }
+
     public void unbind() {
         Platform.runLater(() -> {
             if (modelLoading.getProgressBar() != null) {

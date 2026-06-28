@@ -9,20 +9,20 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="200.0" minWidth="300.0" prefHeight="100.0" prefWidth="200.0" styleClass="loadingPane" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/26" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
+<AnchorPane minHeight="200.0" minWidth="300.0" prefHeight="100.0" prefWidth="200.0" styleClass="loadingPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
    <children>
       <VBox layoutX="2.0" layoutY="2.0" styleClass="shadowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
                <children>
-                  <Label graphicTextGap="0.0" style="-fx-border-width: 2; -fx-border-color: red;" text="%status" HBox.hgrow="ALWAYS">
+                  <Label graphicTextGap="0.0" text="%status" HBox.hgrow="ALWAYS">
                      <HBox.margin>
-                        <Insets left="5.0" />
+                        <Insets bottom="1.0" left="5.0" right="1.0" top="1.0" />
                      </HBox.margin>
                   </Label>
-                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" style="-fx-border-width: 2; -fx-border-color: cyan;" HBox.hgrow="ALWAYS">
+                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" style="-fx-border-width: 1;" HBox.hgrow="ALWAYS">
                      <HBox.margin>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
                      </HBox.margin></Label>
                </children>
                <VBox.margin>
@@ -31,7 +31,7 @@
             </HBox>
             <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
                <children>
-                  <TextArea HBox.hgrow="ALWAYS" />
+                  <TextArea fx:id="messages_txa" editable="false" wrapText="true" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
             <HBox alignment="CENTER_LEFT" mouseTransparent="true" VBox.vgrow="ALWAYS">

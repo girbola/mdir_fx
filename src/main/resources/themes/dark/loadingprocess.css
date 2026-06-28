@@ -27,3 +27,7 @@
 	-fx-border-radius: 5px;
 	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.082), 1, 0, 0, 1);
 }
+.text-area {
+	-fx-control-inner-background: #2b2b2b;
+	-fx-text-fill: white;
+}

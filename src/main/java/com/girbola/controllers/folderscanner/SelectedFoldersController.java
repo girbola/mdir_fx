@@ -100,11 +100,6 @@ public class SelectedFoldersController {
         if (!removeNotSelectedFromTables) {
             Messages.sprintf("There were nothing to remove from tables");
         }
-// WHAT?!?!?
-//        if (modelMain.tables().getSorted_table().getItems().isEmpty() && modelMain.tables().getSorted_table().getItems().isEmpty()) {
-//            Messages.warningText(bundle.getString("noFoldersSelected"));
-//            return;
-//        }
 
         ConcurrencyUtils.stopExecThreadNow();
 
@@ -119,6 +114,7 @@ public class SelectedFoldersController {
                 List<Path> updateLists = new ArrayList<>();
                 List<Path> notConnected = new ArrayList<>();
                 updateMessage("Scanning folders...");
+                loadingProcessTask.updateTextArea("Scanning folders...");
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                     Messages.sprintf("##########getSelectedFolderScanner_obs folder: " + sf.getFolder() + " isSelected: " + sf.isSelected());
                     if (sf.getFolder().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\Ruotsin reissu")) {
@@ -158,29 +154,14 @@ public class SelectedFoldersController {
                         }
                         Messages.warningText("Selected folder(s) not connected: " + sb.toString());
                     }
-//                    if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder()) &&
-//                            sf.isSelected() &&
-//                            Files.exists(Paths.get(sf.getFolder()))) {
-//                        List<Path> paths = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
-//                        for (Path p : paths) {
-//                            if (!TableUtils.checkTableDuplicates(modelMain.tables(), p)) {
-//                                //add as new
-//                                newLists.add(p);
-//                                Messages.sprintf("##########newLists Selected folder to scan: " + p);
-//                            } else {
-//                                //updates folder content for new content
-//                                updateLists.add(p);
-//                                Messages.sprintf("##########updateLists Selected folder to scan: " + p);
-//                            }
-//                        }
-//
-//                    } else {
-//                        Messages.sprintf("##########NOT SELECTED folder: " + sf.getFolder());
-//                    }
                 }
                 updateMessage("Iterating through media files...");
+                loadingProcessTask.updateTextArea("Iterating through media files...");
+
                 for (Path path : newLists) {
                     updateMessage("Iterating through media files...: " + path.getFileName() + "\n");
+                    loadingProcessTask.updateTextArea("Iterating through media files...: " + path.getFileName() + "\n");
+
                     sprintf("#### FOLDER IS NEW and SELECTED: " + path);
 
                     TableType tableType = resolveTableTypeByPath(path);
@@ -201,6 +182,7 @@ public class SelectedFoldersController {
                 }
 
                 updateMessage("Iterating through existing table media files...");
+                loadingProcessTask.updateTextArea("Iterating through existing table media files...");
                 for (Path updateFile : updateLists) {
                     Messages.sprintf("##########updateLists Selected folder to scan: " + updateFile);
                     if (updateFile.startsWith("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
@@ -257,6 +239,7 @@ public class SelectedFoldersController {
             protected void succeeded() {
                 super.succeeded();
                 updateMessage("Finished scanning folders. Adding new media files to tables...");
+                loadingProcessTask.updateTextArea("Finished scanning folders. Adding new media files to tables...");
 //                TableUtils.saveChangesContentsToTables(modelMain.tables());
 
                 List<FolderInfo> newFolderInfos = getValue();
@@ -276,6 +259,7 @@ public class SelectedFoldersController {
 
                 ConfigurationUtils.saveTablesToConfigurationDatabase(modelMain, loadingProcessTask, true);
                 updateMessage("Finished scanning folders. Saving tables to configuration");
+                loadingProcessTask.updateTextArea("Finished scanning folders. Saving tables to configuration");
             }
 
             @Override
@@ -303,6 +287,9 @@ public class SelectedFoldersController {
 //        scanTask.setOnCancelled(e -> loadingProcessTask.closeStage());
 //
         loadingProcessTask.bind(scanTask.messageProperty());
+
+//        loadingProcessTask.attach(scanTask);
+
 // Start the task in a background thread
         Thread scanThread = new Thread(scanTask);
         scanThread.setDaemon(true);

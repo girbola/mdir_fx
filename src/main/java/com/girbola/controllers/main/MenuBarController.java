@@ -409,7 +409,6 @@ public class MenuBarController {
         OptionsComponent.openOptions();
     }
 
-
     public void init(ModelMain aModel_main) {
         this.model_main = aModel_main;
         sprintf("menuBarController....");
