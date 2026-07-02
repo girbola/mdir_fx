@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -1089,13 +1090,29 @@ public class FileInfoUtils {
     }
 
     public static Optional<FileInfo> findFileInfo(Path currentFile, List<FileInfo> fileInfoList) {
+        if (fileInfoList == null || fileInfoList.isEmpty()) {
+            return Optional.empty();
+        }
+
         return fileInfoList.stream()
+                .filter(fileInfo -> fileInfo != null) // Filter out null FileInfo objects
                 .filter(fileInfo -> {
                     try {
-                        Path fileInfoPath = Paths.get(fileInfo.getOrgPath());
+                        String orgPath = fileInfo.getOrgPath();
+                        // Validate that orgPath is not null or empty
+                        if (orgPath == null || orgPath.isBlank()) {
+                            return false;
+                        }
+                        Path fileInfoPath = Paths.get(orgPath);
                         return Files.isSameFile(currentFile, fileInfoPath);
+                    } catch (NoSuchFileException e) {
+                        // File doesn't exist, skip this entry
+                        Messages.sprintfError("File not found in findFileInfo: " + fileInfo.getOrgPath());
+                        return false;
                     } catch (IOException e) {
-                        throw new UncheckedIOException(e);
+                        // Other IO errors, skip this entry
+                        Messages.sprintfError("IOException in findFileInfo: " + e.getMessage());
+                        return false;
                     }
                 })
                 .findFirst(); // Returns an empty Optional if nothing matches

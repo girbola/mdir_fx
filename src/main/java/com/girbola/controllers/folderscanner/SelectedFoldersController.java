@@ -226,7 +226,6 @@ public class SelectedFoldersController {
 
                             Messages.sprintf("*** ended folderFile: " + currentFile);
                         }
-                        folderInfo.setFolderFiles(10000);
                         //FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
                     } else {
                         Messages.sprintfError("Cannot find correct folderinfo: " + updateFile);

@@ -87,9 +87,11 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     protected void succeeded() {
         super.succeeded();
         Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase Saving succeeded");
-        if (closeLoadingStage) {
+        if (closeLoadingStage && loadingProcess_Task != null) {
             Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
+        } else if (closeLoadingStage && loadingProcess_Task == null) {
+            Messages.sprintfError("loadingProcess_Task is null in succeeded()");
         }
         Main.setChanged(false);
     }
@@ -97,18 +99,22 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     @Override
     protected void cancelled() {
         super.cancelled();
-        if (closeLoadingStage) {
+        if (closeLoadingStage && loadingProcess_Task != null) {
             Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
+        } else if (closeLoadingStage && loadingProcess_Task == null) {
+            Messages.sprintfError("loadingProcess_Task is null in cancelled()");
         }
     }
 
     @Override
     protected void failed() {
         super.failed();
-        if (closeLoadingStage) {
+        if (closeLoadingStage && loadingProcess_Task != null) {
             Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
             loadingProcess_Task.closeStage();
+        } else if (closeLoadingStage && loadingProcess_Task == null) {
+            Messages.sprintfError("loadingProcess_Task is null in failed()");
         }
     }
 
