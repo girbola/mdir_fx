@@ -542,3 +542,77 @@ unselected {
     -fx-background-radius: 15;
     -fx-background-color: rgba(255, 106, 0, 0.82);
 }
+
+/* ==========================================================================
+   1. PUUN SOLUJEN JA ELEMENTTIEN KESKITYS
+   ========================================================================= */
+
+.tree-cell {
+    -fx-alignment: center-left !important;
+    -fx-padding: 2px 0px 2px 0px !important;
+    -fx-text-fill: -fx-light-text-color;
+}
+
+.tree-cell > .tree-disclosure-node {
+    -fx-alignment: center-left !important;
+    -fx-max-height: -fx-inherited !important;
+    -fx-translate-y: 10px !important;
+}
+
+/* ==========================================================================
+   2. LAAJENNUSNUOLEN (ARROW) PERIÝTYVÄ TYÝLI
+   ========================================================================= */
+
+/* Nuoli käyttää pohjana tekstin väriä, mutta häivytettynä (derive -30%), jotta se ei loista liikaa */
+.tree-cell > .tree-disclosure-node > .arrow {
+    -fx-translate-x: -2px !important;
+    -fx-background-color: derive(-fx-light-text-color, -30%) !important;
+    -fx-border-color: derive(-fx-base, 20%) !important;
+}
+
+.tree-cell:expanded > .tree-disclosure-node > .arrow {
+    -fx-background-color: derive(-fx-light-text-color, -30%) !important;
+}
+
+/* Kun hiiri viedään päälle, nuoli kirkastuu tekstin täyteen väriin */
+.tree-cell > .tree-disclosure-node:hover > .arrow {
+    -fx-background-color: -fx-light-text-color !important;
+}
+
+/* ==========================================================================
+   3. VALINTARUUDUN (CHECKBOX) PUHDAS FX-BASE TYÝLI
+   ========================================================================= */
+
+/* Valintaruudun pohja sulautuu tummaan base-reunaväriin ja taustaan */
+.tree-cell .folder-tree-cell-hbox .check-box .box {
+    -fx-background-color: -fx-mid-base !important;
+    -fx-border-color: -fx-mid-border-color !important;
+    -fx-border-width: 1px !important;
+    -fx-border-radius: 3px !important;
+    -fx-background-radius: 3px !important;
+}
+
+/* Kun CheckBox valitaan, laatikon pohja värjäytyy uudella elegantilla accent-värillä */
+.tree-cell .folder-tree-cell-hbox .check-box:selected .box,
+.tree-cell .folder-tree-cell-hbox .check-box:indeterminate .box {
+    -fx-background-color: -fx-base-accent !important;
+    -fx-border-color: derive(-fx-base-accent, 20%) !important;
+}
+
+/* Valintamerkki (rasti/viiva) piirtyy kirkkaalla tekstivärillä */
+.tree-cell .folder-tree-cell-hbox .check-box:selected .box .mark,
+.tree-cell .folder-tree-cell-hbox .check-box:indeterminate .box .mark {
+    -fx-background-color: -fx-light-text-color !important;
+}
+
+/* Hover-tilassa laatikon taustaa vaalennetaan kevyesti suhteessa pohjaväriin */
+.tree-cell .folder-tree-cell-hbox .check-box:hover .box {
+    -fx-background-color: derive(-fx-base, 15%) !important;
+}
+
+/* Kun Ignore on päällä (disabled), laatikko häivytetään lähes kokonaan taustaan */
+.tree-cell .folder-tree-cell-hbox .check-box:disabled .box {
+    -fx-background-color: derive(-fx-mid-base, -20%) !important;
+    -fx-border-color: derive(-fx-base, 40%) !important;
+    -fx-opacity: 0.3;
+}

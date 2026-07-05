@@ -266,13 +266,44 @@ public class Main extends Application {
                     ex.printStackTrace();
                     cancel();
                 }
-                //primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));
+                primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));
 
-                Taskbar.getTaskbar().setIconImage(
-                        Toolkit.getDefaultToolkit().getImage(
-                                Main.class.getResource("/img/mdir_m2_icon.png")
-                        )
-                );
+                try {
+                    if(Taskbar.isTaskbarSupported()) {
+                        Taskbar.getTaskbar().setIconImage(
+                                Toolkit.getDefaultToolkit().getImage(
+                                        Main.class.getResource("/img/mdir_m2_icon.png")
+                                )
+                        );
+                    }
+                } catch (UnsupportedOperationException e) {
+                    Messages.sprintfError("AWT Taskbar is not supported on this platform: " + e.getMessage());
+                } catch (Exception e) {
+                    Messages.sprintfError("Error setting AWT Taskbar icon: " + e.getMessage());
+                }
+
+                /*
+                             primaryStage.getIcons().add(new Image(Objects.requireNonNull(
+                        Main.class.getResourceAsStream("/img/mdir_m2_icon.png")
+                )));
+
+                // 2. macOS Dock-kuvake (Suojattu tarkistuksilla)
+                try {
+                    if (Taskbar.isTaskbarSupported()) {
+                        Taskbar taskbar = Taskbar.getTaskbar();
+                        if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                            java.awt.Image macIcon = Toolkit.getDefaultToolkit().getImage(
+                                    Main.class.getResource("/img/mdir_m2_icon.png")
+                            );
+                            taskbar.setIconImage(macIcon);
+                        }
+                    }
+                } catch (Exception e) {
+                    // Hiljennetään virhe, jos alusta ei tue AWT Taskbaria
+                    System.out.println("AWT Taskbar ei ole tuettu tällä alustalla: " + e.getMessage());
+                }
+
+                 */
 
                 primaryScene = new Scene(parent);
 
@@ -353,7 +384,7 @@ public class Main extends Application {
                     }
                 });
                 load_FileInfosBackToTableViews.setOnSucceeded(event1 -> {
-                  Messages.sprintf("load_FileInfosBackToTableViews succeeded");
+                    Messages.sprintf("load_FileInfosBackToTableViews succeeded");
                     Platform.runLater(() -> {
                         lpt.closeStage();
                     });

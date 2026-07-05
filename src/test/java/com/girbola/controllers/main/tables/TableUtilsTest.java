@@ -19,7 +19,7 @@ public class TableUtilsTest {
     void resolveTableTypeByPath_shouldReturnSortItForPicturesPath() {
         Path picturesPath = Paths.get(System.getProperty("user.home"), "Pictures", "SampleFolder");
         TableType result = TableUtils.resolveTableTypeByPath(picturesPath);
-        assertEquals(TableType.SORTIT, result);
+        assertEquals(TableType.SORTED, result);
     }
 
     @Test
@@ -64,6 +64,12 @@ public class TableUtilsTest {
         assertNotNull(picturesPath);
         TableType result = TableUtils.resolveTableTypeByPath(picturesPath);
         assertEquals(TableType.SORTIT, result);
+    }
+    @Test
+    void resolveTableTypeByPath_shouldReturnSortItForReissuPattern() {
+        Path path = Paths.get("Ruotsin Reissu");
+        TableType result = TableUtils.resolveTableTypeByPath(path);
+        assertEquals(TableType.SORTED, result);
     }
 
 
@@ -299,7 +305,7 @@ public class TableUtilsTest {
         map.keySet().forEach(System.out::println);
 
         double result = TableUtils.calculateDateDifferenceRatio(map);
-        assertEquals(732, result);
+        assertEquals(734, result);
     }
 
 

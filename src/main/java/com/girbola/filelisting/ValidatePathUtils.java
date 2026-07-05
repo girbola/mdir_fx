@@ -112,7 +112,7 @@ public class ValidatePathUtils {
         }
 
         Path path = Paths.get(filePath);
-        Messages.sprintf("Checking path: " + path.toString());
+        //Messages.sprintf("Checking path: " + path.toString());
 
         // Test if filePath is file or folder
         if (Files.isRegularFile(path)) {

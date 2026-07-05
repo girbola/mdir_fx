@@ -103,6 +103,8 @@ public class SelectedFoldersController {
 
         ConcurrencyUtils.stopExecThreadNow();
 
+
+
         // Create background task
         Task<List<FolderInfo>> scanTask = new Task<>() {
             @Override
@@ -192,6 +194,7 @@ public class SelectedFoldersController {
 
                     Messages.sprintf("##########updateLists folderInfo: " + folderInfo);
                     if (folderInfo != null && folderInfo.getFileInfoList() != null && !folderInfo.getFileInfoList().isEmpty()) {
+                        //TODO existsFileInfos ei käytetä missään?!?!!?
                         List<FileInfo> existsFileInfos = new ArrayList<>();
                         List<FileInfo> fileInfoList = folderInfo.getFileInfoList();
                         if (folderInfo.getFolderPath().equals("C:\\Users\\marko\\Pictures\\mdir - Copy")) {

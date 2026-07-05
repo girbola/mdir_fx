@@ -26,18 +26,18 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
         this.loadingProcess_Task = loadingProcess_Task;
         this.closeLoadingStage = closeLoadingStage;
     }
-//
-//    public void initializeTask() {
-//        Messages.sprintf("Saving tables to databases");
-//
-//        if (this.loadingProcess_Task == null) {
-//            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase loadingProcess_Task were NULL!");
-//            loadingProcess_Task = new LoadingProcessTask(stage);
-//            loadingProcess_Task.setTask(this);
-//        } else {
-//            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase loadingProcess_Task were NOT NULL!");
-//        }
-//    }
+
+    /**
+     * Initializes LoadingProcessTask if it was null at construction time.
+     * This should be called before attempting to use loadingProcess_Task.
+     */
+    private void initializeLoadingProcessTaskIfNeeded() {
+        if (this.loadingProcess_Task == null && this.stage != null) {
+            Messages.sprintf("Initializing LoadingProcessTask - it was NULL at constructor");
+            this.loadingProcess_Task = new LoadingProcessTask(stage);
+            this.loadingProcess_Task.setTask(this);
+        }
+    }
 
     @Override
     protected Integer call() throws Exception {
@@ -87,11 +87,14 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     protected void succeeded() {
         super.succeeded();
         Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase Saving succeeded");
-        if (closeLoadingStage && loadingProcess_Task != null) {
-            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
-            loadingProcess_Task.closeStage();
-        } else if (closeLoadingStage && loadingProcess_Task == null) {
-            Messages.sprintfError("loadingProcess_Task is null in succeeded()");
+        if (closeLoadingStage) {
+            initializeLoadingProcessTaskIfNeeded();
+            if (loadingProcess_Task != null) {
+                Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
+                loadingProcess_Task.closeStage();
+            } else {
+                Messages.sprintfError("Could not initialize loadingProcess_Task in succeeded()");
+            }
         }
         Main.setChanged(false);
     }
@@ -99,22 +102,28 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     @Override
     protected void cancelled() {
         super.cancelled();
-        if (closeLoadingStage && loadingProcess_Task != null) {
-            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
-            loadingProcess_Task.closeStage();
-        } else if (closeLoadingStage && loadingProcess_Task == null) {
-            Messages.sprintfError("loadingProcess_Task is null in cancelled()");
+        if (closeLoadingStage) {
+            initializeLoadingProcessTaskIfNeeded();
+            if (loadingProcess_Task != null) {
+                Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
+                loadingProcess_Task.closeStage();
+            } else {
+                Messages.sprintfError("Could not initialize loadingProcess_Task in cancelled()");
+            }
         }
     }
 
     @Override
     protected void failed() {
         super.failed();
-        if (closeLoadingStage && loadingProcess_Task != null) {
-            Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
-            loadingProcess_Task.closeStage();
-        } else if (closeLoadingStage && loadingProcess_Task == null) {
-            Messages.sprintfError("loadingProcess_Task is null in failed()");
+        if (closeLoadingStage) {
+            initializeLoadingProcessTaskIfNeeded();
+            if (loadingProcess_Task != null) {
+                Messages.sprintf("WriteTablesFolderInfoToConfigurationDatabase CloseLoadingStage");
+                loadingProcess_Task.closeStage();
+            } else {
+                Messages.sprintfError("Could not initialize loadingProcess_Task in failed()");
+            }
         }
     }
 

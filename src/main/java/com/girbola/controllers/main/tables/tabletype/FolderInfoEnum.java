@@ -82,15 +82,15 @@ public enum FolderInfoEnum {
 //        return createTableSQLBuilder.toString();
 //    }
 
-    public static String getAllColumnFolderInfoColumnNames() {
-        StringBuilder columnNamesBuilder = new StringBuilder();
-        for (int i = 0; i < BINDING_ORDER.length; i++) {
-            if (i > 0) {
-                columnNamesBuilder.append(", ");
-            }
-            columnNamesBuilder.append(BINDING_ORDER[i]);
-        }
-        Messages.sprintf("Binding-order columns: " + columnNamesBuilder);
-        return columnNamesBuilder.toString();
-    }
+//    public static String getAllColumnFolderInfoColumnNames() {
+//        StringBuilder columnNamesBuilder = new StringBuilder();
+//        for (int i = 0; i < BINDING_ORDER.length; i++) {
+//            if (i > 0) {
+//                columnNamesBuilder.append(", ");
+//            }
+//            columnNamesBuilder.append(BINDING_ORDER[i]);
+//        }
+//        Messages.sprintf("Binding-order columns: " + columnNamesBuilder);
+//        return columnNamesBuilder.toString();
+//    }
 }

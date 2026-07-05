@@ -177,25 +177,26 @@ public class FolderScannerController {
         Main.setProcessCancelled(false);
 
         initNewSingleExecutionService();
-
+//        CustomFolderTreeCellFactory customFolderTreeCellFactory = new CustomFolderTreeCellFactory(modelMain, model_folderScanner);
         drives_rootItem = new CheckBoxTreeItem<>();
         drives_rootItem.setIndependent(true);
         drives_rootItem.setExpanded(true);
-        drives_treeView.setCellFactory(tv -> new CheckBoxTreeCell<Path>() {
-            @Override
-            public void updateItem(Path item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    Messages.sprintf("-----drives_treeView setCellFactory null: " + item + " boolean is: " + empty);
-                    setText(null);
-                } else {
-                    Messages.sprintf("-----drives_treeView setCellFactory: " + item + " boolean is: " + empty);
-                    String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
-                    setText(name);
-                }
-            }
-        });
+        drives_treeView.setCellFactory(tv -> new CustomFolderTreeCell(modelMain, model_folderScanner));
+//        drives_treeView.setCellFactory(tv -> new CheckBoxTreeCell<Path>() {
+//            @Override
+//            public void updateItem(Path item, boolean empty) {
+//                super.updateItem(item, empty);
+//
+//                if (empty || item == null) {
+//                    Messages.sprintf("-----drives_treeView setCellFactory null: " + item + " boolean is: " + empty);
+//                    setText(null);
+//                } else {
+//                    Messages.sprintf("-----drives_treeView setCellFactory: " + item + " boolean is: " + empty);
+//                    String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
+//                    setText(name);
+//                }
+//            }
+//        });
 
 //        drives_treeView.setCellFactory(CheckBoxTreeCell.forTreeView());
 

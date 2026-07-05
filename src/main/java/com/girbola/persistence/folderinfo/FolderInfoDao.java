@@ -32,31 +32,6 @@ public class FolderInfoDao {
 
     private Connection connection = null;
 
-    //@formatter:off
-//	private static final String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType()
-//			+ " (id INTEGER PRIMARY KEY AUTOINCREMENT, "
-//			+ "status INTEGER, "
-//			+ "changed BOOLEAN, "
-//			+ "connected BOOLEAN, "
-//			+ "ignored BOOLEAN, "
-//			+ "dateDifference DOUBLE, "
-//			+ "badFiles INTEGER, "
-//			+ "confirmed INTEGER, "
-//			+ "copied INTEGER, "
-//			+ "folderFiles INTEGER, "
-//			+ "folderImageFiles INTEGER, "
-//			+ "folderRawFiles INTEGER, "
-//			+ "folderVideoFiles INTEGER, "
-//			+ "goodFiles INTEGER, "
-//			+ "suggested INTEGER, "
-//			+ "folderSize INTEGER, "
-//			+ "justFolderName TEXT, "
-//			+ "folderPath TEXT, "
-//			+ "maxDate TEXT, "
-//			+ "minDate TEXT, "
-//			+ "state TEXT, "
-//			+ "tableType TEXT)";
-
     final static String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType() + " ("
             + "'" + FolderInfoEnum.ID.getColumnName() + "' INTEGER PRIMARY KEY AUTOINCREMENT, "
             + "'" + FolderInfoEnum.STATUS.getColumnName() + "' INTEGER, "

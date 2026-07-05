@@ -396,7 +396,7 @@ public class TableUtils {
             }
         }
 
-        if (knownCameraFolderNames.stream().anyMatch(name -> path.equalsIgnoreCase(name))) {
+        if (knownCameraFolderNames.stream().anyMatch(path::equalsIgnoreCase)) {
             return TableType.SORTIT;
         }
 
@@ -404,6 +404,7 @@ public class TableUtils {
         if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
             return TableType.SORTIT;
         } else if (path.matches(".*\\d{4}([\\-_\\.])?\\d{2}\\1?\\d{2}.*")) { // e.g. 2014-12-11, 2012_12_05, 2012.12.05, 20121205
+            Messages.sprintf("Resolving date on folder name: " + path + " SORTIT");
             return TableType.SORTIT;
         } else if (path.matches("[A-Za-z\\s']+\\d{4}")) { // e\.g\. O'layreys pub 2013
             return TableType.SORTED;
