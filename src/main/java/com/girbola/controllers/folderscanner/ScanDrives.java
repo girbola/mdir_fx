@@ -155,7 +155,7 @@ public class ScanDrives {
         if (Files.exists(selectedPath) && !selectedFolderHasValue(selectedPath)) {
             boolean hasMedia = FileUtils.getHasMedia(selectedPath.toFile());
             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                    .add(new SelectedFolder(true, true, selectedPath.toString(), hasMedia));
+                    .add(SelectedFolder.create(true, true, selectedPath.toString(), false, hasMedia));
         } else {
             Messages.sprintf("processSelectedPath Folder already exists: " + selectedPath);
         }

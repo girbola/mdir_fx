@@ -71,7 +71,7 @@ public class SelectedFoldersController {
     @FXML private Button selectedFolders_cancel_btn;
     @FXML private Button selectedFolders_select_folder;
     @FXML private TableView<SelectedFolder> selectedFolder_TableView;
-    //@formatter:on
+    //@formatter:on÷
     private List<SelectedFolder> selectedFolderScannerOriginal = new ArrayList<>();
 
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
@@ -400,12 +400,12 @@ public class SelectedFoldersController {
                         Messages.sprintf("Adding folder: " + folder.getAbsolutePath());
                     }
                 }
-                modelMain.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
+                modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false,true));
             }
             Messages.sprintf("foldersAdded: " + foldersAdded + "  vs size: " + modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size());
             if (foldersAdded != modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() || modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() == 0) {
 
-                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
+                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false, true));
 //                modelMain.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
                 SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
             }

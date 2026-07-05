@@ -30,6 +30,8 @@ import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.date.SimpleDates;
+
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -264,7 +266,14 @@ public class Main extends Application {
                     ex.printStackTrace();
                     cancel();
                 }
-                primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));
+                //primaryStage.getIcons().add(new Image(Objects.requireNonNull(Main.class.getResourceAsStream("/img/mdir_m2_icon.png"))));
+
+                Taskbar.getTaskbar().setIconImage(
+                        Toolkit.getDefaultToolkit().getImage(
+                                Main.class.getResource("/img/mdir_m2_icon.png")
+                        )
+                );
+
                 primaryScene = new Scene(parent);
 
                 if (conf.getThemePath() == null) {

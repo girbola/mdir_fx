@@ -38,6 +38,7 @@ public class FolderSelectionService {
     }
 
     public boolean remove(SelectedFolder selectedFolder) {
+        Messages.sprintf("Removing selected folder: " + selectedFolder);
         if (modelMain == null || selectedFolder == null || selectedFolder.getFolder() == null) {
             return false;
         }
@@ -184,6 +185,7 @@ public class FolderSelectionService {
     }
 
     private void addRecursiveListener(CheckBoxTreeItem<Path> item) {
+        Messages.sprintf("addRecursiveListener item: " + item.getValue());
         if (item == null) {
             return;
         }
@@ -194,13 +196,13 @@ public class FolderSelectionService {
             }
 
             Path value = item.getValue();
+            Messages.sprintf("#######checkboxTreeItemValue: " + value);
             if (value != null) {
                 String pathString = value.toString();
-
-                if (Boolean.TRUE.equals(newV)) {
+                if (newV) {
                     if (!isPathInSelectedFolders(pathString)) {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                .add(new SelectedFolder(true, true, pathString, true));
+                                .add(SelectedFolder.create(true, true, pathString, false,true));
                     }
                 } else {
                     modelMain.getSelectedFolders().getSelectedFolderScanner_obs()

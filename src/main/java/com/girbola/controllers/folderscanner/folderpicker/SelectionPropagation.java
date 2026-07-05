@@ -125,7 +125,7 @@ public class SelectionPropagation {
                     if (Boolean.TRUE.equals(newV)) {
                         if (!isPathInSelectedFolders(pathString)) {
                             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                    .add(new SelectedFolder(true, true, pathString, true));
+                                    .add(SelectedFolder.create(true, true, pathString, false, true));
                         }
                     } else {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()

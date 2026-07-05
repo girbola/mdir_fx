@@ -90,7 +90,7 @@ public class FolderScannerController {
                 if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
                     if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(new SelectedFolder(true, true, path.toString(), true));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, path.toString(), false,true));
                     }
                 }
             }
@@ -187,10 +187,10 @@ public class FolderScannerController {
                 super.updateItem(item, empty);
 
                 if (empty || item == null) {
-                    Messages.sprintf("-----setCellFactory null: " + item + " boolean is: " + empty);
+                    Messages.sprintf("-----drives_treeView setCellFactory null: " + item + " boolean is: " + empty);
                     setText(null);
                 } else {
-                    Messages.sprintf("-----setCellFactory: " + item + " boolean is: " + empty);
+                    Messages.sprintf("-----drives_treeView setCellFactory: " + item + " boolean is: " + empty);
                     String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
                     setText(name);
                 }
@@ -218,17 +218,10 @@ public class FolderScannerController {
 
         homeDefaults_path_column.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, String> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getFolder()));
 
-//        homeDefaults_path_column.setResizable(true);
-//        homeDefaults_path_column.setPrefWidth(Region.USE_COMPUTED_SIZE);
-//        homeDefaults_path_column.setMinWidth(Region.USE_PREF_SIZE);
-
         Platform.runLater(() -> {
             homeDefaultsTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_LAST_COLUMN);
             homeDefaultsTableView.setTableMenuButtonVisible(true);
         });
-//        this.modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().addListener((javafx.collections.ListChangeListener.Change<? extends SelectedFolder> c) -> {
-//            updatePathColumnWidth();
-//        });
 
         Map<CommonUserFolders.Kind, Path> resolve = CommonUserFolders.resolve();
         for (Path commonPath : resolve.values()) {
@@ -239,9 +232,9 @@ public class FolderScannerController {
                 SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
                 if (selectedHomeFolder != null) {
                     Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
-                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(new SelectedFolder(selectedHomeFolder.isSelected(), true, commonPath.toString(), false));
+                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(SelectedFolder.create(selectedHomeFolder.isSelected(), true, commonPath.toString(), false,false));
                 } else {
-                    selectedHomeFolder = new SelectedFolder(false, true, commonPath.toString(), false);
+                    selectedHomeFolder = SelectedFolder.create(false, true, commonPath.toString(), false,false);
                     modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }
@@ -292,32 +285,6 @@ public class FolderScannerController {
             }
         });
 
-/*        Messages.sprintf("homeDefaultsTableView.getItems().size(); " + homeDefaultsTableView.getColumnResizePolicy() + " " + homeDefaultsTableView.getItems().size());
-        modelMain.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
-        for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScannerOriginal()) {
-            Messages.sprintf("LIIIIIST:: SelectedFolder: " + sf.getFolder());
-        }
-*/
-//        homeDefaultsTableView.sceneProperty().addListener((obs, oldScene, newScene) -> {
-//            if (newScene != null) {
-//                newScene.getWindow().showingProperty().addListener((obsWindow, oldVal, newVal) -> {
-//                    if (newVal) {
-//                        Messages.sprintf("homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
-//                        Platform.runLater(() -> {
-//                            homeDefaultsTableView.getScene().getWindow().sizeToScene();
-//                            homeDefaultsTableView.refresh();
-//                            homeDefaultsTableView.layout();
-//                            homeDefaultsTableView.autosize();
-//                            //updatePathColumnWidth();
-//                            Messages.sprintf("homeDefaultsTableView.getWidth(); " + homeDefaultsTableView.getWidth());
-//                        });
-//                        Messages.sprintf("homeDefaultsTableView is showing");
-//                    } else {
-//                        Messages.sprintf("homeDefaultsTableView is not showing");
-//                    }
-//                });
-//            }
-//        });
         folderScannerMain.widthProperty().addListener((obs, oldVal, newVal) -> {
             Messages.sprintf("folderScannerMain.getWidth(); " + folderScannerMain.getWidth());
             if (homeDefaultsTableView == null) {

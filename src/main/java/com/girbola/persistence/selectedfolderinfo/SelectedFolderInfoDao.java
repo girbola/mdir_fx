@@ -186,7 +186,7 @@ public class SelectedFolderInfoDao {
 
                 Messages.sprintf("---------------------------selected::: " + selected + " path::: " + path + " connected:::" + connected + " media:::" + media);
 
-                SelectedFolder selectedFolder = new SelectedFolder(selected, connected, path, media);
+                SelectedFolder selectedFolder = SelectedFolder.create(selected, connected, path, false, media);
                 Messages.sprintf("loadFolders_list: " + selectedFolder.getFolder());
 
                 boolean exists = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().stream().anyMatch(sf -> Objects.equals(sf.getFolder(), selectedFolder.getFolder()));

@@ -11,25 +11,28 @@ import static com.girbola.controllers.folderscanner.SelectedFolderUtils.getDrive
 public class SelectedFolder {
 
     private SimpleStringProperty folder;
+    private SimpleBooleanProperty ignored;
     private SimpleBooleanProperty selected;
     private SimpleBooleanProperty connected;
     private SimpleBooleanProperty media;
     private SimpleStringProperty driveSerialNumber;
 
-    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media) {
+    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media, boolean ignored) {
         this.selected = new SimpleBooleanProperty(selected);
         this.connected = new SimpleBooleanProperty(connected);
         this.folder = new SimpleStringProperty(folder);
         this.media = new SimpleBooleanProperty(media);
+        this.ignored = new SimpleBooleanProperty(ignored);
 		this.driveSerialNumber = new SimpleStringProperty(getDriveSerialNumberFromPath(folder));
     }
 
 
-    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media, String driveSerialNumber) {
+    public SelectedFolder(boolean selected, boolean connected, String folder, boolean media, boolean ignored, String driveSerialNumber) {
         this.selected = new SimpleBooleanProperty(selected);
         this.connected = new SimpleBooleanProperty(connected);
         this.folder = new SimpleStringProperty(folder);
         this.media = new SimpleBooleanProperty(media);
+        this.ignored = new SimpleBooleanProperty(ignored);
 
         if(driveSerialNumber == null) {
             driveSerialNumber = getDriveSerialNumberFromPath(folder);
@@ -37,6 +40,10 @@ public class SelectedFolder {
 			return;
 		}
         this.driveSerialNumber = new SimpleStringProperty(driveSerialNumber);
+    }
+
+    public static SelectedFolder create(boolean selected, boolean connected, String folder, boolean media, boolean ignored) {
+        return new SelectedFolder(selected, connected, folder, media, ignored);
     }
 
     //@formatter:off
@@ -61,5 +68,9 @@ public class SelectedFolder {
 	public SimpleStringProperty driveSerialNumberProperty() { return driveSerialNumber; }
 	public String getDriveSerialNumber() { return driveSerialNumber.get(); }
 	public void setDriveSerialNumber(String driveSerialNumber) { this.driveSerialNumber.set(driveSerialNumber); }
+
+    public SimpleBooleanProperty ignoredProperty() { return ignored; }
+    public boolean isIgnored() { return ignored.get(); }
+    public void setIgnored(boolean ignored) { this.ignored.set(ignored); }
 
 }
