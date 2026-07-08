@@ -37,9 +37,9 @@
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN" />
                </columnResizePolicy>
               </TableView>
-              <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="1.0" VBox.vgrow="NEVER">
+              <HBox alignment="CENTER_LEFT" fillHeight="false" spacing="5.0" style="-fx-background-color: transparent;" VBox.vgrow="NEVER">
                   <children>
-                      <Button fx:id="selectedFolders_ok_btn" minHeight="30.0" mnemonicParsing="false" onAction="#selectedFolders_ok_action" prefHeight="30.0" prefWidth="30.0" HBox.hgrow="NEVER">
+                      <Button fx:id="selectedFolders_ok_btn" minHeight="25.0" mnemonicParsing="false" onAction="#selectedFolders_ok_action" prefHeight="25.0" prefWidth="50.0" style="-fx-background-color: green; -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 ); -fx-background-radius: 5;" HBox.hgrow="NEVER">
                           <font>
                               <Font size="10.0" />
                           </font>
@@ -47,7 +47,7 @@
                         <FontIcon iconColor="#2bcd4b" iconLiteral="bi-check" iconSize="25" />
                      </graphic>
                       </Button>
-                      <Button fx:id="selectedFolders_cancel_btn" minHeight="30.0" mnemonicParsing="false" onAction="#selectedFolders_cancel_action" prefHeight="30.0" prefWidth="30.0" HBox.hgrow="NEVER">
+                      <Button fx:id="selectedFolders_cancel_btn" minHeight="25.0" mnemonicParsing="false" onAction="#selectedFolders_cancel_action" prefHeight="25.0" prefWidth="50.0" style="-fx-background-color: green; -fx-background-radius: 5; -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 );" HBox.hgrow="NEVER">
                           <VBox.margin>
                               <Insets bottom="1.0" left="1.0" right="1.0" top="1.0" />
                           </VBox.margin>
@@ -57,9 +57,9 @@
                       </Button>
                   <HBox alignment="CENTER_RIGHT" fillHeight="false" HBox.hgrow="ALWAYS">
                      <children>
-                            <Button fx:id="selectedFolders_select_folder_btn" lineSpacing="1.0" minHeight="30.0" mnemonicParsing="false" onAction="#selectedFolders_select_folder_action" prefHeight="30.0" prefWidth="30.0" HBox.hgrow="NEVER">
+                            <Button fx:id="selectedFolders_select_folder_btn" lineSpacing="1.0" minHeight="30.0" mnemonicParsing="false" onAction="#selectedFolders_select_folder_action" prefHeight="30.0" prefWidth="30.0" style="-fx-background-color: orange; -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 10,0,0,1 ); -fx-background-radius: 5;" HBox.hgrow="NEVER">
                            <graphic>
-                              <FontIcon iconColor="WHITE" iconLiteral="bi-file-earmark-plus" iconSize="25" selectionFill="#fcfcfc" />
+                              <FontIcon iconColor="WHITE" iconLiteral="bi-plus" iconSize="25" selectionFill="#fcfcfc" />
                            </graphic>
                            <HBox.margin>
                               <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
