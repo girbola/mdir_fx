@@ -484,7 +484,7 @@ public class FileInfoUtils {
 //        }
         return false;
     }
-
+// TODO T*ÄÄÄÄ EI TOIMI OIKEIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public static Path renameFile(FileInfo fileInfoSrc, FolderInfo folderInfoDest) {
         final String prefix = "_";
 

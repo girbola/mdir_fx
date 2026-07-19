@@ -16,19 +16,35 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.controllers.operate.OperateFiles;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.filelisting.GetRootFiles;
+import com.girbola.media.KnownCameraFolderNames;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.persistence.fileinfo.FileInfoDao;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.utils.CommonUserFolders;
-import com.girbola.utils.FileInfoUtils;
 import common.utils.Conversion;
 import common.utils.FileUtils;
 import common.utils.date.DateUtils;
 import common.utils.ui.ScreenUtils;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -53,57 +69,18 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import lombok.extern.java.Log;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.Connection;
-import java.time.LocalDate;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import static com.girbola.Main.*;
+import static com.girbola.Main.bundle;
+import static com.girbola.Main.conf;
+import static com.girbola.Main.simpleDates;
 import static com.girbola.concurrency.ConcurrencyUtils.exec;
 import static com.girbola.concurrency.ConcurrencyUtils.getExecCounter;
 import static com.girbola.controllers.main.tables.FolderInfoUtils.calculateFolderInfoStatus;
-import static com.girbola.messages.Messages.errorSmth;
 import static com.girbola.messages.Messages.sprintf;
-
 
 @Log
 public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
-
-
-    private static List<String> knownCameraFolderNames = Arrays.asList(
-            // DCF root
-            "DCIM",
-
-            // DCF standard subfolder pattern: 3 digits + 5 letters (e.g., 100CANON, 101APPLE)
-            // You’ll handle this with regex: "\\d{3}[A-Za-z0-9]{5}"
-
-            // Common brand-specific names (metadata or extra folders)
-            "CANONMSC",    // Canon metadata
-            "MISC",        // DCF metadata folder
-            "PRIVATE",     // Panasonic, DJI, AVCHD structure
-            "AVCHD",       // Video folder
-            "MP_ROOT",     // Sony Memory Stick
-            "CLIP",        // Professional cameras
-            "VIDEO",       // Some brands for video clips
-
-            // Android/iOS common camera folders
-            "Camera",
-            "Screenshots",
-            ".thumbnails",
-
-            // DJI / GoPro extras
-            "MEDIA",
-            "DJI"
-    );
-
 
     public static void showConflictTable(ModelMain model_Main, ObservableList<FileInfo> obs) {
         try {
@@ -396,7 +373,7 @@ public class TableUtils {
             }
         }
 
-        if (knownCameraFolderNames.stream().anyMatch(path::equalsIgnoreCase)) {
+        if (KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.stream().anyMatch(path::equalsIgnoreCase)) {
             return TableType.SORTIT;
         }
 

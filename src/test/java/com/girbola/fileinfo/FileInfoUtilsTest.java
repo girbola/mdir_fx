@@ -58,7 +58,7 @@ public class FileInfoUtilsTest {
         fileInfo.setFileHistories(list);
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
         Messages.sprintf("fileInfo1giihgo: " + fileInfo.getImageDifferenceHash());
-        Path path = Paths.get("src","test","resources", "in","20220413_160023.jpg");
+        Path path = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
 
         String expected = "FileInfo{bad=false, camera_model='SM-A515F', confirmed=false, copied=false, date=1649865623000, destination_Path='', event='', fileInfo_id=1, fileInfo_version=1, good=true, ignored=false, image=true, imageDifferenceHash=, localDateTime=null, location='', modified=false, orientation=1, orgPath='src\\test\\resources\\in\\20220413_160023.jpg', raw=false, size=3515984, suggested=false, tableDuplicated=false, tags='', thumb_length=51503, thumb_offset=916, timeShift=0, user='', video=false, workDir='', workDirDriveSerialNumber='', fileInfoHistories='[2025-09-20T12:04:11.840611300 FileInfo created. PATH=src\\test\\resources\\in\\20220413_160023.jpg]'}";
         String expected2 = "FileInfo{fileInfo_version=1, bad=false, confirmed=false, copied=false, good=true, ignored=false, image=true, raw=false," +
@@ -74,7 +74,7 @@ public class FileInfoUtilsTest {
     void createFileInfo_with_goodDate() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20220413-blaa.jpg"));
         fileInfo.setFileInfo_id(1);
-        if(fileInfo.isSuggested()) {
+        if (fileInfo.isSuggested()) {
             Messages.sprintf("Suggested date: " + fileInfo.getDate());
         }
         assertEquals(true, fileInfo.isGood());
@@ -88,7 +88,7 @@ public class FileInfoUtilsTest {
     void createFileInfo_with_badDate() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "IMG.jpg"));
         fileInfo.setFileInfo_id(1);
-        if(fileInfo.isSuggested()) {
+        if (fileInfo.isSuggested()) {
             Messages.sprintf("Suggested date: " + fileInfo.getDate());
         }
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
@@ -103,7 +103,7 @@ public class FileInfoUtilsTest {
     void createFileInfo_with_suggestedDate() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20250920-tidii.jpg"));
         fileInfo.setFileInfo_id(1);
-        if(fileInfo.isSuggested()) {
+        if (fileInfo.isSuggested()) {
             Messages.sprintf("Suggested date: " + fileInfo.getDate());
         }
         Messages.sprintf("Fileinfo: " + fileInfo.showAllValues());
@@ -115,8 +115,7 @@ public class FileInfoUtilsTest {
         assertEquals(1758358800000L, fileInfo.getDate());
     }
 
-
-
+// TODO KORJAA TÄMÄ TESTII!!!!!!!!IIII!!!!III!!!
     @Test
     public void testRenameFile() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
@@ -128,7 +127,7 @@ public class FileInfoUtilsTest {
         folderInfo.getFileInfoList().add(fileInfo2);
 
         Path newPath = FileInfoUtils.renameFile(fileInfo, folderInfo);
-
+        System.out.println("fileInfo.getOrgPath(): " + fileInfo.getOrgPath() + " newPATH: " + newPath);
         assertNotNull(newPath, "Renamed file path is null");
         assertNotEquals(fileInfo.getOrgPath(), newPath.toString(), "Original path and renamed path should not be same");
         assertTrue(newPath.toString().contains("_"), "Renamed path should contain '_' ");
@@ -161,7 +160,7 @@ public class FileInfoUtilsTest {
         folderInfoDest.getFileInfoList().add(fileInfoSrc2);
         Path newPath = FileInfoUtils.renameFile(fileInfoSrc, folderInfoDest);
 
-        assertEquals("src\\test\\resources\\in\\IMG.jpg",newPath.toString());
+        assertEquals("src\\test\\resources\\in\\IMG.jpg", newPath.toString());
     }
 
 
@@ -192,6 +191,7 @@ public class FileInfoUtilsTest {
             fail("IOException thrown on createFileInfo: " + e.getMessage());
         }
     }
+
     @Test
     public void testCompareImagesMetadata_SameFileInfoMetadata() {
         Path sourcePath = Paths.get("src", "test", "resources", "test-material", "milky-way-559641_640.jpg");
@@ -298,5 +298,51 @@ public class FileInfoUtilsTest {
             long endTime = System.currentTimeMillis();
             System.out.println("File: " + file.getAbsolutePath() + " sha256\n" + sha256 + " sha256Checksum computation time: " + (endTime - startTime) + " ms");
         }
+    }
+
+    @Test
+    public void containsEssentialDCFEntries() {
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("DCIM"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("MISC"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("VIDEO"));
+    }
+
+    @Test
+    public void containsCommonCameraFolderNames() {
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Camera"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Pictures"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Photos"));
+    }
+
+    @Test
+    public void containsRawAndVideoFolderNames() {
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("RAW"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("DNG"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Movies"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Videos"));
+    }
+
+    @Test
+    public void noNullOrEmptyEntriesInKnownCameraFolderNames() {
+        for (String name : com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES) {
+            assertNotNull(name, "Found null entry in KNOWN_CAMERA_FOLDER_NAMES");
+            assertFalse(name.trim().isEmpty(), "Found empty or blank entry in KNOWN_CAMERA_FOLDER_NAMES");
+            assertEquals(name, name.trim(), "Entry has leading or trailing whitespace: '" + name + "'");
+        }
+    }
+
+    @Test
+    public void containsNameWhenComparedCaseInsensitively() {
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.stream().anyMatch(n -> n.equalsIgnoreCase("dcim")));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.stream().anyMatch(n -> n.equalsIgnoreCase("camera")));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.stream().anyMatch(n -> n.equalsIgnoreCase("gopro")));
+    }
+
+    @Test
+    public void containsManufacturerAndVendorNames() {
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Canon"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Nikon"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("Sony"));
+        assertTrue(com.girbola.media.KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.contains("DJI"));
     }
 }
