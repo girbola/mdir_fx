@@ -1,0 +1,36 @@
+# Java
+*.java      text eol=lf
+*.kt        text eol=lf
+*.kts       text eol=lf
+
+# JavaFX
+*.fxml      text eol=lf
+*.css       text eol=lf
+
+# Build
+*.xml       text eol=lf
+*.properties text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.json      text eol=lf
+*.gradle    text eol=lf
+*.groovy    text eol=lf
+
+# Maven
+*.pom       text eol=lf
+
+# Documentation
+*.md        text eol=lf
+*.txt       text eol=lf
+*.csv       text eol=lf
+
+# Git
+*.gitignore text eol=lf
+.gitattributes text eol=lf
+
+# Shell scripts
+*.sh        text eol=lf
+
+# Windows scripts
+*.bat       text eol=crlf
+*.cmd       text eol=crlf
