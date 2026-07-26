@@ -1,0 +1,206 @@
+/* ---------- Token-like variables ---------- */
+.root {
+    -bg-0: #1F2125;
+    -bg-1: #26292E;
+    -bg-2: #2D3137;
+    -border: #3A4048;
+
+    -text-1: #E7EAF0;
+    -text-2: #AEB6C2;
+
+    -accent: #3AA0FF;
+    -accent-soft: rgba(58, 160, 255, 0.18);
+
+    -success: #39C16C;
+    -warn: #F5B14A;
+    -danger: #E55A5A;
+
+    -fx-background-color: -bg-0;
+    -fx-text-fill: -text-1;
+    -fx-font-size: 12px;
+}
+
+/* ---------- Shared containers ---------- */
+.panel {
+    -fx-background-color: -bg-1;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 12px;
+}
+
+.panel-title {
+    -fx-text-fill: -text-1;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+/* ---------- Toolbar groups ---------- */
+.toolbar-group {
+    -fx-background-color: -bg-1;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 12px;
+    -fx-spacing: 8px;
+    -fx-alignment: center-left;
+}
+
+.selection-summary {
+    -fx-background-color: -bg-2;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 6px 10px;
+    -fx-text-fill: -text-1;
+    -fx-font-weight: 600;
+}
+
+/* ---------- Buttons ---------- */
+.button {
+    -fx-background-color: -bg-2;
+    -fx-text-fill: -text-1;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-min-height: 30px;
+}
+
+.button:hover {
+    -fx-background-color: #343A43;
+}
+
+.button:focused {
+    -fx-border-color: -accent;
+    -fx-border-width: 1.5px;
+}
+
+.action-primary {
+    -fx-background-color: -accent;
+    -fx-text-fill: white;
+    -fx-border-color: transparent;
+}
+
+.action-primary:hover {
+    -fx-background-color: #55AEFF;
+}
+
+.action-danger {
+    -fx-background-color: #8A2C2C;
+    -fx-text-fill: #FFECEC;
+    -fx-border-color: #B94848;
+}
+
+.action-danger:hover {
+    -fx-background-color: #A53A3A;
+}
+
+.icon-btn {
+    -fx-min-width: 30px;
+    -fx-max-width: 30px;
+    -fx-min-height: 30px;
+    -fx-max-height: 30px;
+    -fx-padding: 0;
+}
+
+/* ---------- Inputs ---------- */
+.text-field, .combo-box, .spinner {
+    -fx-background-color: -bg-2;
+    -fx-text-fill: -text-1;
+    -fx-border-color: -border;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+}
+
+.text-field:focused, .combo-box:focused, .spinner:focused {
+    -fx-border-color: -accent;
+}
+
+/* ---------- Inspector / left side ---------- */
+.inspector-tabs .tab-header-area {
+    -fx-padding: 0 0 8px 0;
+}
+.inspector-tabs .tab {
+    -fx-background-color: -bg-2;
+    -fx-background-radius: 6px 6px 0 0;
+}
+.inspector-tabs .tab:selected {
+    -fx-background-color: #3A4250;
+}
+
+/* ---------- Tables ---------- */
+.table-view {
+    -fx-background-color: -bg-1;
+    -fx-border-color: -border;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: -bg-2;
+}
+
+.table-row-cell {
+    -fx-background-color: -bg-1;
+    -fx-text-fill: -text-1;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: -accent-soft;
+}
+
+/* ---------- Media cards ---------- */
+.media-card {
+    -fx-background-color: -bg-1;
+    -fx-border-color: -border;
+    -fx-border-width: 1px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.media-card:hover {
+    -fx-border-color: #4A5360;
+}
+
+.media-card.selected {
+    -fx-border-color: -accent;
+    -fx-effect: dropshadow(gaussian, rgba(58,160,255,0.25), 8, 0.2, 0, 0);
+}
+
+.media-title {
+    -fx-text-fill: -text-1;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.media-meta {
+    -fx-text-fill: -text-2;
+    -fx-font-size: 11px;
+}
+
+.timestamp-chip {
+    -fx-background-color: #21252C;
+    -fx-border-color: -border;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-padding: 4px 8px;
+    -fx-text-fill: -text-1;
+}
+
+/* ---------- Footer status ---------- */
+.status-strip {
+    -fx-background-color: -bg-1;
+    -fx-border-color: -border;
+    -fx-border-width: 1px 0 0 0;
+    -fx-padding: 6px 10px;
+}
+
+.status-muted {
+    -fx-text-fill: -text-2;
+}
+
+/* ---------- Utility ---------- */
+.section-gap { -fx-padding: 0 0 12px 0; }
