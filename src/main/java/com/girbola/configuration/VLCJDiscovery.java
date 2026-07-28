@@ -3,7 +3,6 @@ package com.girbola.configuration;
 import com.girbola.Main;
 import com.girbola.messages.Messages;
 import javafx.scene.control.Alert.AlertType;
-import uk.co.caprica.vlcj.binding.support.runtime.RuntimeUtil;
 import uk.co.caprica.vlcj.factory.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.factory.discovery.strategy.NativeDiscoveryStrategy;
 import uk.co.caprica.vlcj.support.Info;
@@ -80,9 +79,10 @@ public class VLCJDiscovery {
 		Messages.sprintf("java.library.path: %s%n", (info.javaLibraryPath()));
 		Messages.sprintf("PATH             : %s%n", (info.path()));
 
-		if (RuntimeUtil.isNix()) {
+		String osName = System.getProperty("os.name", "").toLowerCase();
+		if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
 			Messages.sprintf(" LD_LIBRARY_PATH  : %s%n", (info.ldLibraryPath()));
-		} else if (RuntimeUtil.isMac()) {
+		} else if (osName.contains("mac")) {
 			Messages.sprintf("DYLD_LIBRARY_PATH          : %s%n", (info.dyldLibraryPath()));
 			Messages.sprintf("DYLD_FALLBACK_LIBRARY_PATH : %s%n", (info.dyldFallbackLibraryPath()));
 		}

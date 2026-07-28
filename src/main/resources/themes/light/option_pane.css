@@ -9,6 +9,9 @@
 .root {
     -fx-background-color: #393939;
 }
+.optionPane {
+    -fx-background-color: #393939;
+}
 .workDir_label {
     -fx-background-color: transparent;
     -fx-text-fill: white; 
@@ -31,9 +34,6 @@
     /*-fx-insets: 5px;*/
     -fx-padding: 5px;
     -fx-text-fill: white;  
-}
-.optionPane {
-    -fx-background-color: #393939;
 }
 .bottomButtons {
      -fx-background-color: #393939;

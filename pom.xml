@@ -280,17 +280,21 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>com.girbola.Launcher</mainClass>
+                            <mainClass>com.girbola/com.girbola.Launcher</mainClass>
                             <options>
                                 <option>--enable-native-access=javafx.graphics</option>
                                 <option>--enable-native-access=ALL-UNNAMED</option>
                             </options>
-<!--                            <launcher>app</launcher>-->
-<!--                            <jlinkZipName>app</jlinkZipName>-->
-<!--                            <jlinkImageName>app</jlinkImageName>-->
-<!--                            <noManPages>true</noManPages>-->
-<!--                            <stripDebug>true</stripDebug>-->
-<!--                            <noHeaderFiles>true</noHeaderFiles>-->
+                            <!-- jlink: creates a trimmed custom runtime image (mvn javafx:jlink) -->
+                            <!-- NOTE: jlink only works when ALL dependencies are proper named    -->
+                            <!-- modules (no automatic modules). Comment these out if any         -->
+                            <!-- automatic-module dependency prevents the build from completing.  -->
+                            <launcher>mdir_fx</launcher>
+                            <jlinkZipName>mdir_fx</jlinkZipName>
+                            <jlinkImageName>mdir_fx</jlinkImageName>
+                            <noManPages>true</noManPages>
+                            <stripDebug>true</stripDebug>
+                            <noHeaderFiles>true</noHeaderFiles>
                         </configuration>
                     </execution>
                 </executions>
@@ -301,6 +305,7 @@
             </plugin>
         </plugins>
         <resources>
+
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
@@ -320,4 +325,41 @@
             </resource>
         </resources>
     </build>
+
+    <!--
+        Release profile – only activated when building a distributable release.
+        Copies all runtime dependencies to target/release-lib/ during the
+        prepare-package phase so the release scripts can pick them up.
+
+        Usage: mvn -Prelease clean package [-DskipTests]
+        Normal dev run is unaffected: mvn javafx:run
+    -->
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-runtime-deps</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeScope>runtime</includeScope>
+                                    <outputDirectory>${project.build.directory}/release-lib</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

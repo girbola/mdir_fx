@@ -101,7 +101,7 @@ public class FileInfoUtilsTest {
 
     @Test
     void createFileInfo_with_suggestedDate() throws IOException {
-        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20250920-tidii.jpg"));
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "testi-20250920111111-tidii.jpg"));
         fileInfo.setFileInfo_id(1);
         if (fileInfo.isSuggested()) {
             Messages.sprintf("Suggested date: " + fileInfo.getDate());
@@ -120,17 +120,17 @@ public class FileInfoUtilsTest {
     public void testRenameFile() throws IOException {
         FileInfo fileInfo = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in", "20220413_160023.jpg"));
         fileInfo.setFileInfo_id(1);
-        FileInfo fileInfo2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "out", "20220413_160023.jpg"));
+        FileInfo fileInfo2 = FileInfoUtils.createFileInfo(Paths.get("src", "test", "resources", "in2", "20220413_160023.jpg"));
         fileInfo2.setFileInfo_id(2);
 
-        FolderInfo folderInfo = new FolderInfo(Paths.get("src", "test", "resources", "in"));
+        FolderInfo folderInfo = new FolderInfo(Paths.get("src", "test", "resources", "in2"));
         folderInfo.getFileInfoList().add(fileInfo2);
 
         Path newPath = FileInfoUtils.renameFile(fileInfo, folderInfo);
         System.out.println("fileInfo.getOrgPath(): " + fileInfo.getOrgPath() + " newPATH: " + newPath);
         assertNotNull(newPath, "Renamed file path is null");
         assertNotEquals(fileInfo.getOrgPath(), newPath.toString(), "Original path and renamed path should not be same");
-        assertTrue(newPath.toString().contains("_"), "Renamed path should contain '_' ");
+        assertTrue(newPath.toString().contains("_2"), "Renamed path should contain '_2' ");
     }
 
     @Test

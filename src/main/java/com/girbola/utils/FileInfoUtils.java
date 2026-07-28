@@ -72,7 +72,36 @@ public class FileInfoUtils {
             if (FileUtils.supportedImage(path)) {
                 setImage(fileInfo);
 
-                tryToGetCreationDateTime(path, fileInfo);
+//                boolean tryParseDateTime2 = FileNameParseUtils.tryParseDateTime(fileInfo);
+//
+//                boolean tryParseDateTime = tryParseDateTime(fileInfo);
+//                String imageDifferenceHash = ImageUtils.calculateImagePHash(fileName);
+//                String imageDifferenceHash = "";
+//                long start = System.currentTimeMillis();
+                Metadata metaData = DateTaken.getMetaData(fileName);
+//                if (metaData == null) {
+//                    Messages.sprintf("metaData were null!");
+//                    fileInfo.setBad(true);
+//                    boolean found = tryFileNameDate(fileInfo);
+//                    Messages.sprintf("found???: " + found);
+//                    if (found) {
+//                        FileInfoUtils.setSuggested(fileInfo);
+//                    } else {
+//                        FileInfoUtils.setBad(fileInfo);
+//                    }
+//
+//
+//                    return null;
+//                }
+                for (Directory directory : metaData.getDirectories()) {
+                    if (directory.getName().equals("File")) {
+                        Messages.sprintf("directory: " + directory.getName());
+                        try {
+                            String fileNameeee = directory.getString(FileSystemDirectory.TAG_FILE_NAME);
+                            String fSize = directory.getString(FileSystemDirectory.TAG_FILE_SIZE);
+                            String modified = directory.getString(FileSystemDirectory.TAG_FILE_MODIFIED_DATE);
+                            Messages.sprintf("00000Filename" + fileName + "fileNameeee:::: " + fileNameeee + " (Long.parseLong(fSize) == Files.size(fileName):::: " + (Long.parseLong(fSize) == Files.size(fileName)) + " modified:::: " + modified);
+                        } catch (Exception e) {
 
                 fileInfo.setSize(Files.size(path));
             } else if (FileUtils.supportedVideo(path)) {
@@ -364,6 +393,7 @@ public class FileInfoUtils {
 
         // TODO Auto-generated method stub
     }
+
     public static boolean handleMetadataInformation(FileInfo fileInfo) throws IOException {
         return handleMetadataInformation(Paths.get(fileInfo.getOrgPath()), fileInfo);
     }
@@ -392,8 +422,14 @@ public class FileInfoUtils {
                 FileInfoUtils.setGood(fileInfo);
                 fileInfo.setDate(creationDate);
             } else {
-                FileInfoUtils.setBad(fileInfo);
-                fileInfo.setDate(0);
+                boolean fileNameHadDate = FileInfoUtils.tryFileNameDate(fileInfo);
+                if (!fileNameHadDate) {
+                    FileInfoUtils.setSuggested(fileInfo);
+                    fileInfo.setSuggested(true);
+                } else {
+                    FileInfoUtils.setBad(fileInfo);
+                    fileInfo.setDate(0);
+                }
             }
 
             // Orientation
@@ -484,26 +520,63 @@ public class FileInfoUtils {
 //        }
         return false;
     }
-// TODO T*ÄÄÄÄ EI TOIMI OIKEIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    // TODO T*ÄÄÄÄ EI TOIMI OIKEIN!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     public static Path renameFile(FileInfo fileInfoSrc, FolderInfo folderInfoDest) {
         final String prefix = "_";
 
+        if (folderInfoDest.getFileInfoList().isEmpty()) {
+            Messages.sprintf("FolderInfo filelist is empty.");
+            return null;
+        }
+
+        Path fileSourcePath = Paths.get(fileInfoSrc.getOrgPath());
+        if (Files.isDirectory(fileSourcePath)) {
+            Messages.sprintfError("File source path is a directory: " + fileSourcePath);
+            return null;
+        }
+
+        if (!Files.exists(fileSourcePath)) {
+            Messages.sprintfError("File source path does not exist: " + fileSourcePath);
+            return null;
+        }
+        if (!Files.isRegularFile(fileSourcePath)) {
+            Messages.sprintfError("File source path is not a regular file: " + fileSourcePath);
+            return null;
+        }
+
+        String fileSourceFileName = Paths.get(fileInfoSrc.getOrgPath()).getFileName().toString();
+        fileSourcePath = fileSourcePath.getParent();
+
         for (FileInfo fileInfoDest : folderInfoDest.getFileInfoList()) {
-//            if (fileInfoSrc.getOrgPath().equals(fileInfoDest.getOrgPath()) && (fileInfoSrc.getSize() != fileInfoDest.getSize())) {
-            if (!fileInfoSrc.getImageDifferenceHash().isEmpty() && !fileInfoDest.getImageDifferenceHash().isEmpty() && !fileInfoSrc.getImageDifferenceHash().equals(fileInfoDest.getImageDifferenceHash())) {
+            Messages.sprintf("FileInfo SRC: " + fileInfoSrc.getOrgPath() + "Renaming fileInfoDest: " + fileInfoDest.getOrgPath());
+            Messages.sprintf("fileInfoSRC size: " + fileInfoSrc.getSize() + " fileInfoDEST SRC size: " + fileInfoDest.getSize());
+            Messages.sprintf("fileInfoSRC hash: " + fileInfoSrc.hashCode() + " fileInfoDEST hash: " + fileInfoDest.hashCode());
 
-                Path sourceFile = Paths.get(fileInfoDest.getOrgPath());
-                Path destFolder = Paths.get(fileInfoDest.getOrgPath()).getParent();
 
-                Path destFile = null;
+            Path fileDestPath = Paths.get(fileInfoDest.getOrgPath()).getParent();
+//            if (fileSourcePath.equals(fileDestPath)) {
+//
+//            }
 
-                String fileNameWithoutExtension = getFilenameWithoutExtension(sourceFile);
-                String fileExtension = getFileExtension(sourceFile);
+            String fileDestFileName = Paths.get(fileInfoDest.getOrgPath()).getFileName().toString();
 
-                for (int runningNumber = 2; runningNumber < folderInfoDest.getFileInfoList().size() + 3; runningNumber++) {
-                    destFile = Paths.get(destFolder.toString(), fileNameWithoutExtension + prefix + "" + runningNumber + "." + fileExtension);
-                    if (!Files.exists(destFile)) {
-                        return destFile;
+            if (fileSourceFileName.equals(fileDestFileName)) {
+                if (fileInfoSrc.getSize() != fileInfoDest.getSize()) {
+                    if (!fileInfoSrc.getImageDifferenceHash().isEmpty() || !fileInfoDest.getImageDifferenceHash().isEmpty()) {
+                        if (fileInfoSrc.getImageDifferenceHash().equals(fileInfoDest.getImageDifferenceHash())) {
+                            Messages.sprintf("Renaming image difference hashes is not equal.");
+                            return null;
+                        }
+                    }
+                    Path destFile = null;
+                    String fileNameWithoutExtension = getFilenameWithoutExtension(fileSourceFileName);
+                    String fileExtension = getFileExtension(fileSourceFileName);
+                    for (int runningNumber = 2; runningNumber < folderInfoDest.getFileInfoList().size() + 3; runningNumber++) {
+                        destFile = Paths.get(fileDestPath.toString(), fileNameWithoutExtension + prefix + runningNumber + "." + fileExtension);
+                        if (!Files.exists(destFile)) {
+                            return destFile;
+                        }
                     }
                 }
             }
@@ -858,12 +931,13 @@ public class FileInfoUtils {
 
 //            fileInfo.setOrgPathDriveSerialNumber(sourceDriveSerialNumber);
             long startTimeSha = System.currentTimeMillis();
-            fileInfo.setSha256Checksum(calculateFileSHA256(path));
-            long endTimeSha = System.currentTimeMillis();
-            Messages.sprintf("******SHA256: TOOK:::::: " + (endTimeSha - startTimeSha) + "ms");
+            if (fileInfo.getSha256Checksum().isEmpty()) {
+                fileInfo.setSha256Checksum(calculateFileSHA256(path));
+                long endTimeSha = System.currentTimeMillis();
+                Messages.sprintf("******SHA256: TOOK:::::: " + (endTimeSha - startTimeSha) + "ms");
+            }
 
-
-            boolean processed = populateFileInfoByType(path, fileInfo);
+            boolean processed = fileInfoGetCreationDates(path, fileInfo);
 
             if (!processed) {
                 Messages.sprintf("Cannot create FileInfo: " + path);
@@ -924,7 +998,7 @@ public class FileInfoUtils {
         return 1;
     }
 
-    private static boolean populateFileInfoByType(Path path, FileInfo fileInfo) throws IOException {
+    private static boolean fileInfoGetCreationDates(Path path, FileInfo fileInfo) throws IOException {
         long size = Files.size(path);
 
         if (FileUtils.supportedImage(path)) {
@@ -1056,9 +1130,9 @@ public class FileInfoUtils {
 
     public static boolean hasCurrentFile(List<FileInfo> fileListInfos, Path currentFile) {
         Iterator<FileInfo> fileInfosIterator = fileListInfos.iterator();
-        while(fileInfosIterator.hasNext()) {
+        while (fileInfosIterator.hasNext()) {
             FileInfo fileInfo = fileInfosIterator.next();
-            if(currentFile.toString().equals(fileInfo.getOrgPath())) {
+            if (currentFile.toString().equals(fileInfo.getOrgPath())) {
                 sprintf("##########hasCurrentFile folderFile: " + currentFile);
                 return true;
             }
@@ -1068,9 +1142,9 @@ public class FileInfoUtils {
 
     public static boolean fileInfoHasCurrentFile(List<FileInfo> fileListInfos, Path currentFile) {
         Iterator<FileInfo> fileInfosIterator = fileListInfos.iterator();
-        while(fileInfosIterator.hasNext()) {
+        while (fileInfosIterator.hasNext()) {
             FileInfo fileInfo = fileInfosIterator.next();
-            if(currentFile.toString().equals(fileInfo.getOrgPath())) {
+            if (currentFile.toString().equals(fileInfo.getOrgPath())) {
                 return true;
             }
         }
@@ -1079,10 +1153,10 @@ public class FileInfoUtils {
     }
 
     public static FileInfo hasFileInfo(Path currentFile, List<FileInfo> fileInfoList) throws IOException {
-        for(FileInfo fileInfo : fileInfoList) {
+        for (FileInfo fileInfo : fileInfoList) {
             Path fileInfoPath = Paths.get(fileInfo.getOrgPath());
             boolean isSameFile = Files.isSameFile(currentFile, fileInfoPath);
-            if(isSameFile) {
+            if (isSameFile) {
                 return fileInfo;
             }
         }

@@ -26,8 +26,9 @@
 .anchor-pane{
     -fx-background-color:  -fx-primary;
 }
-.button {
-    -fx-background-color: 
+.button,
+.combo-box {
+    -fx-background-color:
         grey,
         transparent,
         transparent,
@@ -43,20 +44,6 @@
 .button:disabled {
     -fx-opacity: 0.1;
     -fx-background-color: grey;
-}
-.combo-box {
-    -fx-background-color: 
-        grey,
-        transparent,
-        transparent,
-        linear-gradient(darkgrey 0%, grey 38%, grey 61%, darkgrey 100%);
-    -fx-background-insets: 1, 2, 1, 2;
-    -fx-background-radius: 4;
-    -fx-padding: 6;
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    -fx-text-fill: white;
-    -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
 .fileDate_tf {
     -fx-font-size: 9px;

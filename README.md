@@ -76,6 +76,16 @@ The IntelliJ IDEA `.iml` module file should look similar to the following:
   </component>
 </module>
 ```
+
+### Release build scripts
+
+If you want to recreate the distributable release folder on another computer, use:
+
+- `scripts/build-release.ps1` on Windows
+- `scripts/build-release.sh` on macOS/Linux
+
+These scripts build the project, copy runtime dependencies, create the `release/` folder, and optionally zip it.
+
 ## JavaFX Scene Builder 24.0.1
 Libraries need to be installed manually:
 ```

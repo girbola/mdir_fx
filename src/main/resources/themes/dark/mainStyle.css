@@ -1,3 +1,5 @@
+/*@import "ui-refresh.css";*/
+
 /*@font-face {*/
 /*    font-family: "Inter";*/
 /*    src: url("fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype");*/
@@ -468,7 +470,7 @@ unselected {
 
 .bottomButton {
     -fx-font-size: 7px;
-    -fx-background-color: darkgrey;
+    -fx-background-color: derive(-fx-mid-base, 15%);
     /*-fx-text-fill: grey;*/
         -fx-effect: dropshadow(three-pass-box, rgba(255,255,255,0.2), 10, 0.3, 0, 0),
     innershadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);

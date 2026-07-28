@@ -8,12 +8,13 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
+<AnchorPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.SelectorController">
     <children>
-        <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+        <ScrollPane fx:id="infoTables_container" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" layoutX="4.0" layoutY="4.0" pannable="true" styleClass="selector_scrollPane" vbarPolicy="NEVER" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
             <content>
                 <VBox fx:id="selector_root" minWidth="200.0" spacing="1.0">
                     <children>
+
                         <TitledPane fx:id="dates_titledPane" text="%dates" VBox.vgrow="NEVER">
                             <content>
                                 <TableView fx:id="dates_tableView" styleClass="metadataTable">
@@ -30,7 +31,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane fx:id="cameras_titledPane" text="%cameras" VBox.vgrow="NEVER">
+                        <TitledPane fx:id="cameras_titledPane" text="%cameras" VBox.vgrow="SOMETIMES">
                             <content>
                                 <TableView fx:id="cameras_tableView" styleClass="metadataTable">
                                     <columns>
@@ -43,7 +44,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane fx:id="events_titledPane" text="%events" VBox.vgrow="NEVER">
+                        <TitledPane fx:id="events_titledPane" text="%events" VBox.vgrow="SOMETIMES">
                             <content>
                                 <TableView fx:id="events_tableView" styleClass="metadataTable">
                                     <columns>
@@ -56,7 +57,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane fx:id="locations_titledPane" text="%location" VBox.vgrow="NEVER">
+                        <TitledPane fx:id="locations_titledPane" text="%location" VBox.vgrow="SOMETIMES">
                             <content>
                                 <TableView fx:id="locations_tableView" styleClass="metadataTable">
                                     <columns>
@@ -69,7 +70,7 @@
                                 </TableView>
                             </content>
                         </TitledPane>
-                        <TitledPane fx:id="users_titledPane" text="%users" VBox.vgrow="NEVER">
+                        <TitledPane fx:id="users_titledPane" text="%users" VBox.vgrow="SOMETIMES">
                             <content>
                                 <TableView fx:id="users_tableView" styleClass="metadataTable">
                                     <columns>
@@ -83,14 +84,8 @@
                             </content>
                         </TitledPane>
                     </children>
-                    <padding>
-                        <Insets left="2.0" right="4.0" />
-                    </padding>
                 </VBox>
             </content>
         </ScrollPane>
     </children>
-   <padding>
-      <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
-   </padding>
 </AnchorPane>

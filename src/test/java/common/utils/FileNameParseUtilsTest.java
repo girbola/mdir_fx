@@ -6,6 +6,7 @@ import common.utils.date.DateUtils;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -98,6 +99,25 @@ Messages.sprintf("testTryParseDateTimeAsLongWithValidDateWithSplittedText:::::::
         String expected = "2024-02-28 13.27.10"; // Should match the first occurrence
         String actual = FileNameParseUtils.extractDateFromFileName(fileName);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testHasFileNameDateRejectsInvalidCalendarDate() {
+        long timestamp = FileNameParseUtils.hasFileNameDate(Paths.get("IMG_2023-02-29_10-11-12.jpg"));
+        assertEquals(0L, timestamp);
+    }
+
+    @Test
+    void testHasFileNameDateAcceptsLeapDay() {
+        long timestamp = FileNameParseUtils.hasFileNameDate(Paths.get("IMG_2024-02-29_10-11-12.jpg"));
+        assertNotEquals(0L, timestamp);
+    }
+
+    @Test
+    void testTryParseDateTimeAsLongWithEuropeanDateTimeFormat() {
+        FileInfo fileInfo = new FileInfo("holiday_28.02.2024 13.27.10.jpg", 1);
+        long timestamp = FileNameParseUtils.tryParseDateTimeAsLong(fileInfo);
+        assertNotEquals(0L, timestamp);
     }
 
 

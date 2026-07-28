@@ -10,11 +10,18 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,6 +62,65 @@ public class FileNameParseUtils {
     private final static String DATE_WITH_YMD = "\\d{4}\\d{2}\\d{2}[\\w|\\s]"; // 20001213 121314
     private static final List<String> regex_list = Arrays.asList(DATE_WITH_SEPARATOR, DATE_WITH_YMDHMS,
             DATE_WITH_YMD_HMS);
+
+    private static final Pattern MULTI_DATE_CANDIDATE_PATTERN = Pattern.compile(
+            "(?i)(\\d{4}[-./]\\d{2}[-./]\\d{2}(?:\\s+at\\s+|[ T_])\\d{2}[:.-]\\d{2}(?:[:.-]\\d{2})?(?:[.,]\\d{1,3})?(?:\\s?[APMapm]{2})?(?:Z|[+-]\\d{2}:?\\d{2})?"
+                    + "|\\d{2}[-./]\\d{2}[-./]\\d{4}(?:[ T_])\\d{2}[:.-]\\d{2}(?:[:.-]\\d{2})?(?:\\s?[APMapm]{2})?"
+                    + "|\\d{8}[ _-]\\d{6}(?:[ _-]\\d{3})?"
+                    + "|\\d{14}(?:\\d{3})?"
+                    + "|\\d{4}[-./]\\d{2}[-./]\\d{2}"
+                    + "|\\d{2}[-./]\\d{2}[-./]\\d{4}"
+                    + "|\\d{8})");
+
+    private static final List<DateTimeFormatter> STRICT_DATE_TIME_FORMATTERS = Arrays.asList(
+            strictFormatter("uuuu-MM-dd HH:mm:ss"),
+            strictFormatter("uuuu-MM-dd HH:mm"),
+            strictFormatter("uuuu-MM-dd HH.mm.ss"),
+            strictFormatter("uuuu-MM-dd HH-mm-ss"),
+            strictFormatter("uuuu/MM/dd HH:mm:ss"),
+            strictFormatter("uuuu/MM/dd HH:mm"),
+            strictFormatter("uuuu/MM/dd HH.mm.ss"),
+            strictFormatter("uuuu/MM/dd HH-mm-ss"),
+            strictFormatter("uuuu.MM.dd HH:mm:ss"),
+            strictFormatter("uuuu.MM.dd HH:mm"),
+            strictFormatter("uuuu.MM.dd HH.mm.ss"),
+            strictFormatter("uuuu.MM.dd HH-mm-ss"),
+            strictFormatter("uuuu-MM-dd'T'HH:mm:ss"),
+            strictFormatter("uuuu-MM-dd'T'HH:mm:ss.SSS"),
+            strictFormatter("uuuu-MM-dd 'at' HH.mm.ss"),
+            strictFormatter("uuuu-MM-dd 'at' HH-mm-ss"),
+            strictFormatter("dd.MM.uuuu HH:mm:ss"),
+            strictFormatter("dd.MM.uuuu HH.mm.ss"),
+            strictFormatter("dd-MM-uuuu HH:mm:ss"),
+            strictFormatter("dd/MM/uuuu HH:mm:ss"),
+            strictFormatter("MM-dd-uuuu HH:mm:ss"),
+            strictFormatter("MM/dd/uuuu HH:mm:ss"),
+            strictFormatter("MM-dd-uuuu hh:mm:ss a"),
+            strictFormatter("MM/dd/uuuu hh:mm:ss a"),
+            strictFormatter("uuuuMMddHHmmss"),
+            strictFormatter("uuuuMMddHHmmssSSS"),
+            strictFormatter("uuuuMMdd HHmmss"),
+            strictFormatter("uuuuMMdd_HHmmss"),
+            strictFormatter("uuuuMMdd-HHmmss"),
+            strictFormatter("uuuuMMdd_HHmmss_SSS"));
+
+    private static final List<DateTimeFormatter> STRICT_OFFSET_DATE_TIME_FORMATTERS = Arrays.asList(
+            strictFormatter("uuuu-MM-dd'T'HH:mm:ssXXX"),
+            strictFormatter("uuuu-MM-dd'T'HH:mm:ss.SSSXXX"),
+            strictFormatter("uuuu-MM-dd HH:mm:ssXXX"),
+            strictFormatter("uuuu-MM-dd HH:mmXXX"));
+
+    private static final List<DateTimeFormatter> STRICT_DATE_FORMATTERS = Arrays.asList(
+            strictFormatter("uuuu-MM-dd"),
+            strictFormatter("uuuu/MM/dd"),
+            strictFormatter("uuuu.MM.dd"),
+            strictFormatter("uuuuMMdd"),
+            strictFormatter("dd-MM-uuuu"),
+            strictFormatter("dd/MM/uuuu"),
+            strictFormatter("dd.MM.uuuu"),
+            strictFormatter("MM-dd-uuuu"),
+            strictFormatter("MM/dd/uuuu"),
+            strictFormatter("MM.dd.uuuu"));
 
     /* Filename parse utils START */
     /**
@@ -146,35 +212,16 @@ public class FileNameParseUtils {
      * @return
      */
     public static String parseFileExtentension(Path path) {
-        return path.getFileName().toString().substring(0, path.getFileName().toString().lastIndexOf("."));
+        String fileName = path.getFileName().toString();
+        int dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex <= 0) {
+            return fileName;
+        }
+        return fileName.substring(0, dotIndex);
     }
 
     public static long hasFileNameDate(Path path) {
-        // dfb;
-
-        long ymd_hms_separator = tryFileNameDate(path, DATE_WITH_SEPARATOR);
-        if (ymd_hms_separator >= 1) {
-            return ymd_hms_separator;
-        }
-//		long ymd_hms_separator = tryFileNameDate(path, DATE_WITH_SEPARATOR);
-//		if (ymd_hms_separator >= 1) {
-//			return ymd_hms_separator;
-//		}
-        long ymdhms = tryFileNameDate(path, DATE_WITH_YMDHMS);
-        if (ymdhms >= 1) {
-            return ymdhms;
-        }
-        long ymd_hms = tryFileNameDate(path, DATE_WITH_YMD_HMS);
-        if (ymd_hms >= 1) {
-            return ymd_hms;
-        }
-
-        long ymd = tryFileNameDate(path, DATE_WITH_YMD);
-        if (ymd >= 1) {
-            return ymd;
-        }
-
-        return 0;
+        return parseEpochMillisFromText(parseFileExtentension(path));
     }
 
     protected static long tryFileNameDateKnownFormat(Path path) {
@@ -270,25 +317,7 @@ public class FileNameParseUtils {
         }
 
         if (!result.isEmpty()) {
-            StringBuilder sb = new StringBuilder();
-            result = m.group(); // 2016-10-29 14:31:44
-            for (char s : result.toCharArray()) {
-                if (s >= '0' && s <= '9') {
-                    sb.append(s);
-                }
-            }
-            if (isValidDate(sb.toString())) {
-                if (!sb.toString().isEmpty()) {
-                    long date = 0;
-                    try {
-                        date = Conversion.stringDateToLong(sb.toString(), simpleDates.getSdf_ymd_hms_nospaces());
-                        return date;
-                    } catch (Exception ex) {
-                        sprintf("Exception d = hasDate(sb); " + result + " exception is: " + ex.getMessage());
-                        return 0;
-                    }
-                }
-            }
+            return parseEpochMillisFromText(result);
         }
         return 0;
     }
@@ -306,37 +335,11 @@ public class FileNameParseUtils {
 
     public static long tryParseDateTimeAsLong(FileInfo fileInfo) {
         Path filename = Paths.get(fileInfo.getOrgPath());
-        String datePart = extractDateFromFileName(filename.toAbsolutePath().toString());
-
-        if (datePart == null || datePart.isBlank()) {
-            return 0L;
+        long epoch = parseEpochMillisFromText(parseFileExtentension(filename));
+        if (epoch > 0L) {
+            fileInfo.setDate(epoch);
         }
-
-        DateTimeFormatter defineDateTimeFormatter = getDateTimeFormatterIfFound(dateTimeFormats, datePart, fileInfo);
-        if (defineDateTimeFormatter != null) {
-            LocalDateTime localDateTime = LocalDateTime.parse(datePart, defineDateTimeFormatter);
-            String format = simpleDates.getDtf_ymd_hms_minusDots_default().format(localDateTime);
-            try {
-                java.time.LocalDateTime ldt = DateUtils.stringDateToLocalDateTime(format);
-                if (ldt != null) {
-                    return ldt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-        defineDateTimeFormatter = getDateFormatterIfFound(dateFormats, datePart);
-        if (defineDateTimeFormatter != null) {
-            LocalDateTime localDateTime = LocalDate.parse(datePart, defineDateTimeFormatter).atTime(12, 0, 0);
-            String format = simpleDates.getDtf_ymd_hms_minusDots_default().format(localDateTime);
-            try {
-                java.time.LocalDateTime ldt = DateUtils.stringDateToLocalDateTime(format);
-                if (ldt != null) {
-                    return ldt.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli();
-                }
-            } catch (Exception ignored) {
-            }
-        }
-        return 0L;
+        return epoch;
     }
 
     private static DateTimeFormatter getDateTimeFromString(Map<String, DateTimeFormatter> dateFormats, String datePart) {
@@ -363,21 +366,79 @@ public class FileNameParseUtils {
 // extractDateFromFileName
 
     public static String extractDateFromFileName(String fileName) {
-        // Match the flexible date-time pattern with "at" allowing additional text
-        String regex = "(\\d{4}-\\d{2}-\\d{2})\\s+.*?\\s+(\\d{2}\\.\\d{2}\\.\\d{2})";
-
-        Matcher matcher = java.util.regex.Pattern.compile(regex).matcher(fileName);
-
-        if (matcher.find()) {
-            // Combine the captured group to form the full date and time
-            return matcher.group(1) + " " + matcher.group(2);
+        for (String candidate : extractDateCandidates(fileName)) {
+            if (isSupportedDateOrDateTime(candidate)) {
+                return candidate;
+            }
         }
-        String date = extractDatePart(fileName);
-        if( date != null && !date.isBlank()) {
-            return date;
-        }
-
         return null;
+    }
+
+    private static long parseEpochMillisFromText(String text) {
+        if (text == null || text.isBlank()) {
+            return 0L;
+        }
+        for (String candidate : extractDateCandidates(text)) {
+            long parsed = parseCandidateToEpochMillis(candidate);
+            if (parsed > 0L) {
+                return parsed;
+            }
+        }
+        return 0L;
+    }
+
+    private static List<String> extractDateCandidates(String text) {
+        Set<String> candidates = new LinkedHashSet<>();
+        Matcher matcher = MULTI_DATE_CANDIDATE_PATTERN.matcher(text);
+        while (matcher.find()) {
+            String candidate = normalizeDateCandidate(matcher.group());
+            if (!candidate.isBlank()) {
+                candidates.add(candidate);
+            }
+        }
+
+        String fallback = extractDatePart(text);
+        if (fallback != null && !fallback.isBlank()) {
+            candidates.add(normalizeDateCandidate(fallback));
+        }
+        return new ArrayList<>(candidates);
+    }
+
+    private static long parseCandidateToEpochMillis(String candidate) {
+        for (DateTimeFormatter fmt : STRICT_OFFSET_DATE_TIME_FORMATTERS) {
+            try {
+                OffsetDateTime odt = OffsetDateTime.parse(candidate, fmt);
+                return odt.toInstant().toEpochMilli();
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        for (DateTimeFormatter fmt : STRICT_DATE_TIME_FORMATTERS) {
+            try {
+                LocalDateTime ldt = LocalDateTime.parse(candidate, fmt);
+                return ldt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        for (DateTimeFormatter fmt : STRICT_DATE_FORMATTERS) {
+            try {
+                LocalDate ld = LocalDate.parse(candidate, fmt);
+                return ld.atTime(12, 0, 0).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            } catch (DateTimeParseException ignored) {
+            }
+        }
+        return 0L;
+    }
+
+    private static boolean isSupportedDateOrDateTime(String candidate) {
+        return parseCandidateToEpochMillis(candidate) > 0L;
+    }
+
+    private static DateTimeFormatter strictFormatter(String pattern) {
+        return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH).withResolverStyle(ResolverStyle.STRICT);
+    }
+
+    private static String normalizeDateCandidate(String value) {
+        return value.replaceAll("(?i)\\s+at\\s+", " ").replaceAll("\\s+", " ").trim();
     }
 
     private static DateTimeFormatter getDateTimeFormatterIfFound(Map<String, DateTimeFormatter> dateTimeFormats, String text, FileInfo fileInfo) {
