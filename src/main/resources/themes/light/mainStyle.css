@@ -23,6 +23,14 @@ Main /theme/light/mainStyle.css
     -fx-mid-text-color: #aaaaaa;
     -fx-light-text-color: white;
 
+    /* Folder scanner tree-cell accents tuned for light backgrounds */
+    -mdir-folder-label-selected: derive(-fx-primary, -88%);
+    -mdir-folder-label-deselected: derive(-fx-primary, -72%);
+    -mdir-folder-label-ignored: derive(-fx-primary, -48%);
+    -mdir-folder-toggle-ignored: derive(-fx-primary, -22%);
+    -mdir-folder-icon-normal: derive(-fx-primary, -76%);
+    -mdir-folder-icon-ignored: derive(-fx-primary, -58%);
+
 }
 
 .button {

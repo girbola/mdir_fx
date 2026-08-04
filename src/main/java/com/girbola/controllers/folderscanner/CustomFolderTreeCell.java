@@ -2,126 +2,322 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
+import javafx.beans.value.ChangeListener;
+import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.TreeItem;
 import javafx.scene.control.cell.CheckBoxTreeCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.Node;
-import javafx.scene.control.CheckBox;
-import java.nio.file.Path;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.SVGPath;
 import org.kordamp.ikonli.javafx.FontIcon;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
-    private final ToggleButton toggleButton = new ToggleButton();
-    private final Label label = new Label();
 
-    // HBox sisältää ToggleButtonin ja Labelin.
-    private final HBox hBox = new HBox(10, toggleButton, label);
-
-    // Luodaan universaali "Kielletty / Ignore" SVG-ikoni
-//    private final SVGPath ignoreIcon = new SVGPath();
-    FontIcon ignoreIcon = new FontIcon();
-    private final ModelMain modelMain;
-
+    // ── Style constants ──────────────────────────────────────────────────────
     private static final String TRANSPARENT_BG = "-fx-background-color: transparent; -fx-alignment: center;";
+    private static final String CB_NORMAL_STYLE = "-fx-background-color: transparent; -fx-alignment: center;";
+    private static final String LABEL_IGNORED_STYLE = "-fx-text-fill: -mdir-folder-label-ignored; -fx-strikethrough: true;";
+    private static final String LABEL_SELECTED_STYLE = "-fx-text-fill: -mdir-folder-label-selected;";
+    private static final String LABEL_DESELECTED_STYLE = "-fx-text-fill: -mdir-folder-label-deselected;";
+    private static final String TOGGLE_IGNORED_STYLE = "-fx-background-color: -mdir-folder-toggle-ignored;";
+    private static final String TOGGLE_NORMAL_STYLE = TRANSPARENT_BG;
+    private static final String IGNORE_ICON_LITERAL = "bi-snow";
+    private static final String ICON_FONT_STYLE = "-fx-font-family: 'bootstrap-icons';";
+    private static final Color ICON_NORMAL_COLOR = Color.WHITESMOKE;
+    private static final Color ICON_IGNORED_COLOR = Color.DARKGRAY;
 
+    // ── UI components ────────────────────────────────────────────────────────
+    private final ToggleButton ignoreToggleButton = new ToggleButton();
+    private final Label label = new Label();
+    private final HBox hBox = new HBox(10);
+    private FontIcon ignoreIcon = new FontIcon();
+    private ModelMain modelMain;
+    private final Map<String, Boolean> standaloneIgnoredByPath = new HashMap<>();
+
+    // ── Per-cell state (reset on recycle) ────────────────────────────────────
+    private SelectedFolder currentFolder;
+    private CheckBox currentCb;
+
+    /**
+     * Fires whenever folder.ignoredProperty or folder.selectedProperty changes.
+     */
+    private final ChangeListener<Boolean> ignoredListener = (obs, old, nv) -> refreshStyles();
+    private final ChangeListener<Boolean> selectedListener = (obs, old, nv) -> refreshStyles();
+
+    // ────────────────────────────────────────────────────────────────────────
     public CustomFolderTreeCell(ModelMain modelMain, Object modelFolderScanner) {
         this.modelMain = modelMain;
 
-        toggleButton.setFocusTraversable(false);
-
-        ignoreIcon.setIconLiteral("bi-snow");
+        ignoreIcon.setIconLiteral(IGNORE_ICON_LITERAL);
         ignoreIcon.setIconSize(10);
-        ignoreIcon.setIconColor(Color.WHITESMOKE);
+        ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+        if (!ignoreIcon.getStyleClass().contains("ikonli-font-icon")) {
+            ignoreIcon.getStyleClass().add("ikonli-font-icon");
+        }
+        ignoreIcon.setStyle(ICON_FONT_STYLE);
 
-        // Määritetään ympyrän ja poikkiviivan SVG-polku (proportionaalisesti siisti)
-//        ignoreIcon.setContent("M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8 0-1.85.63-3.55 1.69-4.9L16.9 18.31C15.55 19.37 13.85 20 12 20zm6.31-4.9L7.1 5.69C8.45 4.63 10.15 4 12 4c4.42 0 8 3.58 8 8 0 1.85-.63 3.55-1.69 4.9z");
+        ignoreToggleButton.setFocusTraversable(false);
+        ignoreToggleButton.setGraphic(ignoreIcon);
+        ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
+        ignoreToggleButton.setMinWidth(24);
+        ignoreToggleButton.setPrefWidth(24);
+        ignoreToggleButton.setMaxWidth(24);
 
-        // Pakotetaan ikoni sopivan pikkuruiseksi (esim. 14x14px) puunäkymään
-//        ignoreIcon.setScaleX(0.6);
-//        ignoreIcon.setScaleY(0.6);
 
-        // Asetetaan ikoni ToggleButtonin sisällöksi
-        toggleButton.setGraphic(ignoreIcon);
-
-        // Make label grow to fill available space
         HBox.setHgrow(label, Priority.ALWAYS);
         label.setMaxWidth(Double.MAX_VALUE);
     }
 
+    // ── Cell lifecycle ───────────────────────────────────────────────────────
     @Override
     public void updateItem(Path item, boolean empty) {
         super.updateItem(item, empty);
-
-        toggleButton.setOnAction(null);
+        detachCurrentFolder();
 
         if (empty || item == null) {
-            Messages.sprintf("-----drives_treeView setCellFactory null: " + item + " boolean is: " + empty);
             setGraphic(null);
             setText(null);
-        } else {
-            Messages.sprintf("-----drives_treeView setCellFactory: " + item + " boolean is: " + empty);
+            return;
+        }
 
-            if (getTreeItem() instanceof javafx.scene.control.CheckBoxTreeItem<Path> cbItem) {
-                Messages.sprintf("cbItem::: " + cbItem.getValue());
-                String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
-                label.setText(name);
+        if (!(getTreeItem() instanceof javafx.scene.control.CheckBoxTreeItem<Path>)) {
+            //setGraphic(null);
+            Messages.sprintf("getTreeItem checkboxtreeitem!!!:_ ");
+            setText(item.getFileName() == null ? item.toString() : item.getFileName().toString());
+            return;
+        }
 
-                // Haetaan puun oletusvalintaruutu
-                Node defaultCheckBox = getGraphic();
+        label.setText(item.getFileName() == null ? item.toString() : item.getFileName().toString());
 
-                if (defaultCheckBox instanceof CheckBox cb) {
-                    setStyle(TRANSPARENT_BG);
-                    setStyle("-fx-text-fill: cyan;");
+        CheckBox cb = extractCheckBoxFromGraphic(getGraphic());
+        if (cb == null) {
+            return;
+        }
 
-                    String currentPathStr = item.toString();
-                    SelectedFolder selectedFolder = findSelectedFolder(currentPathStr);
+        TreeItem<Path> treeItem = getTreeItem();
+        if(treeItem != null && treeItem.isLeaf()) {
+            Messages.sprintf("getTreeItem ISLEAF!");
+            javafx.scene.Node checkBox = getGraphic();
 
-                    if (selectedFolder != null) {
-                        // Keep toggle button always enabled so users can toggle it
-                        toggleButton.setDisable(false);
-                        defaultCheckBox.disableProperty().bind(toggleButton.selectedProperty());
-
-                        // Apply initial styling based on folder state
-                        applyFolderStyling(cb, selectedFolder);
-
-                    // Listen for toggle button changes and update styling
-                    toggleButton.selectedProperty().addListener((change, oldVal, newVal) -> {
-                        Messages.sprintf("ToggleButton state changed for " + currentPathStr + ": " + newVal);
-                        applyFolderStyling(cb, selectedFolder);
-                    });
-                    } else {
-                        toggleButton.setSelected(false);
-                        toggleButton.setDisable(true);
-                        defaultCheckBox.disableProperty().unbind();
-                        defaultCheckBox.setDisable(false);
-                    }
-
-                    // Yhdistetään puun oma CheckBox meidän HBoxiimme ensimmäiseksi
-                    if (!hBox.getChildren().contains(defaultCheckBox)) {
-                        hBox.getChildren().addFirst(defaultCheckBox);
-                    }
-
-                    // Ensure correct order: CheckBox -> ToggleButton -> Label
-                    if (!hBox.getChildren().contains(toggleButton)) {
-                        hBox.getChildren().add(toggleButton);
-                    }
-                    if (!hBox.getChildren().contains(label)) {
-                        hBox.getChildren().add(label);
-                    }
-
-                    setGraphic(hBox);
-                    setText(null);
-                }
+            if (checkBox instanceof javafx.scene.control.CheckBox) {
+                Node lehti = treeItem.getGraphic();
+                Messages.sprintf("getTreeItem ISLEAF! checkBox instanceof CheckBox: " + lehti);
+                cb = (CheckBox) checkBox;
             } else {
-                setGraphic(null);
-                String name = item.getFileName() == null ? item.toString() : item.getFileName().toString();
-                setText(name);
+                Messages.sprintf("getTreeItem ISLEAF! checkBox NOT instanceof CheckBox");
+            }
+
+        }
+
+        Messages.sprintf("Checkbox were not null");
+        Node graphic = getGraphic();
+        Messages.sprintf("Graphic were not null: " + graphic);
+        Node leafGraphic;
+        if (getGraphic() == null) {
+            leafGraphic = null;
+            Messages.sprintf("Leafgraphic were null");
+        } else {
+            leafGraphic = getGraphic();
+            Messages.sprintf("Leafgraphic were not null: "  + leafGraphic);
+
+        }
+
+        Messages.sprintf("leafGraphic:::: " + leafGraphic);
+        setStyle(TRANSPARENT_BG);
+        assembleHBox(cb, leafGraphic);
+        setGraphic(hBox);
+        setText(null);
+//TODO Tee tämä kokonaan uusiksil, koska on olemassa
+        SelectedFolder folder = findSelectedFolder(item.toString());
+        if (folder == null) {
+            Messages.sprintf("No SelectedFolder for: " + item);
+            attachStandaloneToggle(cb, item.toString());
+            return;
+        }
+
+        Messages.sprintf("**************About to attachFolder " + folder);
+        attachFolder(folder, cb);
+    }
+
+    // ── Folder attach / detach ───────────────────────────────────────────────
+    private void attachFolder(SelectedFolder folder, CheckBox cb) {
+        Messages.sprintf("Attaching Folder: " + folder);
+        currentFolder = folder;
+        currentCb = cb;
+
+        // Listen to model property changes so styles update reactively
+        folder.ignoredProperty().addListener(ignoredListener);
+        folder.selectedProperty().addListener(selectedListener);
+
+        // Keep button always active: when user toggles, mirror state back to model.
+        ignoreToggleButton.setDisable(false);
+        ignoreToggleButton.setOnAction(e -> folder.setIgnored(ignoreToggleButton.isSelected()));
+
+        // Sync toggle visual state from the model.
+        ignoreToggleButton.setSelected(folder.isIgnored());
+
+        // Apply initial styles
+        refreshStyles();
+    }
+
+    private void detachCurrentFolder() {
+        if (currentFolder != null) {
+            currentFolder.ignoredProperty().removeListener(ignoredListener);
+            currentFolder.selectedProperty().removeListener(selectedListener);
+            currentFolder = null;
+        }
+        // Null out the CheckBox reference (do NOT unbind — we use setDisable explicitly now)
+        currentCb = null;
+        // Clear the per-folder action so a recycled cell's stale lambda never fires
+        ignoreToggleButton.setOnAction(null);
+        ignoreToggleButton.setSelected(false);
+        ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
+        ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+    }
+
+    private void attachStandaloneToggle(CheckBox cb, String pathStr) {
+        currentCb = cb;
+        ignoreToggleButton.setDisable(false);
+        boolean ignored = standaloneIgnoredByPath.getOrDefault(pathStr, false);
+        ignoreToggleButton.setSelected(ignored);
+        ignoreToggleButton.setOnAction(e -> {
+            boolean newIgnored = ignoreToggleButton.isSelected();
+            standaloneIgnoredByPath.put(pathStr, newIgnored);
+            applyStandaloneStyles(newIgnored);
+        });
+        applyStandaloneStyles(ignored);
+    }
+
+    private void applyStandaloneStyles(boolean ignored) {
+        if (currentCb == null) {
+            return;
+        }
+
+        ensureIgnoreIconLiteral();
+
+        currentCb.setDisable(ignored);
+        currentCb.setStyle(CB_NORMAL_STYLE);
+        setStyle(TRANSPARENT_BG);
+
+        if (ignored) {
+            label.setStyle(LABEL_IGNORED_STYLE);
+            ignoreToggleButton.setStyle(TOGGLE_IGNORED_STYLE);
+            ignoreIcon.setIconColor(ICON_IGNORED_COLOR);
+        } else {
+            label.setStyle(LABEL_DESELECTED_STYLE);
+            ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
+            ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+        }
+    }
+
+    // ── Styling ──────────────────────────────────────────────────────────────
+    private void refreshStyles() {
+        if (currentFolder == null || currentCb == null) return;
+
+        if (ignoreToggleButton.isSelected() != currentFolder.isIgnored()) {
+            ignoreToggleButton.setSelected(currentFolder.isIgnored());
+        }
+
+        // Explicitly enable/disable the checkbox to match the ignored state.
+        // We do NOT use disableProperty().bind() because CheckBoxTreeCell's superclass
+        // may interfere with the property binding.
+        currentCb.setDisable(currentFolder.isIgnored());
+
+        if (currentFolder.isIgnored()) {
+            applyIgnoredStyle();
+            return;
+        }
+        if (currentFolder.isSelected()) {
+            applySelectedStyle();
+        } else {
+            applyDeselectedStyle();
+        }
+    }
+
+    /**
+     * Toggle ON → greyed-out, strikethrough label, red toggle, checkbox disabled
+     */
+    private void applyIgnoredStyle() {
+        ensureIgnoreIconLiteral();
+        setStyle(TRANSPARENT_BG);
+        currentCb.setStyle(CB_NORMAL_STYLE);
+        label.setStyle(LABEL_IGNORED_STYLE);
+        ignoreToggleButton.setStyle(TOGGLE_IGNORED_STYLE);
+        ignoreIcon.setIconColor(ICON_IGNORED_COLOR);
+    }
+
+    /**
+     * Toggle OFF + folder selected → yellow label, checkbox enabled
+     */
+    private void applySelectedStyle() {
+        Messages.sprintf("Selected Folder: " + currentFolder.getFolder());
+        ensureIgnoreIconLiteral();
+        setStyle(TRANSPARENT_BG);
+        currentCb.setStyle(CB_NORMAL_STYLE);
+        label.setStyle(LABEL_SELECTED_STYLE);
+        ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
+        ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+    }
+
+    /**
+     * Toggle OFF + folder not selected → cyan label, checkbox enabled
+     */
+    private void applyDeselectedStyle() {
+        Messages.sprintf("Deselected Folder: " + currentFolder.getFolder());
+        ensureIgnoreIconLiteral();
+        setStyle(TRANSPARENT_BG);
+        currentCb.setStyle(CB_NORMAL_STYLE);
+        label.setStyle(LABEL_DESELECTED_STYLE);
+        ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
+        ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+
+    }
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    private void assembleHBox(CheckBox cb, Node leafGraphic) {
+        ensureIgnoreIconLiteral();
+        List<Node> nodes = new ArrayList<>(4);
+        nodes.add(cb);
+        if (leafGraphic != null && leafGraphic != cb && leafGraphic != ignoreToggleButton && leafGraphic != label) {
+            nodes.add(leafGraphic);
+        }
+        nodes.add(ignoreToggleButton);
+        nodes.add(label);
+
+        for (Node n : nodes) {
+            Messages.sprintf("-----assembleHBox nodes: " + n);
+        }
+        hBox.getChildren().setAll(nodes);
+    }
+
+    private void ensureIgnoreIconLiteral() {
+        if (!IGNORE_ICON_LITERAL.equals(ignoreIcon.getIconLiteral())) {
+            ignoreIcon.setIconLiteral(IGNORE_ICON_LITERAL);
+        }
+        ignoreIcon.setStyle(ICON_FONT_STYLE);
+    }
+
+
+    private CheckBox extractCheckBoxFromGraphic(Node graphic) {
+        if (graphic instanceof CheckBox cb) {
+            return cb;
+        }
+        if (graphic instanceof HBox box) {
+            for (Node child : box.getChildren()) {
+                if (child instanceof CheckBox cb) {
+                    return cb;
+                }
             }
         }
+        return null;
     }
 
     private SelectedFolder findSelectedFolder(String pathStr) {
@@ -131,37 +327,4 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
                 .findFirst()
                 .orElse(null);
     }
-
-    /**
-     * Centralized method to apply consistent styling based on folder state
-     */
-    private void applyFolderStyling(CheckBox cb, SelectedFolder folder) {
-        if (folder == null) {
-            return;
-        }
-
-        boolean isIgnored = folder.isIgnored();
-        boolean isSelected = folder.isSelected();
-
-        if (isIgnored) {
-            Messages.sprintf("Applying ignored styling for: " + folder.getFolder());
-            setVisible(false);
-            cb.setStyle(TRANSPARENT_BG);
-            setStyle(TRANSPARENT_BG);
-            label.setStyle("-fx-text-fill: white;");
-        } else if (isSelected) {
-            Messages.sprintf("Applying selected styling for: " + folder.getFolder());
-            setVisible(true);
-            cb.setStyle("-fx-background-color: -fx-base; -fx-alignment: center;");
-            setStyle(TRANSPARENT_BG);
-            label.setStyle("-fx-text-fill: yellow;");
-        } else {
-            Messages.sprintf("Applying default styling for: " + folder.getFolder());
-            setVisible(true);
-            cb.setStyle("-fx-background-color: -fx-base; -fx-alignment: center;");
-            setStyle(TRANSPARENT_BG);
-            label.setStyle("-fx-text-fill: yellow;");
-        }
-    }
-
 }

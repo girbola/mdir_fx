@@ -24,6 +24,16 @@
     -fx-font-family: "Roboto", monospace;
     -fx-font-weight: normal;
 
+    /* Folder scanner tree-cell accents based on theme base tones */
+    -mdir-folder-label-selected: derive(-fx-base, 10%);
+    -mdir-folder-label-deselected: derive(-fx-base, 10%);
+    -mdir-folder-label-ignored: derive(-fx-base, 10%);
+    -mdir-folder-toggle-ignored: derive(-fx-base, 7%);
+    -mdir-folder-icon-normal: derive(-fx-base, 26%);
+    -mdir-folder-icon-ignored: derive(-fx-base, 32%);
+
+    -fx-background-color: -fx-base;
+
     /*-fx-font-family: "Source Code Pro", monospace;*/
     /*-fx-font-family: "Inter", system-ui, sans-serif;*/
     /*-fx-font-family: "Source Code Pro", monospace;*/
@@ -34,7 +44,9 @@
 .main {
     -fx-background-color: -fx-base;
 }
-
+#main_container {
+    -fx-background-color: -fx-base;
+}
 /*.main_vbox .menu-bar {*/
 /*    -fx-background-color: yellow;*/
 /*}*/
@@ -549,10 +561,16 @@ unselected {
 /*   1. PUUN SOLUJEN JA ELEMENTTIEN KESKITYS*/
 /*   ========================================================================= *!*/
 
+/*.tree-cell {*/
+/*    -fx-alignment: center-left !important;*/
+/*    -fx-padding: 2px 0px 2px 0px !important;*/
+/*    -fx-text-fill: -fx-light-text-color;*/
+
+/*}*/
 .tree-cell {
-    -fx-alignment: center-left !important;
-    -fx-padding: 2px 0px 2px 0px !important;
-    -fx-text-fill: -fx-light-text-color;
+    -fx-background-color: #2b2b2b;
+    -fx-border-color: transparent transparent rgba(255,255,255,0.05) transparent;
+    -fx-border-width: 0 0 1 0;
 }
 
 /*.tree-cell > .tree-disclosure-node {*/
@@ -648,3 +666,13 @@ unselected {
 /*.ignore-button:selected:hover {*/
 /*    -fx-background-color: #2D3748;*/
 /*}*/
+
+
+.tree-view .check-box > .box {
+    -fx-background-color: transparent;
+    -fx-border-color: #666;
+}
+
+.tree-view .check-box:selected > .box {
+    -fx-background-color: #e24aa5;
+}

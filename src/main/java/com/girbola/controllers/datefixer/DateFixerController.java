@@ -90,8 +90,8 @@ public class DateFixerController {
 	@FXML private CheckBox ignored_chk;
 	@FXML private HBox infoTable_container_root;
 
-    @FXML private Label images_stat;
-    @FXML private Label videos_stat;
+//    @FXML private Label images_stat;
+//    @FXML private Label videos_stat;
 
     @FXML private Button select_good_btn;
     @FXML private Button select_bad_btn;
@@ -595,8 +595,8 @@ public class DateFixerController {
 
         select_good_btn.textProperty().bind(modelDatefix.getFolderInfo_full().goodFiles_prop().asString());
 
-        images_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderImageFiles_prop().asString());
-        videos_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderVideoFiles_prop().asString());
+//        images_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderImageFiles_prop().asString());
+//        videos_stat.textProperty().bind(modelDatefix.getFolderInfo_full().folderVideoFiles_prop().asString());
         suggested_stat.textProperty().bind(modelDatefix.getFolderInfo_full().suggested_prop().asString());
 
         bad_image_stat.textProperty().bind(modelDatefix.getFolderInfo_full().badImageFiles_prop().asString());

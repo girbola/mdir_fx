@@ -39,7 +39,7 @@
         <lombok.version>1.18.38</lombok.version>
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven.compiler.target.release>24</maven.compiler.target.release>
-        <metadata-extractor.version>2.19.0</metadata-extractor.version>
+        <metadata-extractor.version>2.21.0</metadata-extractor.version>
         <mockito-core-release>5.23.0</mockito-core-release>
 <!--        <org.openpnp.version>4.9.0-0</org.openpnp.version>-->
         <oshi-core.version>6.9.2</oshi-core.version>

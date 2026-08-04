@@ -23,20 +23,25 @@ The project is developed using:
 
 ## License
 
-This project is not currently ready for public release. The intended license for this project is **GPLv3**.
+This project is licensed under **GNU GPL v3 or later**. See the full text in `LICENSE`.
+
+Third-party dependency licenses are tracked in `THIRD_PARTY_LICENSES.md`.
 
 ## Third-Party Repositories
 
-| Library                | License            | Project URL                                      | Notes                               |
-|------------------------|--------------------|--------------------------------------------------|-------------------------------------|
-| Apache Commons Imaging | Apache License 2.0 | https://github.com/apache/commons-imaging        | Previously Sanselan                 |
-| Ikonli                 | Apache License 2.0 | https://github.com/kordamp/ikonli                | —                                   |
-| JavaCV                 | Apache License 2.0 | https://github.com/bytedeco/javacv               | Version not specified               |
-| Metadata Extractor     | Apache License 2.0 | https://github.com/drewnoakes/metadata-extractor | —                                   |
-| OpenJFX                | GPLv2              | https://github.com/openjdk/jfx                   | —                                   |
-| OSHI                   | MIT License        | https://github.com/oshi/oshi                     | —                                   |
-| TwelveMonkeys ImageIO  | BSD 3-Clause       | https://github.com/haraldk/TwelveMonkeys         | Modules: imageio-jpeg, imageio-tiff |
-| VLCJ                   | GPLv3              | https://github.com/caprica/vlcj                  | —                                   |
+| Library                | License                       | Project URL                                      | Notes                                    |
+|------------------------|-------------------------------|--------------------------------------------------|------------------------------------------|
+| Apache Commons Imaging | Apache-2.0                    | https://github.com/apache/commons-imaging        |                                          |
+| BootstrapFX            | MIT                           | https://github.com/kordamp/bootstrapfx           |                                          |
+| Ikonli                 | Apache-2.0                    | https://github.com/kordamp/ikonli                | Multiple icon packs are used             |
+| JavaCV / JavaCPP       | Apache-2.0 OR GPLv2+CE        | https://github.com/bytedeco/javacv               | Includes native preset artifacts         |
+| Metadata Extractor     | Apache-2.0                    | https://github.com/drewnoakes/metadata-extractor |                                          |
+| OpenJFX                | GPLv2 with Classpath Exception| https://github.com/openjdk/jfx                   | GPLv2+CE                                |
+| OSHI                   | MIT                           | https://github.com/oshi/oshi                     |                                          |
+| SQLite JDBC            | Apache-2.0                    | https://github.com/xerial/sqlite-jdbc            |                                          |
+| Thumbnailator          | MIT                           | https://github.com/coobird/thumbnailator         |                                          |
+| TwelveMonkeys ImageIO  | BSD 3-Clause                  | https://github.com/haraldk/TwelveMonkeys         | Modules: imageio-jpeg, imageio-tiff      |
+| VLCJ / VLCJ-JavaFX     | GPLv3                         | https://github.com/caprica/vlcj                  | vlcj-javafx pulls compatible vlcj native |
 
 ## Supported File Formats
 

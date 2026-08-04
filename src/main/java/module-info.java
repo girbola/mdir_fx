@@ -30,8 +30,8 @@ module com.girbola {
     requires javafx.swing;           // javafx.embed.swing.SwingFXUtils
 
     // ── Image / Metadata ─────────────────────────────────────────────────────
-    // metadata-extractor: automatic module, name derived from JAR → metadata.extractor
-    requires metadata.extractor;
+    // metadata-extractor: automatic module, derived module name → com.drew.metadata
+    requires com.drew.metadata;
     // Apache Commons Imaging (multi-release named module)
     requires org.apache.commons.imaging;
     // TwelveMonkeys ImageIO plug-ins (automatic modules)

@@ -316,11 +316,11 @@
                                       <GridPane hgap="3.0" vgap="3.0" VBox.vgrow="ALWAYS">
                                           <columnConstraints>
                                               <ColumnConstraints hgrow="NEVER" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
-                                              <ColumnConstraints hgrow="ALWAYS" maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
+                                              <ColumnConstraints hgrow="ALWAYS" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
                                               <ColumnConstraints fillWidth="false" hgrow="ALWAYS" maxWidth="40.0" minWidth="40.0" prefWidth="40.0" />
                                     <ColumnConstraints fillWidth="false" hgrow="ALWAYS" maxWidth="40.0" minWidth="40.0" prefWidth="100.0" />
-                                              <ColumnConstraints hgrow="ALWAYS" maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
-                                              <ColumnConstraints hgrow="ALWAYS" maxWidth="40.0" minWidth="10.0" prefWidth="40.0" />
+                                              <ColumnConstraints fillWidth="false" hgrow="ALWAYS" maxWidth="40.0" minWidth="40.0" prefWidth="100.0" />
+                                              <ColumnConstraints fillWidth="false" hgrow="ALWAYS" maxWidth="40.0" minWidth="40.0" prefWidth="100.0" />
                                     <ColumnConstraints hgrow="ALWAYS" maxWidth="40.0" minWidth="10.0" prefWidth="100.0" />
                                           </columnConstraints>
                                           <rowConstraints>
@@ -328,21 +328,22 @@
                                               <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
                                               <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="NEVER" />
                                               <RowConstraints valignment="CENTER" vgrow="NEVER" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="NEVER" />
                                               <RowConstraints valignment="CENTER" vgrow="NEVER" />
-                                    <RowConstraints minHeight="10.0" valignment="CENTER" vgrow="ALWAYS" />
+                                    <RowConstraints valignment="BOTTOM" vgrow="ALWAYS" />
                                     <RowConstraints valignment="CENTER" vgrow="NEVER" />
                                           </rowConstraints>
                                           <children>
-                                              <Label text="%sortBy" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
-                                              <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%sortBy" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                              <Label text="%sortBy" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM" GridPane.vgrow="NEVER" />
+                                              <MenuButton maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="%sortBy" GridPane.columnIndex="1" GridPane.columnSpan="4" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="7" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                   <items>
                                                       <MenuItem fx:id="sortByDate_mi" mnemonicParsing="false" onAction="#sortByDate_mi_action" text="%date" />
                                                       <MenuItem fx:id="fileName_mi" mnemonicParsing="false" onAction="#fileName_mi_action" text="%fileName" />
                                                   </items>
                                               </MenuButton>
                                               <Label alignment="CENTER" text="%showAndHide" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-                                              <CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.vgrow="NEVER" />
-                                              <CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.vgrow="NEVER" />
+                                              <CheckBox fx:id="ignored_chk" mnemonicParsing="false" text="%ignored" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.hgrow="NEVER" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
+                                              <CheckBox fx:id="copied_chk" mnemonicParsing="false" text="%copied" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="NEVER" />
                                               <Button id="showHideMediaBasedOnSelectionButton" fx:id="show_only_selected_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#show_only_selected_btn_action" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="NEVER" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                   <graphic>
                                                       <FontIcon iconColor="#ff9f9f" iconLiteral="bi-eye-slash" iconSize="20" />
@@ -356,11 +357,12 @@
                                                       <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                   </GridPane.margin>
                                               </Button>
-                                                <Label fx:id="ignored_stat" focusTraversable="false" text="0" GridPane.columnIndex="3">
+                                                <Label fx:id="ignored_stat" focusTraversable="false" text="0" GridPane.columnIndex="3" GridPane.rowIndex="4">
                                                     <font>
                                                         <Font size="10.0" />
                                                     </font>
                                                 </Label>
+                                    <Label text="Label" GridPane.columnIndex="6" GridPane.rowIndex="4" />
                                           </children>
                                       </GridPane>
                            </children>
@@ -545,12 +547,12 @@
                         <fx:include fx:id="selector" source="Selector.fxml" VBox.vgrow="ALWAYS" />
                     </children>
                     <BorderPane.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                        <Insets />
                     </BorderPane.margin>
                 </VBox>
             </left>
             <center>
-                <HBox focusTraversable="true" maxWidth="1.7976931348623157E308" styleClass="imagesContainerScrollPane" BorderPane.alignment="TOP_LEFT">
+                <HBox focusTraversable="true" maxHeight="1.7976931348623157E308" styleClass="imagesContainerScrollPane" BorderPane.alignment="TOP_LEFT">
                     <children>
                         <AnchorPane focusTraversable="true" styleClass="imagesContainer" HBox.hgrow="ALWAYS">
                             <children>

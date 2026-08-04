@@ -183,20 +183,10 @@ public class ScanDrives {
         }
     }
 
-    private boolean findDuplicateDrive(DriveInfo driveInfoToSearch) {
-        Messages.sprintf("findDuplicateDrive driveInfoToSearch: " + driveInfoToSearch.getDrivePath() + " serial: " + driveInfoToSearch.getIdentifier());
-        for (DriveInfo driveInfo : rootDrives) {
-            if (Main.getProcessCancelled()) {
-                break;
-            }
-            Messages.sprintf("222driveInfo: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
-
-            if (driveInfoToSearch.getIdentifier().equals(driveInfo.getIdentifier()) && driveInfoToSearch.getDrivePath().equals(driveInfo.getDrivePath()) && driveInfoToSearch.getDriveTotalSize() == driveInfo.getDriveTotalSize()) {
-                Messages.sprintf("Right identifier found!" + driveInfo.getDrivePath());
-                return true;
-            }
-        }
-        return false;
+    private String getDriveKey(DriveInfo driveInfo) {
+        return Objects.toString(driveInfo.getIdentifier(), "") + "|"
+                + Objects.toString(driveInfo.getDrivePath(), "") + "|"
+                + driveInfo.getDriveTotalSize();
     }
 
     private void redrawRootFolders() throws IOException {
@@ -208,56 +198,84 @@ public class ScanDrives {
         for (Path r : FileSystems.getDefault().getRootDirectories()) {
             rootItem.getChildren().add(new LazyDirTreeItem(r));
         }
-
-
-
     }
 
     private boolean updateRootDrives(File[] roots) {
-        Set<DriveInfo> rootDrives = new HashSet<>();
+        Set<DriveInfo> latestRootDrives = new HashSet<>();
+        Set<String> latestDriveKeys = new HashSet<>();
         boolean changed = false;
 
         for (int i = 0; i < roots.length; i++) {
             if (Main.getProcessCancelled()) {
                 break;
             }
-            //TODO driveinfos ei huomioi olemassa olevia lisättyjä drivejnfoja vaan se lisää listaan kokoajan uutta.
             String serial = OSHI_Utils.getDriveSerialNumber(roots[i].toString());
 
             Messages.sprintf("ROOT DRIVE: " + roots[i] +  " seriallllllll: " + serial + " drive: " + roots[i].toString());
             DriveInfo driveInfo = new DriveInfo(roots[i].toString(), roots[i].getTotalSpace(), roots[i].exists(), false, serial);
+            String driveKey = getDriveKey(driveInfo);
+            latestRootDrives.add(driveInfo);
+            latestDriveKeys.add(driveKey);
 
             if (!hasDriveInfo(driveInfo, modelMain.driveInfos())) {
+                Messages.sprintf("New drive detected: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
                 driveInfo.setSelected(false);
                 driveInfo.setConnected(true);
                 modelMain.driveInfos().add(driveInfo);
-                rootDrives.add(driveInfo);
                 changed = true;
+            } else {
+                for (DriveInfo existing : modelMain.driveInfos()) {
+                    Messages.sprintf("Existing Drive: " + existing.getDrivePath() + " serial: " + existing.getIdentifier());
+                    if (getDriveKey(existing).equals(driveKey)) {
+                        existing.setConnected(true);
+                        break;
+                    }
+                }
+            }
+Messages.sprintf("selectedFolderScanner osb size::: ");
+            Messages.sprintf("selectedFolderScanner osb size::: " + modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size());
+
+            for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                Messages.sprintf("sf.selectedFolders size " + sf.getFolder() + " rootFolder: " + driveInfo.getIdentifier() + " driveInfo getDrive: " + driveInfo.getDrive() );
+                if(sf.isSelected()) {
+                    if (driveInfo.isConnected() && sf.getDriveSerialNumber().equals(driveInfo.getIdentifier())) {
+                        Messages.sprintf("drive connected!!::  " + driveInfo.getDrivePath());
+                        sf.setConnected(true);
+                    } else if (!driveInfo.isConnected() && sf.getDriveSerialNumber().equals(driveInfo.getIdentifier())) {
+                        Messages.sprintf("drive not connected!!::  " + driveInfo.getDrivePath());
+                        sf.setConnected(false);
+                    }
+                }
             }
         }
 
-        if (changed) {
-            for (DriveInfo driveInfo : rootDrives) {
-                if (Main.getProcessCancelled()) {
-                    break;
-                }
-                if (!findDuplicateDrive(driveInfo)) {
-                    Messages.sprintf("Adding all to root Drives. DriveInfo: " + driveInfo.getDrivePath()
-                            + " serial: " + driveInfo.getIdentifier() + " setOfRootDrives size: "
-                            + rootDrives.size());
-                    rootDrives.clear();
-                    rootDrives.addAll(rootDrives);
-                    return true;
-                }
-            }
+        for (DriveInfo driveInfo : modelMain.driveInfos()) {
+            boolean isConnectedNow = latestDriveKeys.contains(getDriveKey(driveInfo));
+            driveInfo.setConnected(isConnectedNow);
         }
-        return false;
+
+        Set<String> currentDriveKeys = new HashSet<>();
+        for (DriveInfo driveInfo : rootDrives) {
+            currentDriveKeys.add(getDriveKey(driveInfo));
+        }
+
+        if (!currentDriveKeys.equals(latestDriveKeys)) {
+            changed = true;
+        }
+
+        if (changed) {
+            rootDrives.clear();
+            rootDrives.addAll(latestRootDrives);
+            Messages.sprintf("Updated root drives, count: " + rootDrives.size());
+        }
+
+        return changed;
     }
 
     private boolean hasDriveInfo(DriveInfo driveInfo, List<DriveInfo> driveInfos) {
 
         for (DriveInfo driveInfoToSearch : driveInfos) {
-            if (driveInfoToSearch.getIdentifier().equals(driveInfo.getIdentifier()) && driveInfoToSearch.getDrivePath().equals(driveInfo.getDrivePath()) && driveInfoToSearch.getDriveTotalSize() == driveInfo.getDriveTotalSize()) {
+            if (getDriveKey(driveInfoToSearch).equals(getDriveKey(driveInfo))) {
                 Messages.sprintf("Right identifier found!" + driveInfo.getDrivePath());
                 return true;
             }
