@@ -477,8 +477,6 @@ public class FileInfoUtils {
             return false;
         }
         ExifSubIFDDirectory subIfd = metaData.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
-        ExifThumbnailDirectory firstDirectoryOfType = metaData.getFirstDirectoryOfType(ExifThumbnailDirectory.class);
-        firstDirectoryOfType.getAdjustedThumbnailOffset();
 
         if (subIfd != null) {
             Integer width = subIfd.getInteger(ExifDirectoryBase.TAG_EXIF_IMAGE_WIDTH);

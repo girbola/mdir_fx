@@ -4,13 +4,17 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.FileInfoTestUtil;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import javax.imageio.ImageIO;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +30,23 @@ import static org.junit.jupiter.api.Assertions.fail;
 public class FileInfoUtilsTest {
 
     private final Logger log = LoggerFactory.getLogger(FileInfoUtilsTest.class);
+
+    @TempDir
+    Path tempDir;
+
+    @Test
+    void createFileInfo_plainJpegWithoutExifThumbnailDoesNotCrash() throws IOException {
+        Path imagePath = tempDir.resolve("plain-no-exif.jpg");
+        BufferedImage image = new BufferedImage(4, 4, BufferedImage.TYPE_INT_RGB);
+        assertTrue(ImageIO.write(image, "jpg", imagePath.toFile()));
+        assertTrue(Files.exists(imagePath));
+
+        FileInfo fileInfo = FileInfoUtils.createFileInfo(imagePath);
+
+        assertNotNull(fileInfo);
+        assertEquals(imagePath.toString(), fileInfo.getOrgPath());
+        assertTrue(fileInfo.isImage());
+    }
 
     @Test
     public void createFileInfoTest_imageType() {

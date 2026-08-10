@@ -28,61 +28,50 @@ import java.util.List;
 @Getter
 public class FolderInfoDao {
 
-    private static final String ALTER_TABLE = "ALTER TABLE ";
-
     private Connection connection = null;
 
-    final static String createFolderInfoSQL = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType() + " ("
-            + "'" + FolderInfoEnum.ID.getColumnName() + "' INTEGER PRIMARY KEY AUTOINCREMENT, "
-            + "'" + FolderInfoEnum.STATUS.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.CHANGED.getColumnName() + "' BOOLEAN, "
-            + "'" + FolderInfoEnum.CONNECTED.getColumnName() + "' BOOLEAN, "
-            + "'" + FolderInfoEnum.IGNORED.getColumnName() + "' BOOLEAN, "
-            + "'" + FolderInfoEnum.DATE_DIFFERENCE.getColumnName() + "' DOUBLE, "
-            + "'" + FolderInfoEnum.BAD_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.CONFIRMED.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.COPIED.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.FOLDER_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.FOLDER_RAW_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.GOOD_FILES.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.SUGGESTED.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.FOLDER_SIZE.getColumnName() + "' INTEGER, "
-            + "'" + FolderInfoEnum.JUST_FOLDER_NAME.getColumnName() + "' TEXT, "
-            + "'" + FolderInfoEnum.FOLDER_PATH.getColumnName() + "' TEXT, "
-            + "'" + FolderInfoEnum.MAX_DATE.getColumnName() + "' TEXT, "
-            + "'" + FolderInfoEnum.MIN_DATE.getColumnName() + "' TEXT, "
-            + "'" + FolderInfoEnum.STATE.getColumnName() + "' TEXT, "
-            + "'" + FolderInfoEnum.TABLE_TYPE.getColumnName() + "' TEXT)";
+    final static String createFolderInfoSQL = buildCreateFolderInfoSql();
 
 
-    private static final String insertFolderInfo = "INSERT OR REPLACE INTO "
-            + SQLTableEnums.FOLDERINFO.getType()
-            + " ("
-            + "'id', "
-            + "'status', "
-            + "'changed', "
-            + "'connected', "
-            + "'ignored', "
-            + "'dateDifference', "
-            + "'badFiles', "
-            + "'confirmed', "
-            + "'copied', "
-            + "'folderFiles', "
-            + "'folderImageFiles', "
-            + "'folderRawFiles', "
-            + "'folderVideoFiles', "
-            + "'goodFiles', "
-            + "'suggested', "
-            + "'folderSize', "
-            + "'justFolderName', "
-            + "'folderPath', "
-            + "'maxDate', "
-            + "'minDate', "
-            + "'state', "
-            + "'tableType')"
-            + " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    private static final String insertFolderInfo = buildInsertFolderInfoSql();
+
+    private static String buildCreateFolderInfoSql() {
+        StringBuilder createTableSql = new StringBuilder("CREATE TABLE IF NOT EXISTS " + SQLTableEnums.FOLDERINFO.getType() + " (");
+        FolderInfoEnum[] columns = FolderInfoEnum.getValuesInBindingOrder();
+        for (int i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                createTableSql.append(", ");
+            }
+            createTableSql.append("'")
+                    .append(columns[i].getColumnName())
+                    .append("' ")
+                    .append(columns[i].getSqlType());
+        }
+        createTableSql.append(")");
+        return createTableSql.toString();
+    }
+
+    private static String buildInsertFolderInfoSql() {
+        StringBuilder sql = new StringBuilder("INSERT OR REPLACE INTO ")
+                .append(SQLTableEnums.FOLDERINFO.getType())
+                .append(" (");
+        FolderInfoEnum[] columns = FolderInfoEnum.getValuesInBindingOrder();
+        for (int i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                sql.append(", ");
+            }
+            sql.append("'").append(columns[i].getColumnName()).append("'");
+        }
+        sql.append(") VALUES(");
+        for (int i = 0; i < columns.length; i++) {
+            if (i > 0) {
+                sql.append(",");
+            }
+            sql.append("?");
+        }
+        sql.append(")");
+        return sql.toString();
+    }
 
     //@formatter:on
     private static boolean createFolderInfoTable(Connection mdirDatabaseConnection) {
@@ -120,22 +109,8 @@ public class FolderInfoDao {
     }
 
     private static void ensureFolderInfoTable(Connection connection) {
-        List<String> alterTableCommands = Arrays.asList(ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN id INTEGER PRIMARY KEY AUTOINCREMENT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN status INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN changed BOOLEAN;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN connected BOOLEAN;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN ignored BOOLEAN;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN dateDifference DOUBLE;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN badFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN confirmed INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN copied INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderImageFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderRawFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderVideoFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN goodFiles INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN suggested INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderSize INTEGER;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN justFolderName TEXT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN folderPath TEXT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN maxDate TEXT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN minDate TEXT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN state TEXT;", ALTER_TABLE + SQLTableEnums.FOLDERINFO.getType() + " ADD COLUMN tableType TEXT;");
-
-        SQL_Utils.setAutoCommit(connection, false);
-        try (Statement stmt = connection.createStatement()) {
-            for (String sql : alterTableCommands) {
-                try {
-                    stmt.executeUpdate(sql);
-                } catch (SQLException e) {
-                    if (!e.getMessage().contains("duplicate column name")) {
-                        Messages.sprintfError("Error altering FolderInfo table: " + e.getMessage());
-                        connection.rollback(); // rollback on any non-recoverable error
-                        throw e;
-                    }
-                }
-            }
-            connection.commit(); // commit only if all commands succeed
+        try {
+            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FOLDERINFO.getType(), FolderInfoEnum.getRequiredColumns());
         } catch (SQLException e) {
             Messages.sprintfError("Overall error altering table: " + e.getMessage());
             SQL_Utils.rollBackConnection(connection);
@@ -168,6 +143,7 @@ public class FolderInfoDao {
             pstmt.setString(20, folderInfo.getMinDate());
             pstmt.setString(21, folderInfo.getState());
             pstmt.setString(22, folderInfo.getTableType());
+            pstmt.setString(23, folderInfo.getSourceFolderSerialNumber());
             pstmt.addBatch();
 
             int[] counter = pstmt.executeBatch();
@@ -222,6 +198,9 @@ public class FolderInfoDao {
             Messages.sprintf("Connection connected to path: " + path);
 
             SQL_Utils.setAutoCommit(connectionFileInfos, false);
+            createFolderInfoTable(connectionFileInfos);
+            ensureFolderInfoTable(connectionFileInfos);
+            FileInfoDao.createFileInfoTable(connectionFileInfos);
 
             String sql = buildSelectFolderInfoQuery();
             Messages.sprintf("sql query is: " + sql);
@@ -279,7 +258,7 @@ public class FolderInfoDao {
     }
 
     private static String buildSelectFolderInfoQuery() {
-        return "SELECT id, status, " + FolderInfoEnum.CHANGED.getColumnName() + ", " + FolderInfoEnum.CONNECTED.getColumnName() + ", " + FolderInfoEnum.IGNORED.getColumnName() + ", " + FolderInfoEnum.DATE_DIFFERENCE.getColumnName() + ", " + FolderInfoEnum.BAD_FILES.getColumnName() + ", " + FolderInfoEnum.CONFIRMED.getColumnName() + ", " + FolderInfoEnum.COPIED.getColumnName() + ", " + FolderInfoEnum.FOLDER_FILES.getColumnName() + ", " + FolderInfoEnum.FOLDER_IMAGE_FILES.getColumnName() + ", " + FolderInfoEnum.FOLDER_RAW_FILES.getColumnName() + ", " + FolderInfoEnum.FOLDER_VIDEO_FILES.getColumnName() + ", " + FolderInfoEnum.GOOD_FILES.getColumnName() + ", " + FolderInfoEnum.SUGGESTED.getColumnName() + ", " + FolderInfoEnum.FOLDER_SIZE.getColumnName() + ", " + FolderInfoEnum.JUST_FOLDER_NAME.getColumnName() + ", " + FolderInfoEnum.FOLDER_PATH.getColumnName() + ", " + FolderInfoEnum.MAX_DATE.getColumnName() + ", " + FolderInfoEnum.MIN_DATE.getColumnName() + ", " + FolderInfoEnum.STATE.getColumnName() + ", " + FolderInfoEnum.TABLE_TYPE.getColumnName() + " FROM " + SQLTableEnums.FOLDERINFO.getType() + ";";
+        return "SELECT " + FolderInfoEnum.getAllFolderInfoColumnNames() + " FROM " + SQLTableEnums.FOLDERINFO.getType() + ";";
     }
 
     private static FolderInfo loadFolderInfoFromResultSet(ResultSet rs) throws SQLException {
@@ -420,7 +399,8 @@ public class FolderInfoDao {
 
         // Add missing WORKDIR_SERIAL_NUMBER column
         try {
-            folderInfo.setSourceFolderSerialNumber(rs.getString(FolderInfoEnum.WORKDIR_SERIAL_NUMBER.getColumnName()));
+            String sourceFolderSerialNumber = rs.getString(FolderInfoEnum.WORKDIR_SERIAL_NUMBER.getColumnName());
+            folderInfo.setSourceFolderSerialNumber(sourceFolderSerialNumber == null ? "" : sourceFolderSerialNumber);
         } catch (SQLException e) {
             Messages.sprintf("Warning: Could not read WORKDIR_SERIAL_NUMBER column: " + e.getMessage());
         }

@@ -148,6 +148,9 @@ public class FileInfoSqlConnectionFactory {
                 Class.forName("org.sqlite.JDBC");
                 conn = DriverManager.getConnection("jdbc:sqlite:" + path.toString() + File.separator + tableName);
                 Messages.sprintf("Opening SQLite connection: " + conn.getMetaData().getURL());
+                if (conn != null && !conn.isClosed()) {
+                    FileInfoSqlDatabaseMigrator.migrate(conn);
+                }
 
                 addConnection(conn);
                 showConnections(connectionList);

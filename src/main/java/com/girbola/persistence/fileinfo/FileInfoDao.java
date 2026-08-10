@@ -132,27 +132,22 @@ public class FileInfoDao {
             return new ArrayList<>();
         }
 
-        // Add this block to ensure all required columns exist
+        if (!createFileInfoTable(connection)) {
+            Messages.sprintfError("Failed to create or verify file info table before loading");
+            return new ArrayList<>();
+        }
+
         try {
-            // Create a map of column names and their SQL types
             Map<String, String> fileInfoColumnsMap = new HashMap<>();
-            for (FileInfoEnum column : FileInfoEnum.values()) {
+            for (FileInfoEnum column : FileInfoEnum.getValuesInBindingOrder()) {
                 fileInfoColumnsMap.put(column.getColumnName(), column.getSqlType());
-                //Messages.sprintf("############Adding column: " + column.getColumnName());
             }
-//            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
+            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);
             Messages.sprintf("############Ensured columns exist!");
         } catch (Exception e) {
             Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
             throw new RuntimeException(e);
         }
-
-//        try {
-//            SQL_Utils.ensureColumnsExist(connection, SQLTableEnums.FILEINFO.getType(), fileInfoColumnsMap);}
-//        catch (SQLException e) {
-//            Messages.sprintf("Error ensuring columns exist in file info table: " + e.getMessage());
-//            throw new RuntimeException(e);
-//        }
         List<FileInfo> list = new ArrayList<>();
 
         //String sql = "SELECT * FROM " + SQLTableEnums.FILEINFO.getType();

@@ -159,6 +159,11 @@ public class VLCPlayerController {
         }
 
         @Override
+        public void newFormatSize(int bufferWidth, int bufferHeight, int displayWidth, int displayHeight) {
+
+        }
+
+        @Override
         public void allocatedBuffers(ByteBuffer[] buffers) {
             // TODO Auto-generated method stub
             Messages.sprintfError("Buffers is not allocated");
@@ -174,8 +179,18 @@ public class VLCPlayerController {
     // get smooth rendering (the timer is
     // handled by the demo sub-classes)
     private class JavaFxRenderCallback implements RenderCallback {
+//        @Override
+//        public void display(MediaPlayer mediaPlayer, ByteBuffer[] nativeBuffers, BufferFormat bufferFormat) {
+//
+//        }
+
         @Override
-        public void display(MediaPlayer mediaPlayer, ByteBuffer[] nativeBuffers, BufferFormat bufferFormat) {
+        public void lock(MediaPlayer mediaPlayer) {
+
+        }
+
+        @Override
+        public void display(MediaPlayer mediaPlayer, ByteBuffer[] nativeBuffers, BufferFormat bufferFormat, int displayWidth, int displayHeight) {
             try {
                 semaphore.acquire();
                 pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat,
@@ -183,6 +198,11 @@ public class VLCPlayerController {
                 semaphore.release();
             } catch (InterruptedException e) {
             }
+        }
+
+        @Override
+        public void unlock(MediaPlayer mediaPlayer) {
+
         }
     }
 
