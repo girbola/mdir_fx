@@ -13,6 +13,7 @@ import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.utils.folderscanner.FolderScanner;
@@ -31,10 +32,13 @@ import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -45,7 +49,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 import static com.girbola.Main.bundle;
@@ -77,7 +83,6 @@ public class SelectedFoldersController {
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(modelMain, model_folderScanner);
 
-
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) throws ExecutionException, InterruptedException, IOException {
         Messages.sprintf("selectedFolders_ok_action pressed");
@@ -104,7 +109,6 @@ public class SelectedFoldersController {
         ConcurrencyUtils.stopExecThreadNow();
 
 
-
         // Create background task
         Task<List<FolderInfo>> scanTask = new Task<>() {
             @Override
@@ -123,7 +127,7 @@ public class SelectedFoldersController {
                         Messages.sprintf("##########FFFFFFFFFFFFFFFFFFFFOUNDgetSelectedFolderScanner_obs folder: " + sf.getFolder() + " isSelected: " + sf.isSelected());
                     }
                     if (sf.isConnected()) {
-                        if (sf.isSelected()) {
+                        if (sf.isSelected() && !sf.isIgnored()) {
                             if (Files.exists(Paths.get(sf.getFolder()))) {
                                 if (!hasInIgnoredListMain(Main.conf.getIgnoredFoldersScanList(), sf.getFolder())) {
                                     List<Path> subFolders = FolderScanner.scanFolders(Paths.get(sf.getFolder()));
@@ -154,7 +158,7 @@ public class SelectedFoldersController {
                         for (Path notConnectedPath : notConnected) {
                             sb.append(notConnectedPath).append("\n");
                         }
-                        Messages.warningText("Selected folder(s) not connected: " + sb.toString());
+                        Messages.warningText(bundle.getString("selectedFoldersNotConnected") + ":\n" + sb.toString());
                     }
                 }
                 updateMessage("Iterating through media files...");
@@ -167,20 +171,31 @@ public class SelectedFoldersController {
                     sprintf("#### FOLDER IS NEW and SELECTED: " + path);
 
                     TableType tableType = resolveTableTypeByPath(path);
-                    FolderInfo folderInfo = new FolderInfo(path);
-                    folderInfo.setTableType(tableType.getType());
 
-                    // Heavy I/O operation
-                    List<FileInfo> fileInfoList = FileInfoUtils.createFileInfo_list(folderInfo);
-                    if (fileInfoList != null && !fileInfoList.isEmpty()) {
-                        folderInfo.setFileInfoList(fileInfoList);
-                        FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
-                        folderInfo.setChanged(true);
-                        Main.setChanged(true);
+                    FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(path);
+                    if (folderInfo == null) {
+                        folderInfo = new FolderInfo(path);
+                        folderInfo.setTableType(tableType.getType());
 
-                        // Store with table type info
-                        folderInfos.add(folderInfo);
+                        // Heavy I/O operation
+                        List<FileInfo> fileInfoList = FileInfoUtils.createFileInfo_list(folderInfo);
+                        if (fileInfoList != null && !fileInfoList.isEmpty()) {
+                            folderInfo.setFileInfoList(fileInfoList);
+                            FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
+                            folderInfo.setChanged(true);
+                            Main.setChanged(true);
+
+                            // Store with table type info
+                            folderInfos.add(folderInfo);
+                        }
+
+                    } else {
+                        boolean b = modelMain.tables().addToTable(folderInfo);
+                        if (b) {
+                            updateLists.add(path);
+                        }
                     }
+
                 }
 
                 updateMessage("Iterating through existing table media files...");
@@ -403,7 +418,7 @@ public class SelectedFoldersController {
                         Messages.sprintf("Adding folder: " + folder.getAbsolutePath());
                     }
                 }
-                modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false,true));
+                modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false, true));
             }
             Messages.sprintf("foldersAdded: " + foldersAdded + "  vs size: " + modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size());
             if (foldersAdded != modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() || modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() == 0) {

@@ -10,6 +10,8 @@ import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ListChangeListener;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.girbola.Main.bundle;
+import static com.girbola.controllers.main.tables.TableUtils.resolveTableTypeByPath;
 import static com.girbola.messages.Messages.sprintf;
 
 
@@ -95,6 +98,31 @@ public class Tables {
         sprintf("Tables hideButtons instantiating...");
         showAndHideTables = new ShowAndHideTables(this.model_Main);
         sprintf("Tables hideButtons instantiated...");
+    }
+
+    public boolean addToTable(FolderInfo folderInfo) {
+        if(folderInfo == null) {
+            Messages.errorSmth(ERROR, "folderInfo was null", null, Misc.getLineNumber(), false);
+            return false;
+        }
+        Path path = Paths.get(folderInfo.getFolderPath());
+        if(folderInfo.getTableType() == null) {
+            TableType tableType = resolveTableTypeByPath(path);
+            folderInfo.setTableType(tableType.getType());
+        }
+        if(TableType.SORTIT.getType().equals(folderInfo.getTableType())) {
+            getSortIt_table().getItems().add(folderInfo);
+            return true;
+        } else if(TableType.SORTED.getType().equals(folderInfo.getTableType())) {
+            getSorted_table().getItems().add(folderInfo);
+            return true;
+        } else if(TableType.ASITIS.getType().equals(folderInfo.getTableType())) {
+            getAsItIs_table().getItems().add(folderInfo);
+            return true;
+        } else {
+            Messages.errorSmth(ERROR, "folderInfo tableType was not recognized: " + folderInfo.getTableType(), null, Misc.getLineNumber(), false);
+            return false;
+        }
     }
 
     private FolderInfo findTableValues(TableView<FolderInfo> table, File f) {

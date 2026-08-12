@@ -1,5 +1,6 @@
 package com.girbola;
 
+import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
@@ -53,34 +54,37 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                             return false;
                         }
                         Messages.sprintf("=============SavedFolderInfoStatus: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+                        if (SelectedFolderUtils.contains(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), Paths.get(folderInfoStatus.getFolderPath()))) {
 
-                        FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(folderInfoStatus.getFolderPath());
-                        if (folderInfo == null) {
-                            Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
-                            continue;
-                        }
-                        if(!folderInfo.getFolderPath().contains("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON\\")) {
-                            Messages.sprintf("Here we go!: " + folderInfo.getFolderPath());
-                        }
-                        Messages.sprintf("-----------------folderInfo getFolderPath:::: " + folderInfo.getFolderPath());
 
-                        try {
-                            if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTIT.getType())) {
-                                modelMain.tables().getSortIt_table().getItems().add(folderInfo);
-                                Messages.sprintf("SORTIT ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
-                            } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTED.getType())) {
-                                modelMain.tables().getSorted_table().getItems().add(folderInfo);
-                                Messages.sprintf("SORTED ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
-                            } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.ASITIS.getType())) {
-                                modelMain.tables().getAsItIs_table().getItems().add(folderInfo);
-                                Messages.sprintf("ASITIS ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
-                            } else {
-                                Messages.sprintfError("FolderInfo tableType was not recognized: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
-                                Platform.exit();
+                            FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(folderInfoStatus.getFolderPath());
+                            if (folderInfo == null) {
+                                Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+                                continue;
                             }
-                            Messages.sprintf("FOLDER TO ITERATE NOW::::: " + folderInfo.getFolderPath() + " TYPEEE:::: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
-                        } catch (Exception e) {
-                            Messages.sprintfError("Error in tableType: " + folderInfo.getTableType() + " " + Misc.getLineNumber() + " " + e.getMessage());
+                            if (!folderInfo.getFolderPath().contains("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON\\")) {
+                                Messages.sprintf("Here we go!: " + folderInfo.getFolderPath());
+                            }
+                            Messages.sprintf("-----------------folderInfo getFolderPath:::: " + folderInfo.getFolderPath());
+
+                            try {
+                                if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTIT.getType())) {
+                                    modelMain.tables().getSortIt_table().getItems().add(folderInfo);
+                                    Messages.sprintf("SORTIT ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
+                                } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.SORTED.getType())) {
+                                    modelMain.tables().getSorted_table().getItems().add(folderInfo);
+                                    Messages.sprintf("SORTED ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
+                                } else if (folderInfo.getTableType().equalsIgnoreCase(TableType.ASITIS.getType())) {
+                                    modelMain.tables().getAsItIs_table().getItems().add(folderInfo);
+                                    Messages.sprintf("ASITIS ADDED: " + folderInfo.getFolderPath() + " " + Misc.getLineNumber());
+                                } else {
+                                    Messages.sprintfError("FolderInfo tableType was not recognized: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
+                                    Platform.exit();
+                                }
+                                Messages.sprintf("FOLDER TO ITERATE NOW::::: " + folderInfo.getFolderPath() + " TYPEEE:::: " + folderInfo.getTableType() + " " + Misc.getLineNumber());
+                            } catch (Exception e) {
+                                Messages.sprintfError("Error in tableType: " + folderInfo.getTableType() + " " + Misc.getLineNumber() + " " + e.getMessage());
+                            }
                         }
                     }
                 }

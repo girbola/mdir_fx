@@ -13,6 +13,7 @@ import java.util.List;
 
 public class SelectedFolderUtils {
 
+
     /**
      * Checks if the specified folder is present in the list of selected folders.
      *
@@ -22,11 +23,20 @@ public class SelectedFolderUtils {
      */
     public static boolean contains(List<SelectedFolder> selectedFolders, File folder) {
         for (SelectedFolder selectedFolder : selectedFolders) {
-            if (selectedFolder.getFolder().equals(folder.toString())) {
+            if (selectedFolder.getFolder().equals(folder.toString()) && !selectedFolder.isIgnored()) {
+                if(!selectedFolder.isSelected()) {
+                    Messages.sprintf("SelectedFolderUtils contains folder: " + folder + " but it is not selected");
+                    return false;
+                }
+
                 return true;
             }
         }
         return false;
+    }
+
+    public static boolean contains(List<SelectedFolder> selectedFolders, Path folder) {
+        return contains(selectedFolders, folder.toFile());
     }
 
     /**

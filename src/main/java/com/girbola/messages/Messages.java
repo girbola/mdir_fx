@@ -181,15 +181,19 @@ public class Messages {
      */
     public static void warningText(String message) {
         Messages.sprintfError("WARN: message: " + message);
-        Alert alert = new Alert(AlertType.WARNING);
-        DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.setContentText(message);
-        dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-        dialogPane.setHeaderText("");
+        Platform.runLater(() -> {
 
-        dialogPane.getStyleClass().add("alertDiag");
+            Alert alert = new Alert(AlertType.WARNING);
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.setContentText(message);
+            dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+            dialogPane.setHeaderText("");
 
-        alert.showAndWait();
+            dialogPane.getStyleClass().add("alertDiag");
+
+            alert.showAndWait();
+
+        });
     }
 
     /**
