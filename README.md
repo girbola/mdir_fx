@@ -12,7 +12,7 @@ MDir_FX helps organize pictures and videos, especially when transferring or main
 The project is developed using:
 
 - OpenJDK 24
-- OpenJFX 25.0.1
+- OpenJFX 26.0.2
 
 ## Features
 

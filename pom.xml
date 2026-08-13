@@ -361,5 +361,55 @@
                 </plugins>
             </build>
         </profile>
+
+        <!--
+            Debug Module-Path Profile – Run with module-path for proper debugging
+            Usage: mvn -Pdebug-modulepath exec:java
+            or just use the run-debug.bat / run-debug.ps1 / run-debug.sh scripts
+        -->
+        <profile>
+            <id>debug-modulepath</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <version>3.8.1</version>
+                        <executions>
+                            <execution>
+                                <id>copy-module-deps</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>copy-dependencies</goal>
+                                </goals>
+                                <configuration>
+                                    <includeScope>runtime</includeScope>
+                                    <outputDirectory>${project.build.directory}/module-deps</outputDirectory>
+                                    <overWriteReleases>false</overWriteReleases>
+                                    <overWriteSnapshots>true</overWriteSnapshots>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <!--
+                        Exec plugin to run with module-path
+                        Note: The run-debug.bat/sh/ps1 scripts are the recommended way to run.
+                        This profile is here for reference and can be used as:
+                        mvn -Pdebug-modulepath exec:java -Dexec.mainClass="com.girbola.Launcher"
+                    -->
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <configuration>
+                            <mainClass>com.girbola.Launcher</mainClass>
+                            <classpathScope>runtime</classpathScope>
+                            <arguments>
+                                <!-- Add JVM arguments here if needed -->
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
