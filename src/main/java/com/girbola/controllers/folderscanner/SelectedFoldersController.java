@@ -188,14 +188,12 @@ public class SelectedFoldersController {
                             // Store with table type info
                             folderInfos.add(folderInfo);
                         }
-
                     } else {
                         boolean b = modelMain.tables().addToTable(folderInfo);
                         if (b) {
                             updateLists.add(path);
                         }
                     }
-
                 }
 
                 updateMessage("Iterating through existing table media files...");
@@ -231,17 +229,21 @@ public class SelectedFoldersController {
                             if new file if in currentFile it should be added as new fileinfo to FolderInfo.getFileLists().add(newFileInfo);
                              */
                             // 1. Call your find method (returns an Optional)
-                            FileInfo fileInfo = FileInfoUtils.findFileInfo(currentFile, fileInfoList).orElseGet(() -> {
-                                try {
-                                    folderInfo.setChanged(true);
-                                    Main.setChanged(true);
-                                    return FileInfoUtils.createFileInfo(currentFile);
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            });
-                            existsFileInfos.add(fileInfo);
+                            Optional<FileInfo> fileInfo = FileInfoUtils.findFileInfo(currentFile, fileInfoList);
+                            if (fileInfo != null && fileInfo.isPresent()) {
+                                Messages.sprintf("FileInfo already exists for: " + currentFile);
+                                existsFileInfos.add(fileInfo.get());
+                            } else {
+                                FileInfo newFileInfo = FileInfoUtils.createFileInfo(currentFile);
+                                if(newFileInfo != null) {
+                                    existsFileInfos.add(newFileInfo);
 
+                                folderInfo.setChanged(true);
+                                Messages.sprintf("FileInfo does not exist for: " + currentFile);
+                                } else {
+                                    Messages.sprintfError();
+                                }
+                            }
                             Messages.sprintf("*** ended folderFile: " + currentFile);
                         }
                         //FolderInfoUtils.calculateFolderInfoStatus(folderInfo);
