@@ -370,7 +370,7 @@ public class ImageUtils {
                 
                 slice = Arrays.copyOfRange(data, actualOffset, (offset + length));
                 Messages.sprintf("slice size is: " + slice.length);
-                saveByteArrayToFile(slice, Paths.get("C:\\Temp\\thumbnail_slice_for_examination.bin"));
+//                saveByteArrayToFile(slice, Paths.get("C:\\Temp\\thumbnail_slice_for_examination.bin"));
                 ByteArrayInputStream bais = new ByteArrayInputStream(slice);
                 BufferedImage image = ImageIO.read(bais);
                 if(image != null) {
@@ -391,8 +391,7 @@ public class ImageUtils {
                     Messages.sprintf("Successfully decoded thumbnail: " + bufferedImage.getWidth() + "x" + bufferedImage.getHeight());
                 } else {
                     // Try to detect what format this might be
-                    Messages.sprintf("Warning: Could not decode image. First bytes: " + 
-                                      bytesToHexPreview(slice, 16));
+                    Messages.sprintf("Warning: Could not decode image. First bytes: " + bytesToHexPreview(slice, 16));
                     
                     // Try with different image readers to see if any can handle it
                     tryAlternativeImageReaders(slice);

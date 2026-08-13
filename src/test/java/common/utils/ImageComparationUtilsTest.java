@@ -204,7 +204,7 @@ class ImageComparationUtilsTest {
         BufferedImage imageDifference = ImageComparionUtils.createDifferenceImage(resourcePath, resourcePath2);
         assertNotNull(imageDifference, "Difference image should not be null");
 
-        ImageIO.write(imageDifference, "jpg", new File("C:\\Temp\\20220413_160023_edited_difference.jpg"));
+//        ImageIO.write(imageDifference, "jpg", new File("C:\\Temp\\20220413_160023_edited_difference.jpg"));
 
     }
 
