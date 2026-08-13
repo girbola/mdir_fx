@@ -241,7 +241,7 @@ public class SelectedFoldersController {
                                 folderInfo.setChanged(true);
                                 Messages.sprintf("FileInfo does not exist for: " + currentFile);
                                 } else {
-                                    Messages.sprintfError();
+                                    Messages.sprintfError("Could not create fileinfo: " + currentFile);
                                 }
                             }
                             Messages.sprintf("*** ended folderFile: " + currentFile);

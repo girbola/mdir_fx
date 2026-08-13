@@ -45,12 +45,12 @@ Third-party dependency licenses are tracked in `THIRD_PARTY_LICENSES.md`.
 
 ## Supported File Formats
 
-| Category | Formats                                             |
-|----------|-----------------------------------------------------|
-| Video    | 3GP, AVI, MKV, MOV, MP4, MPG                        |
-| Image    | BMP, GIF, HEIC(not tested), JPG/JPEG, PNG, TIF/TIFF |
-| RAW      | CR2, DNG, NEF(not tested)                           |
-
+| Category    | Formats                                                   |
+|-------------|-----------------------------------------------------------|
+| Video       | 3GP, AVI, MKV, MOV, MP4, MPG                              |
+| Image       | BMP, GIF, JPG, PNG, TIFF                                  |
+| RAW         | CR2, DNG, NEF(not tested)                                 |
+| Plus others | with ffmpeg we can convert other formats for viewing them |
 ## Development Status
 
 MDir_FX is still under active development and should be considered experimental.
@@ -61,8 +61,8 @@ Use this software carefully, especially when working with important media files.
 
 ### Required Versions
 
-- GraalVM 22.0.2
-- JavaFX 24.0.2
+- JavaJDK 24+
+- JavaFX 26+
 
 ### IntelliJ IDEA Module Configuration
 
