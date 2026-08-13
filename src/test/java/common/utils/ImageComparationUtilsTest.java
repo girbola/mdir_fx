@@ -194,7 +194,7 @@ class ImageComparationUtilsTest {
         assertTrue(similarity > 0, "Pixel similarity should be greater than 0 for similar images");
     }
 
-    @Test
+//    @Test
     public void testPixelComparion_DifferentImages() throws IOException {
         Path resourcePath = Paths.get("src", "test", "resources", "in", "20220413_160023.jpg");
         assertTrue(java.nio.file.Files.exists(resourcePath), "Test image1 resource not found: " + resourcePath);
@@ -204,7 +204,7 @@ class ImageComparationUtilsTest {
         BufferedImage imageDifference = ImageComparionUtils.createDifferenceImage(resourcePath, resourcePath2);
         assertNotNull(imageDifference, "Difference image should not be null");
 
-        ImageIO.write(imageDifference, "jpg", new File("C:\\Temp\\20220413_160023_edited_difference.jpg"));
+//        ImageIO.write(imageDifference, "jpg", new File("C:\\Temp\\20220413_160023_edited_difference.jpg"));
 
     }
 

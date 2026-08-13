@@ -370,7 +370,7 @@ public class ImageUtils {
                 
                 slice = Arrays.copyOfRange(data, actualOffset, (offset + length));
                 Messages.sprintf("slice size is: " + slice.length);
-                saveByteArrayToFile(slice, Paths.get("C:\\Temp\\thumbnail_slice_for_examination.bin"));
+//                saveByteArrayToFile(slice, Paths.get("C:\\Temp\\thumbnail_slice_for_examination.bin"));
                 ByteArrayInputStream bais = new ByteArrayInputStream(slice);
                 BufferedImage image = ImageIO.read(bais);
                 if(image != null) {
