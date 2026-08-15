@@ -91,6 +91,16 @@ If you want to recreate the distributable release folder on another computer, us
 
 These scripts build the project, copy runtime dependencies, create the `release/` folder, and optionally zip it.
 
+### Debug run scripts
+
+For module-path debugging without Maven's exec plugin, use:
+
+- Windows PowerShell: `powershell -ExecutionPolicy Bypass -File .\scripts\run-debug.ps1 -SkipTests`
+- Windows batch: `scripts\run-debug.bat -SkipTests`
+- macOS/Linux: `chmod +x scripts/run-debug.sh && ./scripts/run-debug.sh -SkipTests`
+
+The debug scripts build with the `debug-modulepath` profile and then launch `com.girbola/com.girbola.Launcher` directly with `java --module-path`.
+
 ## JavaFX Scene Builder 24.0.1
 Libraries need to be installed manually:
 ```

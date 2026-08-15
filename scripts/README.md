@@ -15,6 +15,29 @@ chmod +x scripts/build-release.sh
 ./scripts/build-release.sh
 ```
 
+## Debug run scripts
+
+Use these when you want to launch the modular app without relying on Maven's exec plugin.
+
+### Windows
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\run-debug.ps1 -SkipTests
+```
+
+or:
+
+```bat
+scripts\run-debug.bat -SkipTests
+```
+
+### macOS / Linux
+
+```bash
+chmod +x scripts/run-debug.sh
+./scripts/run-debug.sh -SkipTests
+```
+
 ## What they do
 
 - run `mvn -Prelease clean package` (activates the `release` Maven profile)
@@ -30,4 +53,5 @@ chmod +x scripts/build-release.sh
 - The release output folder is ignored by git (`/release/` is in `.gitignore`).
 - The generated package is OS-specific because JavaFX native dependencies are platform-specific.
 - If you want to build for macOS, run the script on macOS so Maven resolves the mac JavaFX artifacts.
+- The debug scripts run `mvn -Pdebug-modulepath package`, then start `com.girbola/com.girbola.Launcher` with `java --module-path target/classes + target/module-deps`.
 

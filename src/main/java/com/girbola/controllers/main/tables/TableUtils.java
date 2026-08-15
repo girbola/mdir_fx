@@ -190,7 +190,7 @@ public class TableUtils {
         return null;
     }
 
-                                             public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
+    public static FolderInfo findTableValues(Path path, ObservableList<FolderInfo> tableValues) {
         // TableValues tbv = null;
         for (FolderInfo tv : tableValues) {
             if (tv.getFolderPath().equals(path.toString())) {

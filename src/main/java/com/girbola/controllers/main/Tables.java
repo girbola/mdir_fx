@@ -120,8 +120,9 @@ public class Tables {
             getAsItIs_table().getItems().add(folderInfo);
             return true;
         } else {
-            Messages.errorSmth(ERROR, "folderInfo tableType was not recognized: " + folderInfo.getTableType(), null, Misc.getLineNumber(), false);
-            return false;
+            getSortIt_table().getItems().add(folderInfo);
+            Messages.sprintfError("folderInfo tableType was not recognized and were added to SORTIT: " + folderInfo.getTableType());
+            return true;
         }
     }
 

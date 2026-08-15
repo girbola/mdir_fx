@@ -94,11 +94,12 @@ public class SelectedFoldersController {
         for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
             Messages.sprintf("----selectedFolders size" + sf.getFolder());
         }
+        SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
 
 //        modelMain.getSelectedFolders().restore();
 
         modelMain.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
-            Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected());
+            Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected() + " isIgnored: " + selectedFolder.isIgnored() + " isConnected: " + selectedFolder.isConnected() + " hasMedia: " + selectedFolder.isMedia());
         });
 
         boolean removeNotSelectedFromTables = TableUtils.removeNotSelectedFromTables(modelMain);
@@ -107,7 +108,6 @@ public class SelectedFoldersController {
         }
 
         ConcurrencyUtils.stopExecThreadNow();
-
 
         // Create background task
         Task<List<FolderInfo>> scanTask = new Task<>() {
@@ -294,8 +294,6 @@ public class SelectedFoldersController {
                 super.cancelled();
                 Messages.sprintf("Folder scanningn cancelled");
             }
-
-
         };
 
 // Optional: Show progress indicator

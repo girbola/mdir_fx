@@ -4,6 +4,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
+import com.girbola.misc.Misc;
 import common.utils.OSHI_Utils;
 import javafx.scene.control.TableView;
 
@@ -13,7 +14,6 @@ import java.util.List;
 
 public class SelectedFolderUtils {
 
-
     /**
      * Checks if the specified folder is present in the list of selected folders.
      *
@@ -21,22 +21,26 @@ public class SelectedFolderUtils {
      * @param folder          The File object representing the folder to find.
      * @return true if the folder is present in the list of selected folders, false otherwise.
      */
-    public static boolean contains(List<SelectedFolder> selectedFolders, File folder) {
-        for (SelectedFolder selectedFolder : selectedFolders) {
-            if (selectedFolder.getFolder().equals(folder.toString()) && !selectedFolder.isIgnored()) {
-                if(!selectedFolder.isSelected()) {
-                    Messages.sprintf("SelectedFolderUtils contains folder: " + folder + " but it is not selected");
+    public static boolean startsWithSelectedFolders(List<SelectedFolder> selectedFolders, File folder) {
+        for (SelectedFolder selectedFolder : selectedFolders) { //KUVILOI tekeee jonkun oman kierroksen tässä. Tai lähinnä Documents. Ilmeiseti koska Documents ei ole varsinaisesti media, joten se palauttaa failed?
+            Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+            if(folder.toString().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
+                Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " isIgnored? " +  selectedFolder.isIgnored() + " hasMedia? " + selectedFolder.isMedia() + " LINE::: " + Misc.getLineNumber());
+            }
+            if (folder.toPath().startsWith(selectedFolder.getFolder()) && !selectedFolder.isIgnored()) {
+                Messages.sprintf("--------SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+                if (!selectedFolder.isSelected()) {
+                    Messages.sprintf("SelectedFolderUtils contains folder: " + folder + " but it is NOT selected");
                     return false;
                 }
-
                 return true;
             }
         }
         return false;
     }
 
-    public static boolean contains(List<SelectedFolder> selectedFolders, Path folder) {
-        return contains(selectedFolders, folder.toFile());
+    public static boolean startsWithSelectedFolders(List<SelectedFolder> selectedFolders, Path folder) {
+        return startsWithSelectedFolders(selectedFolders, folder.toFile());
     }
 
     /**
