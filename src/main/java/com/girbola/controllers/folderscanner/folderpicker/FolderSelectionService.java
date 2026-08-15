@@ -3,6 +3,7 @@ package com.girbola.controllers.folderscanner.folderpicker;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
+import common.utils.FileUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import javafx.application.Platform;
@@ -202,7 +203,7 @@ public class FolderSelectionService {
                 if (newV) {
                     if (!isPathInSelectedFolders(pathString)) {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                .add(SelectedFolder.create(true, true, pathString, false,true));
+                                .add(SelectedFolder.create(true, true, pathString, FileUtils.getHasMedia(pathString),false));
                     }
                 } else {
                     modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -213,7 +214,7 @@ public class FolderSelectionService {
             internalSelectionUpdate = true;
             try {
                 if (!item.isIndeterminate()) {
-                    setChildrenSelected(item, Boolean.TRUE.equals(newV));
+                    setChildrenSelected(item, newV);
                 }
                 updateParents(item);
             } finally {

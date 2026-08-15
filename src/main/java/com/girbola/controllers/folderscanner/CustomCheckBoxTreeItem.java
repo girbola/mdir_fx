@@ -24,7 +24,7 @@ public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
         this.modelMain = modelMain;
         this.path = path;
         // Update the item when the checkbox is selected/deselected
-       // this.selectedProperty().addListener((observable, oldValue, newValue) -> updateItem(newValue));
+        // this.selectedProperty().addListener((observable, oldValue, newValue) -> updateItem(newValue));
     }
 
     private void handleWorkDirConflict() {
@@ -37,11 +37,11 @@ public class CustomCheckBoxTreeItem<S> extends CheckBoxTreeItem<String> {
 
     private void handleSelection(boolean hasMedia) {
         Messages.sprintf("handleSelection Selected: " + path.toFile().getAbsolutePath());
-        modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, path.toString(), false, hasMedia));
+        modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, path.toString(), hasMedia, false));
 
 
         if (!hasSelectedFolder(path)) {
-            modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, path.toString(), false, FileUtils.getHasMedia(path.toString())));
+            modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, path.toString(), FileUtils.getHasMedia(path.toString()), false));
             Messages.sprintf("Folder added: " + path.toString());
         } else {
             Messages.sprintf("Folder already exists: " + path.toString());

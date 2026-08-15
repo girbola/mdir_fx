@@ -31,10 +31,10 @@ public class SelectedFolderInfoDao {
             CREATE TABLE IF NOT EXISTS %s (
                 path      STRING PRIMARY KEY,
                 connected BOOLEAN,
-                ignored   BOOLEAN DEFAULT 1,
+                ignored   BOOLEAN DEFAULT 0,
                 selected  BOOLEAN,
                 media     BOOLEAN
-
+            
             )
             """, SQLTableEnums.SELECTEDFOLDERS.getType());
 
@@ -69,7 +69,7 @@ public class SelectedFolderInfoDao {
 
         Path configFile = Paths.get(Main.conf.getAppDataPath().toString(), Main.conf.getConfiguration_db_fileName());
 
-        Messages.sprintf("configFile.getParent().toString(), configFile.getFileName().toString() " + configFile.getParent().toString() + " DATABASE NAMEEEE:::::::::::: " +  configFile.getFileName().toString());
+        Messages.sprintf("configFile.getParent().toString(), configFile.getFileName().toString() " + configFile.getParent().toString() + " DATABASE NAMEEEE:::::::::::: " + configFile.getFileName().toString());
         try (Connection connection = ConfigurationSqlConnection.connectToDatabase(configFile.getParent().toString(), configFile.getFileName().toString())) {
 
             if (!isDbConnected(connection)) {
@@ -82,7 +82,7 @@ public class SelectedFolderInfoDao {
             }
 
             boolean loadSelectedFoldersFromConfigDb = SelectedFolderInfoDao.loadSelectedFoldersFromConfigDb(connection, modelMain);
-            if(loadSelectedFoldersFromConfigDb) {
+            if (loadSelectedFoldersFromConfigDb) {
                 Messages.sprintf("load_SelectedFolders_UsingSQL loaded....");
                 return true;
             } else {
@@ -186,13 +186,13 @@ public class SelectedFolderInfoDao {
             ResultSet resultSet = metaData.getTables(null, null, SQLTableEnums.SELECTEDFOLDERS.getType(), null);
             if (resultSet.next()) {
                 Messages.sprintf("Table: already exists " + SQLTableEnums.SELECTEDFOLDERS.getType());
-                for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                     Messages.sprintf("----SelectedFolder: " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
                 }
 
                 insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 //                updateSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
-                for(SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                     Messages.sprintf("----SelectedFolder: " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
                 }
             } else {
@@ -230,7 +230,7 @@ public class SelectedFolderInfoDao {
 
                 Messages.sprintf("---------------------------selected::: " + selected + " path::: " + path + " connected:::" + connected + " media:::" + media);
 
-                SelectedFolder selectedFolder = SelectedFolder.create(selected, connected, path, false, media);
+                SelectedFolder selectedFolder = SelectedFolder.create(selected, connected, path, media, false);
                 Messages.sprintf("loadFolders_list: " + selectedFolder.getFolder());
 
                 boolean exists = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().stream().anyMatch(sf -> Objects.equals(sf.getFolder(), selectedFolder.getFolder()));
@@ -280,19 +280,19 @@ public class SelectedFolderInfoDao {
         boolean originalAutoCommit;
 
         final String sql = String.format("""
-        INSERT INTO %s (
-            selected,
-            connected,
-            ignored,
-            path,
-            media
-        ) VALUES (?,?,?,?,?)
-        ON CONFLICT(path) DO UPDATE SET
-            selected = excluded.selected,
-            connected = excluded.connected,
-            ignored = excluded.ignored,
-            media = excluded.media
-        """, SQLTableEnums.SELECTEDFOLDERS.getType());
+                INSERT INTO %s (
+                    selected,
+                    connected,
+                    ignored,
+                    path,
+                    media
+                ) VALUES (?,?,?,?,?)
+                ON CONFLICT(path) DO UPDATE SET
+                    selected = excluded.selected,
+                    connected = excluded.connected,
+                    ignored = excluded.ignored,
+                    media = excluded.media
+                """, SQLTableEnums.SELECTEDFOLDERS.getType());
 
         try {
             originalAutoCommit = connection.getAutoCommit();

@@ -18,9 +18,7 @@ import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.utils.folderscanner.FolderScanner;
 import common.utils.FileUtils;
-
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,16 +27,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ExecutionException;
-
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -49,15 +42,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.Window;
 import javafx.util.Callback;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.controllers.main.tables.TableUtils.resolveTableTypeByPath;
 import static com.girbola.messages.Messages.sprintf;
-import static com.girbola.utils.FileInfoUtils.createFileInfo;
 
 public class SelectedFoldersController {
 
@@ -77,14 +67,14 @@ public class SelectedFoldersController {
     @FXML private Button selectedFolders_cancel_btn;
     @FXML private Button selectedFolders_select_folder;
     @FXML private TableView<SelectedFolder> selectedFolder_TableView;
-    //@formatter:on÷
+    //@formatter:on
     private List<SelectedFolder> selectedFolderScannerOriginal = new ArrayList<>();
 
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
     Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> removeRowCellFactory = p -> new CheckBoxRemoveRowTableCell(modelMain, model_folderScanner);
 
     @FXML
-    private void selectedFolders_ok_action(ActionEvent event) throws ExecutionException, InterruptedException, IOException {
+    private void selectedFolders_ok_action(ActionEvent event) {
         Messages.sprintf("selectedFolders_ok_action pressed");
         modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
         LoadingProcessTask loadingProcessTask = new LoadingProcessTask(Main.sceneManager.getWindow());
@@ -235,11 +225,11 @@ public class SelectedFoldersController {
                                 existsFileInfos.add(fileInfo.get());
                             } else {
                                 FileInfo newFileInfo = FileInfoUtils.createFileInfo(currentFile);
-                                if(newFileInfo != null) {
+                                if (newFileInfo != null) {
                                     existsFileInfos.add(newFileInfo);
 
-                                folderInfo.setChanged(true);
-                                Messages.sprintf("FileInfo does not exist for: " + currentFile);
+                                    folderInfo.setChanged(true);
+                                    Messages.sprintf("FileInfo does not exist for: " + currentFile);
                                 } else {
                                     Messages.sprintfError("Could not create fileinfo: " + currentFile);
                                 }
@@ -286,6 +276,8 @@ public class SelectedFoldersController {
                 super.failed();
                 Throwable exception = getException();
                 Messages.sprintfError("Folder scanning failed: " + exception.getMessage());
+                updateMessage("Folder scanning failed: " + exception.getMessage());
+                loadingProcessTask.closeStage();
                 exception.printStackTrace();
             }
 
@@ -293,6 +285,7 @@ public class SelectedFoldersController {
             protected void cancelled() {
                 super.cancelled();
                 Messages.sprintf("Folder scanningn cancelled");
+                loadingProcessTask.closeStage();
             }
         };
 
@@ -418,12 +411,12 @@ public class SelectedFoldersController {
                         Messages.sprintf("Adding folder: " + folder.getAbsolutePath());
                     }
                 }
-                modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false, true));
+                modelMain.getSelectedFolders().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), FileUtils.getHasMedia(folder.toString()), false));
             }
             Messages.sprintf("foldersAdded: " + foldersAdded + "  vs size: " + modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size());
-            if (foldersAdded != modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() || modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() == 0) {
+            if (foldersAdded != modelMain.getSelectedFolders().getSelectedFolderScanner_obs().size() || modelMain.getSelectedFolders().getSelectedFolderScanner_obs().isEmpty()) {
 
-                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), false, true));
+                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, folder.getAbsolutePath(), FileUtils.getHasMedia(folder.toString()), false));
 //                modelMain.getSelectedFolders().add(new SelectedFolder(true, true, folder.getAbsolutePath(), true));
                 SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
             }

@@ -2,6 +2,7 @@ package com.girbola.controllers.folderscanner.folderpicker;
 
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
+import common.utils.FileUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
@@ -122,10 +123,10 @@ public class SelectionPropagation {
                 String pathString = value.toString();
 
                 if (!internalSelectionUpdate) {
-                    if (Boolean.TRUE.equals(newV)) {
+                    if (newV) {
                         if (!isPathInSelectedFolders(pathString)) {
                             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                    .add(SelectedFolder.create(true, true, pathString, false, true));
+                                    .add(SelectedFolder.create(true, true, pathString, FileUtils.getHasMedia(pathString), false));
                         }
                     } else {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()

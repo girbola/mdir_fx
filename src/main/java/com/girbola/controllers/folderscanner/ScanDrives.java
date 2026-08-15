@@ -71,6 +71,10 @@ public class ScanDrives {
 
                     File[] listOfRoots = getListOfRoots();
 
+                    if(listOfRoots.length == 0) {
+                        Messages.sprintf("Drive count changed from: " + rootCount + " to: " + listOfRoots.length);
+                        return null;
+                    }
                     Arrays.sort(listOfRoots, (File f1, File f2) -> f1.getAbsolutePath().compareToIgnoreCase(f2.getAbsolutePath()));
 
                     if (listOfRoots != null) {
@@ -155,7 +159,7 @@ public class ScanDrives {
         if (Files.exists(selectedPath) && !selectedFolderHasValue(selectedPath)) {
             boolean hasMedia = FileUtils.getHasMedia(selectedPath.toFile());
             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                    .add(SelectedFolder.create(true, true, selectedPath.toString(), false, hasMedia));
+                    .add(SelectedFolder.create(true, true, selectedPath.toString(), hasMedia, false));
         } else {
             Messages.sprintf("processSelectedPath Folder already exists: " + selectedPath);
         }

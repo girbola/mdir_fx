@@ -6,6 +6,7 @@ import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.messages.Messages;
 import com.girbola.utils.CommonUserFolders;
+import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -90,7 +91,7 @@ public class FolderScannerController {
                 if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
                     if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, path.toString(), false,true));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, path.toString(), FileUtils.getHasMedia(path.toString()), false));
                     }
                 }
             }
@@ -233,9 +234,9 @@ public class FolderScannerController {
                 SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
                 if (selectedHomeFolder != null) {
                     Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
-                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(SelectedFolder.create(selectedHomeFolder.isSelected(), true, commonPath.toString(), false,false));
+                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(SelectedFolder.create(selectedHomeFolder.isSelected(), true, commonPath.toString(), FileUtils.getHasMedia(commonPath.toString()), false));
                 } else {
-                    selectedHomeFolder = SelectedFolder.create(false, true, commonPath.toString(), false,false);
+                    selectedHomeFolder = SelectedFolder.create(false, true, commonPath.toString(), FileUtils.getHasMedia(commonPath.toString()), false);
                     modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }
