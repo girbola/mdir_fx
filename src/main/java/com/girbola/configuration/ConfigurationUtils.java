@@ -5,8 +5,10 @@ import com.girbola.controllers.loading.LoadingProcess;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.WriteTablesFolderInfoToConfigurationDatabase;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.fileinfo.SavedFoldersIntoConfigurationTable;
 import com.girbola.messages.Messages;
+import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
 import javafx.concurrent.Task;
 
 public class ConfigurationUtils {
@@ -21,8 +23,10 @@ public class ConfigurationUtils {
     }
 
     public static void saveTablesToConfigurationDatabase(ModelMain modelMain) {
-        SavedFoldersIntoConfigurationTable saveFileInfos =
-                new SavedFoldersIntoConfigurationTable(modelMain, Main.sceneManager.getWindow(), null, true);
+
+        ConfigurationSavedFoldersDao.dropTable();
+
+        SavedFoldersIntoConfigurationTable saveFileInfos = new SavedFoldersIntoConfigurationTable(modelMain, Main.sceneManager.getWindow(), null, true);
         saveFileInfos.readTables();
 
         Task<Integer> writeTablesFolderInfoToConfigurationDatabase =

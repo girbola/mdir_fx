@@ -35,30 +35,30 @@ public class SelectionPropagation {
 //        });
 //    }
 
-    public static void installSelectionPropagation(ModelMain modelMain) {
-        CheckBoxTreeItem<Path> root = modelMain.getFolderScannerController().getDrives_rootItem();
+//    public static void installSelectionPropagation(ModelMain modelMain) {
+//        CheckBoxTreeItem<Path> root = modelMain.getFolderScannerController().getDrives_rootItem();
+//
+//        SelectionPropagation.modelMain = modelMain;
+//        addRecursiveListener(root, (item, selected) -> {
+//            internalSelectionUpdate = true;
+//            try {
+//                if (!item.isIndeterminate()) {
+//                    setChildrenSelected(item, selected);
+//                }
+//                updateParents(item);
+//            } finally {
+//                internalSelectionUpdate = false;
+//            }
+//        });
+//        Platform.runLater(() -> {
+//            // populate tree items first
+//            // root.getChildren().addAll(...);
+//
+//            SelectionPropagation.syncTreeFromModel(modelMain);
+//        });
 
-        SelectionPropagation.modelMain = modelMain;
-        addRecursiveListener(root, (item, selected) -> {
-            internalSelectionUpdate = true;
-            try {
-                if (!item.isIndeterminate()) {
-                    setChildrenSelected(item, selected);
-                }
-                updateParents(item);
-            } finally {
-                internalSelectionUpdate = false;
-            }
-        });
-        Platform.runLater(() -> {
-            // populate tree items first
-            // root.getChildren().addAll(...);
-
-            SelectionPropagation.syncTreeFromModel(modelMain);
-        });
-//        SelectionPropagation.syncTreeFromModel(modelMain);
-    }
-
+    /// /        SelectionPropagation.syncTreeFromModel(modelMain);
+//    }
     public static void syncTreeFromModel(ModelMain modelMain) {
         CheckBoxTreeItem<Path> root = modelMain.getFolderScannerController().getDrives_rootItem();
 
@@ -85,32 +85,6 @@ public class SelectionPropagation {
         }
     }
 
-    public static void removeFromSelection(SelectedFolder selectedFolder) {
-        if (selectedFolder == null || selectedFolder.getFolder() == null) {
-            return;
-        }
-
-        String removedPath = selectedFolder.getFolder();
-
-        Iterator<SelectedFolder> it = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
-        while (it.hasNext()) {
-            SelectedFolder current = it.next();
-            String currentPath = current.getFolder();
-
-            if (currentPath == null) {
-                continue;
-            }
-
-            if (currentPath.equals(removedPath) || currentPath.startsWith(removedPath + java.io.File.separator)) {
-                it.remove();
-            }
-        }
-
-        // refresh tree so parents/intermediate folders update correctly
-        SelectionPropagation.syncTreeFromModel(modelMain);
-    }
-
-
     private static void addRecursiveListener(CheckBoxTreeItem<Path> item,
                                              TreeItemSelectionConsumer onChange) {
         ChangeListener<Boolean> selectedListener = (obs, oldV, newV) -> {
@@ -123,10 +97,10 @@ public class SelectionPropagation {
                 String pathString = value.toString();
 
                 if (!internalSelectionUpdate) {
-                    if (newV) {
+                    if (Boolean.TRUE.equals(newV)) {
                         if (!isPathInSelectedFolders(pathString)) {
                             modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                    .add(SelectedFolder.create(true, true, pathString, FileUtils.getHasMedia(pathString), false));
+                                    .add(SelectedFolder.create(pathString, true, true, FileUtils.getHasMedia(pathString), false));
                         }
                     } else {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -274,16 +248,6 @@ public class SelectionPropagation {
         }
     }
 
-    private static void setChildrenSelected(CheckBoxTreeItem<Path> parent, boolean selected) {
-        for (TreeItem<Path> child : parent.getChildren()) {
-            if (child instanceof CheckBoxTreeItem<Path> cb) {
-                cb.setIndeterminate(false);
-                cb.setSelected(selected);
-                setChildrenSelected(cb, selected);
-            }
-        }
-    }
-
     private static void updateParents(CheckBoxTreeItem<Path> item) {
         TreeItem<Path> p = item.getParent();
 
@@ -382,6 +346,41 @@ public class SelectionPropagation {
         for (TreeItem<Path> child : item.getChildren()) {
             if (child instanceof CheckBoxTreeItem<Path> cb) {
                 findAndSelectPaths(cb, targetPath);
+            }
+        }
+    }
+
+    public static void removeFromSelection(SelectedFolder selectedFolder) {
+        if (selectedFolder == null || selectedFolder.getFolder() == null) {
+            return;
+        }
+
+        String removedPath = selectedFolder.getFolder();
+
+        Iterator<SelectedFolder> it = modelMain.getSelectedFolders().getSelectedFolderScanner_obs().iterator();
+        while (it.hasNext()) {
+            SelectedFolder current = it.next();
+            String currentPath = current.getFolder();
+
+            if (currentPath == null) {
+                continue;
+            }
+
+            if (currentPath.equals(removedPath) || currentPath.startsWith(removedPath + java.io.File.separator)) {
+                it.remove();
+            }
+        }
+
+        // refresh tree so parents/intermediate folders update correctly
+        SelectionPropagation.syncTreeFromModel(modelMain);
+    }
+
+    private static void setChildrenSelected(CheckBoxTreeItem<Path> parent, boolean selected) {
+        for (TreeItem<Path> child : parent.getChildren()) {
+            if (child instanceof CheckBoxTreeItem<Path> cb) {
+                cb.setIndeterminate(false);
+                cb.setSelected(selected);
+                setChildrenSelected(cb, selected);
             }
         }
     }

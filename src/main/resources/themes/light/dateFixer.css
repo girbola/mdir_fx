@@ -68,14 +68,14 @@
     -fx-background-color: transparent;
 }
 .grid-pane > * {
-    -fx-min-height: 30 ;
+    -fx-min-height: 30;
 }
 .imagesContainer {
     -fx-background-color: transparent;
 }
 .imageFrame {
     -fx-border-color: white;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-background-color: -fx-primary;
 }
 .imageNumber {
@@ -106,7 +106,7 @@
     -fx-background-color: linear-gradient(to bottom, blue, white);
     -fx-background-radius: 0 0 0 0;
     -fx-border-color: #555555;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
 }
@@ -115,7 +115,7 @@
     /*-fx-background-color: red;*/
     -fx-background-color: linear-gradient(to bottom, red, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     -fx-padding: 0 1 0 1;
@@ -124,7 +124,7 @@
     /*-fx-background-color: transparent;*/
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
     /*-fx-padding: 0 1 0 1;*/
@@ -132,7 +132,7 @@
 .jump_Button_video {
     -fx-background-color: linear-gradient(to bottom, orange, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 
@@ -140,7 +140,7 @@
 .jump_Button_good {
     -fx-background-color: linear-gradient(to bottom, green, white);
     -fx-background-radius: 0 0 0 0;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-color: #555555;
     -fx-border-radius: 0 0 0 0;
 
@@ -200,7 +200,7 @@
     /*-fx-background-color: derive(-fx-primary, 10%);*/
     -fx-background-color: red;
     -fx-border-color: #ffffff;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-background-color: linear-gradient(to bottom, #b5bcc6, #dee3e4);
@@ -289,7 +289,7 @@
     -fx-border-color:  -fx-dark-border-color;
         -fx-table-header-border-color: cyan;
     -fx-border-color: -fx-mid-border-color;
-    -fx-border-width: 0.0625em;;
+    -fx-border-width: 0.0625em;
 }
 .table-view .column-header.table_media .label {
     -fx-background-color: linear-gradient(to bottom, red, orange);

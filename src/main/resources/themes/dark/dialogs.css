@@ -44,7 +44,7 @@
 .loadingPane {
 	-fx-background-color: -fx-primary;
 	-fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
-	-fx-border-width: 0.0625em;;
+	-fx-border-width: 0.0625em;
 }
 .loadingPane_hbox {
 	-fx-background-color: red;
@@ -110,7 +110,7 @@ Custom styleclasses
 	/*-fx-background-color: linear-gradient(derive(-fx-base-background-dark, 40%),derive(-fx-base-background-dark, 30%),derive(-fx-base-background-dark, 30%),derive(-fx-base-background-dark, 40%));*/
 	-fx-background-color: blue;
 	-fx-border-color: orange;
-	-fx-border-width: 0.0625em;;
+	-fx-border-width: 0.0625em;
 	-fx-text-fill: white;
 }
 .alertDiag:header *.header-panel {

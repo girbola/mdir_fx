@@ -3,6 +3,7 @@ package com.girbola.persistence.configuration;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.SQLTableEnums;
+import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -123,6 +124,26 @@ public class ConfigurationSavedFoldersDao {
         }
 
         String sql = "CREATE TABLE IF NOT EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType() + " (path STRING NOT NULL PRIMARY KEY UNIQUE, " + "justFolderName STRING, " + "tableType STRING NOT NULL, " + "connected BOOLEAN)";
+        try {
+            Statement stmt = connection.createStatement();
+            stmt.execute(sql);
+            stmt.close();
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+    }
+
+    public static boolean dropTable() {
+        Connection connection = ConfigurationSQLHandler.getConnection();
+
+        if (!SQL_Utils.isDbConnected(connection)) {
+            Messages.errorSmth(ConfigurationSavedFoldersDao.class.getSimpleName(), Main.bundle.getString("cannotCreateDatabase"), null, Misc.getLineNumber(), true);
+            return false;
+        }
+
+        String sql = "DROP TABLE IF EXISTS " + SQLTableEnums.SAVED_FOLDERS.getType();
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);

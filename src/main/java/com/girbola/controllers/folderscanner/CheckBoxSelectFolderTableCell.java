@@ -20,15 +20,14 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
 
     private Logger logger = LoggerFactory.getLogger(CheckBoxSelectFolderTableCell.class);
 
-    //private ModelMain modelMain;
+    private ModelMain modelMain;
     private ModelFolderScanner modelFolderScanner;
     private List<SelectedFolder> selectedFolderScanner;
 
     private CheckBox checkBox;
 
-    public CheckBoxSelectFolderTableCell(List<SelectedFolder> selectedFolderScanner, ModelFolderScanner modelFolderScanner) {
-        //this.modelMain = modelMain;
-        this.selectedFolderScanner = selectedFolderScanner;
+    public CheckBoxSelectFolderTableCell(ModelMain modelMain, ModelFolderScanner modelFolderScanner) {
+        this.modelMain = modelMain;
         this.modelFolderScanner = modelFolderScanner;
     }
 
@@ -50,17 +49,23 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
         if (checkBox == null) {
             checkBox = new CheckBox();
             checkBox.setSelected(getValue());
+            Messages.sprintf("*****CheckBoxSelectFolderTableCell CHECKBOX IS: " + getValue());
             checkBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
                 Messages.sprintf("CheckBoxSelectFolderTableCell CHECKBOX IS: " + newValue);
                 SelectedFolder selectedFolder = getTableView().getItems().get(getIndex());
+                selectedFolder.setSelected(newValue);
+                selectedFolder.setMedia(FileUtils.getHasMedia(selectedFolder.getFolder()));
 
-                for(SelectedFolder selectedFolder1 : selectedFolderScanner) {
-                    if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
-                        selectedFolder1.setSelected(newValue);
-                        selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));
-                        Messages.sprintf("--CHECKBOX IS: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia());
-                    }
-                }
+                Messages.sprintf("SelectedFolder SELECTCELL: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia() + " isSelected? " + selectedFolder.isSelected());
+
+//                for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+//                    Messages.sprintf("###--CHECKBOX selectedFolder1: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia() + " selected: " + selectedFolder.isSelected());
+//                    if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+//                        selectedFolder1.setSelected(newValue);
+//                        selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));
+//                        Messages.sprintf("----FOUND CHECKBOX IS selectedFolder1: " + newValue + " selectedFolder1: " + selectedFolder1.getFolder() + " hasMedia? " + selectedFolder1.isMedia() + " selected: " + selectedFolder1.isSelected());
+//                    }
+//                }
             });
         }
     }

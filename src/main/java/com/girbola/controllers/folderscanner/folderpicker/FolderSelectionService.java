@@ -200,10 +200,10 @@ public class FolderSelectionService {
             Messages.sprintf("#######checkboxTreeItemValue: " + value);
             if (value != null) {
                 String pathString = value.toString();
-                if (newV) {
+                if (Boolean.TRUE.equals(newV)) {
                     if (!isPathInSelectedFolders(pathString)) {
                         modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
-                                .add(SelectedFolder.create(true, true, pathString, FileUtils.getHasMedia(pathString),false));
+                                .add(SelectedFolder.create(pathString, true, true, FileUtils.getHasMedia(pathString),false));
                     }
                 } else {
                     modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -214,7 +214,7 @@ public class FolderSelectionService {
             internalSelectionUpdate = true;
             try {
                 if (!item.isIndeterminate()) {
-                    setChildrenSelected(item, newV);
+                    setChildrenSelected(item, Boolean.TRUE.equals(newV));
                 }
                 updateParents(item);
             } finally {

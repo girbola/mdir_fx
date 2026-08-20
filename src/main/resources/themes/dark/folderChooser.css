@@ -163,7 +163,7 @@
 /*}*/
 /*.tree-view, .tree-cell {*/
 /*    -fx-background-color: -fx-base;*/
-/*    -fx-text-fill: white ;*/
+/*    -fx-text-fill: white;*/
 /*}*/
 /*.tree-cell:expanded, .tree-cell:sub-tree-item {*/
 /*    -fx-background-color: #404040;*/
@@ -176,5 +176,5 @@
 /*    -fx-padding: 0.15em 0em 0.15em 0em;*/
 /*}*/
 /*.tree-cell:sub-tree-item {*/
-/*    -fx-padding: 0.25em ;*/
+/*    -fx-padding: 0.25em;*/
 }

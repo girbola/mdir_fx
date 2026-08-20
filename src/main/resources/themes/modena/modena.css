@@ -368,7 +368,7 @@ is being used to size a border should also be in pixels.
         -fx-dark-text-color 59%,
         -fx-mid-text-color 60%
     );
-    -fx-focused-mark-color : -fx-focused-text-base-color ;
+    -fx-focused-mark-color : -fx-focused-text-base-color;
 
     /***************************************************************************
      *                                                                         *
@@ -683,12 +683,12 @@ is being used to size a border should also be in pixels.
 .button.center-pill,
 .toggle-button.center-pill {
     -fx-background-radius: 0;
-    -fx-background-insets: 0 0 -1 0, 0 0 0 0, 1 1 1 0, 2 2 2 1 ;
+    -fx-background-insets: 0 0 -1 0, 0 0 0 0, 1 1 1 0, 2 2 2 1;
 }
 .button.right-pill,
 .toggle-button.right-pill {
     -fx-background-radius: 0 3 3 0, 0 3 3 0, 0 2 2 0, 0 1 1 0;
-    -fx-background-insets: 0 0 -1 0, 0, 1 1 1 0, 2 2 2 1 ;
+    -fx-background-insets: 0 0 -1 0, 0, 1 1 1 0, 2 2 2 1;
 }
 .button.left-pill:focused,
 .toggle-button.left-pill:focused {
@@ -926,16 +926,16 @@ is being used to size a border should also be in pixels.
     -fx-orientation: horizontal;
 }
 .tool-bar-overflow-button {
-    -fx-padding: 0 0.75em 0 0 ;
+    -fx-padding: 0 0.75em 0 0;
 }
 .tool-bar:vertical > .tool-bar-overflow-button {
-    -fx-padding: 0 0 0.75em 0 ;
+    -fx-padding: 0 0 0.75em 0;
 }
 .tool-bar-overflow-button > .arrow {
     -fx-background-color: -fx-mark-highlight-color, -fx-mark-color;
     -fx-background-insets: 1 0 -1 0, 0;
     -fx-padding: 0.666667em 0.916667em 0em 0em; /* 8 11 0 0 */
-    -fx-shape: "M337.273,297.622l-0.016,1.069l2.724,2.639l-2.723,2.628l0.015,1.048h0.881l3.81-3.685l-3.788-3.699H337.273z M343.783,297.622h-0.902l-0.015,1.069l2.724,2.639l-2.724,2.628l0.015,1.048h0.882l3.809-3.685L343.783,297.622z" ;
+    -fx-shape: "M337.273,297.622l-0.016,1.069l2.724,2.639l-2.723,2.628l0.015,1.048h0.881l3.81-3.685l-3.788-3.699H337.273z M343.783,297.622h-0.902l-0.015,1.069l2.724,2.639l-2.724,2.628l0.015,1.048h0.882l3.809-3.685L343.783,297.622z";
 }
 
 .tool-bar-overflow-button:focused > .arrow {
@@ -1510,7 +1510,7 @@ is being used to size a border should also be in pixels.
         linear-gradient(to bottom, derive(-fx-base,75%) 0%, -fx-outer-border 90%),
         linear-gradient(to bottom, derive(-fx-base,46.9%) 2%, derive(-fx-base,-2.1%) 95%);
     -fx-background-insets: 0 0 0 0, 1 0 1 0;
-    -fx-background-radius: 0, 0 ;
+    -fx-background-radius: 0, 0;
 }
 /* Show nothing for background of normal menu button in a menu bar */
 .menu-bar > .container > .menu-button {

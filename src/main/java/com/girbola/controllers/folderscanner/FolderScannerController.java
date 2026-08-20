@@ -91,7 +91,7 @@ public class FolderScannerController {
                 if (!selectedFolderHasValue(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), path)) {
                     if (!hasTableSelectedFolderPath(modelMain.tables(), path)) {
                         //TODO Check selectedfolder selected. It might not work correctly?
-                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(true, true, path.toString(), FileUtils.getHasMedia(path.toString()), false));
+                        modelMain.getSelectedFolders().getSelectedFolderScanner_obs().add(SelectedFolder.create(path.toString(), true, true, FileUtils.getHasMedia(path.toString()), false));
                     }
                 }
             }
@@ -172,7 +172,7 @@ public class FolderScannerController {
 //    }
 
 
-    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain.getSelectedFolders().getSelectedFolderScannerOriginal(), model_folderScanner);
+    Callback<TableColumn<SelectedFolder, Boolean>, TableCell<SelectedFolder, Boolean>> selectedFoldersCellFactory = p -> new CheckBoxSelectFolderTableCell(modelMain, model_folderScanner);
 
     public void initFolderScanner() {
         Main.setProcessCancelled(false);
@@ -234,9 +234,9 @@ public class FolderScannerController {
                 SelectedFolder selectedHomeFolder = existsInSelectedFolderScannerObs(commonPath);
                 if (selectedHomeFolder != null) {
                     Messages.sprintf("Common path exists in selectedFolderScanner_obs: " + commonPath);
-                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(SelectedFolder.create(selectedHomeFolder.isSelected(), true, commonPath.toString(), FileUtils.getHasMedia(commonPath.toString()), false));
+                    modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(SelectedFolder.create(commonPath.toString(), selectedHomeFolder.isSelected(), true, FileUtils.getHasMedia(commonPath.toString()), false));
                 } else {
-                    selectedHomeFolder = SelectedFolder.create(false, true, commonPath.toString(), FileUtils.getHasMedia(commonPath.toString()), false);
+                    selectedHomeFolder = SelectedFolder.create(commonPath.toString(), false, true, FileUtils.getHasMedia(commonPath.toString()), false);
                     modelMain.getSelectedFolders().getHomeDefaultsFolders_obs().add(selectedHomeFolder);
                 }
             }

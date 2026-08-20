@@ -29,7 +29,12 @@ public class SelectedFolderScanner {
     }
 
     public void backup() {
-        selectedFolderScannerOriginal = new ArrayList<>(selectedFolderScanner_obs);
+        //selectedFolderScannerOriginal = new ArrayList<>(selectedFolderScanner_obs);
+        selectedFolderScannerOriginal = selectedFolderScanner_obs.stream()
+                // Luodaan kokonaan uudet oliot, jotta viittaukset katkeavat
+                .map(f -> new SelectedFolder(f.getFolder(), f.isSelected(), f.isConnected(), f.isMedia(), f.isIgnored()))
+                // .toList() palauttaa unmodifiable (muuttumattoman) listan
+                .toList();
     }
 
     public void restore() {
@@ -37,8 +42,27 @@ public class SelectedFolderScanner {
         selectedFolderScanner_obs.setAll(selectedFolderScannerOriginal);
     }
 
+    public void save() {
+        for(SelectedFolder folderToSave : selectedFolderScannerOriginal) {
+            saveValuesToObs(folderToSave);
+        }
+    }
+
+    private boolean saveValuesToObs(SelectedFolder folderToSave) {
+        for (SelectedFolder folderInObs : selectedFolderScanner_obs) {
+            if (folderInObs.getFolder().toString().equals(folderToSave.getFolder().toString())) {
+                folderInObs.setSelected(folderToSave.isSelected());
+                folderInObs.setConnected(folderToSave.isConnected());
+                folderInObs.setMedia(folderToSave.isMedia());
+                folderInObs.setIgnored(folderToSave.isIgnored());
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void add(SelectedFolder selectedFolderToFind) {
-        Messages.sprintf("::::::::::::::::::::add selectedFolderToFind: " + selectedFolderToFind.getFolder());;
+        Messages.sprintf("::::::::::::::::::::add selectedFolderToFind: " + selectedFolderToFind.getFolder());
         // Only add if selectedFolderToFind is not null and not already in the list
         if (selectedFolderToFind != null) {
             Iterator<SelectedFolder> iterator = selectedFolderScanner_obs.iterator();

@@ -5,7 +5,7 @@
     /*-fx-background-color: gold;*/
     -fx-background-color:orange;
     -fx-border-color: linear-gradient(to bottom, lightgray, whitesmoke);
-    -fx-border-width:  0.0625em;;  
+    -fx-border-width:  0.0625em;
     -fx-padding: 2;
 }
 .loadingPane_hbox{

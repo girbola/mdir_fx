@@ -1,11 +1,15 @@
 package com.girbola.controllers.folderscanner;
 
+import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.Tables;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.OSHI_Utils;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import javafx.scene.control.TableView;
 
 import java.io.File;
@@ -13,6 +17,10 @@ import java.nio.file.Path;
 import java.util.List;
 
 public class SelectedFolderUtils {
+
+    private SelectedFolderUtils() {
+        // Utility class
+    }
 
     /**
      * Checks if the specified folder is present in the list of selected folders.
@@ -24,8 +32,8 @@ public class SelectedFolderUtils {
     public static boolean startsWithSelectedFolders(List<SelectedFolder> selectedFolders, File folder) {
         for (SelectedFolder selectedFolder : selectedFolders) { //KUVILOI tekeee jonkun oman kierroksen tässä. Tai lähinnä Documents. Ilmeiseti koska Documents ei ole varsinaisesti media, joten se palauttaa failed?
             Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
-            if(folder.toString().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
-                Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " isIgnored? " +  selectedFolder.isIgnored() + " hasMedia? " + selectedFolder.isMedia() + " LINE::: " + Misc.getLineNumber());
+            if (folder.toString().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
+                Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " isIgnored? " + selectedFolder.isIgnored() + " hasMedia? " + selectedFolder.isMedia() + " LINE::: " + Misc.getLineNumber());
             }
             if (folder.toPath().startsWith(selectedFolder.getFolder()) && !selectedFolder.isIgnored()) {
                 Messages.sprintf("--------SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
@@ -69,8 +77,23 @@ public class SelectedFolderUtils {
     public static String getDriveSerialNumberFromPath(String path) {
         try {
             return OSHI_Utils.getDriveSerialNumber(path);
-        } catch (Exception e) {
+        } catch (Exception _) {
             return "";
         }
+    }
+
+    public static SelectedFolder getSelectedFolderParent(String folderPath, ModelMain modelMain) {
+        for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+            if (folderPath.startsWith(selectedFolder.getFolder())) {
+                boolean exists = Files.exists(Paths.get(folderPath));
+                if (!exists) {
+                    selectedFolder.setConnected(false);
+                    SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
+                    Messages.sprintfError("SelectedFolderUtils getSelectedFolderParent folderPath: " + folderPath + " does not exist. selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+                }
+                return selectedFolder;
+            }
+        }
+        return null;
     }
 }

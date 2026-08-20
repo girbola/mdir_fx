@@ -13,7 +13,9 @@ import com.girbola.misc.Misc;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
+import com.girbola.utils.FileInfoUtils;
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.List;
@@ -57,27 +59,41 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                             cancel();
                             return false;
                         }
-                        if(folderInfoStatus.getFolderPath().equals("E:\\M-Drive\\Documents\\Kuviloi")) {
+                        if (folderInfoStatus.getFolderPath().equals("E:\\M-Drive\\Documents\\Kuviloi")) {
                             Messages.sprintf("FolderInfo was found: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
-                            for(SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                            for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
                                 Messages.sprintf("111111111111111111111selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
                             }
                         }
                         Messages.sprintf("=============LoadFileInfosBackToTableViews: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+
+
                         if (SelectedFolderUtils.startsWithSelectedFolders(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), Paths.get(folderInfoStatus.getFolderPath()))) {
-                            FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(folderInfoStatus.getFolderPath());
-                            if (folderInfo == null) {
-                                Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+
+                            SelectedFolder selectedFolder = SelectedFolderUtils.getSelectedFolderParent(folderInfoStatus.getFolderPath(), modelMain);
+                            if (selectedFolder == null) {
+                                Messages.sprintf("SelectedFolder was found: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+                                selectedFolder.setConnected(false);
                                 continue;
                             }
-                            if (folderInfo.getFolderPath().contains("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
-                                Messages.sprintf("Here we go!: " + folderInfo.getFolderPath());
+
+                            FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(folderInfoStatus.getFolderPath());
+                            if (folderInfo == null) { // Not connected if not found in database. This is because the folder might have been deleted or moved to another location.
+                                if (Files.exists(Paths.get(folderInfoStatus.getFolderPath()))) {
+                                    folderInfo = new FolderInfo(Paths.get(folderInfoStatus.getFolderPath()));
+                                    FileInfoUtils.createFileInfo_list(folderInfo);
+
+                                    folderInfoStatus.setConnected(true);
+                                    Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+                                } else {
+                                    folderInfoStatus.setConnected(false);
+                                    Messages.sprintf("FolderInfo was null for some reason: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+                                    continue;
+                                }
                             }
-                            if(folderInfo.getFolderPath().equals("E:\\M-Drive\\Documents\\Kuviloi")) {
-                                Messages.sprintf("FolderInfo E:\\M-Drive\\Documents\\Kuviloi were found: " + folderInfo.getFolderPath() + " LINE::: " + Misc.getLineNumber());
-                            }
+
                             boolean folderInfoAddedToTable = modelMain.tables().addToTable(folderInfo);
-                            if(folderInfoAddedToTable) {
+                            if (folderInfoAddedToTable) {
                                 Messages.sprintf("FolderInfo was added to table: " + folderInfo.getFolderPath() + " LINE::: " + Misc.getLineNumber());
                             } else {
                                 Messages.sprintfError("FolderInfo were NOT able to add to table: " + folderInfo.getFolderPath() + " LINE::: " + Misc.getLineNumber());
