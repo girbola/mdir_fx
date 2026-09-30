@@ -35,6 +35,10 @@ public class SelectedFolderScanner {
                 .map(f -> new SelectedFolder(f.getFolder(), f.isSelected(), f.isConnected(), f.isMedia(), f.isIgnored()))
                 // .toList() palauttaa unmodifiable (muuttumattoman) listan
                 .toList();
+        Messages.sprintf("selectedFolders_backup_action pressed");
+        for(SelectedFolder sf : selectedFolderScanner_obs){
+            Messages.sprintf("Backing up folder: " + sf.getFolder() + " selected: " + sf.isSelected() + " connected: " + sf.isConnected() + " media: " + sf.isMedia() + " ignored: " + sf.isIgnored());
+        }
     }
 
     public void restore() {
@@ -43,7 +47,13 @@ public class SelectedFolderScanner {
     }
 
     public void save() {
+
+        for(SelectedFolder folderInObs : selectedFolderScanner_obs) {
+            Messages.sprintf("NOT SAVE folderInObs selectedFolders_save_action pressed: " + folderInObs.getFolder() + " selected: " + folderInObs.isSelected() + " connected: " + folderInObs.isConnected() + " media: " + folderInObs.isMedia() + " ignored: " + folderInObs.isIgnored());
+        }
+
         for(SelectedFolder folderToSave : selectedFolderScannerOriginal) {
+            Messages.sprintf("SAVING selectedFolders_save_action pressed: " + folderToSave.getFolder() + " selected: " + folderToSave.isSelected() + " connected: " + folderToSave.isConnected() + " media: " + folderToSave.isMedia() + " ignored: " + folderToSave.isIgnored());
             saveValuesToObs(folderToSave);
         }
     }
@@ -55,6 +65,7 @@ public class SelectedFolderScanner {
                 folderInObs.setConnected(folderToSave.isConnected());
                 folderInObs.setMedia(folderToSave.isMedia());
                 folderInObs.setIgnored(folderToSave.isIgnored());
+                Messages.sprintf("Saved values to obs for folder: " + folderInObs.getFolder() + " selected: " + folderInObs.isSelected() + " connected: " + folderInObs.isConnected() + " media: " + folderInObs.isMedia() + " ignored: " + folderInObs.isIgnored());
                 return true;
             }
         }

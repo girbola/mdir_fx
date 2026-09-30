@@ -58,14 +58,14 @@ public class CheckBoxSelectFolderTableCell extends TableCell<SelectedFolder, Boo
 
                 Messages.sprintf("SelectedFolder SELECTCELL: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia() + " isSelected? " + selectedFolder.isSelected());
 
-//                for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-//                    Messages.sprintf("###--CHECKBOX selectedFolder1: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia() + " selected: " + selectedFolder.isSelected());
-//                    if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
-//                        selectedFolder1.setSelected(newValue);
-//                        selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));
-//                        Messages.sprintf("----FOUND CHECKBOX IS selectedFolder1: " + newValue + " selectedFolder1: " + selectedFolder1.getFolder() + " hasMedia? " + selectedFolder1.isMedia() + " selected: " + selectedFolder1.isSelected());
-//                    }
-//                }
+                for(SelectedFolder selectedFolder1 : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    Messages.sprintf("###--CHECKBOX selectedFolder1: " + newValue + " selectedFolder: " + selectedFolder.getFolder() + " hasMedia? " + selectedFolder.isMedia() + " selected: " + selectedFolder.isSelected());
+                    if(selectedFolder1.getFolder().equals(selectedFolder.getFolder())) {
+                        selectedFolder1.setSelected(newValue);
+                        selectedFolder1.setMedia(FileUtils.getHasMedia(selectedFolder1.getFolder()));
+                        Messages.sprintf("----FOUND CHECKBOX IS selectedFolder1: " + newValue + " selectedFolder1: " + selectedFolder1.getFolder() + " hasMedia? " + selectedFolder1.isMedia() + " selected: " + selectedFolder1.isSelected());
+                    }
+                }
             });
         }
     }

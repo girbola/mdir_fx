@@ -159,7 +159,17 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
         // Keep button always active: when user toggles, mirror state back to model.
         ignoreToggleButton.setDisable(false);
-        ignoreToggleButton.setOnAction(e -> folder.setIgnored(ignoreToggleButton.isSelected()));
+        ignoreToggleButton.setOnAction(e -> {
+            folder.setIgnored(ignoreToggleButton.isSelected());
+//            getChildren().forEach(child -> {
+//                Messages.sprintf("------disabling possible CheckBox: " + child);
+//                if (child instanceof CheckBox cbChild) {
+//                    cbChild.setDisable(folder.isIgnored());
+//                } else {
+//                    Messages.sprintf("-*_*_*_*_*_NOT Ignored CheckBox: " + child);
+//                }
+//            });
+        });
 
         // Sync toggle visual state from the model.
         ignoreToggleButton.setSelected(folder.isIgnored());

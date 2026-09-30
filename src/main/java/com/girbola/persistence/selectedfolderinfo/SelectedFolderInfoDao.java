@@ -193,7 +193,7 @@ public class SelectedFolderInfoDao {
                 insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 //                updateSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                    Messages.sprintf("----SelectedFolder: " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
+                    Messages.sprintf("----SelectedFolder: isSelected? "+ sf.isSelected() + " " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
                 }
             } else {
                 Messages.sprintf("Table: not exists " + SQLTableEnums.SELECTEDFOLDERS.getType() + " not exists");

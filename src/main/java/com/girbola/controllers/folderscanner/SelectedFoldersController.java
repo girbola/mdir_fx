@@ -81,7 +81,7 @@ public class SelectedFoldersController {
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
         Messages.sprintf("selectedFolders_ok_action pressed");
-        modelMain.getSelectedFolders().save();
+//        modelMain.getSelectedFolders().save();
         modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
         LoadingProcessTask loadingProcessTask = new LoadingProcessTask(Main.sceneManager.getWindow());
 
@@ -95,13 +95,13 @@ public class SelectedFoldersController {
 //        modelMain.getSelectedFolders().restore();
 
         modelMain.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder -> {
-            Messages.sprintf("Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected() + " isIgnored: " + selectedFolder.isIgnored() + " isConnected: " + selectedFolder.isConnected() + " hasMedia: " + selectedFolder.isMedia());
+            Messages.sprintf("getSelectedFolders Selected folder to scan: " + selectedFolder.getFolder() + " isSelected: " + selectedFolder.isSelected() + " isIgnored: " + selectedFolder.isIgnored() + " isConnected: " + selectedFolder.isConnected() + " hasMedia: " + selectedFolder.isMedia());
         });
 
-        boolean removeNotSelectedFromTables = TableUtils.removeNotSelectedFromTables(modelMain);
-        if (!removeNotSelectedFromTables) {
-            Messages.sprintf("There were nothing to remove from tables");
-        }
+//        boolean removeNotSelectedFromTables = TableUtils.removeNotSelectedFromTables(modelMain);
+//        if (!removeNotSelectedFromTables) {
+//            Messages.sprintf("There were nothing to remove from tables");
+//        }
 
         ConcurrencyUtils.stopExecThreadNow();
 
@@ -115,6 +115,8 @@ public class SelectedFoldersController {
                 List<Path> newLists = new ArrayList<>();
                 List<Path> updateLists = new ArrayList<>();
                 List<Path> notConnected = new ArrayList<>();
+                List<Path> removedList = new ArrayList<>();
+
                 updateMessage("Scanning folders...");
                 loadingProcessTask.updateTextArea("Scanning folders...");
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
@@ -145,6 +147,9 @@ public class SelectedFoldersController {
                                     }
                                 }
                             }
+                        } else {
+                            Messages.sprintf("added to removedList: " + sf.getFolder());
+                            removedList.add(Paths.get(sf.getFolder()));
                         }
                     } else {
                         notConnected.add(Paths.get(sf.getFolder()));
@@ -160,11 +165,15 @@ public class SelectedFoldersController {
                 updateMessage("Iterating through media files...");
                 loadingProcessTask.updateTextArea("Iterating through media files...");
 
+                for(Path path : removedList) {
+                    Messages.sprintf("##########removedList Selected folder to scan: " + path);
+                    TableUtils.removeFolderFromTables(modelMain.tables(), path);
+                }
                 for (Path path : newLists) {
                     updateMessage("Iterating through media files...: " + path.getFileName() + "\n");
                     loadingProcessTask.updateTextArea("Iterating through media files...: " + path.getFileName() + "\n");
 
-                    sprintf("#### FOLDER IS NEW and SELECTED: " + path);
+                    Messages.sprintf("#### FOLDER IS NEW and SELECTED: " + path);
 
                     TableType tableType = resolveTableTypeByPath(path);
 
@@ -390,7 +399,7 @@ public class SelectedFoldersController {
         //  modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
 //        selectedFolder_TableView.setItems(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 //        SelectionPropagation.syncTreeFromModel(model_main);
-//        modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
+        modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
     }
 
     public static List<SelectedFolder> findModifiedFolders(List<SelectedFolder> obs1, List<SelectedFolder> obs2) {
@@ -505,6 +514,14 @@ public class SelectedFoldersController {
                 removeFromTable(selectedFolder_TableView);
             }
         });
+
+        selectedFolder_TableView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                Messages.sprintf("Selected item: " + newSelection.getFolder());
+                modelMain.getFolderSelectionService().focusFolder(newSelection);
+            }
+        });
+
 
         folder_selected_col.setCellFactory(selectedFoldersCellFactory);
         //folder_selected_col.setCellValueFactory((TableColumn.CellDataFeatures<SelectedFolder, Boolean> cellData) -> new SimpleObjectProperty<>(cellData.getValue().isSelected()));

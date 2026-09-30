@@ -907,4 +907,18 @@ public class TableUtils {
 
         return changed;
     }
+
+    public static void removeFolderFromTables(Tables tables, Path path) {
+        for (TableView<FolderInfo> table : getAllTables(tables)) {
+            Iterator<FolderInfo> items = table.getItems().iterator();
+            while (items.hasNext()) {
+                FolderInfo folderInfo = items.next();
+                Messages.sprintf("removeFolderFromTables Checking folderInfo: " + folderInfo.getFolderPath() + " against path: " + path);
+                if (folderInfo.getFolderPath().startsWith(path.toString())) {
+                    Messages.sprintf("-----------REMOVING FROM TABLE: " + folderInfo.getFolderPath() + " Tabletype: " + folderInfo.getTableType() + " path: " + path);
+                    items.remove();
+                }
+            }
+        }
+    }
 }
