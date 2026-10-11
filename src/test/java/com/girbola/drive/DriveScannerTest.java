@@ -1,6 +1,7 @@
 package com.girbola.drive;
 
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
+import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
@@ -21,20 +22,115 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBoxTreeItem;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.junit.jupiter.api.io.TempDir;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
 
+import static com.girbola.drive.DriveInfoUtils.parseDriveLetterFromPath;
+import static com.girbola.drive.DriveInfoUtils.parseDrivePathFromPath;
+import static com.girbola.drive.DriveInfoUtils.resolveConnectivityForSelectedFolder;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 class DriveScannerTest {
 
     @Test
+    void testParseDriveLetterFromPath() {
+        Path path = Paths.get("C:\\Users\\User\\Documents");
+        String driveLetter = parseDriveLetterFromPath(path);
+        Path changedPath = DriveInfoUtils.changeDriveLetterWithPath(path, "D:\\Media\\Movies");
+
+        assertEquals("C:\\", driveLetter, "Expected the root path to be C:\\");
+        assertEquals(Paths.get("D:\\Users\\User\\Documents"), changedPath,
+                "Expected the path to be remapped to the new drive letter");
+    }
+    @Test
+    @EnabledOnOs({OS.WINDOWS})
+    void testDriveLetterChange() {
+        Path currentDriveLetter = (Paths.get("D:\\"));
+
+        Path selectedFolder = Paths.get("E:\\Temp\\");
+
+        System.out.println("Selected folder: " + selectedFolder);
+        String selectedFolderDriveLetter = parseDriveLetterFromPath(selectedFolder);
+        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(selectedFolder);
+
+        System.out.println("Selected drive letter: " + selectedFolderDriveLetter);
+        System.out.println("Selected folder: " + selectedFolder);
+
+        Path thePath = Paths.get(currentDriveLetter.toString(), selectedFolderPathWithoutDriveLetter);
+        System.out.println("The path: " + thePath);
+
+        assertEquals("D:\\Temp", thePath.toString(), "Expected drive letter to be D:\\" + selectedFolderPathWithoutDriveLetter);
+    }
+
+    @Test
+    @EnabledOnOs({OS.WINDOWS})
+    void testDriveLetterChange2(@TempDir Path tempDir) {
+        Path currentDriveLetter = tempDir.getRoot();
+        System.out.println("Current drive letter: " + currentDriveLetter);
+        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(tempDir);
+        Path originalFolderPath = Paths.get("Z:\\", selectedFolderPathWithoutDriveLetter);
+
+        SelectedFolder selectedFolder = new SelectedFolder(originalFolderPath.toString(), true, false, true, true, "serial-123");
+        DriveInfo currentDriveInfo = new DriveInfo(currentDriveLetter.toString(), 0, true, true, "serial-123");
+        currentDriveInfo.setDrive(currentDriveLetter);
+
+        Path resolvedPath = resolveConnectivityForSelectedFolder(selectedFolder, currentDriveInfo);
+
+        assertNotNull(resolvedPath, "Expected the disconnected folder path to be remapped to the current drive");
+        assertEquals(tempDir.normalize(), resolvedPath.normalize(),
+                "Expected the remapped path to point to the existing directory on the current drive");
+    }
+    @Test
+    @EnabledOnOs({OS.WINDOWS})
+    void testDriveLetterChangeWithoutPathJustLetter() {
+        Path currentDriveLetter = (Paths.get("C:\\"));
+
+        Path selectedFolder = Paths.get("D:\\");
+
+        System.out.println("Selected folder: " + selectedFolder);
+        String selectedFolderDriveLetter = parseDriveLetterFromPath(selectedFolder);
+        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(selectedFolder);
+
+        System.out.println("Selected drive letter: " + selectedFolderDriveLetter);
+        System.out.println("Selected folder: " + selectedFolder);
+
+        Path thePath = Paths.get(currentDriveLetter.toString(), selectedFolderPathWithoutDriveLetter);
+        System.out.println("The path: " + thePath);
+
+        assertEquals("C:\\", thePath.toString(), "Expected drive letter to be C:\\" + selectedFolderPathWithoutDriveLetter);
+    }
+
+    @Test
+    @EnabledOnOs({OS.LINUX})
+    void testDriveLetterChangeWithoutPathJustLetterOnLinux() {
+        Path currentDriveLetter = (Paths.get("/mnt/c/"));
+
+        Path selectedFolder = Paths.get("/mnt/d/");
+
+        System.out.println("Selected folder: " + selectedFolder);
+        String selectedFolderDriveLetter = parseDriveLetterFromPath(selectedFolder);
+        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(selectedFolder);
+
+        System.out.println("Selected drive letter: " + selectedFolderDriveLetter);
+        System.out.println("Selected folder: " + selectedFolder);
+
+        Path thePath = Paths.get(currentDriveLetter.toString(), selectedFolderPathWithoutDriveLetter);
+        System.out.println("The path: " + thePath);
+
+        assertEquals("/mnt/c/", thePath.toString(), "Expected drive letter to be /mnt/c/" + selectedFolderPathWithoutDriveLetter);
+    }
+
+    @Test
+    @EnabledOnOs({OS.WINDOWS})
     void getHDiskStoreTest() {
         List<HWDiskStore> hardwareDisks = OSHI_Utils.getHWDiskStore();
         assertFalse(hardwareDisks.isEmpty(), "Expected OSHI to return at least one disk");
@@ -48,21 +144,29 @@ class DriveScannerTest {
     }
 
     @Test
-    void getHDiskStoreTestG() {
+    @EnabledOnOs({OS.WINDOWS})
+    void getHDiskStoreTestNonExistingDrive() {
         List<HWDiskStore> hardwareDisks = OSHI_Utils.getHWDiskStore();
         assertFalse(hardwareDisks.isEmpty(), "Expected OSHI to return at least one disk");
 
-        Path firstRoot = Paths.get("G:\\");
+        Path firstRoot = Paths.get("thedrivewhichdoesnotexists");
+        org.junit.jupiter.api.Assumptions.assumeFalse(Files.exists(firstRoot), "Drive thedrivewhichdoesnotexists: is not available on this machine");
 
         HWDiskStore matchingDisk = OSHI_Utils.findDiskStoreForRoot(firstRoot, hardwareDisks);
-        for(HWPartition partition : matchingDisk.getPartitions()) {
-            System.out.println("Partition: " + partition.getMountPoint() + " Name: " + partition.getName() + " Type: " + partition.getType());
-        }
+        assertNull(matchingDisk, "Expected to resolve a disk store for the default root");
+    }
 
-        assertNotNull(matchingDisk, "Expected to resolve a disk store for the default root");
+    @Test
+    @EnabledOnOs({OS.LINUX})
+    void getHDiskStoreTestNonExistingDriveOnLinux() {
+        List<HWDiskStore> hardwareDisks = OSHI_Utils.getHWDiskStore();
+        assertFalse(hardwareDisks.isEmpty(), "Expected OSHI to return at least one disk");
 
-        List<HWPartition> partitions = matchingDisk.getPartitions();
-        assertNotNull(partitions, "Expected partitions list to be available");
+        Path firstRoot = Paths.get("/mnt/thedrivewhichdoesnotexists");
+        org.junit.jupiter.api.Assumptions.assumeFalse(Files.exists(firstRoot), "Drive /mnt/thedrivewhichdoesnotexists: is not available on this machine");
+
+        HWDiskStore matchingDisk = OSHI_Utils.findDiskStoreForRoot(firstRoot, hardwareDisks);
+        assertNull(matchingDisk, "Expected to resolve a disk store for the default root");
     }
 
     @Test
@@ -187,7 +291,6 @@ class DriveScannerTest {
         return (File[]) method.invoke(scanner);
     }
 
-    @SuppressWarnings("unchecked")
     private void invokeAddMountedChildren(DriveScanner scanner, Set<Path> roots, Path mountParent) throws Exception {
         Method method = DriveScanner.class.getDeclaredMethod("addMountedChildren", Set.class, Path.class);
         method.setAccessible(true);

@@ -1,12 +1,16 @@
 package com.girbola.drive;
 
+import static com.girbola.drive.DriveInfoUtils.parseDrivePathFromPath;
+import static com.girbola.drive.DriveInfoUtils.resolveConnectivityForSelectedFolder;
+import static com.girbola.messages.Messages.sprintf;
+
 import com.girbola.Main;
 import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.folderpicker.LazyDirTreeItem;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
@@ -21,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -39,32 +42,29 @@ import javafx.util.Duration;
 import oshi.hardware.HWDiskStore;
 import oshi.hardware.HWPartition;
 
-import static com.girbola.messages.Messages.sprintf;
 
 public class DriveScanner {
 
-    private final String ERROR = DriveScanner.class.getSimpleName();
+    private static final String ERROR = DriveScanner.class.getSimpleName();
 
-    private AtomicInteger redraw = new AtomicInteger(0);
+    private final AtomicInteger redraw = new AtomicInteger(0);
 
-    private CheckBoxTreeItem<Path> rootItem;
-
-    private ObservableList<Path> driveListSelectedObs;
-    private ObservableList<HWDiskStore> rootDrives;
-    private List<String> rootDrivePaths = new ArrayList<>();
-
-    private ModelFolderScanner modelFolderScanner;
+    private final CheckBoxTreeItem<Path> rootItem;
+    private final ObservableList<Path> driveListSelectedObs;
+    private final ObservableList<HWDiskStore> rootDrives;
+    private final List<String> rootDrivePaths = new ArrayList<>();
+    private final ModelFolderScanner modelFolderScanner;
+    private final DriveInfoUtils driveInfoUtils;
+    private final ModelMain modelMain;
 
     private int rootCount = 0;
-    private DriveInfoUtils driveInfoUtils;
-    private ModelMain modelMain;
-
-
     private int counter = 1;
 
-
-    public DriveScanner(ModelMain modelMain, CheckBoxTreeItem<Path> rootItem, ObservableList<Path> driveListSelectedObs,
-                        DriveInfoUtils driveInfoUtils, ModelFolderScanner modelFolderScanner) {
+    public DriveScanner(ModelMain modelMain,
+                        CheckBoxTreeItem<Path> rootItem,
+                        ObservableList<Path> driveListSelectedObs,
+                        DriveInfoUtils driveInfoUtils,
+                        ModelFolderScanner modelFolderScanner) {
         this.modelMain = modelMain;
         this.rootItem = rootItem;
         this.rootDrives = FXCollections.observableArrayList();
@@ -84,13 +84,11 @@ public class DriveScanner {
     }
 
     ScheduledService<Void> scanner = new ScheduledService<>() {
-
         @Override
-        protected Task createTask() {
-            return new Task<Integer>() {
+        protected Task<Void> createTask() {
+            return new Task<>() {
                 @Override
-                protected Integer call() throws Exception {
-
+                protected Void call() {
                     List<Path> listOfRoots = new ArrayList<>();
                     for (Path root : FileSystems.getDefault().getRootDirectories()) {
                         listOfRoots.add(root);
@@ -101,21 +99,21 @@ public class DriveScanner {
                         return null;
                     }
 
-                    listOfRoots.sort((Path p1, Path p2) -> p1.toAbsolutePath().toString().compareToIgnoreCase(p2.toAbsolutePath().toString()));
+                    listOfRoots.sort((p1, p2) -> p1.toAbsolutePath().toString().compareToIgnoreCase(p2.toAbsolutePath().toString()));
 
-                    if (listOfRoots != null) {
-                        if (updateRootDrives(listOfRoots)) {
-                            Messages.sprintf("Updating root drives: " + rootDrives.size());
-                            rootItem.getChildren().clear();
-                            rootCount = listOfRoots.size();
+                    if (updateRootDrives(listOfRoots)) {
+                        Messages.sprintf("Updating root drives: " + rootDrives.size());
+                        rootItem.getChildren().clear();
+                        rootCount = listOfRoots.size();
 
+                        try {
                             redrawRootFolders();
-                            checkConnectivityOfSelectedFolders();
+                        } catch (IOException e) {
+                            Messages.errorSmth(ERROR, "Unable to redraw root folders", e, Misc.getLineNumber(), false);
                         }
-                    } else {
-                        Messages.errorSmth(ERROR, "Listing Drives list were null", null, Misc.getLineNumber(), false);
-                        Main.setProcessCancelled(true);
+                        checkConnectivityOfSelectedFolders();
                     }
+
                     return null;
                 }
             };
@@ -128,6 +126,7 @@ public class DriveScanner {
             if (!sf.isSelected()) {
                 continue;
             }
+
 
             HWDiskStore matchingDrive = findMatchingDriveForSelectedFolder(sf, rootDrives);
             boolean connected = matchingDrive != null;
@@ -204,8 +203,6 @@ public class DriveScanner {
         CheckBoxTreeItem<Path> cb = new CheckBoxTreeItem<>(fileName);
         cb.setExpanded(true);
         cb.selectedProperty().addListener((observable, oldValue, newValue) -> handleSelectionChange(cb, newValue));
-
-//        initializeCheckBoxSelection(cb, fileName);
         return cb;
     }
 
@@ -250,10 +247,7 @@ public class DriveScanner {
 
     private void processDeselectedPath(CheckBoxTreeItem<Path> cb, Path selectedPath) {
         sprintf("cb.selectedProperty de-selected path is: " + selectedPath);
-        Platform.runLater(() -> {
-//            remove(cb.getValue().toString());
-            driveListSelectedObs.remove(selectedPath);
-        });
+        Platform.runLater(() -> driveListSelectedObs.remove(selectedPath));
     }
 
     private void initializeCheckBoxSelection(CheckBoxTreeItem<File> cb, File fileName) {
@@ -466,39 +460,75 @@ public class DriveScanner {
             String diskSerial = Objects.toString(diskStore.getSerial(), "").trim();
 
             Messages.sprintf("ROOT DRIVE: " + rootPath + " identifier: " + driveIdentifier + " drive: " + rootPath);
-            DriveInfo driveInfo = new DriveInfo(rootPath.toString(), diskStore.getSize(), rootPath.toFile().exists(), false, driveIdentifier);
-            driveInfo.setDrive(rootPath);
-            driveInfo.setIdentifier(driveIdentifier);
-            driveInfo.setSerial(diskSerial);
+            DriveInfo currentDriveDriveInfo = new DriveInfo(rootPath.toString(), diskStore.getSize(), rootPath.toFile().exists(), false, driveIdentifier);
+            currentDriveDriveInfo.setDrive(rootPath);
+            currentDriveDriveInfo.setIdentifier(driveIdentifier);
+            currentDriveDriveInfo.setSerial(diskSerial);
             if (matchingPartition != null) {
-                driveInfo.setPartitionUuid(Objects.toString(matchingPartition.getUuid(), "").trim());
-                driveInfo.setPartitionIdentification(Objects.toString(matchingPartition.getIdentification(), "").trim());
-                driveInfo.setPartitionMountPoint(Objects.toString(matchingPartition.getMountPoint(), "").trim());
+                currentDriveDriveInfo.setPartitionUuid(Objects.toString(matchingPartition.getUuid(), "").trim());
+                currentDriveDriveInfo.setPartitionIdentification(Objects.toString(matchingPartition.getIdentification(), "").trim());
+                currentDriveDriveInfo.setPartitionMountPoint(Objects.toString(matchingPartition.getMountPoint(), "").trim());
             }
 
-            String driveKey = getDriveKey(driveInfo);
+            String driveKey = getDriveKey(currentDriveDriveInfo);
             if (latestDriveKeys.contains(driveKey)) {
                 continue;
             }
             latestRootDrives.add(diskStore);
             latestDriveKeys.add(driveKey);
 
-            for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                Messages.sprintf("Counter:::: " + counter + " sf: " + sf.getFolder() + " drive serial: " + sf.getDriveSerialNumber() + " driveInfo serial: " + driveInfo.getIdentifier());
+            for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                Messages.sprintf("Counter:::: " + counter + " sf: " + selectedFolder.getFolder() + " drive serial: " + selectedFolder.getDriveSerialNumber() + " driveInfo serial: " + currentDriveDriveInfo.getIdentifier());
                 counter++;
-                if (sf.getDriveSerialNumber().isEmpty()) {
-                    Messages.sprintf("SelectedFolderUtils sf.getDriveSerialNumber() is empty for folder: " + sf.getFolder());
+                if (selectedFolder.getDriveSerialNumber().isEmpty()) {
+                    Messages.sprintf("SelectedFolderUtils sf.getDriveSerialNumber() is empty for folder: " + selectedFolder.getFolder());
                     continue;
                 }
-                if (sf.isSelected() && matchesDriveIdentity(sf.getDriveSerialNumber(), driveInfo)) {
+
+                if (selectedFolder.isSelected()) {
+                    Path path = Paths.get(selectedFolder.getFolder(), "mdir.db");
+                    modelFolderScanner.drive().getDrivesList_obs().forEach(driveInfo -> {
+                        Messages.sprintf("99999DriveInfo: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
+                    });
+                    // Is connected
+                    if (Files.exists(path)) {
+                        Messages.sprintf("SelectedFolderUtils sf.getFolder() exists: " + path);
+                    } else {
+                        Messages.sprintfError("SelectedFolderUtils sf.getFolder() not connected: " + path + " trying to resolve the path");
+                        Platform.runLater(() -> selectedFolder.setConnected(false));
+
+                        Path resolveConnectedSelectedFolder = resolveConnectivityForSelectedFolder(selectedFolder, currentDriveDriveInfo);
+//                        if(resolveConnectedSelectedFolder != null) {
+//                            boolean changedDriveLetters = changeDriveLetterForSelected(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), selectedFolder, path, currentDriveDriveInfo);
+//                            if(changedDriveLetters) {
+//
+//                            }
+//                        }
+
+                    }
+
+//                    if(sf.getFolder().startsWith(rootPath.toString())) {
+//                        Messages.sprintf("SelectedFolderUtils sf.getFolder() starts with rootPath: " + rootPath + " for folder: " + sf.getFolder());
+//                    } else {
+//                        Messages.sprintf("SelectedFolderUtils sf.getFolder() does NOT start with rootPath: " + rootPath + " for folder: " + sf.getFolder());
+//
+//                    }
+                }
+
+                if (selectedFolder.isSelected() && matchesDriveIdentity(selectedFolder.getDriveSerialNumber(), currentDriveDriveInfo) && !selectedFolder.isConnected()) {
+                    Messages.sprintfError("NOT CONNETED BUT SELECTED. We need to check if the drive contains the selected folder: " + selectedFolder.getFolder() + " drive serial: " + selectedFolder.getDriveSerialNumber() + " currentDriveDriveInfo serial: " + currentDriveDriveInfo.getIdentifier());
                     // E:\, serial=abcde D:\, serial=abcde If drive size == sf.folders harddrive size then it must be match
                     if (isWindows()) {
-                        String driveLetter = extractDriveLetter(rootPath.toString());
-                        if (!driveLetter.isEmpty() && !sf.getFolder().startsWith(driveLetter)) {
-                            Messages.sprintfError("Drive letter mismatch for selected folder: " + sf.getFolder() + " (expected " + driveLetter + " from drive: " + rootPath + "). External drive may have been remapped. Check folder connectivity.");
-
-                        } else {
-                            Messages.sprintf("Drive letter matches for selected folder: " + sf.getFolder() + " (drive: " + rootPath + ")");
+                        Messages.sprintf("SelectedFolderUtils sf.getFolder() is on Windows. Attempting to remap drive letter for folder: " + selectedFolder.getFolder() + " currentDriveDriveInfo: " + currentDriveDriveInfo.getDrive().toString());
+                        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(Paths.get(selectedFolder.getFolder()));
+                        if (selectedFolderPathWithoutDriveLetter.isEmpty()) {
+                            Messages.sprintfError("SelectedFolderUtils selectedFolderPathWithoutDriveLetter is empty for folder: " + selectedFolder.getFolder());
+                            continue;
+                        }
+                        Path thePath = Paths.get(currentDriveDriveInfo.getDrive().toString(), selectedFolderPathWithoutDriveLetter);
+                        Messages.sprintf("SelectedFolderUtils thePath: " + thePath);
+                        if (Files.exists(thePath)) {
+                            Messages.sprintf("###Drive letter changed from sf.folder: " + selectedFolder.getFolder() + " to " + thePath + " selectedFolderPathWithoutDriveLetter: " + selectedFolderPathWithoutDriveLetter);
                         }
                     }
 
@@ -507,11 +537,11 @@ public class DriveScanner {
                 }
             }
 
-            if (!hasDriveInfo(driveInfo, modelMain.driveInfos())) {
-                Messages.sprintf("New drive detected: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
-                driveInfo.setSelected(false);
-                driveInfo.setConnected(true);
-                Platform.runLater(() -> modelMain.driveInfos().add(driveInfo));
+            if (!hasDriveInfo(currentDriveDriveInfo, modelMain.driveInfos())) {
+                Messages.sprintf("New drive detected: " + currentDriveDriveInfo.getDrivePath() + " serial: " + currentDriveDriveInfo.getIdentifier());
+                currentDriveDriveInfo.setSelected(false);
+                currentDriveDriveInfo.setConnected(true);
+                Platform.runLater(() -> modelMain.driveInfos().add(currentDriveDriveInfo));
                 changed = true;
             } else {
                 for (DriveInfo existing : modelMain.driveInfos()) {
@@ -530,8 +560,7 @@ public class DriveScanner {
         remapSelectedFoldersToCurrentDriveLetters(roots, hardwareDisks);
 
         for (DriveInfo driveInfo : modelMain.driveInfos()) {
-            boolean isConnectedNow = latestDriveKeys.contains(getDriveKey(driveInfo));
-            driveInfo.setConnected(isConnectedNow);
+            driveInfo.setConnected(latestDriveKeys.contains(getDriveKey(driveInfo)));
         }
 
         List<String> currentDriveKeys = toDiskKeys(rootDrives);
@@ -541,6 +570,7 @@ public class DriveScanner {
                 .map(path -> path.toAbsolutePath().normalize().toString())
                 .sorted(String.CASE_INSENSITIVE_ORDER)
                 .toList();
+
         if (!currentDriveKeys.equals(latestDriveKeysList) || !rootDrivePaths.equals(latestRootPaths)) {
             changed = true;
         }
@@ -550,12 +580,14 @@ public class DriveScanner {
                 rootDrives.clear();
                 rootDrives.addAll(latestRootDrives);
             });
-            rootDrivePaths = latestRootPaths;
+            rootDrivePaths.clear();
+            rootDrivePaths.addAll(latestRootPaths);
             Messages.sprintf("Updated root drives, count: " + rootDrives.size());
         }
 
         return changed;
     }
+
 
     private void remapSelectedFoldersToCurrentDriveLetters(List<Path> roots, List<HWDiskStore> hardwareDisks) {
         if (!isWindows()) {
@@ -629,8 +661,7 @@ public class DriveScanner {
         Platform.runLater(() -> {
             boolean updated = false;
             for (SelectedFolderDriveRemap remap : remaps) {
-                if (!samePath(remap.selectedFolder.getFolder(), remap.previousPath)
-                        || !Files.isDirectory(remap.currentPath)) {
+                if (!samePath(remap.selectedFolder.getFolder(), remap.previousPath) || !Files.isDirectory(remap.currentPath)) {
                     continue;
                 }
 
@@ -646,6 +677,7 @@ public class DriveScanner {
                 Messages.sprintf("Remapped selected folder from " + remap.previousPath + " to " + remap.currentPath
                         + " after matching saved file drive serials");
             }
+
             if (updated) {
                 SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
             }
@@ -663,6 +695,7 @@ public class DriveScanner {
                 .map(serial -> Objects.toString(serial, "").trim())
                 .filter(serial -> !serial.isBlank())
                 .toList();
+
         return !serials.isEmpty() && serials.stream().allMatch(serial -> serial.equalsIgnoreCase(driveIdentity));
     }
 
