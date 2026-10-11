@@ -1,17 +1,33 @@
+# Maven
 /target/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Logs
+*.log
+
+# Archives
+*.zip
+
+# Generated
+/.apt_generated/
+/.apt_generated_tests/
+
+# Local files
+/scenicView.properties
+/identifier.sqlite
+
+# Other project-specific ignores
 /MDir_FXDiag.ucls
 src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
-/scenicView.properties
 /shade/
-*.classpath
-*.log
-*.settings*
-*.zip
-*.idea*
-*.project
 /bin/
 *null*
 
-/.apt_generated/
-/.apt_generated_tests/
-/identifier.sqlite
+# IntelliJ
+*.iml
+.idea/workspace.xml
+.idea/shelf/
