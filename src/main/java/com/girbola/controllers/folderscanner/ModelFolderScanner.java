@@ -5,6 +5,7 @@ import com.girbola.controllers.folderscanner.choosefolders.ChooseFoldersControll
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.drive.DriveInfo;
 import com.girbola.drive.DriveInfoUtils;
+import com.girbola.drive.DriveScanner;
 import com.girbola.messages.Messages;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +28,7 @@ public class ModelFolderScanner {
 
 //	private Connection connection = FileInfoSqlConnectionFactory.connector(Main.conf.getAppDataPath(), Main.conf.getFolderInfos_db_fileName());
 
-	private ScanDrives scanDrives;
+	private DriveScanner driveScanner;
 	private DriveInfoUtils driveInfoUtils = new DriveInfoUtils();
 
 	private ChooseFoldersController chooseFoldersController;
@@ -37,8 +38,8 @@ public class ModelFolderScanner {
 	private VBox analyzeList_vbox;
 	private CheckBoxTreeItem<Path> drivesRootItem;
 
-	public ScanDrives getScanDrives() {
-		return scanDrives;
+	public DriveScanner getScanDrives() {
+		return driveScanner;
 	}
 
 	public DriveInfoUtils drive() {
@@ -108,9 +109,9 @@ public class ModelFolderScanner {
 			Messages.sprintf("No drives found!");
 		}
 
-		scanDrives = new ScanDrives(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, driveInfoUtils, this);
+		driveScanner = new DriveScanner(this.modelMain, this.drivesRootItem, selectedDrivesFoldersListObs, driveInfoUtils, this);
 
-		scanDrives.restart();
+        driveScanner.restart();
 	}
 //
 //	public Connection getConnection() {

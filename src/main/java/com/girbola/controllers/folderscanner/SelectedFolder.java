@@ -2,6 +2,7 @@
 
 package com.girbola.controllers.folderscanner;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -24,7 +25,16 @@ public class SelectedFolder {
         this.connected = new SimpleBooleanProperty(connected);
         this.media = new SimpleBooleanProperty(media);
         this.ignored = new SimpleBooleanProperty(ignored);
-		this.driveSerialNumber = new SimpleStringProperty(getDriveSerialNumberFromPath(folder));
+        this.driveSerialNumber = new SimpleStringProperty(getDriveSerialNumberFromPath(folder));
+    }
+
+    public SelectedFolder(String folder, boolean selected, boolean connected, boolean media, boolean ignored, String driveSerialNumber) {
+        this.folder = new SimpleStringProperty(folder);
+        this.selected = new SimpleBooleanProperty(selected);
+        this.connected = new SimpleBooleanProperty(connected);
+        this.media = new SimpleBooleanProperty(media);
+        this.ignored = new SimpleBooleanProperty(ignored);
+        this.driveSerialNumber = new SimpleStringProperty(driveSerialNumber);
     }
 
 
@@ -44,11 +54,28 @@ public class SelectedFolder {
 //    }
 
     public static SelectedFolder create(Path folder, boolean selected, boolean connected, boolean media, boolean ignored) {
-        return new SelectedFolder(folder.toString(), selected, connected, media, ignored);
+        if (folder == null) {
+            return null;
+        }
+        return create(folder.toString(), selected, connected, media, ignored);
     }
 
     public static SelectedFolder create(String folder, boolean selected, boolean connected, boolean media, boolean ignored) {
-        return new SelectedFolder(folder, selected, connected, media, ignored);
+        if (folder == null || folder.isBlank()) {
+            return null;
+        }
+
+        boolean exists = false;
+        try {
+            Path path = Path.of(folder);
+            exists = Files.exists(path);
+        } catch (Exception _) {
+            // Keep object creation possible even if path string is malformed on current OS.
+        }
+        String createdDriveSerialNumber = getDriveSerialNumberFromPath(folder);
+
+        // Missing paths can still be represented (for persisted or temporarily disconnected folders).
+        return new SelectedFolder(folder, selected, connected && exists, media, ignored, createdDriveSerialNumber);
     }
 
     //@formatter:off

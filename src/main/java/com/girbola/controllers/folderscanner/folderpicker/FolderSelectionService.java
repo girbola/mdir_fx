@@ -6,9 +6,13 @@ import com.girbola.messages.Messages;
 import common.utils.FileUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.IdentityHashMap;
+import java.util.Set;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
+import javafx.scene.Node;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TreeItem;
 
@@ -318,11 +322,13 @@ public class FolderSelectionService {
 
             Path value = item.getValue();
             String pathString = value != null ? value.toString() : null;
-            Messages.sprintf("#######checkboxTreeItemValue: " + value);
+            Messages.sprintf("#######selectedListener checkboxTreeItemValue: " + value);
             if (value != null) {
                 if (Boolean.TRUE.equals(newV)) {
-                    Messages.sprintf("Adding path to selected folders: " + pathString);
+                    Messages.sprintf("SELECTEDDDD - Adding path to selected folders: " + pathString);
                     Path newPath = Paths.get(pathString);
+                    iterateTreeItems(item);
+
                     if (isAncestorSelectedInModel(newPath)) {
                         // Parent coverage already includes this node: prevent checkbox
                         // based sibling selection. Ignore exclusions are handled by
@@ -358,7 +364,7 @@ public class FolderSelectionService {
                         consolidateAncestors(pathString);
                     }
                 } else {
-                    Messages.sprintf("Removing path from selected folders: " + pathString);
+                    Messages.sprintf("DESELECTEDDDD - Removing path from selected folders: " + pathString);
                     // Remove this item and any ignored descendants — they were only
                     // meaningful as exclusions under this path's coverage.
                     modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
@@ -444,6 +450,99 @@ public class FolderSelectionService {
             }
         });
     }
+    private final Set<CheckBoxTreeItem<Path>> unselectableItems =
+            Collections.newSetFromMap(new IdentityHashMap<>());
+    private void setChildrenUnselectable(
+            CheckBoxTreeItem<Path> parent,
+            boolean unselectable) {
+
+        for (TreeItem<Path> child : parent.getChildren()) {
+
+            if (child instanceof CheckBoxTreeItem<Path> childItem) {
+
+                if (unselectable) {
+                    unselectableItems.add(childItem);
+
+                    // Parent covers this child, so remove its own selection
+                    childItem.setSelected(false);
+                    childItem.setIndeterminate(false);
+
+                } else {
+                    unselectableItems.remove(childItem);
+                }
+
+                // Process ALL descendants
+                setChildrenUnselectable(childItem, unselectable);
+            }
+        }
+    }
+
+    private void iterateTreeItems(CheckBoxTreeItem<Path> item) {
+
+        if (item == null) {
+            return;
+        }
+
+        Messages.sprintf(
+                "CHECKBOX TREE ITEM: " + item.getValue()
+                        + " isSelected: " + item.isSelected()
+                        + " isIndeterminate: " + item.isIndeterminate()
+        );
+
+        setChildrenUnselectable(item, item.isSelected());
+    }
+
+//    private void iterateTreeItems2(CheckBoxTreeItem<Path> item) {
+//        int count = 0;
+//        CheckBoxTreeItem<Path> current = item;
+//
+//        while(current != null) {
+//
+////            Messages.sprintf("COUNTER::: " + count + " PPPPPPPPPPPPPPARENT: " + current.getValue() + " isSelected: " + current.isSelected() + " isIndeterminate: " + current.isIndeterminate());
+//            count ++;
+//            current = (CheckBoxTreeItem<Path>) current.getParent();
+//        }
+//        if(item instanceof CheckBoxTreeItem<Path> cb) {
+//            if(item.isSelected()) {
+//
+//            }
+//            Messages.sprintf("CHECKBOX TREE ITEM: " + cb.getValue() + " isSelected: " + cb.isSelected() + " isIndeterminate: " + cb.isIndeterminate());
+//            CheckBoxTreeItem<Path> checkBoxTreeItem = (CheckBoxTreeItem<Path>) item;
+//Messages.sprintf("***********FIRST TEST: " + checkBoxTreeItem.getValue());
+////            Node graphic = checkBoxTreeItem.getGraphic();
+////            graphic.setVisible(false);
+//
+//            for (TreeItem<Path> child : item.getChildren()) {
+//                Messages.sprintf("Iterating treeitem: " + child.getValue());
+//                if (child instanceof CheckBoxTreeItem) {
+//                    CheckBoxTreeItem<Path> childCheckBox = (CheckBoxTreeItem<Path>) child;
+//                    Node graphicInner = childCheckBox.getGraphic();
+//                    if(graphicInner != null) {
+//
+//                    graphicInner.setVisible(false);
+//Messages.sprintf("---had graphics in item: " + graphicInner);
+//                    }
+//                    //Messages.sprintf("#######1111checkboxTreeItemValue: " + childCheckBox.getValue() + " isSelected: " + childCheckBox.isSelected() + " isIndeterminate: " + childCheckBox.isIndeterminate());
+//                } else {
+//                    Messages.sprintf("---*NOT Checkboxtreeitem: " + child.getValue());
+//                }
+//                //Messages.sprintf("#######checkboxTreeItemValue: " + child.getValue());
+//            }
+//            //for(TreeItem<Path> child : checkBoxTreeItem.getChildren()) {
+////                Messages.sprintf("#######checkboxTreeItemValue: " + child.getValue());
+////                if (child.getValue() != null && isExactPathIgnored(child.getValue().toString())) {
+////                    child.getGraphic().setStyle("-fx-background-color: red;");
+////                    iterateTreeItems((CheckBoxTreeItem<Path>) child);
+////                    // Child is explicitly excluded under this parent — remove it from obs
+////                    // because the parent now covers it.
+//////                modelMain.getSelectedFolders().getSelectedFolderScanner_obs()
+//////                        .removeIf(sf -> sf.isIgnored() && areSamePath(sf.getFolder(), child.getValue().toString()));
+////                }
+////            }
+////
+//        }
+//
+//    }
 
     public void syncTreeFromModel(ModelMain modelMain) {
         this.modelMain = modelMain;

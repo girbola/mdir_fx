@@ -8,6 +8,7 @@ import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.FolderInfoStatus;
 import com.girbola.controllers.main.tables.tabletype.TableType;
+import com.girbola.drive.DriveInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
@@ -20,6 +21,7 @@ import java.nio.file.Paths;
 import java.sql.Connection;
 import java.util.List;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 
@@ -59,21 +61,30 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                             cancel();
                             return false;
                         }
-                        if (folderInfoStatus.getFolderPath().equals("E:\\M-Drive\\Documents\\Kuviloi")) {
-                            Messages.sprintf("FolderInfo was found: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
-                            for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                                Messages.sprintf("111111111111111111111selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
-                            }
-                        }
-                        Messages.sprintf("=============LoadFileInfosBackToTableViews: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus);
+//                        if (folderInfoStatus.getFolderPath().equals("E:\\M-Drive\\Documents\\Kuviloi")) {
+//                            Messages.sprintf("FolderInfo was found: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+//                            for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+//                                Messages.sprintf("111111111111111111111selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+//                            }
+//                        }
 
+                        Messages.sprintf("=============LoadFileInfosBackToTableViews: " + folderInfoStatus.getFolderPath() + " savedFolderInfoStatus " + folderInfoStatus.isConnected() + " LINE::: " + Misc.getLineNumber());
 
+                        //TODO Temporarely disabled 2026-10-05 21:37:00
+//if(!Paths.get(folderInfoStatus.getFolderPath()).toFile().exists()) {
+//    Messages.sprintf("FolderInfoStatus folder does not exist: " + folderInfoStatus.getFolderPath() + " LINE::: " + Misc.getLineNumber());
+//    if(!modelMain.getMonitorExternalDriveConnectivity().checkIfFolderIsConnected(folderInfoStatus.getFolderPath())) {
+//        ObservableList<DriveInfo> driveInfos = modelMain.driveInfos();
+//        modelMain.getMonitorExternalDriveConnectivity().getDrivesList_obs().forEach(driveInfo -> {
+//            Messages.sprintf("DriveInfo: " + driveInfo.getDrivePath() + " LINE::: " + Misc.getLineNumber());
+//        });
+//    }
+//}
                         if (SelectedFolderUtils.startsWithSelectedFolders(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), Paths.get(folderInfoStatus.getFolderPath()))) {
 
                             SelectedFolder selectedFolder = SelectedFolderUtils.getSelectedFolderParent(folderInfoStatus.getFolderPath(), modelMain);
                             if (selectedFolder == null) {
-                                Messages.sprintf("SelectedFolder was found: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
-                                selectedFolder.setConnected(false);
+                                Messages.sprintf("SelectedFolder was NULL: " + folderInfoStatus.getFolderPath() + " at LINE::: " + Misc.getLineNumber());
                                 continue;
                             }
 

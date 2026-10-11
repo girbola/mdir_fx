@@ -173,7 +173,7 @@ public class SQL_Utils extends FolderInfoDao {
                     String colName = rs.getString("COLUMN_NAME");
                     if (colName != null) {
                         existingColumns.add(colName.toLowerCase());
-                        Messages.sprintf("Column EXISTS: " + colName);
+                        //Messages.sprintf("Column EXISTS: " + colName);
                     } else {
                         Messages.sprintf("Column NOT found: " + colName + " ===of type===: " + rs.getString("TYPE_NAME"));
                     }

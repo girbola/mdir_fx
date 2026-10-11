@@ -80,6 +80,7 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
     @Override
     public void updateItem(Path item, boolean empty) {
         super.updateItem(item, empty);
+       // Messages.sprintf("CustomFolderTreeCell Updating item: " + item);
         detachCurrentFolder();
 
         if (empty || item == null) {
@@ -90,7 +91,7 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
         if (!(getTreeItem() instanceof javafx.scene.control.CheckBoxTreeItem<Path>)) {
             //setGraphic(null);
-            Messages.sprintf("getTreeItem checkboxtreeitem!!!:_ ");
+          //  Messages.sprintf("getTreeItem checkboxtreeitem!!!:_ ");
             setText(item.getFileName() == null ? item.toString() : item.getFileName().toString());
             return;
         }
@@ -104,12 +105,12 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
         TreeItem<Path> treeItem = getTreeItem();
         if(treeItem != null && treeItem.isLeaf()) {
-            Messages.sprintf("getTreeItem ISLEAF!");
+         //   Messages.sprintf("getTreeItem ISLEAF!");
             javafx.scene.Node checkBox = getGraphic();
 
             if (checkBox instanceof javafx.scene.control.CheckBox) {
                 Node lehti = treeItem.getGraphic();
-                Messages.sprintf("getTreeItem ISLEAF! checkBox instanceof CheckBox: " + lehti);
+            //    Messages.sprintf("getTreeItem ISLEAF! checkBox instanceof CheckBox: " + lehti);
                 cb = (CheckBox) checkBox;
             } else {
                 Messages.sprintf("getTreeItem ISLEAF! checkBox NOT instanceof CheckBox");
@@ -117,20 +118,20 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
         }
 
-        Messages.sprintf("Checkbox were not null");
+      //  Messages.sprintf("Checkbox were not null");
         Node graphic = getGraphic();
-        Messages.sprintf("Graphic were not null: " + graphic);
+        // Messages.sprintf("Graphic were not null: " + graphic);
         Node leafGraphic;
         if (getGraphic() == null) {
             leafGraphic = null;
-            Messages.sprintf("Leafgraphic were null");
+           // Messages.sprintf("Leafgraphic were null");
         } else {
             leafGraphic = getGraphic();
-            Messages.sprintf("Leafgraphic were not null: "  + leafGraphic);
+           // Messages.sprintf("Leafgraphic were not null: "  + leafGraphic);
 
         }
 
-        Messages.sprintf("leafGraphic:::: " + leafGraphic);
+      //  Messages.sprintf("leafGraphic:::: " + leafGraphic);
         setStyle(TRANSPARENT_BG);
         assembleHBox(cb, leafGraphic);
         setGraphic(hBox);
@@ -138,12 +139,12 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 //TODO Tee tämä kokonaan uusiksil, koska on olemassa
         SelectedFolder folder = findSelectedFolder(item.toString());
         if (folder == null) {
-            Messages.sprintf("No SelectedFolder for: " + item);
+        //    Messages.sprintf("No SelectedFolder for: " + item);
             attachStandaloneToggle(cb, item.toString());
             return;
         }
 
-        Messages.sprintf("**************About to attachFolder " + folder);
+      //  Messages.sprintf("**************About to attachFolder " + folder);
         attachFolder(folder, cb);
     }
 
@@ -180,6 +181,7 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
     private void detachCurrentFolder() {
         if (currentFolder != null) {
+  //          Messages.sprintf("Detaching Folder: " + currentFolder);
             currentFolder.ignoredProperty().removeListener(ignoredListener);
             currentFolder.selectedProperty().removeListener(selectedListener);
             currentFolder = null;
@@ -191,6 +193,7 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
         ignoreToggleButton.setSelected(false);
         ignoreToggleButton.setStyle(TOGGLE_NORMAL_STYLE);
         ignoreIcon.setIconColor(ICON_NORMAL_COLOR);
+    //    Messages.sprintf("Detaching Folder: ignoreToggleButton setOnAction(null) and setSelected(false)");
     }
 
     private void attachStandaloneToggle(CheckBox cb, String pathStr) {
@@ -281,7 +284,7 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
      * Toggle OFF + folder not selected → cyan label, checkbox enabled
      */
     private void applyDeselectedStyle() {
-        Messages.sprintf("Deselected Folder: " + currentFolder.getFolder());
+      //  Messages.sprintf("Deselected Folder: " + currentFolder.getFolder());
         ensureIgnoreIconLiteral();
         setStyle(TRANSPARENT_BG);
         currentCb.setStyle(CB_NORMAL_STYLE);
@@ -302,9 +305,9 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
         nodes.add(ignoreToggleButton);
         nodes.add(label);
 
-        for (Node n : nodes) {
-            Messages.sprintf("-----assembleHBox nodes: " + n);
-        }
+//        for (Node n : nodes) {
+//            Messages.sprintf("-----assembleHBox nodes: " + n);
+//        }
         hBox.getChildren().setAll(nodes);
     }
 
@@ -317,16 +320,21 @@ public class CustomFolderTreeCell extends CheckBoxTreeCell<Path> {
 
 
     private CheckBox extractCheckBoxFromGraphic(Node graphic) {
+       // Messages.sprintf("extractCheckBoxFromGraphic graphic: " + graphic);
         if (graphic instanceof CheckBox cb) {
+         //   Messages.sprintf("---Extracting CheckBox from CheckBox: " + cb);
             return cb;
         }
         if (graphic instanceof HBox box) {
+            // Messages.sprintf("---Extracting CheckBox from HBox: " + box);
             for (Node child : box.getChildren()) {
                 if (child instanceof CheckBox cb) {
+              //      Messages.sprintf("-----Found CheckBox: " + cb);
                     return cb;
                 }
             }
         }
+        // Messages.sprintf("Wont extract CheckBox from Node: " + graphic);
         return null;
     }
 

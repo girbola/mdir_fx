@@ -1,13 +1,16 @@
-# Java
+# Catch-all: force LF line endings for all text files
+* text=auto eol=lf
+
+# Java & Kotlin
 *.java      text eol=lf
 *.kt        text eol=lf
 *.kts       text eol=lf
 
-# JavaFX
+# JavaFX & Resources
 *.fxml      text eol=lf
 *.css       text eol=lf
 
-# Build
+# Build & Configuration
 *.xml       text eol=lf
 *.properties text eol=lf
 *.yml       text eol=lf
@@ -15,22 +18,19 @@
 *.json      text eol=lf
 *.gradle    text eol=lf
 *.groovy    text eol=lf
-
-# Maven
 *.pom       text eol=lf
 
-# Documentation
+# Documentation & Git
 *.md        text eol=lf
 *.txt       text eol=lf
 *.csv       text eol=lf
-
-# Git
 *.gitignore text eol=lf
 .gitattributes text eol=lf
 
-# Shell scripts
+# Shell Scripts (Linux/Mac)
 *.sh        text eol=lf
 
-# Windows scripts
+# Windows Scripts
 *.bat       text eol=crlf
 *.cmd       text eol=crlf
+*.ps1       text eol=crlf

@@ -46,7 +46,16 @@ public class Messages {
         Dialog<ButtonType> dialog = new Dialog<>();
         DialogPane dialogPane = new DialogPane();
         dialog.setDialogPane(dialogPane);
-        dialog.getDialogPane().getStylesheets().add(Main.conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE);
+
+        URL mainStyleUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+        if (mainStyleUrl != null) {
+            dialogPane.getStylesheets().add(mainStyleUrl.toExternalForm());
+        }
+
+        URL dialogsStyleUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType());
+        if (dialogsStyleUrl != null) {
+            dialogPane.getStylesheets().add(dialogsStyleUrl.toExternalForm());
+        }
         return dialog;
     }
 
@@ -176,6 +185,8 @@ public class Messages {
 
     }
 
+
+
     /**
      * @param message
      */
@@ -294,7 +305,14 @@ public class Messages {
         sprintf("warningText_title: " + message + " alertType: " + alertType.toString());
         Alert alert = new Alert(alertType);
         DialogPane dialogPane = alert.getDialogPane();
-        dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+        URL mainStyleUrl = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
+        if (mainStyleUrl != null) {
+            dialogPane.getStylesheets().add(mainStyleUrl.toExternalForm());
+        }
+        URL dialogsStyleUrl = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType());
+        if (dialogsStyleUrl != null) {
+            dialogPane.getStylesheets().add(dialogsStyleUrl.toExternalForm());
+        }
         dialogPane.getStyleClass().add("alertDiag");
         dialogPane.setHeaderText(null);
         dialogPane.setContentText(message);

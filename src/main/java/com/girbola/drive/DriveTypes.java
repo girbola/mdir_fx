@@ -3,19 +3,21 @@ package com.girbola.drive;
 
 
 public enum DriveTypes {
-    CD_DRIVE("CD Drive"),
+    UNKNOWN("Unknown"),
+    NO_ROOT_DIR("No Root Directory"),
+    REMOVABLE_DISK("Removable Disk"),
     LOCAL_DISK("Local Disk"),
     NETWORK_DRIVE("Network Drive"),
-    REMOVABLE_DISK("Removable Disk");
+    CD_DRIVE("CD/DVD Drive"),
+    RAM_DISK("RAM Disk");
 
-    private String type;
-
-    public String getType() {
-        return type;
-    }
+    private final String type;
 
     DriveTypes(String type) {
         this.type = type;
     }
 
+    public String getType() {
+        return type;
+    }
 }
