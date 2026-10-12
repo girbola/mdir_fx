@@ -31,14 +31,12 @@ public class SelectedFolderUtils {
      */
     public static boolean startsWithSelectedFolders(List<SelectedFolder> selectedFolders, File folder) {
         for (SelectedFolder selectedFolder : selectedFolders) { //KUVILOI tekeee jonkun oman kierroksen tässä. Tai lähinnä Documents. Ilmeiseti koska Documents ei ole varsinaisesti media, joten se palauttaa failed?
-            Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
-            if (folder.toString().equals("C:\\Users\\marko\\OneDrive\\Kuvat\\100CANON")) {
-                Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " isIgnored? " + selectedFolder.isIgnored() + " hasMedia? " + selectedFolder.isMedia() + " LINE::: " + Misc.getLineNumber());
-            }
+         //   Messages.sprintfError("ROOOOT: SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+
             if (folder.toPath().startsWith(selectedFolder.getFolder()) && !selectedFolder.isIgnored()) {
-                Messages.sprintf("--------SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
+           //     Messages.sprintf("--------SelectedFolderUtils contains folder: " + folder + " and selectedFolder: " + selectedFolder.getFolder() + " LINE::: " + Misc.getLineNumber());
                 if (!selectedFolder.isSelected()) {
-                    Messages.sprintf("SelectedFolderUtils contains folder: " + folder + " but it is NOT selected");
+             //       Messages.sprintf("SelectedFolderUtils contains folder: " + folder + " but it is NOT selected");
                     return false;
                 }
                 return true;

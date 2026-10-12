@@ -2,14 +2,19 @@
 package com.girbola.drive;
 
 import com.girbola.Main;
+import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.drive.DriveInfoDao;
 import common.utils.OSHI_Utils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+
 
 public class DriveInfoUtils {
 
@@ -105,6 +110,7 @@ public class DriveInfoUtils {
 
 		}
 	}
+
 	public void createDriveInfo(String path, boolean selected) {
 		if (Main.getProcessCancelled()) {
 			return;
@@ -124,26 +130,79 @@ public class DriveInfoUtils {
 		addDriveInfo(file, selected);
 	}
 
-	/**
+    public static Path changeDriveLetterWithPath(Path originalPath, String newDriveLetter) {
+        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(originalPath);
+		String replacementDriveRoot = parseDriveLetterFromPath(Paths.get(newDriveLetter));
+
+		return Paths.get(replacementDriveRoot, selectedFolderPathWithoutDriveLetter);
+    }
+
+    public static String parseDrivePathFromPath(Path drivePath) {
+        Path root = drivePath.getRoot();
+        if (root == null) {
+            throw new IllegalArgumentException("The provided path does not have a root: " + drivePath);
+        }
+        return drivePath.toString().replace(root.toString(), "");
+    }
+
+    public static String parseDriveLetterFromPath(Path drivePath) {
+        System.out.println("parseDriveLetterFromPath: " + drivePath);
+        return drivePath.getRoot().toString();
+    }
+
+    /**
 	 * Helper method to create and add a new DriveInfo object to the drives list.
 	 */
 	private void addDriveInfo(File file, boolean selected) {
 		String drivePath = file.toString();
-		String driveSerialNumber = OSHI_Utils.getDriveSerialNumber(drivePath);
+		OSHI_Utils.DriveIdentity driveIdentity = OSHI_Utils.resolveDriveIdentity(drivePath);
+		String driveSerialNumber = driveIdentity.identifier();
 
 		// Log the path for debugging purposes
 		Messages.sprintf("Adding drive info for path: " + drivePath);
 
 		// Create and add the DriveInfo object to the list
-		drivesList_obs.add(new DriveInfo(
+		DriveInfo driveInfo = new DriveInfo(
 				drivePath,
 				file.getTotalSpace(),
 				file.exists(),
 				selected,
 				driveSerialNumber
-		));
+		);
+		driveInfo.setSerial(driveIdentity.serial());
+		driveInfo.setPartitionUuid(driveIdentity.partitionUuid());
+		driveInfo.setPartitionIdentification(driveIdentity.partitionIdentification());
+		driveInfo.setPartitionMountPoint(driveIdentity.partitionMountPoint());
+		drivesList_obs.add(driveInfo);
 
 		// Optional logging for the size of the list
 		Messages.sprintf("drivesList size after addition: " + drivesList_obs.size());
 	}
+
+    public static Path resolveConnectivityForSelectedFolder(SelectedFolder selectedFolder, DriveInfo currentDriveDriveInfo) {
+
+        if (isWindows()) {
+            Messages.sprintf("SelectedFolderUtils selectedFolder.getFolder() is on Windows. Attempting to remap drive letter for folder: " + selectedFolder.getFolder() + " currentDriveDriveInfo: " + currentDriveDriveInfo.getDrive().toString());
+            String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(Paths.get(selectedFolder.getFolder()));
+            if (selectedFolderPathWithoutDriveLetter.isEmpty()) {
+                Messages.sprintfError("SelectedFolderUtils selectedFolderPathWithoutDriveLetter is empty for folder: " + selectedFolder.getFolder());
+                return null;
+            }
+            Path thePath = Paths.get(currentDriveDriveInfo.getDrive().toString(), selectedFolderPathWithoutDriveLetter);
+            Messages.sprintf("SelectedFolderUtils thePath: " + thePath);
+            if (Files.exists(thePath)) {
+                Messages.sprintf("###Drive letter changed from selectedFolder.folder: " + selectedFolder.getFolder() + " to " + thePath + " selectedFolderPathWithoutDriveLetter: " + selectedFolderPathWithoutDriveLetter);
+                return thePath;
+            }
+        }
+
+        return null;
+
+    }
+
+    public static boolean isWindows() {
+        String osName = System.getProperty("os.name").toLowerCase();
+        return osName.contains("win");
+    }
+
 }

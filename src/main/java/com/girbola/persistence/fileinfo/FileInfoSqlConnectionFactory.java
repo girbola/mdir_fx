@@ -157,7 +157,7 @@ public class FileInfoSqlConnectionFactory {
                 return conn;
             } catch (Exception e) {
                 e.printStackTrace();
-                System.err.println("Something went wrong while connecting SQLITE database.\n" + e.getMessage());
+                System.err.println("connectToDatabase - Something went wrong while connecting SQLITE database.\n" + e.getMessage() + "\npath: " + path + " tableName: " + tableName);
                 return null;
             }
         }
@@ -204,12 +204,13 @@ public class FileInfoSqlConnectionFactory {
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:" + path + File.separator + tableName);
             if(conn != null && !conn.isClosed()) {
+                Messages.sprintf("FileInfoSqlConnectionFactory - connectToDatabase - Successfully connected to SQLITE database. In path: " + path + " tableName: " + tableName);
                 FileInfoSqlDatabaseMigrator.migrate(conn);
             }
             return conn;
         } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Something went wrong while connecting SQLITE database.\n" + e.getMessage());
+            System.err.println("FileInfoSqlConnectionFactory - connectToDatabase - Something went wrong while connecting SQLITE database.\n" + e.getMessage() + "\npath: " + path + " tableName: " + tableName);
             return conn;
         }
     }

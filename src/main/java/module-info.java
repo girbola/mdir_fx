@@ -40,6 +40,7 @@ module com.girbola {
     // Thumbnailator (automatic module – Automatic-Module-Name: net.coobird.thumbnailator)
     requires net.coobird.thumbnailator;
 
+
     // ── Video / OpenCV (JavaCV / JavaCPP) ───────────────────────────────────
     // JavaCPP runtime (multi-release named module)
     requires org.bytedeco.javacpp;

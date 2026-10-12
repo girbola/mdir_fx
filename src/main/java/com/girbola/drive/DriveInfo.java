@@ -19,6 +19,9 @@ public class DriveInfo {
 	private String drivePath;
 	private String identifier;
 	private String serial;
+	private String partitionUuid;
+	private String partitionIdentification;
+	private String partitionMountPoint;
 	private boolean connected;
 	private boolean isWritable;
 	private boolean selected;
@@ -53,6 +56,9 @@ public class DriveInfo {
 				", drivePath='" + drivePath + '\'' +
 				", identifier='" + identifier + '\'' +
 				", serial='" + serial + '\'' +
+				", partitionUuid='" + partitionUuid + '\'' +
+				", partitionIdentification='" + partitionIdentification + '\'' +
+				", partitionMountPoint='" + partitionMountPoint + '\'' +
 				", connected=" + connected +
 				", isWritable=" + isWritable +
 				", selected=" + selected +

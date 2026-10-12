@@ -87,7 +87,7 @@ public class MainController {
             if (newValue != null) {
                 if (newValue.getText() != null) {
                     if (newValue.getText().equals("Folders")) {
-                        sprintf("Selected tab: " + newValue.getText());
+                        sprintf("Folders - Selected tab: " + newValue.getText());
                         //  model_main.getSelectedFolders().getSelectedFolderScannerOriginal().addAll(model_main.getSelectedFolders().getSelectedFolderScanner_obs());
 
                         model_main.getSelectedFolders().backup();
@@ -108,7 +108,7 @@ public class MainController {
                             Messages.sprintf("getSelectedFolderScannerOriginal: " + selectedFolder.getFolder() + " isConnected?: " + selectedFolder.isConnected());
                         });
                     } else {
-                        Messages.sprintf("Selected tab: " + newValue.getText());
+                        Messages.sprintf("Not Folders - Selected tab: " + newValue.getText());
                     }
                 }
             }

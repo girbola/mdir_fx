@@ -25,7 +25,7 @@ public class ConfigurationSqlConnection {
             return conn;
         } catch (Exception e) {
             e.printStackTrace();
-            Messages.sprintf("Something went wrong while connecting SQLITE database.\n" + e.getMessage());
+            Messages.sprintf("ConfigurationSqlConnection - Something went wrong while connecting SQLITE database.\n" + e.getMessage() + "\npath: " + path + " tableName: " + tableName);
             return conn;
         }
     }

@@ -30,6 +30,7 @@ import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.event.EventHandler;
@@ -67,7 +68,7 @@ public class ModelMain {
 //    private WorkDirSQL workDirSQL; //TODO Move this to SQLHandler when it is ready
 //    private SQLConfigurationHandler sqlConfigurationHandler;
 
-    private List<DriveInfo> driveInfos = new ArrayList<>();
+    private ObservableList<DriveInfo> driveInfos = FXCollections.observableArrayList();
 
     public FolderSelectionService getFolderSelectionService() {
         return folderSelectionService;
@@ -370,7 +371,7 @@ public class ModelMain {
         return this.bottomController;
     }
 
-    public List<DriveInfo> driveInfos() {
+    public ObservableList<DriveInfo> driveInfos() {
         return this.driveInfos;
     }
 

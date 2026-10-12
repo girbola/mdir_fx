@@ -50,6 +50,8 @@ public class Dialogs {
 
 
 		dialogPane.getStylesheets()
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+		dialogPane.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		
 		// dialogPane.getStyleClass().add("dialogPane");
@@ -68,6 +70,8 @@ public class Dialogs {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		Messages.sprintf("width: " + dialog.getWidth());
+		dialogPane.getStylesheets()
+				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 		dialogPane.getStylesheets()
 				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 		dialog.setDialogPane(dialogPane);
