@@ -5,7 +5,7 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.model.FolderInfoStatus;
+import com.girbola.controllers.main.tables.model.SavedFolderInfos;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
@@ -52,8 +52,10 @@ public class SavedFoldersIntoConfigurationTable {
         for (FolderInfo folderInfo : table.getItems()) {
             Messages.sprintf("Saving status for: " + folderInfo.getFolderPath());
             try {
-                FolderInfoStatus folderInfoStatus = new FolderInfoStatus(folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
-                ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(ConfigurationSQLHandler.getConnection(), folderInfoStatus);
+                SavedFolderInfos savedFolderInfos = SavedFolderInfos.capture(
+                        folderInfo.getFolderPath(), folderInfo.getTableType(), folderInfo.getJustFolderName(), folderInfo.isConnected());
+                ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(
+                        ConfigurationSQLHandler.getConnection(), savedFolderInfos);
 
             } catch (Exception e) {
                 Messages.sprintfError(Main.bundle.getString("cannotSaveStatus"));

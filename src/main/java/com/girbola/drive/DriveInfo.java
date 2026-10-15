@@ -1,5 +1,3 @@
-
-
 package com.girbola.drive;
 
 import java.nio.file.FileStore;
@@ -13,56 +11,51 @@ import lombok.Setter;
 @Setter
 public class DriveInfo {
 
-	private FileStore fileSystem;
-	private List<Path> selectedFolders = new ArrayList<>();
-	private Path drive;
-	private String drivePath;
-	private String identifier;
-	private String serial;
-	private String partitionUuid;
-	private String partitionIdentification;
-	private String partitionMountPoint;
-	private boolean connected;
-	private boolean isWritable;
-	private boolean selected;
-	private long driveTotalSize;
+    private FileStore fileSystem;
+    private List<Path> selectedFolders = new ArrayList<>();
+    private Path drive;
+    private String drivePath;
+    private String identifier;
+    private String serial;
+    private String partitionUuid;
+    private String partitionIdentification;
+    private String partitionMountPoint;
+    private boolean connected;
+    private boolean isWritable;
+    private boolean selected;
+    private long driveTotalSize;
 
+    public DriveInfo(String drivePath, long driveTotalSize, boolean connected, boolean selected,
+                     String identifier) {
+        this(drivePath, driveTotalSize, connected, selected, identifier, null);
+    }
 
+    public DriveInfo(String drivePath, long driveTotalSize, boolean connected, boolean selected,
+                     String identifier, String serial) {
+        this.drivePath = drivePath;
+        this.driveTotalSize = driveTotalSize;
+        this.connected = connected;
+        this.selected = selected;
+        this.identifier = identifier;
+        this.serial = serial;
+    }
 
-	/**
-	 * Constructs a DriveInfo object with the given drive details.
-	 *
-	 * @param drivePath the path to the drive.
-	 * @param driveTotalSize the total size of the drive in bytes.
-	 * @param connected indicates whether the drive is currently connected.
-	 * @param selected indicates whether the drive is selected.
-	 * @param identifier a unique identifier for the drive, such as a serial number.
-	 */
-	public DriveInfo(String drivePath, long driveTotalSize, boolean connected, boolean selected,
-			String identifier) {
-		this.drivePath = drivePath;
-		this.driveTotalSize = driveTotalSize;
-		this.connected = connected;
-		this.selected = selected;
-		this.identifier = identifier;
-	}
-
-	@Override
-	public String toString() {
-		return "DriveInfo{" +
-				"fileSystem=" + fileSystem +
-				", selectedFolders=" + selectedFolders +
-				", drive=" + drive +
-				", drivePath='" + drivePath + '\'' +
-				", identifier='" + identifier + '\'' +
-				", serial='" + serial + '\'' +
-				", partitionUuid='" + partitionUuid + '\'' +
-				", partitionIdentification='" + partitionIdentification + '\'' +
-				", partitionMountPoint='" + partitionMountPoint + '\'' +
-				", connected=" + connected +
-				", isWritable=" + isWritable +
-				", selected=" + selected +
-				", driveTotalSize=" + driveTotalSize +
-				'}';
-	}
+    @Override
+    public String toString() {
+        return "DriveInfo{" +
+                "fileSystem=" + fileSystem +
+                ", selectedFolders=" + selectedFolders +
+                ", drive=" + drive +
+                ", drivePath='" + drivePath + '\'' +
+                ", identifier='" + identifier + '\'' +
+                ", serial='" + serial + '\'' +
+                ", partitionUuid='" + partitionUuid + '\'' +
+                ", partitionIdentification='" + partitionIdentification + '\'' +
+                ", partitionMountPoint='" + partitionMountPoint + '\'' +
+                ", connected=" + connected +
+                ", isWritable=" + isWritable +
+                ", selected=" + selected +
+                ", driveTotalSize=" + driveTotalSize +
+                '}';
+    }
 }

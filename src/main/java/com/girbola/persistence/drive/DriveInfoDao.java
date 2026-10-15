@@ -31,11 +31,56 @@ public class DriveInfoDao extends TablesSQL {
     private static final String PARTITION_IDENTIFICATION = "partitionIdentification";
     private static final String PARTITION_MOUNT_POINT = "partitionMountPoint";
 
-    private static final String insertDriveInfo = "INSERT OR REPLACE INTO " + SQLTableEnums.DRIVEINFO.getType()
-            + "('" + DRIVE_PATH + "', " + "'" + IDENTIFIER + "', " + "'" + DRIVE_TOTAL_SIZE + "', "
-            + "'" + DRIVE_CONNECTED + "', " + "'" + DRIVE_SELECTED + "', " + "'" + SERIAL + "', " + "'" + PARTITION_UUID + "', "
-            + "'" + PARTITION_IDENTIFICATION + "', " + "'" + PARTITION_MOUNT_POINT + "')"
-            + " VALUES(?,?,?,?,?,?,?,?,?)";
+    private static final String insertDriveInfo = """
+            INSERT OR REPLACE INTO %s (
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s,
+                %s
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """.formatted(
+            SQLTableEnums.DRIVEINFO.getType(),
+            DRIVE_PATH,
+            IDENTIFIER,
+            DRIVE_TOTAL_SIZE,
+            DRIVE_CONNECTED,
+            DRIVE_SELECTED,
+            SERIAL,
+            PARTITION_UUID,
+            PARTITION_IDENTIFICATION,
+            PARTITION_MOUNT_POINT
+    );
+
+
+    final static String driveInfoTableSchema = """
+            CREATE TABLE IF NOT EXISTS %s (
+                %s TEXT NOT NULL UNIQUE,
+                %s INTEGER,
+                %s TEXT,
+                %s TEXT,
+                %s BOOLEAN,
+                %s TEXT,
+                %s TEXT,
+                %s TEXT,
+                %s TEXT
+            )
+            """.formatted(
+            SQLTableEnums.DRIVEINFO.getType(),
+            DRIVE_PATH,
+            DRIVE_TOTAL_SIZE,
+            IDENTIFIER,
+            DRIVE_SELECTED,
+            DRIVE_CONNECTED,
+            SERIAL,
+            PARTITION_UUID,
+            PARTITION_IDENTIFICATION,
+            PARTITION_MOUNT_POINT
+    );
 
     public static boolean addDriveInfos(List<DriveInfo> driveInfos) {
         connection = ConfigurationSQLHandler.getConnection();
@@ -79,19 +124,8 @@ public class DriveInfoDao extends TablesSQL {
         }
     }
 
-    public static boolean createDriveInfoTable() {
-        final String driveInfoTableSchema = "CREATE TABLE IF NOT EXISTS " +
-                SQLTableEnums.DRIVEINFO.getType()
-                + " (" + DRIVE_PATH + " STRING NOT NULL UNIQUE, "
-                + DRIVE_TOTAL_SIZE + " INTEGER, "
-                + IDENTIFIER + " STRING, "
-                + DRIVE_SELECTED + " STRING, "
-                + DRIVE_CONNECTED + " BOOLEAN, "
-                + SERIAL + " STRING, "
-                + PARTITION_UUID + " STRING, "
-                + PARTITION_IDENTIFICATION + " STRING, "
-                + PARTITION_MOUNT_POINT + " STRING)";
 
+    public static boolean createDriveInfoTable() {
         connection = ConfigurationSQLHandler.getConnection();
 
         try {
@@ -137,6 +171,7 @@ public class DriveInfoDao extends TablesSQL {
 
                 // Creating DriveInfo object
                 DriveInfo driveInfo = new DriveInfo(drivePath, driveTotalSize, isConnected, isSelected, identifier);
+
                 driveInfo.setSerial(rs.getString(SERIAL));
                 driveInfo.setPartitionUuid(rs.getString(PARTITION_UUID));
                 driveInfo.setPartitionIdentification(rs.getString(PARTITION_IDENTIFICATION));

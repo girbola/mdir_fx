@@ -11,7 +11,7 @@ import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
-import com.girbola.controllers.main.tables.model.FolderInfoStatus;
+import com.girbola.controllers.main.tables.model.SavedFolderInfos;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
@@ -23,9 +23,7 @@ import com.girbola.sql.SQL_Utils;
 import com.girbola.persistence.configuration.ConfigurationSavedFoldersDao;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Optional;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -227,11 +225,12 @@ public class ModelMain {
                 folderInfo.setTableType(tableType);
                 try {
 
-                    FolderInfoStatus folderInfoStatus = new FolderInfoStatus(folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
+                    SavedFolderInfos savedFolderInfos = SavedFolderInfos.capture(
+                            folderInfo.getFolderPath(), tableType, folderInfo.getJustFolderName(), folderInfo.isConnected());
 
-                    Messages.sprintf("Saving folderInfo: " + folderInfoStatus.getFolderPath() + " tableType: " + folderInfoStatus.getTableType() + " justFolderName: " + folderInfoStatus.getJustFolderName() + " connected: " + folderInfoStatus.isConnected() + " size: " + folderInfo.getFileInfoList().size());
+                    Messages.sprintf("Saving folderInfo: " + savedFolderInfos.getFolderPath() + " tableType: " + savedFolderInfos.getTableType() + " justFolderName: " + savedFolderInfos.getJustFolderName() + " connected: " + savedFolderInfos.isConnected() + " size: " + folderInfo.getFileInfoList().size());
 
-                    boolean addingToFolderInfos = ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(connectionConfiguration, folderInfoStatus);  // Saving folderinfo current state to to configure database
+                    boolean addingToFolderInfos = ConfigurationSavedFoldersDao.insertSavedFoldersIntoConfigurationDatabase(connectionConfiguration, savedFolderInfos);  // Saving folderinfo current state to to configure database
                     if (!addingToFolderInfos) {
                         Platform.runLater(() -> {
                             Messages.sprintfError("Something went wrong when saving folderinfo into configuration file: " + folderInfo.getFolderPath());

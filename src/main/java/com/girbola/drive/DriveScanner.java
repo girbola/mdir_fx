@@ -14,6 +14,7 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.persistence.drive.DriveInfoDao;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.FileUtils;
@@ -460,10 +461,11 @@ public class DriveScanner {
             String diskSerial = Objects.toString(diskStore.getSerial(), "").trim();
 
             Messages.sprintf("ROOT DRIVE: " + rootPath + " identifier: " + driveIdentifier + " drive: " + rootPath);
-            DriveInfo currentDriveDriveInfo = new DriveInfo(rootPath.toString(), diskStore.getSize(), rootPath.toFile().exists(), false, driveIdentifier);
-            currentDriveDriveInfo.setDrive(rootPath);
-            currentDriveDriveInfo.setIdentifier(driveIdentifier);
-            currentDriveDriveInfo.setSerial(diskSerial);
+            DriveInfo currentDriveDriveInfo = new DriveInfo(
+                    rootPath.toString(), diskStore.getSize(), Files.exists(rootPath), false, driveIdentifier, diskSerial);
+//            currentDriveDriveInfo.setDrive(rootPath);
+//            currentDriveDriveInfo.setIdentifier(driveIdentifier);
+//            currentDriveDriveInfo.setSerial(diskSerial);
             if (matchingPartition != null) {
                 currentDriveDriveInfo.setPartitionUuid(Objects.toString(matchingPartition.getUuid(), "").trim());
                 currentDriveDriveInfo.setPartitionIdentification(Objects.toString(matchingPartition.getIdentification(), "").trim());
@@ -477,66 +479,6 @@ public class DriveScanner {
             latestRootDrives.add(diskStore);
             latestDriveKeys.add(driveKey);
 
-            for (SelectedFolder selectedFolder : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                Messages.sprintf("Counter:::: " + counter + " sf: " + selectedFolder.getFolder() + " drive serial: " + selectedFolder.getDriveSerialNumber() + " driveInfo serial: " + currentDriveDriveInfo.getIdentifier());
-                counter++;
-                if (selectedFolder.getDriveSerialNumber().isEmpty()) {
-                    Messages.sprintf("SelectedFolderUtils sf.getDriveSerialNumber() is empty for folder: " + selectedFolder.getFolder());
-                    continue;
-                }
-
-                if (selectedFolder.isSelected()) {
-                    Path path = Paths.get(selectedFolder.getFolder(), "mdir.db");
-                    modelFolderScanner.drive().getDrivesList_obs().forEach(driveInfo -> {
-                        Messages.sprintf("99999DriveInfo: " + driveInfo.getDrivePath() + " serial: " + driveInfo.getIdentifier());
-                    });
-                    // Is connected
-                    if (Files.exists(path)) {
-                        Messages.sprintf("SelectedFolderUtils sf.getFolder() exists: " + path);
-                    } else {
-                        Messages.sprintfError("SelectedFolderUtils sf.getFolder() not connected: " + path + " trying to resolve the path");
-                        Platform.runLater(() -> selectedFolder.setConnected(false));
-
-                        Path resolveConnectedSelectedFolder = resolveConnectivityForSelectedFolder(selectedFolder, currentDriveDriveInfo);
-//                        if(resolveConnectedSelectedFolder != null) {
-//                            boolean changedDriveLetters = changeDriveLetterForSelected(modelMain.getSelectedFolders().getSelectedFolderScanner_obs(), selectedFolder, path, currentDriveDriveInfo);
-//                            if(changedDriveLetters) {
-//
-//                            }
-//                        }
-
-                    }
-
-//                    if(sf.getFolder().startsWith(rootPath.toString())) {
-//                        Messages.sprintf("SelectedFolderUtils sf.getFolder() starts with rootPath: " + rootPath + " for folder: " + sf.getFolder());
-//                    } else {
-//                        Messages.sprintf("SelectedFolderUtils sf.getFolder() does NOT start with rootPath: " + rootPath + " for folder: " + sf.getFolder());
-//
-//                    }
-                }
-
-                if (selectedFolder.isSelected() && matchesDriveIdentity(selectedFolder.getDriveSerialNumber(), currentDriveDriveInfo) && !selectedFolder.isConnected()) {
-                    Messages.sprintfError("NOT CONNETED BUT SELECTED. We need to check if the drive contains the selected folder: " + selectedFolder.getFolder() + " drive serial: " + selectedFolder.getDriveSerialNumber() + " currentDriveDriveInfo serial: " + currentDriveDriveInfo.getIdentifier());
-                    // E:\, serial=abcde D:\, serial=abcde If drive size == sf.folders harddrive size then it must be match
-                    if (isWindows()) {
-                        Messages.sprintf("SelectedFolderUtils sf.getFolder() is on Windows. Attempting to remap drive letter for folder: " + selectedFolder.getFolder() + " currentDriveDriveInfo: " + currentDriveDriveInfo.getDrive().toString());
-                        String selectedFolderPathWithoutDriveLetter = parseDrivePathFromPath(Paths.get(selectedFolder.getFolder()));
-                        if (selectedFolderPathWithoutDriveLetter.isEmpty()) {
-                            Messages.sprintfError("SelectedFolderUtils selectedFolderPathWithoutDriveLetter is empty for folder: " + selectedFolder.getFolder());
-                            continue;
-                        }
-                        Path thePath = Paths.get(currentDriveDriveInfo.getDrive().toString(), selectedFolderPathWithoutDriveLetter);
-                        Messages.sprintf("SelectedFolderUtils thePath: " + thePath);
-                        if (Files.exists(thePath)) {
-                            Messages.sprintf("###Drive letter changed from sf.folder: " + selectedFolder.getFolder() + " to " + thePath + " selectedFolderPathWithoutDriveLetter: " + selectedFolderPathWithoutDriveLetter);
-                        }
-                    }
-
-                    //driveInfo.setSelected(true);
-                    break;
-                }
-            }
-
             if (!hasDriveInfo(currentDriveDriveInfo, modelMain.driveInfos())) {
                 Messages.sprintf("New drive detected: " + currentDriveDriveInfo.getDrivePath() + " serial: " + currentDriveDriveInfo.getIdentifier());
                 currentDriveDriveInfo.setSelected(false);
@@ -547,8 +489,14 @@ public class DriveScanner {
                 for (DriveInfo existing : modelMain.driveInfos()) {
                     Messages.sprintf("Existing Drive: " + existing.getDrivePath() + " serial: " + existing.getIdentifier());
                     if (getDriveKey(existing).equals(driveKey)) {
-                        existing.setDrive(rootPath);
-                        existing.setDrivePath(rootPath.toString());
+                        //(String drivePath, long driveTotalSize, boolean connected, boolean selected,
+                        //			String identifier)
+                        Messages.sprintf("!!!!!Updating existing drive info for: " + existing.getDrivePath() + " serial: " + existing.getIdentifier());
+////                        existing.setSelected(true);
+//                        existing.setDrive(rootPath);
+//                        existing.setDriveTotalSize(diskStore.getSize());
+//existing
+//                        existing.setDrivePath(rootPath.toString());
                         existing.setConnected(true);
                         break;
                     }

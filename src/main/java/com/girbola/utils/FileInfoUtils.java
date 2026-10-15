@@ -847,30 +847,30 @@ public class FileInfoUtils {
         return newFilesToAdd;
     }
 
-    private static boolean handleEmptySerialNumber(FolderInfo folderInfo) {
-        boolean isDriveFound = false;
-        try {
-            List<DriveInfo> driveInfos = DriveInfoDao.loadDriveInfos();
-            if (driveInfos == null || driveInfos.isEmpty()) {
-                return false;
-            }
-
-            Path folderToFindPath = Paths.get(folderInfo.getFolderPath());
-            for (DriveInfo driveInfo : driveInfos) {
-                if (hasPath(driveInfo, folderToFindPath)) {
-                    isDriveFound = true;
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            Messages.sprintfError("Error in handleEmptySerialNumber: " + e.getMessage());
-            return false;
-        } finally {
-            DriveInfoDao.closeConnection();
-        }
-
-        return isDriveFound;
-    }
+//    private static boolean handleEmptySerialNumber(FolderInfo folderInfo) {
+//        boolean isDriveFound = false;
+//        try {
+//            List<DriveInfo> driveInfos = DriveInfoDao.loadDriveInfos();
+//            if (driveInfos == null || driveInfos.isEmpty()) {
+//                return false;
+//            }
+//
+//            Path folderToFindPath = Paths.get(folderInfo.getFolderPath());
+//            for (DriveInfo driveInfo : driveInfos) {
+//                if (hasPath(driveInfo, folderToFindPath)) {
+//                    isDriveFound = true;
+//                    break;
+//                }
+//            }
+//        } catch (Exception e) {
+//            Messages.sprintfError("Error in handleEmptySerialNumber: " + e.getMessage());
+//            return false;
+//        } finally {
+//            DriveInfoDao.closeConnection();
+//        }
+//
+//        return isDriveFound;
+//    }
 
     private static boolean hasPath(DriveInfo driveInfo, Path pathToFind) {
         if (driveInfo == null || driveInfo.getDrive() == null || pathToFind == null) {

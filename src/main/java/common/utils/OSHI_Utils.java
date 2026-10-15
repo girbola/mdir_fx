@@ -20,14 +20,21 @@ public class OSHI_Utils {
         private final String partitionUuid;
         private final String partitionIdentification;
         private final String partitionMountPoint;
+        private final long diskSize;
 
         public DriveIdentity(String identifier, String serial, String partitionUuid,
                              String partitionIdentification, String partitionMountPoint) {
+            this(identifier, serial, partitionUuid, partitionIdentification, partitionMountPoint, 0L);
+        }
+
+        public DriveIdentity(String identifier, String serial, String partitionUuid,
+                             String partitionIdentification, String partitionMountPoint, long diskSize) {
             this.identifier = sanitize(identifier);
             this.serial = sanitize(serial);
             this.partitionUuid = sanitize(partitionUuid);
             this.partitionIdentification = sanitize(partitionIdentification);
             this.partitionMountPoint = sanitize(partitionMountPoint);
+            this.diskSize = diskSize;
         }
 
         public String identifier() {
@@ -48,6 +55,10 @@ public class OSHI_Utils {
 
         public String partitionMountPoint() {
             return partitionMountPoint;
+        }
+
+        public long diskSize() {
+            return diskSize;
         }
     }
 
@@ -136,7 +147,8 @@ public class OSHI_Utils {
             String identifier = chooseIdentifier(partitionUuid, partitionIdentification, serial,
                     sanitize(diskStore.getName()), sanitize(diskStore.getModel()));
 
-            return new DriveIdentity(identifier, serial, partitionUuid, partitionIdentification, partitionMountPoint);
+            return new DriveIdentity(identifier, serial, partitionUuid, partitionIdentification,
+                    partitionMountPoint, diskStore.getSize());
         } catch (Exception e) {
             Messages.sprintfError("Unable to resolve drive serial for path: " + path + " error: " + e.getMessage());
         }
@@ -244,7 +256,7 @@ public class OSHI_Utils {
     }
 
     private static DriveIdentity emptyIdentity() {
-        return new DriveIdentity("", "", "", "", "");
+        return new DriveIdentity("", "", "", "", "", 0L);
     }
 
     private static String chooseIdentifier(String partitionUuid, String partitionIdentification,
