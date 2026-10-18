@@ -17,6 +17,7 @@
 
 package com.girbola;
 
+import com.girbola.app.ApplicationContext;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.configuration.Configuration;
 import com.girbola.configuration.ConfigurationSqlConnection;
@@ -24,6 +25,7 @@ import com.girbola.configuration.VLCJDiscovery;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.MainController;
 import com.girbola.controllers.main.ModelMain;
+import com.girbola.controllers.main.loadfileinfostableviews.LoadFileInfosBackToTableViews;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.messages.Messages;
@@ -71,7 +73,8 @@ public class Main extends Application {
     private static RandomAccessFile lockFile;
     private static FileLock fileLock;
 
-    private ModelMain model_main = new ModelMain();
+    private final ApplicationContext applicationContext = new MainApplicationContext();
+    private final ModelMain model_main = new ModelMain(applicationContext);
     private Scene primaryScene;
     private StageControl stageControl;
     private Service<Boolean> load_FileInfosBackToTableViews = null;
@@ -597,6 +600,44 @@ public class Main extends Application {
                     stage.setY((Main.conf.getWindowStartPosY() + (Main.conf.getWindowStartHeight() / 2) - stage.getHeight() / 2));
                 });
             });
+        }
+    }
+
+    private static final class MainApplicationContext implements ApplicationContext {
+
+        @Override
+        public Configuration getConfiguration() {
+            return Main.conf;
+        }
+
+        @Override
+        public ResourceBundle getBundle() {
+            return Main.bundle;
+        }
+
+        @Override
+        public SceneSwitcher getSceneManager() {
+            return Main.sceneManager;
+        }
+
+        @Override
+        public boolean isChanged() {
+            return Main.getChanged();
+        }
+
+        @Override
+        public void setChanged(boolean changed) {
+            Main.setChanged(changed);
+        }
+
+        @Override
+        public boolean isProcessCancelled() {
+            return Main.getProcessCancelled();
+        }
+
+        @Override
+        public void setProcessCancelled(boolean processCancelled) {
+            Main.setProcessCancelled(processCancelled);
         }
     }
 }

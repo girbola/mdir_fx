@@ -84,6 +84,7 @@ public class DriveInfoDao extends TablesSQL {
 
     public static boolean addDriveInfos(List<DriveInfo> driveInfos) {
         connection = ConfigurationSQLHandler.getConnection();
+        Messages.sprintf("Adding list of drive infos to database: " + driveInfos.size() + " entries");
         try {
             createDriveInfoTable(); // Ensure the table exists
 

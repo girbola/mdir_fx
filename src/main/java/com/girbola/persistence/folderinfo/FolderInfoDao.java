@@ -189,6 +189,16 @@ public class FolderInfoDao {
         Connection connectionFileInfos = null;
         boolean success = false;
 
+                /*
+        List<FileInfo> goods
+        List<FileInfo> those which couldnt load bevause sql paths were not found or something else
+
+        returning Map<String, List<FileInfo>> failedLoads = new HashMap<>();
+        example: failedLoads.put("Failed to load", new ArrayList<>());
+
+
+         */
+
         try {
             connectionFileInfos = FileInfoSqlConnectionFactory.connectToDatabase(path, Main.conf.getMdir_db_fileName());
             if (!SQL_Utils.isDbConnected(connectionFileInfos)) {

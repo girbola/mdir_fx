@@ -1,13 +1,10 @@
 package com.girbola.drive;
 
-import com.girbola.controllers.folderscanner.ModelFolderScanner;
 import com.girbola.controllers.folderscanner.SelectedFolder;
-import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.fileinfo.FileInfo;
 import common.utils.OSHI_Utils;
 import java.io.File;
-import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -18,9 +15,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.control.CheckBoxTreeItem;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -38,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class DriveScannerTest {
 
@@ -171,9 +166,7 @@ class DriveScannerTest {
 
     @Test
     void returnsExistingSortedAndUniqueRoots() throws Exception {
-        DriveScanner scanner = createScanner();
-
-        File[] roots = invokeGetListOfRoots(scanner);
+        File[] roots = DriveScannerUtils.getListOfRoots();
 
         assertNotNull(roots);
         assertTrue(roots.length > 0, "Expected at least one root directory");
@@ -199,9 +192,7 @@ class DriveScannerTest {
 
     @Test
     void includesAllDefaultFileSystemRootDirectories() throws Exception {
-        DriveScanner scanner = createScanner();
-
-        Set<String> discovered = Arrays.stream(invokeGetListOfRoots(scanner))
+        Set<String> discovered = Arrays.stream(DriveScannerUtils.getListOfRoots())
                 .map(file -> file.getAbsoluteFile().toPath().normalize().toString().toLowerCase(java.util.Locale.ROOT))
                 .collect(Collectors.toSet());
         long startTime = System.currentTimeMillis();
@@ -215,24 +206,22 @@ class DriveScannerTest {
 
     @Test
     void addMountedChildrenSkipsNonDirectoryParent(@TempDir Path tempDir) throws Exception {
-        DriveScanner scanner = createScanner();
         Set<Path> roots = new HashSet<>();
         Path fileParent = Files.createFile(tempDir.resolve("not-a-directory.txt"));
 
-        invokeAddMountedChildren(scanner, roots, fileParent);
+        DriveScannerUtils.addMountedChildren(roots, fileParent);
 
         assertTrue(roots.isEmpty());
     }
 
     @Test
     void addMountedChildrenAddsOnlyDirectories(@TempDir Path tempDir) throws Exception {
-        DriveScanner scanner = createScanner();
         Set<Path> roots = new HashSet<>();
         Path mountParent = Files.createDirectory(tempDir.resolve("mount-parent"));
         Path dirChild = Files.createDirectory(mountParent.resolve("usb1"));
         Files.createFile(mountParent.resolve("plain-file.txt"));
 
-        invokeAddMountedChildren(scanner, roots, mountParent);
+        DriveScannerUtils.addMountedChildren(roots, mountParent);
 
         Set<Path> normalizedRoots = roots.stream()
                 .map(path -> path.toAbsolutePath().normalize())
@@ -251,8 +240,8 @@ class DriveScannerTest {
         secondMatchingFile.setOrgPathDriveSerialNumber("VOLUME-123");
         folderInfo.setFileInfoList(new ArrayList<>(List.of(matchingFile, secondMatchingFile)));
 
-        assertTrue(DriveScanner.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
-        assertFalse(DriveScanner.hasMatchingFileInfoDriveSerial(folderInfo, "volume-456"));
+        assertTrue(SelectedFolderDriveManager.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
+        assertFalse(SelectedFolderDriveManager.hasMatchingFileInfoDriveSerial(folderInfo, "volume-456"));
     }
 
     @Test
@@ -261,7 +250,7 @@ class DriveScannerTest {
         FileInfo fileInfo = new FileInfo();
         folderInfo.setFileInfoList(new ArrayList<>(List.of(fileInfo)));
 
-        assertFalse(DriveScanner.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
+        assertFalse(SelectedFolderDriveManager.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
     }
 
     @Test
@@ -273,27 +262,100 @@ class DriveScannerTest {
         conflictingFile.setOrgPathDriveSerialNumber("volume-456");
         folderInfo.setFileInfoList(new ArrayList<>(List.of(matchingFile, conflictingFile)));
 
-        assertFalse(DriveScanner.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
+        assertFalse(SelectedFolderDriveManager.hasMatchingFileInfoDriveSerial(folderInfo, "volume-123"));
     }
 
-    private DriveScanner createScanner() {
-        ModelMain modelMain = mock(ModelMain.class);
-        CheckBoxTreeItem<Path> rootItem = new CheckBoxTreeItem<>(Path.of("."));
-        ObservableList<Path> driveListSelectedObs = FXCollections.observableArrayList();
-        DriveInfoUtils driveInfoUtils = mock(DriveInfoUtils.class);
-        ModelFolderScanner modelFolderScanner = mock(ModelFolderScanner.class);
-        return new DriveScanner(modelMain, rootItem, driveListSelectedObs, driveInfoUtils, modelFolderScanner);
+    @Test
+    void createDriveInfoCopiesDiskAndPartitionIdentity(@TempDir Path tempDir) {
+        HWDiskStore diskStore = mock(HWDiskStore.class);
+        HWPartition partition = mock(HWPartition.class);
+        when(diskStore.getSerial()).thenReturn(" disk-serial ");
+        when(diskStore.getSize()).thenReturn(1024L);
+        when(partition.getUuid()).thenReturn(" partition-uuid ");
+        when(partition.getIdentification()).thenReturn(" partition-id ");
+        when(partition.getMountPoint()).thenReturn(tempDir.toString());
+
+        DriveInfo driveInfo = DriveInventoryScanner.createDriveInfo(tempDir, diskStore, partition);
+
+        assertEquals(tempDir.toString(), driveInfo.getDrivePath());
+        assertEquals(1024L, driveInfo.getDriveTotalSize());
+        assertEquals("partition-uuid", driveInfo.getIdentifier());
+        assertEquals("disk-serial", driveInfo.getSerial());
+        assertEquals("partition-uuid", driveInfo.getPartitionUuid());
+        assertEquals("partition-id", driveInfo.getPartitionIdentification());
+        assertEquals(tempDir.toString(), driveInfo.getPartitionMountPoint());
+        assertTrue(driveInfo.isConnected());
+        assertFalse(driveInfo.isSelected());
     }
 
-    private File[] invokeGetListOfRoots(DriveScanner scanner) throws Exception {
-        Method method = DriveScanner.class.getDeclaredMethod("getListOfRoots");
-        method.setAccessible(true);
-        return (File[]) method.invoke(scanner);
+    @Test
+    void registerDriveInfoAddsNewDriveAndUpdatesExistingByIdentity() {
+        DriveInfo existingDrive = new DriveInfo("C:\\", 1024, false, true, "partition-uuid");
+        List<DriveInfo> registeredDriveInfos = new ArrayList<>(List.of(existingDrive));
+        DriveInfo discoveredExisting = new DriveInfo("D:\\", 1024, false, false, "partition-uuid");
+
+        assertFalse(DriveInventoryScanner.registerDriveInfo(discoveredExisting, registeredDriveInfos));
+
+        assertEquals(1, registeredDriveInfos.size());
+        assertTrue(existingDrive.isConnected());
+        assertTrue(existingDrive.isSelected());
+
+        DriveInfo newDrive = new DriveInfo("E:\\", 2048, false, true, "new-uuid");
+        assertTrue(DriveInventoryScanner.registerDriveInfo(newDrive, registeredDriveInfos));
+
+        assertEquals(2, registeredDriveInfos.size());
+        assertTrue(newDrive.isConnected());
+        assertFalse(newDrive.isSelected());
     }
 
-    private void invokeAddMountedChildren(DriveScanner scanner, Set<Path> roots, Path mountParent) throws Exception {
-        Method method = DriveScanner.class.getDeclaredMethod("addMountedChildren", Set.class, Path.class);
-        method.setAccessible(true);
-        method.invoke(scanner, roots, mountParent);
+    @Test
+    void scanRootsSkipsMissingAndUnmatchedRootsAndDeduplicatesDiscoveredDrive(@TempDir Path tempDir)
+            throws Exception {
+        Path unmatchedFile = Files.createFile(tempDir.resolve("ordinary-file.txt"));
+        Path missingRoot = tempDir.resolve("missing");
+        HWDiskStore diskStore = mock(HWDiskStore.class);
+        HWPartition partition = mock(HWPartition.class);
+        when(diskStore.getPartitions()).thenReturn(List.of(partition));
+        when(diskStore.getSerial()).thenReturn("disk-serial");
+        when(diskStore.getSize()).thenReturn(1024L);
+        when(diskStore.getName()).thenReturn("disk-name");
+        when(partition.getMountPoint()).thenReturn(tempDir.toString());
+        when(partition.getUuid()).thenReturn("partition-uuid");
+        when(partition.getIdentification()).thenReturn("partition-id");
+
+        List<DriveInfo> registeredDriveInfos = new ArrayList<>();
+        DriveInventoryScanner.Result result = new DriveInventoryScanner().scanRoots(
+                List.of(tempDir, tempDir, missingRoot, unmatchedFile),
+                List.of(diskStore),
+                registeredDriveInfos,
+                () -> false);
+
+        assertEquals(List.of(diskStore), result.rootDrives());
+        assertEquals(1, result.driveKeys().size());
+        assertTrue(result.driveInfosChanged());
+        assertEquals(1, registeredDriveInfos.size());
+        assertEquals(4, result.rootPaths().size());
+    }
+
+    @Test
+    void scanRootsStopsWhenCancelled(@TempDir Path tempDir) {
+        List<DriveInfo> registeredDriveInfos = new ArrayList<>();
+
+        DriveInventoryScanner.Result result = new DriveInventoryScanner().scanRoots(
+                List.of(tempDir), List.of(), registeredDriveInfos, () -> true);
+
+        assertTrue(result.rootDrives().isEmpty());
+        assertTrue(result.driveKeys().isEmpty());
+        assertTrue(registeredDriveInfos.isEmpty());
+    }
+
+    @Test
+    void snapshotChangeDetectionComparesDriveKeysAndRootPaths() {
+        DriveInventoryScanner.Result result = new DriveInventoryScanner.Result(
+                List.of(), Set.of(), false, List.of("C:\\", "D:\\"));
+
+        assertFalse(DriveInventoryScanner.hasChanged(result, List.of(), List.of("C:\\", "D:\\")));
+        assertTrue(DriveInventoryScanner.hasChanged(result, List.of("new-drive"), List.of("C:\\", "D:\\")));
+        assertTrue(DriveInventoryScanner.hasChanged(result, List.of(), List.of("C:\\")));
     }
 }

@@ -29,24 +29,24 @@
 
         <apache-common-imaging.version>1.0.0-alpha6</apache-common-imaging.version>
         <ikonli-javafx.version>12.4.0</ikonli-javafx.version>
-        <com.twelvemonkeys.imageio.version>3.14.0</com.twelvemonkeys.imageio.version>
+        <com.twelvemonkeys.imageio.version>3.15.3</com.twelvemonkeys.imageio.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <javacv-platform.version>1.5.14</javacv-platform.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <javafx.version>26.0.2</javafx.version>
         <junit-jupiter.version>6.1.3</junit-jupiter.version>
-        <lombok.version>1.18.46</lombok.version>
+        <lombok.version>1.18.48</lombok.version>
         <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
         <maven.compiler.target.release>24</maven.compiler.target.release>
         <maven.surefire.plugin.version>3.6.0</maven.surefire.plugin.version>
         <metadata-extractor.version>2.21.0</metadata-extractor.version>
-        <mockito-core-release>5.23.0</mockito-core-release>
+        <mockito-core-release>5.24.0</mockito-core-release>
         <org.apache.logging.log4j.version>3.0.0-beta2</org.apache.logging.log4j.version>
 <!--        <org.openpnp.version>4.9.0-0</org.openpnp.version>-->
-        <oshi-core.version>7.4.4</oshi-core.version>
+        <oshi-core.version>7.7.1</oshi-core.version>
         <owasp.version>13.0.0</owasp.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <sqlite-jdbc.version>3.53.2.1</sqlite-jdbc.version>
+        <sqlite-jdbc.version>3.53.4.0</sqlite-jdbc.version>
         <thumbnailator.version>[0.4, 0.5]</thumbnailator.version>
         <vlcj-javafx.version>1.2.1</vlcj-javafx.version>
         <vlcj.version>5.0.0</vlcj.version>
