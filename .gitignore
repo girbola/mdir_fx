@@ -29,5 +29,8 @@ src/main/java/com/girbola/controllers/folderscanner/ScanDrives2.java
 
 # IntelliJ
 *.iml
-.idea/workspace.xml
+.idea/
+
+# Packaged release output
+/release/
 .idea/shelf/
