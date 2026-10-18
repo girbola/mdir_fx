@@ -470,3 +470,17 @@ Main /theme/light/mainStyle.css
     -fx-background-color: transparent;
 }
 
+
+/* Folder table value colours */
+.table-view .table-cell.col-name { -fx-text-fill: #1c2430; -fx-font-weight: bold; }
+.table-view .table-cell.col-files { -fx-text-fill: #1f5fbf; -fx-font-weight: bold; }
+.table-view .table-cell.col-date-min { -fx-text-fill: #117a70; }
+.table-view .table-cell.col-date-max { -fx-text-fill: #b4551f; }
+.table-view .table-cell.col-size { -fx-text-fill: #9a6b00; -fx-font-weight: bold; }
+.table-view .table-cell.col-path { -fx-text-fill: #5d6978; -fx-font-style: italic; }
+.table-view .table-row-cell:selected .table-cell.col-name,
+.table-view .table-row-cell:selected .table-cell.col-files,
+.table-view .table-row-cell:selected .table-cell.col-date-min,
+.table-view .table-row-cell:selected .table-cell.col-date-max,
+.table-view .table-row-cell:selected .table-cell.col-size,
+.table-view .table-row-cell:selected .table-cell.col-path { -fx-text-fill: white; }

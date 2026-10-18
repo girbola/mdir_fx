@@ -968,3 +968,17 @@ unselected {
     -fx-background-color: transparent;
 }
 
+
+/* Folder table value colours */
+.table-view .table-cell.col-name { -fx-text-fill: #f2f5f9; -fx-font-weight: bold; }
+.table-view .table-cell.col-files { -fx-text-fill: #8ab4f8; -fx-font-weight: bold; }
+.table-view .table-cell.col-date-min { -fx-text-fill: #7fd1c7; }
+.table-view .table-cell.col-date-max { -fx-text-fill: #f0a67a; }
+.table-view .table-cell.col-size { -fx-text-fill: #e6c36a; -fx-font-weight: bold; }
+.table-view .table-cell.col-path { -fx-text-fill: #8f9bab; -fx-font-style: italic; }
+.table-view .table-row-cell:selected .table-cell.col-name,
+.table-view .table-row-cell:selected .table-cell.col-files,
+.table-view .table-row-cell:selected .table-cell.col-date-min,
+.table-view .table-row-cell:selected .table-cell.col-date-max,
+.table-view .table-row-cell:selected .table-cell.col-size,
+.table-view .table-row-cell:selected .table-cell.col-path { -fx-text-fill: white; }

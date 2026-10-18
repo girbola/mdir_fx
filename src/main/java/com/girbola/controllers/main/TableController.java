@@ -894,6 +894,19 @@ public class TableController {
         justFolderName_col.setCellFactory(param -> new EditingCell(model_main, param));
         status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
 
+        justFolderName_col.getStyleClass().add("col-name");
+        folderFiles_col.getStyleClass().add("col-files");
+        minDate_col.getStyleClass().add("col-date-min");
+        maxDates_col.getStyleClass().add("col-date-max");
+        size_col.getStyleClass().add("col-size");
+        fullPath_col.getStyleClass().add("col-path");
+
+        badFiles_col.setCellFactory(col -> new CountCell(CountCell.Kind.BAD));
+        image_col.setCellFactory(col -> new CountCell(CountCell.Kind.IMAGE));
+        raw_col.setCellFactory(col -> new CountCell(CountCell.Kind.RAW));
+        video_col.setCellFactory(col -> new CountCell(CountCell.Kind.VIDEO));
+        suggested_col.setCellFactory(col -> new CountCell(CountCell.Kind.SUGGESTED));
+
         dateDifference_ratio_col.setSortType(SortType.ASCENDING);
         justFolderName_col.setEditable(true);
 
@@ -1111,4 +1124,41 @@ public class TableController {
 //        });
     }
 
-}
+
+    private static class CountCell extends TableCell<FolderInfo, Integer> {
+        enum Kind {BAD, IMAGE, RAW, VIDEO, SUGGESTED}
+
+        private final Kind kind;
+
+        CountCell(Kind kind) {
+            this.kind = kind;
+        }
+
+        @Override
+        protected void updateItem(Integer item, boolean empty) {
+            super.updateItem(item, empty);
+            if (empty || item == null) {
+                setText(null);
+                setStyle("");
+                return;
+            }
+            setText(String.valueOf(item));
+            String color;
+            String weight = "normal";
+            if (item == 0) {
+                color = kind == Kind.BAD ? "#6fbf8f" : "#6b7480";
+            } else {
+                switch (kind) {
+                    case BAD -> {
+                        color = "#ff6b6b";
+                        weight = "bold";
+                    }
+                    case IMAGE -> color = "#7fc4ff";
+                    case RAW -> color = "#d6a8ff";
+                    case VIDEO -> color = "#ffc46b";
+                    default -> color = "#e6c36a";
+                }
+            }
+            setStyle("-fx-text-fill: " + color + "; -fx-font-weight: " + weight + ";");
+        }
+    }}
