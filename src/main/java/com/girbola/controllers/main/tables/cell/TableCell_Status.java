@@ -24,13 +24,10 @@ public class TableCell_Status extends TableCell<FolderInfo, Integer> {
     protected void updateItem(Integer item, boolean empty) {
         super.updateItem(item, empty);
 
+        getStyleClass().removeAll(TABLECELLSTATUS_DONE, TABLECELLSTATUS_READY,
+                TABLECELLSTATUS_BAD, TABLECELLSTATUS_ADD, TABLECELLSTATUS_REMOVE);
         if (empty || item == null) {
             setStyle("");
-            getStyleClass().remove(TABLECELLSTATUS_DONE);
-            getStyleClass().remove(TABLECELLSTATUS_READY);
-            getStyleClass().remove(TABLECELLSTATUS_BAD);
-            getStyleClass().remove(TABLECELLSTATUS_ADD);
-            getStyleClass().remove(TABLECELLSTATUS_REMOVE);
             setGraphic(null);
             setText(null);
         } else {

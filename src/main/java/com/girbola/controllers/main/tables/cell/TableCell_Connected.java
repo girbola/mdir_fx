@@ -1,7 +1,6 @@
 package com.girbola.controllers.main.tables.cell;
 
 import com.girbola.Main;
-import com.girbola.controllers.datefixer.CssStylesEnum;
 import com.girbola.controllers.datefixer.utils.GUI_Methods;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
@@ -64,7 +63,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
 
     private void setBad(FolderInfo folderInfo) {
         stackPane.getChildren().add(tryToReconnect);
-        stackPane.setStyle(CssStylesEnum.BAD_STYLE.getStyle());//"-fx-background-color: derive(red, 50%);");
+        stackPane.setStyle("-fx-background-color: #583638; -fx-background-radius: 5;");
         tryToReconnect.setOnAction(event -> {
             if (Files.exists(Paths.get(folderInfo.getFolderPath()))) {
                 setGood();
@@ -86,7 +85,7 @@ public class TableCell_Connected extends TableCell<FolderInfo,
     }
 
     private void setGood() {
-        stackPane.setStyle("-fx-background-color: derive(blue, 20%);");
+        stackPane.setStyle("-fx-background-color: #29483c; -fx-background-radius: 5;");
         stackPane.getChildren().remove(tryToReconnect);
 
     }

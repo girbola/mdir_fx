@@ -69,6 +69,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -545,7 +546,7 @@ public class TableController {
 
             } else {
                 Messages.sprintf("TABLE  NOOOOT VISIBLE!!!!!!!!");
-                hide_btn.setManaged(false);
+                hide_btn.setManaged(true);
 
                 table_rootVBox.setMinSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
                 table_rootVBox.setPrefSize(buttonHideSize,  Region.USE_COMPUTED_SIZE);
@@ -607,11 +608,18 @@ public class TableController {
                 descriptionHBox.setPrefSize(0, 0);
                 descriptionHBox.setMaxSize(0, 0);
 
-                buttons_hbox.setMinSize(0, 0);
-                buttons_hbox.setPrefSize(0, 0);
-                buttons_hbox.setMaxSize(0, 0);
+                buttons_hbox.setMinSize(buttonHideSize, buttonHideSize);
+                buttons_hbox.setPrefSize(buttonHideSize, buttonHideSize);
+                buttons_hbox.setMaxSize(buttonHideSize, buttonHideSize);
             }
 
+            table.setManaged(table.isVisible());
+            tableInformation_flowpane.setVisible(table.isVisible());
+            tableInformation_flowpane.setManaged(table.isVisible());
+            buttons_hbox.getStyleClass().remove("collapsed");
+            if (!table.isVisible()) {
+                buttons_hbox.getStyleClass().add("collapsed");
+            }
             toggleVisibilityAndManaged(buttonsSeparator1, hide);
             toggleVisibilityAndManaged(buttonsSeparator2, hide);
             toggleVisibilityAndManaged(buttonsSeparator3, hide);

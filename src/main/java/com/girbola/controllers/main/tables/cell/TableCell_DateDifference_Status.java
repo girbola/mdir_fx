@@ -20,6 +20,8 @@ public class TableCell_DateDifference_Status extends TableCell<FolderInfo, Doubl
 	protected void updateItem(Double item, boolean empty) {
 		super.updateItem(item, empty);
 		if (empty) {
+			setStyle("");
+			setTextFill(null);
 			setGraphic(null);
 			setText(null);
 		} else {
@@ -30,24 +32,22 @@ public class TableCell_DateDifference_Status extends TableCell<FolderInfo, Doubl
 						// sprintf("folderInfo.getStatus(): " + folderInfo.getStatus() + "
 						// folderInfo.getDateDifferenceRatio(): " +
 						// folderInfo.getDateDifferenceRatio());
-						setTextFill(Color.RED);
+						setStyle("");
+						setTextFill(Color.web("#d98282"));
 						setText("" + item);
-						// setStyle("-fx-background-color: red;");
-						setStyle("-fx-text-fill: red;");
 					} else {
 
 						// sprintf("ELSE!! folderInfo.getStatus(): " + folderInfo.getStatus() + "
 						// folderInfo.getDateDifferenceRatio(): " +
 						// folderInfo.getDateDifferenceRatio());
-						// setTextFill(null);
-						// setTextFill(Color.RED);
+						setStyle("");
+						setTextFill(Color.web("#8fc49f"));
 						setText("" + item);
-						// setStyle("-fx-background-color: green;");
-						setStyle("-fx-text-fill: green;");
-						// setStyle("-fx-background-color: transparent;");
 					}
 				} else {
-					setStyle("-fx-text-fill: transparent;");
+					setStyle("");
+					setTextFill(Color.TRANSPARENT);
+					setText("");
 				}
 				// sprintf("folderInfo-> " + folderInfo.toString());
 				// sprintf("file: " + folderInfo.getFolderPath() + " folderInfo

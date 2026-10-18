@@ -29,7 +29,7 @@
                            <children>
                               <HBox fx:id="showHideButton_hbox" alignment="CENTER_LEFT">
                                  <children>
-                        				<Button fx:id="hide_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" prefHeight="26.0" prefWidth="26.0" style="-fx-background-color: red;" styleClass="showAndHide" HBox.hgrow="NEVER">
+                                    <Button fx:id="hide_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" mnemonicParsing="false" onAction="#hide_btn_action" prefHeight="26.0" prefWidth="26.0" styleClass="showAndHide" HBox.hgrow="NEVER">
                                        <tooltip>
                                           <Tooltip text="%showAndHideTableTooltip" />
                                        </tooltip>
@@ -226,32 +226,32 @@
             		</TableView>
                   <FlowPane fx:id="tableInformation_flowpane" alignment="CENTER_RIGHT" columnHalignment="CENTER" hgap="10.0" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" styleClass="tableBottomButtons" VBox.vgrow="NEVER">
                      <children>
-                        <Label text="%totalFilesWithColon">
+                        <Label styleClass="table-total-label" text="%totalFilesWithColon">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label fx:id="allFilesTotal_lbl">
+                        <Label fx:id="allFilesTotal_lbl" styleClass="table-total-value">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label text="%allFilesCopiedWithColon">
+                        <Label styleClass="table-total-label" text="%allFilesCopiedWithColon">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label fx:id="allFilesCopied_lbl">
+                        <Label fx:id="allFilesCopied_lbl" styleClass="table-total-value">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label text="%allFilesSizeWithColon">
+                        <Label styleClass="table-total-label" text="%allFilesSizeWithColon">
                            <font>
                               <Font size="11.0" />
                            </font>
                         </Label>
-                        <Label fx:id="allFilesSize_lbl">
+                        <Label fx:id="allFilesSize_lbl" styleClass="table-total-value">
                            <font>
                               <Font size="11.0" />
                            </font>

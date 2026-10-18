@@ -49,6 +49,9 @@ public class MainController {
 	@FXML private AnchorPane main_container;
 	@FXML private AnchorPane tables_rootPane;
 	@FXML private HBox tables_hbox;
+	@FXML private AnchorPane sortit_table_parent;
+	@FXML private AnchorPane sorted_table_parent;
+	@FXML private AnchorPane asitis_table_parent;
 	@FXML private VBox main_vbox;
     @FXML MenuBarController menuBar_topController;
     @FXML TabPane tabPaneMain;
@@ -71,8 +74,12 @@ public class MainController {
             @Override
             public void changed(ObservableValue<? extends Number> observableValue, Number number, Number t1) {
                 model_main.tables().setTablesParentWidth((double) t1);
+                layoutTableColumns();
             }
         });
+        for (javafx.scene.control.TableView<?> tv : java.util.List.of(model_main.tables().getSortIt_table(), model_main.tables().getSorted_table(), model_main.tables().getAsItIs_table())) {
+            tv.visibleProperty().addListener((o, a, b) -> Platform.runLater(this::layoutTableColumns));
+        }
 
 
         //tables_hbox.setMaxWidth(ScreenUtils.screenBouds().getWidth() - 300);
@@ -181,6 +188,27 @@ public class MainController {
         this.model_main.tables().setSortit_TableStatistic(sortitTableStatistic);
         this.model_main.tables().setSorted_TableStatistic(sortedTableStatistic);
         this.model_main.tables().setAsitis_TableStatistic(asitisTableStatistic);
+    }
+
+    private void layoutTableColumns() {
+        double collapsed = 34;
+        AnchorPane[] parents = {sortit_table_parent, sorted_table_parent, asitis_table_parent};
+        boolean[] shown = {model_main.tables().getSortIt_table().isVisible(), model_main.tables().getSorted_table().isVisible(), model_main.tables().getAsItIs_table().isVisible()};
+        int visibles = 0;
+        for (boolean b : shown) {
+            if (b) visibles++;
+        }
+        if (visibles == 0) {
+            return;
+        }
+        double inner = tables_hbox.getWidth() - tables_hbox.getPadding().getLeft() - tables_hbox.getPadding().getRight() - tables_hbox.getSpacing() * 2;
+        double each = Math.max(0, Math.floor((inner - collapsed * (3 - visibles)) / visibles));
+        for (int i = 0; i < 3; i++) {
+            double w = shown[i] ? each : collapsed;
+            parents[i].setMinWidth(w);
+            parents[i].setPrefWidth(w);
+            parents[i].setMaxWidth(w);
+        }
     }
 
     private void configureTableActions() {

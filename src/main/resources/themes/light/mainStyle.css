@@ -176,3 +176,297 @@ Main /theme/light/mainStyle.css
 .view_btn {
     -fx-background-color: orange;
 }
+
+/* Lightroom-inspired workspace surfaces and folder tables */
+.root,
+.main,
+.main_rootPane,
+#main_container {
+    -fx-background-color: #e8edf2;
+}
+
+.menu-bar {
+    -fx-background-color: #f4f6f9;
+    -fx-border-color: #d3dbe4;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 2 8;
+}
+
+.menu-bar .label {
+    -fx-padding: 7 10;
+    -fx-text-fill: #334459;
+    -fx-font-size: 0.9em;
+}
+
+.menu:hover,
+.menu:showing {
+    -fx-background-color: #dce7f1;
+}
+
+.menu-item:hover {
+    -fx-background-color: #dcecf9;
+    -fx-opacity: 1;
+}
+
+.table_parent {
+    -fx-background-color: #e8edf2;
+    -fx-spacing: 3;
+    -fx-padding: 2;
+}
+
+.table_vbox {
+    -fx-background-color: #f7f9fb;
+    -fx-border-color: #cbd4df;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 3;
+    -fx-spacing: 3;
+}
+
+.hideablePane {
+    -fx-background-color: #f7f9fb;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+.topButtons {
+    -fx-background-color: #edf1f5;
+    -fx-background-radius: 7;
+    -fx-padding: 2 4;
+    -fx-spacing: 3;
+}
+
+.topButtons .button,
+.topButtons .menu-button,
+.bottomBar .button,
+.bottomButton {
+    -fx-min-height: 0;
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 6;
+    -fx-border-color: #c4cfdb;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-effect: none;
+    -fx-padding: 4 8;
+    -fx-text-fill: #334459;
+    -fx-font-size: 0.88em;
+    -fx-font-weight: 600;
+}
+
+.topButtons .button:hover,
+.topButtons .menu-button:hover,
+.bottomBar .button:hover,
+.bottomButton:hover {
+    -fx-background-color: #e8f2fb;
+    -fx-border-color: #7ba5ca;
+}
+
+.topButtons .menu-button {
+    -fx-padding: 0 2 0 6;
+}
+
+.topButtons .menu-button > .label {
+    -fx-font-size: 0.95em;
+    -fx-effect: null;
+    -fx-padding: 0;
+}
+
+.topButtons .menu-button > .arrow-button {
+    -fx-padding: 0 6 0 2;
+}
+
+.topButtons .menu-button-reload {
+    -fx-background-color: #dce9f5;
+    -fx-border-color: #abc3db;
+    -fx-text-fill: #294d70;
+}
+
+.topButtons .menu-button-action {
+    -fx-background-color: #f0e4d7;
+    -fx-border-color: #dec2a6;
+    -fx-text-fill: #694a30;
+}
+
+.topButtons .showAndHide {
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #c4cfdb;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.topButtons .selectSquareButton,
+.topButtons .selectCircleButton {
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: #f5f7fa;
+    -fx-background-radius: 6;
+    -fx-border-color: #d0d8e1;
+    -fx-border-radius: 6;
+}
+
+.topButtons .textfield-info,
+.topButtons .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: #52657a;
+}
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-control-inner-background: #ffffff;
+    -fx-control-inner-background-alt: #f6f8fa;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: #d3dbe4;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #edf1f5;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 34px;
+    -fx-background-color: #edf1f5;
+    -fx-border-color: transparent transparent #d9e0e8 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-view .column-header .label {
+    -fx-padding: 6 2;
+    -fx-font-size: 0.88em;
+    -fx-font-weight: 600;
+    -fx-text-fill: #52657a;
+}
+
+.table-view .nested-column-header .column-header {
+    -fx-background-color: #e5ebf1;
+}
+
+.table-row-cell,
+.table-row-cell:odd,
+.table-row-cell:even {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent transparent #edf0f3 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8fafc;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #edf4fa;
+}
+
+.table-row-cell:selected,
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: #dcecf9;
+}
+
+.table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 5 5;
+    -fx-text-fill: #334459;
+    -fx-font-size: 0.9em;
+}
+
+.table-cell:focused {
+    -fx-border-color: #438ac1;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tableCellStatus_DONE {
+    -fx-background-color: #dceee4;
+    -fx-text-fill: #315f46;
+}
+
+.tableCellStatus_READY {
+    -fx-background-color: #e1ebf4;
+    -fx-text-fill: #385c7a;
+}
+
+.tableCellStatus_ADD {
+    -fx-background-color: #f3ead5;
+    -fx-text-fill: #765f2b;
+}
+
+.tableCellStatus_BAD {
+    -fx-background-color: #f2dfdf;
+    -fx-text-fill: #80484a;
+}
+
+.tableBottomButtons {
+    -fx-background-color: #edf1f5;
+    -fx-background-radius: 0 0 6 6;
+    -fx-padding: 6 10;
+    -fx-hgap: 7;
+}
+
+.tableBottomButtons .label {
+    -fx-font-size: 0.84em;
+    -fx-text-fill: #6d7d8e;
+}
+
+.tableBottomButtons .table-total-value {
+    -fx-font-weight: bold;
+    -fx-text-fill: #334459;
+}
+
+.tableBottomButtons .table-total-label {
+    -fx-text-fill: #6d7d8e;
+}
+
+.bottomBar {
+    -fx-background-color: #f4f6f9;
+    -fx-border-color: #d3dbe4;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 4 8;
+}
+
+.bottomBar .label {
+    -fx-text-fill: #52657a;
+    -fx-font-size: 0.86em;
+}
+
+.bottomBar .optionsButton {
+    -fx-min-width: 34px;
+    -fx-pref-width: 34px;
+    -fx-padding: 4;
+}
+
+.bottomBar .debug-info {
+    -fx-text-fill: #7d8997;
+    -fx-font-size: 0.8em;
+}
+
+.buttons-separator:vertical .line {
+    -fx-border-color: #d0d8e1;
+    -fx-background-color: #d0d8e1;
+}
+
+.scroll-bar:horizontal,
+.scroll-bar:vertical {
+    -fx-background-color: #edf1f5;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #b8c3cf;
+    -fx-background-radius: 6;
+}
+
+.topButtons.collapsed {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+

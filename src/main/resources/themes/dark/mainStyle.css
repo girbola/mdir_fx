@@ -676,3 +676,295 @@ unselected {
 .tree-view .check-box:selected > .box {
     -fx-background-color: #e24aa5;
 }
+
+/* Lightroom-inspired workspace surfaces and folder tables */
+.root,
+.main,
+.main_rootPane,
+#main_container {
+    -fx-background-color: #1b1e22;
+}
+
+.menu-bar {
+    -fx-background-color: #22262b;
+    -fx-border-color: #343a42;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 2 8;
+}
+
+.menu-bar .label {
+    -fx-padding: 7 10;
+    -fx-text-fill: #d8dee7;
+    -fx-font-size: 0.9em;
+}
+
+.menu:hover,
+.menu:showing {
+    -fx-background-color: #343b44;
+}
+
+.menu-item:hover {
+    -fx-background-color: #354c63;
+    -fx-opacity: 1;
+}
+
+.table_parent {
+    -fx-background-color: #1b1e22;
+    -fx-spacing: 3;
+    -fx-padding: 2;
+}
+
+.table_vbox {
+    -fx-background-color: #22262b;
+    -fx-border-color: #343a42;
+    -fx-border-radius: 9;
+    -fx-background-radius: 9;
+    -fx-padding: 3;
+    -fx-spacing: 3;
+}
+
+.hideablePane {
+    -fx-background-color: #22262b;
+    -fx-border-color: transparent;
+    -fx-effect: none;
+}
+
+.topButtons {
+    -fx-background-color: #272c32;
+    -fx-background-radius: 7;
+    -fx-padding: 2 4;
+    -fx-spacing: 3;
+}
+
+.topButtons .button,
+.topButtons .menu-button,
+.bottomBar .button,
+.bottomButton {
+    -fx-min-height: 0;
+    -fx-background-color: #343a42;
+    -fx-background-radius: 6;
+    -fx-border-color: #454d58;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-effect: none;
+    -fx-padding: 4 8;
+    -fx-text-fill: #e5eaf0;
+    -fx-font-size: 0.88em;
+    -fx-font-weight: 600;
+}
+
+.topButtons .button:hover,
+.topButtons .menu-button:hover,
+.bottomBar .button:hover,
+.bottomButton:hover {
+    -fx-background-color: #414b57;
+    -fx-border-color: #637487;
+}
+
+.topButtons .menu-button {
+    -fx-padding: 0 2 0 6;
+}
+
+.topButtons .menu-button > .label {
+    -fx-font-size: 0.95em;
+    -fx-effect: null;
+    -fx-padding: 0;
+}
+
+.topButtons .menu-button > .arrow-button {
+    -fx-padding: 0 6 0 2;
+}
+
+.topButtons .menu-button-reload {
+    -fx-background-color: #344b67;
+    -fx-border-color: #496987;
+}
+
+.topButtons .menu-button-action {
+    -fx-background-color: #8e562d;
+    -fx-border-color: #a96d3f;
+}
+
+.topButtons .showAndHide {
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: #343a42;
+    -fx-border-color: #454d58;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+.topButtons .selectSquareButton,
+.topButtons .selectCircleButton {
+    -fx-min-width: 0;
+    -fx-min-height: 0;
+    -fx-padding: 0;
+    -fx-background-color: #30363d;
+    -fx-background-radius: 6;
+    -fx-border-color: #414a55;
+    -fx-border-radius: 6;
+}
+
+.topButtons .textfield-info,
+.topButtons .label {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c6ced8;
+}
+
+.table-view {
+    -fx-background-color: #202429;
+    -fx-control-inner-background: #202429;
+    -fx-control-inner-background-alt: #24292f;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-color: #343a42;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+    -fx-padding: 0;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #2b3037;
+    -fx-background-radius: 6 6 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-size: 34px;
+    -fx-background-color: #2b3037;
+    -fx-border-color: transparent transparent #3b424b transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-view .column-header .label {
+    -fx-padding: 6 2;
+    -fx-font-size: 0.88em;
+    -fx-font-weight: 600;
+    -fx-text-fill: #c3ccd7;
+}
+
+.table-view .nested-column-header .column-header {
+    -fx-background-color: #30363e;
+}
+
+.table-row-cell,
+.table-row-cell:odd,
+.table-row-cell:even {
+    -fx-background-color: #202429;
+    -fx-border-color: transparent transparent #2c3239 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #24292f;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #303841;
+}
+
+.table-row-cell:selected,
+.table-view:focused .table-row-cell:filled:focused:selected {
+    -fx-background-color: #304b64;
+}
+
+.table-cell {
+    -fx-border-color: transparent;
+    -fx-padding: 5 5;
+    -fx-text-fill: #dce2e9;
+    -fx-font-size: 0.9em;
+}
+
+.table-cell:focused {
+    -fx-border-color: #5797cb;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tableCellStatus_DONE {
+    -fx-background-color: #29483c;
+    -fx-text-fill: #b9e6cd;
+}
+
+.tableCellStatus_READY {
+    -fx-background-color: #34495c;
+    -fx-text-fill: #d1e2f1;
+}
+
+.tableCellStatus_ADD {
+    -fx-background-color: #4c432c;
+    -fx-text-fill: #f0d89b;
+}
+
+.tableCellStatus_BAD {
+    -fx-background-color: #583638;
+    -fx-text-fill: #f2c0c0;
+}
+
+.tableBottomButtons {
+    -fx-background-color: #272c32;
+    -fx-background-radius: 0 0 6 6;
+    -fx-padding: 6 10;
+    -fx-hgap: 7;
+}
+
+.tableBottomButtons .label {
+    -fx-font-size: 0.84em;
+    -fx-text-fill: #aeb8c4;
+}
+
+.tableBottomButtons .table-total-value {
+    -fx-font-weight: bold;
+    -fx-text-fill: #e0e6ed;
+}
+
+.tableBottomButtons .table-total-label {
+    -fx-text-fill: #aeb8c4;
+}
+
+.bottomBar {
+    -fx-background-color: #22262b;
+    -fx-border-color: #343a42;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 4 8;
+}
+
+.bottomBar .label {
+    -fx-text-fill: #c4ccd6;
+    -fx-font-size: 0.86em;
+}
+
+.bottomBar .optionsButton {
+    -fx-min-width: 34px;
+    -fx-pref-width: 34px;
+    -fx-padding: 4;
+}
+
+.bottomBar .debug-info {
+    -fx-text-fill: #929daa;
+    -fx-font-size: 0.8em;
+}
+
+.buttons-separator:vertical .line {
+    -fx-border-color: #414852;
+    -fx-background-color: #414852;
+}
+
+.scroll-bar:horizontal,
+.scroll-bar:vertical {
+    -fx-background-color: #23272d;
+    -fx-background-radius: 6;
+}
+
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #4a535e;
+    -fx-background-radius: 6;
+}
+
+.topButtons.collapsed {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+

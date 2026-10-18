@@ -10,6 +10,7 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 	@Override
 	protected void updateItem(Integer item, boolean empty) {
 		super.updateItem(item, empty);
+		setStyle("");
 		if (empty) {
 //			setStyle("null");
 			setGraphic(null);
@@ -32,13 +33,13 @@ public class TableCell_Copied extends TableCell<FolderInfo, Integer> {
 				if (folderInfo.getFileInfoList().size() != 0) {
 					if (item == folderInfo.getFileInfoList().size()) {
 						folderInfo.setState(FolderInfoType.DONE.getType());
-						setStyle("-fx-background-color: green; -fx-text-fill: yellow;");
+						setStyle("-fx-background-color: #29483c; -fx-text-fill: #b9e6cd;");
 						setText("" + item);
 					} else if (item > 0) {
-						setStyle("-fx-text-fill: white;");
+						setStyle("-fx-text-fill: #dce2e9;");
 						setText("" + item);
 					} else if (item == 0) {
-						setStyle("-fx-text-fill: yellow;");
+						setStyle("-fx-text-fill: #b7a36c;");
 						setText("" + item);
 					} else {
 //						setStyle("null");

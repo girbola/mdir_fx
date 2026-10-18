@@ -34,8 +34,7 @@
                   <Font size="9.0" />
                </font>
             </Button>
-            <Label text="Label" />
-            <Label fx:id="debug_pref_width" text="Label" />
+            <Label fx:id="debug_pref_width" managed="false" visible="false" styleClass="debug-info" text="" />
          </children>
          <HBox.margin>
             <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
