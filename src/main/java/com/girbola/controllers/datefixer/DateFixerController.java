@@ -175,16 +175,19 @@ public class DateFixerController {
             return fileInfo.getOrgPath();
         });
         modelDatefix.getAllNodes().sort(nodeComparator);
+        df_tilePane.getChildren().sort(nodeComparator);
     }
 
     @FXML private void sortByDate_mi_action(ActionEvent event) {
-        modelDatefix.getAllNodes().sort((o1, o2) -> {
+        Comparator<Node> nodeComparator = (o1, o2) -> {
             VBox vbox1 = Node_Methods.getImageFrameNode(o1, DateFixConstants.IMAGEFRAME.getType());
             VBox vbox2 = Node_Methods.getImageFrameNode(o2, DateFixConstants.IMAGEFRAME.getType());
             FileInfo fileInfo1 = (FileInfo) vbox1.getUserData();
             FileInfo fileInfo2 = (FileInfo) vbox2.getUserData();
             return Long.compare(fileInfo1.getDate(), fileInfo2.getDate());
-        });
+        };
+        modelDatefix.getAllNodes().sort(nodeComparator);
+        df_tilePane.getChildren().sort(nodeComparator);
         DateFixLoadingProcessLoader.reNumberTheFrames(modelDatefix);
     }
     @FXML private void addToUnsorted_btn_action(ActionEvent event) {
@@ -612,26 +615,38 @@ public class DateFixerController {
         int imageGoodFiles = 0;
         int imageBadFiles = 0;
         int imageSuggestedFiles = 0;
+        int imageConfirmedFiles = 0;
         int videoGoodFiles = 0;
         int videoBadFiles = 0;
+        int videoSuggestedFiles = 0;
         int videoConfirmedFiles = 0;
 
         for(FileInfo fi : folderInfo.getFileInfoList()) {
             if (fi.isImage()) {
                 if (fi.isGood()) {
                     imageGoodFiles++;
-                } else if (fi.isBad()) {
+                }
+                if (fi.isBad()) {
                     imageBadFiles++;
-                } else if (fi.isConfirmed()) {
+                }
+                if (fi.isSuggested()) {
                     imageSuggestedFiles++;
+                }
+                if (fi.isConfirmed()) {
+                    imageConfirmedFiles++;
                 }
             }
             if (fi.isVideo()) {
                 if (fi.isGood()) {
                     videoGoodFiles++;
-                } else if (fi.isBad()) {
+                }
+                if (fi.isBad()) {
                     videoBadFiles++;
-                } else if (fi.isConfirmed()) {
+                }
+                if (fi.isSuggested()) {
+                    videoSuggestedFiles++;
+                }
+                if (fi.isConfirmed()) {
                     videoConfirmedFiles++;
                 }
             }
@@ -640,9 +655,11 @@ public class DateFixerController {
         modelDatefix.getFolderInfo_full().setGoodImageFiles(imageGoodFiles);
         modelDatefix.getFolderInfo_full().setBadImageFiles(imageBadFiles);
         modelDatefix.getFolderInfo_full().setSuggestedImageFiles(imageSuggestedFiles);
+        modelDatefix.getFolderInfo_full().setConfirmedImageFiles(imageConfirmedFiles);
         modelDatefix.getFolderInfo_full().setGoodVideoFiles(videoGoodFiles);
         modelDatefix.getFolderInfo_full().setBadVideoFiles(videoBadFiles);
-        modelDatefix.getFolderInfo_full().setSuggestedVideoFiles(videoConfirmedFiles);
+        modelDatefix.getFolderInfo_full().setSuggestedVideoFiles(videoSuggestedFiles);
+        modelDatefix.getFolderInfo_full().setConfirmedVideoFiles(videoConfirmedFiles);
 
         quickPick_Navigator = new QuickPick_Navigator(modelDatefix, df_scrollPane, df_tilePane, quickPick_tilePane);
         modelDatefix.setQuickPick_Navigator(quickPick_Navigator);
@@ -747,7 +764,7 @@ public class DateFixerController {
 
         Optional<ButtonType> result = dialog.showAndWait();
 
-        if (result.get().getButtonData().equals(ButtonData.YES)) {
+        if (result.isPresent() && result.get().getButtonData().equals(ButtonData.YES)) {
             sprintf("yes pressed!");
             boolean update = false;
 
@@ -767,14 +784,18 @@ public class DateFixerController {
                 }
             }
             if (update) {
+                for (Node node : toRemove) {
+                    while (modelDatefix.getSelectionModel().contains(node)) {
+                        modelDatefix.getSelectionModel().remove(node);
+                    }
+                }
                 modelDatefix.getTilePane().getChildren().removeAll(toRemove);
+                modelDatefix.getAllNodes().removeAll(toRemove);
                 modelDatefix.getFolderInfo_full().getFileInfoList().removeAll(fileInfo_toRemove);
 
                 DateFixLoadingProcessLoader.reNumberTheFrames(modelDatefix);
 
             }
-        } else if (result.get().getButtonData().equals(ButtonData.NO)) {
-            dialog.close();
         }
     }
     @FXML private void select_all_btn_action(ActionEvent event) {
@@ -991,6 +1012,9 @@ public class DateFixerController {
 		for (Node n : modelDatefix.getSelectionModel().getSelectionList()) {
 			if (n instanceof VBox && n.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
 				FileInfo fileInfo = (FileInfo) n.getUserData();
+                if (fileInfo.isIgnored()) {
+                    continue;
+                }
 				Path source = Paths.get(fileInfo.getOrgPath());
 				Path dest = DestinationResolver.getDestinationFileNameMisc(source, fileInfo);
 				if (dest != null && Main.conf.getDrive_connected()) {

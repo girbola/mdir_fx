@@ -41,11 +41,10 @@ public class SelectionModel {
     }
 
     public synchronized void addAll(Node node) {
-        if (!contains(node)) {
-            Platform.runLater(() -> {
-                node.setStyle(style_selected);
-            });
+        if (contains(node)) {
+            return;
         }
+        Platform.runLater(() -> node.setStyle(style_selected));
         selectionList.add((VBox) node);
     }
 
@@ -105,15 +104,18 @@ public class SelectionModel {
     }
 
     public synchronized boolean contains(Node node) {
-        FileInfo targetFileInfo = (FileInfo) node.getUserData();
         for (Node n : selectionList) {
-
-            FileInfo sourceFileInfo = (FileInfo) n.getUserData();
-            if(sourceFileInfo.getFileInfo_id() == targetFileInfo.getFileInfo_id()) {
+            if (sameFileInfo(n, node)) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean sameFileInfo(Node first, Node second) {
+        FileInfo firstFileInfo = (FileInfo) first.getUserData();
+        FileInfo secondFileInfo = (FileInfo) second.getUserData();
+        return firstFileInfo.getFileInfo_id() == secondFileInfo.getFileInfo_id();
     }
 
     public synchronized void remove(Node node) {
@@ -129,27 +131,29 @@ public class SelectionModel {
         if (pane == null || !pane.isVisible()) {
             return;
         }
-        List<Node> list = new ArrayList<>();
+        if (!(pane instanceof TilePane)) {
+            return;
+        }
 
-        if (pane instanceof TilePane) {
-            for (Node node : pane.getChildren()) {
-                if (!contains(node)) {
-                    list.add((VBox) node);
+        List<Node> selectedNodes = new ArrayList<>();
+        List<Node> unselectedNodes = new ArrayList<>();
+        for (Node node : pane.getChildren()) {
+            if (node instanceof VBox && DateFixConstants.IMAGEFRAME.getType().equals(node.getId())) {
+                if (contains(node)) {
+                    selectedNodes.add(node);
+                } else {
+                    unselectedNodes.add(node);
                 }
             }
         }
 
-        if (list.isEmpty()) {
-            Messages.sprintf("list was empty at selectionModel lineb " + selectionList.size());
-            return;
+        for (Node node : selectedNodes) {
+            Platform.runLater(() -> node.setStyle(style_deselected));
+            selectionList.removeIf(selected -> sameFileInfo(selected, node));
         }
-        clearAll(pane);
-        for (Node n : list) {
-            Messages.sprintf("Adding to list: " + n.getId());
-            addWithToggle(n);
+        for (Node node : unselectedNodes) {
+            addAll(node);
         }
-        //list.clear();
-
     }
 
     public ObservableList<Node> getSelectionList() {

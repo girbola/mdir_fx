@@ -3,7 +3,6 @@ package com.girbola.controllers.main;
 
 
 import com.girbola.app.ApplicationContext;
-import com.girbola.Main;
 import com.girbola.controllers.folderscanner.FolderScannerController;
 import com.girbola.controllers.folderscanner.folderpicker.FolderSelectionService;
 import com.girbola.controllers.main.selectedfolder.SelectedFolderScanner;
@@ -23,9 +22,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
-
-import static com.girbola.messages.Messages.sprintf;
-
 
 public class ModelMain {
 
@@ -66,10 +62,12 @@ public class ModelMain {
 
     public ModelMain(ApplicationContext applicationContext) {
         this.applicationContext = Objects.requireNonNull(applicationContext, "applicationContext must not be null");
-        sprintf("Model instantiated...");
-        if (this.applicationContext.getConfiguration() == null) {
+        Messages.sprintf("Model instantiated...");
+        ModelMainConfigurationValidator.ValidationResult validation =
+                ModelMainConfigurationValidator.validate(this.applicationContext.getConfiguration());
+        if (validation == ModelMainConfigurationValidator.ValidationResult.MISSING_CONFIGURATION) {
             Messages.sprintfError("conf were null!!!!!!!!!!!!!!!!!!");
-        } else if (this.applicationContext.getConfiguration().getWorkDir().trim().isEmpty()) {
+        } else if (validation == ModelMainConfigurationValidator.ValidationResult.MISSING_WORK_DIRECTORY) {
             Messages.sprintfError("workdir were empty");
         }
 //        workDirSQL = new WorkDirSQL();
@@ -184,43 +182,5 @@ public class ModelMain {
 
     public FolderScannerController getFolderScannerController() {
         return this.folderScannerController;
-    }
-
-    private static final class LegacyMainApplicationContext implements ApplicationContext {
-
-        @Override
-        public com.girbola.configuration.Configuration getConfiguration() {
-            return Main.conf;
-        }
-
-        @Override
-        public java.util.ResourceBundle getBundle() {
-            return Main.bundle;
-        }
-
-        @Override
-        public com.girbola.SceneSwitcher getSceneManager() {
-            return Main.sceneManager;
-        }
-
-        @Override
-        public boolean isChanged() {
-            return Main.getChanged();
-        }
-
-        @Override
-        public void setChanged(boolean changed) {
-            Main.setChanged(changed);
-        }
-
-        @Override
-        public boolean isProcessCancelled() {
-            return Main.getProcessCancelled();
-        }
-
-        @Override
-        public void setProcessCancelled(boolean processCancelled) {
-            Main.setProcessCancelled(processCancelled);
-        }
     }
 }

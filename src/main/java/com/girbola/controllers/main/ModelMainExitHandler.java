@@ -60,16 +60,36 @@ final class ModelMainExitHandler {
             Messages.sprintf("BTNNTTNNT: " + button.getText());
         }
 
-        Optional<ButtonType> result = dialog.showAndWait();
-        if (result.get().getButtonData().equals(ButtonBar.ButtonData.YES)) {
+        ExitDecision decision = resolveDecision(dialog.showAndWait());
+        if (decision == ExitDecision.SAVE) {
             saveAllTableContents.getAsBoolean();
             monitorExternalDriveConnectivity.cancel();
-        } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.NO)) {
+        } else if (decision == ExitDecision.EXIT_WITHOUT_SAVE) {
             Messages.sprintf("No answered. This is not finished!");
-        } else if (result.get().getButtonData().equals(ButtonBar.ButtonData.CANCEL_CLOSE)) {
+        } else {
             Messages.sprintf("Cancel pressed. This is not finished!");
             return false;
         }
         return true;
+    }
+
+    static ExitDecision resolveDecision(Optional<ButtonType> result) {
+        if (result.isEmpty()) {
+            return ExitDecision.CANCEL;
+        }
+        ButtonBar.ButtonData buttonData = result.get().getButtonData();
+        if (buttonData == ButtonBar.ButtonData.YES) {
+            return ExitDecision.SAVE;
+        }
+        if (buttonData == ButtonBar.ButtonData.CANCEL_CLOSE) {
+            return ExitDecision.CANCEL;
+        }
+        return ExitDecision.EXIT_WITHOUT_SAVE;
+    }
+
+    enum ExitDecision {
+        SAVE,
+        EXIT_WITHOUT_SAVE,
+        CANCEL
     }
 }
