@@ -27,8 +27,9 @@ public class SelectionModel {
                     "-fx-border-width: 1px;";
 
     final private String style_selected =
-            "-fx-border-color: #ba1d1d;" +
-                    "-fx-border-width: 1px;";
+            "-fx-border-color: #62aef2;" +
+                    "-fx-border-width: 2px;" +
+                    "-fx-border-radius: 10px;";
 
     private SimpleIntegerProperty selectedIndicator_property = new SimpleIntegerProperty();
 

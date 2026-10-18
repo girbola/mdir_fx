@@ -24,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -192,6 +193,13 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         GridPane infoGridPane = new GridPane();
 //        infoGridPane.setMouseTransparent(true);
         infoGridPane.getStyleClass().add("imageFrameTop");
+        ColumnConstraints fileNameColumn = new ColumnConstraints();
+        fileNameColumn.setHgrow(Priority.ALWAYS);
+        fileNameColumn.setFillWidth(true);
+        ColumnConstraints numberColumn = new ColumnConstraints();
+        numberColumn.setHgrow(Priority.NEVER);
+        numberColumn.setHalignment(HPos.RIGHT);
+        infoGridPane.getColumnConstraints().addAll(fileNameColumn, numberColumn);
 //        infoGridPane.setGridLinesVisible(true);
 //        infoGridPane.setStyle("-fx-background-color: orange; -fx-grid-lines-visible: true");
 
@@ -209,12 +217,12 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
     private void createTopInfoRow1(GridPane gridPane, FileInfo fileInfo, int index) {
         Label fileNameTextField = DateFixGuiUtils.createFileName_tf(Paths.get(fileInfo.getOrgPath()));
         gridPane.add(fileNameTextField, 0, 0);
-        GridPane.setColumnSpan(fileNameTextField, 2);
-        HBox.setHgrow(fileNameTextField, Priority.ALWAYS);
+        GridPane.setHgrow(fileNameTextField, Priority.ALWAYS);
+        GridPane.setHalignment(fileNameTextField, HPos.LEFT);
 
         Label imageFrameNumber = DateFixGuiUtils.createImageNumberLbl(index + 1);
         gridPane.add(imageFrameNumber, 1, 0);
-        HBox.setHgrow(imageFrameNumber, Priority.NEVER);
+        GridPane.setHalignment(imageFrameNumber, HPos.RIGHT);
     }
 
     private void createTopInfoRow2(GridPane gridPane, FileInfo fileInfo) {

@@ -89,7 +89,8 @@ public class DateFixGuiUtils {
         fileNameLabel.setFocusTraversable(false);
         fileNameLabel.setId("fileName");
         fileNameLabel.setMinSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
-        fileNameLabel.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
+        fileNameLabel.setMaxWidth(Double.MAX_VALUE);
+        fileNameLabel.setMaxHeight(Region.USE_COMPUTED_SIZE);
         fileNameLabel.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 //        fileNameLabel.setMaxHeight(23);
 //        fileNameLabel.setMinHeight(23);

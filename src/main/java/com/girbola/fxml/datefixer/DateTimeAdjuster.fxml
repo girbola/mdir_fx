@@ -18,7 +18,7 @@
 
 <VBox styleClass="dateTimeAdjuster" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1" fx:controller="com.girbola.controllers.datefixer.DateTimeAdjusterController">
     <children>
-        <GridPane alignment="CENTER_LEFT" hgap="1.0" vgap="2.0" VBox.vgrow="ALWAYS">
+        <GridPane styleClass="date-time-grid" alignment="CENTER_LEFT" hgap="5.0" vgap="4.0" VBox.vgrow="ALWAYS">
             <columnConstraints>
             <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" minWidth="10.0" />
                 <ColumnConstraints fillWidth="false" halignment="LEFT" hgrow="NEVER" />
