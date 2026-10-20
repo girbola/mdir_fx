@@ -1553,16 +1553,16 @@
 }
 
 .imageFrame {
-    -fx-background-color: #22262b;
+    -fx-background-color: #3a3f47;
     -fx-background-radius: 10;
-    -fx-border-color: #343a43;
+    -fx-border-color: #565d68;
     -fx-border-radius: 10;
     -fx-border-width: 1;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.26), 10, 0, 0, 3);
 }
 
 .imageFrameTop {
-    -fx-background-color: linear-gradient(to bottom, #343941, #2b3037);
+    -fx-background-color: linear-gradient(to bottom, #4a505a, #41464f);
     -fx-background-radius: 9 9 0 0;
     -fx-padding: 8 10;
 }
@@ -1595,8 +1595,8 @@
 }
 
 .buttonDateTimeContainer {
-    -fx-background-color: #292e35;
-    -fx-border-color: #3b434d;
+    -fx-background-color: #454b55;
+    -fx-border-color: #5d6571;
     -fx-border-width: 1;
     -fx-background-radius: 0 0 9 9;
     -fx-border-radius: 0 0 9 9;

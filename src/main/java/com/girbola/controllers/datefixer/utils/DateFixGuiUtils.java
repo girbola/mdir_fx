@@ -21,6 +21,7 @@ import javafx.scene.control.OverrunStyle;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.nio.file.Path;
@@ -267,6 +268,11 @@ public class DateFixGuiUtils {
         imageViewContainer.setFillHeight(true);
 
         VBox.setVgrow(imageViewContainer, Priority.ALWAYS);
+
+        Rectangle clip = new Rectangle();
+        clip.widthProperty().bind(imageViewContainer.widthProperty());
+        clip.heightProperty().bind(imageViewContainer.heightProperty());
+        imageViewContainer.setClip(clip);
 
         return imageViewContainer;
     }
