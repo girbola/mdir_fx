@@ -6,6 +6,8 @@ package com.girbola.utils;
 // macOS: assumes ~/Documents, ~/Pictures, ~/Downloads.
 // Linux: reads ~/.config/user-dirs.dirs (XDG) with fallback to ~/… if missing.
 
+import com.girbola.messages.Messages;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -22,7 +24,7 @@ public final class CommonUserFolders {
         for(Map.Entry<Kind, Path> entry : resolveCommonOsUserFolders.entrySet()) {
             Kind k = entry.getKey();
             Path p = entry.getValue();
-            System.out.println(k + " -> " + p);
+            Messages.sprintf(k + " -> " + p);
             sb.append(k).append(" -> ").append(p).append(" ");
         }
         return sb.toString().trim();

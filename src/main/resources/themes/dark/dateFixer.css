@@ -1630,3 +1630,22 @@
     -fx-background-radius: 7;
     -fx-padding: 6 9;
 }
+
+/* Media frame bottom bar sizing */
+.buttonDateTimeContainer {
+    -fx-padding: 3 6;
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+
+.buttonDateTimeContainer .acceptButton {
+    -fx-padding: 2 6;
+}
+
+.buttonDateTimeContainer .acceptButton .ikonli-font-icon {
+    -fx-icon-size: 16;
+}
+
+.bottomContainer {
+    -fx-border-color: transparent;
+}

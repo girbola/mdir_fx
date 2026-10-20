@@ -62,7 +62,7 @@ public class DateTaken {
 
             for(com.drew.metadata.Tag tag : gpsDirectory.getTags()) {
                 String description = tag.getDescription();
-                System.out.println("Tag: " + tag.getTagName() + " - " + description);
+                Messages.sprintf("Tag: " + tag.getTagName() + " - " + description);
             }
 //            for (Directory dir : metaData.getDirectories()) {
 //                System.out.println("Directory: " + dir.getName());

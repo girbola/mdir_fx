@@ -77,7 +77,7 @@
                 </AnchorPane>
 
 
-                <fx:include fx:id="bottom" maxHeight="35.0" minHeight="35.0" prefHeight="35.0" source="Bottom.fxml" VBox.vgrow="NEVER" />
+                <fx:include fx:id="bottom" maxHeight="50.0" minHeight="50.0" prefHeight="50.0" source="Bottom.fxml" VBox.vgrow="NEVER" />
             </children>
         </VBox>
     </children>

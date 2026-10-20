@@ -17,23 +17,26 @@
       <VBox AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
          <children>
             <HBox alignment="CENTER" styleClass="folderSelectorLabelHead">
+               <padding>
+                  <Insets bottom="6.0" top="6.0" />
+               </padding>
                <children>
                   <Label fx:id="folderSelectorLabel" text="%folderSelectorLabel">
                      <font>
-                        <Font size="23.0" />
+                        <Font size="16.0" />
                      </font>
                   </Label>
                </children>
             </HBox>
-              <SplitPane fx:id="splitPane_root" dividerPositions="0.464" VBox.vgrow="ALWAYS">
+              <SplitPane fx:id="splitPane_root"               dividerPositions="0.3" VBox.vgrow="ALWAYS">
                   <items>
-                      <AnchorPane styleClass="splitPane_root">
+                                    <AnchorPane minWidth="220.0" styleClass="splitPane_root" SplitPane.resizableWithParent="false">
                           <children>
                                   <VBox styleClass="listRoots" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <children>
                               <SplitPane dividerPositions="0.3" maxHeight="1.7976931348623157E308" orientation="VERTICAL" VBox.vgrow="ALWAYS">
                                  <items>
-                                     <TableView fx:id="homeDefaultsTableView">
+                                     <TableView fx:id="homeDefaultsTableView" fixedCellSize="28.0" minHeight="60.0">
                                          <columns>
                                              <TableColumn fx:id="homeDefaults_select_column" editable="false" maxWidth="30.0" minWidth="30.0" prefWidth="30.0" resizable="false" sortable="false" />
                                              <TableColumn fx:id="homeDefaults_path_column" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="%path" />
@@ -42,15 +45,18 @@
                                              <TableView fx:constant="CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN" />
                                          </columnResizePolicy>
                                      </TableView>
-                                    <VBox maxHeight="1.7976931348623157E308">
+                                    <VBox maxHeight="1.7976931348623157E308" minHeight="150.0">
                                        <children>
                                                       <Label text="%drives" VBox.vgrow="NEVER">
                                              <padding>
-                                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+                                                <Insets bottom="4.0" left="6.0" right="6.0" top="4.0" />
                                              </padding>
                                           </Label>
-                                                        <TreeView fx:id="drives_treeView" styleClass="listRoots" VBox.vgrow="ALWAYS" />
-                                                      <HBox alignment="CENTER" VBox.vgrow="NEVER">
+                                                        <TreeView fx:id="drives_treeView" fixedCellSize="28.0" styleClass="listRoots" VBox.vgrow="ALWAYS" />
+                                                      <HBox alignment="CENTER" spacing="6.0" VBox.vgrow="NEVER">
+                                                          <padding>
+                                                              <Insets bottom="4.0" left="6.0" right="6.0" top="4.0" />
+                                                          </padding>
                                                           <children>
                                                               <Button fx:id="addToSelectedFolders_btn" mnemonicParsing="false" onAction="#addToSelectedFolders_btn_action" text="&lt;-" />
                                                               <Button fx:id="list" maxHeight="50.0" maxWidth="75.0" minHeight="30.0" minWidth="50.0" mnemonicParsing="false" onAction="#list_action" prefHeight="30.0" prefWidth="75.0" text="List DEBUG" textAlignment="CENTER" wrapText="true" HBox.hgrow="ALWAYS" />

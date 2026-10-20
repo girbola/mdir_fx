@@ -143,14 +143,14 @@ public class TableUtils {
         List<LocalDate> sortedDates = new ArrayList<>(dateSet);
         Collections.sort(sortedDates);
 
-        System.out.println("SORTED:::: number on sortedDates");
+        Messages.sprintf("SORTED:::: number on sortedDates");
         sortedDates.forEach(System.out::println);
 
         // Calculate the days between min and max date
         LocalDate minDate = sortedDates.get(0);
         LocalDate maxDate = sortedDates.get(sortedDates.size() - 1);
 
-        System.out.println("Min date: " + minDate + ", max date: " + maxDate + ", difference: " + ChronoUnit.DAYS.between(minDate, maxDate) + " days");
+        Messages.sprintf("Min date: " + minDate + ", max date: " + maxDate + ", difference: " + ChronoUnit.DAYS.between(minDate, maxDate) + " days");
         return ChronoUnit.DAYS.between(
                 minDate, maxDate); // 365
 

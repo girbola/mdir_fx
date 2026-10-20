@@ -1,5 +1,7 @@
 package com.girbola.utils.imagehash;
 
+import com.girbola.messages.Messages;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -111,8 +113,8 @@ public class ImageComparionUtils {
         // 7. Compute average (excluding DC coefficient [0][0] optional)
         double avg = (sum - dctVals[0][0]) / (size * size - 1);
 
-        System.out.println("Average: " + avg);
-        System.out.println("SUM: " + sum);
+        Messages.sprintf("Average: " + avg);
+                Messages.sprintf("SUM: " + sum);
         // 8. Build hash
         long hash = 0L;
         for (int i = 0; i < size; i++) {

@@ -274,10 +274,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         // Create accept button
         Button accept = DateFixGuiUtils.createAcceptButton(fileInfo, buttonDateTimeContainer, fileDateTextField);
 
-        // Create right filling region to balance layout
-        Region rightFilling = createFillingRegion(accept);
-        Messages.sprintf("rightFilling WIDTH::::  " + rightFilling.getWidth());
-        buttonDateTimeContainer.getChildren().addAll(accept, fileDateTextField, rightFilling);
+        buttonDateTimeContainer.getChildren().addAll(accept, fileDateTextField);
 
         return buttonDateTimeContainer;
     }

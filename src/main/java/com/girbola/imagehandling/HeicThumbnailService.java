@@ -1,5 +1,7 @@
 package com.girbola.imagehandling;
 
+import com.girbola.messages.Messages;
+
 import java.io.*;
 import java.nio.file.*;
 import java.security.MessageDigest;
@@ -62,16 +64,16 @@ public class HeicThumbnailService {
 
         for (FfmpegInfo f : candidates) {
             try {
-                System.out.println("\nTrying ffmpeg: " + f.path);
-                System.out.println("Hash: " + f.sha256);
+                Messages.sprintf("\nTrying ffmpeg: " + f.path);
+                Messages.sprintf("Hash: " + f.sha256);
 
                 runFfmpeg(f.path, input, output);
 
-                System.out.println("✅ Success with: " + f.path);
+                Messages.sprintf("✅ Success with: " + f.path);
                 return;
 
             } catch (Exception e) {
-                System.out.println("❌ Failed with: " + f.path);
+                Messages.sprintf("❌ Failed with: " + f.path);
             }
         }
 
@@ -105,7 +107,7 @@ public class HeicThumbnailService {
                 }
 
             } catch (Exception e) {
-                System.out.println("Skipping " + path + ": " + e.getMessage());
+                Messages.sprintf("Skipping " + path + ": " + e.getMessage());
             }
         }
 
@@ -201,7 +203,7 @@ public class HeicThumbnailService {
             if (STRICT_HASH_CHECK) {
                 throw new SecurityException(msg);
             } else {
-                System.out.println("⚠ WARNING: " + msg);
+                Messages.sprintf("⚠ WARNING: " + msg);
             }
         }
     }

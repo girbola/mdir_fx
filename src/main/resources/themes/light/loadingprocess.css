@@ -1,23 +1,90 @@
-/*
- * Empty Stylesheet file.
- */
-
 .root {
     -fx-background-color: whitesmoke;
+    -kitt-red: #e61f1f;
+    -kitt-red-soft: #ff8a8a;
 }
 
-
-.progress-bar .bar {
-    -fx-background-color: derive(red, 50%);
-
-}
-.progress-bar .track {
-    -fx-background-color: derive(black, 50%);
+.loadingPane {
+    -fx-background-color: #f4f6f9;
+    -fx-border-color: #d3dbe4;
+    -fx-border-width: 1;
 }
 
 .shadowPane {
-    -fx-background-color: darkgrey;
-    -fx-effect: dropshadow(gaussian, black, 5, 0, 0, 0);
-    -fx-background-insets: 5
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #f4f6f9);
+}
+
+.loadingTitle {
+    -fx-text-fill: #52657a;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.loadingMessage {
+    -fx-text-fill: #1f2933;
+    -fx-font-size: 13px;
+    -fx-text-overrun: ellipsis;
+}
+
+.text-area.loadingLog {
+    -fx-control-inner-background: #ffffff;
+    -fx-background-color: #c4cfdb, #ffffff;
+    -fx-background-insets: 0, 1;
+    -fx-background-radius: 6, 5;
+    -fx-text-fill: #2b3640;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 11px;
+}
+
+.text-area.loadingLog .content {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 5;
+}
+
+/* Michael Knight scanner: red glowing bar sweeping back and forth */
+.progress-bar.kittBar > .track {
+    -fx-background-color: #2a2f36;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-padding: 0.4em;
+}
+
+.progress-bar.kittBar > .bar {
+    -fx-background-color: linear-gradient(to right, rgba(230, 31, 31, 0), -kitt-red 25%, -kitt-red-soft 50%, -kitt-red 75%, rgba(230, 31, 31, 0));
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-padding: 0.4em;
+    -fx-effect: dropshadow(gaussian, rgba(230, 31, 31, 0.7), 10, 0.3, 0, 0);
+}
+
+.progress-bar.kittBar:determinate > .bar {
+    -fx-background-color: linear-gradient(to right, #9c1414, -kitt-red);
+}
+
+.progress-bar.kittBar:indeterminate {
+    -fx-indeterminate-bar-length: 90;
+    -fx-indeterminate-bar-escape: true;
+    -fx-indeterminate-bar-flip: true;
+    -fx-indeterminate-bar-animation-time: 1.4;
+}
+
+.button.cancelButton {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-border-color: #e61f1f;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-text-fill: #1f2933;
+    -fx-padding: 6 20;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.button.cancelButton:hover {
+    -fx-background-color: #ffeaea;
+}
+
+.button.cancelButton:pressed {
+    -fx-background-color: #ffd5d5;
 }
 

@@ -1,33 +1,91 @@
 .root {
-	-fx-primary: #393939;
+	-fx-primary: #1b1e22;
+	-kitt-red: #ff2a2a;
+	-kitt-red-soft: #ff8a8a;
 }
+
 .loadingPane {
 	-fx-background-color: -fx-primary;
-	-fx-border-color: transparent;
-	-fx-border-radius: 5px;
-	-fx-border-color: rgb(187, 123, 4);
-	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
-}
-.progress-bar .bar {
-	-fx-background-color: derive(red, 50%);
-	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
-}
-.progress-bar .track {
-	-fx-background-color: derive(black, 50%);
-	-fx-effect: dropshadow(three-pass-box, rgba(255, 255, 255, 0.2), 1, 0, 0, 1);
+	-fx-border-color: #343a42;
+	-fx-border-width: 1;
 }
 
 .shadowPane {
-	-fx-background-color: rgb(133, 131, 131);
-	-fx-background-radius: 5px;
+	-fx-background-color: linear-gradient(to bottom, #23272d, #1b1e22);
 }
-.button {
-	-fx-background-color: derive(red, 50%);
-	-fx-background-radius: 5px;
-	-fx-border-radius: 5px;
-	-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.082), 1, 0, 0, 1);
+
+.loadingTitle {
+	-fx-text-fill: #8f9bab;
+	-fx-font-size: 11px;
+	-fx-font-weight: bold;
 }
-.text-area {
-	-fx-control-inner-background: #2b2b2b;
-	-fx-text-fill: white;
+
+.loadingMessage {
+	-fx-text-fill: #eef2f7;
+	-fx-font-size: 13px;
+	-fx-text-overrun: ellipsis;
+}
+
+.text-area.loadingLog {
+	-fx-control-inner-background: #14171a;
+	-fx-background-color: #343a42, #14171a;
+	-fx-background-insets: 0, 1;
+	-fx-background-radius: 6, 5;
+	-fx-text-fill: #c4ccd6;
+	-fx-font-family: "Consolas", monospace;
+	-fx-font-size: 11px;
+}
+
+.text-area.loadingLog .content {
+	-fx-background-color: #14171a;
+	-fx-background-radius: 5;
+}
+
+/* Michael Knight scanner: red glowing bar sweeping back and forth */
+.progress-bar.kittBar > .track {
+	-fx-background-color: #0e1013;
+	-fx-background-insets: 0;
+	-fx-background-radius: 6;
+	-fx-padding: 0.4em;
+	-fx-border-color: #2a1416;
+	-fx-border-radius: 6;
+}
+
+.progress-bar.kittBar > .bar {
+	-fx-background-color: linear-gradient(to right, rgba(255, 42, 42, 0), -kitt-red 25%, -kitt-red-soft 50%, -kitt-red 75%, rgba(255, 42, 42, 0));
+	-fx-background-insets: 0;
+	-fx-background-radius: 6;
+	-fx-padding: 0.4em;
+	-fx-effect: dropshadow(gaussian, rgba(255, 42, 42, 0.85), 12, 0.35, 0, 0);
+}
+
+.progress-bar.kittBar:determinate > .bar {
+	-fx-background-color: linear-gradient(to right, #8f1010, -kitt-red);
+}
+
+.progress-bar.kittBar:indeterminate {
+	-fx-indeterminate-bar-length: 90;
+	-fx-indeterminate-bar-escape: true;
+	-fx-indeterminate-bar-flip: true;
+	-fx-indeterminate-bar-animation-time: 1.4;
+}
+
+.button.cancelButton {
+	-fx-background-color: #2a2f36;
+	-fx-background-radius: 16;
+	-fx-border-color: #ff3b3b;
+	-fx-border-radius: 16;
+	-fx-border-width: 1;
+	-fx-text-fill: #f2f4f7;
+	-fx-padding: 6 20;
+	-fx-cursor: hand;
+	-fx-effect: none;
+}
+
+.button.cancelButton:hover {
+	-fx-background-color: #3a1d1f;
+}
+
+.button.cancelButton:pressed {
+	-fx-background-color: #4a2326;
 }

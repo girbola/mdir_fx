@@ -260,9 +260,8 @@ public class DateFixGuiUtils {
         imageViewContainer.setMaxSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
         imageViewContainer.setPrefSize(Region.USE_COMPUTED_SIZE, Region.USE_COMPUTED_SIZE);
 
-        imageViewContainer.setMinHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
-        imageViewContainer.setMaxHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
-        imageViewContainer.setPrefHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.7));
+        imageViewContainer.setMinHeight(Math.round((double) UIContants.IMAGE_FRAME_HEIGHT * 0.55));
+        imageViewContainer.setMaxHeight(Double.MAX_VALUE);
 
         imageViewContainer.setAlignment(Pos.CENTER);
         imageViewContainer.setFillHeight(true);
@@ -290,9 +289,9 @@ public class DateFixGuiUtils {
         buttonDateTimeContainer.setSpacing(hGap);
         buttonDateTimeContainer.setAlignment(Pos.CENTER_LEFT);
         buttonDateTimeContainer.setId("bottom");
-        buttonDateTimeContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
-        buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
-        buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - hGap, 30);
+        buttonDateTimeContainer.setMaxSize(UIContants.IMAGE_FRAME_WIDTH - 8, Double.MAX_VALUE);
+        buttonDateTimeContainer.setPrefSize(UIContants.IMAGE_FRAME_WIDTH - 8, Region.USE_COMPUTED_SIZE);
+        buttonDateTimeContainer.setMinSize(UIContants.IMAGE_FRAME_WIDTH - 8, 40);
         buttonDateTimeContainer.getStyleClass().add("buttonDateTimeContainer");
 
         return buttonDateTimeContainer;

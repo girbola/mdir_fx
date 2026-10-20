@@ -499,7 +499,7 @@ public class FileInfoUtils {
 //                }
 //            }
         } else {
-            System.out.println("ExifSubIFDDirectory not found.");
+            Messages.sprintf("ExifSubIFDDirectory not found.");
         }
 //
 //        if (directory != null) {

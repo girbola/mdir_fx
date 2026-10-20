@@ -56,7 +56,7 @@ Why this is bad:
 - testing becomes much harder,
 - a simple read can trigger persistent side effects.
 
-Also, the match itself is string-based:
+Also, the match itself dis string-based:
 ```java
 if (folderPath.startsWith(selectedFolder.getFolder()))
 ```

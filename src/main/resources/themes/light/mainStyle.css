@@ -484,3 +484,48 @@ Main /theme/light/mainStyle.css
 .table-view .table-row-cell:selected .table-cell.col-date-max,
 .table-view .table-row-cell:selected .table-cell.col-size,
 .table-view .table-row-cell:selected .table-cell.col-path { -fx-text-fill: white; }
+
+/* Folder scanner: split pane dividers and selected folders buttons */
+.split-pane > .split-pane-divider {
+    -fx-padding: 0 2 0 2;
+    -fx-background-color: #d3dbe4;
+    -fx-background-insets: 0;
+}
+
+.split-pane > .split-pane-divider:hover {
+    -fx-background-color: #7ba5ca;
+}
+
+.split-pane:horizontal > .split-pane-divider {
+    -fx-cursor: h-resize;
+}
+
+.split-pane:vertical > .split-pane-divider {
+    -fx-cursor: v-resize;
+    -fx-padding: 2 0 2 0;
+}
+
+.selectedFoldersButtonBar {
+    -fx-background-color: transparent;
+}
+
+.sfButton {
+    -fx-min-width: 50px;
+    -fx-pref-width: 50px;
+    -fx-min-height: 30px;
+    -fx-pref-height: 30px;
+    -fx-padding: 0;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 8, 0, 0, 1);
+}
+
+.sfButtonOk,
+.sfButtonCancel {
+    -fx-background-color: green;
+}
+
+.sfButtonAdd {
+    -fx-min-width: 30px;
+    -fx-pref-width: 30px;
+    -fx-background-color: orange;
+}

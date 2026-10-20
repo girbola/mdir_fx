@@ -1090,7 +1090,7 @@ public class TableController {
             // Check horizontal scrollbar
             ScrollBar horizontalScrollBar = (ScrollBar) scrollPane.lookup(".scroll-bar:horizontal");
             if (horizontalScrollBar != null) {
-                System.out.println("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
+                Messages.sprintf("Horizontal ScrollBar visible: " + horizontalScrollBar.isVisible());
             }
         } else {
             Messages.sprintf("scrollPane is null");

@@ -172,7 +172,7 @@ public class DriveInfoUtils {
     }
 
     public static String parseDriveLetterFromPath(Path drivePath) {
-        System.out.println("parseDriveLetterFromPath: " + drivePath);
+        Messages.sprintf("parseDriveLetterFromPath: " + drivePath);
         return drivePath.getRoot().toString();
     }
 

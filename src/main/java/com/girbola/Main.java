@@ -307,7 +307,7 @@ public class Main extends Application {
                     }
                 } catch (Exception e) {
                     // Hiljennetään virhe, jos alusta ei tue AWT Taskbaria
-                    System.out.println("AWT Taskbar ei ole tuettu tällä alustalla: " + e.getMessage());
+                    Messages.sprintf("AWT Taskbar ei ole tuettu tällä alustalla: " + e.getMessage());
                 }
 
                  */

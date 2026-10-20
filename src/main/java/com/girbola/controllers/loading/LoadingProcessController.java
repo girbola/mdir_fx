@@ -42,6 +42,7 @@ public class LoadingProcessController {
     }
 
     public void closeWindow() {
+        System.err.println("closeWindow() called");
         // model.getTask().cancel();
         if (model_loading.getTask() != null) {
             if (model_loading.getTask().isRunning()) {
@@ -78,6 +79,7 @@ public class LoadingProcessController {
     }
 
     public void setCancel_btn(Button cancel_btn) {
+        sprintf("setCancel_btn() called");
         this.cancel_btn = cancel_btn;
     }
 

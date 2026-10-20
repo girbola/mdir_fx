@@ -52,7 +52,7 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
                     cancel();
                     break;
                 }
-                System.out.println("----ConvertVideo_Byte video imageInByte size: " + imageInByte.length);
+                Messages.sprintf("----ConvertVideo_Byte video imageInByte size: " + imageInByte.length);
                 InputStream in = new ByteArrayInputStream(imageInByte);
 
                 BufferedImage bufferedImage = ImageIO.read(in);
@@ -71,14 +71,14 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
         List<BufferedImage> list = null;
         try {
             list = get();
-            System.out.println("ConvertVideo_Byte video thumblist size: " + list.size());
+            Messages.sprintf("ConvertVideo_Byte video thumblist size: " + list.size());
         } catch (Exception e) {
             super.cancel();
             System.err.println("buffered failed: " + e);
             return;
         }
 
-        System.out.println("ConvertVideo_Byte video imageView: " + imageView);
+        Messages.sprintf("ConvertVideo_Byte video imageView: " + imageView);
 //		System.out.println("imageView.getParent() " + imageView.getParent());
 //		Node node = imageView.getParent();
 //		System.out.println("node.getClass() " + node.getClass() + " node.getId: " + node.getId());
@@ -91,10 +91,10 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
         StackPane pane = new StackPane();
         pane.setMouseTransparent(true);
 
-        System.out.println("rootPane ID: " + rootPane.getId());
+        Messages.sprintf("rootPane ID: " + rootPane.getId());
         if (list == null || list.isEmpty()) {
             System.err.println("ConvertVideo_Byte video thumblist were null. returning: " + fileName);
-            System.out.println("StackPANE ID: " + pane.getId());
+            Messages.sprintf("StackPANE ID: " + pane.getId());
             pane.getChildren().add(new Label("Video. NP"));
             return;
         } else {

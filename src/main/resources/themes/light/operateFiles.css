@@ -1,45 +1,90 @@
 .root {
-    /*-fx-background-insets: 3;*/
-	-fx-primary:black;
+    -fx-primary: #f4f6f9;
+    -fx-background-color: #f4f6f9;
+    -kitt-red: #e61f1f;
 }
 
-
-.button {
-    -fx-background-color: 
-        -fx-primary,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
-    /*-fx-background-insets: 2;*/
-    /*-fx-background-radius: 2;*/
-    /*-fx-border-color: derive(-fx-primary, 80%);*/
-    /*-fx-border-radius: 4;*/
-    
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    /*-fx-insets: 0;*/
-    /*-fx-padding: 3;*/
-    -fx-text-fill: white;
+.operatePane {
+    -fx-background-color: #f4f6f9;
 }
-.button:hover {
-    -fx-background-color: linear-gradient(to bottom, white, orange);
+
+.operateCard {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-border-color: #d3dbe4;
+    -fx-border-radius: 8;
+    -fx-border-width: 1;
 }
 
 .label {
-    /*-fx-background-color:whitesmoke;*/
-    /*-fx-border-color: black;*/
-    -fx-font-family: Gadius;
-    /*-fx-font-size: 15px;*/
-    -fx-text-fill: black;
-}
-.text-field {
-    -fx-font-family: Gadius;
-    -fx-background-color: derive(#393939, 40%);
-    -fx-text-fill: black;
-}
-.gridpaneStat {
-    -fx-padding: 5 5 5 5;
-    -fx-background-color: derive(#393939, 50%);
+    -fx-text-fill: #1f2933;
 }
 
+.statName {
+    -fx-text-fill: #52657a;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.statValue {
+    -fx-text-fill: #1f2933;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.statPath {
+    -fx-text-fill: #3c4a58;
+    -fx-font-family: "Consolas", monospace;
+    -fx-font-size: 12px;
+    -fx-text-overrun: leading-ellipsis;
+}
+
+.progress-bar.kittBar > .track {
+    -fx-background-color: #dfe5ec;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+}
+
+.progress-bar.kittBar > .bar {
+    -fx-background-color: linear-gradient(to right, #9c1414, -kitt-red);
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-effect: dropshadow(gaussian, rgba(230, 31, 31, 0.45), 6, 0.2, 0, 0);
+}
+
+.button.operateButton {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 16;
+    -fx-border-color: #c4cfdb;
+    -fx-border-radius: 16;
+    -fx-border-width: 1;
+    -fx-text-fill: #1f2933;
+    -fx-font-size: 12px;
+    -fx-padding: 6 22;
+    -fx-cursor: hand;
+    -fx-effect: none;
+}
+
+.button.operateButton:hover {
+    -fx-background-color: #e8f2fb;
+}
+
+.button.operateButton:disabled {
+    -fx-opacity: 0.45;
+}
+
+.button.startButton {
+    -fx-border-color: #2fa84f;
+}
+
+.button.startButton:hover {
+    -fx-background-color: #e3f5e8;
+}
+
+.button.cancelButton {
+    -fx-border-color: #e61f1f;
+}
+
+.button.cancelButton:hover {
+    -fx-background-color: #ffeaea;
+}

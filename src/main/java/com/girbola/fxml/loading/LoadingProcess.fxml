@@ -9,50 +9,29 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane minHeight="200.0" minWidth="300.0" prefHeight="100.0" prefWidth="200.0" styleClass="loadingPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
+<AnchorPane minHeight="220.0" minWidth="380.0" prefHeight="240.0" prefWidth="420.0" styleClass="loadingPane" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.loading.LoadingProcessController">
    <children>
-      <VBox layoutX="2.0" layoutY="2.0" styleClass="shadowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox spacing="10.0" styleClass="shadowPane" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <padding>
+            <Insets bottom="14.0" left="16.0" right="16.0" top="14.0" />
+         </padding>
          <children>
-            <HBox alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_LEFT" spacing="8.0" VBox.vgrow="NEVER">
                <children>
-                  <Label graphicTextGap="0.0" text="%status" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets bottom="1.0" left="5.0" right="1.0" top="1.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" style="-fx-border-width: 1;" HBox.hgrow="ALWAYS">
-                     <HBox.margin>
-                        <Insets bottom="1.0" left="5.0" right="5.0" top="1.0" />
-                     </HBox.margin></Label>
-               </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-               <children>
-                  <TextArea fx:id="messages_txa" editable="false" wrapText="true" HBox.hgrow="ALWAYS" />
+                  <Label graphicTextGap="0.0" styleClass="loadingTitle" text="%status" HBox.hgrow="NEVER" />
+                  <Label fx:id="messages_lbl" maxWidth="1.7976931348623157E308" styleClass="loadingMessage" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_LEFT" mouseTransparent="true" VBox.vgrow="ALWAYS">
+            <TextArea fx:id="messages_txa" editable="false" prefRowCount="5" styleClass="loadingLog" wrapText="true" VBox.vgrow="ALWAYS" />
+            <HBox alignment="CENTER_LEFT" mouseTransparent="true" VBox.vgrow="NEVER">
                <children>
-                  <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="0.35" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER">
-                     <padding>
-                        <Insets left="3.0" right="3.0" />
-                     </padding>
-                  </ProgressBar>
+                  <ProgressBar fx:id="progressBar" maxWidth="1.7976931348623157E308" progress="-1.0" styleClass="kittBar" HBox.hgrow="ALWAYS" />
                </children>
             </HBox>
-            <HBox alignment="CENTER_RIGHT" maxHeight="-Infinity" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+            <HBox alignment="CENTER_RIGHT" VBox.vgrow="NEVER">
                <children>
-                  <Button fx:id="cancel_btn" mnemonicParsing="false" onAction="#cancel_btn_action" text="%cancel" HBox.hgrow="ALWAYS" VBox.vgrow="NEVER" />
+                  <Button fx:id="cancel_btn" mnemonicParsing="false" onAction="#cancel_btn_action" styleClass="cancelButton" text="%cancel" />
                </children>
-               <VBox.margin>
-                  <Insets bottom="5.0" right="5.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets top="5.0" />
-               </padding>
             </HBox>
          </children>
       </VBox>

@@ -36,7 +36,7 @@ public class WorkDirSQL {
 
     public WorkDirSQL(Path workDirPath) {
         if (Files.exists(workDirPath)) {
-            System.out.println("WorkDirSQL: " + workDirPath.toString() + " exists");
+            Messages.sprintf("WorkDirSQL: " + workDirPath.toString() + " exists");
             this.connection = createWorkDirConnection(workDirPath);
         } else {
             loadWorkDir();
@@ -66,7 +66,7 @@ public class WorkDirSQL {
         }
 
         final String sql = FileInfoEnum.getCreateTableSQL(SQLTableEnums.FILEINFO.getType());
-        System.out.println("SQLLLRLERLGELR::::::: " + sql);
+        Messages.sprintf("SQLLLRLERLGELR::::::: " + sql);
         try {
             Statement stmt = connection.createStatement();
             stmt.execute(sql);
@@ -208,8 +208,8 @@ public class WorkDirSQL {
 
             SQL_Utils.setAutoCommit(connection, false);
 
-            System.out.println("sql:::::::: " + sql);
-            System.out.println(" fileInfo: " + fileInfo.showAllValues());
+            Messages.sprintf("sql:::::::: " + sql);
+                        Messages.sprintf(" fileInfo: " + fileInfo.showAllValues());
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
             // Update values
