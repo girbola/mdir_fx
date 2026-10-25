@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/img" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/sql" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources/themes" type="java-resource" />
+      <excludeFolder url="file://$MODULE_DIR$/src/.idea" />
     </content>
   </component>
 </module>
