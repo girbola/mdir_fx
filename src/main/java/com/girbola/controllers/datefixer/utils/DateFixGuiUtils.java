@@ -572,6 +572,20 @@ public class DateFixGuiUtils {
         return null;
     }
 
+    public static GridPane getImageFrameTopGridPane(VBox vbox) {
+        GridPane imageFrameGridPane = getImageFrameGridPane(vbox);
+        if (imageFrameGridPane == null) {
+            return null;
+        }
+
+        for (Node gridPaneChild : imageFrameGridPane.getChildren()) {
+            if (gridPaneChild instanceof GridPane && gridPaneChild.getId().equals("imageFrameTop")) {
+                return (GridPane) gridPaneChild;
+            }
+        }
+        return null;
+    }
+
     public static Label createDimensionsLabel(FileInfo fileInfo) {
         int width = (int) fileInfo.getWidth();
         int height = (int) fileInfo.getHeight();

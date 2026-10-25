@@ -521,6 +521,8 @@ public class ModelDatefix extends DateFixerModel {
 
     public BooleanProperty copied_property() {return this.copied;}
 
+    public BooleanProperty hideShowImageFrameTop_property() {return this.hideShowImageFrameTop;}
+
     public BooleanProperty locations_property() {return this.locations;}
 
     public boolean getIgnored() {return this.ignored.get();}

@@ -5,6 +5,7 @@ import com.girbola.messages.Messages;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 public class DateFixLoadingProcessLoader {
@@ -30,6 +31,19 @@ public class DateFixLoadingProcessLoader {
                     imageFrameImageNumber.setText("");
                     imageFrameImageNumber.setText("" + counter);
                 });
+            }
+        }
+    }
+
+    public static void hideShowImageFrameTop(ModelDatefix modelDatefix) {
+        for (Node node : modelDatefix.getTilePane().getChildren()) {
+            if (node instanceof VBox vbox && node.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+                GridPane imageFrameTop = DateFixGuiUtils.getImageFrameTopGridPane(vbox);
+                if (imageFrameTop != null) {
+                    Platform.runLater(() -> {
+                        imageFrameTop.setVisible(!imageFrameTop.isVisible());
+                    });
+                }
             }
         }
     }

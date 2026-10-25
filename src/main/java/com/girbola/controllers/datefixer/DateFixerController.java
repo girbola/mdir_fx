@@ -623,7 +623,7 @@ public class DateFixerController {
 
         copied_chk.selectedProperty().bindBidirectional(this.modelDatefix.copied_property());
 
-        showHideImageFrameTopChk.selectedProperty().bindBidirectional(this.modelDatefix.showHideImageFrameTop_property());
+        showHideImageFrameTopChk.selectedProperty().bindBidirectional(this.modelDatefix.hideShowImageFrameTop_property());
 
         folderize_btn.disableProperty().bind(Main.conf.drive_connected_property().not());
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -633,6 +633,12 @@ public class DateFixerController {
             }
         });
 
+        showHideImageFrameTopChk.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                DateFixLoadingProcessLoader.hideShowImageFrameTop(modelDatefix);
+            }
+        });
         this.modelDatefix.setRightInfoPanel(rightInfoPanel);
 
         df_tilePane.setId("dateFixer");
