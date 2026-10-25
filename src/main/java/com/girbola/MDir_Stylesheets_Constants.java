@@ -14,6 +14,7 @@ public enum MDir_Stylesheets_Constants {
 	MAINSTYLE("mainStyle.css"),
 	MODENA("modena/modena.css"),
 	OPTIONPANE( "option_pane.css"),
+	PALETTE("palette.css"),
 	VLCPLAYER("vlcPlayer.css");
 
 	//======== Styling css file names============ ENDS

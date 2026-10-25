@@ -29,6 +29,7 @@ public class AlertDialog {
             stage.initOwner(window.getScene().getWindow());
             stage.initModality(Modality.WINDOW_MODAL);
             stage.setAlwaysOnTop(true);
+            scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
             scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
             AlertDialogController alertDialogController = (AlertDialogController) loader.getController();

@@ -48,12 +48,10 @@ public class Dialogs {
 		}
 		Messages.sprintf("createDialog_YesNoCancel width: " + dialog.getWidth());
 
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
 
-		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-		
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
 		dialogPane.setMinHeight(250);
@@ -70,11 +68,11 @@ public class Dialogs {
 		Dialog<ButtonType> dialog = new Dialog<>();
 		DialogPane dialogPane = new DialogPane();
 		Messages.sprintf("width: " + dialog.getWidth());
-		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
-		dialogPane.getStylesheets()
-				.add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
-		dialog.setDialogPane(dialogPane);
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+        dialogPane.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGSSTYLE.getType()).toExternalForm());
+
+        dialog.setDialogPane(dialogPane);
 		// dialogPane.getStyleClass().add("dialogPane");
 		dialogPane.setContentText(contentText);
 		dialog.initOwner(owner);

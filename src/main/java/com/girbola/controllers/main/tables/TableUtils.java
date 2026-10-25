@@ -97,7 +97,9 @@ public class TableUtils {
             conflictTableViewController.init(model_Main, obs);
 
             Scene scene_conflictTableView = new Scene(parent);
-            scene_conflictTableView.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+            scene_conflictTableView.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
+            scene_conflictTableView.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+
 
             Stage window = new Stage();
             window.setScene(scene_conflictTableView);

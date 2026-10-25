@@ -17,7 +17,6 @@ public class ThumbInfo {
 	private double thumb_fast_height;
 	private double orientation;
 	private String fileName;
-	private byte[] thumb_fast;
 	private ArrayList<byte[]> thumbs;
 
 	public ThumbInfo(String aFileName, int id) {
@@ -50,7 +49,7 @@ public class ThumbInfo {
 	public String toString() {
 		return "ThumbInfo [id=" + id + ", thumb_width=" + thumb_width + ", thumb_height=" + thumb_height + ", thumb_fast_width="
 				+ thumb_fast_width + ", thumb_fast_height=" + thumb_fast_height + ", orientation=" + orientation + ", fileName="
-				+ fileName + ", thumb_fast=" + Arrays.toString(thumb_fast) + ", thumbs size=" + thumbs.size() + "]";
+				+ fileName + ", thumbs size=" + thumbs.size() + "]";
 	}
 
 }

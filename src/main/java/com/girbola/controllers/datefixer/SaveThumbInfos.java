@@ -120,8 +120,6 @@ public class SaveThumbInfos extends Task<List<ThumbInfo>> {
                                                 fileInfo.getFileInfo_id());
                                         if (image != null) {
                                             Platform.runLater(() -> {
-
-                                                Messages.sprintf("IMAGEEEEEEEEEEEEEEEEE:::::::::::: " + image.toString());
                                                 WritableImage writableImage = iv.snapshot(new SnapshotParameters(), null);
                                                 thumbInfo.setThumb_fast_width(writableImage.getWidth());
                                                 thumbInfo.setThumb_fast_height(writableImage.getHeight());

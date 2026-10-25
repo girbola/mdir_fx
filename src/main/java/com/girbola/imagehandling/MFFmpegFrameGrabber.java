@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Node;
@@ -26,43 +25,40 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
 public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
-    private FileInfo fileInfo;
-    private ImageView imageView;
-    private int image_width;
+    private final FileInfo fileInfo;
+    private final ImageView imageView;
+    private final int imageWidth;
     private Timeline timeLine;
 
-    public MFFmpegFrameGrabber(FileInfo fileInfo, ImageView imageView, double image_width) {
+    public MFFmpegFrameGrabber(FileInfo fileInfo, ImageView imageView, double imageWidth) {
         this.fileInfo = fileInfo;
         this.imageView = imageView;
-        this.image_width = ((int) image_width);
+        this.imageWidth = (int) imageWidth;
     }
 
-    public static List<Double> grabListOfTimeLine(double duration) {
-        List<Double> list = new ArrayList<>();
-        if (duration <= 5) {
-            list.add(0.0);
-        } else if (duration <= 10 && duration >= 6) {
-            double startPos = 0;
-            double ratio = (duration / 2); //
-            list.add(startPos);
-            for (int i = 0; i < 1; i++) {
-                startPos += ratio;
-                list.add(startPos);
-            }
+    public static List<Long> grabListOfTimeLineMicros(long totalDurationMicros) {
+        List<Long> list = new ArrayList<>();
+        double durationSec = totalDurationMicros / 1_000_000.0;
+
+        if (durationSec <= 5) {
+            list.add(0L);
+        } else if (durationSec <= 10) {
+            long step = totalDurationMicros / 2;
+            list.add(0L);
+            list.add(step);
         } else {
-            double startPos = (duration / 10); // = 3. 10% from duration. This could avoid black screen as a start image
-            double ratio = ((duration - startPos) / 5); //
-            list.add(startPos);
-            for (int i = 0; i < 4; i++) {
-                startPos += ratio;
-                list.add(startPos);
+            long startPos = totalDurationMicros / 10; // 10% offset to avoid black screens
+            long step = (totalDurationMicros - startPos) / 5;
+            long current = startPos;
+            for (int i = 0; i < 5; i++) {
+                list.add(current);
+                current += step;
             }
         }
         return list;
     }
-    public List<BufferedImage> frameGrabber(Path path) {
-        //final int thumbnailCount = 5; // Number of thumbnails to generate
 
+    public List<BufferedImage> frameGrabber(Path path) {
         try (FFmpegFrameGrabber frameGrabber = new FFmpegFrameGrabber(path.toFile())) {
             try {
                 frameGrabber.start();
@@ -71,26 +67,30 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
                 return null;
             }
 
-            long totalLength = frameGrabber.getLengthInTime();
-            List<Double> doubles = grabListOfTimeLine(totalLength);
+            long totalLengthMicros = frameGrabber.getLengthInTime();
+            List<Long> timestampsMicros = grabListOfTimeLineMicros(totalLengthMicros);
 
             List<BufferedImage> list = new ArrayList<>();
-            for (Double timeStamp : doubles) {
-                long frameNumber = (long) Math.floor(timeStamp);
-                frameGrabber.setTimestamp(frameNumber);
-                frameGrabber.setFormat("jpg");
-                Frame frame = frameGrabber.grabImage();
-                Java2DFrameConverter converter = new Java2DFrameConverter();
 
-                BufferedImage bufferedImage = converter.getBufferedImage(frame);
-                if (bufferedImage != null) {
-                    BufferedImage bufferedImage1 = ImageUtils.scaleImageWithAspectRatio(bufferedImage);
-                    list.add(bufferedImage1);
-                    bufferedImage = null;
-                    bufferedImage1 = null;
-                } else {
-                    Messages.sprintfError("Cannot grab bufferedImage: " + path + " frame number: " + frameNumber);
-                    break;
+            // Re-use a single converter instance to prevent off-heap native memory leaks
+            try (Java2DFrameConverter converter = new Java2DFrameConverter()) {
+                for (Long timeStampMicros : timestampsMicros) {
+                    if (isCancelled()) {
+                        break;
+                    }
+
+                    frameGrabber.setTimestamp(timeStampMicros);
+                    Frame frame = frameGrabber.grabImage();
+
+                    if (frame != null) {
+                        BufferedImage bufferedImage = converter.getBufferedImage(frame);
+                        if (bufferedImage != null) {
+                            BufferedImage scaledImage = ImageUtils.scaleImageWithAspectRatio(bufferedImage);
+                            list.add(scaledImage);
+                        }
+                    } else {
+                        Messages.sprintfError("Cannot grab frame for " + path + " at " + timeStampMicros + " µs");
+                    }
                 }
             }
 
@@ -98,95 +98,97 @@ public class MFFmpegFrameGrabber extends Task<List<BufferedImage>> {
             frameGrabber.release();
 
             return list;
-        } catch (
-                IOException e) {
-            Messages.sprintf("Problem to grab thumbnails from video. MESSAGE: " + e.getMessage());
+        } catch (IOException e) {
+            Messages.sprintf("Problem grabbing video thumbnails: " + e.getMessage());
             return null;
         }
     }
 
-
     @Override
     protected List<BufferedImage> call() throws Exception {
-        List<BufferedImage> list = null;
-        try {
-            list = frameGrabber(Paths.get(fileInfo.getOrgPath()));
-        } catch (Exception ex) {
-            Messages.sprintfError("Exception ex: " + ex.getMessage());
-            cancelled();
+        if (fileInfo == null || fileInfo.getOrgPath() == null) {
             return null;
         }
-        return list;
+        return frameGrabber(Paths.get(fileInfo.getOrgPath()));
     }
 
     @Override
     protected void succeeded() {
-        List<BufferedImage> list = new ArrayList<>();
-        try {
-            list = get();
-            if (list == null) {
-                cancelled();
-                return;
-            }
-        } catch (Exception e) {
-            Messages.sprintfError("buffered failed: " + e.getMessage());
+        super.succeeded();
+        List<BufferedImage> list = getValue();
+
+        if (list == null || list.isEmpty()) {
+            Messages.sprintfError("VideoThumbMaker returned null/empty for: " + fileInfo.getOrgPath());
             return;
         }
 
-        // Safely navigate the parent hierarchy to avoid ClassCastException
+        // Safely navigate view hierarchy
         Node parentNode = imageView.getParent();
         HBox pane = null;
         VBox rootPane = null;
 
         if (parentNode instanceof StackPane) {
-            // If parent is StackPane, traverse up to find HBox (common in your image frame setup)
             Node grandParent = parentNode.getParent();
             if (grandParent instanceof HBox) {
                 pane = (HBox) grandParent;
-                rootPane = (VBox) pane.getParent(); // Assuming VBox is next
-            } else {
-                Messages.sprintfError("Unexpected parent structure for ImageView: " + grandParent);
-                return; // Bail out to prevent further errors
+                if (pane.getParent() instanceof VBox) {
+                    rootPane = (VBox) pane.getParent();
+                }
             }
         } else if (parentNode instanceof HBox) {
             pane = (HBox) parentNode;
-            rootPane = (VBox) pane.getParent();
-        } else {
-            Messages.sprintfError("Unexpected parent type for ImageView: " + parentNode.getClass().getName());
-            return; // Handle gracefully
+            if (pane.getParent() instanceof VBox) {
+                rootPane = (VBox) pane.getParent();
+            }
         }
 
-        if (list == null || list.isEmpty()) {
-            Messages.sprintfError("VideoThumbMaker video thumblist were null. returning: " + fileInfo.getOrgPath());
+        if (rootPane == null) {
+            Messages.sprintfError("Could not resolve VBox root container for ImageView");
             return;
         }
 
         VideoPreview videoPreview = new VideoPreview(list, imageView);
-        Platform.runLater(() -> {
-            imageView.setImage(videoPreview.getImage(0));
-        });
+
+        // Directly set initial image (succeeded runs on JavaFX thread automatically)
+        imageView.setImage(videoPreview.getImage(0));
         imageView.setUserData(list);
 
-        rootPane.setOnMouseEntered(event -> {
-            timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+        // Setup clean hover animation handlers
+        VBox finalRootPane = rootPane;
+        finalRootPane.setOnMouseEntered(event -> {
+            if (timeLine != null) {
+                timeLine.stop();
+            }
+            timeLine = new Timeline(new KeyFrame(Duration.seconds(0.8), e -> {
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
-                Platform.runLater(() -> {
-                    imageView.setImage(image);
-                });
+                imageView.setImage(image);
             }));
-            timeLine.setCycleCount(5);
+            timeLine.setCycleCount(Timeline.INDEFINITE);
             timeLine.play();
+        });
+
+        finalRootPane.setOnMouseExited(event -> {
+            if (timeLine != null) {
+                timeLine.stop();
+            }
+            // Reset to default static thumbnail on exit
+            imageView.setImage(videoPreview.getImage(0));
         });
     }
 
     @Override
     protected void cancelled() {
+        if (timeLine != null) {
+            timeLine.stop();
+        }
         super.cancelled();
     }
 
     @Override
     protected void failed() {
+        if (timeLine != null) {
+            timeLine.stop();
+        }
         super.failed();
     }
-
 }

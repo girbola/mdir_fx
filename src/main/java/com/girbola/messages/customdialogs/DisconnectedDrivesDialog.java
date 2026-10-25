@@ -128,6 +128,11 @@ public class DisconnectedDrivesDialog extends Dialog<ButtonType> {
         dialogPane.setContent(root);
         dialogPane.getStyleClass().add("disconnected-drives-dialog");
 
+        URL paletteUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType());
+        if (paletteUrl != null) {
+            dialogPane.getStylesheets().add(paletteUrl.toExternalForm());
+        }
+
         URL mainStyleUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
         if (mainStyleUrl != null) {
             dialogPane.getStylesheets().add(mainStyleUrl.toExternalForm());

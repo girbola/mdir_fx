@@ -69,7 +69,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
@@ -265,7 +264,9 @@ public class TableController {
 
             stage.setMaxWidth(Misc.getScreenBounds().getWidth());
             stage.setAlwaysOnTop(true);
+            scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
             scene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+
             MergeDialogController mergeDialogController = loader.getController();
             mergeDialogController.init(model_main, model_main.tables(), table, tableType);
             stage.setScene(scene);
@@ -944,7 +945,7 @@ public class TableController {
                 if (value == null || empty) {
                     setText("");
                 } else {
-                    setText(Conversion.convertToSmallerConversion(value));
+                    setText(Conversion.toHumanReadableSize(value));
                 }
             }
         });

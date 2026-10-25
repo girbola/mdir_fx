@@ -1,8 +1,10 @@
 package com.girbola.persistence.thumbinfo;
 
+import com.girbola.Main;
 import com.girbola.controllers.main.SQLTableEnums;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
 import com.girbola.sql.SQL_Utils;
 import com.girbola.thumbinfo.ThumbInfo;
 import java.sql.Connection;
@@ -13,15 +15,30 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 // implements SQLInterface
 public class ThumbInfoDao {
 
     final private static String ERROR = ThumbInfoDao.class.getSimpleName();
 
+    final static String createThumbnailTable = "CREATE TABLE IF NOT EXISTS "
+            + SQLTableEnums.THUMBINFO.getType()
+            + " (id INTEGER PRIMARY KEY,"
+            + " filepath STRING UNIQUE NOT NULL,"
+            + " thumb_width  DOUBLE,"
+            + " thumb_height DOUBLE,"
+            + " thumb_fast_width  DOUBLE,"
+            + " thumb_fast_height DOUBLE,"
+            + " orientation INTEGER,"
+            + " image_0 BLOB NULL,"
+            + " image_1  BLOB NULL,"
+            + " image_2 BLOB NULL,"
+            + " image_3  BLOB NULL,"
+            + " image_4  BLOB NULL)";
     final static String thumbInfoInsert =
             "INSERT OR REPLACE INTO " +
                     SQLTableEnums.THUMBINFO.getType() +
-                    " ('id',"+
+                    " ('id'," +
                     "'filepath', " +
                     "'thumb_width', " +
                     "'thumb_height', " +
@@ -66,6 +83,7 @@ public class ThumbInfoDao {
             return false;
         }
     }
+
     // @formatter:off
     public static boolean createThumbInfoTable(Connection connection) {
         boolean dbConnected = SQL_Utils.isDbConnected(connection);
@@ -76,22 +94,8 @@ public class ThumbInfoDao {
         try {
             Statement stmt = connection.createStatement();
             connection.setAutoCommit(false);
-            String sql = "CREATE TABLE IF NOT EXISTS "
-                    + SQLTableEnums.THUMBINFO.getType()
-                    + " (id INTEGER PRIMARY KEY,"
-                    + " filepath STRING UNIQUE NOT NULL,"
-                    + " thumb_width  DOUBLE,"
-                    + " thumb_height DOUBLE,"
-                    + " thumb_fast_width  DOUBLE,"
-                    + " thumb_fast_height DOUBLE,"
-                    + " orientation INTEGER,"
-                    + " image_0 BLOB NULL,"
-                    + " image_1  BLOB NULL,"
-                    + " image_2 BLOB NULL,"
-                    + " image_3  BLOB NULL,"
-                    + " image_4  BLOB NULL)";
 
-            stmt.execute(sql);
+            stmt.execute(createThumbnailTable);
             connection.commit();
 
             stmt.close();
@@ -241,5 +245,40 @@ public class ThumbInfoDao {
         return thumbInfo;
     }
 
+    public static boolean deleteThumbInfoListFromDatabase(String folderPath) {
+        String tableName = SQLTableEnums.THUMBINFO.getType();
+        String dropSql = "DROP TABLE IF EXISTS " + tableName;
 
+        try (Connection connection = FileInfoSqlConnectionFactory.connectToDatabase(folderPath, Main.conf.getMdir_db_fileName());
+             Statement stmt = connection.createStatement()) {
+
+            // Auto-commit ensures each DDL statement commits immediately and releases locks
+            connection.setAutoCommit(true);
+
+            // Set busy timeout so it waits up to 10 seconds for locks to clear
+            stmt.execute("PRAGMA busy_timeout = 10000;");
+
+            // Enable Write-Ahead Logging (WAL) mode to allow concurrent reads while dropping/creating
+            stmt.execute("PRAGMA journal_mode = WAL;");
+
+            // Force synchronous writes to ensure disk completion before the method returns
+            stmt.execute("PRAGMA synchronous = FULL;");
+
+            // 1. Drop table
+            stmt.executeUpdate(dropSql);
+
+            // 2. Recreate table
+            stmt.executeUpdate(createThumbnailTable);
+
+            // Optional: Vacuum to immediately reclaim space and ensure file handle updates
+            stmt.execute("VACUUM;");
+
+            return true;
+
+        } catch (SQLException e) {
+            Messages.sprintfError("Failed to drop and recreate table " + tableName + ": " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

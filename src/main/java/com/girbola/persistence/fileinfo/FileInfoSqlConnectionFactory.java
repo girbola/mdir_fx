@@ -199,19 +199,33 @@ public class FileInfoSqlConnectionFactory {
 
 
     public static Connection connectToDatabase(String path, String tableName) {
-        Connection conn = null;
+        String dbPath = path + File.separator + tableName;
+        // busy_timeout=5000 forces SQLite to wait up to 5 seconds for existing locks to clear
+        String url = "jdbc:sqlite:" + dbPath + "?busy_timeout=5000";
+
         try {
-            Class.forName("org.sqlite.JDBC");
-            conn = DriverManager.getConnection("jdbc:sqlite:" + path + File.separator + tableName);
-            if(conn != null && !conn.isClosed()) {
+            // Modern JDBC drivers auto-load org.sqlite.JDBC; Class.forName is optional
+            Connection conn = DriverManager.getConnection(url);
+
+            if (conn != null && !conn.isClosed()) {
+                // Enable Write-Ahead Logging (WAL) to allow simultaneous reads while writing
+                try (Statement stmt = conn.createStatement()) {
+                    stmt.execute("PRAGMA journal_mode=WAL;");
+                    stmt.execute("PRAGMA synchronous=NORMAL;");
+                } catch (SQLException e) {
+                    Messages.sprintf("Failed to set PRAGMAs: " + e.getMessage());
+                }
+
                 Messages.sprintf("FileInfoSqlConnectionFactory - connectToDatabase - Successfully connected to SQLITE database. In path: " + path + " tableName: " + tableName);
+
+                // Ensure migration code closes all internally opened statements/resultsets
                 FileInfoSqlDatabaseMigrator.migrate(conn);
             }
             return conn;
         } catch (Exception e) {
-            e.printStackTrace();
             System.err.println("FileInfoSqlConnectionFactory - connectToDatabase - Something went wrong while connecting SQLITE database.\n" + e.getMessage() + "\npath: " + path + " tableName: " + tableName);
-            return conn;
+            e.printStackTrace();
+            return null;
         }
     }
 

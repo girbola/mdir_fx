@@ -47,6 +47,11 @@ public class Messages {
         DialogPane dialogPane = new DialogPane();
         dialog.setDialogPane(dialogPane);
 
+        URL paletteUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType());
+        if (paletteUrl != null) {
+            dialogPane.getStylesheets().add(paletteUrl.toExternalForm());
+        }
+
         URL mainStyleUrl = Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
         if (mainStyleUrl != null) {
             dialogPane.getStylesheets().add(mainStyleUrl.toExternalForm());
@@ -98,6 +103,10 @@ public class Messages {
         Alert alert = new Alert(alertType);
         DialogPane dialogPane = alert.getDialogPane();
         try {
+            URL paletteUrl = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType());
+            if (paletteUrl != null) {
+                dialogPane.getStylesheets().add(paletteUrl.toExternalForm());
+            }
             String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.DIALOGS.getType();
             URL resourceUrl = Main.class.getResource(stylesheetPath);
             if (resourceUrl != null) {
@@ -197,6 +206,7 @@ public class Messages {
             Alert alert = new Alert(AlertType.WARNING);
             DialogPane dialogPane = alert.getDialogPane();
             dialogPane.setContentText(message);
+            dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
             dialogPane.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
             dialogPane.setHeaderText("");
 
@@ -305,6 +315,10 @@ public class Messages {
         sprintf("warningText_title: " + message + " alertType: " + alertType.toString());
         Alert alert = new Alert(alertType);
         DialogPane dialogPane = alert.getDialogPane();
+        URL paletteUrl = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType());
+        if (paletteUrl != null) {
+            dialogPane.getStylesheets().add(paletteUrl.toExternalForm());
+        }
         URL mainStyleUrl = Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
         if (mainStyleUrl != null) {
             dialogPane.getStylesheets().add(mainStyleUrl.toExternalForm());

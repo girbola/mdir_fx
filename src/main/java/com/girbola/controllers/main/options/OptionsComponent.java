@@ -37,8 +37,8 @@ public class OptionsComponent {
         stage_opt.setAlwaysOnTop(true);
 
         Scene scene_opt = new Scene(parent);
-        scene_opt.getStylesheets()
-                .add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
+        scene_opt.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
+        scene_opt.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
 
         stage_opt.setScene(scene_opt);
         stage_opt.setOnCloseRequest(closeEvent -> {

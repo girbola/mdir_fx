@@ -99,6 +99,8 @@ public class DateFixer extends Task<Void> {
 
                 sprintf("conf.getThemePath(): " + conf.getThemePath());
                 scene_dateFixer.getStylesheets().add(
+                        Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
+                scene_dateFixer.getStylesheets().add(
                         Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.DATEFIXER.getType()).toExternalForm());
 
                 Main.sceneManager.setScene_dateFixer(scene_dateFixer);

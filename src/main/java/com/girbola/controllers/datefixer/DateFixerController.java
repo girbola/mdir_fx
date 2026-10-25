@@ -6,23 +6,35 @@ import com.girbola.SceneNameType;
 import com.girbola.concurrency.ConcurrencyUtils;
 import com.girbola.controllers.datefixer.table.EXIF_Data_Selector;
 import com.girbola.controllers.datefixer.utils.DateFixGuiUtils;
-import com.girbola.controllers.datefixer.utils.DestinationResolver;
 import com.girbola.controllers.datefixer.utils.DateFixerControllerUtils;
+import com.girbola.controllers.datefixer.utils.DestinationResolver;
 import com.girbola.controllers.main.ImportImages;
 import com.girbola.controllers.main.ModelMain;
-import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.operate.OperateFiles;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
+import com.girbola.persistence.folderinfo.FolderInfoDao;
+import com.girbola.persistence.thumbinfo.ThumbInfoDao;
 import com.girbola.utils.FileInfoUtils;
-import common.utils.FileUtils;
 import common.utils.date.DateUtils;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.sql.Connection;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
@@ -30,14 +42,26 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -48,16 +72,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import org.slf4j.LoggerFactory;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.controllers.main.tables.TableUtils.calculateDateDifferenceRatio;
@@ -82,13 +96,17 @@ public class DateFixerController {
 	@FXML private Button close_btn;
 	@FXML private Button dateFix_btn;
 	@FXML private Button folderize_btn;
+    @FXML private Button forceReloadThumbsBtn;
 	@FXML private Button hideInfoTables_btn;
 	@FXML private Button hideRightInfo_btn;
+
     @FXML private Button moveFilesInfSourcePath;
 	@FXML private Button show_all_btn;
 	@FXML private Button show_only_selected_btn;
-	@FXML private CheckBox copied_chk;
+
+    @FXML private CheckBox copied_chk;
 	@FXML private CheckBox ignored_chk;
+    @FXML private CheckBox showHideImageFrameTopChk;
 	@FXML private HBox infoTable_container_root;
 
 //    @FXML private Label images_stat;
@@ -264,6 +282,81 @@ public class DateFixerController {
         }
         Main.setChanged(true);
     }
+    @FXML private void forceReloadThumbsBtnAction(ActionEvent event) {
+        // Force reload thumbs
+        // Clear images from tableView by dropping thumbnail database for current folder
+        boolean deleteSuccess = ThumbInfoDao.deleteThumbInfoListFromDatabase(modelDatefix.getCurrentFolderPath().toString());
+
+        for (Node tilePane : df_tilePane.getChildren()) {
+            if (tilePane instanceof VBox && tilePane.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
+                    for (Node imageFrame_vbox : ((VBox) tilePane).getChildren()) {
+                        if (imageFrame_vbox instanceof HBox && imageFrame_vbox.getId().equals("imageViewContainer")) {
+                            ImageView iv = (ImageView) imageFrame_vbox.lookup("#imageView");
+                            iv.setImage(null);
+                        }
+                    }
+            }
+        }
+
+        if (deleteSuccess) {
+            sprintf("ThumbInfoDao.deleteThumbInfoListFromDatabase was successful");
+            //triggerViewportUpdate(modelDatefix.getScrollPane());
+
+        } else {
+            sprintf("ThumbInfoDao.deleteThumbInfoListFromDatabase was NOT successful");
+        }
+    }
+
+    public void triggerViewportUpdate(ScrollPane scrollPane) {
+        double currentV = scrollPane.getVvalue();
+        Node content = scrollPane.getContent();
+
+        Messages.sprintf("[DEBUG Viewport] --- Starting Viewport Update ---");
+        Messages.sprintf("[DEBUG Viewport] Initial vvalue: " + currentV);
+
+        if (content == null) {
+            Messages.sprintf("[DEBUG Viewport] ABORT: ScrollPane content is null.");
+            return;
+        }
+
+        // Get content and viewport height bounds
+        double contentHeight = content.getBoundsInLocal().getHeight();
+        double viewportHeight = scrollPane.getViewportBounds().getHeight();
+        double scrollableHeight = contentHeight - viewportHeight;
+
+        Messages.sprintf("[DEBUG Viewport] Content Height: " + contentHeight + "px");
+        Messages.sprintf("[DEBUG Viewport] Viewport Height: " + viewportHeight + "px");
+        Messages.sprintf("[DEBUG Viewport] Scrollable Height: " + scrollableHeight + "px");
+
+        if (scrollableHeight <= 0) {
+            Messages.sprintf("[DEBUG Viewport] ABORT: Content fits entirely within viewport. No scroll space.");
+            return;
+        }
+
+        // Calculate delta equivalent to 1 pixel in relative 0.0 - 1.0 range
+        double onePixelDelta = 1.0 / scrollableHeight;
+        double shift = (currentV <= 0.0) ? onePixelDelta : -onePixelDelta;
+        double newV = Math.min(1.0, Math.max(0.0, currentV + shift));
+
+        Messages.sprintf("[DEBUG Viewport] 1-Pixel Relative Delta: " + onePixelDelta);
+        Messages.sprintf("[DEBUG Viewport] Calculated Nudge Target: " + newV);
+
+        if (Double.compare(currentV, newV) == 0) {
+            Messages.sprintf("[DEBUG Viewport] ABORT: Calculated new position matches current position.");
+            return;
+        }
+
+        // Step 1: Execute the initial scroll nudge
+        scrollPane.setVvalue(newV);
+        Messages.sprintf("[DEBUG Viewport] STEP 1 EXECUTED: Set vvalue to " + scrollPane.getVvalue());
+
+        // Step 2: Restore position on the next JavaFX pulse
+        Platform.runLater(() -> {
+            scrollPane.setVvalue(currentV);
+            Messages.sprintf("[DEBUG Viewport] STEP 2 EXECUTED (Platform.runLater): Restored vvalue to " + scrollPane.getVvalue());
+            Messages.sprintf("[DEBUG Viewport] --- Viewport Update Complete ---");
+        });
+    }
     @FXML private void setBadDate_btn_action(ActionEvent event) {
         sprintf("setBadDate_btn_action: ");
         for (Node node : modelDatefix.getSelectionModel().getSelectionList()) {
@@ -361,6 +454,7 @@ public class DateFixerController {
                 Scene scene = new Scene(parent);
                 Stage stage = new Stage();
                 stage.setScene(scene);
+                scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
                 scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
                 stage.show();
                 stage.setOnHiding(event1-> modelDatefix.getSelectionModel().clearAll(df_tilePane));
@@ -528,6 +622,8 @@ public class DateFixerController {
         ignored_chk.selectedProperty().bindBidirectional(this.modelDatefix.ignored_property());
 
         copied_chk.selectedProperty().bindBidirectional(this.modelDatefix.copied_property());
+
+        showHideImageFrameTopChk.selectedProperty().bindBidirectional(this.modelDatefix.showHideImageFrameTop_property());
 
         folderize_btn.disableProperty().bind(Main.conf.drive_connected_property().not());
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {

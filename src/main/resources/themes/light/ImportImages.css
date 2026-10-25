@@ -280,7 +280,7 @@
     -fx-background-color: derive(-fx-primary, 10%);
 }
 .titled-pane .label {
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
     -fx-text-fill: white;
 }
 .titled-pane > .title > *.text {

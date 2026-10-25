@@ -148,7 +148,7 @@ public class Conversion {
 
 	}
 
-	public static String convertToSmallerConversion(long bytes) {
+	public static String toHumanReadableSize(long bytes) {
 		float kilobyte = 1024;
 		float megabyte = kilobyte * 1024;
 		float gigabyte = megabyte * 1024;

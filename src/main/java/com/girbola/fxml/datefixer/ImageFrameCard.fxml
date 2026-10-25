@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox id="imageFrame" fx:id="imageFrame" alignment="TOP_CENTER" fillWidth="true" prefHeight="440.0" prefWidth="300.0" styleClass="imageFrame" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.datefixer.ImageFrameCardController">
+   <children>
+      <GridPane fx:id="topGridPane" styleClass="imageFrameTopInfos" VBox.vgrow="NEVER">
+         <columnConstraints>
+            <ColumnConstraints fillWidth="true" hgrow="ALWAYS" />
+            <ColumnConstraints halignment="CENTER" hgrow="ALWAYS" />
+         </columnConstraints>
+         <children>
+            <Label id="fileName" fx:id="fileNameLabel" maxWidth="1.7976931348623157E308" styleClass="imageFrameInfo" text="photo.jpg" textFill="#b52b2b" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="0">
+               <font>
+                  <Font size="7.0" />
+               </font>
+            </Label>
+            <Label id="imageNumber" fx:id="imageNumberLabel" styleClass="imageNumber" text="9999" textAlignment="CENTER" textFill="#b52b2b" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="0" GridPane.rowSpan="2" GridPane.valignment="TOP" />
+            <Label id="cameraLabel" fx:id="cameraLabel" text="Camera model" textFill="#b52b2b" GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <font>
+                  <Font size="7.0" />
+               </font></Label>
+            <Label id="dimensionsLabel" fx:id="dimensionsLabel" text="6000 x 4000" textFill="#b52b2b" GridPane.columnIndex="0" GridPane.rowIndex="2">
+               <font>
+                  <Font size="7.0" />
+               </font></Label>
+            <Label id="fileSizeLabel" fx:id="fileSizeLabel" text="5242880" textFill="#b52b2b" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+               <font>
+                  <Font size="7.0" />
+               </font></Label>
+         </children>
+         <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+         </rowConstraints>
+      </GridPane>
+      <HBox id="imageViewContainer" fx:id="imageViewContainer" alignment="CENTER" maxHeight="1.7976931348623157E308" minHeight="242.0" styleClass="imageViewContainer" VBox.vgrow="ALWAYS">
+         <children>
+            <ImageView id="imageView" fx:id="imageView" fitHeight="290.0" fitWidth="260.0" pickOnBounds="true" preserveRatio="true" styleClass="imageView">
+
+            </ImageView>
+         </children>
+      </HBox>
+      <VBox id="bottomContainer" fx:id="bottomContainer" alignment="CENTER" fillWidth="true" maxWidth="294.0" minWidth="294.0" prefWidth="294.0" styleClass="bottomContainer">
+         <children>
+            <HBox id="bottom" fx:id="buttonDateTimeContainer" alignment="CENTER_LEFT" maxWidth="292.0" minHeight="40.0" minWidth="292.0" prefWidth="292.0" spacing="6.0" styleClass="buttonDateTimeContainer">
+               <children>
+                  <Button fx:id="acceptButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" styleClass="acceptButton" HBox.hgrow="NEVER">
+                     <graphic>
+                        <FontIcon fx:id="acceptIcon" iconColor="WHITESMOKE" iconLiteral="bi-check" iconSize="20" />
+                     </graphic>
+                  </Button>
+                  <Label id="fileDate" fx:id="fileDateLabel" maxWidth="1.7976931348623157E308" styleClass="fileDate_tf" text="2025-06-20 12:00:00" HBox.hgrow="ALWAYS">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Label>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

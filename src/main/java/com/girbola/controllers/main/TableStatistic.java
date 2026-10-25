@@ -37,7 +37,7 @@ public class TableStatistic {
 			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
 				long value = (long) newValue;
 				Platform.runLater(() -> {
-					totalFilesSize_lbl.setText("" + Conversion.convertToSmallerConversion(value));
+					totalFilesSize_lbl.setText("" + Conversion.toHumanReadableSize(value));
 				});
 			}
 		});

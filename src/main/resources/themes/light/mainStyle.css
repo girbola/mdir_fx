@@ -76,7 +76,7 @@ Main /theme/light/mainStyle.css
 }
 .menu-bar .label {
     -fx-text-fill: -fx-light-text-color;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 .menu-item {
     -fx-background-color: -fx-primary;
@@ -84,14 +84,14 @@ Main /theme/light/mainStyle.css
 .menu-item .label {
     /*-fx-background-color: grey;*/
     -fx-text-fill: -fx-light-text-color;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 .menu-item:hover .label {
     /*-fx-background-color: grey;*/
     /*-fx-text-fill: yellow;*/
     /*-fx-font-weight: bold;*/
     /*-fx-font: 11pt "Gaduci";*/
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 .menu-item:hover {
     -fx-background-color: derive(blue, 50%);
@@ -99,7 +99,7 @@ Main /theme/light/mainStyle.css
     /*-fx-font-style: bold;*/
     /*-fx-text-fill: yellow;*/
     -fx-opacity: 0.5;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 
 .table-view {

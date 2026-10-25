@@ -59,6 +59,7 @@ public class OperateFiles {
             operateDialogController.init(modelOperate);
 
             Scene operateScene = new Scene(parent);
+            operateScene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
             operateScene.getStylesheets()
                     .add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
             Platform.runLater(() -> {

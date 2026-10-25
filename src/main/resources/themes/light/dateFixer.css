@@ -1,28 +1,3 @@
-.root {
-	-fx-primary:#393939;
-    -fx-dark-border-color: darkgrey;
-    -fx-mid-border-color: grey;
-    -fx-light-border-color: white;
-
-    /* One of these colors will be chosen based upon a ladder calculation
- * that uses the brightness of a background color.  Instead of using these
- * colors directly as -fx-text-fill values, the sections in this file should
- * use a derived color to match the background in use.  See also:
- *
- * -fx-text-base-color for text on top of -fx-base, -fx-color, and -fx-body-color
- * -fx-text-background-color for text on top of -fx-background
- * -fx-text-inner-color for text on top of -fx-control-inner-color
- * -fx-selection-bar-text for text on top of -fx-selection-bar
- */
-    -fx-dark-text-color: black;
-    -fx-mid-text-color: #292929;
-    -fx-light-text-color: white;
-    -fx-background-color: -fx-primary;
-    /*-fx-padding: 0 3 3 3;*/
-    -fx-border-color:  -fx-dark-border-color;
-
-}
-
 .anchor-pane{
     -fx-background-color:  -fx-primary;
 }
@@ -45,28 +20,7 @@
     -fx-opacity: 0.1;
     -fx-background-color: grey;
 }
-.fileDate_tf {
-    -fx-font-size: 9px;
-    -fx-font-smoothing-type: lcd;
-    -fx-background-color: grey;
-    -fx-border-color: grey;
-    -fx-border-radius: 3;
-    -fx-text-fill: white;
-    -fx-padding: 10;
-}
-.fileName_ta {
-    -fx-background-color: transparent;
-    /*-fx-border-color: transparent;*/
-    -fx-font-size: 9px;
-    -fx-font-smoothing-type: lcd;
-    -fx-text-fill: white;   
-}
-.fileName_ta *.text {
-    -fx-text-alignment: left;
-}
-.fileName_ta .content {
-    -fx-background-color: transparent;
-}
+
 .grid-pane > * {
     -fx-min-height: 30;
 }
@@ -154,20 +108,6 @@
 .imagesContainer {
     -fx-background-color: transparent;
 }
-.imageFrame {
-    -fx-border-color: white;
-    -fx-border-width: 0.0625em;
-    -fx-background-color: -fx-primary;
-}
-.imageNumber {
-    -fx-font-family: Gaduci;
-    -fx-font-size: 40px;
-    -fx-fill: red;
-    /*-fx-fill: linear-gradient(from 0% 0% to 100% 200%, repeat, aqua 0%, red 50%);*/
-    -fx-stroke: grey;
-    -fx-stroke-width: 1;
-    -fx-font-smoothing-type: lcd;
-}
 .list-cell:filled:selected:focused, .list-cell:filled:selected {
     /* 3:, 4: */
     -fx-background-color: linear-gradient(#333 0%, #777 25%, #aaa 75%, #eee 100%);
@@ -177,9 +117,6 @@
 .list-cell:filled:hover { 
     -fx-background-color: #00f; /* 2 */
     -fx-text-fill: white; /* 5 */
-}
-.rootPath {
-    -fx-background-color: pink;
 }
 
 .jump_Button {
@@ -287,12 +224,6 @@
     -fx-background-color: linear-gradient(to bottom, #b5bcc6, #dee3e4);
     -fx-padding: 15;
 
-}
-.selection_text {
-    -fx-font-size: 0.625em;
-    /*-fx-background-color: cyan;*/
-    -fx-text-fill: white;
-    -fx-underline: true;   
 }
 
 .split-pane{
@@ -522,29 +453,13 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-padding: 5;
 }
 
-.datefix-tabs {
-    -fx-border-color: #cbd4df;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-}
 
 .datefix-tabs .tab-header-area .tab-header-background {
     -fx-background-color: #e9eef4;
     -fx-background-radius: 8 8 0 0;
 }
 
-.datefix-tabs .tab {
-    -fx-background-color: #f4f6f9;
-    -fx-background-radius: 7 7 0 0;
-    -fx-border-color: #cbd4df;
-    -fx-border-radius: 7 7 0 0;
-    -fx-padding: 6 12 6 12;
-}
 
-.datefix-tabs .tab:selected {
-    -fx-background-color: white;
-    -fx-border-color: #9eb2c8;
-}
 
 .datefix-tabs .tab .tab-label {
     -fx-font-size: 0.9em;
@@ -556,13 +471,6 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-text-fill: #263548;
 }
 
-.datefix-tabs .tab-content-area {
-    -fx-background-color: white;
-    -fx-border-color: #cbd4df;
-    -fx-border-radius: 0 0 8 8;
-    -fx-background-radius: 0 0 8 8;
-    -fx-padding: 8;
-}
 
 .dateTimeAdjuster {
     -fx-background-color: transparent;
@@ -605,9 +513,6 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-text-fill: white;
 }
 
-.root {
-    -fx-background-color: #e9edf2;
-}
 
 .imagesContainerScrollPane,
 .imagesContainer,
@@ -686,17 +591,17 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-effect: dropshadow(gaussian, rgba(30, 45, 60, 0.14), 10, 0, 0, 3);
 }
 
-.imageFrameTop {
-    -fx-background-color: linear-gradient(to bottom, #f4f6f9, #e8edf3);
-    -fx-background-radius: 9 9 0 0;
-    -fx-padding: 8 10;
-}
 
 .imageFrameTop .label {
     -fx-text-fill: #263548;
 }
 
 .imageNumber {
+    -fx-font-family: Gaduci;
+    -fx-fill: red;
+    -fx-stroke: grey;
+    -fx-stroke-width: 1;
+    /*-fx-font-smoothing-type */: lcd;
     -fx-min-width: 28px;
     -fx-pref-width: 36px;
     -fx-max-width: 36px;
@@ -714,24 +619,17 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-font-size: 12px;
 }
 
-.imageViewContainer {
-    -fx-background-color: #f5f7f9;
-    -fx-padding: 8;
-}
 
-.buttonDateTimeContainer {
-    -fx-background-color: #f0f3f7;
-    -fx-border-color: #d2dae4;
-    -fx-border-width: 1;
-    -fx-background-radius: 0 0 9 9;
-    -fx-border-radius: 0 0 9 9;
-    -fx-padding: 5 7;
-}
 
 .fileDate_tf {
     -fx-font-size: 0.9em;
-    -fx-font-weight: 600;
+    /*-fx-font-smoothing-type */: lcd;
+    -fx-background-color: grey;
+    -fx-border-color: grey;
+    -fx-border-radius: 3;
     -fx-text-fill: #334459;
+    -fx-padding: 10;
+    -fx-font-weight: 600;
 }
 
 .acceptButton {
@@ -770,18 +668,29 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
 
 .datefix-tabs {
     -fx-border-color: transparent;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
 }
 
 .datefix-tabs .tab-content-area {
+    -fx-background-color: white;
     -fx-border-color: transparent;
+    -fx-border-radius: 0 0 8 8;
+    -fx-background-radius: 0 0 8 8;
+    -fx-padding: 8;
 }
 
 .datefix-tabs .tab {
+    -fx-background-color: #f4f6f9;
+    -fx-background-radius: 7 7 0 0;
     -fx-border-color: transparent transparent #cbd4df transparent;
+    -fx-border-radius: 7 7 0 0;
+    -fx-padding: 6 12 6 12;
     -fx-border-width: 0 0 1 0;
 }
 
 .datefix-tabs .tab:selected {
+    -fx-background-color: white;
     -fx-border-color: #9eb2c8 #9eb2c8 white #9eb2c8;
     -fx-border-width: 1 1 0 1;
 }
@@ -819,21 +728,15 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-padding: 10;
 }
 
-.bottomContainer {
-    -fx-background-color: transparent;
-}
 
+
+/* Media frame bottom bar sizing */
 .buttonDateTimeContainer {
     -fx-background-color: #edf0f4;
     -fx-border-color: transparent;
     -fx-border-width: 0;
     -fx-background-radius: 0 0 8 8;
     -fx-border-radius: 0 0 8 8;
-    -fx-padding: 6 9;
-}
-
-/* Media frame bottom bar sizing */
-.buttonDateTimeContainer {
     -fx-padding: 3 6;
     -fx-spacing: 6;
     -fx-alignment: center-left;
@@ -848,5 +751,6 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
 }
 
 .bottomContainer {
+    -fx-background-color: transparent;
     -fx-border-color: transparent;
 }

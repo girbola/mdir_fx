@@ -85,7 +85,7 @@ public class DateFixGuiUtils {
 
     public static Label createFileName_tf(Path path) {
         Label fileNameLabel = new Label();
-        fileNameLabel.getStyleClass().add("fileName_ta");
+        fileNameLabel.getStyleClass().add("imageFrameTopInfos");
 
         fileNameLabel.setFocusTraversable(false);
         fileNameLabel.setId("fileName");
@@ -102,8 +102,16 @@ public class DateFixGuiUtils {
     }
 
     public static Label createFileDate_tf(FileInfo fileInfo, HBox hbox) {
-        Label label = new Label(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
-        label.getStyleClass().add("fileDate_tf");
+        Label label = new Label();
+        configureFileDateLabel(label, fileInfo);
+        return label;
+    }
+
+    public static void configureFileDateLabel(Label label, FileInfo fileInfo) {
+        label.setText(simpleDates.getSdf_ymd_hms_minusDots_default().format(fileInfo.getDate()));
+        if (!label.getStyleClass().contains("fileDate_tf")) {
+            label.getStyleClass().add("fileDate_tf");
+        }
 
         label.setFocusTraversable(false);
         label.setId("fileDate");
@@ -130,8 +138,6 @@ public class DateFixGuiUtils {
         } else if (FileInfoUtils.isSuggested(fileInfo)) {
             label.setStyle(CssStylesEnum.SUGGESTED_STYLE.getStyle());
         }
-
-        return label;
     }
 
     public static Button createAcceptButton(FileInfo fi, HBox hbox, Label tf) {
@@ -143,6 +149,11 @@ public class DateFixGuiUtils {
         fontIcon.setIconSize(20);
         fontIcon.setIconColor(Color.WHITESMOKE);
         button.setGraphic(fontIcon);
+        configureAcceptButton(button, fontIcon, fi, hbox, tf);
+        return button;
+    }
+
+    public static void configureAcceptButton(Button button, FontIcon fontIcon, FileInfo fi, HBox hbox, Label tf) {
 //        fontIcon.setStyle("-fx-background-color: red;");
 //        fontIcon.setIconColor(Color.RED);
 //        fontIcon.setIconLiteral("bi-check");
@@ -169,7 +180,6 @@ public class DateFixGuiUtils {
             button.setDisable(true);
             button.setVisible(false);
         }
-        return button;
     }
 
     public static void setGridPaneColumnWidth(ColumnConstraints column, double width) {
@@ -566,7 +576,7 @@ public class DateFixGuiUtils {
         int width = (int) fileInfo.getWidth();
         int height = (int) fileInfo.getHeight();
         Label dimensionsLabel = new Label(width + " x " + height);
-        dimensionsLabel.getStyleClass().add("dimensionsLabel");
+        //dimensionsLabel.getStyleClass().add("dimensionsLabel");
         dimensionsLabel.setId("dimensionsLabel");
         dimensionsLabel.setMouseTransparent(true);
         return dimensionsLabel;

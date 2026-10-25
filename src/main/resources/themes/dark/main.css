@@ -11,7 +11,7 @@
     -fx-base-cyan: #3b8787;
     -fx-base-orange: #cf6418;
     -fx-base-blue: #355091;
-    -fx-base-red: #c14545;
+    -fx-base-red: -danger;
 
     -fx-light-text-color: #e4e1e1;
     -fx-dark-text-color: #000000;
@@ -76,7 +76,7 @@
 
 .menu-item .label {
     -fx-text-fill: -fx-light-text-color;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 
 /* Table Styles */
@@ -122,7 +122,7 @@
     -fx-fill: -fx-light-text-color;
     -fx-stroke: grey;
     -fx-stroke-width: 1;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
 }
 
 /* Jump Button Variants */

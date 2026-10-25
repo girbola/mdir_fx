@@ -33,7 +33,7 @@
     /*-fx-font-smoothing-type: lcd;*/
     /*    -fx-background-color: -fx-base; */
     /*-fx-padding: 0 3 3 3;*/
-    /*  -fx-border-color:  -fx-dark-border-color; */
+    /*  -fx-border-color:  -fx-dark-border-color; */1
 }
 
 #main_vbox {

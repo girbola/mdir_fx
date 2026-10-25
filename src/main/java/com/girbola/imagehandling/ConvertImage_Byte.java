@@ -33,7 +33,7 @@ public class ConvertImage_Byte extends Task<Image> {
 	@Override
 	protected Image call() throws Exception {
 		try {
-			image = new Image(new ByteArrayInputStream(thumbInfo.getThumbs().get(0)));
+			image = new Image(new ByteArrayInputStream(thumbInfo.getThumbs().getFirst()));
 		} catch (Exception ex) {
 			Messages.errorSmth(ERROR, "", ex, Misc.getLineNumber(), false);
 			return null;
@@ -46,20 +46,23 @@ public class ConvertImage_Byte extends Task<Image> {
 	protected void failed() {
 		sprintf("ConvertImage_Byte image loading failed: " + fileName);
 		super.failed();
+        imageView.setImage(null);
 	}
 
 	@Override
 	protected void cancelled() {
 		sprintf("image loading cancelled: " + fileName);
 		super.cancelled();
+        imageView.setImage(null);
 	}
 
 	@Override
 	protected void succeeded() {
-		if (image != null) {
-			imageView.setImage(image);
-		}
+sprintf("ConvertImage_Byte image loading succeeded: " + fileName);
 		super.succeeded();
+        if(image != null) {
+            imageView.setImage(image);
+        }
 	}
 
 }

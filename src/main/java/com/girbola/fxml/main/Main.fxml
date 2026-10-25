@@ -15,14 +15,14 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane fx:id="main_container" maxHeight="800.0" maxWidth="1800.0" prefHeight="800.0" styleClass="main" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
+<AnchorPane fx:id="main_container" maxHeight="800.0" maxWidth="1800.0" prefHeight="800.0" styleClass="main" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.MainController">
     <children>
         <VBox fx:id="main_vbox" spacing="5.0" styleClass="main_vbox" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
             <children>
                 <fx:include fx:id="menuBar_top" source="MenuBar.fxml" VBox.vgrow="NEVER" />
                 <AnchorPane VBox.vgrow="ALWAYS">
                     <children>
-                        <TabPane fx:id="tabPaneMain" side="LEFT" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
+                        <TabPane fx:id="tabPaneMain" side="LEFT" style="-fx-background-color: black;" styleClass="bottomBar" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="-1.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="-1.0" AnchorPane.topAnchor="-1.0">
                             <tabs>
                                 <Tab fx:id="tabTables" closable="false" text="%main">
                                     <content>

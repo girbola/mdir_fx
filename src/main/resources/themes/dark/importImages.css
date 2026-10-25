@@ -125,7 +125,7 @@
 }*/
 .text-field  {
     -fx-font-size: 9px;
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
     -fx-background-color: grey;
     -fx-border-color: grey;
     -fx-border-radius: 3;
@@ -304,7 +304,7 @@
     -fx-background-color: derive(-fx-primary, 10%);
 }
 .titled-pane .label {
-    -fx-font-smoothing-type: lcd;
+    /*-fx-font-smoothing-type */: lcd;
     -fx-text-fill: white;
 }
 .titled-pane > .title > *.text {

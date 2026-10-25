@@ -1,0 +1,32 @@
+/*
+ * Shared light palette. Load this before any screen stylesheet so every layout
+ * uses the same colors. Mirrors the semantic names used in the dark palette.
+ */
+.root {
+    /* Semantic palette */
+    -app-bg: #e9edf2;
+    -surface: #ffffff;
+    -surface-alt: #f2f5f8;
+    -surface-raised: #f2f5f8;
+    -border: #cbd4df;
+    -border-strong: #9eb2c8;
+    -text: #263548;
+    -text-muted: #52657a;
+    -text-dark: #1d1d1d;
+    -accent: #438ac1;
+    -danger: #b9686e;
+    -ok: #4db36a;
+
+    /* JavaFX / legacy lookups */
+    -fx-primary: #393939;
+    -fx-dark-border-color: darkgrey;
+    -fx-mid-border-color: grey;
+    -fx-light-border-color: white;
+
+    -fx-dark-text-color: black;
+    -fx-mid-text-color: #292929;
+    -fx-light-text-color: white;
+
+    -fx-background-color: -app-bg;
+    -fx-border-color: -fx-dark-border-color;
+}

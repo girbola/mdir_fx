@@ -64,6 +64,8 @@ public class ModelDatefix extends DateFixerModel {
 
     private SimpleBooleanProperty changes_made = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty ignored = new SimpleBooleanProperty(false);
+    private SimpleBooleanProperty hideShowImageFrameTop = new SimpleBooleanProperty(false);
+
     private SimpleBooleanProperty copied = new SimpleBooleanProperty(false);
     private SimpleBooleanProperty events = new SimpleBooleanProperty(true);
     private SimpleBooleanProperty locations = new SimpleBooleanProperty(true);

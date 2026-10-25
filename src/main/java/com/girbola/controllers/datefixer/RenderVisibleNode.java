@@ -55,7 +55,7 @@ public class RenderVisibleNode {
 
     private ScrollPane scrollPane;
     private Timeline timeline;
-    private Map<ImageView, FileInfo> map = new HashMap<>();
+    private Map<ImageView, FileInfo> imageViewsMap = new HashMap<>();
     private Path currentFolderPath;
 
     private Connection connection;
@@ -71,7 +71,7 @@ public class RenderVisibleNode {
             timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), e -> renderVisibleNodes()));
             sprintf("1time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
             timeline.play();
-            //map.clear();
+            //imageViewsMap.clear();
         });
 
         scrollPane.viewportBoundsProperty().addListener((observable, oldValue, newValue) -> {
@@ -81,7 +81,7 @@ public class RenderVisibleNode {
             timeline = new Timeline(new KeyFrame(javafx.util.Duration.millis(200), ae -> renderVisibleNodes()));
             Messages.sprintf("2time to render visible nodes> " + scrollPane.getVvalue() + " getVMax: " + scrollPane.getVmax());
             timeline.play();
-            //map.clear();
+            //imageViewsMap.clear();
         });
         Platform.runLater(() -> {
 
@@ -110,7 +110,7 @@ public class RenderVisibleNode {
 
         checkVisible();
 
-        if (!map.isEmpty()) {
+        if (!imageViewsMap.isEmpty()) {
             exec_multi = Executors.newCachedThreadPool(r -> {
                 Thread t = new Thread(r);
                 t.setName("multi thread");
@@ -128,8 +128,8 @@ public class RenderVisibleNode {
             List<Task<?>> needToConvert_Image_list = new ArrayList<>();
             List<Task<?>> needToConvert_Video_list = new ArrayList<>();
             List<Task<?>> needToConvert_SlowRender_list = new ArrayList<>();
-            Messages.sprintf("############Map size: " + map.size());
-            for (Entry<ImageView, FileInfo> entry : map.entrySet()) {
+            Messages.sprintf("############Map size: " + imageViewsMap.size());
+            for (Entry<ImageView, FileInfo> entry : imageViewsMap.entrySet()) {
                 ImageView imageView = entry.getKey();
                 FileInfo fileInfo = (FileInfo) entry.getValue();
                 if (fileInfo == null) {
@@ -138,12 +138,23 @@ public class RenderVisibleNode {
                     break;
                 }
                 Messages.sprintf("************File: " + fileInfo.getOrgPath());
+                if (fileInfo.getOrgPath().contains("D:\\Temppi\\2011\\2011-04-28 - Espanja - Kiertelemässä")) {
+                    Messages.sprintf("Found problematic file: " + fileInfo.getOrgPath());
+                }
                 if (imageView != null) {
                     Path file = Paths.get(fileInfo.getOrgPath());
                     if (Files.exists(file)) {
                         if (imageView.getImage() == null) {
                             if (FileUtils.supportedMediaFormat(file.toFile())) {
                                 ThumbInfo thumbInfo = ThumbInfoDao.loadThumbInfo(connection, fileInfo.getFileInfo_id());
+//                                for(byte[] thumb : thumbInfo.getThumbs()) {
+//                                    if(thumb == null) {
+//                                     Messages.sprintf("##############Thumb ID: " + thumbInfo.getId() + " is null");
+//                                    } else {
+//                                        Messages.sprintf("##############Thumb ID: " + thumbInfo.getId() + " size: " + thumb.length);
+//                                    }
+//                                }
+                                Messages.sprintf("thumbInfo is: " + thumbInfo);
                                 int value = handle_thumb(fileInfo, thumbInfo);
                                 /*
                                  * 0 = thumbinfo found with image(s). Load 1 = thumbinfo has no arraylist.
@@ -152,44 +163,42 @@ public class RenderVisibleNode {
                                 switch (value) {
                                     case 0:
                                         if (FileUtils.supportedImage(file)) {
-                                            Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
+                                            Task<Image> convertByteThumbFast = new ConvertImage_Byte(
                                                     Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
-                                            byte_List.add(convertByte_thumb_fast);
-
+                                            byte_List.add(convertByteThumbFast);
                                         }
                                         if (FileUtils.supportedHeic(file)) {
-                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
-                                            needToConvert_Video_list.add(convertVideo_task);
+                                            Task<List<BufferedImage>> convertVideotask = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
+                                            needToConvert_Video_list.add(convertVideotask);
                                         }
                                         if (FileUtils.supportedRaw(file)) {
-                                            Task<Image> convertByte_thumb_fast = new ConvertImage_Byte(
+                                            Task<Image> convertRawByteFast = new ConvertImage_Byte(
                                                     Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
-                                            byte_List.add(convertByte_thumb_fast);
+                                            byte_List.add(convertRawByteFast);
 
                                         } else if (FileUtils.supportedVideo(file)) {
-                                            Task<List<BufferedImage>> convertByte_thumb_fast = new ConvertVideo_Byte(
+                                            Task<List<BufferedImage>> convertByteThumbFast = new ConvertVideo_Byte(
                                                     Paths.get(fileInfo.getOrgPath()), thumbInfo, UIContants.THUMBNAIL_MAX_WIDTH,
                                                     imageView);
-                                            byte_List.add(convertByte_thumb_fast);
+                                            byte_List.add(convertByteThumbFast);
                                         }
                                         break;
                                     case 1:
                                         if (FileUtils.supportedVideo(file)) {
-                                            Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
-                                            needToConvert_Video_list.add(convertVideo_task);
+                                            Task<List<BufferedImage>> convertVideoTask = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
+                                            needToConvert_Video_list.add(convertVideoTask);
                                         } else if (FileUtils.supportedImage(file)) {
                                             if (FileUtils.isTiff(file.toFile())) {
                                                 Messages.sprintf("Tiff file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
-                                                Task<Image> imageThumb = ImageHandling.handleTiffThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
+                                                Task<Image> tiffThumb = ImageHandling.handleTiffThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
                                                 imageView.setRotate(Rotate.rotate(fileInfo.getOrientation()));
-                                                needToConvert_Image_list.add(imageThumb);
+                                                needToConvert_Image_list.add(tiffThumb);
                                             } else if (FileUtils.supportedHeic(file)) {
                                                 Messages.sprintf("Heic file. Can't find getThumbs.get(0). Creating imageThumb and rotate");
-//                                                Task<Image> imageThumb = HeicThumbnailService.¸
-                                                Task<List<BufferedImage>> convertVideo_task = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
-                                                needToConvert_Video_list.add(convertVideo_task);
+                                                Task<List<BufferedImage>> convertVideoTask = new MFFmpegFrameGrabber(fileInfo, imageView, (UIContants.THUMBNAIL_MAX_WIDTH - 2));
+                                                needToConvert_Video_list.add(convertVideoTask);
                                             } else {
                                                 Messages.sprintf("2 Can't find getThumbs.get(0). Creating imageThumb and rotate");
                                                 Task<Image> imageThumb = handleImageThumb(fileInfo, UIContants.THUMBNAIL_MAX_WIDTH, imageView);
@@ -210,7 +219,7 @@ public class RenderVisibleNode {
                 }
             }
 
-            if (byte_List.size() > 1) {
+            if (!byte_List.isEmpty()) {
                 for (Task<?> bytes_Task : byte_List) {
                     if (bytes_Task != null && !Main.getProcessCancelled()) {
                         exec_multi.submit(bytes_Task);
@@ -258,45 +267,56 @@ public class RenderVisibleNode {
      * @return
      */
     private int handle_thumb(FileInfo fileInfo, ThumbInfo thumbInfo) {
+        String path = (fileInfo != null) ? fileInfo.getOrgPath() : "unknown path";
+
         if (thumbInfo == null) {
-            Messages.sprintf("thumbsInfo were null! " + fileInfo.getOrgPath());
+            Messages.sprintf("[handle_thumb] ThumbInfo object is null for path: %s", path);
             return 1;
         }
         if (thumbInfo.getThumbs() == null) {
-            Messages.sprintf("getThumbswere null" + fileInfo.getOrgPath());
-            return 1;
-        }
-        if (thumbInfo.getThumbs().getFirst() == null) {
-            Messages.sprintf("getThumbs.get(0) is empty" + fileInfo.getOrgPath());
+            Messages.sprintf("[handle_thumb] Thumbs list is null for path: %s", path);
             return 1;
         }
         if (thumbInfo.getThumbs().isEmpty()) {
-            Messages.sprintf("getThumbs list is empty" + fileInfo.getOrgPath());
+            Messages.sprintf("[handle_thumb] Thumbs list is empty for path: %s", path);
             return 1;
-        } else {
-            Messages.sprintf("getThumbs() were not empty");
-            return 0;
         }
+        if (thumbInfo.getThumbs().getFirst() == null) {
+            Messages.sprintf("[handle_thumb] First thumbnail in list is null for path: %s", path);
+            return 1;
+        }
+//        if (thumbInfo.getThumb_fast() == null) {
+//            Messages.sprintf("[handle_thumb] Fast thumbnail byte array is null for path: %s", path);
+//            return 1;
+//        }
+        if (thumbInfo.getThumbs().getFirst().length == 0) {
+            Messages.sprintf("[handle_thumb] Fast thumbnail byte array is empty for path: %s", path);
+            return 1;
+        }
+
+        Messages.sprintf("[handle_thumb] Successfully retrieved fast thumb (%d bytes) for path: " + path);
+        return 0;
     }
 
     private synchronized void checkVisible() {
 
-        //map.clear();
+        //imageViewsMap.clear();
         Bounds paneBounds = scrollPane.localToScene(scrollPane.getBoundsInParent());
         sprintf("Scrollpane id is: " + scrollPane.getContent());
 
         Node mainNode = scrollPane.getContent();
-
+        Messages.sprintf("mainNode is: " + mainNode + " id: " + mainNode.getId() + " class: " + mainNode.getClass().getName());
         if (mainNode instanceof TilePane && mainNode.getId().equals("dateFixer")) {
-            Messages.sprintf("datefixer. mainNode is: " + ((TilePane) mainNode).getChildren().size());
+            Messages.sprintf("before children iteration datefixer. mainNode is: " + ((TilePane) mainNode).getChildren().size());
             for (Node tilePane : ((TilePane) mainNode).getChildren()) {
+                Messages.sprintf("tilePane is: " + tilePane + " id: " + tilePane.getId() + " class: " + tilePane.getClass().getName());
                 if (tilePane instanceof VBox && tilePane.getId().equals(DateFixConstants.IMAGEFRAME.getType())) {
                     Bounds nodeBounds = tilePane.localToScene(tilePane.getBoundsInLocal());
                     if (paneBounds.intersects(nodeBounds)) {
                         for (Node imageFrame_vbox : ((VBox) tilePane).getChildren()) {
                             if (imageFrame_vbox instanceof HBox && imageFrame_vbox.getId().equals("imageViewContainer")) {
                                 ImageView iv = (ImageView) imageFrame_vbox.lookup("#imageView");
-                                map.put(iv, (FileInfo) tilePane.getUserData());
+                                imageViewsMap.put(iv, (FileInfo) tilePane.getUserData());
                             }
                         }
                     }
@@ -316,7 +336,7 @@ public class RenderVisibleNode {
                         ImageView iv = (ImageView) root.lookup("#" + DateFixConstants.IMAGEVIEW.getType());
                         StackPane stackPane = (StackPane) root.lookup("#" + DateFixConstants.IMAGEFRAME.getType());
                         if (iv != null) {
-                            map.put(iv, (FileInfo) stackPane.getUserData());
+                            imageViewsMap.put(iv, (FileInfo) stackPane.getUserData());
                         }
                     }
                 }
@@ -339,7 +359,7 @@ public class RenderVisibleNode {
                                         ImageView iv = (ImageView) tiles.lookup("#imageView");
                                         StackPane stackPane = (StackPane) tiles.lookup("#imageFrame");
                                         if (iv != null) {
-                                            map.put(iv, (FileInfo) stackPane.getUserData());
+                                            imageViewsMap.put(iv, (FileInfo) stackPane.getUserData());
                                         }
                                     }
                                 }
@@ -348,10 +368,8 @@ public class RenderVisibleNode {
                     } else {
                         Messages.sprintf("Else if doesn't intersect: " + scrollPane_NODE);
                     }
-
                 }
             }
-
         } else {
             sprintf("scrollPane.getContent node was: " + scrollPane.getContent());
         }

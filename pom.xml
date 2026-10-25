@@ -291,6 +291,7 @@
                         --add-reads com.girbola=org.junit.platform.commons
                         --add-reads com.girbola=org.junit.platform.engine
                         --add-opens com.girbola/com.girbola.drive=org.junit.platform.commons
+                        --enable-native-access=org.xerial.sqlitejdbc
                     </argLine>
                 </configuration>
             </plugin>

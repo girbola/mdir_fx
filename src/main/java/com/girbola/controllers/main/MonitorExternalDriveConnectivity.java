@@ -5,7 +5,6 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.FolderInfoUtils;
 import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.persistence.fileinfo.FileInfoDao;
 import com.girbola.persistence.fileinfo.FileInfoMapper;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
@@ -92,9 +91,9 @@ public class MonitorExternalDriveConnectivity extends ScheduledService<Void> {
 		 */
 		Platform.runLater(() -> {
 			try {
-				Main.conf.setDrive_space("" + Conversion.convertToSmallerConversion(
+				Main.conf.setDrive_space("" + Conversion.toHumanReadableSize(
 						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getTotalSpace()));
-				Main.conf.setDrive_spaceLeft("" + Conversion.convertToSmallerConversion(
+				Main.conf.setDrive_spaceLeft("" + Conversion.toHumanReadableSize(
 						Files.getFileStore(Paths.get(Main.conf.getWorkDir()).toRealPath()).getUsableSpace()));
 				Main.conf.setDrive_connected(true);
 				Main.conf.setDrive_name(Main.conf.getWorkDir());

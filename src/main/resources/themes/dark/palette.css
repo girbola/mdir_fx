@@ -1,0 +1,46 @@
+/*
+ * Shared dark palette. Load this before any screen stylesheet so every layout
+ * uses the same colors. Screen stylesheets should reference these lookups
+ * (-app-bg, -surface, -border, -text ...) instead of hardcoded hex values.
+ */
+.root {
+    /* Semantic palette */
+    -app-bg: #1c1f23;
+    -surface: #24272c;
+    -surface-alt: #2a2e34;
+    -surface-raised: #303640;
+    -border: #3a4048;
+    -border-strong: #4a515b;
+    -text: #e7eaf0;
+    -text-muted: #cbd3de;
+    -text-grey: #c1cad7;
+    -text-dark: #111318;
+    -accent: #438ac1;
+    -danger: #c14545;
+    -ok: #4db36a;
+
+    /* JavaFX / legacy lookups mapped to the palette */
+    -fx-base: -surface;
+    -fx-mid-base: #1d2025;
+    -fx-dark-border-color: -border;
+    -fx-mid-border-color: -border-strong;
+
+    -fx-base-cyan: #3aa0ff;
+    -fx-base-orange: #cf7a2f;
+    -fx-base-blue: #355091;
+    -fx-base-red: -danger;
+    -fx-base-green: -ok;
+    -fx-base-pink: #d16aa1;
+
+    -fx-light-text-color: -text;
+    -fx-dark-text-color: -text-dark;
+
+    -fx-background-color: -app-bg;
+
+    -fx-font-family: "Inter, sans-serif";
+    -fx-font-size: 1em;
+    -fx-border-base: #b65858;
+    -fx-focus-color: transparent;
+    -fx-font-weight: 900;
+    -fx-font-smoothing-type: lcd;
+}

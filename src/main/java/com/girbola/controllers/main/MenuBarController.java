@@ -13,7 +13,6 @@ import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.fileinfo.FileInfo;
-import com.girbola.fileinfo.SavedFoldersIntoConfigurationTable;
 import com.girbola.messages.Messages;
 import com.girbola.messages.html.HTMLClass;
 import com.girbola.misc.Misc;
@@ -249,7 +248,7 @@ public class MenuBarController {
             TableUtils.updateAllFolderInfos(model_main.tables());
             TableUtils.cleanTables(model_main.tables());
 
-            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter() + "\nSaved space: " + Conversion.convertToSmallerConversion(duplicateStatistics.getFolderSavedSize().get()));
+            Messages.warningText("" + "Duplicated files: " + duplicateStatistics.getFileCounter() + "\nScanned folders: " + duplicateStatistics.getFolderCounter() + "\nSaved space: " + Conversion.toHumanReadableSize(duplicateStatistics.getFolderSavedSize().get()));
 
             duplicateStatistics.getDuplicateCounter().set(0);
             duplicateStatistics.getFileCounter().set(0);
@@ -466,6 +465,7 @@ public class MenuBarController {
             Main.sceneManager.getScene_main().getStylesheets().clear();
             conf.setCurrentTheme(ThemeType.DARK.getValue());
             switchThemeItemOn(ThemeType.DARK.getValue());
+            Main.sceneManager.getScene_main().getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
             Main.sceneManager.getScene_main().getStylesheets().add(getClass().getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
             ConfigurationSQLHandler.updateConfiguration();
         });
