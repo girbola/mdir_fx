@@ -16,19 +16,15 @@ import com.girbola.controllers.operate.OperateFiles;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
-import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
-import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.persistence.thumbinfo.ThumbInfoDao;
 import com.girbola.utils.FileInfoUtils;
 import common.utils.date.DateUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,7 +40,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -62,6 +57,7 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -106,7 +102,9 @@ public class DateFixerController {
 
     @FXML private CheckBox copied_chk;
 	@FXML private CheckBox ignored_chk;
-    @FXML private CheckBox showHideImageFrameTopChk;
+    @FXML private ToggleButton showHideImageFrameTopTglBtn;
+    @FXML private ToggleButton showHideImageFrameBottomTglBtn;
+
 	@FXML private HBox infoTable_container_root;
 
 //    @FXML private Label images_stat;
@@ -623,7 +621,7 @@ public class DateFixerController {
 
         copied_chk.selectedProperty().bindBidirectional(this.modelDatefix.copied_property());
 
-        showHideImageFrameTopChk.selectedProperty().bindBidirectional(this.modelDatefix.hideShowImageFrameTop_property());
+        showHideImageFrameTopTglBtn.selectedProperty().bindBidirectional(this.modelDatefix.hideShowImageFrameTop_property());
 
         folderize_btn.disableProperty().bind(Main.conf.drive_connected_property().not());
         copied_chk.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -633,12 +631,22 @@ public class DateFixerController {
             }
         });
 
-        showHideImageFrameTopChk.selectedProperty().addListener(new ChangeListener<Boolean>() {
+        showHideImageFrameTopTglBtn.selectedProperty().addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                Messages.sprintf("showHideImageFrameTopTglBtn.selectedProperty().addListener changed: " + newValue);
                 DateFixLoadingProcessLoader.hideShowImageFrameTop(modelDatefix);
             }
         });
+        showHideImageFrameBottomTglBtn.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                Messages.sprintf("showHideImageFrameBottomTglBtn.selectedProperty().addListener changed: " + newValue);
+                DateFixLoadingProcessLoader.hideShowImageFrameBottom(modelDatefix);
+            }
+        });
+
+
         this.modelDatefix.setRightInfoPanel(rightInfoPanel);
 
         df_tilePane.setId("dateFixer");
@@ -1008,6 +1016,19 @@ public class DateFixerController {
         modelDatefix.setRightInfo_visible(show);
 	}
 
+    @FXML private void groupByDateAction(ActionEvent event) {
+        Map<LocalDate,List<Node>> localDateListMap = DateFixLoadingProcessLoader.groupByDate(modelDatefix);
+        for(Map.Entry<LocalDate,List<Node>> entry : localDateListMap.entrySet()) {
+            Messages.sprintf("groupByDate");
+            Messages.sprintf("entry: " + entry.getKey());
+            List<Node> nodes = entry.getValue();
+            for(Node node : nodes) {
+                Messages.sprintf("-----node: " + node);
+            }
+        }
+
+
+    }
     private void operateFilesTask(List<FileInfo> fileInfo_list) {
        OperateFiles operateFiles = new OperateFiles(fileInfo_list, true, model_main,
                 SceneNameType.DATEFIXER.getType());

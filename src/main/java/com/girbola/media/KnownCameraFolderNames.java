@@ -5,7 +5,6 @@ import java.util.List;
 
 public class KnownCameraFolderNames {
 
-
     public static final List<String> KNOWN_CAMERA_FOLDER_NAMES = Arrays.asList(
 
             // ==========================================================

@@ -100,6 +100,7 @@ public class DateFixPopulate extends Task<ObservableList<Node>> {
         Messages.sprintf("DateFixPopulate.call() and size: " + fileInfoList.size());
 
         for (FileInfo fileInfo : fileInfoList) {
+            Messages.sprintf("DateFixPopulate.call() fileInfo: " + fileInfo.getOrgPath());
             if (!validateAndProcessFile(fileInfo)) {
                 continue;
             }

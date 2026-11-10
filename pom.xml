@@ -89,6 +89,11 @@
         </dependency>
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-boxicons-pack</artifactId>
+            <version>${ikonli-javafx.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-fluentui-pack</artifactId>
             <version>${ikonli-javafx.version}</version>
         </dependency>

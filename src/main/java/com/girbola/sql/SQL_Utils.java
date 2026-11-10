@@ -100,6 +100,11 @@ public class SQL_Utils extends FolderInfoDao {
      * @return true if the changes are successfully committed, false otherwise.
      */
     public static boolean commitChanges(Connection connection) {
+        if(connection == null) {
+            Messages.sprintfError("Cannot commit changes: connection is null");
+            return false;
+        }
+        Messages.sprintf("Committing changes to the database at: " + getUrl(connection));
         try {
             connection.commit();
             return true;
@@ -110,6 +115,10 @@ public class SQL_Utils extends FolderInfoDao {
     }
 
     public static boolean setAutoCommit(Connection connection, boolean value) {
+        if(connection == null) {
+            Messages.sprintfError("Cannot set AutoCommit: connection is null");
+            return false;
+        }
         try {
             connection.setAutoCommit(value);
             return true;

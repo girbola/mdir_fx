@@ -227,11 +227,11 @@ public class OSHI_Utils {
         }
 
         for (HWDiskStore diskStore : hardwareDisks) {
-            Messages.sprintf("Searching for disk store: " + diskStore);
+            //Messages.sprintf("Searching for disk store: " + diskStore);
             for (HWPartition partition : diskStore.getPartitions()) {
 
                 if (mountPointMatchesRoot(partition.getMountPoint(), rootPath)) {
-                    Messages.sprintf("mountPointMatchesRoot FOUND: " + partition.getMountPoint() + " against root path: " + rootPath);
+            //        Messages.sprintf("mountPointMatchesRoot FOUND: " + partition.getMountPoint() + " against root path: " + rootPath);
                     return diskStore;
                 }
             }

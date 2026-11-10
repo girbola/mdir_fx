@@ -17,14 +17,14 @@ public class TableUtilsTest {
 
     @Test
     void resolveTableTypeByPath_shouldReturnSortItForPicturesPath() {
-        Path picturesPath = Paths.get(System.getProperty("user.home"), "Pictures", "SampleFolder");
+        Path picturesPath = CommonUserFolders.resolve().get(CommonUserFolders.Kind.PICTURES).resolve("SampleFolder");
         TableType result = TableUtils.resolveTableTypeByPath(picturesPath);
-        assertEquals(TableType.SORTED, result);
+        assertEquals(TableType.SORTIT, result);
     }
 
     @Test
     void resolveTableTypeByPath_shouldReturnAsItIsForDownloadsPath() {
-        Path downloadsPath = Paths.get(System.getProperty("user.home"), "Downloads", "SampleFolder");
+        Path downloadsPath = CommonUserFolders.resolve().get(CommonUserFolders.Kind.DOWNLOADS).resolve("SampleFolder");
         TableType result = TableUtils.resolveTableTypeByPath(downloadsPath);
         assertEquals(TableType.ASITIS, result);
     }
@@ -85,28 +85,60 @@ public class TableUtilsTest {
     void resolveTableTypeByPath_shouldReturnSortItForLongNumberPattern() {
         Path path = Paths.get("20231005123456");
         TableType result = TableUtils.resolveTableTypeByPath(path);
-        assertEquals(TableType.SORTED, result);
+        assertEquals(TableType.SORTIT, result);
     }
 
     @Test
-    void resolveTableTypeByPath_shouldReturnSortedForDatePatternWithHyphens() {
+    void resolveTableTypeByPath_shouldReturnSortItForDatePatternWithHyphens() {
         Path path = Paths.get("2023-10-05");
         TableType result = TableUtils.resolveTableTypeByPath(path);
-        assertEquals(TableType.SORTED, result);
+        assertEquals(TableType.SORTIT, result);
     }
 
     @Test
-    void resolveTableTypeByPath_shouldReturnSortedForDatePatternWithDots() {
+    void resolveTableTypeByPath_shouldReturnSortItForDatePatternWithDots() {
         Path path = Paths.get("2023.10.05");
         TableType result = TableUtils.resolveTableTypeByPath(path);
-        assertEquals(TableType.SORTED, result);
+        assertEquals(TableType.SORTIT, result);
     }
 
     @Test
-    void resolveTableTypeByPath_shouldReturnSortedForDatePatternWithUnderscores() {
+    void resolveTableTypeByPath_shouldReturnSortItForDatePatternWithUnderscores() {
         Path path = Paths.get("2023_10_05");
         TableType result = TableUtils.resolveTableTypeByPath(path);
-        assertEquals(TableType.SORTED, result);
+        assertEquals(TableType.SORTIT, result);
+    }
+
+    @Test
+    void resolveTableTypeByPath_shouldClassifyCameraAndDateNamesAsSortIt() {
+        for (String folder : new String[] {
+                "123Canon", "100NIKON", "100_1234", "dcim", "20231005",
+                "2024-02-29", "2024_02_29", "2024.02.29",
+                "20240229", "2023-02-29 2024-02-29"
+        }) {
+            assertEquals(TableType.SORTIT, TableUtils.resolveTableTypeByPath(Paths.get(folder)), folder);
+        }
+    }
+
+    @Test
+    void resolveTableTypeByPath_shouldClassifyDescriptiveNamesAsSorted() {
+        for (String folder : new String[] {
+                "Mazda CX-3", "O'layreys pub 2013", "Helsinki 2024",
+                "Kes\u00e4loma (perhe)", "2024 Holiday", "Trip 2023-02-29",
+                "Trip 2023-10_05", "Photos from 202310051",
+                "Trip 2024-02-29", "Trip_2024_02_29", "Trip 2024.02.29",
+                "Trip 20240229", "2024-02-29 Trip", "Trip 2023-02-29 2024-02-29",
+                "!Trip 2024-02-29"
+        }) {
+            assertEquals(TableType.SORTED, TableUtils.resolveTableTypeByPath(Paths.get(folder)), folder);
+        }
+    }
+
+    @Test
+    void resolveTableTypeByPath_shouldKeepUnrecognizedNamesInSortIt() {
+        for (String folder : new String[] {"!@#SpecialFolder", "...", "12345"}) {
+            assertEquals(TableType.SORTIT, TableUtils.resolveTableTypeByPath(Paths.get(folder)), folder);
+        }
     }
 
     @Test

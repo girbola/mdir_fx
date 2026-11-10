@@ -24,6 +24,11 @@ public final class LoadFileInfosUtils {
 		CANCELLED
 	}
 
+	@FunctionalInterface
+	public interface ProgressListener {
+		void onProgress(int done, int total, String folderPath);
+	}
+
 	private LoadFileInfosUtils() {
 		// Utility class
 	}
@@ -33,6 +38,15 @@ public final class LoadFileInfosUtils {
 			List<SavedFolderInfos> savedFolders,
 			List<DriveInfo> currentDrives,
 			BooleanSupplier processCancelled) {
+		return loadSavedFoldersToTableViews(modelMain, savedFolders, currentDrives, processCancelled, null);
+	}
+
+	public static LoadSavedFoldersResult loadSavedFoldersToTableViews(
+			ModelMain modelMain,
+			List<SavedFolderInfos> savedFolders,
+			List<DriveInfo> currentDrives,
+			BooleanSupplier processCancelled,
+			ProgressListener progressListener) {
 
 		List<SavedFolderInfos> folderExists = savedFolders.stream()
 				.filter(savedFolderInfos -> savedFolderInfos.resolveCurrentFolderPath(currentDrives).isPresent())
@@ -45,14 +59,27 @@ public final class LoadFileInfosUtils {
 			Messages.sprintfError("####SavedFolderInfos folder does NOT exist: " + savedFolderInfos.getFolderPath());
 		}
 
-		for (SavedFolderInfos savedFolderInfos : folderExists) {
+		int total = folderExists.size();
+		for (int i = 0; i < total; i++) {
+			SavedFolderInfos savedFolderInfos = folderExists.get(i);
 			Messages.sprintf("###### Loading SavedFolders savedFolderInfos: " + savedFolderInfos.getFolderPath());
 			if (processCancelled.getAsBoolean()) {
 				Messages.sprintf("SavedFolderInfos process cancelled");
 				return LoadSavedFoldersResult.CANCELLED;
 			}
+			if (progressListener != null) {
+				progressListener.onProgress(i, total, savedFolderInfos.getFolderPath());
+			}
 
-			loadSavedFolderToTable(modelMain, savedFolderInfos, currentDrives);
+			try {
+				loadSavedFolderToTable(modelMain, savedFolderInfos, currentDrives);
+			} catch (RuntimeException e) {
+				Messages.sprintfError("Failed to load saved folder " + savedFolderInfos.getFolderPath()
+						+ ": " + e.getMessage());
+			}
+		}
+		if (progressListener != null) {
+			progressListener.onProgress(total, total, "");
 		}
 		return LoadSavedFoldersResult.COMPLETED;
 	}

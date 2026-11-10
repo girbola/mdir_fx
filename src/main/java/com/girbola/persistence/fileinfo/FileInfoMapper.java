@@ -234,8 +234,8 @@ if(rs.getString(FileInfoEnum.ORGPATH.getColumnName()).equals("C:\\Users\\marko\\
         // Complex fields
         List<String> fileHistories = getFileHistoriesData(rs);
         FileInfo fileInfo = new FileInfo(orgPath, orgPathDriveSerialNumber, workDir, workDirDriveSerialNumber, destinationPath, event, location, tags, cameraModel, user, orientation, timeShift, fileInfoId, bad, good, suggested, confirmed, modified, image, raw, video, ignored, copied, tableDuplicated, createdDate, size, imageDifferenceHash, thumbOffset, thumbLenght, sha256CheckSum, fileHistories);
-Messages.sprintf("****************FileInfo all values*************: " + fileInfo.showAllValues());
-Messages.sprintf("*************************************************");
+//Messages.sprintf("****************FileInfo all values*************: " + fileInfo.showAllValues());
+//Messages.sprintf("*************************************************");
         if (FileInfoUtils.handleMetadataInformation(fileInfo)) {
             return fileInfo;
         }

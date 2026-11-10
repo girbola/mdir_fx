@@ -566,7 +566,7 @@ public class FileUtils {
 
         Path success = Files.move(sourceFile, newPath);
         if (Files.exists(success)) {
-            sprintf("Showing ALL fileinfo values: " + fileInfo.showAllValues());
+            sprintf("Showing ALL fileinfo values: " + fileInfo.getOrgPath());
         }
     }
 

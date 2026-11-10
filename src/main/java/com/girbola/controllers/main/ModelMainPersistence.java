@@ -71,9 +71,10 @@ final class ModelMainPersistence {
                 + " connectionConfiguration: " + connectionConfiguration);
         if (items.isEmpty()) {
             Messages.sprintf("saveTableContent items list were empty. tabletype: " + tableType);
-            return false;
+            return true;
         }
 
+        boolean success = true;
         for (FolderInfo folderInfo : items) {
             Messages.sprintf("Saving folderInfo at: " + folderInfo.getFolderPath()
                     + " folder size: " + folderInfo.getFileInfoList().size());
@@ -102,11 +103,16 @@ final class ModelMainPersistence {
                         Platform.runLater(() -> Messages.sprintfError(
                                 "Something went wrong when saving folderinfo into configuration file: "
                                         + folderInfo.getFolderPath()));
+                        success = false;
                     }
                     SQL_Utils.commitChanges(connectionConfiguration);
                     FolderInfoDao.saveConfigurationFolderInfoStateToDatabase(
                             connectionConfiguration, folderInfo, true);
-                    FolderInfoDao.insertFileInfoListToFileInfoDatabase(folderInfo, false);
+                    if (!FolderInfoDao.insertFileInfoListToFileInfoDatabase(folderInfo, false)) {
+                        Messages.sprintfError("Failed to save file information for folder: "
+                                + folderInfo.getFolderPath());
+                        success = false;
+                    }
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong with writing folderinfo into database at line: "
                             + Misc.getLineNumber() + " folderInfo path was: " + folderInfo.getFolderPath()
@@ -117,10 +123,7 @@ final class ModelMainPersistence {
                 Messages.sprintf("No stuff to print");
             }
         }
-        if (SQL_Utils.isDbConnected(connectionConfiguration)) {
-            SQL_Utils.closeConnection(connectionConfiguration);
-        }
-        return true;
+        return success;
     }
 
     private boolean saveTableAndLog(Connection connection, ObservableList<FolderInfo> items,

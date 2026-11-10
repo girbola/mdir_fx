@@ -47,7 +47,7 @@ public enum ConfigurationEnum {
 
     public static String getAllColumnNames() {
         int counter = 0;
-        Messages.sprintf("##################################### values count: " + values().length);
+        //Messages.sprintf("##################################### values count: " + values().length);
         StringBuilder columnNamesBuilder = new StringBuilder();
 
         for (ConfigurationEnum e : values()) {
@@ -56,7 +56,7 @@ public enum ConfigurationEnum {
                 counter++;
             }
             columnNamesBuilder.append(e.getColumnName());
-            Messages.sprintf("eeeeeeeeeeeeeeeeee: " + e.columnName);
+//            Messages.sprintf("eeeeeeeeeeeeeeeeee: " + e.columnName);
         }
 
         return columnNamesBuilder.toString();

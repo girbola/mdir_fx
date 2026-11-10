@@ -90,7 +90,7 @@ public class Main extends Application {
     public static SimpleDates simpleDates = new SimpleDates();
 
     public static final boolean DEBUG = true;
-    public static final boolean DEBUG_CONF = true;
+    public static final boolean DEBUG_CONF = false;
     public static final String country = "EN";
     public static final String lang = "en";
 
@@ -329,6 +329,7 @@ public class Main extends Application {
                     if (MDir_Stylesheets_Constants.MAINSTYLE.getType() != null) {
                         Messages.sprintf("MDir_Stylesheets_Constants.MAINSTYLE.getType() != null: " + conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType());
                     }
+                    primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.PALETTE.getType()).toExternalForm());
                     primaryScene.getStylesheets().add(Main.class.getResource(conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType()).toExternalForm());
                 } catch (Exception e) {
                     Messages.sprintfError("Something went wrong: " + e.getMessage());
@@ -425,15 +426,11 @@ public class Main extends Application {
                 load_FileInfosBackToTableViews.setOnFailed(event13 -> {
                     Messages.sprintfError("load_FileInfosBackToTableViews failed");
                     primaryStage.setOnCloseRequest(event131 -> model_main.exitProgram_NOSAVE());
-                    lpt.closeStage();
+                    Platform.runLater(() -> lpt.closeStage());
                 });
 
+                lpt.bindService(load_FileInfosBackToTableViews);
                 load_FileInfosBackToTableViews.start();
-
-                /*lpt.setTask(load_FileInfosBackToTableViews);
-                Thread load = new Thread(load_FileInfosBackToTableViews, "Load_FileInfosBackToTableViewsThread");
-//                load.setDaemon(true);
-                load.start();*/
             } else {
                 Messages.sprintfError("11111 Couldn't connect to database");
                 lpt.closeStage();

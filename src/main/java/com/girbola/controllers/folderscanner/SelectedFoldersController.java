@@ -12,11 +12,9 @@ import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.dialogs.Dialogs;
 import com.girbola.drive.DriveInfo;
-import com.girbola.drive.DriveScanner;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.messages.customdialogs.DisconnectedDrivesDialog;
-import com.girbola.misc.Misc;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
 import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import com.girbola.utils.FileInfoUtils;
@@ -35,6 +33,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -55,8 +55,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.DirectoryChooser;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicReference;
 import javafx.util.Callback;
 
 import static com.girbola.Main.bundle;
@@ -90,22 +88,81 @@ public class SelectedFoldersController {
     @FXML
     private void selectedFolders_ok_action(ActionEvent event) {
         Messages.sprintf("selectedFolders_ok_action pressed");
+        Main.setProcessCancelled(false);
         modelMain.getTabPaneMain().getSelectionModel().select(0); // Selecting tabMain
         LoadingProcessTask loadingProcessTask = new LoadingProcessTask(Main.sceneManager.getWindow());
-        prepareForFolderScan();
-        Task<List<FolderInfo>> scanTask = createScanTask(loadingProcessTask);
-        loadingProcessTask.bind(scanTask.messageProperty());
 
-        Thread scanThread = new Thread(scanTask, "selected-folders-scan");
-//        scanTask.setOnSucceeded(e -> {
-//            Messages.sprintf("SUCCEEDEDDDDD::::::::::::: " + scanTask.getValue().size() + " new folders added to tables");
-//            model_folderScanner.getScanDrives().restart();
-//        });
-        scanThread.setDaemon(true);
-        scanThread.start();
+        if (model_folderScanner != null && model_folderScanner.getScanDrives() != null) {
+            model_folderScanner.getScanDrives().stop();
+        }
+        if (modelMain != null && modelMain.getMonitorExternalDriveConnectivity() != null) {
+            modelMain.getMonitorExternalDriveConnectivity().cancel();
+        }
+
+
+        Task<Void> prepareTask = prepareForFolderScanTask();
+        loadingProcessTask.setTask(prepareTask);
+        loadingProcessTask.bind();
+
+        prepareTask.setOnSucceeded(e -> {
+            Task<List<FolderInfo>> scanTask = createScanTask(loadingProcessTask);
+            loadingProcessTask.unbind();
+            loadingProcessTask.setTask(scanTask);
+            loadingProcessTask.bind();
+
+            Thread scanThread = new Thread(scanTask, "selected-folders-scan");
+            scanThread.setDaemon(true);
+            scanThread.start();
+        });
+
+        prepareTask.setOnFailed(e -> {
+            Throwable exception = prepareTask.getException();
+            Messages.sprintf("Preparation task failed: " + exception.getMessage());
+            loadingProcessTask.closeStage();
+        });
+
+        prepareTask.setOnCancelled(e -> {
+            Messages.sprintf("Preparation task cancelled");
+            loadingProcessTask.closeStage();
+        });
+
+        // 2. Start the prepare task on a background thread
+        Thread prepareThread = new Thread(prepareTask, "selected-folders-prepare");
+//        prepareThread.setDaemon(true);
+        prepareThread.start();
     }
+    private Task<Void> prepareForFolderScanTask() {
+        Messages.sprintf("[debug] prepareForFolderScanTask");
+        return new Task<>() {
+            @Override
+            protected Void call() throws Exception {
+                updateMessage("Preparing folder scan...");
+//                if (model_folderScanner != null && model_folderScanner.getScanDrives() != null) {
+//                    model_folderScanner.getScanDrives().stop();
+//                }
+//                if (modelMain != null && modelMain.getMonitorExternalDriveConnectivity() != null) {
+//                    modelMain.getMonitorExternalDriveConnectivity().cancel();
+//                }
 
-    private void prepareForFolderScan() {
+                for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
+                    Messages.sprintf("----selectedFolders size" + sf.getFolder());
+                }
+                SelectedFolderInfoDao.saveSelectedFoldersToConfigDb(modelMain);
+
+                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().forEach(selectedFolder ->
+                        Messages.sprintf("getSelectedFolders Selected folder to scan: " + selectedFolder.getFolder()
+                                + " isSelected: " + selectedFolder.isSelected()
+                                + " isIgnored: " + selectedFolder.isIgnored()
+                                + " isConnected: " + selectedFolder.isConnected()
+                                + " hasMedia: " + selectedFolder.isMedia())
+                );
+
+                ConcurrencyUtils.stopExecThreadNow();
+                return null;
+            }
+        };
+    }
+    private void prepareForFolderScan_() {
         if (model_folderScanner != null && model_folderScanner.getScanDrives() != null) {
             model_folderScanner.getScanDrives().stop();
         }
@@ -253,6 +310,7 @@ public class SelectedFoldersController {
             Messages.sprintf("#### FOLDER IS NEW and SELECTED: " + path);
 
             TableType tableType = resolveTableTypeByPath(path);
+            Messages.sprintf("#### FOLDER IS NEW and SELECTED: " + path + " tableType: " + tableType);
             FolderInfo folderInfo = FolderInfoDao.loadFolderInfo(path);
             if (folderInfo == null) {
                 folderInfo = new FolderInfo(path);
@@ -278,6 +336,10 @@ public class SelectedFoldersController {
     private void processUpdatedFolders(List<Path> updateLists) throws Exception {
         for (Path updateFile : updateLists) {
             Messages.sprintf("##########updateLists Selected folder to scan: " + updateFile);
+            if(Main.getProcessCancelled()) {
+                Messages.sprintf("processUpdatedFolders cancelled");
+                return;
+            }
             FolderInfo folderInfo = TableUtils.findTableValues(updateFile, modelMain.tables());
 
             Messages.sprintf("##########updateLists folderInfo: " + folderInfo);
@@ -288,6 +350,10 @@ public class SelectedFoldersController {
 
                 Iterator<Path> mediaFiles = currentFolderMediaFilesOnly.iterator();
                 while (mediaFiles.hasNext()) {
+                    if(Main.getProcessCancelled()) {
+                        Messages.sprintf("processUpdatedFolders cancelled");
+                        return;
+                    }
                     Path currentFile = mediaFiles.next();
                     Optional<FileInfo> fileInfo = FileInfoUtils.findFileInfo(currentFile, fileInfoList);
                     if (fileInfo != null && fileInfo.isPresent()) {
@@ -697,17 +763,17 @@ public class SelectedFoldersController {
 
     public void start() {
 //        this.scanner.start();
-        Messages.sprintfError("start is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
+        Messages.sprintfError("[START DEBUG] start is not working yet");
     }
 
     public void restart() {
 //        this.scanner.restart();
-        Messages.sprintfError("restart is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
+        Messages.sprintfError("[Restart] is not working yet");
     }
 
     public void stop() {
 //        this.scanner.cancel();
-        Messages.sprintfError("stop is not working yet: " + ERROR + " at line: " + Misc.getLineNumber());
+        Messages.sprintfError("[Stop DEBUG] is not working yet");
     }
 
     private boolean hasInIgnoredListMain(ObservableList<Path> ignoredList, String path) {

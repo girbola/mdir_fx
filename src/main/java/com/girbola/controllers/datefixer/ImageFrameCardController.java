@@ -94,5 +94,8 @@ public class ImageFrameCardController {
         clip.widthProperty().bind(imageViewContainer.widthProperty());
         clip.heightProperty().bind(imageViewContainer.heightProperty());
         imageViewContainer.setClip(clip);
+
+        topGridPane.managedProperty().bind(topGridPane.visibleProperty());
+        buttonDateTimeContainer.managedProperty().bind(buttonDateTimeContainer.visibleProperty());
     }
 }

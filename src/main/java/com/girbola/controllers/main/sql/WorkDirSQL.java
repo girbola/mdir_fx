@@ -208,8 +208,8 @@ public class WorkDirSQL {
 
             SQL_Utils.setAutoCommit(connection, false);
 
-            Messages.sprintf("sql:::::::: " + sql);
-                        Messages.sprintf(" fileInfo: " + fileInfo.showAllValues());
+//            Messages.sprintf("sql:::::::: " + sql);
+//                        Messages.sprintf(" fileInfo: " + fileInfo.showAllValues());
             PreparedStatement pstmt = connection.prepareStatement(sql);
 
             // Update values

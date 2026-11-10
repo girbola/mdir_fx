@@ -137,7 +137,7 @@ public enum FileInfoEnum {
 
         boolean first = true;
         for (FileInfoEnum fileInfoEnum : getValuesInBindingOrder()) {
-            Messages.sprintf("getCreateTableSQL e: " + fileInfoEnum.getColumnName());
+        //    Messages.sprintf("getCreateTableSQL e: " + fileInfoEnum.getColumnName());
             if (!first) {
                 createTableSQLBuilder.append(", ");
             }
@@ -146,7 +146,7 @@ public enum FileInfoEnum {
         }
         createTableSQLBuilder.append(")");
 
-        Messages.sprintf("create table sql: " + createTableSQLBuilder);
+       // Messages.sprintf("create table sql: " + createTableSQLBuilder);
 
         return createTableSQLBuilder.toString();
     }

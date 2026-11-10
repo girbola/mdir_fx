@@ -161,8 +161,22 @@ public class LoadingProcessTask {
             Messages.sprintfError("LoadingProcess_Task: modelLoading or currentTask was null!");
             return;
         }
-        // FIXED: Actually assign the task to your model!
         modelLoading.setTask(currentTask);
+        // Rebind so the progress bar and label follow the newest task
+        unbind();
+        bind();
+    }
+
+    public void bindService(javafx.concurrent.Service<?> service) {
+        if (service == null) {
+            return;
+        }
+        Platform.runLater(() -> {
+            modelLoading.getProgressBar().progressProperty().unbind();
+            modelLoading.getMessages_lbl().textProperty().unbind();
+            modelLoading.getProgressBar().progressProperty().bind(service.progressProperty());
+            modelLoading.getMessages_lbl().textProperty().bind(service.messageProperty());
+        });
     }
 
     public void setProgress(double value, double max) {

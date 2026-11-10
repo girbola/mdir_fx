@@ -122,7 +122,7 @@ module com.girbola {
     opens com.girbola.controllers.main.populatetableview to javafx.fxml;
     opens com.girbola.controllers.main.selectedfolder to javafx.fxml;
     opens com.girbola.controllers.main.sql to javafx.fxml;
-    opens com.girbola.controllers.main.tables to javafx.fxml, javafx.base;
+    opens com.girbola.controllers.main.tables to javafx.fxml, javafx.base, org.junit.platform.commons;
     opens com.girbola.controllers.main.tables.cell to javafx.fxml;
     opens com.girbola.controllers.main.tables.model to javafx.fxml, javafx.base;
     opens com.girbola.controllers.main.tables.tabletype to javafx.fxml;

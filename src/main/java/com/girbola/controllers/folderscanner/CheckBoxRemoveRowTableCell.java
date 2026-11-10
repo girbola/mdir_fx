@@ -2,6 +2,7 @@ package com.girbola.controllers.folderscanner;
 
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableCell;
 import javafx.scene.paint.Color;
@@ -30,6 +31,7 @@ public class CheckBoxRemoveRowTableCell extends TableCell<SelectedFolder, Boolea
 //                modelMain.getSelectedFolders().getSelectedFolderScanner_obs().remove(selectedFolder);
                 modelMain.getFolderSelectionService().remove(selectedFolder);
                 getTableView().getItems().remove(selectedFolder);
+
             }
         });
     }

@@ -109,8 +109,8 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
                     localConnection.close();
                 } catch (SQLException e) {
 
-                    if(!SQL_Utils.isDbConnected(localConnection)){
-                        Messages.sprintfError("Cannot close connection. " +  e.getMessage());
+                    if (!SQL_Utils.isDbConnected(localConnection)) {
+                        Messages.sprintfError("Cannot close connection. " + e.getMessage());
                     }
                     e.printStackTrace();
                 }
@@ -125,7 +125,7 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
 
         if (!dbConnected) {
             boolean configurationDatabase = createConfigurationDatabase();
-            if(!configurationDatabase) {
+            if (!configurationDatabase) {
                 return false;
             }
         }
@@ -133,7 +133,7 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
         StringBuilder questionMarks = new StringBuilder();
 
         for (String col : ConfigurationEnum.getAllColumnNames().split(",")) {
-            Messages.sprintf("col: " + col);
+//            Messages.sprintf("col: " + col);
             if (questionMarks.toString().length() == 0) {
                 questionMarks.append("?");
             } else {
@@ -144,7 +144,7 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
                 " (" + String.join(", ", getAllColumnNames()) + ") " +
                 "VALUES(" + questionMarks + ")";
 
-        Messages.sprintf("insertConfiguration: " + sql);
+        //Messages.sprintf("insertConfiguration: " + sql);
 //        int index = 1;
 //        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 //            pstmt.setInt(index++, 0);
@@ -196,67 +196,86 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
 //            e.printStackTrace();
 //            return false;
 //        }
-        Messages.sprintf("insertConfiguration: " + sql);
+        //Messages.sprintf("insertConfiguration: " + sql);
         int index = 1;
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             int p;
 
-            p = index; pstmt.setInt(index++, 0);
-            Messages.sprintf("index " + p + " ID: 0");
+            p = index;
+            pstmt.setInt(index++, 0);
+//            Messages.sprintf("index " + p + " ID: 0");
 
-            p = index; pstmt.setBoolean(index++, configuration.isBetterQualityThumbs());
-            Messages.sprintf("index " + p + " BETTER_THUMBNAIL_QUALITY: " + configuration.isBetterQualityThumbs());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isBetterQualityThumbs());
+//            Messages.sprintf("index " + p + " BETTER_THUMBNAIL_QUALITY: " + configuration.isBetterQualityThumbs());
 
-            p = index; pstmt.setBoolean(index++, configuration.isConfirmOnExit());
-            Messages.sprintf("index " + p + " CONFIRM_ON_EXIT: " + configuration.isConfirmOnExit());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isConfirmOnExit());
+//            Messages.sprintf("index " + p + " CONFIRM_ON_EXIT: " + configuration.isConfirmOnExit());
 
-            p = index; pstmt.setInt(index++, configuration.getId_counter().get());
-            Messages.sprintf("index " + p + " ID_COUNTER: " + configuration.getId_counter().get());
+            p = index;
+            pstmt.setInt(index++, configuration.getId_counter().get());
+//            Messages.sprintf("index " + p + " ID_COUNTER: " + configuration.getId_counter().get());
 
-            p = index; pstmt.setBoolean(index++, configuration.isShowFullPath());
-            Messages.sprintf("index " + p + " SHOW_FULL_PATH: " + configuration.isShowFullPath());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isShowFullPath());
+//            Messages.sprintf("index " + p + " SHOW_FULL_PATH: " + configuration.isShowFullPath());
 
-            p = index; pstmt.setBoolean(index++, configuration.isShowHints());
-            Messages.sprintf("index " + p + " SHOW_HINTS: " + configuration.isShowHints());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isShowHints());
+//            Messages.sprintf("index " + p + " SHOW_HINTS: " + configuration.isShowHints());
 
-            p = index; pstmt.setBoolean(index++, configuration.isShowTooltips());
-            Messages.sprintf("index " + p + " SHOW_TOOLTIPS: " + configuration.isShowTooltips());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isShowTooltips());
+//            Messages.sprintf("index " + p + " SHOW_TOOLTIPS: " + configuration.isShowTooltips());
 
-            p = index; pstmt.setString(index++, configuration.getCurrentTheme());
-            Messages.sprintf("index " + p + " CURRENTTHEME: " + configuration.getCurrentTheme());
+            p = index;
+            pstmt.setString(index++, configuration.getCurrentTheme());
+//            Messages.sprintf("index " + p + " CURRENTTHEME: " + configuration.getCurrentTheme());
 
-            p = index; pstmt.setString(index++, configuration.getVlcPath());
-            Messages.sprintf("index " + p + " VLC_PATH: " + configuration.getVlcPath());
+            p = index;
+            pstmt.setString(index++, configuration.getVlcPath());
+//            Messages.sprintf("index " + p + " VLC_PATH: " + configuration.getVlcPath());
 
-            p = index; pstmt.setBoolean(index++, configuration.isVlcSupport());
-            Messages.sprintf("index " + p + " VLC_SUPPORT: " + configuration.isVlcSupport());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isVlcSupport());
+//            Messages.sprintf("index " + p + " VLC_SUPPORT: " + configuration.isVlcSupport());
 
-            p = index; pstmt.setBoolean(index++, configuration.isSaveDataToHD());
-            Messages.sprintf("index " + p + " SAVE_DATA_AS_HD: " + configuration.isSaveDataToHD());
+            p = index;
+            pstmt.setBoolean(index++, configuration.isSaveDataToHD());
+//            Messages.sprintf("index " + p + " SAVE_DATA_AS_HD: " + configuration.isSaveDataToHD());
 
-            p = index; pstmt.setDouble(index++, configuration.getWindowStartPosX());
-            Messages.sprintf("index " + p + " WINDOW_START_POSITION_X: " + configuration.getWindowStartPosX());
+            p = index;
+            pstmt.setDouble(index++, configuration.getWindowStartPosX());
+//            Messages.sprintf("index " + p + " WINDOW_START_POSITION_X: " + configuration.getWindowStartPosX());
 
-            p = index; pstmt.setDouble(index++, configuration.getWindowStartPosY());
-            Messages.sprintf("index " + p + " WINDOW_START_POSITION_Y: " + configuration.getWindowStartPosY());
+            p = index;
+            pstmt.setDouble(index++, configuration.getWindowStartPosY());
+//            Messages.sprintf("index " + p + " WINDOW_START_POSITION_Y: " + configuration.getWindowStartPosY());
 
-            p = index; pstmt.setDouble(index++, configuration.getWindowStartWidth());
-            Messages.sprintf("index " + p + " WINDOW_START_WIDTH: " + configuration.getWindowStartWidth());
+            p = index;
+            pstmt.setDouble(index++, configuration.getWindowStartWidth());
+//            Messages.sprintf("index " + p + " WINDOW_START_WIDTH: " + configuration.getWindowStartWidth());
 
-            p = index; pstmt.setDouble(index++, configuration.getWindowStartHeight());
-            Messages.sprintf("index " + p + " WINDOW_START_HEIGHT: " + configuration.getWindowStartHeight());
+            p = index;
+            pstmt.setDouble(index++, configuration.getWindowStartHeight());
+//            Messages.sprintf("index " + p + " WINDOW_START_HEIGHT: " + configuration.getWindowStartHeight());
 
-            p = index; pstmt.setDouble(index++, configuration.getImageViewXPosition());
-            Messages.sprintf("index " + p + " IMAGE_VIEW_X_POSITION: " + configuration.getImageViewXPosition());
+            p = index;
+            pstmt.setDouble(index++, configuration.getImageViewXPosition());
+//            Messages.sprintf("index " + p + " IMAGE_VIEW_X_POSITION: " + configuration.getImageViewXPosition());
 
-            p = index; pstmt.setDouble(index++, configuration.getImageViewYPosition());
-            Messages.sprintf("index " + p + " IMAGE_VIEW_Y_POSITION: " + configuration.getImageViewYPosition());
+            p = index;
+            pstmt.setDouble(index++, configuration.getImageViewYPosition());
+//            Messages.sprintf("index " + p + " IMAGE_VIEW_Y_POSITION: " + configuration.getImageViewYPosition());
 
-            p = index; pstmt.setString(index++, configuration.getWorkDirSerialNumber());
-            Messages.sprintf("index " + p + " WORK_DIR_SERIAL_NUMBER: " + configuration.getWorkDirSerialNumber());
+            p = index;
+            pstmt.setString(index++, configuration.getWorkDirSerialNumber());
+//            Messages.sprintf("index " + p + " WORK_DIR_SERIAL_NUMBER: " + configuration.getWorkDirSerialNumber());
 
-            p = index; pstmt.setString(index++, configuration.getWorkDir());
-            Messages.sprintf("index " + p + " WORK_DIR: " + configuration.getWorkDir());
+            p = index;
+            pstmt.setString(index++, configuration.getWorkDir());
+//            Messages.sprintf("index " + p + " WORK_DIR: " + configuration.getWorkDir());
 
             int result = pstmt.executeUpdate();
             conn.commit();
@@ -273,6 +292,7 @@ public class ConfigurationSQLHandler extends DriveInfoDao {
         try {
             localConnection = getConnection();
             if (localConnection == null) {
+
                 Messages.sprintfError("Could not establish database connection");
                 return false;
             }

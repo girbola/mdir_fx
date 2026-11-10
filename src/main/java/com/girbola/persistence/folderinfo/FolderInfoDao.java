@@ -182,7 +182,7 @@ public class FolderInfoDao {
         Messages.sprintf("Loading FolderInfo from: " + src);
 
         if (!Files.exists(src)) {
-            Messages.sprintfError("Database file not found at: " + src);
+            Messages.sprintfError("[DEBUG] loadFolderInfo - Database file not found at: " + src);
             return null;
         }
 
@@ -232,7 +232,7 @@ public class FolderInfoDao {
                     SQL_Utils.rollBackConnection(connectionFileInfos);
                     return null;
                 }
-                Messages.sprintf("Loaded file infos: " + fileInfos.size() + " folderInfo: " + folderInfo.getFolderPath());
+                //Messages.sprintf("Loaded file infos: " + fileInfos.size() + " folderInfo: " + folderInfo.getFolderPath());
 
                 folderInfo.setFileInfoList(fileInfos);
 
@@ -560,15 +560,15 @@ public class FolderInfoDao {
             final String insertSql = "INSERT OR REPLACE INTO " + SQLTableEnums.FILEINFO.getType()
                     + " (" + columnNames + ") VALUES (" + placeholders + ");";
 
-            Messages.sprintf("FileInfo columns count: " + FileInfoEnum.getBindingColumnCount() + " columns: " + columnNames);
-            Messages.sprintf("FileInfo placeholders count: " + FileInfoEnum.getBindingColumnCount());
-            Messages.sprintf("Insert SQL: " + insertSql);
+//            Messages.sprintf("FileInfo columns count: " + FileInfoEnum.getBindingColumnCount() + " columns: " + columnNames);
+//            Messages.sprintf("FileInfo placeholders count: " + FileInfoEnum.getBindingColumnCount());
+//            Messages.sprintf("Insert SQL: " + insertSql);
 
             try (PreparedStatement pstmt = connection.prepareStatement(insertSql)) {
                 int batchSize = 0;
 
                 for (FileInfo fileInfo : fileInfos) {
-                    Messages.sprintf("FIQ - Processing file: " + fileInfo.getOrgPath());
+                //    Messages.sprintf("FIQ - Processing file: " + fileInfo.getOrgPath());
 
                     if (!FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo)) {
                         throw new SQLException("Failed to bind FileInfo: " + fileInfo.getOrgPath());

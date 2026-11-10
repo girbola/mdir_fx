@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ContextMenu?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.main.TableController">
+<VBox fx:id="table_Vbox" spacing="1.0" styleClass="table_vbox" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/26" fx:controller="com.girbola.controllers.main.TableController">
 	<children>
       <AnchorPane fx:id="hideablePane" styleClass="hideablePane" VBox.vgrow="ALWAYS">
          <children>
@@ -195,26 +196,81 @@
             		<TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handleMouseClicked" VBox.vgrow="ALWAYS">
             			<columns>
             				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
-            				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status" />
-            				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio" />
-            				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied" />
-            				<TableColumn fx:id="dateFix_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
-                            <TableColumn fx:id="folderize_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false" />
-            				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%justFolderName" />
-            				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles" />
-            				<TableColumn fx:id="badFiles_col" editable="false" minWidth="65.0" prefWidth="65.0" text="%badFiles" />
-            				<TableColumn fx:id="minDate_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%mindate" />
-            				<TableColumn fx:id="maxDates_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%maxdate" />
-            				<TableColumn fx:id="size_col" editable="false" minWidth="100.0" prefWidth="100.0" text="%size" />
-            				<TableColumn fx:id="media_col" editable="false" minWidth="150.0" prefWidth="150.0" styleClass="media-column" text="%media">
+            				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status">
+                           <styleClass>
+                              <String fx:value="col-status" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="dateDifference_ratio_col" editable="false" maxWidth="60.0" minWidth="35.0" prefWidth="60.0" text="%dateDifferenceRatio">
+                           <styleClass>
+                              <String fx:value="col-date-difference-ratio" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="copied_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%copied">
+                           <styleClass>
+                              <String fx:value="col-copied" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="dateFix_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false">
+                           <styleClass>
+                              <String fx:value="col-date-fix" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+                            <TableColumn fx:id="folderize_col" editable="false" minWidth="35.0" prefWidth="35.0" sortable="false">
+                           <styleClass>
+                              <String fx:value="col-folderize" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="justFolderName_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%justFolderName">
+                           <styleClass>
+                              <String fx:value="col-name" />
+                              <String fx:value="col-center-left" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="folderFiles_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%folderFiles">
+                           <styleClass>
+                              <String fx:value="col-files" />
+                              <String fx:value="col-centered" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="badFiles_col" editable="false" minWidth="65.0" prefWidth="65.0" styleClass="col-centered" text="%badFiles" />
+            				<TableColumn fx:id="minDate_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%mindate">
+                           <styleClass>
+                              <String fx:value="col-date-min" />
+                              <String fx:value="col-center-left" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="maxDates_col" editable="false" minWidth="150.0" prefWidth="150.0" text="%maxdate">
+                           <styleClass>
+                              <String fx:value="col-date-max" />
+                              <String fx:value="col-center-left" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="size_col" editable="false" minWidth="100.0" prefWidth="100.0" text="%size">
+                           <styleClass>
+                              <String fx:value="col-size" />
+                              <String fx:value="col-center-left" />
+                           </styleClass>
+                        </TableColumn>
+            				<TableColumn fx:id="media_col" editable="false" minWidth="150.0" prefWidth="150.0" styleClass="col-media" text="%media">
             					<columns>
-            						<TableColumn fx:id="image_col" minWidth="50.0" prefWidth="50.0" text="%image" />
-            						<TableColumn fx:id="raw_col" minWidth="50.0" prefWidth="50.0" text="%raw" />
-            						<TableColumn fx:id="video_col" minWidth="50.0" prefWidth="50.0" text="%video" />
+            						<TableColumn fx:id="image_col" minWidth="50.0" prefWidth="50.0" styleClass="col-centered" text="%image" />
+            						<TableColumn fx:id="raw_col" minWidth="50.0" prefWidth="50.0" styleClass="col-centered" text="%raw" />
+            						<TableColumn fx:id="video_col" minWidth="50.0" prefWidth="50.0" styleClass="col-centered" text="%video" />
             					</columns>
             				</TableColumn>
-            				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="81.5" text="%suggested" />
-            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="%fullPath" />
+            				<TableColumn fx:id="suggested_col" editable="false" minWidth="65.0" prefWidth="81.5" styleClass="col-centered" text="%suggested" />
+            				<TableColumn fx:id="fullPath_col" editable="false" maxWidth="1.7976931348623157E308" minWidth="-1.0" prefWidth="-1.0" text="%fullPath">
+                           <styleClass>
+                              <String fx:value="col-fullpath" />
+                              <String fx:value="col-center-left" />
+                           </styleClass>
+                        </TableColumn>
             			</columns>
                      <contextMenu>
                         <ContextMenu>

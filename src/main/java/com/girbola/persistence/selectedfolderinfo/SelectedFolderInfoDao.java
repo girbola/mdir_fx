@@ -40,16 +40,19 @@ public class SelectedFolderInfoDao {
             PATH, CONNECTED, IGNORED, SELECTED, MEDIA, DRIVE_SERIAL_NUMBER);
 
     private static final String selectedFolderTable = String.format("""
-            CREATE TABLE IF NOT EXISTS %s (
-                %s STRING PRIMARY KEY UNIQUE NOT NULL,
-                %s BOOLEAN,
-                %s BOOLEAN DEFAULT 0,
-                %s BOOLEAN,
-                %s BOOLEAN,
-                %s STRING
-            )
-            """, SQLTableEnums.SELECTEDFOLDERS.getType(),
+                    CREATE TABLE IF NOT EXISTS %s (
+                        %s STRING PRIMARY KEY UNIQUE NOT NULL,
+                        %s BOOLEAN,
+                        %s BOOLEAN DEFAULT 0,
+                        %s BOOLEAN,
+                        %s BOOLEAN,
+                        %s STRING
+                    )
+                    """, SQLTableEnums.SELECTEDFOLDERS.getType(),
             PATH, CONNECTED, IGNORED, SELECTED, MEDIA, DRIVE_SERIAL_NUMBER);
+
+    private static final String DELETE_FOLDER_SQL =
+            "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE " + PATH + " = ?";
 
 
     public static boolean createSelectedFoldersDBTable(Connection connection) {
@@ -114,6 +117,31 @@ public class SelectedFolderInfoDao {
         }
     }
 
+    public static boolean removeSelectedFolderFromTable(SelectedFolder selectedFolder) {
+        if (selectedFolder == null || selectedFolder.getFolder().isEmpty()) {
+            Messages.sprintf("removeSelectedFolder: selectedFolder is null or empty");
+            return false;
+        }
+
+        Connection connection = ConfigurationSqlConnection.connectToDatabase(Main.conf.getAppDataPath(), Main.conf.getConfiguration_db_fileName());
+        if (connection == null) {
+            Messages.sprintfError("Could not connect to configuration DB for removing selected folders: " + Main.conf.getConfiguration_db_fileName());
+            return false;
+        }
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_FOLDER_SQL)) {
+            pstmt.setString(1, selectedFolder.getFolder());
+
+            int rowsAffected = pstmt.executeUpdate();
+            Messages.sprintf("removeSelectedFolder deleted rows: " + rowsAffected);
+        } catch (Exception e) {
+            Messages.sprintfError("removeSelectedFolder failed: " + e.getMessage());
+            return false;
+        } finally {
+            closeConnection(connection);
+            return true;
+        }
+    }
+
     /**
      * Removes selected folders from the database table.
      *
@@ -130,8 +158,7 @@ public class SelectedFolderInfoDao {
             return;
         }
 
-        String sql = "DELETE FROM " + SQLTableEnums.SELECTEDFOLDERS.getType() + " WHERE " + PATH + " = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = connection.prepareStatement(DELETE_FOLDER_SQL)) {
             connection.setAutoCommit(false);
 
             for (SelectedFolder sf : selectedItems) {
@@ -209,7 +236,7 @@ public class SelectedFolderInfoDao {
                 insertSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
 //                updateSelectedFoldersToDB(connection, modelMain.getSelectedFolders().getSelectedFolderScanner_obs());
                 for (SelectedFolder sf : modelMain.getSelectedFolders().getSelectedFolderScanner_obs()) {
-                    Messages.sprintf("----SelectedFolder: isSelected? "+ sf.isSelected() + " " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
+                    Messages.sprintf("----SelectedFolder: isSelected? " + sf.isSelected() + " " + sf.getFolder() + " isConnected? " + sf.isConnected() + " is ignored? " + sf.isIgnored() + " is media? " + sf.isMedia());
                 }
             } else {
                 Messages.sprintf("Table: not exists " + SQLTableEnums.SELECTEDFOLDERS.getType() + " not exists");
@@ -301,21 +328,21 @@ public class SelectedFolderInfoDao {
         boolean originalAutoCommit;
 
         final String sql = String.format("""
-                INSERT INTO %s (
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s,
-                    %s
-                ) VALUES (?,?,?,?,?,?)
-                ON CONFLICT(%s) DO UPDATE SET
-                    %s = excluded.%s,
-                    %s = excluded.%s,
-                    %s = excluded.%s,
-                    %s = excluded.%s,
-                    %s = excluded.%s
-                """,
+                        INSERT INTO %s (
+                            %s,
+                            %s,
+                            %s,
+                            %s,
+                            %s,
+                            %s
+                        ) VALUES (?,?,?,?,?,?)
+                        ON CONFLICT(%s) DO UPDATE SET
+                            %s = excluded.%s,
+                            %s = excluded.%s,
+                            %s = excluded.%s,
+                            %s = excluded.%s,
+                            %s = excluded.%s
+                        """,
                 SQLTableEnums.SELECTEDFOLDERS.getType(),
                 PATH, CONNECTED, IGNORED, SELECTED, MEDIA, DRIVE_SERIAL_NUMBER,
                 PATH,

@@ -484,7 +484,7 @@ public class FileInfoUtils {
             if (width != null && width != 0 && height != null && height != 0) {
                 fileInfo.setWidth(width);
                 fileInfo.setHeight(height);
-                Messages.sprintf("123width: " + width + ", height: " + height);
+//                Messages.sprintf("123width: " + width + ", height: " + height);
                 return true;
             }
 //            else {
@@ -914,7 +914,7 @@ public class FileInfoUtils {
 
     public static FileInfo createFileInfo(Path path) throws IOException {
 //        String sourceDriveSerialNumber = resolveSourceDriveSerialNumber(path);
-        Messages.sprintf("--------------createFileInfo: " + path);
+        //Messages.sprintf("--------------createFileInfo: " + path);
         long startTime = System.currentTimeMillis();
 
         if (!Files.isRegularFile(path)) {
@@ -932,13 +932,13 @@ public class FileInfoUtils {
             if (fileInfo.getSha256Checksum().isEmpty()) {
                 fileInfo.setSha256Checksum(calculateFileSHA256(path));
                 long endTimeSha = System.currentTimeMillis();
-                Messages.sprintf("******SHA256: TOOK:::::: " + (endTimeSha - startTimeSha) + "ms");
+//                Messages.sprintf("******SHA256: TOOK:::::: " + (endTimeSha - startTimeSha) + "ms");
             }
 
             boolean processed = fileInfoGetCreationDates(path, fileInfo);
 
             if (!processed) {
-                Messages.sprintf("Cannot create FileInfo: " + path);
+//                Messages.sprintf("Cannot create FileInfo: " + path);
                 Messages.sprintfError("Something went wrong and this file can't be created: " + path);
                 return null;
             }
@@ -946,11 +946,11 @@ public class FileInfoUtils {
             fileInfo.setFileHistories(
                     Arrays.asList(LocalDateTime.now() + " FileInfo created. PATH=" + fileInfo.getOrgPath()));
             long endTime = System.currentTimeMillis();
-            Messages.sprintf("########FileInfo created in " + (endTime - startTime) + " ms ################");
+            //Messages.sprintf("########FileInfo created in " + (endTime - startTime) + " ms ################");
             return fileInfo;
         } catch (IOException e) {
             long endTime = System.currentTimeMillis();
-            Messages.sprintf("IOException ########FileInfo created in " + (endTime - startTime) + " ms ################");
+//            Messages.sprintf("IOException ########FileInfo created in " + (endTime - startTime) + " ms ################");
             Messages.sprintfError("IOException while processing file: " + path + " - " + e.getMessage());
             throw e;
         }

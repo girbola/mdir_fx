@@ -3,6 +3,7 @@ package com.girbola.controllers.folderscanner.folderpicker;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.messages.Messages;
+import com.girbola.persistence.selectedfolderinfo.SelectedFolderInfoDao;
 import common.utils.FileUtils;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -12,7 +13,6 @@ import java.util.Set;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
 import javafx.scene.control.CheckBoxTreeItem;
 import javafx.scene.control.TreeItem;
 
@@ -53,6 +53,7 @@ public class FolderSelectionService {
 
         if (removed) {
             syncTreeFromModel(modelMain);
+            SelectedFolderInfoDao.removeSelectedFolderFromTable(selectedFolder);
         }
 
         return removed;
@@ -310,7 +311,7 @@ public class FolderSelectionService {
     }
 
     private void addRecursiveListener(CheckBoxTreeItem<Path> item) {
-        Messages.sprintf("addRecursiveListener item: " + item.getValue());
+        //Messages.sprintf("addRecursiveListener item: " + item.getValue());
         if (item == null) {
             return;
         }

@@ -34,6 +34,7 @@ public class DateTimeAdjusterController {
     private final String ERROR = DateTimeAdjusterController.class.getSimpleName();
     private TilePane df_tilePane;
 
+
     //private GridPane df_tilePane;
     private TilePane quickPick_tilePane;
     private ModelMain model_main;
@@ -42,10 +43,11 @@ public class DateTimeAdjusterController {
     //@formatter:off
     @FXML private DatePicker end_datePicker;
     @FXML private TextField end_hour;
-    @FXML private Button copy_startToEnd_btn;
     @FXML private Button selectRange_btn;
     @FXML private Button setDateTimeRange_btn;
     @FXML private Button findExistsPath_btn;
+    @FXML private Button copy_startToEnd_btn;
+    @FXML private Button copy_endToStart;
     //@formatter:on
 
     //@formatter:off
@@ -96,6 +98,15 @@ public class DateTimeAdjusterController {
                 }
             }
         }
+    }
+    @FXML
+    private void copy_endToStart_action(ActionEvent event) {
+        start_datePicker.setValue(end_datePicker.getValue());
+
+        model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
+        model_datefix.getStart_time().setMin(model_datefix.getEnd_time().getMin());
+        model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
+
     }
 
     @FXML
@@ -168,18 +179,7 @@ public class DateTimeAdjusterController {
         }
     }
 
-    @FXML
-    private Button copy_endToStart;
 
-    @FXML
-    private void copy_endToStart_action(ActionEvent event) {
-        start_datePicker.setValue(end_datePicker.getValue());
-
-        model_datefix.getStart_time().setHour(model_datefix.getEnd_time().getHour());
-        model_datefix.getStart_time().setMin(model_datefix.getEnd_time().getMin());
-        model_datefix.getStart_time().setSec(model_datefix.getEnd_time().getSec());
-
-    }
 
     @FXML
     private void end_hour_action(ActionEvent event) {

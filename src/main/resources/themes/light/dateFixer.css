@@ -754,3 +754,11 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-background-color: transparent;
     -fx-border-color: transparent;
 }
+.filter-check #showHideTopPart {
+    -fx-background-color: red;
+    -fx-text-fill: -accent;
+    -fx-padding: 30px;
+}
+.button {
+    -fx-background-color: yellow;
+}

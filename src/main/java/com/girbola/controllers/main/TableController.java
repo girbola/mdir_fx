@@ -895,12 +895,14 @@ public class TableController {
         justFolderName_col.setCellFactory(param -> new EditingCell(model_main, param));
         status_col.setCellFactory(model_main.tables().cell_Status_cellFactory);
 
-        justFolderName_col.getStyleClass().add("col-name");
-        folderFiles_col.getStyleClass().add("col-files");
-        minDate_col.getStyleClass().add("col-date-min");
-        maxDates_col.getStyleClass().add("col-date-max");
-        size_col.getStyleClass().add("col-size");
-        fullPath_col.getStyleClass().add("col-path");
+//        status_col.getStyleClass().add("col-status");
+//        dateDifference_ratio_col.getStyleClass().add("col-date-difference-ratio");
+//        justFolderName_col.getStyleClass().add("col-name");
+//        folderFiles_col.getStyleClass().add("col-files");
+//        minDate_col.getStyleClass().add("col-date-min");
+//        maxDates_col.getStyleClass().add("col-date-max");
+//        size_col.getStyleClass().add("col-size");
+//        fullPath_col.getStyleClass().add("col-path");
 
         badFiles_col.setCellFactory(col -> new CountCell(CountCell.Kind.BAD));
         image_col.setCellFactory(col -> new CountCell(CountCell.Kind.IMAGE));

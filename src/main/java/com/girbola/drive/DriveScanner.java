@@ -185,10 +185,10 @@ public class DriveScanner {
     }
 
     private void redrawRootFolders() throws IOException {
-        if (Main.getProcessCancelled()) {
-            Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
-            return;
-        }
+//        if (Main.getProcessCancelled()) {
+//            Messages.sprintfError("redrawRootFolders method stopped. Process cancelled");
+//            return;
+//        }
 
         for (Path r : FileSystems.getDefault().getRootDirectories()) {
             rootItem.getChildren().add(new LazyDirTreeItem(r));

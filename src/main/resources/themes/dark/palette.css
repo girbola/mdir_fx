@@ -1,46 +1,85 @@
-/*
- * Shared dark palette. Load this before any screen stylesheet so every layout
- * uses the same colors. Screen stylesheets should reference these lookups
- * (-app-bg, -surface, -border, -text ...) instead of hardcoded hex values.
- */
 .root {
-    /* Semantic palette */
-    -app-bg: #1c1f23;
-    -surface: #24272c;
-    -surface-alt: #2a2e34;
-    -surface-raised: #303640;
-    -border: #3a4048;
-    -border-strong: #4a515b;
-    -text: #e7eaf0;
-    -text-muted: #cbd3de;
-    -text-grey: #c1cad7;
-    -text-dark: #111318;
-    -accent: #438ac1;
-    -danger: #c14545;
-    -ok: #4db36a;
+    /* ============================================================================
+       Semantic Palette
+       ========================================================================== */
+    /* Main Backgrounds & Surfaces */
+    -color-bg-app: #15171a;
+    -color-surface: #20242a;
+    -color-surface-alt: #22262c;
+    -color-surface-raised: #2b3038;
+    -color-surface-panel: #202328;
+    -color-surface-frame: #3a3f47;
+    -color-surface-image: #17191d;
 
-    /* JavaFX / legacy lookups mapped to the palette */
-    -fx-base: -surface;
-    -fx-mid-base: #1d2025;
-    -fx-dark-border-color: -border;
-    -fx-mid-border-color: -border-strong;
+    /* Interactive Elements & Control Backgrounds */
+    -color-control-bg: #30343b;
+    -color-control-hover: #383d45;
+    -color-control-active: #373c44;
+    -color-control-muted: #2c323a;
+    -color-control-muted-hover: #394552;
+    -color-input-bg: #1c2025;
+    -color-header-bg: #32363d;
+    -color-scroll-track: #262a30;
+    -color-scroll-thumb: #4d5560;
 
-    -fx-base-cyan: #3aa0ff;
-    -fx-base-orange: #cf7a2f;
-    -fx-base-blue: #355091;
-    -fx-base-red: -danger;
-    -fx-base-green: -ok;
-    -fx-base-pink: #d16aa1;
+    /* Borders */
+    -color-border-dark: #39414b;
+    -color-border-muted: #454e5a;
+    -color-border-accent: #6a829c;
+    -color-border-base: #b65858;
+    -color-border-base-dark: #3b434d;
 
-    -fx-light-text-color: -text;
-    -fx-dark-text-color: -text-dark;
+    /* Primary & Brand Accent Colors */
+    -color-primary: #245f91;
+    -color-primary-hover: #2c75ad;
+    -color-primary-active: #273c52;
+    -color-primary-border: #4f9fe8;
 
-    -fx-background-color: -app-bg;
+    /* Action & Signal Colors */
+    -color-destructive: #793b40;
+    -color-destructive-hover: #94464c;
+    -color-destructive-border: #a85c62;
+    -color-close: #63363a;
+    -color-close-hover: #804349;
+    -color-close-bright: #9f3131;
+    -color-close-bright-hover: #b53b3b;
 
-    -fx-font-family: "Inter, sans-serif";
-    -fx-font-size: 1em;
-    -fx-border-base: #b65858;
-    -fx-focus-color: transparent;
-    -fx-font-weight: 900;
-    -fx-font-smoothing-type: lcd;
+    /* Selection & Highlights */
+    -color-selection-bg: rgba(58, 160, 255, 0.24);
+    -color-selection-alt: #29435c;
+
+    /* Text & Foregrounds */
+    -color-text-main: #edf2f7;
+    -color-text-bright: #f3f6fa;
+    -color-text-muted: #aebdce;
+    -color-text-subtle: #dce3ec;
+    -color-text-dark: #111318;
+    -color-text-icon: #ee8c8c;
+
+    /* Status Colors */
+    -color-status-orange: #ef5705;
+    -color-status-red: #cc4d4d;
+    -color-status-red-light: #f59d9d;
+    -color-status-blue: #2196f3;
+    -color-status-green: #4db36a;
+    -color-status-pink: #d16aa1;
+    -color-status-cyan: #3aa0ff;
+
+    -color-olive-green: #96B68D;
+
+    /* ============================================================================
+       JavaFX Mapped Aliases (Bridge for legacy JavaFX lookups)
+       ========================================================================== */
+    -fx-base: -color-surface;
+    -fx-light-text-color: -color-text-main;
+    -fx-dark-text-color: -color-text-dark;
+    -fx-border-base: -color-border-base;
+    -fx-border-base-dark: -color-border-base-dark;
+    -fx-base-red: -color-status-red;
+    -fx-base-green: -color-status-green;
+    -fx-base-textfield-green: -color-olive-green;
+    -fx-base-blue: -color-status-blue;
+    -fx-base-cyan: -color-status-cyan;
+    -fx-base-orange: -color-status-orange;
+    -fx-base-pink: -color-status-pink;
 }

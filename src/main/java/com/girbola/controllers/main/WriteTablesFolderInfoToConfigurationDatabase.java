@@ -6,6 +6,7 @@ import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.tables.tabletype.TableType;
 import com.girbola.messages.Messages;
 import com.girbola.sql.SQL_Utils;
+import java.sql.Connection;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
 
@@ -41,42 +42,39 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
 
     @Override
     protected Integer call() throws Exception {
+        Connection connection = ConfigurationSQLHandler.getConnection();
         try {
-
-            if (!SQL_Utils.isDbConnected(ConfigurationSQLHandler.getConnection())) {
-                Messages.sprintfError("Cannot get connected with database at: " + ConfigurationSQLHandler.getConnection().getMetaData().getURL());
-                cancel();
-                return null;
+            if (!SQL_Utils.isDbConnected(connection)) {
+                throw new IllegalStateException("Cannot connect to the configuration database");
             }
 
 //        SQL_Utils.clearTable(ConfigurationSQLHandler.getConnection(), SQLTableEnums.SAVED_FOLDERS.getType());
 
             long start = System.currentTimeMillis();
             updateMessage("Loading Sorted");
-            boolean sorted = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
+            boolean sorted = model_main.saveTableContent(connection, model_main.tables().getSorted_table().getItems(), TableType.SORTED.getType());
             if (sorted) {
                 Messages.sprintf("sorted were saved successfully took: " + (System.currentTimeMillis() - start));
             }
 
             start = System.currentTimeMillis();
             updateMessage("Loading SortIt");
-            boolean sortit = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
+            boolean sortit = model_main.saveTableContent(connection, model_main.tables().getSortIt_table().getItems(), TableType.SORTIT.getType());
             if (sortit) {
                 Messages.sprintf("sortit were saved successfully took: " + (System.currentTimeMillis() - start));
             }
 
             start = System.currentTimeMillis();
             updateMessage("Loading AsItIs");
-            boolean asitis = model_main.saveTableContent(ConfigurationSQLHandler.getConnection(), model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
+            boolean asitis = model_main.saveTableContent(connection, model_main.tables().getAsItIs_table().getItems(), TableType.ASITIS.getType());
             if (asitis) {
                 Messages.sprintf("asitis were saved successfully took: " + (System.currentTimeMillis() - start));
             }
-            //SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
-        } catch (Exception e) {
-            Messages.sprintfError("Error saving tables to databases: " + e.getMessage());
+            if (!sorted || !sortit || !asitis) {
+                throw new IllegalStateException("Some folders could not be saved. Check the log for their paths.");
+            }
         } finally {
-            SQL_Utils.commitChanges(ConfigurationSQLHandler.getConnection());
-            SQL_Utils.closeConnection(ConfigurationSQLHandler.getConnection());
+            SQL_Utils.closeConnection(connection);
         }
 
 
@@ -116,6 +114,9 @@ public class WriteTablesFolderInfoToConfigurationDatabase extends Task<Integer> 
     @Override
     protected void failed() {
         super.failed();
+        Throwable exception = getException();
+        Messages.sprintfError("Error saving tables to databases: " + exception.getMessage());
+        Messages.warningText("Could not save all folder data. Some folders may be unavailable; check the log for details.");
         if (closeLoadingStage) {
             initializeLoadingProcessTaskIfNeeded();
             if (loadingProcess_Task != null) {

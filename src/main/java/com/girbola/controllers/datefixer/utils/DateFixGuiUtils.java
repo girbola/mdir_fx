@@ -573,17 +573,7 @@ public class DateFixGuiUtils {
     }
 
     public static GridPane getImageFrameTopGridPane(VBox vbox) {
-        GridPane imageFrameGridPane = getImageFrameGridPane(vbox);
-        if (imageFrameGridPane == null) {
-            return null;
-        }
-
-        for (Node gridPaneChild : imageFrameGridPane.getChildren()) {
-            if (gridPaneChild instanceof GridPane && gridPaneChild.getId().equals("imageFrameTop")) {
-                return (GridPane) gridPaneChild;
-            }
-        }
-        return null;
+        return getImageFrameGridPane(vbox);
     }
 
     public static Label createDimensionsLabel(FileInfo fileInfo) {
@@ -611,5 +601,18 @@ public class DateFixGuiUtils {
         label.setMaxHeight(height);
         label.setPrefHeight(height);
         return label;
+    }
+
+    public static HBox getImageFrameBottomHBox(VBox vbox) {
+        for (Node node : vbox.getChildren()) {
+            if (node instanceof VBox bottomContainer && bottomContainer.getId().equals("bottomContainer")) {
+                for (Node node2 : bottomContainer.getChildren()) {
+                    if (node2 instanceof HBox hbox && hbox.getId().equals("bottom")) {
+                        return (HBox) node2;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

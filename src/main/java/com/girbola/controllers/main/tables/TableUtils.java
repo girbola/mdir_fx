@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.value.ChangeListener;
@@ -81,6 +84,11 @@ import static com.girbola.messages.Messages.sprintf;
 public class TableUtils {
 
     private static final String ERROR = TableUtils.class.getSimpleName();
+    private static final Pattern CAMERA_DIRECTORY = Pattern.compile("[0-9]{3}[A-Za-z0-9_]{5}");
+    private static final Pattern DATE_IN_FOLDER = Pattern.compile(
+            "(?<![0-9])([0-9]{4})(?:([-_.])([0-9]{2})\\2([0-9]{2})|([0-9]{2})([0-9]{2}))(?![0-9])");
+    private static final Pattern DESCRIPTIVE_FOLDER = Pattern.compile(
+            "[\\p{L}\\p{N}][\\p{L}\\p{M}\\p{N}\\s'’._&()\\-]*");
 
     public static void showConflictTable(ModelMain model_Main, ObservableList<FileInfo> obs) {
         try {
@@ -375,25 +383,44 @@ public class TableUtils {
             }
         }
 
-        if (KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES.stream().anyMatch(path::equalsIgnoreCase)) {
-            return TableType.SORTIT;
+        for (String KNOWN_CAMERA_FOLDER_NAME : KnownCameraFolderNames.KNOWN_CAMERA_FOLDER_NAMES) {
+            if (path.equalsIgnoreCase(KNOWN_CAMERA_FOLDER_NAME)) {
+                Messages.sprintf("KNOWN_CAMERA_FOLDER_NAME: " + KNOWN_CAMERA_FOLDER_NAME + " resolveTableTypeByPath: " + path + " is a known camera folder name, returning SORTIT");
+                return TableType.SORTIT;
+            }
         }
 
-        // Analyze the path for patterns using regex and more precise rules
-        if (path.matches("\\d{3}[A-Za-z]{5}")) { // e\.g\. 123Canon
-            return TableType.SORTIT;
-        } else if (path.matches(".*\\d{4}([\\-_\\.])?\\d{2}\\1?\\d{2}.*")) { // e.g. 2014-12-11, 2012_12_05, 2012.12.05, 20121205
-            Messages.sprintf("Resolving date on folder name: " + path + " SORTIT");
-            return TableType.SORTIT;
-        } else if (path.matches("[A-Za-z\\s']+\\d{4}")) { // e\.g\. O'layreys pub 2013
-            return TableType.SORTED;
-        } else if (path.matches("\\d+")) { // Only numbers
-            return TableType.SORTIT;
-        } else if (path.matches("[A-Za-z\\s']+")) { // Only letters and spaces
-            return TableType.SORTED;
-        } else {
+        if (CAMERA_DIRECTORY.matcher(path).matches() || path.matches("[0-9]+")) {
             return TableType.SORTIT;
         }
+        if (containsValidFolderDate(path)) {
+            if (path.codePoints().anyMatch(Character::isLetter)) {
+                return TableType.SORTED;
+            }
+            Messages.sprintf("Resolving date on folder name: " + path + " SORTIT");
+            return TableType.SORTIT;
+        }
+        if (DESCRIPTIVE_FOLDER.matcher(path).matches()
+                && path.codePoints().anyMatch(Character::isLetter)) {
+            return TableType.SORTED;
+        }
+        return TableType.SORTIT;
+    }
+
+    private static boolean containsValidFolderDate(String folderName) {
+        Matcher matcher = DATE_IN_FOLDER.matcher(folderName);
+        while (matcher.find()) {
+            int year = Integer.parseInt(matcher.group(1));
+            int month = Integer.parseInt(matcher.group(matcher.group(2) == null ? 5 : 3));
+            int day = Integer.parseInt(matcher.group(matcher.group(2) == null ? 6 : 4));
+            try {
+                LocalDate.of(year, month, day);
+                return true;
+            } catch (DateTimeException ignored) {
+                // Continue looking for another date in the folder name.
+            }
+        }
+        return false;
     }
 
     public static List<TableView<FolderInfo>> getAllTables(Tables tables) {

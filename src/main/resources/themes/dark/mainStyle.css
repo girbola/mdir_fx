@@ -155,12 +155,6 @@
     -fx-background-insets: 0;
 }
 
-.media-column > .label .text {
-    -fx-alignment: center-right;
-    -fx-background-color: -fx-base-blue;
-    -fx-font-size: 10px;
-}
-
 .menu-bar {
     -fx-background-color: -fx-base;
     -fx-border-color: derive(-fx-base, 20%);
@@ -970,6 +964,14 @@ unselected {
 
 
 /* Folder table value colours */
+.table-view .table-cell.col-status {}
+.table-view .table-cell.col-date-difference-ratio {}
+.table-view .table-cell.col-copied {}
+.table-view .table-cell.col-date-fix {}
+.table-view .table-cell.col-date-fix .button { -fx-background-color: transparent; -fx-border-color: none; -fx-background-radius: 0; }
+.table-view .table-cell.col-folderize {}
+.table-view .table-cell.col-date-fix .button,
+.table-view .table-cell.col-folderize .button { -fx-background-color: transparent; -fx-border-color: none; -fx-background-radius: 0; }
 .table-view .table-cell.col-name { -fx-text-fill: #f2f5f9; -fx-font-weight: bold; }
 .table-view .table-cell.col-files { -fx-text-fill: #8ab4f8; -fx-font-weight: bold; }
 .table-view .table-cell.col-date-min { -fx-text-fill: #7fd1c7; }
@@ -982,6 +984,16 @@ unselected {
 .table-view .table-row-cell:selected .table-cell.col-date-max,
 .table-view .table-row-cell:selected .table-cell.col-size,
 .table-view .table-row-cell:selected .table-cell.col-path { -fx-text-fill: white; }
+
+.table-view .table-cell.col-centered  { -fx-alignment: center; }
+.table-view .table-cell.col-center-left { -fx-alignment: center-left; }
+
+/*.table-view .table-cell.col-media > label .text {*/
+/*    -fx-alignment: center;*/
+/*    -fx-background-color: -fx-base-blue;*/
+/*    -fx-font-size: 2.2em;*/
+/*}*/
+
 
 /* Folder scanner: split pane dividers and selected folders buttons */
 .split-pane > .split-pane-divider {

@@ -52,7 +52,11 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
                         modelMain,
                         savedFolders,
                         DriveInfoUtils.getCurrentDriveInfos(),
-                        Main::getProcessCancelled);
+                        Main::getProcessCancelled,
+                        (done, total, folderPath) -> {
+                            updateProgress(done, total);
+                            updateMessage("Loading folders " + done + "/" + total + " " + folderPath);
+                        });
                 if (loadResult == LoadFileInfosUtils.LoadSavedFoldersResult.CANCELLED) {
                     cancel();
                     return false;
