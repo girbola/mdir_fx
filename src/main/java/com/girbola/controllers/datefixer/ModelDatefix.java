@@ -283,8 +283,10 @@ public class ModelDatefix extends DateFixerModel {
                     tf.setText("" + DateUtils.longToLocalDateTime(date).format(Main.simpleDates.getDtf_ymd_hms_minusDots_default()));
                     if (date != 0) {
                         bottom.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
+                        tf.setStyle(CssStylesEnum.GOOD_STYLE.getStyle());
                     } else {
                         bottom.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
+                        tf.setStyle(CssStylesEnum.BAD_STYLE.getStyle());
                     }
                 }
             }

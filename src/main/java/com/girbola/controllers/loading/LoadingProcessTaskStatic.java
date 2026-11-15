@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
 
 public class LoadingProcessTaskStatic {
 
@@ -126,7 +125,7 @@ public class LoadingProcessTaskStatic {
 
     private static void applyStylesheet() {
         try {
-            String themePath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+            String themePath = Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType();
             URL cssResource = Main.class.getResource(themePath);
             if (cssResource != null) {
                 loadingScene.getStylesheets().add(cssResource.toExternalForm());

@@ -10,8 +10,6 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
@@ -482,63 +480,167 @@
                                                             <RowConstraints fillHeight="false" vgrow="NEVER" />
                                                         </rowConstraints>
                                                         <children>
-                                                            <Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#close_btn_action" styleClass="action-button closeButton" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="close_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#close_btn_action" text="%close" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <font>
                                                                     <Font size="10.0" />
                                                                 </font>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="closeButton" />
+                                                   </styleClass>
                                                             </Button>
-                                                            <Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#applyChanges_btn_action" styleClass="action-button primary-action" text="%apply" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="applyChanges_btn" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#applyChanges_btn_action" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <font>
                                                                     <Font size="10.0" />
                                                                 </font>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="accept-action" />
+                                                   </styleClass>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2c-check-underline" iconSize="25" />
+                                                   </graphic>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.applyAllChanges" />
+                                                   </tooltip>
                                                             </Button>
-                                                            <Button id="actionButtons" fx:id="copyToMisc_btn" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#copyToMisc_btn_action" styleClass="action-button" text="%copyToMisc" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="copyToMisc_btn" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#copyToMisc_btn_action" text="%copyToMisc" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.rowSpan="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="Empty Tooltip" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="direct-action" />
+                                                   </styleClass>
                                                             </Button>
-                                                            <Button id="actionButtons" fx:id="remove_btn" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#remove_btn_action" styleClass="action-button destructive-action" text="%remove" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="remove_btn" contentDisplay="TOP" focusTraversable="false" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#remove_btn_action" text="%remove" textAlignment="CENTER" wrapText="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="Empty Tooltip" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="destructive-action" />
+                                                   </styleClass>
                                                             </Button>
                                                             <Label styleClass="action-heading" text="%fileutils" wrapText="true" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                                                            <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" styleClass="action-button" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="folderize_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="0.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#folderize_btn_action" text="%folderize" textAlignment="CENTER" wrapText="true" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="Make folder and choose to copy now or later" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="file-action" />
+                                                   </styleClass>
                                                             </Button>
                                                             <Label styleClass="action-heading" text="%batch" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                                                            <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" styleClass="action-button" text="%addToMisc" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="addToBatch_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToBatch_btn_action" text="%addToMisc" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="%copyToMiscTip" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="file-action" />
+                                                   </styleClass>
                                                             </Button>
-                                                            <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" styleClass="action-button" text="%addToAsItIs" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="addToAsItIs_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToAsItIs_btn_action" text="%addToAsItIs" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="5" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="%copyToAsItIsTip" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="file-action" />
+                                                   </styleClass>
                                                             </Button>
-                                                            <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" styleClass="action-button" text="%addToAsUnsorted" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
+                                                            <Button id="actionButtons" fx:id="addToUnsorted_btn" alignment="TOP_CENTER" contentDisplay="TOP" graphicTextGap="3.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addToUnsorted_btn_action" text="%addToAsUnsorted" GridPane.columnIndex="3" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.vgrow="NEVER">
                                                                 <tooltip>
                                                                     <Tooltip text="%copyToAsItIsTip" />
                                                                 </tooltip>
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="file-action" />
+                                                   </styleClass>
                                                             </Button>
                                                             <Label styleClass="action-heading" text="%direct" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-                                                <Button fx:id="moveFilesInfSourcePath" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveFilesInfSourcePath_action" styleClass="action-button" text="%moveToInSourceFolder" wrapText="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS" />
-                                                <Button id="actionButtons" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#findSimilars_btn_action" styleClass="action-button" text="Find similars" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER" />
+                                                <Button fx:id="moveFilesInfSourcePath" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#moveFilesInfSourcePath_action" styleClass="action-button" text="%moveToInSourceFolder" wrapText="true" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+                                                   <tooltip>
+                                                      <Tooltip text="Empty Tooltip" />
+                                                   </tooltip></Button>
+                                                <Button id="actionButtons" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#findSimilars_btn_action" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" GridPane.valignment="CENTER" GridPane.vgrow="NEVER">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="accept-action" />
+                                                   </styleClass>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.findImagesWithSimilarDates" />
+                                                   </tooltip>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2i-image-multiple-outline" iconSize="25" />
+                                                   </graphic></Button>
                                                 <Label styleClass="action-heading" text="%restore" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                                    <Button fx:id="lastModified_date_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#lastModified_date_btn_action" styleClass="action-button" text="%lastModified" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4" />
-                                                                    <Button fx:id="restoresSelectedExifDates_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#restoresSelectedExifDates_btn_action" styleClass="action-button" text="%exifDates" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                                                                    <Button fx:id="accept_dates_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#accept_dates_btn_action" styleClass="action-button primary-action" text="Accept selected" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3" />
-                                                                    <Button fx:id="dateFromFileName_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dateFromFileName_btn_action" styleClass="action-button" text="%dateFromFilename" wrapText="true" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
+                                                                    <Button fx:id="lastModified_date_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#lastModified_date_btn_action" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="restore-action" />
+                                                   </styleClass>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.lastModified" />
+                                                   </tooltip>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2h-history" iconSize="25" />
+                                                   </graphic></Button>
+                                                                    <Button fx:id="restoresSelectedExifDates_btn" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#restoresSelectedExifDates_btn_action" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="restore-action" />
+                                                   </styleClass>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.getDateFromFileExifMetadataIfExists" />
+                                                   </tooltip>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2c-calendar-import" iconSize="25" />
+                                                   </graphic></Button>
+                                                                    <Button fx:id="accept_dates_btn" contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#accept_dates_btn_action" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="accept-action" />
+                                                   </styleClass>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2i-image-check-outline" iconSize="25" />
+                                                   </graphic>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.acceptSelected" />
+                                                   </tooltip></Button>
+                                                                    <Button fx:id="dateFromFileName_btn" contentDisplay="GRAPHIC_ONLY" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dateFromFileName_btn_action" text="filename" wrapText="true" GridPane.columnIndex="2" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="restore-action" />
+                                                   </styleClass>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.getFileNameDateIfExists" />
+                                                   </tooltip>
+                                                   <graphic>
+                                                      <FontIcon iconColor="WHITE" iconLiteral="mdi2c-calendar-text" iconSize="25" />
+                                                   </graphic></Button>
                                                             <Button id="actionButtons" fx:id="dateFix_btn" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#dateFix_btn_action" styleClass="action-button" text="Folderizer" GridPane.columnIndex="5" GridPane.hgrow="ALWAYS" GridPane.rowIndex="4">
                                                                 <font>
                                                                     <Font size="10.0" />
                                                                 </font>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.folderize" />
+                                                   </tooltip>
                                                             </Button>
                                                 <Label styleClass="action-heading" text="%accept" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                <Button mnemonicParsing="false" text="Accept suggested" textFill="#dd1717" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Button mnemonicParsing="false" textFill="#dd1717" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                   <styleClass>
+                                                      <String fx:value="action-button" />
+                                                      <String fx:value="accept-action" />
+                                                   </styleClass>
+                                                   <graphic>
+                                                      <FontIcon iconColor="#ee8c8c" iconLiteral="mdi2c-calendar-alert-outline" iconSize="25" />
+                                                   </graphic>
+                                                   <tooltip>
+                                                      <Tooltip text="%datefix.tooltip.acceptSuggested" />
+                                                   </tooltip></Button>
                                                         </children>
                                                         <padding>
                                                             <Insets bottom="2.0" left="5.0" right="5.0" top="2.0" />
@@ -632,17 +734,10 @@
                 </HBox>
             </bottom>
             <right>
-                <ScrollPane fx:id="rightInfoPanel_scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="ALWAYS" maxWidth="150.0" pannable="true" prefWidth="0.0" vbarPolicy="ALWAYS" visible="false" BorderPane.alignment="CENTER">
+                <ScrollPane fx:id="rightInfoPanel_scrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" maxWidth="350.0" minWidth="350.0" pannable="true" prefHeight="0.0" prefWidth="350.0" styleClass="rightInfoPanel_scrollPane" vbarPolicy="AS_NEEDED" visible="false" BorderPane.alignment="CENTER">
                     <content>
-                        <VBox fx:id="rightInfoPanel">
-                            <children>
-                                <TableView styleClass="metadataTable">
-                                    <columns>
-                                        <TableColumn prefWidth="75.0" text="C1" />
-                                        <TableColumn prefWidth="75.0" text="C2" />
-                                    </columns>
-                                </TableView>
-                            </children>
+                        <VBox fx:id="rightInfoPanel" styleClass="metadataVbox">
+
                         </VBox>
                     </content>
                 </ScrollPane>

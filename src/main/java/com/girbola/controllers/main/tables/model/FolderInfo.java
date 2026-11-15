@@ -45,6 +45,7 @@ public class FolderInfo implements TableValues_inf {
     private SimpleStringProperty maxDate;
     private SimpleStringProperty minDate;
     private SimpleStringProperty sourceFolderSerialNumber;
+    private SimpleStringProperty processState;
     private SimpleStringProperty state;
     private IntegerProperty status;
     private SimpleIntegerProperty suggested;
@@ -85,6 +86,7 @@ public class FolderInfo implements TableValues_inf {
         this.justFolderName = new SimpleStringProperty("");
         this.maxDate = new SimpleStringProperty("0");
         this.minDate = new SimpleStringProperty("0");
+        this.processState = new SimpleStringProperty("NEW");
         this.state = new SimpleStringProperty("");
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
@@ -101,8 +103,6 @@ public class FolderInfo implements TableValues_inf {
         this.goodVideoFiles = new SimpleIntegerProperty(0);
         this.suggestedVideoFiles = new SimpleIntegerProperty(0);
         this.confirmedVideoFiles = new SimpleIntegerProperty(0);
-
-        Bindings.subtract(folderFiles, badFiles);
     }
 
 
@@ -134,6 +134,7 @@ public class FolderInfo implements TableValues_inf {
         this.ignored = new SimpleBooleanProperty(false);
         this.maxDate = new SimpleStringProperty("0");
         this.minDate = new SimpleStringProperty("0");
+        this.processState = new SimpleStringProperty("NEW");
         this.state = new SimpleStringProperty("");
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
@@ -179,6 +180,7 @@ public class FolderInfo implements TableValues_inf {
         this.ignored = new SimpleBooleanProperty(false);
         this.maxDate = new SimpleStringProperty("0");
         this.minDate = new SimpleStringProperty("0");
+        this.processState = new SimpleStringProperty("NEW");
         this.state = new SimpleStringProperty("");
         this.status = new SimpleIntegerProperty(0);
         this.suggested = new SimpleIntegerProperty(0);
@@ -233,6 +235,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public int               getSuggestedVideoFiles()      { return this.suggestedVideoFiles.get(); }
     @Override public int               getConfirmedVideoFiles()      { return this.confirmedVideoFiles.get(); }
     @Override public String            getTableType()                { return tableType.get(); }
+    @Override public String            getProcessState()            { return processState.get(); }
 
     // Property accessors (…_prop and …_property)
     @Override public SimpleIntegerProperty badFiles_prop()                 { return badFiles; }
@@ -265,6 +268,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public SimpleStringProperty  tableType_property()            { return tableType; }
     @Override public SimpleStringProperty  justFolderName_prop()           { return justFolderName; }
     @Override public IntegerProperty       status_property()               { return status; }
+    @Override public SimpleStringProperty processState_property()         { return processState; }
 
     // Setters (alphabetical)
     @Override public void setBadImageFiles(int value)        { this.badImageFiles.set(value); }
@@ -332,6 +336,7 @@ public class FolderInfo implements TableValues_inf {
     @Override public void setMaxDate(String value) {this.maxDate.set(value);}
     @Override public void setMinDate(String value) {this.minDate.set(value);}
     @Override public void setSourceFolderSerialNumber(String serialNumber) {this.sourceFolderSerialNumber.set(serialNumber);}
+    @Override public void setProcessState(String value) {this.processState.set(value);}
     @Override public void setState(String value) {this.state.set(value);}
     @Override public void setStatus(int value) {this.status.set(value);}
     @Override public void setSuggested(int value) {
@@ -380,6 +385,7 @@ public class FolderInfo implements TableValues_inf {
                 ", maxDate= " + maxDate.get() +
                 ", minDate= " + minDate.get() +
                 ", state= " + state.get() +
+                ", processState= " + processState.get() +
                 ", tableType= " + tableType.get() +
                 ", sourceFolderSerialNumber= " + sourceFolderSerialNumber.get() +
                 '}';

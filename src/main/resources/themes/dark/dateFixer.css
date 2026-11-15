@@ -1,4 +1,5 @@
 @import "palette.css";
+@import "buttons.css";
 
 /* ============================================================================
    Core & Typography
@@ -66,7 +67,6 @@
    Controls (Buttons, Inputs, Pickers, Menus)
    ========================================================================== */
 
-.button,
 .toggle-button,
 .menu-button,
 .combo-box,
@@ -82,14 +82,12 @@
     -fx-text-fill: -color-text-main;
 }
 
-.button:hover,
 .toggle-button:hover,
 .menu-button:hover,
 .combo-box:hover {
     -fx-background-color: -color-control-hover;
 }
 
-.button:focused,
 .toggle-button:focused,
 .menu-button:focused,
 .combo-box:focused,
@@ -97,10 +95,6 @@
 .date-picker .text-field:focused {
     -fx-border-color: -color-border-dark;
     -fx-border-width: 1.4;
-}
-
-.button:disabled {
-    -fx-opacity: 0.48;
 }
 
 .toggle-button {
@@ -274,12 +268,12 @@
 }
 
 .action-button:pressed {
-    -fx-background-color: -color-primary-active;
-    -fx-border-color: -color-primary-border;
+    -fx-background-color: -color-accept-active;
+    -fx-border-color: -color-accept-border;
 }
 
 .action-button:focused {
-    -fx-border-color: -color-primary-border;
+    -fx-border-color: -color-accept-border;
     -fx-border-width: 1.5;
 }
 
@@ -289,15 +283,15 @@
     -fx-border-color: -color-border-muted;
 }
 
-.primary-action {
-    -fx-background-color: -color-primary;
-    -fx-border-color: -color-primary-border;
+.accept-action {
+    -fx-background-color: -color-accept;
+    -fx-border-color: -color-accept-border;
     -fx-text-fill: white;
 }
 
-.primary-action:hover {
-    -fx-background-color: -color-primary-hover;
-    -fx-border-color: -color-primary-border;
+.accept-action:hover {
+    -fx-background-color: -color-accept-hover;
+    -fx-border-color: -color-accept-border;
 }
 
 .destructive-action {
@@ -307,6 +301,31 @@
 
 .destructive-action:hover {
     -fx-background-color: -color-destructive-hover;
+}
+
+.direct-action {
+    -fx-background-color: -color-direct-action;
+    -fx-border-color: -color-border-dark;
+}
+
+
+.file-action {
+    -fx-background-color: -color-file-action;
+    -fx-border-color: -color-file-action-border;
+}
+
+.file-action:hover {
+    -fx-background-color: -color-file-action-hover;
+}
+
+.restore-action {
+    -fx-background-color: -color-restore-date;
+    -fx-border-color: -color-restore-date-border;
+    -fx-text-fill: white;
+}
+
+.restore-action:hover {
+    -fx-background-color: -color-restore-date-hover;
 }
 
 .action-button.closeButton {
@@ -584,6 +603,78 @@
     -fx-background-color: -color-control-hover;
     -fx-text-fill: -color-text-main;
 }
+.rightInfoPanel_scrollPane .metadataVbox {
+    -fx-background-color: -color-surface-alt;
+    -fx-spacing: 8;
+    -fx-padding: 10 10 14 10;
+}
+
+.rightInfoPanel_scrollPane {
+    -fx-background-color: -color-surface-alt;
+    -fx-border-color: -color-border-dark transparent -color-border-dark -color-border-dark;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.rightInfoPanel_scrollPane .viewport {
+    -fx-background-color: -color-surface-alt;
+}
+
+.rightInfoPanel_scrollPane .titled-pane {
+    -fx-text-fill: -color-text-main;
+    -fx-border-color: -color-border-dark;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .title {
+    -fx-background-color: -color-surface-raised;
+    -fx-background-radius: 7 7 0 0;
+    -fx-padding: 8 10;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .title > .text {
+    -fx-fill: -color-text-main;
+    -fx-font-size: 1.0em;
+    -fx-font-weight: bold;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .content {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border-dark;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 4;
+}
+
+.metadataTable {
+    -fx-background-color: -color-surface;
+    -fx-border-color: -color-border-dark;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 0;
+}
+
+.metadataTable .table-row-cell,
+.metadataTable .table-row-cell:odd,
+.metadataTable .table-row-cell:even {
+    -fx-background-color: -color-surface;
+    -fx-table-cell-border-color: -color-border-dark;
+}
+
+.metadataTable .table-row-cell:hover {
+    -fx-background-color: -color-control-hover;
+}
+
+.metadataTable .table-cell {
+    -fx-text-fill: -color-text-main;
+    -fx-font-size: 1.0em;
+    -fx-padding: 5 7;
+}
+
+.metadataTable .scroll-bar:vertical {
+    -fx-pref-width: 7;
+}
 
 /* ============================================================================
    ScrollBars & ScrollPane Helpers
@@ -774,8 +865,8 @@
 }
 
 .date-time-grid .toggle-button:selected {
-    -fx-background-color: -color-primary;
-    -fx-border-color: -color-primary-border;
+    -fx-background-color: -color-accept;
+    -fx-border-color: -color-accept-border;
 }
 
 /* ============================================================================

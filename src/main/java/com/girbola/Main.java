@@ -384,7 +384,8 @@ public class Main extends Application {
 
             if (SQL_Utils.isDbConnected(configurationLoadedFile)) {
                 Messages.sprintf("Loading workdir content: " + conf.getAppDataPath() + " filename: " + conf.getConfiguration_db_fileName());
-                load_FileInfosBackToTableViews = new LoadFileInfosBackToTableViews(model_main, configurationLoadedFile);
+                load_FileInfosBackToTableViews = new LoadFileInfosBackToTableViews(
+                        model_main, configurationLoadedFile, lpt);
                 load_FileInfosBackToTableViews.valueProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal != null) {
                         boolean result = newVal;
@@ -429,7 +430,6 @@ public class Main extends Application {
                     Platform.runLater(() -> lpt.closeStage());
                 });
 
-                lpt.bindService(load_FileInfosBackToTableViews);
                 load_FileInfosBackToTableViews.start();
             } else {
                 Messages.sprintfError("11111 Couldn't connect to database");

@@ -29,11 +29,18 @@
     -color-border-base: #b65858;
     -color-border-base-dark: #3b434d;
 
-    /* Primary & Brand Accent Colors */
-    -color-primary: #245f91;
-    -color-primary-hover: #2c75ad;
-    -color-primary-active: #273c52;
-    -color-primary-border: #4f9fe8;
+    /* Accept & Brand Accent Colors */
+    -color-accept: #2ec084;
+    -color-accept-hover: #42d096;
+    -color-accept-active: #387a5f;
+    -color-accept-border: #81efc2;
+
+    /* File action colors */
+    -color-file-action: #245f91;
+    -color-file-action-hover: #2c75ad;
+    -color-file-action-active: #273c52;
+    -color-file-action-border: #4f9fe8;
+
 
     /* Action & Signal Colors */
     -color-destructive: #793b40;
@@ -43,6 +50,11 @@
     -color-close-hover: #804349;
     -color-close-bright: #9f3131;
     -color-close-bright-hover: #b53b3b;
+
+    /* Restore Date Action */
+    -color-restore-date: #b3b14d;
+    -color-restore-date-hover: #c9c94f;
+    -color-restore-date-border: #d2cf59;
 
     /* Selection & Highlights */
     -color-selection-bg: rgba(58, 160, 255, 0.24);

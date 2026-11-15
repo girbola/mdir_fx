@@ -1,6 +1,8 @@
 package com.girbola.controllers.main;
 
+import com.girbola.Main;
 import com.girbola.app.ApplicationContext;
+import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.controllers.main.loadfileinfostableviews.LoadFileInfosBackToTableViews;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
 import com.girbola.controllers.main.tables.TableUtils;
@@ -137,18 +139,26 @@ final class ModelMainPersistence {
         Connection connection = ConfigurationSQLHandler.getConnection();
         if (SQL_Utils.isDbConnected(connection)) {
             TableUtils.clearTablesContents(tables);
-            LoadFileInfosBackToTableViews loader = new LoadFileInfosBackToTableViews(modelMain, connection);
+            LoadingProcessTask loadingProcessTask = new LoadingProcessTask(
+                    Main.sceneManager != null ? Main.sceneManager.getWindow() : null);
+            LoadFileInfosBackToTableViews loader = new LoadFileInfosBackToTableViews(
+                    modelMain, connection, loadingProcessTask);
             loader.setOnSucceeded(event -> {
                 Messages.sprintf("LoadFileInfosBackToTableViews succeeded");
+                loadingProcessTask.closeStage();
                 SQL_Utils.closeConnection(connection);
             });
             loader.setOnFailed(event -> {
                 Messages.sprintf("LoadFileInfosBackToTableViews failed");
+                loadingProcessTask.closeStage();
                 SQL_Utils.rollBackConnection(connection);
+                SQL_Utils.closeConnection(connection);
             });
             loader.setOnCancelled(event -> {
                 Messages.sprintf("LoadFileInfosBackToTableViews cancelled");
+                loadingProcessTask.closeStage();
                 SQL_Utils.rollBackConnection(connection);
+                SQL_Utils.closeConnection(connection);
             });
             loader.start();
         } else {

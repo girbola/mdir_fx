@@ -1,23 +1,32 @@
 package com.girbola.controllers.main.loadfileinfostableviews;
 
+import com.girbola.Main;
 import com.girbola.controllers.folderscanner.SelectedFolder;
 import com.girbola.controllers.folderscanner.SelectedFolderUtils;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.tables.model.FolderInfo;
 import com.girbola.controllers.main.tables.model.SavedFolderInfos;
 import com.girbola.drive.DriveInfo;
+import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.persistence.folderinfo.FolderInfoDao;
+import com.girbola.persistence.fileinfo.FileInfoSqlConnectionFactory;
+import com.girbola.sql.SQL_Utils;
 import com.girbola.utils.FileInfoUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BooleanSupplier;
 
 public final class LoadFileInfosUtils {
+
+	private static final String PROCESS_STATE_NEW = "NEW";
+	private static final String PROCESS_STATE_DONE = "DONE";
+	private static final String PROCESS_STATE_INTERRUPTED = "INTERRUPTED";
 
 	public enum LoadSavedFoldersResult {
 		COMPLETED,
@@ -29,17 +38,17 @@ public final class LoadFileInfosUtils {
 		void onProgress(int done, int total, String folderPath);
 	}
 
-	private LoadFileInfosUtils() {
-		// Utility class
-	}
-
-	public static LoadSavedFoldersResult loadSavedFoldersToTableViews(
-			ModelMain modelMain,
-			List<SavedFolderInfos> savedFolders,
-			List<DriveInfo> currentDrives,
-			BooleanSupplier processCancelled) {
-		return loadSavedFoldersToTableViews(modelMain, savedFolders, currentDrives, processCancelled, null);
-	}
+//	private LoadFileInfosUtils() {
+//		// Utility class
+//	}
+//
+//	public static LoadSavedFoldersResult loadSavedFoldersToTableViews(
+//			ModelMain modelMain,
+//			List<SavedFolderInfos> savedFolders,
+//			List<DriveInfo> currentDrives,
+//			BooleanSupplier processCancelled) {
+//		return loadSavedFoldersToTableViews(modelMain, savedFolders, currentDrives, processCancelled, null);
+//	}
 
 	public static LoadSavedFoldersResult loadSavedFoldersToTableViews(
 			ModelMain modelMain,
@@ -127,6 +136,10 @@ public final class LoadFileInfosUtils {
 			return false;
 		}
 
+		if (recoverProcessState(folderInfo)) {
+			persistRecoveredProcessState(folderInfo);
+		}
+
 		boolean folderInfoAddedToTable = modelMain.tables().addToTable(folderInfo);
 		if (folderInfoAddedToTable) {
 			Messages.sprintf("FolderInfo was added to table: " + folderInfo.getFolderPath() + " LINE::: " + Misc.getLineNumber());
@@ -134,6 +147,53 @@ public final class LoadFileInfosUtils {
 			Messages.sprintfError("FolderInfo were NOT able to add to table: " + folderInfo.getFolderPath() + " LINE::: " + Misc.getLineNumber());
 		}
 		return folderInfoAddedToTable;
+	}
+
+	static boolean recoverProcessState(FolderInfo folderInfo) {
+		if (!PROCESS_STATE_NEW.equals(folderInfo.getProcessState())
+				|| folderInfo.getFileInfoList() == null) {
+			return false;
+		}
+
+		List<FileInfo> eligibleFiles = folderInfo.getFileInfoList().stream()
+				.filter(fileInfo -> !fileInfo.isIgnored() && !fileInfo.isTableDuplicated())
+				.toList();
+		if (eligibleFiles.isEmpty()) {
+			return false;
+		}
+
+		long copiedFiles = eligibleFiles.stream().filter(FileInfo::isCopied).count();
+		if (copiedFiles == 0) {
+			return false;
+		}
+
+		String recoveredState = copiedFiles == eligibleFiles.size()
+				? PROCESS_STATE_DONE
+				: PROCESS_STATE_INTERRUPTED;
+		folderInfo.setProcessState(recoveredState);
+		Messages.sprintf("Recovered folder process state as " + recoveredState
+				+ ": " + folderInfo.getFolderPath() + " (" + copiedFiles
+				+ "/" + eligibleFiles.size() + " eligible files copied)");
+		return true;
+	}
+
+	private static void persistRecoveredProcessState(FolderInfo folderInfo) {
+		Connection connection = FileInfoSqlConnectionFactory.connectToDatabase(
+				folderInfo.getFolderPath(), Main.conf.getMdir_db_fileName());
+		if (connection == null) {
+			Messages.sprintfError("Could not persist recovered process state for "
+					+ folderInfo.getFolderPath() + ": database connection failed");
+			return;
+		}
+
+		try {
+			if (!FolderInfoDao.saveFolderInfo(connection, folderInfo)) {
+				Messages.sprintfError("Could not persist recovered process state for "
+						+ folderInfo.getFolderPath());
+			}
+		} finally {
+			SQL_Utils.closeConnection(connection);
+		}
 	}
 
 	public static void remapSelectedFolder(ModelMain modelMain, Path savedFolderPath, DriveInfo currentDrive) {

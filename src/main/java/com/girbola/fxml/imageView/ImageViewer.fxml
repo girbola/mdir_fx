@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-<AnchorPane fx:id="anchor_main" minHeight="400.0" minWidth="400.0" styleClass="viewimage-container" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.imageViewer.ImageViewerController">
+<AnchorPane fx:id="anchor_main" minHeight="400.0" minWidth="400.0" styleClass="viewimage-container" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.girbola.controllers.imageViewer.ImageViewerController">
    <children>
       <StackPane fx:id="stackPane" styleClass="anchor_main" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>

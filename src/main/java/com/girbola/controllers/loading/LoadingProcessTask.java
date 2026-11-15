@@ -24,7 +24,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
 
 public class LoadingProcessTask {
 
@@ -122,7 +121,7 @@ public class LoadingProcessTask {
 
     private void applyStylesheet() {
         try {
-            String themePath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+            String themePath = Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType();
             URL cssResource = Main.class.getResource(themePath);
             if (cssResource != null) {
                 loadingScene.getStylesheets().add(cssResource.toExternalForm());

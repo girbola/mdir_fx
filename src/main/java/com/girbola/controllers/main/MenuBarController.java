@@ -377,6 +377,7 @@ public class MenuBarController {
 
         Dialog dialog = new Dialog();
         DialogPane dialogPane = new DialogPane();
+        dialogPane.getStylesheets().add(com.girbola.ThemeStyles.buttons());
         dialogPane.setContent(root);
         dialog.setDialogPane(dialogPane);
         dialog.setTitle("About");

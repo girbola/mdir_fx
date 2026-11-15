@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 .root {
     -fx-background-color: #393939;
 }
@@ -11,17 +13,6 @@
 
 .bottomPane_buttons {
     -fx-background-color: #393939;
-}
-
-.button{
-    -fx-background-color: linear-gradient(to bottom, gray, darkgray);
-    -fx-background-radius: 3 3 3 3;
-    -fx-border-color: black;
-    -fx-border-radius: 3 3 3 3;
-}
-
-.button:hover {
-    -fx-background-color: linear-gradient(#2A5058,#61a2b1);
 }
 
 .context-menu {

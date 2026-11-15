@@ -52,6 +52,7 @@ public class WorkdirGUI {
 
     private static void workdirConnection() {
         dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(com.girbola.ThemeStyles.buttons());
         Messages.sprintf("workdirConnection DIALOG: " + dialog);
         dialog.setTitle("Workdir is not connected");
         //dialog.setContentText(bundle.getString("workDirHasNotConnected"));

@@ -25,6 +25,7 @@ public enum FolderInfoEnum {
     MAX_DATE("maxDate", "TEXT"),
     MIN_DATE("minDate", "TEXT"),
     STATE("state", "TEXT"),
+    PROCESS_STATE("processState", "TEXT"),
     SUGGESTED("suggested", "INTEGER"),
     TABLE_TYPE("tableType", "TEXT"),
     WORKDIR_SERIAL_NUMBER("workdirSerialNumber", "TEXT");
@@ -54,6 +55,7 @@ public enum FolderInfoEnum {
             FolderInfoEnum.MAX_DATE.getColumnName(),
             FolderInfoEnum.MIN_DATE.getColumnName(),
             FolderInfoEnum.STATE.getColumnName(),
+            FolderInfoEnum.PROCESS_STATE.getColumnName(),
             FolderInfoEnum.TABLE_TYPE.getColumnName(),
             FolderInfoEnum.WORKDIR_SERIAL_NUMBER.getColumnName()
     };

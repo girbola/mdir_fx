@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 .root {
     -fx-base-background-dark: #393939;
 	-fx-base-background-medium: #767676;
@@ -48,10 +50,4 @@
 .text-area{
     /*-fx-font-size: 12.0px;*/
     -fx-text-fill: yellow;
-}
-.button {
-    -fx-font-size: 18px;
-    -fx-background-color: #4CAF50;
-    -fx-text-fill: white;
-    -fx-padding: 10px 20px;
 }

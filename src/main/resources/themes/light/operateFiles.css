@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 .root {
     -fx-primary: #f4f6f9;
     -fx-background-color: #f4f6f9;

@@ -831,6 +831,7 @@ public class DateFixerController {
         }
 
         Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.getDialogPane().getStylesheets().add(com.girbola.ThemeStyles.buttons());
         ButtonType yes = new ButtonType(bundle.getString("yes"), ButtonData.YES);
         ButtonType no = new ButtonType(bundle.getString("no"), ButtonData.NO);
         dialog.getDialogPane().getButtonTypes().addAll(yes, no);
@@ -1009,10 +1010,10 @@ public class DateFixerController {
         hideRightInfo_btn.setRotate(DateFixerControllerUtils.arrowRotation(show));
         rightInfoPanel_scrollPane.setVisible(show);
         DateFixerControllerUtils.setFixedWidth(rightInfoPanel_scrollPane,
-                DateFixerControllerUtils.panelWidth(show, 250, 0));
+                DateFixerControllerUtils.panelWidth(show, 350, 0));
         rightInfoPanel.setVisible(show);
         DateFixerControllerUtils.setFixedWidth(rightInfoPanel,
-                DateFixerControllerUtils.panelWidth(show, 250, -100));
+                DateFixerControllerUtils.panelWidth(show, 350, -100));
         modelDatefix.setRightInfo_visible(show);
 	}
 

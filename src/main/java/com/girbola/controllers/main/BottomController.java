@@ -67,6 +67,7 @@ public class BottomController {
                 WorkDirController workdirController = (WorkDirController) loader.getController();
                 workdirController.init(model_main);
                 Scene scene = new Scene(parent);
+                scene.getStylesheets().add(com.girbola.ThemeStyles.buttons());
                 Stage stage = new Stage();
                 stage.setScene(scene);
                 stage.show();

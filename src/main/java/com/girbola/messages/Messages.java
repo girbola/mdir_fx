@@ -225,7 +225,7 @@ public class Messages {
         Messages.sprintfError("WARN: message: " + message + " helpURL: " + helpURL);
 
         Dialog<ButtonType> dialog = createDialog();
-        DialogPane dialogPane = new DialogPane();
+        DialogPane dialogPane = dialog.getDialogPane();
         // dialogPane.setHeaderText(text);
         Image helpImg = new Image(Main.class.getResourceAsStream("/img/helpSign.png"), 30, 0, true, true);
         ImageView helpIcon = new ImageView(helpImg);
@@ -248,7 +248,6 @@ public class Messages {
         hbox.setAlignment(Pos.CENTER_LEFT);
         hbox.getChildren().addAll(lbl);
 
-        dialog.setDialogPane(dialogPane);
         dialog.getDialogPane().setContent(bpane);
 
         ImageView warningImage = new ImageView(

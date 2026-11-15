@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 /*
   Theme: themes/dark/dialogs.css
 */
@@ -30,7 +32,6 @@
 
 	-fx-effect: innershadow(three-pass-box, rgba(133, 131, 131, 0.5), 1, 0, 1, 1);
 	-fx-font-weight: 900;
-	/*-fx-font-smoothing-type */: lcd;
 	/*    -fx-background-color: -fx-base; */
 	/*-fx-padding: 0 3 3 3;*/
 	/*  -fx-border-color:  -fx-dark-border-color; */
@@ -54,18 +55,6 @@
 .borderPane {
 	-fx-padding: 5;
 	-fx-background-color: transparent;
-}
-
-.button {
-	-fx-background-color: darkgrey;
-	-fx-background-radius: 5px;
-
-	-fx-font-family: 'Segoe UI Light';
-	-fx-font-size: 1.125em;
-	-fx-text-fill: white;
-	-fx-border-color: -fx-button-border;
-	-fx-border-radius: 5px;
-
 }
 
 .cancelLoading {

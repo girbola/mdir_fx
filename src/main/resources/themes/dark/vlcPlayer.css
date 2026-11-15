@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 
 .root {
 	-fx-base-background-dark: #393939;
@@ -20,17 +22,6 @@
     -fx-inner-border-horizontal: linear-gradient(to right, derive(grey,55.0%), derive(-fx-box-border, 10%));
 }
 
-.button {
-    -fx-background-color: 
-        -fx-base-background-dark,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-base-background-dark, 40%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 30%), derive(-fx-base-background-dark, 40%));
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    -fx-text-fill: -fx-text-color;
-}
 .stackPane {
 	-fx-background-color: transparent;
 }

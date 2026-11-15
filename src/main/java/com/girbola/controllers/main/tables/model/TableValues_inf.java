@@ -65,12 +65,16 @@ interface TableValues_inf {
     public SimpleStringProperty tableType_property();
     public SimpleStringProperty justFolderName_prop();
 
+    // Processing state property (e.g., NEW, SCANNING, ADDING, UPDATING, REMOVING, DONE, and FAILED)
+    public SimpleStringProperty processState_property();
+
     // ============================ Getters (plain values) ============================
     public String getFolderPath();
     public String getSelectedFolderParentPath();
     public String getJustFolderName();
     public String getMaxDate();
     public String getMinDate();
+    public String getProcessState();
     public String getState();
     public String getTableType();
     public String getSourceFolderSerialNumber();
@@ -132,6 +136,7 @@ interface TableValues_inf {
     public void setCopied(int value);
     public void setDateDifferenceRatio(double value);
     public void setSelectedFolderParentPath(String value);
+    public void setProcessState(String value);
 
     // Data collections
     public void setFileInfoList(List<FileInfo> fileInfo);

@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 
 /* 
     Created on : Mar 13, 2017, 1:46:19 PM
@@ -19,21 +21,6 @@
     -fx-font-size: 0.625em;
     -fx-alignment: center;
     -fx-padding: 3;
-}
-.button {
-    -fx-background-color: derive(-fx-primary, 60%);
-    /*-fx-background-insets: 3;*/
-    -fx-background-radius: 3;
-    -fx-background-padding: 3;
-    -fx-border-color: derive(-fx-primary, 90%);
-    -fx-border-radius: 3;
-    /*-fx-border-insets: 3;*/
-    /*-fx-border-radius: 3;*/
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    /*-fx-insets: 5px;*/
-    -fx-padding: 5px;
-    -fx-text-fill: white;  
 }
 .bottomButtons {
      -fx-background-color: #393939;

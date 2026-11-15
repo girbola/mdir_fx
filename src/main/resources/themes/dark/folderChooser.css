@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 
 /*
     Created on : 10.12.2017, 23:13:25
@@ -34,22 +36,6 @@
     -fx-mid-text-color: #292929;
     -fx-light-text-color: white;
 
-}
-
-.button {
-    -fx-background-color: -fx-base,
-    transparent,
-    transparent,
-    linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
-    -fx-effect: dropshadow(three-pass-box, rgba(217,217,217,0.2), 1, 0.0, 0, 1);
-    -fx-font-size: 0.8em;
-    -fx-text-fill: -fx-light-text-color;
-    -fx-border-radius: 4;
-    -fx-background-radius: 4;
-}
-
-.button:hover {
-    -fx-background-color: linear-gradient(to bottom, white, -fx-base);
 }
 
 .folderSelectorLabelHead {

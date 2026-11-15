@@ -59,6 +59,19 @@ Use this software carefully, especially when working with important media files.
 
 ## Compiling the Project
 
+### Button styling
+
+`src/main/resources/themes/shared/buttons.css` defines the common JavaFX
+`.button` appearance and states. `themes/dark/buttons.css` and
+`themes/light/buttons.css` supply the theme colors. Screen stylesheets import
+their theme's `buttons.css`; new windows should load it as well.
+
+Add the `primary` or `destructive` style class for a reusable variant. For a
+screen-specific appearance, add another class and override only the needed
+properties, for example `.button.my-action` and `.button.my-action:hover`.
+More specific selectors and inline styles take precedence over the shared
+defaults; avoid repeating a global `.button` rule in screen stylesheets.
+
 ### Required Versions
 
 - JavaJDK 24+

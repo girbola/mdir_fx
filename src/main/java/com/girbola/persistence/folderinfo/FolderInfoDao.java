@@ -142,8 +142,9 @@ public class FolderInfoDao {
             pstmt.setString(19, folderInfo.getMaxDate());
             pstmt.setString(20, folderInfo.getMinDate());
             pstmt.setString(21, folderInfo.getState());
-            pstmt.setString(22, folderInfo.getTableType());
-            pstmt.setString(23, folderInfo.getSourceFolderSerialNumber());
+            pstmt.setString(22, folderInfo.getProcessState());
+            pstmt.setString(23, folderInfo.getTableType());
+            pstmt.setString(24, folderInfo.getSourceFolderSerialNumber());
             pstmt.addBatch();
 
             int[] counter = pstmt.executeBatch();
@@ -396,6 +397,15 @@ public class FolderInfoDao {
         }
 
         try {
+            String processState = rs.getString(FolderInfoEnum.PROCESS_STATE.getColumnName());
+            if (processState != null) {
+                folderInfo.setProcessState(processState);
+            }
+        } catch (SQLException e) {
+            Messages.sprintf("Warning: Could not read PROCESS_STATE column: " + e.getMessage());
+        }
+
+        try {
             folderInfo.setSuggested(rs.getInt(FolderInfoEnum.SUGGESTED.getColumnName()));
         } catch (SQLException e) {
             Messages.sprintf("Warning: Could not read SUGGESTED column: " + e.getMessage());
@@ -443,6 +453,10 @@ public class FolderInfoDao {
         folderInfo.setMaxDate(rs.getString(FolderInfoEnum.MAX_DATE.getColumnName()));
         folderInfo.setMinDate(rs.getString(FolderInfoEnum.MIN_DATE.getColumnName()));
         folderInfo.setState(rs.getString(FolderInfoEnum.STATE.getColumnName()));
+        String processState = rs.getString(FolderInfoEnum.PROCESS_STATE.getColumnName());
+        if (processState != null) {
+            folderInfo.setProcessState(processState);
+        }
         folderInfo.setTableType(rs.getString(FolderInfoEnum.TABLE_TYPE.getColumnName()));
     }
 

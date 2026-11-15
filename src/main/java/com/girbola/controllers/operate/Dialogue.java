@@ -52,7 +52,9 @@ public class Dialogue implements Callable<SimpleIntegerProperty> {
                             + Main.bundle.getString("doYouWantToKeepTheFile") + "",
                     Main.bundle.getString("yes"), Main.bundle.getString("no"), Main.bundle.getString("abort"));
 
-            stage.setScene(new Scene(parent));
+            Scene scene = new Scene(parent);
+            scene.getStylesheets().add(Main.class.getResource(Main.conf.getThemePath() + "dialogs.css").toExternalForm());
+            stage.setScene(scene);
             stage.showAndWait();
         } catch (Exception e) {
             e.printStackTrace();

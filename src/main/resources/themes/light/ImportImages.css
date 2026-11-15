@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 .root {
 	 -fx-primary:#393939;
     -fx-background-color: darkgrey;
@@ -23,21 +25,6 @@
 
 }
 
-.button {
-    -fx-background-color: 
-        -fx-primary,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-primary, 40%), derive(-fx-primary, 30%), derive(-fx-primary, 30%), derive(-fx-primary, 40%));
-    /*-fx-background-insets: 1;*/
-    /*-fx-background-radius: 1;*/
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 0.625em;
-    /*-fx-insets: 0;*/
-    /*-fx-padding: 3;*/
-    -fx-text-fill: -fx-light-text-color;
-}
 .combo-box {
     -fx-background-color: grey;
 }
@@ -280,7 +267,6 @@
     -fx-background-color: derive(-fx-primary, 10%);
 }
 .titled-pane .label {
-    /*-fx-font-smoothing-type */: lcd;
     -fx-text-fill: white;
 }
 .titled-pane > .title > *.text {

@@ -218,6 +218,7 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
                     CloserLookController closerLookController = (CloserLookController) loader.getController();
 
                     Scene close_scene = new Scene(root);
+                    close_scene.getStylesheets().add(com.girbola.ThemeStyles.buttons());
                     Stage close_stage = new Stage();
 
                     close_stage.setScene(close_scene);

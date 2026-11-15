@@ -50,10 +50,27 @@ public class FolderInfoSchemaMigrationTest {
         assertEquals(tempDir.toString(), folderInfo.getFolderPath());
         assertEquals(1, folderInfo.getFileInfoList().size());
         assertEquals(imagePath.toString(), folderInfo.getFileInfoList().getFirst().getOrgPath());
+        assertEquals("NEW", folderInfo.getProcessState());
 
+        assertTrue(hasColumn(databasePath, SQLTableEnums.FOLDERINFO.getType(), FolderInfoEnum.PROCESS_STATE.getColumnName()));
         assertTrue(hasColumn(databasePath, SQLTableEnums.FOLDERINFO.getType(), FolderInfoEnum.WORKDIR_SERIAL_NUMBER.getColumnName()));
         assertTrue(hasColumn(databasePath, SQLTableEnums.FILEINFO.getType(), FileInfoEnum.WORK_DIR_DRIVE_SERIAL_NUMBER.getColumnName()));
         assertTrue(hasColumn(databasePath, SQLTableEnums.FILEINFO.getType(), FileInfoEnum.SHA256_CHECKSUM.getColumnName()));
+
+        folderInfo.setProcessState("SCANNING");
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath)) {
+            assertTrue(FolderInfoDao.saveFolderInfo(connection, folderInfo));
+        }
+        FolderInfo reloadedFolderInfo = FolderInfoDao.loadFolderInfo(tempDir.toString());
+        assertNotNull(reloadedFolderInfo);
+        assertEquals("SCANNING", reloadedFolderInfo.getProcessState());
+    }
+
+    @Test
+    public void processStateHasDefaultForEveryConstructor() {
+        assertEquals("NEW", new FolderInfo().getProcessState());
+        assertEquals("NEW", new FolderInfo(tempDir).getProcessState());
+        assertEquals("NEW", new FolderInfo(tempDir, "SortIt", "", true).getProcessState());
     }
 
     private static Path createPlainJpeg(Path target) throws Exception {
@@ -65,6 +82,7 @@ public class FolderInfoSchemaMigrationTest {
     private static void createLegacyFolderInfoTable(Connection connection) throws SQLException {
         String sql = "CREATE TABLE folderinfo ("
                 + joinDefinitions(Arrays.stream(FolderInfoEnum.getValuesInBindingOrder())
+                .filter(column -> column != FolderInfoEnum.PROCESS_STATE)
                 .filter(column -> column != FolderInfoEnum.WORKDIR_SERIAL_NUMBER)
                 .toList())
                 + ")";
@@ -83,6 +101,7 @@ public class FolderInfoSchemaMigrationTest {
 
     private static void insertLegacyFolderInfo(Connection connection, String folderPath) throws SQLException {
         List<FolderInfoEnum> columns = Arrays.stream(FolderInfoEnum.getValuesInBindingOrder())
+                .filter(column -> column != FolderInfoEnum.PROCESS_STATE)
                 .filter(column -> column != FolderInfoEnum.WORKDIR_SERIAL_NUMBER)
                 .toList();
 
@@ -116,6 +135,7 @@ public class FolderInfoSchemaMigrationTest {
                     case MAX_DATE -> pstmt.setString(index++, "2026-01-01 00.00.00");
                     case MIN_DATE -> pstmt.setString(index++, "2026-01-01 00.00.00");
                     case STATE -> pstmt.setString(index++, "");
+                    case PROCESS_STATE -> pstmt.setString(index++, "NEW");
                     case SUGGESTED -> pstmt.setInt(index++, 0);
                     case TABLE_TYPE -> pstmt.setString(index++, "SortIt");
                     case WORKDIR_SERIAL_NUMBER -> throw new IllegalStateException("Legacy folderinfo insert should not include workdirSerialNumber");
@@ -213,4 +233,3 @@ public class FolderInfoSchemaMigrationTest {
         return String.join(", ", java.util.Collections.nCopies(count, "?"));
     }
 }
-

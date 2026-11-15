@@ -289,6 +289,7 @@ public class TableController {
             parent = loader.load();
             Stage stage = new Stage();
             Scene scene = new Scene(parent);
+            scene.getStylesheets().add(com.girbola.ThemeStyles.buttons());
             model_CollectDialog = new Model_CollectDialog();
 
             Collect_DialogController controller = loader.getController();

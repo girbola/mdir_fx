@@ -196,7 +196,7 @@
             		<TableView fx:id="table" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#handleMouseClicked" VBox.vgrow="ALWAYS">
             			<columns>
             				<TableColumn fx:id="connected_col" editable="false" maxWidth="-1.0" minWidth="15.0" prefWidth="-1.0" resizable="false" sortable="false" />
-            				<TableColumn fx:id="status_col" editable="false" minWidth="50.0" prefWidth="50.0" text="%status">
+				<TableColumn fx:id="status_col" editable="false" minWidth="46.0" prefWidth="46.0" text="%status">
                            <styleClass>
                               <String fx:value="col-status" />
                               <String fx:value="col-centered" />

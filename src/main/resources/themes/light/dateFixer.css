@@ -1,7 +1,8 @@
+@import "buttons.css";
+
 .anchor-pane{
     -fx-background-color:  -fx-primary;
 }
-.button,
 .combo-box {
     -fx-background-color:
         grey,
@@ -16,11 +17,6 @@
     -fx-text-fill: white;
     -fx-effect: dropshadow( three-pass-box , rgba(255,255,255,0.2) , 1, 0.0 , 0 , 1);
 }
-.button:disabled {
-    -fx-opacity: 0.1;
-    -fx-background-color: grey;
-}
-
 .grid-pane > * {
     -fx-min-height: 30;
 }
@@ -77,12 +73,12 @@
     -fx-background-color: #e7ebf0;
     -fx-border-color: #cbd4df;
 }
-.primary-action {
+.accept-action {
     -fx-background-color: #286c9f;
     -fx-border-color: #438ac1;
     -fx-text-fill: white;
 }
-.primary-action:hover {
+.accept-action:hover {
     -fx-background-color: #327fb5;
     -fx-border-color: #579fd4;
 }
@@ -105,6 +101,13 @@
     -fx-background-color: #a45157;
     -fx-border-color: #cc777d;
 }
+.restore-action {
+    -fx-background-color: #b3b14d;
+    -fx-border-color: #d2cf59;
+    -fx-text-fill: white;
+}
+
+
 .imagesContainer {
     -fx-background-color: transparent;
 }
@@ -117,6 +120,79 @@
 .list-cell:filled:hover { 
     -fx-background-color: #00f; /* 2 */
     -fx-text-fill: white; /* 5 */
+}
+
+.rightInfoPanel_scrollPane {
+    -fx-background-color: #f4f6f9;
+    -fx-border-color: #d3dbe4 transparent #d3dbe4 #d3dbe4;
+    -fx-border-width: 0 0 0 1;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.rightInfoPanel_scrollPane .viewport,
+.rightInfoPanel_scrollPane .metadataVbox {
+    -fx-background-color: #f4f6f9;
+}
+
+.rightInfoPanel_scrollPane .metadataVbox {
+    -fx-spacing: 8;
+    -fx-padding: 10 10 14 10;
+}
+
+.rightInfoPanel_scrollPane .titled-pane {
+    -fx-text-fill: #263548;
+    -fx-border-color: #cbd4df;
+    -fx-border-radius: 7;
+    -fx-background-radius: 7;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .title {
+    -fx-background-color: #e7edf4;
+    -fx-background-radius: 7 7 0 0;
+    -fx-padding: 8 10;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .title > .text {
+    -fx-fill: #263548;
+    -fx-font-size: 1.0em;
+    -fx-font-weight: bold;
+}
+
+.rightInfoPanel_scrollPane .titled-pane > .content {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cbd4df;
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 4;
+}
+
+.rightInfoPanel_scrollPane .metadataTable {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d3dbe4;
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-padding: 0;
+}
+
+.rightInfoPanel_scrollPane .metadataTable .table-row-cell,
+.rightInfoPanel_scrollPane .metadataTable .table-row-cell:odd,
+.rightInfoPanel_scrollPane .metadataTable .table-row-cell:even {
+    -fx-background-color: #ffffff;
+    -fx-table-cell-border-color: #e3e8ee;
+}
+
+.rightInfoPanel_scrollPane .metadataTable .table-row-cell:hover {
+    -fx-background-color: #eef4fa;
+}
+
+.rightInfoPanel_scrollPane .metadataTable .table-cell {
+    -fx-text-fill: #263548;
+    -fx-font-size: 1.0em;
+    -fx-padding: 5 7;
+}
+
+.rightInfoPanel_scrollPane .metadataTable .scroll-bar:vertical {
+    -fx-pref-width: 7;
 }
 
 .jump_Button {
@@ -601,7 +677,6 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-fill: red;
     -fx-stroke: grey;
     -fx-stroke-width: 1;
-    /*-fx-font-smoothing-type */: lcd;
     -fx-min-width: 28px;
     -fx-pref-width: 36px;
     -fx-max-width: 36px;
@@ -623,7 +698,6 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
 
 .fileDate_tf {
     -fx-font-size: 0.9em;
-    /*-fx-font-smoothing-type */: lcd;
     -fx-background-color: grey;
     -fx-border-color: grey;
     -fx-border-radius: 3;
@@ -758,7 +832,4 @@ linear-gradient(to bottom, derive(-fx-color,-02%), derive(-fx-color,65%) 12%,   
     -fx-background-color: red;
     -fx-text-fill: -accent;
     -fx-padding: 30px;
-}
-.button {
-    -fx-background-color: yellow;
 }

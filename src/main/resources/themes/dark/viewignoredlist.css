@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 
 .root {
 	-fx-base: #3f3f3f;
@@ -19,22 +21,6 @@
     -fx-dark-text-color: black;
     -fx-mid-text-color: #aaaaaa;
     -fx-light-text-color: white;
-}
-
-.button {
-    -fx-background-color: 
-        -fx-base,
-        transparent,
-        transparent,
-        linear-gradient(derive(-fx-base, 40%), derive(-fx-base, 30%), derive(-fx-base, 30%), derive(-fx-base, 40%));
-    /*-fx-background-insets: 1;*/
-    /*-fx-background-radius: 1;*/
-    -fx-effect: dropshadow( three-pass-box , rgba(217,217,217,0.2) , 1, 0.0 , 0 , 1);
-    -fx-font-family: "Gaduci";
-    -fx-font-size: 14px;
-    /*-fx-insets: 0;*/
-    /*-fx-padding: 3;*/
-    -fx-text-fill: -fx-light-text-color;
 }
 
 .borderPane {

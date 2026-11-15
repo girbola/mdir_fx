@@ -1,3 +1,5 @@
+@import "buttons.css";
+
 .bottom_controls {
     -fx-background-color: derive(black, 50%);
     -fx-border-color: white;
@@ -10,12 +12,6 @@
 
 .root {
     -fx-background-color: derive(orange, 30%);
-}
-
-.button {
-    -fx-background-color: derive(orange, 50%);
-    -fx-background-radius: 4;
-
 }
 
 .exit_button {

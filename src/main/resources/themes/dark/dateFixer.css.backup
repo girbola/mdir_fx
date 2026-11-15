@@ -286,13 +286,13 @@
     -fx-border-color: -border;
 }
 
-.primary-action {
+.accept-action {
     -fx-background-color: -accent;
     -fx-border-color: derive(-accent, 20%);
     -fx-text-fill: white;
 }
 
-.primary-action:hover {
+.accept-action:hover {
     -fx-background-color: derive(-accent, 15%);
 }
 

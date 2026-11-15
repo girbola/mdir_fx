@@ -22,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.Duration;
 import static com.girbola.Main.bundle;
-import static com.girbola.Main.conf;
 import static com.girbola.messages.Messages.sprintf;
 
 public class LoadingProcess {
@@ -114,7 +113,7 @@ public class LoadingProcess {
 
     private static void setupLoadingScene() {
         // Add stylesheet
-        String stylesheetPath = conf.getThemePath() + MDir_Stylesheets_Constants.LOADINGPROCESS.getType();
+        String stylesheetPath = Main.conf.getThemePath() + MDir_Stylesheets_Constants.MAINSTYLE.getType();
         loadingScene.getStylesheets().add(LoadingProcess.class.getResource(stylesheetPath).toExternalForm());
 
         // Store initial position
