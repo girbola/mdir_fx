@@ -108,6 +108,10 @@ public class CloserLookController {
         drawNodes(dateList);
     }
 
+    public void stopRendering() {
+        renderVisibleNode.stopTimeLine();
+    }
+
     private ImageView createImageView(FileInfo fi, double width, double height) {
         ImageView iv = new ImageView();
         iv.setFitWidth(Math.floor(width / 3));

@@ -29,7 +29,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -74,7 +73,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.converter.NumberStringConverter;
 
 import static com.girbola.Main.bundle;
 import static com.girbola.Main.conf;
@@ -90,7 +88,6 @@ public class TableController {
     private ModelMain model_main;
     private final ObservableList<FolderInfo> data_obs = FXCollections.observableArrayList();
     private final SimpleBooleanProperty showTable = new SimpleBooleanProperty(true);
-    private final SimpleIntegerProperty allFilesTotal_obs = new SimpleIntegerProperty(0);
     private String tableType;
     private Window owner;
     private ArrayList<HBox> savedButtonsHBoxList;
@@ -839,8 +836,6 @@ public class TableController {
         table_Vbox.setFillWidth(true);
 
         model_main.tables().setDrag(table);
-
-        allFilesTotal_lbl.textProperty().bindBidirectional(allFilesTotal_obs, new NumberStringConverter());
 
         //badFiles_col.setCellValueFactory((TableColumn.CellDataFeatures<FolderInfo, Integer> cellData) -> new SimpleObjectProperty<>(cellData.getValue().getBadFiles()));
         badFiles_col.setCellValueFactory(cellData -> cellData.getValue().badFiles_prop().asObject());

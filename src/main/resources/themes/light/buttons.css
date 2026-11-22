@@ -1,0 +1,14 @@
+@import "../shared/buttons.css";
+
+.button {
+    -mdir-button-background: #ffffff;
+    -mdir-button-border: #c4cfdb;
+    -mdir-button-text: #334459;
+    -mdir-button-hover: #e8f2fb;
+    -mdir-button-pressed: #d3e2ef;
+    -mdir-button-focus: #438ac1;
+    -mdir-button-primary: #245f91;
+    -mdir-button-primary-hover: #2c75ad;
+    -mdir-button-destructive: #793b40;
+    -mdir-button-destructive-hover: #94464c;
+}

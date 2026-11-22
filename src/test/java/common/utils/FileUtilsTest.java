@@ -1,18 +1,30 @@
 package common.utils;
 
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.metadata.Directory;
+import com.drew.metadata.Metadata;
+import com.drew.metadata.Tag;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.utils.FileInfoUtils;
 import com.girbola.messages.Messages;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.logging.Logger;
+
+import static com.girbola.utils.FileInfoUtils.createFileInfo;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +47,7 @@ public class FileUtilsTest {
 
         System.out.println("SRCPATH: " + srcTest.toFile().getAbsolutePath());
         File absoluteFile = srcTest.toFile().getAbsoluteFile();
-        FileInfo fileInfo = FileInfoUtils.createFileInfo(absoluteFile.toPath());
+        FileInfo fileInfo = createFileInfo(absoluteFile.toPath());
         Path renamedFile = FileInfoUtils.renameFileToDate(srcTest, fileInfo);
         Path expectedFile = Paths.get(srcTest.getParent().toString(), "1970-01-01 00.00.00.jpg");
         assertEquals(expectedFile.toString(), renamedFile.toString());
@@ -146,7 +158,120 @@ public class FileUtilsTest {
         assertNull(actualResult);
     }
 
+    @Test
+    public void testsDng() {
 
+        try {
+            FileInfo fileInfo = createFileInfo(Paths.get("src", "test", "resources", "test-material", "IMG_4246.DNG"));
+            assertNotNull(fileInfo);
+            Messages.sprintf("fileInfo: " + fileInfo);
+            long start = System.currentTimeMillis();
+            createThumbnail(Paths.get(fileInfo.getOrgPath()), Paths.get("src", "test", "resources", "test-material", "Blaa-IMG_4246_thumb.DNG"), 100);
+            long end = System.currentTimeMillis();
+            Messages.sprintf("Thumbnail creation took: " + (end - start) + " ms");
+//            Metadata metaData = DateTaken.readMetaData(Paths.get(fileInfo.getOrgPath()));
+//            for(Directory directory : metaData.getDirectories()) {
+//                Messages.sprintf("-directory: " + directory);
+//                directory.getTags().forEach(tag -> {
+//                    Messages.sprintf("--->tag: " + tag);
+//                });
+//            }
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Test
+    public void testHeic() {
+        try {
+            FileInfo fileInfo = createFileInfo(Paths.get("src", "test", "resources", "test-material", "IMG_5436.HEIC"));
+            assertNotNull(fileInfo);
+
+            Metadata metadata = ImageMetadataReader.readMetadata(Paths.get(fileInfo.getOrgPath()).toFile());
+
+            ArrayList<String> lines = new ArrayList<>();
+
+            for (Directory dir : metadata.getDirectories()) {
+                Messages.sprintf("Directory: " + dir.getName());
+                for (Tag tag : dir.getTags()) {
+                    Messages.sprintf("---TAG::: " + tag);
+                }
+            }
+//
+//            for(String line : lines) {
+//
+//            }
+
+//            boolean processed = fileInfoGetCreationDates(Paths.get("src", "test", "resources", "test-material", "IMG_4246.DNG"), fileInfo);
+//
+//            boolean processed = handleMetadataInformation(Paths.get(fileInfo.getOrgPath()), fileInfo);
+//            assertNotNull(processed);
+//            if(processed) {
+//                Messages.sprintf("Metadata information handled successfully.");
+//            } else {
+//                Messages.sprintf("Failed to handle metadata information.");
+//            }
+
+        } catch (IOException | ImageProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void createThumbnail(Path sourcePath, Path outputPath, int targetWidth) throws IOException {
+        if (targetWidth <= 0) {
+            throw new IllegalArgumentException("targetWidth must be positive");
+        }
+
+        try (ImageInputStream iis = ImageIO.createImageInputStream(sourcePath.toFile())) {
+            if (iis == null) {
+                throw new IOException("Could not open ImageInputStream for: " + sourcePath);
+            }
+
+            Iterator<ImageReader> readers = ImageIO.getImageReaders(iis);
+            if (!readers.hasNext()) {
+                throw new IOException("No ImageReader found for: " + sourcePath);
+            }
+
+            ImageReader reader = readers.next();
+            try {
+                reader.setInput(iis, true, true);
+                int fullWidth = reader.getWidth(0);
+                int fullHeight = reader.getHeight(0);
+
+                int step = Math.max(1, fullWidth / (targetWidth * 2));
+
+                ImageReadParam param = reader.getDefaultReadParam();
+                param.setSourceSubsampling(step, step, 0, 0);
+
+                BufferedImage subsampled = reader.read(0, param);
+
+                int targetHeight = Math.max(1, (int) Math.round(
+                        (double) fullHeight * targetWidth / fullWidth
+                ));
+
+                BufferedImage thumb = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+                Graphics2D g2d = thumb.createGraphics();
+                try {
+                    g2d.setRenderingHint(
+                            RenderingHints.KEY_INTERPOLATION,
+                            RenderingHints.VALUE_INTERPOLATION_BILINEAR
+                    );
+                    g2d.drawImage(subsampled, 0, 0, targetWidth, targetHeight, null);
+                } finally {
+                    g2d.dispose();
+                }
+
+                if (outputPath.getParent() != null) {
+                    java.nio.file.Files.createDirectories(outputPath.getParent());
+                }
+                ImageIO.write(thumb, "jpg", outputPath.toFile());
+            } finally {
+                reader.dispose();
+            }
+        }
+    }
     private static Path createTestImage(Path filePath) throws IOException {
         int width = 10; // Width of the image
         int height = 10; // Height of the image

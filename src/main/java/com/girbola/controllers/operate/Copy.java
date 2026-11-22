@@ -4,12 +4,12 @@ import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.ModelOperate;
 import com.girbola.controllers.main.tables.TableUtils;
+import com.girbola.fileinfo.CopyLifecycleState;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import com.girbola.misc.Misc;
 import com.girbola.controllers.main.sql.WorkDirSQL;
 import com.girbola.sql.SQL_Utils;
-import com.girbola.utils.FileInfoUtils;
 import common.utils.FileUtils;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -106,10 +106,16 @@ public class Copy extends Task<Integer> {
             }
 
             source = Paths.get(fileInfo.getOrgPath());
-
+            dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+            fileInfo.setDestination_Path(FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir()));
+            fileInfo.setCopied(false);
+            fileInfo.setCopyLifecycleState(CopyLifecycleState.NEW);
+            if (!workDirSQL.insertFileInfo(fileInfo)) {
+                cancel();
+                return null;
+            }
             if (Files.exists(source)) {
 
-                dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
                 boolean cancellation = copyHelper.checkCancellation(fileInfo, dest);
                 if (cancellation) {
                     Main.setProcessCancelled(true);
@@ -130,6 +136,13 @@ public class Copy extends Task<Integer> {
                     STATE = CopyState.COPY.getType();
                 }
 
+                fileInfo.setDestination_Path(FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir()));
+                fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
+                if (!workDirSQL.insertFileInfo(fileInfo)) {
+                    cancel();
+                    return null;
+                }
+
                 SimpleIntegerProperty answer = new SimpleIntegerProperty(-1);
 
                 CopyState copyState = CopyState.valueOf(STATE);
@@ -140,13 +153,9 @@ public class Copy extends Task<Integer> {
                             if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                                 copyHelper.updateSourceAndDestProcessValues(source, dest);
                                 copyHelper.updateIncreaseCopyingProcessValues();
-                                workDirSQL.insertFileInfo(fileInfo);
-
-                                FileInfoUtils.createWorkDirFileInfo(fileInfo, dest);
-
-                                if (!fileInfo.isCopied()) {
-                                    fileInfo.setCopied(true);
-                                    workDirSQL.insertFileInfo(fileInfo);
+                                if (!workDirSQL.insertFileInfo(fileInfo)) {
+                                    cancel();
+                                    return null;
                                 }
                             }
                         } else {
@@ -158,10 +167,10 @@ public class Copy extends Task<Integer> {
                         Messages.sprintf("Renaming file: " + source + " to: " + dest);
                         if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                             copyHelper.updateIncreaseRenamedProcessValues();
-                            if (!fileInfo.isCopied()) {
-                                fileInfo.setCopied(true);
+                            if (!workDirSQL.insertFileInfo(fileInfo)) {
+                                cancel();
+                                return null;
                             }
-                            workDirSQL.insertFileInfo(fileInfo);
 //                                modelMain.getWorkDirSQL().insertFileInfo(fileInfo);
                         }
                         break;

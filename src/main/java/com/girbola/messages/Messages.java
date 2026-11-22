@@ -73,9 +73,22 @@ public class Messages {
         }
     }
 
+    public static void sprintf(String string, Object object) {
+        System.out.printf(string, object);
+    }
+
     public static void sprintfError(String text) {
         if (DEBUG) {
             System.err.println(text);
+        }
+    }
+
+    public static void sprintfError(String text, Object... args) {
+        if (DEBUG) {
+            String message = (args == null || args.length == 0)
+                    ? text
+                    : String.format(text, args);
+            System.err.println(message);
         }
     }
 
@@ -330,11 +343,6 @@ public class Messages {
         dialogPane.setHeaderText(null);
         dialogPane.setContentText(message);
         alert.showAndWait();
-    }
-
-    public static void sprintf(String string, Object object) {
-        System.out.printf(string, object);
-
     }
 
 }

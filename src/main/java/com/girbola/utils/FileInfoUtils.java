@@ -999,7 +999,7 @@ public class FileInfoUtils {
     private static boolean fileInfoGetCreationDates(Path path, FileInfo fileInfo) throws IOException {
         long size = Files.size(path);
 
-        if (FileUtils.supportedImage(path)) {
+        if (FileUtils.supportedImage(path) || FileUtils.supportedHeic(path)) {
             populateImageFileInfo(path, fileInfo, size);
             return true;
         }

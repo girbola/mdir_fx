@@ -313,29 +313,41 @@ public class WorkDirSQL {
             return false;
         }
 
-        try {
-            if (!SQL_Utils.isDbConnected(connection)) {
-                Messages.sprintf("Database connection failed for: " + Main.conf.getWorkDir());
-                return false;
+        if (!SQL_Utils.isDbConnected(connection) || !createFileInfoTable(connection)) {
+            Messages.sprintfError("Cannot persist FileInfo because the work directory database is unavailable");
+            return false;
+        }
+
+        StringBuilder updateAssignments = new StringBuilder();
+        for (FileInfoEnum column : FileInfoEnum.getValuesInBindingOrder()) {
+            if (column == FileInfoEnum.FILEINFO_ID || column == FileInfoEnum.ORGPATH) {
+                continue;
             }
-            String sql = FileInfoDao.createFileInfoTable();
-            PreparedStatement pstmt = connection.prepareStatement(sql);
+            if (updateAssignments.length() > 0) {
+                updateAssignments.append(", ");
+            }
+            updateAssignments.append(column.getColumnName())
+                    .append(" = excluded.")
+                    .append(column.getColumnName());
+        }
 
-            int index = 1;
-
-            /*
-fileInfo.getDestination_Path() (for DESTINATIONPATH)
-fileInfo.getFileHistories() (for FILEHISTORIES - needs to be converted to String)
-             */
-            // Update values
-            // Update values
-            FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo);
-
-            pstmt.addBatch();
-            Messages.sprintf("FileInfo added to batch");
+        String sql = "INSERT INTO " + SQLTableEnums.FILEINFO.getType()
+                + " (" + FileInfoEnum.getAllFileInfoColumnNames() + ") "
+                + "VALUES (" + FileInfoEnum.getInsertPlaceholders() + ") "
+                + "ON CONFLICT(" + FileInfoEnum.ORGPATH.getColumnName() + ") DO UPDATE SET "
+                + updateAssignments;
+        try {
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                if (!FileInfoMapper.bindToFileInfoStatement(pstmt, fileInfo)) {
+                    throw new SQLException("Failed to bind FileInfo for " + fileInfo.getOrgPath());
+                }
+                pstmt.executeBatch();
+            }
+            connection.commit();
             return true;
         } catch (SQLException e) {
-            Messages.sprintfError("4444Error inserting/updating FileInfo: " + e.getMessage());
+            SQL_Utils.rollBackConnection(connection);
+            Messages.sprintfError("Error inserting/updating FileInfo: " + e.getMessage());
             return false;
         }
     }

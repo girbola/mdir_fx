@@ -1,0 +1,54 @@
+.button {
+    -fx-background-color: -mdir-button-background;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6;
+    -fx-border-color: -mdir-button-border;
+    -fx-border-radius: 6;
+    -fx-border-width: 1;
+    -fx-effect: none;
+    -fx-text-fill: -mdir-button-text;
+    -fx-padding: 4 8;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: -mdir-button-hover;
+}
+
+.button:armed {
+    -fx-background-color: -mdir-button-pressed;
+}
+
+.button:focused {
+    -fx-border-color: -mdir-button-focus;
+}
+
+.button:disabled {
+    -fx-opacity: 0.48;
+}
+
+.button.primary {
+    -fx-background-color: -mdir-button-primary;
+    -fx-text-fill: white;
+}
+
+.button.primary:hover {
+    -fx-background-color: -mdir-button-primary-hover;
+}
+
+.button.primary:armed {
+    -fx-background-color: derive(-mdir-button-primary, -20%);
+}
+
+.button.destructive {
+    -fx-background-color: -mdir-button-destructive;
+    -fx-text-fill: white;
+}
+
+.button.destructive:hover {
+    -fx-background-color: -mdir-button-destructive-hover;
+}
+
+.button.destructive:armed {
+    -fx-background-color: derive(-mdir-button-destructive, -20%);
+}

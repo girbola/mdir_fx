@@ -535,13 +535,11 @@ public class TableUtils {
     }*/
 
     public static void refreshAllTableContent(Tables tables) {
-        Messages.sprintf("refreshAllTableContent started");
-        ConcurrencyUtils.initNewSingleExecutionService();
-
-        RefreshAllTableContent refreshAllTables = new RefreshAllTableContent(tables);
-
-        calculateTableViewsStatistic(tables);
-
+        runOnFxThread(() -> {
+            Messages.sprintf("refreshAllTableContent started");
+            new RefreshAllTableContent(tables);
+            calculateTableViewsStatistic(tables);
+        });
     }
 
     public static void clearTablesContents(Tables tables) {
@@ -584,27 +582,19 @@ public class TableUtils {
     }
 
     public static void calculateTableViewsStatistic(Tables tables) {
+        runOnFxThread(() -> {
+            new CalculateTableViewsStatistic(tables, tables.getSortIt_table()).calculate();
+            new CalculateTableViewsStatistic(tables, tables.getSorted_table()).calculate();
+            new CalculateTableViewsStatistic(tables, tables.getAsItIs_table()).calculate();
+        });
+    }
 
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSortit = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
-//
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSorted = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
-//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIs = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
-//
-        //ConcurrencyUtils.initNewSingleExecutionService();
-
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSortItTask = new CalculateTableViewsStatistic(tables, tables.getSortIt_table());
-//        Thread calculateTableViewsStatisticSortItThread = new Thread(calculateTableViewsStatisticSortItTask, "calculateTableViewsStatisticSortItThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortItThread);
-//
-//        CalculateTableViewsStatistic calculateTableViewsStatisticSortedTask = new CalculateTableViewsStatistic(tables, tables.getSorted_table());
-//        Thread calculateTableViewsStatisticSortedThread = new Thread(calculateTableViewsStatisticSortedTask, "calculateTableViewsStatisticSortedThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticSortedThread);
-//
-//        CalculateTableViewsStatistic calculateTableViewsStatisticAsItIsTask = new CalculateTableViewsStatistic(tables, tables.getAsItIs_table());
-//        Thread calculateTableViewsStatisticAsItIsItThread = new Thread(calculateTableViewsStatisticAsItIsTask, "calculateTableViewsStatisticSortItThread");
-//        exec[ConcurrencyUtils.getExecCounter()].submit(calculateTableViewsStatisticAsItIsItThread);
-//
-//        refreshAllTableContent(tables);
+    private static void runOnFxThread(Runnable action) {
+        if (Platform.isFxApplicationThread()) {
+            action.run();
+        } else {
+            Platform.runLater(action);
+        }
     }
 
     public static void removeTableViewEmptyFolderInfos(Tables tables) {

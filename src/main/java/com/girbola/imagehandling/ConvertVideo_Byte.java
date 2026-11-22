@@ -6,14 +6,15 @@ import com.girbola.misc.Misc;
 import com.girbola.thumbinfo.ThumbInfo;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -26,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
+public class ConvertVideo_Byte extends Task<List<BufferedImage>> implements ThumbnailPreview {
 
     private final String ERROR = ConvertVideo_Byte.class.getSimpleName();
     private final Path fileName;
@@ -35,6 +36,10 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
     private final ImageView imageView;
     private List<BufferedImage> bufferedImageList = new ArrayList<>();
     private Timeline timeLine;
+    private Node previewRoot;
+    private EventHandler<MouseEvent> mouseEntered;
+    private EventHandler<MouseEvent> mouseExited;
+    private boolean previewReleased;
 
     public ConvertVideo_Byte(Path aFileName, ThumbInfo aThumbInfo, double aImage_width, ImageView aImageView) {
         this.fileName = aFileName;
@@ -49,7 +54,6 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
             for (byte[] imageInByte : thumbInfo.getThumbs()) {
                 if (imageInByte == null) {
                     Messages.sprintf("There were no more images in byte[] array");
-                    cancel();
                     break;
                 }
                 Messages.sprintf("----ConvertVideo_Byte video imageInByte size: " + imageInByte.length);
@@ -68,6 +72,9 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
 
     @Override
     protected void succeeded() {
+        if (previewReleased) {
+            return;
+        }
         List<BufferedImage> list = null;
         try {
             list = get();
@@ -107,20 +114,43 @@ public class ConvertVideo_Byte extends Task<List<BufferedImage>> {
         VideoPreview videoPreview = new VideoPreview(list, imageView);
         imageView.setImage(videoPreview.getImage(0));
         imageView.setUserData(list);
-        rootPane.setOnMouseEntered(event -> {
+        previewRoot = rootPane;
+        mouseEntered = event -> {
+            if (timeLine != null) {
+                timeLine.stop();
+            }
             timeLine = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
                 Image image = SwingFXUtils.toFXImage(videoPreview.showNextBufferedImage(), null);
-                Platform.runLater(() -> imageView.setImage(image));
+                imageView.setImage(image);
             }));
             timeLine.setCycleCount(6);
             timeLine.play();
-        });
-        rootPane.setOnMouseExited(event -> {
+        };
+        mouseExited = event -> {
             if (timeLine != null) {
                 timeLine.stop();
             }
             imageView.setImage(videoPreview.getImage(0));
-        });
+        };
+        previewRoot.addEventHandler(MouseEvent.MOUSE_ENTERED, mouseEntered);
+        previewRoot.addEventHandler(MouseEvent.MOUSE_EXITED, mouseExited);
+    }
+
+    @Override
+    public void releasePreview() {
+        previewReleased = true;
+        if (timeLine != null) {
+            timeLine.stop();
+            timeLine = null;
+        }
+        if (previewRoot != null) {
+            previewRoot.removeEventHandler(MouseEvent.MOUSE_ENTERED, mouseEntered);
+            previewRoot.removeEventHandler(MouseEvent.MOUSE_EXITED, mouseExited);
+            previewRoot = null;
+            mouseEntered = null;
+            mouseExited = null;
+        }
+        bufferedImageList = new ArrayList<>();
     }
 
     @Override

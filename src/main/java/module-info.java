@@ -44,6 +44,7 @@ module com.girbola {
     // ── Video / OpenCV (JavaCV / JavaCPP) ───────────────────────────────────
     // JavaCPP runtime (multi-release named module)
     requires org.bytedeco.javacpp;
+    requires org.bytedeco.ffmpeg;
     // JavaCV (multi-release named module)
     requires org.bytedeco.javacv;
     // OpenCV via JavaCV (multi-release named module)
@@ -167,7 +168,7 @@ module com.girbola {
 
     // Shared utility packages (common.*)
     opens common.media to javafx.fxml;
-    opens common.utils to javafx.fxml;
+    opens common.utils to javafx.fxml, org.junit.platform.commons;
     opens common.utils.date to javafx.fxml;
     opens common.utils.regexdynamically to javafx.fxml;
     opens common.utils.ui to javafx.fxml;
@@ -176,4 +177,3 @@ module com.girbola {
     // This is an application module, so we only export the entry-point package.
     exports com.girbola;
 }
-

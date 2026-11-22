@@ -46,21 +46,21 @@ public class ConvertImage_Byte extends Task<Image> {
 	protected void failed() {
 		sprintf("ConvertImage_Byte image loading failed: " + fileName);
 		super.failed();
-        imageView.setImage(null);
+        if (imageView != null) imageView.setImage(null);
 	}
 
 	@Override
 	protected void cancelled() {
 		sprintf("image loading cancelled: " + fileName);
 		super.cancelled();
-        imageView.setImage(null);
+        if (imageView != null) imageView.setImage(null);
 	}
 
 	@Override
 	protected void succeeded() {
 sprintf("ConvertImage_Byte image loading succeeded: " + fileName);
 		super.succeeded();
-        if(image != null) {
+        if(image != null && imageView != null) {
             imageView.setImage(image);
         }
 	}

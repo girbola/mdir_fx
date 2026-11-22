@@ -3,6 +3,7 @@ package com.girbola.controllers.operate;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.ModelOperate;
+import com.girbola.fileinfo.CopyLifecycleState;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.FileUtils;
@@ -52,7 +53,7 @@ public class CopyHelper {
     }
 
 
-    public void renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, ModelMain model_main) {
+    public boolean renameTmpFileBackToOriginalExtentension(FileInfo fileInfo, Path destTmp, Path dest, ModelMain model_main) {
         try {
             Messages.sprintf(
                     "Renaming file .tmp back to org extension: " + destTmp + " to dest: " + dest);
@@ -63,9 +64,11 @@ public class CopyHelper {
             fileInfo.setWorkDirDriveSerialNumber(Main.conf.getWorkDirSerialNumber());
             fileInfo.setCopied(true);
             listCopiedFiles.add(fileInfo);
+            return true;
         } catch (Exception ex) {
             ex.printStackTrace();
             Messages.sprintfError(ex.getMessage());
+            return false;
         }
 
     }
@@ -210,7 +213,8 @@ public class CopyHelper {
     public boolean copyFile(FileInfo fileInfo, Path sourcePath, Path destPath, String state,
                             SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException, ExecutionException, InterruptedException {
 
-        if (!Files.exists(sourcePath)) {
+        if (!Files.isRegularFile(sourcePath)) {
+            Messages.sprintfError("Source file does not exist or is not a regular file: " + sourcePath);
             return false;
         }
 
@@ -222,47 +226,66 @@ public class CopyHelper {
 
         Path destTmpPath = Paths.get(destPath.toFile() + ".tmp");
 
-        try (InputStream from = new FileInputStream(sourcePath.toFile());
-             OutputStream to = new FileOutputStream(destTmpPath.toFile())) {
+        fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
+        fileInfo.setCopied(false);
 
-            Messages.sprintf("Source: " + sourcePath + " dest: " + destPath);
-            resetAndupdateSourceAndDestProcessValues(sourcePath, destPath);
-
-            copyData(from, to, destTmpPath, sourcePath, destPath, answer, modelOperate);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            finalizeCopy(destTmpPath, destPath, fileInfo, answer);
-            // Explicit check: Ensure source remains intact (unchanged and exists) after copy
-            if (!Files.exists(sourcePath)) {
-                throw new IOException("Source file was unexpectedly altered or deleted: " + sourcePath);
+        try {
+            long expectedSize = Files.size(sourcePath);
+            try (InputStream from = new FileInputStream(sourcePath.toFile());
+                 OutputStream to = new FileOutputStream(destTmpPath.toFile())) {
+                Messages.sprintf("Source: " + sourcePath + " dest: " + destPath);
+                resetAndupdateSourceAndDestProcessValues(sourcePath, destPath);
+                copyData(from, to, destTmpPath, sourcePath, destPath, answer, modelOperate);
             }
-        }
 
-        return true;
+            if (!Files.isRegularFile(sourcePath) || Files.size(sourcePath) != expectedSize) {
+                throw new IOException("Source file changed or disappeared during copy: " + sourcePath);
+            }
+            if (!Files.isRegularFile(destTmpPath) || Files.size(destTmpPath) != expectedSize) {
+                throw new IOException("Incomplete copy to temporary destination: " + destTmpPath
+                        + " (expected " + expectedSize + " bytes)");
+            }
+            if (!finalizeCopy(destTmpPath, destPath, fileInfo, answer)) {
+                throw new IOException("Could not move temporary copy to destination: " + destPath);
+            }
+            if (!Files.isRegularFile(destPath) || Files.size(destPath) != expectedSize) {
+                Files.deleteIfExists(destPath);
+                throw new IOException("Destination copy failed size verification: " + destPath);
+            }
+
+            fileInfo.setCopied(true);
+            fileInfo.setCopyLifecycleState(CopyLifecycleState.DONE);
+            resetAndUpdateFileCopiedProcessValues();
+            return true;
+        } catch (Exception e) {
+            try {
+                Files.deleteIfExists(destTmpPath);
+            } catch (IOException cleanupException) {
+                e.addSuppressed(cleanupException);
+            }
+            fileInfo.setCopied(false);
+            fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
+            Messages.sprintfError("Copy failed for " + sourcePath + " to " + destPath + ": " + e.getMessage());
+            return false;
+        }
     }
 
     private void copyData(InputStream from, OutputStream to, Path destTmpPath, Path sourcePath, Path destPath,
                           SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
-        long totalBytesRead = 0L;
         int bytesRead;
 
         sprintf("----] Starting copying: " + sourcePath);
         while ((bytesRead = from.read(buffer)) > 0) {
             if (Main.getProcessCancelled()) {
                 handleCancellationCleanup(from, to, sourcePath, destPath, destTmpPath);
-                break;
+                throw new IOException("Copy was cancelled: " + sourcePath);
             }
             to.write(buffer, 0, bytesRead);
-            totalBytesRead += bytesRead;
             updateIncreaseLastSecondFileSizeProcessValues(bytesRead);
         }
 
         to.flush();
-        resetAndUpdateFileCopiedProcessValues();
     }
 
     private void handleCancellationCleanup(InputStream from, OutputStream to, Path sourcePath, Path destPath, Path destTmpPath) {
@@ -286,9 +309,12 @@ public class CopyHelper {
      * @throws ExecutionException       if an error occurs during concurrent execution
      * @throws InterruptedException     if the thread is interrupted during execution
      */
-    private void finalizeCopy(Path destTmpPath, Path destPath, FileInfo fileInfo, SimpleIntegerProperty answer) throws IOException, ExecutionException, InterruptedException {
-            renameTmpFileBackToOriginalExtentension(fileInfo, destTmpPath, destPath, modelMain);
+    private boolean finalizeCopy(Path destTmpPath, Path destPath, FileInfo fileInfo, SimpleIntegerProperty answer) throws IOException, ExecutionException, InterruptedException {
+        boolean finalized = renameTmpFileBackToOriginalExtentension(fileInfo, destTmpPath, destPath, modelMain);
+        if (finalized) {
             Messages.sprintf("File renamed to original extension: " + destTmpPath + " dest: " + destPath);
+        }
+        return finalized;
     }
 
     private void handleCopyConflict(SimpleIntegerProperty answer, Path destTmpPath, Path destPath, FileInfo fileInfo) throws IOException, ExecutionException, InterruptedException {

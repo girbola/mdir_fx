@@ -1,0 +1,7 @@
+.button {
+    -fx-background-color: red;
+}
+
+.button.custom {
+    -fx-background-color: blue;
+}

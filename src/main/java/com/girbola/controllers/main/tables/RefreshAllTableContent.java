@@ -16,11 +16,16 @@ public class RefreshAllTableContent {
 //        this.tables = tables;
 
         Messages.sprintf("RefreshTableContent size: " + tables.getSortIt_table().getItems().size());
-        Platform.runLater(() -> {
+        Runnable refreshTables = () -> {
             refresh(tables.getSortIt_table());
             refresh(tables.getSorted_table());
             refresh(tables.getAsItIs_table());
-        });
+        };
+        if (Platform.isFxApplicationThread()) {
+            refreshTables.run();
+        } else {
+            Platform.runLater(refreshTables);
+        }
     }
 
     //    @Override
@@ -31,7 +36,7 @@ public class RefreshAllTableContent {
             Messages.sprintfError("refreshTableContent - Table were null at TableUtils. Line: " + Misc.getLineNumber());
             return;
         }
-        if (table.getColumns().getFirst() != null) {
+        if (!table.getColumns().isEmpty()) {
             while (tableIT.hasNext()) {
                 FolderInfo folderInfo = tableIT.next();
                 if (folderInfo.getFileInfoList().isEmpty()) {

@@ -3,6 +3,7 @@ package com.girbola.controllers.main.loadfileinfostableviews;
 import com.girbola.Main;
 import com.girbola.controllers.main.ModelMain;
 import com.girbola.controllers.main.sql.ConfigurationSQLHandler;
+import com.girbola.controllers.main.tables.TableUtils;
 import com.girbola.controllers.main.tables.model.SavedFolderInfos;
 import com.girbola.controllers.loading.LoadingProcessTask;
 import com.girbola.drive.DriveInfoUtils;
@@ -90,4 +91,19 @@ public class LoadFileInfosBackToTableViews extends Service<Boolean> {
         };
     }
 
+    @Override
+    protected void succeeded() {
+        TableUtils.calculateTableViewsStatistic(modelMain.tables());
+        Messages.sprintf("LoadFileInfosBackToTableViews succeeded");
+    }
+
+    @Override
+    protected void cancelled() {
+        Messages.sprintf("LoadFileInfosBackToTableViews cancelled");
+    }
+
+    @Override
+    protected void failed() {
+        Messages.sprintf("LoadFileInfosBackToTableViews failed");
+    }
 }

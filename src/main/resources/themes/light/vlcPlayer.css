@@ -1,0 +1,9 @@
+@import "buttons.css";
+
+.root {
+    -fx-background-color: #e9edf2;
+}
+
+.stackPane {
+    -fx-background-color: transparent;
+}

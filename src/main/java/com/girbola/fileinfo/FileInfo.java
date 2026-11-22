@@ -16,6 +16,7 @@ import static com.girbola.utils.FileInfoUtils.calculateFileSHA256;
 public class FileInfo extends Metadata implements Cloneable {
 
     private long timeShift;
+    private CopyLifecycleState copyLifecycleState = CopyLifecycleState.NEW;
 
     @Override
     public Object clone() throws CloneNotSupportedException {
@@ -28,6 +29,7 @@ public class FileInfo extends Metadata implements Cloneable {
                     ", \n camera_model='" + getCamera_model() + '\'' +
                     ", \n confirmed=" + isConfirmed() +
                     ", \n copied=" + isCopied() +
+                    ", \n copyLifecycleState=" + getCopyLifecycleState() +
                     ", \n date=" + getDate() +
                     ", \n destination_Path='" + getDestination_Path() + '\'' +
                     ", \n event='" + getEvent() + '\'' +

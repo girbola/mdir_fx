@@ -2,6 +2,7 @@ package com.girbola.persistence.fileinfo;
 
 import com.girbola.Main;
 import com.girbola.controllers.main.tables.model.FolderInfo;
+import com.girbola.fileinfo.CopyLifecycleState;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.fileinfo.FileInfoEnum;
 import com.girbola.messages.Messages;
@@ -36,6 +37,7 @@ public class FileInfoMapper {
                     case FILEHISTORIES -> pstmt.setString(index, convertFileHistoriesToString(fileInfo.getFileHistories()));
                     case GOOD -> pstmt.setBoolean(index, fileInfo.isGood());
                     case COPIED -> pstmt.setBoolean(index, fileInfo.isCopied());
+                    case COPY_LIFECYCLE_STATE -> pstmt.setString(index, fileInfo.getCopyLifecycleState().name());
                     case IGNORED -> pstmt.setBoolean(index, fileInfo.isIgnored());
                     case IMAGE -> pstmt.setBoolean(index, fileInfo.isImage());
                     case IMAGE_DIFFERENCE_HASH -> pstmt.setString(index, fileInfo.getImageDifferenceHash());
@@ -206,6 +208,7 @@ if(rs.getString(FileInfoEnum.ORGPATH.getColumnName()).equals("C:\\Users\\marko\\
         boolean ignored = rs.getBoolean(FileInfoEnum.IGNORED.getColumnName());
         boolean copied = rs.getBoolean(FileInfoEnum.COPIED.getColumnName());
         boolean tableDuplicated = rs.getBoolean(FileInfoEnum.TABLE_DUPLICATED.getColumnName());
+        String copyLifecycleStateValue = rs.getString(FileInfoEnum.COPY_LIFECYCLE_STATE.getColumnName());
 
         // Boolean fields - File type flags
         boolean image = rs.getBoolean(FileInfoEnum.IMAGE.getColumnName());
@@ -234,6 +237,9 @@ if(rs.getString(FileInfoEnum.ORGPATH.getColumnName()).equals("C:\\Users\\marko\\
         // Complex fields
         List<String> fileHistories = getFileHistoriesData(rs);
         FileInfo fileInfo = new FileInfo(orgPath, orgPathDriveSerialNumber, workDir, workDirDriveSerialNumber, destinationPath, event, location, tags, cameraModel, user, orientation, timeShift, fileInfoId, bad, good, suggested, confirmed, modified, image, raw, video, ignored, copied, tableDuplicated, createdDate, size, imageDifferenceHash, thumbOffset, thumbLenght, sha256CheckSum, fileHistories);
+        fileInfo.setCopyLifecycleState(copyLifecycleStateValue == null || copyLifecycleStateValue.isBlank()
+                ? (copied ? CopyLifecycleState.DONE : CopyLifecycleState.NEW)
+                : CopyLifecycleState.valueOf(copyLifecycleStateValue));
 //Messages.sprintf("****************FileInfo all values*************: " + fileInfo.showAllValues());
 //Messages.sprintf("*************************************************");
         if (FileInfoUtils.handleMetadataInformation(fileInfo)) {

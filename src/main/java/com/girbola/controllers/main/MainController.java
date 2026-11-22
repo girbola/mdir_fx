@@ -174,11 +174,11 @@ public class MainController {
 
     private void initStatistics() {
         TableStatistic sortitTableStatistic = new TableStatistic(sortitController.getAllFilesCopied_lbl(),
-                sortitController.getAllFilesSize_lbl(), sortitController.getAllFilesCopied_lbl());
+                sortitController.getAllFilesSize_lbl(), sortitController.getAllFilesTotal_lbl());
         TableStatistic sortedTableStatistic = new TableStatistic(sortedController.getAllFilesCopied_lbl(),
-                sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesCopied_lbl());
+                sortedController.getAllFilesSize_lbl(), sortedController.getAllFilesTotal_lbl());
         TableStatistic asitisTableStatistic = new TableStatistic(asitisController.getAllFilesCopied_lbl(),
-                asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesCopied_lbl());
+                asitisController.getAllFilesSize_lbl(), asitisController.getAllFilesTotal_lbl());
 
 
         this.model_main.tables().setSortIt_table(sortitController.getTable());

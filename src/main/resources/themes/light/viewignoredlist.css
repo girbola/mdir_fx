@@ -1,0 +1,11 @@
+@import "buttons.css";
+
+.borderPane,
+.list-view {
+    -fx-background-color: #e9edf2;
+}
+
+.list-view .list-cell {
+    -fx-font-size: 14px;
+    -fx-text-fill: #263548;
+}

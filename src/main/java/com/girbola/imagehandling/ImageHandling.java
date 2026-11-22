@@ -69,7 +69,6 @@ public class ImageHandling {
 			@Override
 			protected Image call() throws Exception {
 				if (isCancelled()) {
-					Main.setProcessCancelled(true);
 					return null;
 				}
 				if (Main.getProcessCancelled()) {
@@ -172,16 +171,21 @@ public class ImageHandling {
 					fileInfo.getThumb_offset(), fileInfo.getThumb_length(), width, imageView);
 			return convertImage_offset_task;
 		} else {
-			Metadata metaData = DateTaken.readMetaData(Paths.get(fileInfo.getOrgPath()));
-			if (metaData != null) {
-				FileInfoUtils.getImageThumb_Offset_Length(metaData, fileInfo);
-				if (fileInfo.getThumb_offset() != 0 && fileInfo.getThumb_length() != 0) {
-					Task<Image> convertImage_offset_task = convertImage_offset(Paths.get(fileInfo.getOrgPath()),
-							fileInfo.getThumb_offset(), fileInfo.getThumb_length(), width, imageView);
-					return convertImage_offset_task;
-				}
-			}
-			return null;
+            Task<Image> convr = new ConvertImage(Paths.get(fileInfo.getOrgPath()), width, imageView);
+            return convr;
+
+//			Metadata metaData = DateTaken.readMetaData(Paths.get(fileInfo.getOrgPath()));
+//			if (metaData != null) {
+//				FileInfoUtils.getImageThumb_Offset_Length(metaData, fileInfo);
+//				if (fileInfo.getThumb_offset() != 0 && fileInfo.getThumb_length() != 0) {
+//					Task<Image> convertImage_offset_task = convertImage_offset(Paths.get(fileInfo.getOrgPath()),
+//							fileInfo.getThumb_offset(), fileInfo.getThumb_length(), width, imageView);
+//					return convertImage_offset_task;
+//				} else  {
+//                    Messages.sprintfError("Thumb offset and length were 0 for: " + fileInfo.getOrgPath());
+//                }
+//			}
+//			return null;
 		}
 	}
 

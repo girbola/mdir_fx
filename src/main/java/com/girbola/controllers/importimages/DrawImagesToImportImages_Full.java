@@ -224,6 +224,10 @@ public class DrawImagesToImportImages_Full extends Task<Void> {
                     close_stage.setScene(close_scene);
                     closerLookController.init((List<FileInfo>) titledPane.getUserData(),
                             model_importImages.getCurrentFolderPath(), connection);
+                    close_stage.setOnHidden(event1 -> {
+                        closerLookController.stopRendering();
+                        model_importImages.getRenderVisibleNode().startTimeLine();
+                    });
 
                     close_stage.show();
                 }
