@@ -10,9 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.mock;
@@ -21,6 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class CopyHelperTest {
+
+    @TempDir
+    private Path tempDirectory;
 
     private CopyHelper copyHelper;
     private ModelMain modelMainMock;
@@ -34,6 +39,39 @@ public class CopyHelperTest {
         modelMainMock = Mockito.mock(ModelMain.class);
         fileInfoMock = Mockito.mock(FileInfo.class);
         copyHelper = new CopyHelper(modelMainMock, null, null);
+    }
+
+    @Test
+    public void testResolveDestinationPathReturnsNullForIdenticalFileContents() throws IOException {
+        Path source = tempDirectory.resolve("source.jpg");
+        Path destination = tempDirectory.resolve("photo.jpg");
+        Files.writeString(source, "same contents");
+        Files.writeString(destination, "same contents");
+
+        assertNull(copyHelper.resolveDestinationPath(source, destination));
+    }
+
+    @Test
+    public void testResolveDestinationPathAddsSuffixForSameSizeDifferentContents() throws IOException {
+        Path source = tempDirectory.resolve("source.jpg");
+        Path destination = tempDirectory.resolve("photo.jpg");
+        Files.writeString(source, "new-data");
+        Files.writeString(destination, "old-data");
+
+        assertEquals(tempDirectory.resolve("photo_1.jpg"),
+                copyHelper.resolveDestinationPath(source, destination));
+    }
+
+    @Test
+    public void testResolveDestinationPathSkipsAlreadyUsedSuffixes() throws IOException {
+        Path source = tempDirectory.resolve("source.jpg");
+        Path destination = tempDirectory.resolve("photo.jpg");
+        Files.writeString(source, "new-data");
+        Files.writeString(destination, "old-data");
+        Files.writeString(tempDirectory.resolve("photo_1.jpg"), "different");
+
+        assertEquals(tempDirectory.resolve("photo_2.jpg"),
+                copyHelper.resolveDestinationPath(source, destination));
     }
 
     @Test

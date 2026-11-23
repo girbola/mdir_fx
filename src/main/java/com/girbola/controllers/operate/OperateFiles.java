@@ -125,7 +125,6 @@ public class OperateFiles {
                     modelOperate.getStart_btn().setDisable(true);
                 });
 
-
                 modelMain.getMonitorExternalDriveConnectivity().cancel();
 
                 workDirSQL.loadWorkDir();
@@ -159,12 +158,10 @@ find destination by date range 2010/01/01 - 2010/01/01 +1 day ratio
 //                }
 //
 
-
                 Task<Integer> copy = new Copy(list, modelOperate, modelMain, sceneNameType, close, workDirSQL);
                 copy.setOnSucceeded((WorkerStateEvent eventWorker) -> Messages.sprintf("copy succeeded"));
                 copy.setOnFailed((WorkerStateEvent eventWorker) -> Messages.sprintf("copy failed"));
                 copy.setOnCancelled((WorkerStateEvent eventWorker) -> {
-
                     modelOperate.getCancel_btn().setText(Main.bundle.getString("close"));
                     modelOperate.doneButton(sceneNameType, close);
                     Platform.runLater(() -> {

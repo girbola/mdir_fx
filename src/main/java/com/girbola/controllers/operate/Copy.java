@@ -97,9 +97,9 @@ public class Copy extends Task<Integer> {
 
         // CopyProcess
         for (FileInfo fileInfo : list) {
-
             Messages.sprintf("Copying file: " + fileInfo.getOrgPath() + " dest: " + fileInfo.getWorkDir() + fileInfo.getDestination_Path());
-            if (fileInfo.getWorkDir() == null || fileInfo.getWorkDir().isEmpty() && Files.exists(Paths.get(fileInfo.getWorkDir()))) {
+            if (fileInfo.getWorkDir() == null || fileInfo.getWorkDir().isEmpty()
+                    || !Files.isDirectory(Paths.get(fileInfo.getWorkDir()))) {
                 Messages.warningText(Main.bundle.getString("workDirDoesNotExist"));
                 cancel();
                 break;
@@ -107,15 +107,38 @@ public class Copy extends Task<Integer> {
 
             source = Paths.get(fileInfo.getOrgPath());
             dest = Paths.get(fileInfo.getWorkDir() + fileInfo.getDestination_Path());
+
             fileInfo.setDestination_Path(FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir()));
             fileInfo.setCopied(false);
             fileInfo.setCopyLifecycleState(CopyLifecycleState.NEW);
+
+            CopyState duplicates = workDirSQL.findDuplicates(fileInfo);
+
+            if(duplicates == CopyState.DUPLICATE) {
+                copyHelper.updateIncreaseDuplicatesProcessValues();
+                continue;
+            }
+
+            STATE = CopyState.COPY.getType();
+            if (Files.isRegularFile(source)) {
+                Path resolvedDest = copyHelper.resolveDestinationPath(source, dest);
+                if (resolvedDest == null) {
+                    copyHelper.updateIncreaseDuplicatesProcessValues();
+                    continue;
+                }
+                if (!resolvedDest.equals(dest)) {
+                    dest = resolvedDest;
+                    STATE = CopyState.RENAME.getType();
+                }
+                fileInfo.setDestination_Path(FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir()));
+            }
+
             if (!workDirSQL.insertFileInfo(fileInfo)) {
                 cancel();
                 return null;
             }
-            if (Files.exists(source)) {
 
+            if (Files.exists(source)) {
                 boolean cancellation = copyHelper.checkCancellation(fileInfo, dest);
                 if (cancellation) {
                     Main.setProcessCancelled(true);
@@ -128,16 +151,10 @@ public class Copy extends Task<Integer> {
 
 //                    List<FileInfo> findPossibleExistsFoldersInWorkdir = modelMain.getWorkDir_Handler().findPossibleExistsFoldersInWorkdir(fileInfo);
 
-                Path dest_test = FileUtils.renameFile(Paths.get(fileInfo.getOrgPath()), dest);
-                if (dest_test != null) {
-                    dest = dest_test;
-                    STATE = CopyState.RENAME.getType();
-                } else {
-                    STATE = CopyState.COPY.getType();
-                }
-
                 fileInfo.setDestination_Path(FileUtils.parseWorkDir(dest.toString(), fileInfo.getWorkDir()));
+
                 fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
+
                 if (!workDirSQL.insertFileInfo(fileInfo)) {
                     cancel();
                     return null;
@@ -153,13 +170,11 @@ public class Copy extends Task<Integer> {
                             if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                                 copyHelper.updateSourceAndDestProcessValues(source, dest);
                                 copyHelper.updateIncreaseCopyingProcessValues();
-                                if (!workDirSQL.insertFileInfo(fileInfo)) {
-                                    cancel();
-                                    return null;
-                                }
                             }
                         } else {
                             Messages.sprintfError("Source file did not exists!: " + source);
+                            fileInfo.setCopied(false);
+                            fileInfo.setCopyLifecycleState(CopyLifecycleState.NEW);
                         }
 
                         break;
@@ -167,11 +182,6 @@ public class Copy extends Task<Integer> {
                         Messages.sprintf("Renaming file: " + source + " to: " + dest);
                         if (copyHelper.copyFile(fileInfo, source, dest, STATE, answer, modelOperate)) {
                             copyHelper.updateIncreaseRenamedProcessValues();
-                            if (!workDirSQL.insertFileInfo(fileInfo)) {
-                                cancel();
-                                return null;
-                            }
-//                                modelMain.getWorkDirSQL().insertFileInfo(fileInfo);
                         }
                         break;
                     case BROKENFILE:
@@ -181,6 +191,12 @@ public class Copy extends Task<Integer> {
                         Messages.sprintfError("Unknown copy state. " + copyState + " Filename: " + fileInfo.getOrgPath());
                         break;
                 }
+
+                if (!workDirSQL.insertFileInfo(fileInfo)) {
+                    cancel();
+                    return null;
+                }
+
                 Messages.sprintf("Dest: " + dest + " STATE: " + STATE);
 
                 copyHelper.updateFilesLeftCounter();

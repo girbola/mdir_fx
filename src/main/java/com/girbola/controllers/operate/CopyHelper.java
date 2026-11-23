@@ -7,14 +7,13 @@ import com.girbola.fileinfo.CopyLifecycleState;
 import com.girbola.fileinfo.FileInfo;
 import com.girbola.messages.Messages;
 import common.utils.FileUtils;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.stage.Window;
 
-import static com.girbola.controllers.operate.OperateFilesUtils.cleanCancelledFile;
 import static com.girbola.controllers.operate.OperateFilesUtils.renameTmpFileToCorruptedFileExtensions;
 import static com.girbola.messages.Messages.sprintf;
 
@@ -201,6 +199,32 @@ public class CopyHelper {
         });
     }
 
+    public Path resolveDestinationPath(Path sourcePath, Path requestedDestPath) throws IOException {
+        Path candidate = requestedDestPath;
+        int suffix = 1;
+
+        while (Files.exists(candidate)) {
+            if (Files.isRegularFile(candidate) && Files.mismatch(sourcePath, candidate) == -1) {
+                return null;
+            }
+            candidate = addSuffix(requestedDestPath, suffix++);
+        }
+
+        return candidate;
+    }
+
+    private Path addSuffix(Path path, int suffix) {
+        String fileName = path.getFileName().toString();
+        int extensionIndex = fileName.lastIndexOf('.');
+        if (extensionIndex <= 0) {
+            extensionIndex = fileName.length();
+        }
+
+        String name = fileName.substring(0, extensionIndex);
+        String extension = fileName.substring(extensionIndex);
+        return path.resolveSibling(name + "_" + suffix + extension);
+    }
+
     private synchronized void resetAndupdateSourceAndDestProcessValues(Path source, Path dest) {
         Platform.runLater(() -> {
             modelOperate.getCopyProcess_values().setCopyFrom_tmp(source.toString());
@@ -213,8 +237,17 @@ public class CopyHelper {
     public boolean copyFile(FileInfo fileInfo, Path sourcePath, Path destPath, String state,
                             SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException, ExecutionException, InterruptedException {
 
+        fileInfo.setCopyLifecycleState(CopyLifecycleState.NEW);
+        fileInfo.setCopied(false);
+
         if (!Files.isRegularFile(sourcePath)) {
             Messages.sprintfError("Source file does not exist or is not a regular file: " + sourcePath);
+            return false;
+        }
+
+        Path destParent = destPath.getParent();
+        if (destParent == null) {
+            Messages.sprintfError("Destination must have a parent directory: " + destPath);
             return false;
         }
 
@@ -224,18 +257,18 @@ public class CopyHelper {
             return false;
         }
 
-        Path destTmpPath = Paths.get(destPath.toFile() + ".tmp");
-
         fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
-        fileInfo.setCopied(false);
+        Path destTmpPath = null;
 
         try {
             long expectedSize = Files.size(sourcePath);
-            try (InputStream from = new FileInputStream(sourcePath.toFile());
-                 OutputStream to = new FileOutputStream(destTmpPath.toFile())) {
+            destTmpPath = Files.createTempFile(destParent, "mdir-copy-", ".tmp");
+            try (InputStream from = Files.newInputStream(sourcePath);
+                 OutputStream to = Files.newOutputStream(destTmpPath, StandardOpenOption.WRITE,
+                         StandardOpenOption.TRUNCATE_EXISTING)) {
                 Messages.sprintf("Source: " + sourcePath + " dest: " + destPath);
                 resetAndupdateSourceAndDestProcessValues(sourcePath, destPath);
-                copyData(from, to, destTmpPath, sourcePath, destPath, answer, modelOperate);
+                copyData(from, to, sourcePath);
             }
 
             if (!Files.isRegularFile(sourcePath) || Files.size(sourcePath) != expectedSize) {
@@ -244,6 +277,9 @@ public class CopyHelper {
             if (!Files.isRegularFile(destTmpPath) || Files.size(destTmpPath) != expectedSize) {
                 throw new IOException("Incomplete copy to temporary destination: " + destTmpPath
                         + " (expected " + expectedSize + " bytes)");
+            }
+            if (Files.mismatch(sourcePath, destTmpPath) != -1) {
+                throw new IOException("Copied data differs from source: " + sourcePath);
             }
             if (!finalizeCopy(destTmpPath, destPath, fileInfo, answer)) {
                 throw new IOException("Could not move temporary copy to destination: " + destPath);
@@ -258,27 +294,27 @@ public class CopyHelper {
             resetAndUpdateFileCopiedProcessValues();
             return true;
         } catch (Exception e) {
-            try {
-                Files.deleteIfExists(destTmpPath);
-            } catch (IOException cleanupException) {
-                e.addSuppressed(cleanupException);
+            if (destTmpPath != null) {
+                try {
+                    Files.deleteIfExists(destTmpPath);
+                } catch (IOException cleanupException) {
+                    e.addSuppressed(cleanupException);
+                }
             }
             fileInfo.setCopied(false);
-            fileInfo.setCopyLifecycleState(CopyLifecycleState.PROCESS);
+            fileInfo.setCopyLifecycleState(CopyLifecycleState.NEW);
             Messages.sprintfError("Copy failed for " + sourcePath + " to " + destPath + ": " + e.getMessage());
             return false;
         }
     }
 
-    private void copyData(InputStream from, OutputStream to, Path destTmpPath, Path sourcePath, Path destPath,
-                          SimpleIntegerProperty answer, ModelOperate modelOperate) throws IOException {
+    private void copyData(InputStream from, OutputStream to, Path sourcePath) throws IOException {
         byte[] buffer = new byte[BUFFER_SIZE];
         int bytesRead;
 
         sprintf("----] Starting copying: " + sourcePath);
         while ((bytesRead = from.read(buffer)) > 0) {
             if (Main.getProcessCancelled()) {
-                handleCancellationCleanup(from, to, sourcePath, destPath, destTmpPath);
                 throw new IOException("Copy was cancelled: " + sourcePath);
             }
             to.write(buffer, 0, bytesRead);
@@ -286,15 +322,6 @@ public class CopyHelper {
         }
 
         to.flush();
-    }
-
-    private void handleCancellationCleanup(InputStream from, OutputStream to, Path sourcePath, Path destPath, Path destTmpPath) {
-        boolean cancelledSucceeded = cleanCancelledFile(from, to, sourcePath, destPath);
-        if (cancelledSucceeded) {
-            Messages.sprintf("Cleanup is done ");
-        } else {
-            Messages.sprintf("Cleanup has FAILED. Tmp file will remain: " + destTmpPath);
-        }
     }
 
     /**
